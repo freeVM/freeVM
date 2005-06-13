@@ -1,0 +1,230 @@
+Mon Jun 13 14:52:06 EDT 2005  [debug] AvalonLogSystem initialized using logfile 'velocity.log'
+Mon Jun 13 14:52:06 EDT 2005   [info] ************************************************************** 
+Mon Jun 13 14:52:06 EDT 2005   [info] Starting Jakarta Velocity v1.5-dev
+Mon Jun 13 14:52:06 EDT 2005   [info] RuntimeInstance initializing.
+Mon Jun 13 14:52:06 EDT 2005   [info] Default Properties File: org/apache/velocity/runtime/defaults/velocity.properties
+Mon Jun 13 14:52:06 EDT 2005   [info] Trying to use logger class org.apache.velocity.runtime.log.AvalonLogSystem
+Mon Jun 13 14:52:06 EDT 2005   [info] Using logger class org.apache.velocity.runtime.log.AvalonLogSystem
+Mon Jun 13 14:52:06 EDT 2005   [info] Default ResourceManager initializing. (class org.apache.velocity.runtime.resource.ResourceManagerImpl)
+Mon Jun 13 14:52:06 EDT 2005   [info] Resource Loader Instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:06 EDT 2005   [info] FileResourceLoader : initialization starting.
+Mon Jun 13 14:52:06 EDT 2005   [info] FileResourceLoader : adding path '/Users/geir/dev/apache/harmony/harmony/standard/site/xdocs/stylesheets'
+Mon Jun 13 14:52:06 EDT 2005   [info] FileResourceLoader : initialization complete.
+Mon Jun 13 14:52:06 EDT 2005   [info] ResourceCache : initialized. (class org.apache.velocity.runtime.resource.ResourceCacheImpl)
+Mon Jun 13 14:52:06 EDT 2005   [info] Default ResourceManager initialization complete.
+Mon Jun 13 14:52:06 EDT 2005   [info] Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+Mon Jun 13 14:52:06 EDT 2005   [info] Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+Mon Jun 13 14:52:06 EDT 2005   [info] Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+Mon Jun 13 14:52:06 EDT 2005   [info] Loaded System Directive: org.apache.velocity.runtime.directive.Include
+Mon Jun 13 14:52:06 EDT 2005   [info] Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+Mon Jun 13 14:52:06 EDT 2005   [info] Created '20' parsers.
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : initialization starting.
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : adding VMs from VM library template : VM_global_library.vm
+Mon Jun 13 14:52:06 EDT 2005  [error] ResourceManager : unable to find resource 'VM_global_library.vm' in any resource loader.
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : error using  VM library template VM_global_library.vm : org.apache.velocity.exception.ResourceNotFoundException: Unable to find resource 'VM_global_library.vm'
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro :  VM library template macro registration complete.
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : allowInline = true : VMs can be defined inline in templates
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : allowInlineLocal = false : VMs defined inline will be  global in scope if allowed.
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : messages on  : VM system will output logging messages
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : autoload off  : VM system will not automatically reload global library macros
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : initialization complete.
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocity successfully started.
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : added new VM : #table( table ) : source = ./site.vsl
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : added new VM : #tr( tr ) : source = ./site.vsl
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : added new VM : #td( value ) : source = ./site.vsl
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : added new VM : #th( value ) : source = ./site.vsl
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : added new VM : #projectanchor( name value ) : source = ./site.vsl
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : added new VM : #metaauthor( author email ) : source = ./site.vsl
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : added new VM : #image( value ) : source = ./site.vsl
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : added new VM : #source( value ) : source = ./site.vsl
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : added new VM : #subsection( subsection ) : source = ./site.vsl
+Mon Jun 13 14:52:06 EDT 2005   [info] Velocimacro : added new VM : #section( section ) : source = ./site.vsl
+Mon Jun 13 14:52:07 EDT 2005   [info] Velocimacro : added new VM : #makeProject( ) : source = ./site.vsl
+Mon Jun 13 14:52:07 EDT 2005   [info] Velocimacro : added new VM : #getProjectImage( ) : source = ./site.vsl
+Mon Jun 13 14:52:07 EDT 2005   [info] Velocimacro : added new VM : #printMeta( metaElement ) : source = ./site.vsl
+Mon Jun 13 14:52:07 EDT 2005   [info] Velocimacro : added new VM : #document( ) : source = ./site.vsl
+Mon Jun 13 14:52:07 EDT 2005  [error] VM #tr: error : too few arguments to macro. Wanted 1 got 0
+Mon Jun 13 14:52:07 EDT 2005  [error] VM #td: error : too few arguments to macro. Wanted 1 got 0
+Mon Jun 13 14:52:07 EDT 2005  [error] VM #th: error : too few arguments to macro. Wanted 1 got 0
+Mon Jun 13 14:52:07 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:07 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:08 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:09 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : table : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : tr : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : td : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : th : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : projectanchor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : metaauthor : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : image : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : source : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : subsection : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : section : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : makeProject : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : getProjectImage : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : printMeta : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [warn] Velocimacro : VM addition rejected : document : inline not allowed to replace existing VM
+Mon Jun 13 14:52:10 EDT 2005   [info] ResourceManager : found ./site.vsl with loader org.apache.velocity.runtime.resource.loader.FileResourceLoader
