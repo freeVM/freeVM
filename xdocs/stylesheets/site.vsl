@@ -219,9 +219,9 @@ limitations under the License.
 #set ( $logoString = $project.getChild("logo").getAttributeValue("href") )
 <td align="left">
 #if ( $logoString.startsWith("/") )
-<a href="$project.getAttributeValue("href")"><img width="70%" src="$relativePath$logoString" alt="$project.getChild("logo").getText()" border="0"/></a>
+<a href="$project.getAttributeValue("href")"><img  src="$relativePath$logoString" alt="$project.getChild("logo").getText()" border="0"/></a>
 #else
-<a href="$project.getAttributeValue("href")"><img width="70%" src="$relativePath/$logoString" alt="$project.getChild("logo").getText()" border="0"/></a>
+<a href="$project.getAttributeValue("href")"><img  src="$relativePath/$logoString" alt="$project.getChild("logo").getText()" border="0"/></a>
 #end
 </td>
 #end
@@ -267,7 +267,7 @@ limitations under the License.
                 <tr>
                     <td align='LEFT'>
                     <table><tr><td>
-                    #getProjectImage()</td><td><h1>Apache Harmony</h1>
+                    #getProjectImage()</td>
                     </td></tr></table>
                     </td>
                     <td align='RIGHT'>
