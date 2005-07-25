@@ -67,10 +67,11 @@ limitations under the License.
                     <!-- LEFT SIDE NAVIGATION -->
                     <td width="20%" valign="top" nowrap="true">
 
-                <!-- special ACon Logo - leave here for next time  -->
+                <!-- special ACon Logo - leave here for next time  
 
                    <a href="http://apachecon.com"><img src="http://apache.org/images/ac2005eu_135x50.gif"
                         alt="ApacheCon Logo" border="0"/></a>
+                 -->
 
                    <!-- regular menu -->
 
@@ -84,6 +85,8 @@ limitations under the License.
                     <li>    <a href="./license.html">License</a>
 </li>
                     <li>    <a href="./contribution_policy.html">Contribution Policy</a>
+</li>
+                    <li>    <a href="./guidelines.html">Project Guidelines</a>
 </li>
                     <li>    <a href="http://www.apache.org/">ASF</a>
 </li>
@@ -127,18 +130,107 @@ limitations under the License.
       <tr><td>
         <blockquote>
                                     <p>
+The following is PROPOSED, and is not yet approved by the community.
+</p>
+                                                <p>
 Due to the oversight which we wish to provide for the Harmony community, the following 
 process will be used for committers, contributors and their contributions.
 </p>
+                                                <p>
+In summary : 
+</p>
+                                                <ul>
+<li>
+  We are working to ensure that we have broad participation from the community, 
+  at all experience levels and interests, but at the same time will work to 
+  minimze any risks to the the ASF, the project and our community  due to 
+  inappropriate contributions of the intellectual property of others.
+</li>
+<li>
+   We will adhere to the standard Apache process and contribution agreements, but 
+   enhance to gather information about contributor's previous experience with
+   similar technology.  This information will be used to ensure that the work
+   contributed to the project does not infringe the intellectual or other
+   property rights of others. 
+</li>
+<li>
+   We will compartmentalize our SVN repository and use fine-grained access control
+   to ensure broad participation while still ensuring that inappropriate or 
+   questionalble contributions do no occur.
+</li>
+<li>
+  We will require every contributor to fill out a "Authorized Contributor Questionnaire", 
+  while will be used to help limit the risks to our source base from inappropriate 
+  contributions.
+</li>
+</ul>
                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#828DA6">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Basic Outline"><strong>Basic Outline</strong></a>
+          <a name="Division of Repository"><strong>Division of Repository</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
-                </blockquote>
+                                    <p>
+We shall divide our SVN repository into sections.  There will be two 
+main sections, the "standard" section, for which the standard Apache process 
+applies (namely, the standard Apache ICLA is all that is required)
+and the "enhanced" section, which requires any committer to also be 
+an Authorized Contributor.  Project code will be in the "enhanced" section, 
+and website, documentation and other miscellany will be in the "standard"
+section.  For the purposes of illustration :
+</p>
+                                                <pre>
+
+enhanced/JVM
+          /VM
+          /JIT
+          /GC
+          /...
+          / vm/lib interface
+enhanced/classlib
+            /applet
+            /awt
+            /beans
+            /...
+standard/website and Documentation
+standard/Legal and administrative
+
+</pre>
+                                                <p>
+and we limit access within the enhanced part of the SVN 
+using information provided by Authorized Contributor, as defined below.
+Access will be controlled with fine-grained access control lists.
+</p>
+                                                <p>
+We will be as liberal as possible - if your status as an Authorized Contributor doesn't prevent it,
+access should be granted to any part of the SVN repository.
+</p>
+                            </blockquote>
+      </td></tr>
+      <tr><td><br/></td></tr>
+    </table>
+                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#828DA6">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="Strict Limits on Committer Contribution"><strong>Strict Limits on Committer Contribution</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                    <p>
+Committers can only commit contributions to the repositories 
+that they personally created <i>specifically for contribution to Apache Harmony.</i>
+This is the standard stream of fresh original work, small enhancements 
+and patches that are the normal flow of project life.  The purpose of 
+this rule is to explicitly prohibit re-purposed "bulk" code 
+that the contributor believes is their original work from being
+added to the codebase without explicit oversight and acceptance. 
+We can still accept contributions like that, but will track them explicitly
+as Bulk Contributions.
+</p>
+                            </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>
     </table>
@@ -150,7 +242,23 @@ process will be used for committers, contributors and their contributions.
       </td></tr>
       <tr><td>
         <blockquote>
-                </blockquote>
+                                    <p>
+Each committer is required to complete a standard 
+<a href="http://www.apache.org/licenses/">Apache Individual Contributor License Agreement</a>.
+This document asserts that the contributor is licensing their 
+material to the ASF under the Apache license and is their original work (there's some other details).
+This document is maintained and managed by the Secretary of the Apache Software Foundation.
+</p>
+                                                <p>
+In order for a committer to become an Authorized Contributor,  each committer is required to complete the 
+<a href="auth_cont_quest.html">Authorized Contributor Questionnaire</a> and submit to the 
+Harmony PMC.
+</p>
+                                                <p>
+We encourage every committer to complete a 
+<a href="http://www.apache.org/licenses/">Apache Corporate Contributor License Agreement</a>.
+</p>
+                            </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>
     </table>
@@ -162,7 +270,35 @@ process will be used for committers, contributors and their contributions.
       </td></tr>
       <tr><td>
         <blockquote>
-                </blockquote>
+                                    <p>
+Any software or other contribution that was not created explicitly for 
+Apache Harmony <i>in</i> the Apache Harmony project is considered to
+be a 'Bulk Contribution'.  This status is independent of the purpose
+or author of said contribution.  For example:
+</p>
+                                                <ul>
+<li> Personal utilities that a committer always uses on projects</li>
+<li> Code from other open source projects that have a compatible license</li>
+<li> Code from proprietary projects for which the donor has clear title</li>
+</ul>
+                                                <p>
+Any Bulk Contribution  :
+</p>
+                                                <ol>
+<li> Will be donated via the project JIRA as a contribution under the Apache License.</li>
+<li> Will be accompanied by a Software Grant or CCLA which will be registered with the Apache Incubator</li>
+<li> Will be registered in the Apache Harmony Bulk Contribution Repository</li>
+<li> Will be made by an Authorized Contributor </li>
+</ol>
+                                                <p>
+The Bulk Contribution Repository is a separate place in our administrative SVN in which each contribution 
+is committed, in it's entirety, before being combined with the project codebases.  We do this to
+ensure that we have a clear and unambiguous record of any repurposed software that was contributed or
+brought into the project source tree. Along with the source or other contributed materials, the 
+contribution will also include a description of the software and the name of the Authorized Contributor
+that made the donation
+</p>
+                            </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>
     </table>
