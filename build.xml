@@ -75,6 +75,12 @@
               <include name="**/*.png"/>
           </fileset>
       </copy>
+
+      <copy todir="${docs.dest}/" filtering="no">
+           <fileset dir="${docs.src}">
+              <include name="**/*.txt"/>
+           </fileset>
+      </copy>
   
       <!-- In case we have CSS someday
       <copy todir="${docs.dest}" filtering="no">
