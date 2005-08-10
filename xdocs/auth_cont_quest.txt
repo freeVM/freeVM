@@ -1,6 +1,6 @@
-The Apache Software Foundation
-   Apache Harmony Project
-Authorized Contributor Questionnaire 
+        The Apache Software Foundation
+           Apache Harmony Project
+     Authorized Contributor Questionnaire
 
 PROPOSED
 
@@ -26,12 +26,34 @@ Part II:  Access to Repositories
    as there are no issues with previous exposure to technology that
    could be a problem for the project.
 
-   Which components are you interested in working on? Please list below :
+   Which components are you interested in working on? Please check items on
+   the list below :
 
-     ___________________________________________
-     ___________________________________________
-     ___________________________________________
-     ___________________________________________
+
+     __ JVM (all)
+     __    JIT
+     __    VM
+     __    GC/MM
+     __    Interfaces (JVMPI, JVMDI, JDWP, JVMTI, VM/Classlib, JNI
+     __    OS portability layer
+
+     __ Classlibrary (all)
+     __    Core (beans, io, lang, math, net, nio, text, util)
+     __    Client (print, sound, imageio, jnlp)
+     __    Enterprise (rmi, sql, management, naming, rmi,transaction, OMG)
+     __    GUI (applet, awt, accessibility, swing)
+     __    Security (security, crypto, providers)
+     __    XML (xml, w3c, xml)
+
+     __  Tools (all)
+     __    launcher (e.g. java.exe)
+     __    javah
+     __    javap
+     __    javac
+     __    jdb
+     __    javadoc
+     __    jar
+     __    browser plugins
 
 
 Part III : Exposure to Related Technologies
@@ -125,23 +147,8 @@ Part III : Exposure to Related Technologies
         a written authorization disclaiming any copyright or confidentiality
         interest in your current or future contributions to this project.
 
-Part IV :  Bulk Contribution
 
-   Have you personally written all of the code or other material
-   that you are intending to contribute to this project?
-
-    [ ] Yes    [ ] No
-
-   If not, you need to satisfy both a) and b) below.
-
-   a)  All of the other authors are Authorized Contributors for the component and
-
-   b)  You have a written agreement with those who wrote the material
-       that either gives you ownership of the material or otherwise
-       provides you sufficient rights to submit this material to the
-       project on their behalf.  (please provide the details of this agreement)
-
-Part V : Confidential Exposure
+Part IV : Confidential Exposure
 
    Have you had access to any information regarding a proprietary
    implementation of a component that could be considered
@@ -154,7 +161,7 @@ Part V : Confidential Exposure
    a written authorization disclaiming any confidentiality interest
    in your current or future contributions to this project.
 
-Part VI :  Non-Compete Restrictions
+Part V :  Non-Compete Restrictions
 
    Are you subject to a non-compete agreement that covers the
    development of software? 
@@ -176,11 +183,11 @@ Part VI :  Non-Compete Restrictions
    your participation in the project is not in conflict with the
    non-compete agreement.
 
-Part VII :  ICLA
+Part VI :  ICLA
 
    Please execute a Individual Contributor License Agreement.
 
-Part VIII :  Employment Limitations
+Part VII :  Employment Limitations
 
    Are you employed as a programmer, systems analyst, or other
    IT professional? 
@@ -202,4 +209,4 @@ Part VIII :  Employment Limitations
 
  Signature : ___________________________________________
 Print Name : ___________________________________________
-      Date : ___________________________________________  
+      Date : ___________________________________________
