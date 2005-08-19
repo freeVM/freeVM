@@ -16,7 +16,6 @@ This document can be found <a href="auth_cont_quest.txt">here</a>.
 </p>
 
 <pre>
-
         The Apache Software Foundation
            Apache Harmony Project
      Authorized Contributor Questionnaire
@@ -41,50 +40,13 @@ Part I :  Identification
 
 Part II:  Access to Repositories
 
-   Apache Harmony would like to limit write access to repositories
-   to those that need it, but will grant all that is asked for as long
-   as there are no issues with previous exposure to technology that
-   could be a problem for the project.
-
-   Which components are you interested in working on? Please check items on
-   the list below :
-
-
-     __ JVM (all)
-     __    JIT
-     __    VM
-     __    GC/MM
-     __    Interfaces (JVMPI, JVMDI, JDWP, JVMTI, VM/Classlib, JNI
-     __    OS portability layer
-
-     __ Classlibrary (all)
-     __    Core (beans, io, lang, math, net, nio, text, util)
-     __    Client (print, sound, imageio, jnlp)
-     __    Enterprise (rmi, sql, management, naming, rmi,transaction, OMG)
-     __    GUI (applet, awt, accessibility, swing)
-     __    Security (security, crypto, providers)
-     __    XML (xml, w3c, xml)
-
-     __  Tools (all)
-     __    launcher (e.g. java.exe)
-     __    javah
-     __    javap
-     __    javac
-     __    jdb
-     __    javadoc
-     __    jar
-     __    browser plugins
-
-
-Part III : Exposure to Related Technologies
-
   The Project is committed to producing an implementation of Java that
   can be licensed freely under the Apache License.  To do this,
   we wish to know what, if any, previous exposure you have had
   to the source for any of the parts of a Java implementation
   including virtual machines, class libraries, tooling, etc.
 
-  The following activities are not considered “accessing’ the
+  The following activities are not considered accessing the
   source code and would not generally disqualify you from
   committing to the related repository here at Apache Harmony
 
@@ -104,58 +66,112 @@ Part III : Exposure to Related Technologies
        of an implementation as long as you did so with reference
        only to published specifications and interfaces.
 
-   With those activities in mind, have you done any of the following to an
-   implementation of one or more of the components you listed in item (2)
-   above.  If the question doesn't apply to you, please write "N/A".  Please
-   provide details for each if "yes" :
+   The following is a list of the components of the project each
+   labeled with an ID (ex. JVM-1):
 
-    Read some or all the source code for an implementation?
+     JVM
+     ---
+     VM-1    VM core (including JVMPI, JVMDI, JDWP, JVMTI, JNI)
+     VM-2    JIT
+     VM-3    Memory Management/GC
+     VM-4    OS portability layer
+     VM-X    other ____________________________________________
+
+
+     Classlibrary
+     ------------
+     CL-1    Applet (java.applet)
+     CL-2    Archive (java.util.zip, java.util.jar)
+     CL-3    Beans (java.beans)
+     CL-4    Core (incl. lang, util, net, io, annotation, concurrent,
+                       NIO-channels, NIO-charset, text, javax.net
+                       where not covered elsewhere in list)
+     CL-5    Image IO (javax.imageio)
+     CL-6    Instrument (java.lang.instrument)
+     CL-7    JMX (javax.management)
+     CL-8    Lang-management (java.lang.management)
+     CL-9    Logging (java.util.logging)
+     CL-10   Math (java.math)
+     CL-11   ORB (javax.activity, javax.rmi.*, javax.transaction.*, org.omg.*)
+     CL-12   Prefs (java.util.prefs)
+     CL-13   Print (javax.print.*)
+     CL-14   Regex (java.util.regex)
+     CL-15   RMI (java.rmi.*)
+     CL-16   Security (java.security.*, javax.security.*, org.ietf.jgss, javax.crypto)
+     CL-17   Sound (javax.sound)
+     CL-18   SQL (java.sql, javax.sql.*)
+     CL-19   Swing / AWT (java.awt.*, javax.swing.*, javax.accessibility)
+     CL-20   XML (javax.xml.*, org.w3c.*, org.xml.*)
+     CL-X   other ____________________________________________
+
+     Tools
+     -----
+     T-1    launcher (e.g. java.exe)
+     T_2    javah
+     T-3    javap
+     T-4    javac
+     T-5    jdb
+     T-6    javadoc
+     T-7    jar
+     T-8    browser plugins
+     T-X    other ____________________________________________
+
+
+Part III : General Exposure
+
+   With the above activities a)-d) in mind, have you done any of the following to an
+   implementation of one or more of the components listed above. If the question
+   doesn't apply to you, please write "N/A".  If it does, please list the components
+   by the above-listed IDs, and provide details :
+
+   1. Read some or all the source code for an implementation?
 
     [ ] Yes    [ ] No
 
-     _____________________________________________________________________
-     _____________________________________________________________________
+     Components : ________________________________________________________
+     Details : ___________________________________________________________
      _____________________________________________________________________
 
-    Fixed defects or performed other maintenance activity on an implementation?
+    2. Fixed defects or performed other maintenance activity on an implementation?
 
     [ ] Yes    [ ] No
 
-     _____________________________________________________________________
-     _____________________________________________________________________
+     Components : ________________________________________________________
+     Details : ___________________________________________________________
      _____________________________________________________________________
 
-    Enhanced the source code for an implementation with additional function,
+
+    3. Enhanced the source code for an implementation with additional function,
       performance or other qualities of service?
 
     [ ] Yes    [ ] No
 
-     _____________________________________________________________________
-     _____________________________________________________________________
-     _____________________________________________________________________
-
-
-    Ported an implementation to a different operating system or hardware platform?
-
-    [ ] Yes    [ ] No
-
-     _____________________________________________________________________
-     _____________________________________________________________________
+     Components : ________________________________________________________
+     Details : ___________________________________________________________
      _____________________________________________________________________
 
-    Reverse compiled or otherwise reverse engineered an implementation?
+
+    4. Ported an implementation to a different operating system or hardware platform?
 
     [ ] Yes    [ ] No
 
+     Components : ________________________________________________________
+     Details : ___________________________________________________________
      _____________________________________________________________________
-     _____________________________________________________________________
+
+    5. Reverse compiled or otherwise reverse engineered an implementation?
+
+    [ ] Yes    [ ] No
+
+     Components : ________________________________________________________
+     Details : ___________________________________________________________
      _____________________________________________________________________
 
 
     If you have answered yes to any question above, and that implementation is
-    not available under a recognized Open Source license, you may not be an contributor to
-    the related component of Apache Harmony unless the copyright owner of that
-    implementation either:
+    not available under a recognized Open Source license, you may not be an
+    contributor to the related component of Apache Harmony unless the
+    copyright owner of that implementation either:
 
      a) submits the implementation to this project under the Software Grant or
         the Corporate Contribution License Agreement (the CCLA);
@@ -166,6 +182,24 @@ Part III : Exposure to Related Technologies
      c) if the copyright owner is not your current employer, submits
         a written authorization disclaiming any copyright or confidentiality
         interest in your current or future contributions to this project.
+
+    For each of the components listed above, please indicate either that you will not
+    be an Authorized Contributor for those components at Apache Harmony, or
+    indicate how you will resolve the issue of previous exposure :
+
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
 
 
 Part IV : Confidential Exposure
@@ -180,6 +214,26 @@ Part IV : Confidential Exposure
    if the owner of that potential confidential information submits
    a written authorization disclaiming any confidentiality interest
    in your current or future contributions to this project.
+
+   For each of the components listed above for which you have had access
+   to such information, please indicate either that you will not
+   be an Authorized Contributor for those components at Apache Harmony, or
+   indicate how you will resolve the issue :
+
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+
 
 Part V :  Non-Compete Restrictions
 
@@ -203,9 +257,21 @@ Part V :  Non-Compete Restrictions
    your participation in the project is not in conflict with the
    non-compete agreement.
 
+   Please indicate either that you will not be an Authorized Contributor for
+   those applicable components at Apache Harmony, or indicate how you will
+   resolve the issue :
+
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+     _____________________________________________________________________
+
 Part VI :  ICLA
 
-   Please execute a Individual Contributor License Agreement.
+   Please execute a Individual Contributor License Agreement (ICLA).
+
+   [ ] Yes, I have executed an ICLA
 
 Part VII :  Employment Limitations
 
@@ -232,7 +298,8 @@ Print Name : ___________________________________________
       Date : ___________________________________________
 
 
-v1.0  20050810
+v1.0  20050818ß
+
 
 </pre>
  </section>
