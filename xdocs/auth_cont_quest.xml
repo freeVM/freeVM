@@ -16,7 +16,6 @@ This document can be found <a href="auth_cont_quest.txt">here</a>.
 </p>
 
 <pre>
-
     The Apache Software Foundation
        Apache Harmony Project
  Authorized Contributor Questionnaire
@@ -49,7 +48,7 @@ Part II:  Access to Repositories
   to the source for any of the parts of a Java implementation
   including virtual machines, class libraries, tooling, etc.
 
-  The following activities are not considered Òaccessing the
+  The following activities are not considered "accessing the
   source code" and would not generally disqualify you from
   committing to the related repository here at Apache Harmony
 
@@ -72,12 +71,11 @@ d) Have written or executed test cases that probed the behavior
    The following is a list of the components of the project each
    labeled with an ID (ex. JVM-1):
 
- JVM
- ---
- VM-1    VM core (including JVMPI, JVMDI, JDWP, JVMTI, JNI)
- VM-2    JIT
- VM-3    Memory Management/GC
- VM-4    OS portability layer
+ VM
+ --
+ VM-1    VM core (including JVMPI, JVMDI, JDWP, JVMTI, JNI,
+                JIT, Memory Management/GC, OS Portabillity,
+                Threading, etc)
  VM-X    other ____________________________________________
 
 
@@ -108,10 +106,10 @@ d) Have written or executed test cases that probed the behavior
  CL-20   XML (javax.xml.*, org.w3c.*, org.xml.*)
  CL-X   other ____________________________________________
 
- Tools
- -----
+ Tools &amp; Misc
+ ------------
  T-1    launcher (e.g. java.exe)
- T_2    javah
+ T-2    javah
  T-3    javap
  T-4    javac
  T-5    jdb
@@ -304,8 +302,8 @@ Print Name : ___________________________________________
   Date : ___________________________________________
 
 
-v1.0  20050921
-    
+v1.0  20050922
+
 </pre>
  </section>
 
