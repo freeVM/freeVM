@@ -1,9 +1,7 @@
 #!/usr/bin/perl
 use strict;
-#use POSIX;
 use POSIX qw/strftime/;
 use File::Find;
-#use Time::Local;
 use Cwd;
 use File::Spec::Functions;
 
@@ -24,7 +22,7 @@ file name is supplied it will look for a file called C<KEYWD_CONFIG> in the same
 The list of words to be scanned for are read from C< KeywordInputFileName>.
 
 Scans source code files in directories under C<ScanRootDirectory> looking for occurrences of keywords.
-Examined file types (C<FileTypes>) are specified by suffix - eg java, c, h, cpp....
+Will scan all text files and (optionally) warn about the existence of files which may contain source (eg gzip, tar)
 
 
 Output is written to C<ReportFileName> as a CSV file in the form:
@@ -68,6 +66,7 @@ my $keywd_outfile;
 my $scan_root;
 my $case_ins = 0;
 my @filetypes;
+my %warning;
 
 while (<CONF>) {
 	if (/^KeywordInputFileName:(.*)/) { $keywd_infile  = $1; }
@@ -80,13 +79,9 @@ while (<CONF>) {
 #
 # Get date
 #
-#my ( $se, $mi, $ho, $md, $mo, $ye, $wd, $yd, $is ) = localtime;
-my $date_str = strftime("%Y-%m-%d at %H:%M", localtime);
+my $date_str = strftime( "%Y-%m-%d at %H:%M", localtime );
 
 #
-#my $month    = $mo + 1;
-#my $year     = $ye + 1900;
-#my $date_str = $year . "-" . $month . "-" . $md . " at " . $ho . ":" . $mi;
 
 #
 print "Starting scan at root directory: $scan_root\n";
@@ -96,10 +91,9 @@ print "Writing to: $keywd_outfile\n";
 #
 open( OUT, "> $keywd_outfile" ) || die "Can't open ReportFile  $!\n";
 print OUT "Scan date $date_str\n";
-if ($case_ins) { print OUT"Case insensitive search\n"; }
+if ($case_ins) { print OUT "Case insensitive search\n"; }
 else { print OUT "Case sensitive search\n"; }
-my $ft = join ";", @filetypes;
-print OUT "Looking for file types $ft \n\n";
+print OUT "Flag existence of files of type: @filetypes\n";
 
 #
 # Create lookup table of filetypes
@@ -120,7 +114,7 @@ while (<KWD>) {
 	#
 	push( @words, $word );
 
-# Deal with ( . in the keyword file by back-slashing. Could deal with * here too?
+	# Deal with ( . and other metacharacters in the keyword file
 	$word = quotemeta($word);
 	push( @matchwords, $word );
 }
@@ -131,6 +125,15 @@ while (<KWD>) {
 my %matchcount;
 my @sourcefiles;
 find( \&source, $scan_root );
+
+#
+# Print warnings first
+#
+print OUT "********************WARNINGS**********************\n";
+while ( my ( $file, $ext ) = each %warning ) {
+	print OUT "***** Found $file - MAY CONTAIN SOURCE\n";
+}
+print OUT "******************END WARNINGS********************\n";
 
 #
 # Check each file for keyword matches
@@ -188,17 +191,21 @@ sub match {
 
 =head2 C<source>
 
-Required by File::Find - looks for files ending in .xxx
+Required by File::Find - looks for text files and files ending in .xxx (specified in C<KEYWD_CONFIG>)
 
 =cut
 
 sub source {
-	return unless ( $_ =~ /\.([^.]+)$/ );
-	my $ext = $1;
-	if ( exists $sourcetypes{$ext} ) {
-		my $name = catfile( $File::Find::dir, $_ );
-		push @sourcefiles, $name;
+	if ( $_ =~ /\.([^.]+)$/ ) {
+		my $ext = $1;
+		if ( exists $sourcetypes{$ext} ) {
+			$warning{$_} = $ext;
+		}
 	}
+	return unless -f $_ && -T $_;
+	my $name = catfile( $File::Find::dir, $_ );
+	push @sourcefiles, $name;
+
 	return;
 }
 
@@ -236,3 +243,4 @@ Zoe Slattey, E<lt>zoe@uk.ibm.comE<gt>
  */
    
 =cut
+
