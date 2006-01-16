@@ -1,0 +1,30 @@
+Here's how to edit and publish the website.  Note
+that this assumes you have a working implementation 
+of Java and Ant installed.
+
+
+1) Edit the docs in xdocs/
+2) Type "ant" in the root (site/)
+3) Look at the changes in the docs/ directory using
+    a web browser.
+4) Repeat steps 1-3 until happness and joy achieved.
+5) Commit all changes, both docs/ and xdocs/
+   
+    svn commit
+
+6) ssh to minotaur
+7) cd /www/incubator.apache.org/harmony
+8) execute 
+    
+     `cat UPDATE` 
+
+   to update the just-committed docs out of SVN
+
+9) Verify that all went as planned by browsing the live 
+   site 
+
+      http://incubator.apache.org/harmony/
+
+   and look for the changes you made.
+
+
