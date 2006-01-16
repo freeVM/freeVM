@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+    Copyright 2006 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Building and Deploying the Apache Harmony Website</title>
+  <author email="harmony-dev@incubator.apache.org">Harmony Documentation Team</author>
+ </properties>
+
+<body>
+
+<section name="Building and Deploying the Apache Harmony Website">
+
+<subsection name="Building">
+	<p>
+		The following tools are required to build the Harmony website
+		
+		<ul>
+		    <li>
+		      <a href="http://subversion.tigris.org/">Subversion</a>
+		    </li>
+		    <li>
+		      <a href="http://ant.apache.org/">Apache Ant</a>
+		    </li>
+			<li>
+			   Java 1.4.2 JDK
+			</li>
+		</ul>
+	</p>
+	
+	<p>
+		<ol>
+			<li>
+			   Download the website source from Harmony subversion repository
+			   <pre>$ svn checkout https://svn.apache.org/repos/asf/incubator/harmony/standard/site</pre>
+			</li>
+			
+			<li>
+			   Change into the site directory and run the default ant script target
+			  <pre>$ cd site</pre>
+			  <pre>$ ant</pre>
+			</li>
+	    </ol>
+	</p>
+	
+	<p>
+	  At this point, you have a complete generated website and documentation in the <i>site/docs</i>
+	   subdirectory.  Open the <i>index.html</i> page and start browsing.
+	</p>
+
+</subsection>
+
+<subsection name="Making Changes">
+
+  <p>
+    Making changes is straightforward.  All edits are made to the contents of the <i>xdocs/</i> 
+    subdirectory, and then rendered via the procedure above into the <i>docs/</i> directory.
+  </p>
+  
+  <p>
+    If you are a Harmony committer, you can simply checkin your changes.  If you are not 
+    a committer, any updates and additions to the site are very welcome.  Please
+    see our <a href="../get-involved.html">Get Involved</a> page for instructions
+    on how to contribute your changes.
+  </p>
+  
+</subsection>
+
+<subsection name="Deploying to Harmony Website">
+
+  <p>
+    If you are a Harmony Committer, you can commit your changes into SVN and then
+    publish to the project website.  Once the changes are in SVN, simply :
+  </p>
+  
+  <p>
+    <ol>
+      <li>
+        SSH to minotaur.apache.org
+        <pre>$ ssh geirm@minotaur.apache.org </pre>
+        Your login name will of course be your own.
+      </li>
+      <li>
+        Go to the project website directory.
+        <pre>$ cd /www/incubator.apache.org/harmony/</pre>
+      </li>
+      <li>
+        Update the local copy.  There are two ways.  A simple
+        <pre>$ svn update</pre>
+        will update the local copy.  If you need to delete the HTML and 
+        re-checout use 
+        <pre>$ `cat UPDATE`</pre>
+        as the UPDATE file has the command used to do a fresh svn checkout.
+      </li>
+        
+    </ol>
+  </p>
+  
+</subsection>
+</section>
+</body>
+</document>

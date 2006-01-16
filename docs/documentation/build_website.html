@@ -29,7 +29,7 @@ limitations under the License.
             <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 
                                                     <meta name="author" value="Harmony Documentation Team">
-            <meta name="email" value="harmony-dev@harmony.apache.org">
+            <meta name="email" value="harmony-dev@incubator.apache.org">
             
            
             
@@ -37,7 +37,7 @@ limitations under the License.
             
             
             
-            <title>Apache Harmony - Apache Harmony</title>
+            <title>Apache Harmony - Building and Deploying the Apache Harmony Website</title>
         </head>
 
         <body bgcolor="#ffffff" text="#000000" link="#525D76">        
@@ -125,32 +125,52 @@ limitations under the License.
                                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#525D76">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Apache Harmony Documentation"><strong>Apache Harmony Documentation</strong></a>
+          <a name="Building and Deploying the Apache Harmony Website"><strong>Building and Deploying the Apache Harmony Website</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                        <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#828DA6">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="Building"><strong>Building</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
                                     <p>
-There is not yet a full manual or similar official documentation.  However,
-the resources below will help new users and developers get up to speed with
-the technology.
-</p>
-                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
-      <tr><td bgcolor="#828DA6">
-        <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Project Documentation"><strong>Project Documentation</strong></a>
-        </font>
-      </td></tr>
-      <tr><td>
-        <blockquote>
-                                    <ul>
-  <li>
-    <a href="build_website.html">Building and Deploying the Apache Harmony Website</a>
-  </li>
-  <li>
-    <a href="build_classlib.html">Building the Classlibrary Code</a>
-  </li>
-</ul>
+		The following tools are required to build the Harmony website
+		
+		<ul>
+		    <li>
+		      <a href="http://subversion.tigris.org/">Subversion</a>
+		    </li>
+		    <li>
+		      <a href="http://ant.apache.org/">Apache Ant</a>
+		    </li>
+			<li>
+			   Java 1.4.2 JDK
+			</li>
+		</ul>
+	</p>
+                                                <p>
+		<ol>
+			<li>
+			   Download the website source from Harmony subversion repository
+			   <pre>$ svn checkout https://svn.apache.org/repos/asf/incubator/harmony/standard/site</pre>
+			</li>
+			
+			<li>
+			   Change into the site directory and run the default ant script target
+			  <pre>$ cd site</pre>
+			  <pre>$ ant</pre>
+			</li>
+	    </ol>
+	</p>
+                                                <p>
+	  At this point, you have a complete generated website and documentation in the <i>site/docs</i>
+	   subdirectory.  Open the <i>index.html</i> page and start browsing.
+	</p>
                             </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>
@@ -158,14 +178,21 @@ the technology.
                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#828DA6">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Project Resource"><strong>Project Resource</strong></a>
+          <a name="Making Changes"><strong>Making Changes</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
-                                    <ul>
-  <li>The <a href="http://wiki.apache.org/harmony">Harmony Wiki</a></li>
-</ul>
+                                    <p>
+    Making changes is straightforward.  All edits are made to the contents of the <i>xdocs/</i> 
+    subdirectory, and then rendered via the procedure above into the <i>docs/</i> directory.
+  </p>
+                                                <p>
+    If you are a Harmony committer, you can simply checkin your changes.  If you are not 
+    a committer, any updates and additions to the site are very welcome.  Please
+    see our <a href="../get-involved.html">Get Involved</a> page for instructions
+    on how to contribute your changes.
+  </p>
                             </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>
@@ -173,36 +200,38 @@ the technology.
                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#828DA6">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Books"><strong>Books</strong></a>
+          <a name="Deploying to Harmony Website"><strong>Deploying to Harmony Website</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
-                </blockquote>
-      </td></tr>
-      <tr><td><br/></td></tr>
-    </table>
-                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
-      <tr><td bgcolor="#828DA6">
-        <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Research Papers and Talks"><strong>Research Papers and Talks</strong></a>
-        </font>
-      </td></tr>
-      <tr><td>
-        <blockquote>
-                </blockquote>
-      </td></tr>
-      <tr><td><br/></td></tr>
-    </table>
-                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
-      <tr><td bgcolor="#828DA6">
-        <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Articles and Interviews"><strong>Articles and Interviews</strong></a>
-        </font>
-      </td></tr>
-      <tr><td>
-        <blockquote>
-                </blockquote>
+                                    <p>
+    If you are a Harmony Committer, you can commit your changes into SVN and then
+    publish to the project website.  Once the changes are in SVN, simply :
+  </p>
+                                                <p>
+    <ol>
+      <li>
+        SSH to minotaur.apache.org
+        <pre>$ ssh geirm@minotaur.apache.org </pre>
+        Your login name will of course be your own.
+      </li>
+      <li>
+        Go to the project website directory.
+        <pre>$ cd /www/incubator.apache.org/harmony/</pre>
+      </li>
+      <li>
+        Update the local copy.  There are two ways.  A simple
+        <pre>$ svn update</pre>
+        will update the local copy.  If you need to delete the HTML and 
+        re-checout use 
+        <pre>$ `cat UPDATE`</pre>
+        as the UPDATE file has the command used to do a fresh svn checkout.
+      </li>
+        
+    </ol>
+  </p>
+                            </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>
     </table>
