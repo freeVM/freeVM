@@ -162,26 +162,27 @@ limitations under the License.
 		The following prerequisite tools must be available on the path in order to build
 		the Harmony classlib code from source.
 		<ul>
-			<li>All platforms require Subversion client, Apache Ant, Java 1.4.2 JDK (i.e. including javac)</li>
-			<li>in addition
+			<li>All platforms require Subversion client, Apache Ant, Java 1.4.2 JDK
+				(i.e. including javac) in addition
 				<ul>
-		    		<li>Windows platforms : Microsoft Visual C++, and nmake. </li>
-		    		<li>Linux platforms : Gnu gcc.</li>
-		    	</ul>
+	    			<li>Windows platforms : Microsoft Visual C++, and nmake. </li>
+	    			<li>Linux platforms : Gnu gcc.</li>
+	    		</ul>
 		    </li>
 		</ul>
 	</p>
                                                 <p>
-		You can build the classlib code in three simple steps:
+		You can build the latest version of the class library code in three simple steps:
 		<ol>
 			<li>Download classlib source from Harmony subversion repository
-			<pre>svn checkout https://svn.apache.org/repos/asf/incubator/harmony/enhanced/classlib/tags/SNAP-20060112 Harmony</pre>
+			<pre>svn checkout -r HEAD https://svn.apache.org/repos/asf/incubator/harmony/enhanced/classlib/trunk Harmony</pre>
 			</li>
 			<li>Change to main make directory, and run the default ant script target
-			<pre>cd Harmony/make</pre>
-			<pre>ant</pre>
+			<pre>cd Harmony/make
+ant</pre>
 			</li>
-			<li>Get a VM suitable for running the class library code (see below), and
+			<li><a href="#Obtaining_a_VM">Get a VM suitable for running the class library
+				code</a>, and
 				expand it over the top of the Harmony directory (so that the 'jre'
 				directories line-up)
 			<pre>unzip &lt;path_to_vm_zip&gt; -d ../.. (on Windows)</pre>
@@ -190,7 +191,7 @@ limitations under the License.
 		</ol>
 	</p>
                                                 <p>
-		Now you are ready to run some Java applications!
+		Now you are ready to <a href="#Running_Java">run some Java applications</a>!
 	</p>
                             </blockquote>
       </td></tr>
@@ -205,12 +206,37 @@ limitations under the License.
       <tr><td>
         <blockquote>
                                     <p>
-		Pre-built binaries will soon be made available as a convenience for people who don't
-		have ready access to the prerequisite tools. These are snapshot builds, not official
-		releases of the project.
+		Pre-built binaries are available as a convenience for people who don't
+		have ready access to the prerequisite tools.
 	</p>
                                                 <p>
-		<i>Check back soon for some binary download links!</i>
+		These are <i>snapshot</i> builds, not official releases of the project.
+		Snapshots are builds of the repository at a given revision.  The file
+		name of each snapshot build indicates the revision of the code repository,
+		and the platform on which it was built.
+	</p>
+                                                <p>
+		You can use a pre-built binaries in three easy steps:
+		<ol>
+			<li>Obtain a pre-built class library snapshot for your platform from the
+				<a href="http://cvs.apache.org/dist/incubator/harmony/snapshots/">
+				Harmony snapshot site</a>.</li>
+			<li><a href="#Obtaining_a_VM">Obtain a compatible virtual machine</a> and
+				put it into the same directory as the class library code.</li>
+   			<li>Simply expand the classlib archive and the VM archive from the
+   				same directory. They should create a subdirectory called "Harmony"
+   				with files from each archive overlaid (so that the
+   				'Harmony/deploy/jre'-s line-up).</li>
+   				On Windows:
+   				<pre>unzip &lt;path_to_classlib_zip&gt; (on Windows)
+unzip &lt;path_to_vm_zip&gt;</pre>
+				On Linux:
+				<pre>tar xzf &lt;path_to_classlib_tarball&gt; (on Linux)
+tar xzf &lt;path_to_vm_tarball&gt;</pre>
+		</ol>
+	</p>
+                                                <p>
+		Now you are ready to <a href="#Running_Java">run some Java applications</a>!
 	</p>
                             </blockquote>
       </td></tr>
@@ -224,7 +250,8 @@ limitations under the License.
       </td></tr>
       <tr><td>
         <blockquote>
-                                    <p>
+                                    <a name="Obtaining_a_VM" />
+                                                <p>
 		The Harmony class library code interfaces to a VM through a virtual machine interface
 		defined in the Harmony project.
 	</p>
@@ -237,9 +264,30 @@ limitations under the License.
                                                 <p>
 		Once you have obtained the IBM VM you should have one of the following files:
 		<ul>
-			<li>on Windows ?Harmony-vme-win.IA32-v1.zip?</li>
-			<li>on Linux ?Harmony-vme-linux.IA32-v1.tar.gz?</li>
+			<li>on Windows "Harmony-vme-win.IA32-v1.zip"</li>
+			<li>on Linux "Harmony-vme-linux.IA32-v1.tar.gz"</li>
 		</ul>
+	</p>
+                            </blockquote>
+      </td></tr>
+      <tr><td><br/></td></tr>
+    </table>
+                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#828DA6">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="Running Java applications"><strong>Running Java applications</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                    <a name="Running_Java" />
+                                                <p>
+		Run Java applications as usual, using the launcher in Harmony/deploy/jre/bin:
+		<pre>&gt; jre\bin\java -showversion -jar helloworld.jar
+java version 1.4.2 (subset)
+(c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable.
+Hello world!
+</pre>
 	</p>
                             </blockquote>
       </td></tr>
