@@ -283,6 +283,10 @@ tar xzf &lt;path_to_vm_tarball&gt;</pre>
         <blockquote>
                                     <a name="Running_Java" />
                                                 <p>
+		Ensure that the <code>JAVA_HOME</code> environment variable is unset, or pointing
+		to the <code>Harmony/deploy/jre</code> directory.
+	</p>
+                                                <p>
 		Run Java applications as usual, using the launcher in Harmony/deploy/jre/bin:
 		<pre>&gt; jre\bin\java -showversion -jar helloworld.jar
 java version 1.4.2 (subset)
