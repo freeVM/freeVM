@@ -20,7 +20,5 @@
 #ifndef _ARCH_PPC_STRUCTURES_H_
 #define _ARCH_PPC_STRUCTURES_H_
 
-typedef _jc_word	*_jc_stack_frame;	/* pointer to saved %epb */
-
 #endif	/* _ARCH_PPC_STRUCTURES_H_ */
 

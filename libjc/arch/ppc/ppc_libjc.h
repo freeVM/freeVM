@@ -58,44 +58,6 @@ _jc_iflush(const void *mem, size_t len)
 	 */
 }
 
-extern inline void
-_jc_stack_frame_init(_jc_stack_frame *framep)
-{
-	*framep = NULL;
-}
-
-#define _jc_stack_frame_current(framep)					\
-    do {								\
-	*(framep) = __builtin_frame_address(0);				\
-    } while (0)
-
-extern inline void
-_jc_stack_frame_next(_jc_stack_frame *framep, const void **pcp)
-{
-	_jc_word *const ebp = *framep;
-
-	*pcp = (const void *)ebp[1];	/* saved %eip is one slot above %ebp */
-	*framep = (_jc_word *)ebp[0];	/* %ebp points to saved %ebp */
-}
-
-extern inline jboolean
-_jc_stack_frame_valid(_jc_stack_frame frame)
-{
-	return frame != NULL;
-}
-
-extern inline jboolean
-_jc_stack_frame_equal(_jc_stack_frame frame1, _jc_stack_frame frame2)
-{
-	return frame1 == frame2;
-}
-
-extern inline const void *
-_jc_stack_frame_sp(_jc_stack_frame frame)
-{
-	return (const void *)frame;
-}
-
 /**
  * @todo Returning NULL to be compile-clean for the moment.
  */
@@ -103,39 +65,6 @@ extern inline const void *
 _jc_mcontext_sp(const mcontext_t *mctx)
 {
 	fprintf(stderr, "WARNING: call to unimplemented function _jc_mcontext_sp(...)\n");
-	exit(0);
-	return (const void *) NULL;
-}
-
-/**
- * @todo Returning NULL to be compile-clean for the moment.
- */
-extern inline const void *
-_jc_mcontext_pc(const mcontext_t *mctx)
-{
-	fprintf(stderr, "WARNING: call to unimplemented function _jc_mcontext_pc(...)\n");
-	exit(0);
-	return (const void *) NULL;
-}
-
-/**
- * @todo Returning NULL to be compile-clean for the moment.
- */
-extern inline _jc_stack_frame
-_jc_mcontext_frame(const mcontext_t *mctx)
-{
-	fprintf(stderr, "WARNING: call to unimplemented function _jc_mcontext_frame(...)\n");
-	exit(0);
-	return (_jc_word *) NULL;
-}
-
-/**
- * @todo Returning NULL to be compile-clean for the moment.
- */
-extern inline const void *
-_jc_signal_fault_address(int sig_num, siginfo_t *info, ucontext_t *uctx)
-{
-	fprintf(stderr, "WARNING: call to unimplemented function _jc_signal_falut_address(...)\n");
 	exit(0);
 	return (const void *) NULL;
 }
