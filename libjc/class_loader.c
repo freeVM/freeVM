@@ -298,7 +298,7 @@ _jc_merge_implicit_refs(_jc_env *env, const _jc_resolve_info *info)
 
 #ifndef NDEBUG
 	/* Sanity check */
-	for (pos = 0; pos < loader->num_implicit_refs; pos++)
+	for (pos = 1; pos < loader->num_implicit_refs; pos++)
 		_JC_ASSERT(loader->implicit_refs[pos] > loader->implicit_refs[pos - 1]);
 #endif
 
