@@ -76,18 +76,9 @@ AC_CHECK_LIB(z, inflateInit_,,
 	[AC_MSG_ERROR([required library libz missing])])
 AC_CHECK_LIB(popt, poptGetContext,,
 	[AC_MSG_ERROR([required library libpopt missing])])
+AC_CHECK_LIB(pthread, pthread_create,,
+	[AC_MSG_ERROR([required library pthread missing])])
 AC_CHECK_LIB(dl, dlopen,,,)
-
-# Check for pthread library, linking either via -pthread or -lpthread
-AC_MSG_CHECKING([whether -pthread gets us the pthread library])
-[old_LDFLAGS="$LDFLAGS"; LDFLAGS="$LDFLAGS -pthread"]
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <pthread.h>
-	    void *x=&pthread_create;]])],
-	[AC_MSG_RESULT(yes)],
-	[AC_MSG_RESULT(no)
-	[LDFLAGS="$old_LDFLAGS"]
-	AC_CHECK_LIB(pthread, pthread_create,,
-	    [AC_MSG_ERROR([required library libpthread missing])])])
 
 # Check for thread local storage support
 AC_MSG_CHECKING([for thread local variable support])
