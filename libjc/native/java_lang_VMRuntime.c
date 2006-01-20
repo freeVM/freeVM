@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- * $Id: java_lang_VMRuntime.c,v 1.7 2005/05/15 21:41:01 archiecobbs Exp $
+ * $Id$
  */
 
 #include "libjc.h"
@@ -110,7 +110,9 @@ JCNI_java_lang_VMRuntime_mapLibraryName(_jc_env *env, _jc_object *string)
 jlong _JC_JCNI_ATTR
 JCNI_java_lang_VMRuntime_maxMemory(_jc_env *env)
 {
-	return _JC_JLONG(0x7fffffffffffffff);
+	_jc_jvm *const vm = env->vm;
+
+	return (jlong)vm->heap.size;
 }
 
 /*
