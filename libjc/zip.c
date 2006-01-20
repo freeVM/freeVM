@@ -306,10 +306,18 @@ _jc_zip_unstore(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 		return JNI_ERR;
 	}
 
+	/* Seek to start of data */
+	if (lseek(zip->fd, zent->offset, SEEK_SET) == -1) {
+		_JC_EX_STORE(env, IOException, "can't seek entry `%s'"
+		    " in ZIP file `%s': %s", zent->name, zip->path,
+		    strerror(errno));
+		return JNI_ERR;
+	}
+
 	/* Read data */
 	for (i = 0; i < zent->comp_len; i += r) {
-		if ((r = pread(zip->fd, (char *)data + i,
-		    zent->comp_len - i, zent->offset + i)) == -1) {
+		if ((r = read(zip->fd, (char *)data + i,
+		    zent->comp_len - i)) == -1) {
 			_JC_EX_STORE(env, IOException, "can't read entry `%s'"
 			    " in ZIP file `%s': %s", zent->name, zip->path,
 			    strerror(errno));
@@ -360,6 +368,14 @@ _jc_zip_inflate(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 		_JC_ASSERT(JNI_FALSE);
 	}
 
+	/* Seek to start of data */
+	if (lseek(zip->fd, zent->offset, SEEK_SET) == -1) {
+		_JC_EX_STORE(env, IOException, "can't seek entry `%s' in"
+		    " ZIP file `%s': %s", zent->name, zip->path,
+		    strerror(errno));
+		return JNI_ERR;
+	}
+
 	/* Read and inflate data */
 	for (i = 0; i < zent->comp_len; i += r) {
 		char buf[512];
@@ -370,9 +386,8 @@ _jc_zip_inflate(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 		to_read = zent->comp_len - i;
 		if (to_read > sizeof(buf))
 			to_read = sizeof(buf);
-		if ((r = pread(zip->fd, buf,
-		    to_read, zent->offset + i)) == -1) {
-			_JC_EX_STORE(env, IOException, "error reading entry"
+		if ((r = read(zip->fd, buf, to_read)) == -1) {
+			_JC_EX_STORE(env, IOException, "can't read entry"
 			    " `%s' in ZIP file `%s': %s", zent->name,
 			    zip->path, strerror(errno));
 			goto fail;
