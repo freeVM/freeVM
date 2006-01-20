@@ -564,6 +564,15 @@ typedef int	_jc_splay_cmp_t(const void *item1, const void *item2);
 	snprintf(_env->ex.msg, sizeof(_env->ex.msg), fmt , ## args);	\
     } while (0)
 
+#ifndef NDEBUG
+#define _JC_EX_RESET(env)						\
+    do {								\
+	(env)->ex.num = -1;						\
+    } while (0)
+#else
+#define _JC_EX_RESET(env)	do { } while (0)
+#endif
+
 /*
  * Allocate some memory on the stack, and throw a StackOverflowError
  * if that fails. This does not directly check for stack overflow, which

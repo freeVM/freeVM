@@ -254,25 +254,29 @@ _jc_resolve_method(_jc_env *env, _jc_type *type,
 	clinit = strcmp(name, "<clinit>") == 0;
 
 	/* Search for method in class and superclasses */
-	for (stype = type; stype != NULL; ) {
+	for (stype = type; stype != NULL; stype = stype->superclass) {
 		if ((method = _jc_get_declared_method(env,
 		    stype, name, sig, 0, 0)) != NULL)
 			return method;
 		if (clinit)
 			return NULL;
-		stype = stype->superclass;
+		_JC_EX_RESET(env);
 	}
 
-	/* Search for method in superinterfaces */
-	for (i = 0; i < type->num_interfaces; i++) {
-		_jc_type *const itype = type->interfaces[i];
+	/* Search for method in all implemented interfaces */
+	for (stype = type; stype != NULL; stype = stype->superclass) {
+		for (i = 0; i < stype->num_interfaces; i++) {
+			_jc_type *const itype = stype->interfaces[i];
 
-		if ((method = _jc_resolve_method(env,
-		    itype, name, sig)) != NULL)
-			return method;
+			if ((method = _jc_resolve_method(env,
+			    itype, name, sig)) != NULL)
+				return method;
+			_JC_EX_RESET(env);
+		}
 	}
 
 	/* Not found */
+	_JC_EX_STORE(env, NoSuchMethodError, "%s.%s%s", type->name, name, sig);
 	return NULL;
 }
 
