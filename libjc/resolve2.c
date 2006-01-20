@@ -845,6 +845,15 @@ _jc_resolve_bytecode(_jc_env *env, _jc_method *const method,
 					goto post_fail;
 				}
 
+				/* Check for illegal constructor access */
+				if (*imethod->name == '<'
+				    && imethod->class != type) {
+					_JC_EX_STORE(env, NoSuchMethodError,
+					    "%s.%s%s", ref->class, ref->name,
+					    ref->descriptor);
+					goto post_fail;
+				}
+
 				/* Perform invokespecial test */
 				if (*imethod->name == '<')
 					break;
@@ -870,15 +879,6 @@ _jc_resolve_bytecode(_jc_env *env, _jc_method *const method,
 				/* Not found? */
 				if (vmethod == NULL) {
 					_JC_EX_STORE(env, AbstractMethodError,
-					    "%s.%s%s", ref->class, ref->name,
-					    ref->descriptor);
-					goto post_fail;
-				}
-
-				/* Check for illegal constructor access */
-				if (*imethod->name == '<'
-				    && vmethod->class != imethod->class) {
-					_JC_EX_STORE(env, NoSuchMethodError,
 					    "%s.%s%s", ref->class, ref->name,
 					    ref->descriptor);
 					goto post_fail;
