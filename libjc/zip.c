@@ -110,8 +110,8 @@ _jc_zip_open(_jc_env *env, const char *path)
 		    -4, &zent->comp_len, -4, &zent->uncomp_len,
 		    -2, &name_len, -2, &extra_len, -2, &comment_len,
 		    8, NULL, -4, &offset, 0) != JNI_OK) {
-			_JC_EX_STORE(env, IOException, "can't read entry"
-			    " directory #%d in ZIP file `%s': %s", i + 1,
+			_JC_EX_STORE(env, IOException, "can't read directory"
+			    " entry #%d in ZIP file `%s': %s", i + 1,
 			    zip->path, strerror(errno));
 			goto fail;
 		}
@@ -352,7 +352,7 @@ _jc_zip_inflate(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 	case Z_MEM_ERROR:
 		return JNI_ERR;
 	case Z_VERSION_ERROR:
-		_JC_EX_STORE(env, IOException, "error reading entry `%s' in"
+		_JC_EX_STORE(env, IOException, "can't read entry `%s' in"
 		    " ZIP file `%s': %s", zent->name, zip->path,
 		    "incompatible zlib version");
 		return JNI_ERR;
@@ -378,7 +378,7 @@ _jc_zip_inflate(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 			goto fail;
 		}
 		if (r == 0) {
-			_JC_EX_STORE(env, IOException, "error reading entry"
+			_JC_EX_STORE(env, IOException, "can't read entry"
 			    " `%s' in ZIP file `%s': %s", zent->name,
 			    zip->path, "premature EOF");
 			goto fail;
@@ -410,12 +410,12 @@ _jc_zip_inflate(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 			_JC_ASSERT(r == Z_OK);
 			return JNI_OK;
 		case Z_NEED_DICT:
-			_JC_EX_STORE(env, IOException, "error reading entry'"
-			    " `%s in ZIP file `%s': %s", zent->name, zip->path,
+			_JC_EX_STORE(env, IOException, "can't read entry"
+			    " `%s' in ZIP file `%s': %s", zent->name, zip->path,
 			    "dictionary required");
 			goto fail;
 		case Z_DATA_ERROR:
-			_JC_EX_STORE(env, IOException, "error reading entry"
+			_JC_EX_STORE(env, IOException, "can't read entry"
 			    " `%s' in ZIP file `%s': %s", zent->name,
 			    zip->path, "corrupted entry");
 			goto fail;
@@ -428,7 +428,7 @@ _jc_zip_inflate(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 
 bad_length:
 	/* Uncompressed data had the wrong length */
-	_JC_EX_STORE(env, IOException, "error reading entry `%s' in ZIP file"
+	_JC_EX_STORE(env, IOException, "can't read entry `%s' in ZIP file"
 	    " `%s': %s", zent->name, zip->path, "incorrect length");
 
 fail:
