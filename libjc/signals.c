@@ -192,12 +192,9 @@ _jc_signal_action(int sig_num, siginfo_t *info, ucontext_t *uctx)
 	switch (sig_index) {
 	case _JC_SIGNAL_SEGV:
 	case _JC_SIGNAL_BUS:
-	    {
 		env->handling_signal = JNI_FALSE;
 		_jc_post_exception(env, _JC_NullPointerException);
 		_jc_throw_exception(env);
-	    }
-
 	case _JC_SIGNAL_FPE:
 		if (info->si_code != FPE_INTDIV)
 			break;
