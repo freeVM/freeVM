@@ -26,11 +26,19 @@
     </menu>
 
     <menu name="Development">
+        <item name="How Are We Doing?"		href="/status.html" />
         <item name="Road Map / TODO"        href="/roadmap.html"/>
         <item name="Source Code"            href="/svn.html"/>
         <item name="JIRA"                   href="http://issues.apache.org/jira/browse/HARMONY"/>
         <item name="Other Projects"       href="/related.html"/>
     </menu>
 
+    <menu name="Subcomponents">
+        <item name="Class Library"          href="/subcomponents/classlibrary/index.html" >
+          <subitem name="Status"            href="/subcomponents/classlibrary/status.html" />
+        </item>
+        <item name="Virtual Machine JCHEVM" href="/subcomponents/jchevm/index.html" />
+    </menu>
+    
     </body>
 </project>

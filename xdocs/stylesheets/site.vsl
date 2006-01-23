@@ -209,6 +209,15 @@ limitations under the License.
         #foreach ( $item in $menu.getChildren() )
             #set ($name = $item.getAttributeValue("name"))
             <li>#projectanchor($name $item.getAttributeValue("href"))</li>
+            
+            <table>
+            #foreach ( $subitem in $item.getChildren() )
+              #set ($name = $subitem.getAttributeValue("name"))
+              <tr><td>
+                &nbsp;&nbsp;#projectanchor($name $subitem.getAttributeValue("href"))
+              </td></tr>
+            #end            
+            </table>
         #end
         </ul>
     #end

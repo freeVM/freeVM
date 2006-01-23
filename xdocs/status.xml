@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+
+    Copyright 2006 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Apache Harmony</title>
+  <author email="harmony-dev@incubator.apache.org">Harmony Documentation Team</author>
+ </properties>
+
+ <body>
+
+<section name="So, What Can We Do Now?">
+
+<p>
+The problem with building something as fundamental as a JRE is how to show
+progress to the community, so that people will begin to use it, give feedback
+and most importantly contribute bugfixes and additions.  Although we have 
+a list of the packages we believe are complete, are in progress, and 
+are not started, it's more useful to answer the question <i>So what can it do?</i>
+</p>
+
+<p>
+ The following is a list of useful things you can do with Harmony. Please note 
+ that Harmony is a work in progress - it is not complete.  Therefore we do not
+ in any way assert that it is a compatible implementation of Java.  (But we're 
+ on our way...)
+ </p>
+ 
+<p>
+To test the examples below, please do the following : 
+
+<ol>
+<li>Either :
+   <ul>
+      <li>Build the classlibraries</li>
+      <li>Get a pre-built snapshot of the class libraries </li>
+   </ul>
+</li>
+<li>
+Get the J9 evaluation VM from IBM.  (We'll use this until our own
+VM efforts make a little more progress).  Install according to
+directions in the deploy directory of the class library build.
+</li>
+<li>
+Set JAVA_HOME to either nothing or the deploy/jre directory of Harmony.
+</li>
+<li>
+You may need to modify your CLASSPATH to include "." (current directory)
+</li>
+</ol>
+</p>
+
+<subsection name="Build our Own Website Using Ant And Velocity">
+
+<p>
+</p>
+
+</subsection>
+
+</section>
+</body>
+</document>
