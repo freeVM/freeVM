@@ -403,7 +403,7 @@ _jc_invoke_v(_jc_env *env, _jc_method *method,
 
 	/* Allocate array of _jc_word's to hold the parameters */
 	if ((params = _JC_STACK_ALLOC(env,
-	    method->code.num_params2 * sizeof(*params))) == NULL) {
+	    method->num_params2 * sizeof(*params))) == NULL) {
 		_jc_post_exception_info(env);
 		return JNI_ERR;
 	}
@@ -478,7 +478,7 @@ _jc_invoke_unwrap_v(_jc_env *env, _jc_method *method,
 
 	/* Allocate array of _jc_word's to hold the parameters */
 	if ((params = _JC_STACK_ALLOC(env,
-	    method->code.num_params2 * sizeof(*params))) == NULL) {
+	    method->num_params2 * sizeof(*params))) == NULL) {
 		_jc_post_exception_info(env);
 		return JNI_ERR;
 	}
@@ -569,7 +569,6 @@ _jc_invoke_jni_a(_jc_env *env, _jc_method *method,
 	_jc_word *params2;
 	u_char *ptypes;
 	jobject ref;
-	int nparams2;
 	int i;
 	int j;
 
@@ -578,13 +577,6 @@ _jc_invoke_jni_a(_jc_env *env, _jc_method *method,
 	    || env->status == _JC_THRDSTAT_HALTING_NORMAL);
 	_JC_ASSERT(_JC_ACC_TEST(method, NATIVE));
 	_JC_ASSERT(func != NULL);
-
-	/* Count number of method parameters, counting long/double twice */
-	nparams2 = method->num_parameters;
-	for (i = 0; i < method->num_parameters; i++) {
-		if (_jc_dword_type[method->param_ptypes[i]])
-			nparams2++;
-	}
 
 	/* Check for null */
 	if (!_JC_ACC_TEST(method, STATIC) && obj == NULL) {
@@ -617,7 +609,8 @@ _jc_invoke_jni_a(_jc_env *env, _jc_method *method,
 		goto done;
 
 	/* Create array of C function parameters */
-	if ((params2 = _JC_STACK_ALLOC(env, (2 + nparams2) * sizeof(*params2)
+	if ((params2 = _JC_STACK_ALLOC(env,
+	    (2 + method->num_params2) * sizeof(*params2)
 	    + (2 + method->num_parameters + 1))) == NULL) {
 		_jc_post_exception_info(env);
 		goto done;
@@ -638,15 +631,14 @@ _jc_invoke_jni_a(_jc_env *env, _jc_method *method,
 			params2[2 + j++] = (_jc_word)ref;
 		} else {
 			params2[2 + j++] = *params++;
-			if (_jc_dword_type[ptype])
+			if (_jc_type_words[ptype] == 2)
 				params2[2 + j++] = *params++;
 		}
 	}
-	_JC_ASSERT(j == nparams2);
-	nparams2 += 2;
+	_JC_ASSERT(j == method->num_params2);
 
 	/* Set up parameter types */
-	ptypes = (u_char *)(params2 + nparams2);
+	ptypes = (u_char *)(params2 + 2 + method->num_params2);
 	ptypes[0] = _JC_TYPE_REFERENCE;		/* JNIEnv parameter */
 	ptypes[1] = _JC_TYPE_REFERENCE;		/* 'this' or Class object */
 	memcpy(ptypes + 2, method->param_ptypes, method->num_parameters + 1);
@@ -669,7 +661,7 @@ _jc_invoke_jni_a(_jc_env *env, _jc_method *method,
 
 	/* Invoke the method */
 	_jc_dynamic_invoke(func, JNI_FALSE, 2 + method->num_parameters,
-	    ptypes, nparams2, params2, &env->retval);
+	    ptypes, 2 + method->num_params2, params2, &env->retval);
 
 	/* Returning from native */
 	_jc_resuming_java(env, NULL);
@@ -726,7 +718,7 @@ _jc_invoke_unwrap_a(_jc_env *env, _jc_method *method,
 
 	/* Allocate array of _jc_word's to hold the parameters */
 	if ((params = _JC_STACK_ALLOC(env,
-	    method->code.num_params2 * sizeof(*params))) == NULL) {
+	    method->num_params2 * sizeof(*params))) == NULL) {
 		_jc_post_exception_info(env);
 		return JNI_ERR;
 	}
@@ -832,8 +824,6 @@ _jc_invoke_jcni_a(_jc_env *env, _jc_method *method,
 	_jc_native_frame frame;
 	_jc_catch_frame catch;
 	u_char *ptypes;
-	int nparams2;
-	int i;
 
 	/* Catch exceptions here */
 	catch.next = env->catch_list;
@@ -876,15 +866,9 @@ _jc_invoke_jcni_a(_jc_env *env, _jc_method *method,
 	/* Sanity check */
 	_JC_ASSERT(func != NULL);
 
-	/* Count number of method parameters, counting long/double twice */
-	nparams2 = method->num_parameters;
-	for (i = 0; i < method->num_parameters; i++) {
-		if (_jc_dword_type[method->param_ptypes[i]])
-			nparams2++;
-	}
-
 	/* Create array of _jc_word's for the C function parameters */
-	if ((params2 = _JC_STACK_ALLOC(env, (2 + nparams2) * sizeof(*params2)
+	if ((params2 = _JC_STACK_ALLOC(env,
+	    (2 + method->num_params2) * sizeof(*params2)
 	    + (2 + method->num_parameters + 1))) == NULL) {
 		_jc_post_exception_info(env);
 		goto done;
@@ -892,18 +876,18 @@ _jc_invoke_jcni_a(_jc_env *env, _jc_method *method,
 	if (!_JC_ACC_TEST(method, STATIC)) {
 		params2[0] = (_jc_word)env;
 		params2[1] = (_jc_word)obj;
-		memcpy(params2 + 2, params, nparams2 * sizeof(*params2));
-		nparams2 += 2;
-		ptypes = (u_char *)(params2 + nparams2);
+		memcpy(params2 + 2, params,
+		    method->num_params2 * sizeof(*params2));
+		ptypes = (u_char *)(params2 + 2 + method->num_params2);
 		ptypes[0] = _JC_TYPE_REFERENCE;
 		ptypes[1] = _JC_TYPE_REFERENCE;
 		memcpy(ptypes + 2, method->param_ptypes,
 		    method->num_parameters + 1);
 	} else {
 		params2[0] = (_jc_word)env;
-		memcpy(params2 + 1, params, nparams2 * sizeof(*params2));
-		nparams2++;
-		ptypes = (u_char *)(params2 + nparams2);
+		memcpy(params2 + 1, params,
+		    method->num_params2 * sizeof(*params2));
+		ptypes = (u_char *)(params2 + 1 + method->num_params2);
 		ptypes[0] = _JC_TYPE_REFERENCE;
 		memcpy(ptypes + 1, method->param_ptypes,
 		    method->num_parameters + 1);
@@ -936,7 +920,8 @@ _jc_invoke_jcni_a(_jc_env *env, _jc_method *method,
 	/* Invoke the method */
 	_jc_dynamic_invoke(func, JNI_TRUE,
 	    (_JC_ACC_TEST(method, STATIC) ? 1 : 2) + method->num_parameters,
-	    ptypes, nparams2, params2, &env->retval);
+	    ptypes, 1 + !_JC_ACC_TEST(method, STATIC) + method->num_params2,
+	    params2, &env->retval);
 
 	/* No exceptions were thrown */
 	status = JNI_OK;

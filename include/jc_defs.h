@@ -325,7 +325,6 @@ struct _jc_method_code {
 	_jc_uint16	num_traps;
 	_jc_uint16	num_linemaps;
 	_jc_uint16	num_insns;
-	_jc_uint16	num_params2;
 };
 
 /* Method descriptor */
@@ -341,6 +340,7 @@ struct _jc_method {
 	_jc_word		vtable_index;	/* index in vtable, mtable */
 	_jc_uint16		access_flags;
 	_jc_uint16		num_parameters;
+	_jc_uint16		num_params2;	/* counts long/double twice */
 	_jc_uint16		num_exceptions;
 	_jc_uint16		signature_hash_bucket;
 	const void		*native_function;

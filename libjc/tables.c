@@ -69,6 +69,22 @@ const size_t _jc_type_sizes[_JC_TYPE_MAX] = {
 };
 
 /*
+ * Number of Java stack words occupied by Java types.
+ */
+const u_char _jc_type_words[_JC_TYPE_MAX] = {
+	[_JC_TYPE_BOOLEAN]=	1,
+	[_JC_TYPE_BYTE]=	1,
+	[_JC_TYPE_CHAR]=	1,
+	[_JC_TYPE_SHORT]=	1,
+	[_JC_TYPE_INT]=		1,
+	[_JC_TYPE_LONG]=	2,
+	[_JC_TYPE_FLOAT]=	1,
+	[_JC_TYPE_DOUBLE]=	2,
+	[_JC_TYPE_REFERENCE]=	1,
+	[_JC_TYPE_VOID]=	0,
+};
+
+/*
  * Alignment requirements of various Java types.
  */
 const size_t _jc_type_align[_JC_TYPE_MAX] = {
@@ -81,21 +97,6 @@ const size_t _jc_type_align[_JC_TYPE_MAX] = {
 	[_JC_TYPE_FLOAT]=	__alignof__(jfloat),
 	[_JC_TYPE_DOUBLE]=	__alignof__(jdouble),
 	[_JC_TYPE_REFERENCE]=	__alignof__(void *),
-};
-
-/*
- * Whether each Java type requires one or two Java stack words.
- */
-const u_char _jc_dword_type[_JC_TYPE_MAX] = {
-	[_JC_TYPE_BOOLEAN]=	JNI_FALSE,
-	[_JC_TYPE_BYTE]=	JNI_FALSE,
-	[_JC_TYPE_CHAR]=	JNI_FALSE,
-	[_JC_TYPE_SHORT]=	JNI_FALSE,
-	[_JC_TYPE_INT]=		JNI_FALSE,
-	[_JC_TYPE_LONG]=	JNI_TRUE,
-	[_JC_TYPE_FLOAT]=	JNI_FALSE,
-	[_JC_TYPE_DOUBLE]=	JNI_TRUE,
-	[_JC_TYPE_REFERENCE]=	JNI_FALSE,
 };
 
 /*

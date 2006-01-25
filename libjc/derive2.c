@@ -375,6 +375,7 @@ _jc_derive_methods(_jc_env *env, _jc_type *type)
 		size_t slen;
 		int nparam;
 		void *mem;
+		int j;
 
 		/* Allocate structure */
 		nlen = strlen(cmethod->name) + 1;
@@ -420,6 +421,14 @@ _jc_derive_methods(_jc_env *env, _jc_type *type)
 
 		/* Get parameter ptypes */
 		_jc_resolve_signature(env, method, NULL);
+
+		/* Determine parameter count with long/double counted twice */
+		_JC_ASSERT(method->num_params2 == 0);
+		for (j = 0; j < method->num_parameters; j++) {
+			const u_char ptype = method->param_ptypes[j];
+
+			method->num_params2 += _jc_type_words[ptype];
+		}
 	}
 
 	/* Done */

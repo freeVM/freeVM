@@ -2134,7 +2134,7 @@ _jc_vinterp(_jc_env *env, va_list args)
 	sp = env->sp;
 
 	/* Check Java stack overflow */
-	if (sp + 1 + method->code.num_params2 > env->stack_data_end) {
+	if (sp + 1 + method->num_params2 > env->stack_data_end) {
 		_jc_post_exception(env, _JC_StackOverflowError);
 		_jc_throw_exception(env);
 	}
@@ -2197,7 +2197,7 @@ _jc_vinterp(_jc_env *env, va_list args)
 			break;
 		}
 	}
-	_JC_ASSERT(sp - env->sp == method->code.num_params2
+	_JC_ASSERT(sp - env->sp == method->num_params2
 	    + !_JC_ACC_TEST(method, STATIC));
 
 #ifndef NDEBUG

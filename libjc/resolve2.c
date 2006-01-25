@@ -326,14 +326,6 @@ _jc_resolve_methods(_jc_env *env, _jc_type *const type, _jc_resolve_info *info)
 		if (_jc_resolve_signature(env, method, info) == -1)
 			return JNI_ERR;
 
-		/* Determine parameter count with long/double counted twice */
-		_JC_ASSERT(method->code.num_params2 == 0);
-		method->code.num_params2 = method->num_parameters;
-		for (j = 0; j < method->num_parameters; j++) {
-			if (_jc_dword_type[method->param_ptypes[j]])
-				method->code.num_params2++;
-		}
-
 		/* Resolve exception types */
 		for (j = 0; j < method->num_exceptions; j++) {
 			if ((method->exceptions[j] = _jc_load_type(env, loader,
@@ -774,7 +766,6 @@ _jc_resolve_bytecode(_jc_env *env, _jc_method *const method,
 			_jc_invoke *const invoke = &info->invoke;
 			_jc_method *imethod;
 			_jc_type *type;
-			int j;
 
 			/* Resolve method's class */
 			if ((type = _jc_load_type(env,
@@ -893,12 +884,8 @@ _jc_resolve_bytecode(_jc_env *env, _jc_method *const method,
 			    == _JC_ACC_TEST(imethod->class, INTERFACE));
 
 			/* Count the number of words to pop off the stack */
-			invoke->pop = imethod->num_parameters
-			    + (opcode != _JC_invokestatic);
-			for (j = 0; j < imethod->num_parameters; j++) {
-				if (_jc_dword_type[imethod->param_ptypes[j]])
-					invoke->pop++;
-			}
+			invoke->pop = (opcode != _JC_invokestatic)
+			    + imethod->num_params2;
 
 			/* Optimization: de-virtualize final methods */
 			if (_JC_ACC_TEST(imethod->class, FINAL)

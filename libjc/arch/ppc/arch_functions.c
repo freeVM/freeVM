@@ -47,11 +47,7 @@ _jc_build_trampoline(u_char *code, _jc_method *method, const void *func)
 	nparams2 = 1;						/* "env" */
 	if (!_JC_ACC_TEST(method, STATIC))
 		nparams2++;					/* "this" */
-	nparams2 += method->num_parameters;
-	for (pnum = 0; pnum < method->num_parameters; pnum++) {
-		if (_jc_dword_type[method->param_ptypes[pnum]])
-			nparams2++;
-	}
+	nparams2 += method->num_params2;
 
 	/* Get types of parameter words 1 and 2 (we know type for 0, "env") */
 	if (_JC_ACC_TEST(method, STATIC)) {
@@ -129,7 +125,7 @@ _jc_build_trampoline(u_char *code, _jc_method *method, const void *func)
 		/* Copy 4th and later parameter words */
 		offset = (offsets[3] + (nparams2 - 4)) * 4;
 		pnum = method->num_parameters - 1;
-		if (_jc_dword_type[method->param_ptypes[pnum]])
+		if (_jc_type_words[method->param_ptypes[pnum]] == 2)
 			pnum = -pnum;
 		for (pword = nparams2 - 1; pword >= 3; pword--, offset -= 4) {
 
@@ -177,7 +173,7 @@ _jc_build_trampoline(u_char *code, _jc_method *method, const void *func)
 			/* Keep track of corresponding parameter index */
 			if (pnum < 0)	/* was second word of long/double */
 				pnum = -pnum;
-			else if (_jc_dword_type[method->param_ptypes[--pnum]])
+			else if (_jc_type_words[method->param_ptypes[--pnum]] == 2)
 				pnum = -pnum;
 		}
 

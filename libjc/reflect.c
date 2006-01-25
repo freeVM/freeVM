@@ -389,7 +389,6 @@ _jc_reflect_invoke(_jc_env *env, _jc_method *method,
 	jobject this_ref = NULL;
 	_jc_word *params;
 	jint status;
-	int nwords;
 	int pi;
 	int i;
 
@@ -459,15 +458,9 @@ _jc_reflect_invoke(_jc_env *env, _jc_method *method,
 		goto fail;
 	}
 
-	/* Count parameter words */
-	nwords = method->num_parameters;
-	for (i = 0; i < method->num_parameters; i++) {
-		if (_jc_dword_type[method->param_ptypes[i]])
-			nwords++;
-	}
-
 	/* Allocate parameter array */
-	if ((params = _JC_STACK_ALLOC(env, nwords * sizeof(*params))) == NULL) {
+	if ((params = _JC_STACK_ALLOC(env,
+	    method->num_params2 * sizeof(*params))) == NULL) {
 		_jc_post_exception_info(env);
 		goto fail;
 	}
