@@ -109,7 +109,7 @@ _jc_parse_classfile(_jc_env *env, _jc_classbytes *bytes, int howmuch)
 	if (_jc_parse_uint16(&s, &cfile->major_version) != JNI_OK)
 		goto fail;
 	if (!((cfile->major_version == 45 && cfile->minor_version >= 3)
-	    || (cfile->major_version >= 46 && cfile->major_version <= 48))) {
+	    || (cfile->major_version >= 46 && cfile->major_version <= 49))) {
 		_JC_EX_STORE(env, UnsupportedClassVersionError,
 		    "%u.%u", cfile->major_version, cfile->minor_version);
 		goto fail;
