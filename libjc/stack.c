@@ -40,49 +40,23 @@ _jc_stack_clip(_jc_env *env)
 	_JC_ASSERT(!cstack->clipped);
 
 	/* Grab the current context and clip the Java stack with it */
-#if HAVE_GETCONTEXT
-    {
-	ucontext_t ctx;
-
-	getcontext(&ctx);
-	cstack->regs = ctx.uc_mcontext;
-    }
-#else
-    {
-	mcontext_t ctx;
-
-	/* Sanity check */
-	_JC_ASSERT(env->ctx == NULL);
-
-	/* Get current machine context */
-#if defined(__FreeBSD__) && defined(__i386__)
-	/* Work around for FreeBSD bug threads/75374 */
-	{
-	    jmp_buf buf;
-
-	    setjmp(buf);
-	    memset(&ctx, 0, sizeof(ctx));
-	    ctx.mc_eip = buf[0]._jb[0];
-	    ctx.mc_ebx = buf[0]._jb[1];
-	    ctx.mc_esp = buf[0]._jb[2];
-	    ctx.mc_ebp = buf[0]._jb[3];
-	    ctx.mc_esi = buf[0]._jb[4];
-	    ctx.mc_edi = buf[0]._jb[5];
-	}
-#else
-	env->ctx = &ctx;
-	pthread_kill(pthread_self(), SIGSEGV);
-	env->ctx = NULL;
-#endif
-
-	/* Use it to clip Java stack */
-	cstack->regs = ctx.uc_mcontext;
-    }
-#endif
+	sigsetjmp(cstack->regs, JNI_FALSE);
 
 #ifndef NDEBUG
+    {
+    	_jc_word diff;
+	const void *sp;
+	const void *here;
+
+	/* Sanity check the _jc_jmpbuf_sp() function */
+	sp = _jc_jmpbuf_sp(cstack->regs);
+	here = &sp;
+	diff = (sp > here) ? sp - here : here - sp;
+	_JC_ASSERT(diff < 0x100);
+
 	/* Mark stack as clipped */
 	cstack->clipped = JNI_TRUE;
+    }
 #endif
 }
 

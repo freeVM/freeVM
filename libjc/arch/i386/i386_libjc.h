@@ -48,17 +48,17 @@ _jc_iflush(const void *mem, size_t len)
 #ifdef __FreeBSD__
 
 extern inline const void *
-_jc_mcontext_sp(const mcontext_t *mctx)
+_jc_jmpbuf_sp(const jmp_buf buf)
 {
-	return (const void *)mctx->mc_esp;
+	return (const void *)buf[0]._jb[0];
 }
 
 #elif defined(__linux__)
 
 extern inline const void *
-_jc_mcontext_sp(const mcontext_t *mctx)
+_jc_jmpbuf_sp(const jmp_buf buf)
 {
-	return (const void *)mctx->gregs[REG_ESP];
+	return (const void *)buf[0].__jmpbuf[4];
 }
 
 #else

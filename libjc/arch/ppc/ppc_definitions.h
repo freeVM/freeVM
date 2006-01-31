@@ -30,23 +30,5 @@
 
 #define _JC_BIG_ENDIAN		1
 
-#define	_JC_REGISTER_OFFS	{					\
-	_JC_OFFSETOF(mcontext_t, mc_gs),				\
-	_JC_OFFSETOF(mcontext_t, mc_fs),				\
-	_JC_OFFSETOF(mcontext_t, mc_es),				\
-	_JC_OFFSETOF(mcontext_t, mc_ds),				\
-	_JC_OFFSETOF(mcontext_t, mc_edi),				\
-	_JC_OFFSETOF(mcontext_t, mc_esi),				\
-	_JC_OFFSETOF(mcontext_t, mc_ebp),				\
-	_JC_OFFSETOF(mcontext_t, mc_isp),				\
-	_JC_OFFSETOF(mcontext_t, mc_ebx),				\
-	_JC_OFFSETOF(mcontext_t, mc_edx),				\
-	_JC_OFFSETOF(mcontext_t, mc_ecx),				\
-	_JC_OFFSETOF(mcontext_t, mc_eax),				\
-	_JC_OFFSETOF(mcontext_t, mc_cs),				\
-	_JC_OFFSETOF(mcontext_t, mc_esp),				\
-	_JC_OFFSETOF(mcontext_t, mc_ss),				\
-    }
-
 #endif	/* _ARCH_PPC_DEFINITIONS_H_ */
 

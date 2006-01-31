@@ -72,14 +72,6 @@ Numerical constants
 
     _JC_BIG_ENDIAN	1 if big endian, 0 if little endian
 
-Other definitions
------------------
-
-    _JC_REGISTER_OFFS	Initializer for an array of integers representing
-    			the offsets into a mcontext_t structure where the
-			registers possibly containing references live.
-			Used for garbage collection.
-
 */
 
 /************************************************************************

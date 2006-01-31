@@ -20,10 +20,6 @@
 
 #include "libjc.h"
 
-/* Internal definitions */
-#define _JC_NUM_REGISTER_OFFS						\
-	(sizeof(_jc_register_offs) / sizeof(*_jc_register_offs))
-
 /* Internal functions */
 static _jc_object	*_jc_locate_object(_jc_jvm *vm,
 				const _jc_word *info, const void *ptr);
@@ -33,9 +29,6 @@ static int		_jc_root_walk_native_refs(_jc_native_frame_list *list,
 				_jc_object ***refsp);
 static int		_jc_scan_c_stack(_jc_jvm *vm, _jc_c_stack *cstack,
 				const _jc_word *info, _jc_object ***refsp);
-
-/* Internal variables */
-static const int	_jc_register_offs[] = _JC_REGISTER_OFFS;
 
 /*
  * Find the head of the object given a pointer into its interior.
@@ -316,15 +309,15 @@ _jc_scan_c_stack(_jc_jvm *vm, _jc_c_stack *cstack,
 	_jc_object *obj;
 	const char *ptr;
 	int count = 0;
-	int regnum;
+	int i;
 
 	/* Get references from saved registers */
-	for (regnum = 0; regnum < _JC_NUM_REGISTER_OFFS; regnum++) {
+	for (i = 0; i < sizeof(cstack->regs); i++) {
+		const char *const ptr = (char *)&cstack->regs + i;
 
-		/* Find object pointed to by register, if any */
-		if ((obj = _jc_locate_object(vm, info,
-		    *(_jc_word **)((char *)&cstack->regs
-		      + _jc_register_offs[regnum]))) == NULL)
+		/* Find object pointed into, if any */
+		if ((obj = _jc_locate_object(vm,
+		    info, *(_jc_word **)ptr)) == NULL)
 			continue;
 
 		/* Add object to list */
@@ -341,7 +334,7 @@ _jc_scan_c_stack(_jc_jvm *vm, _jc_c_stack *cstack,
 	stack_bot = (const char *)cstack;
 
 	/* Find the top of this Java stack segment */
-	stack_top = _jc_mcontext_sp(&cstack->regs);
+	stack_top = _jc_jmpbuf_sp(cstack->regs);
 
 	/* Sanity check stack alignment */
 	_JC_ASSERT(((_jc_word)stack_top & (_JC_STACK_ALIGN - 1)) == 0);

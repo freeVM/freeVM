@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
-#include <ucontext.h>
+#include <setjmp.h>
 #include <limits.h>
 #include <fcntl.h>
 #include <unistd.h>

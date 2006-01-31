@@ -31,49 +31,5 @@
 
 #define _JC_BIG_ENDIAN		0
 
-#ifdef __FreeBSD__
-
-#define	_JC_REGISTER_OFFS	{					\
-	_JC_OFFSETOF(mcontext_t, mc_gs),				\
-	_JC_OFFSETOF(mcontext_t, mc_fs),				\
-	_JC_OFFSETOF(mcontext_t, mc_es),				\
-	_JC_OFFSETOF(mcontext_t, mc_ds),				\
-	_JC_OFFSETOF(mcontext_t, mc_edi),				\
-	_JC_OFFSETOF(mcontext_t, mc_esi),				\
-	_JC_OFFSETOF(mcontext_t, mc_ebp),				\
-	_JC_OFFSETOF(mcontext_t, mc_isp),				\
-	_JC_OFFSETOF(mcontext_t, mc_ebx),				\
-	_JC_OFFSETOF(mcontext_t, mc_edx),				\
-	_JC_OFFSETOF(mcontext_t, mc_ecx),				\
-	_JC_OFFSETOF(mcontext_t, mc_eax),				\
-	_JC_OFFSETOF(mcontext_t, mc_cs),				\
-	_JC_OFFSETOF(mcontext_t, mc_esp),				\
-	_JC_OFFSETOF(mcontext_t, mc_ss),				\
-    }
-
-#elif defined(__linux__)
-
-#define	_JC_REGISTER_OFFS	{					\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_GS  * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_FS  * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_ES  * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_DS  * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_EDI * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_ESI * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_EBP * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_ESP * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_EBX * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_EDX * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_ECX * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_EAX * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_CS  * sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_UESP* sizeof(greg_t),	\
-	_JC_OFFSETOF(mcontext_t, gregs) + REG_SS  * sizeof(greg_t),	\
-    }
-
-#else
-#error "Unsupported O/S for i386 _JC_REGISTER_OFFS"
-#endif
-
 #endif	/* _ARCH_I386_DEFINITIONS_H_ */
 

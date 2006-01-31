@@ -100,9 +100,9 @@ These functions must not call any other functions that could allocate
 memory, etc. See "arch/arch_structures.h".
 
     const void *
-    _jc_mcontext_sp(const mcontext_t *mctx)
+    _jc_jmpbuf_sp(const jmp_buf *buf)
 
-    	Returns the saved stack pointer from an mcontext_t structure.
+    	Returns the saved stack pointer from a jmp_buf structure.
 
 */
 
@@ -121,7 +121,7 @@ extern void		_jc_dynamic_invoke(const void *func, int jcni,
 				_jc_word *words, _jc_rvalue *retval);
 
 /* Stack pointer functions */
-extern const void	*_jc_mcontext_sp(const mcontext_t *mctx);
+extern const void	*_jc_jmpbuf_sp(const jmp_buf buf);
 
 /************************************************************************
  *			Architecture-specific functions			*

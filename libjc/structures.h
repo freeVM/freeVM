@@ -178,7 +178,7 @@ struct _jc_native_frame {
  */
 struct _jc_c_stack {
 	_jc_c_stack			*next;
-	mcontext_t			regs;
+	jmp_buf				regs;
 #ifndef NDEBUG
 	jboolean			clipped;
 #endif

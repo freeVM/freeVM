@@ -94,12 +94,6 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS(sys/mman.h sys/wait.h pthread.h fcntl.h signal.h \
 	ctype.h errno.h dlfcn.h sched.h math.h pwd.h zlib.h, [],
 	[AC_MSG_ERROR([required header file missing])])
-AC_CHECK_HEADERS([ucontext.h], [],
-	[AC_MSG_ERROR([required header file missing])],
-[#if HAVE_SIGNAL_H
-# include <signal.h>
-# endif
-])
 
 AC_CHECK_HEADERS(inttypes.h)
 
@@ -107,9 +101,6 @@ AC_CHECK_HEADERS(inttypes.h)
 AC_FUNC_MMAP
 AC_CHECK_FUNCS([getcwd gettimeofday memmove memset munmap], , \
     [AC_MSG_ERROR([required function missing])])
-
-# Check for optional library functions
-AC_CHECK_FUNCS([getcontext])
 
 # See if pthread_attr_setstack() is available
 AC_CHECK_FUNCS([pthread_attr_setstack])
