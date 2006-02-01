@@ -62,7 +62,7 @@ _jc_iflush(const void *mem, size_t len)
  * @todo Returning NULL to be compile-clean for the moment.
  */
 extern inline const void *
-_jc_jmpbuf_sp(const jmp_buf buf)
+_jc_jmpbuf_sp(const sigjmp_buf buf)
 {
 	fprintf(stderr, "WARNING: call to unimplemented function _jc_jmpbuf_sp(...)\n");
 	exit(0);

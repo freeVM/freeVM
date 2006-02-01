@@ -30,10 +30,9 @@ enum {
 };
 
 /* Internal functions */
-static void	_jc_signal_action(int sig_num,
-			siginfo_t *info, ucontext_t *uctx);
+static void	_jc_signal_action(int sig_num, siginfo_t *info, void *uctx);
 static void	_jc_signal_fallthrough(int sig_index,
-			siginfo_t *info, ucontext_t *uctx);
+			siginfo_t *info, void *uctx);
 
 /* Internal variables */
 static struct	sigaction _jc_previous[_JC_SIGNAL_MAX];
@@ -100,7 +99,7 @@ _jc_restore_signals(void)
  * Handle a signal.
  */
 static void
-_jc_signal_action(int sig_num, siginfo_t *info, ucontext_t *uctx)
+_jc_signal_action(int sig_num, siginfo_t *info, void *uctx)
 {
 	_jc_env *const env = _jc_get_current_env();
 	_jc_jvm *vm = NULL;
@@ -206,7 +205,7 @@ unexpected:
  * Handle a signal by falling through to the previously defined handler.
  */
 static void
-_jc_signal_fallthrough(int sig_index, siginfo_t *info, ucontext_t *uctx)
+_jc_signal_fallthrough(int sig_index, siginfo_t *info, void *uctx)
 {
 	struct sigaction *const sa = &_jc_previous[sig_index];
 	const int sig_num = _jc_signals[sig_index];

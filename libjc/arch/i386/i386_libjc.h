@@ -48,15 +48,15 @@ _jc_iflush(const void *mem, size_t len)
 #ifdef __FreeBSD__
 
 extern inline const void *
-_jc_jmpbuf_sp(const jmp_buf buf)
+_jc_jmpbuf_sp(const sigjmp_buf buf)
 {
-	return (const void *)buf[0]._jb[0];
+	return (const void *)buf[0]._sjb[2];
 }
 
 #elif defined(__linux__)
 
 extern inline const void *
-_jc_jmpbuf_sp(const jmp_buf buf)
+_jc_jmpbuf_sp(const sigjmp_buf buf)
 {
 	return (const void *)buf[0].__jmpbuf[4];
 }
