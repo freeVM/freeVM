@@ -179,15 +179,6 @@ _jc_signal_action(int sig_num, siginfo_t *info, ucontext_t *uctx)
 	       goto unexpected;
 #endif
 
-#if !HAVE_GETCONTEXT
-	/* Poor man's getcontext() using signals */
-	if (env->ctx != NULL) {
-		*env->ctx = uctx->uc_mcontext;
-		env->handling_signal = JNI_FALSE;
-		return;
-	}
-#endif
-
 	/* Take the appropriate action */
 	switch (sig_index) {
 	case _JC_SIGNAL_SEGV:

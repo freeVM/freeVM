@@ -285,11 +285,6 @@ struct _jc_env {
 	/* Exception information filled in by some functions on error */
 	_jc_ex_info			ex;
 
-#if !HAVE_GETCONTEXT
-	/* For our poor man's getcontext() using signals */
-	mcontext_t			*ctx;
-#endif
-
 	/* Thread flags */
 	jboolean			out_of_memory;
 	jboolean			handling_signal;
