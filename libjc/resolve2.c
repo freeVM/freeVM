@@ -36,7 +36,6 @@ static jint		_jc_resolve_inner_classes(_jc_env *env, _jc_type *type,
 				_jc_resolve_info *info);
 static int		_jc_add_iface_methods(_jc_type *type,
 				_jc_method **methods);
-static int		_jc_method_sorter(const void *item1, const void *item2);
 static int		_jc_type_sorter(const void *item1, const void *item2);
 
 /*
@@ -1145,7 +1144,7 @@ _jc_derive_imethod_tables(_jc_env *env, _jc_type *type)
 	}
 
 	/* Sort methods by name & signature */
-	qsort(methods, max_methods, sizeof(*methods), _jc_method_sorter);
+	qsort(methods, max_methods, sizeof(*methods), _jc_method_compare);
 
 	/* Eliminate redundancies (methods declared in multiple interfaces) */
 	num_methods = max_methods;
@@ -1514,29 +1513,12 @@ _jc_method_lookup(_jc_type *type, _jc_method *key)
 
 	/* Search */
 	methodp = bsearch(&key, ntype->methods, ntype->num_methods,
-	    sizeof(*ntype->methods), _jc_method_sorter);
+	    sizeof(*ntype->methods), _jc_method_compare);
 	if (methodp != NULL && !_JC_ACC_TEST(*methodp, STATIC))
 		return *methodp;
 
 	/* Not found */
 	return NULL;
-}
-
-/*
- * Sorts method pointers by name, then signature.
- *
- * This must sort the same as org.dellroad.jc.cgen.Util.methodComparator.
- */
-static int
-_jc_method_sorter(const void *item1, const void *item2)
-{
-        const _jc_method *const method1 = *((_jc_method **)item1);
-        const _jc_method *const method2 = *((_jc_method **)item2);
-	int diff;
-
-	if ((diff = strcmp(method1->name, method2->name)) != 0)
-		return diff;
-	return strcmp(method1->signature, method2->signature);
 }
 
 /*
