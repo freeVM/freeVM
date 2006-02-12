@@ -755,10 +755,9 @@ not_reference_object:
 			    VMThrowable, vmdata, _jc_byte_array *);
 			if (bytes == NULL)
 				goto do_exception_loader;
-			frames = (_jc_saved_frame *)_JC_ROUNDUP2(
-			    (_jc_word)bytes->elems, _JC_FULL_ALIGNMENT);
-			num_frames = (bytes->length -
-			      ((_jc_word)frames - (_jc_word)bytes->elems))
+			frames = (_jc_saved_frame *)
+			    (bytes->elems + _JC_BYTE_ARRAY_PAD);
+			num_frames = (bytes->length - _JC_BYTE_ARRAY_PAD)
 			    / sizeof(*frames);
 			if (num_frames == 0)
 				goto do_exception_loader;

@@ -21,12 +21,6 @@
 #include "libjc.h"
 #include "java_lang_VMThrowable.h"
 
-/* Used to align byte[] array bytes to _JC_FULL_ALIGNMENT */
-#define _JC_BYTE_ARRAY_PAD	(_JC_ROUNDUP2(_JC_OFFSETOF(		\
-				    _jc_byte_array, elems),		\
-				      _JC_FULL_ALIGNMENT)		\
-				    - _JC_OFFSETOF(_jc_byte_array, elems))
-
 /*
  * static final native VMThrowable fillInStackTrace(Throwable)
  */
@@ -50,8 +44,7 @@ JCNI_java_lang_VMThrowable_fillInStackTrace(_jc_env *env, _jc_object *throwable)
 	      num_frames * sizeof(*frames) + _JC_BYTE_ARRAY_PAD))) == NULL)
 		_jc_throw_exception(env);
 	bytes = (_jc_byte_array *)*bytes_ref;
-	frames = (_jc_saved_frame *)_JC_ROUNDUP2(
-	    (_jc_word)bytes->elems, _JC_FULL_ALIGNMENT);
+	frames = (_jc_saved_frame *)(bytes->elems + _JC_BYTE_ARRAY_PAD);
 
 	/* Fill in trace */
 	_jc_save_stack_frames(env, env, num_frames, frames);

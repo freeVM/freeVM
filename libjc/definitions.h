@@ -325,6 +325,14 @@ enum {
 	_JC_ROUNDUP2(sizeof(_jc_uni_pages), _JC_FULL_ALIGNMENT)
 
 /*
+ * This is the padding required at the beginning of a byte[] array
+ * to ensure universal alignment.
+ */
+#define _JC_BYTE_ARRAY_PAD						\
+	(_JC_ROUNDUP2(_JC_OFFSETOF(_jc_byte_array, elems),		\
+	    _JC_FULL_ALIGNMENT) - _JC_OFFSETOF(_jc_byte_array, elems))
+
+/*
  * Minimum number of uni-allocator pages to grab when additional
  * class loader memory is needed.
  */

@@ -97,10 +97,8 @@ again:
 		goto no_trace;
 
 	/* Print stack frames */
-	frames = (_jc_saved_frame *)_JC_ROUNDUP2(
-	    (_jc_word)bytes->elems, _JC_FULL_ALIGNMENT);
-	num_frames = (bytes->length -
-	    ((_jc_word)frames - (_jc_word)bytes->elems)) / sizeof(*frames);
+	frames = (_jc_saved_frame *)(bytes->elems + _JC_BYTE_ARRAY_PAD);
+	num_frames = (bytes->length - _JC_BYTE_ARRAY_PAD) / sizeof(*frames);
 	_jc_print_stack_frames(env, fp, num_frames, frames);
 
 no_trace:
