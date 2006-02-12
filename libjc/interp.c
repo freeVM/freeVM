@@ -515,6 +515,7 @@ TARGET(aload_3)
 	PUSHL(LOCALL(3));
 	NEXT();
 TARGET(anewarray)
+TARGET(newarray)
     {
 	_jc_array *array;
 
@@ -1710,18 +1711,6 @@ TARGET(new)
 	if (_JC_UNLIKELY((obj = _jc_new_object(env, INFO(type))) == NULL))
 		goto exception;
 	PUSHL(obj);
-	NEXT();
-    }
-TARGET(newarray)
-    {
-	_jc_array *array;
-
-	POP(1);
-	stack_frame.pc = pc;
-	if (_JC_UNLIKELY((array = _jc_new_array(env,
-	    INFO(type), STACKI(0))) == NULL))
-		goto exception;
-	PUSHL((_jc_object *)array);
 	NEXT();
     }
 TARGET(nop)
