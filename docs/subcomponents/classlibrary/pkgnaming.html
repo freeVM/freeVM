@@ -37,7 +37,7 @@ limitations under the License.
             
             
             
-            <title>Apache Harmony - Apache Harmony</title>
+            <title>Apache Harmony - Package naming conventions in the Apache Harmony Classlib</title>
         </head>
 
         <body bgcolor="#ffffff" text="#000000" link="#525D76">        
@@ -195,34 +195,53 @@ limitations under the License.
                                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#525D76">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Apache Harmony Class Library"><strong>Apache Harmony Class Library</strong></a>
+          <a name="Package naming conventions used in the Apache Harmony Class Library"><strong>Package naming conventions used in the Apache Harmony Class Library</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
                                     <p>
-		The following documentation links are specific to the class library effort underway at Apache Harmony.
+		<small><em>This section is inspired by, and derived from,
+		<a href="http://dev.eclipse.org/naming.html">the Eclipse package naming convention</a>
+		documentation.</em></small>
+	</p>
+                                                <p>
+		<big><em>The following guidelines are currently PROPOSED and being discussed on the
+		development mailing list <code>harmony-dev@incubator.apache.org</code>.  Please
+		direct comments and questions there.</em></big>
+	</p>
+                                                <p>
+		The Harmony class library code is organized into Java packages comprising the
+		public API (packages such as <code>java.lang</code>, <code>org.omg.CORBA</code>
+		and so on) and internal implementation packages that all begin
+		<code>org.apache.harmony</code>.
+	</p>
+                                                <p>
+		The public APIs are defined by the JSE specification, and as such as managed beyond
+		the direct control of the Apache Harmony project.  The other packages are managed
+		by the project development team, and as such the project attributes the following
+		meaning to package names.
 	</p>
                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#828DA6">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Developing and Building the code"><strong>Developing and Building the code</strong></a>
+          <a name="All packages belong to a specific module"><strong>All packages belong to a specific module</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
-                                    <ul>
-		<li><a href="build_classlib.html">Building the Classlibrary Code</a>
-			<p>
-				Describes how to download and build the class library code from source.
-			</p>
-			</li>
-		<li><a href="dev_eclipse.html">Development with the Eclipse IDE</a>
-			<p>
-				Describes how to set up Eclipse to develop the class library code.
-			</p>
-			</li>
-	</ul>
+                                    <p>
+		Each Java package is owned by a specific module of the Harmony class library.
+		The module name immediately follows the <code>org.apache.harmony</code> prefix.
+			<blockquote>
+				<code>org.apache.harmony.<b>&lt;module&gt;</b></code>
+			</blockquote>
+		for example
+			<blockquote>
+				<code>org.apache.harmony.luni</code><br />
+				<code>org.apache.harmony.security</code>
+			</blockquote>
+	</p>
                             </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>
@@ -230,49 +249,53 @@ limitations under the License.
                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#828DA6">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Project conventions"><strong>Project conventions</strong></a>
+          <a name="Package names within a module"><strong>Package names within a module</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
-                                    <ul>
-		<li><a href="pkgnaming.html">Java package naming guidelines</a>
+                                    <p>
+		Modules are free to use whatever package names they choose with the
+		prefix <code>org.apache.harmony.<b>&lt;modulename&gt;</b></code>
+	</p>
+                                                <p>
+		The following package name segements are <ul>reserved</ul> to indicate the meanings
+		defined below:
+		<ul>
+			<li><code>org.apache.harmony.&lt;modulename&gt;.<b>internal</b></code>
 			<p>
-				<b>Proposed</b> guidelines for package naming convention.
-			</p>
-			</li>
-	</ul>
-                            </blockquote>
-      </td></tr>
-      <tr><td><br/></td></tr>
-    </table>
-                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
-      <tr><td bgcolor="#828DA6">
-        <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Architecture and guides"><strong>Architecture and guides</strong></a>
-        </font>
-      </td></tr>
-      <tr><td>
-        <blockquote>
-                                    <ul>
-		<li>
-<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/vm_doc/html/index.html">
-			Class library porting documentation</a>
-			<p>
-				A porting guide aimed at developers interested in porting the classlib
-				code to a new VM.
+				Packages with this prefix are implementation packages for use within
+				the given module.  Types and fields that are visible within these
+				packages <em>MUST NOT</em> be used outside the module itself.
+				Some runtime environments may enforce this reduced visibility scope.
 			</p></li>
-		<li>
-<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/vm_doc/html/group__Port.html">
-			The Harmony class library port layer</a>
+			<li><code>org.apache.harmony.&lt;modulename&gt;.<b>tests</b></code>
 			<p>
-				A description of the functions in the class library portlayer aimed at
-				developers who are writing JNI code for use by the Harmony class libraries
-				and developers who are interested in porting the classlib code to a new
-				operating system.
-			</p>
-			</li>
-	</ul>
+				Packages with this prefix contain test code that is not part of the
+				module API or implementation.  Some builds may not include these
+				packages.
+			</p></li>
+			<li><code>org.apache.harmony.&lt;modulename&gt;.<b>examples</b></code>
+			<p>
+				Packages with this prefix contain example code that is not part of the
+				module API or implementation.  Some builds may not include these
+				packages.
+			</p></li>
+			<li><code>org.apache.harmony.&lt;modulename&gt;.<b>&lt;anything_else&gt;</b></code>
+			<p>
+				All other packages within a module contain internal APIs that may
+				be referenced from any module.
+			</p></li>
+		</ul>
+	</p>
+                                                <p>
+		In practice, this means that module developers are free to change the code within an
+		<code>internal</code> package without expecting any consequences beyond the module
+		itself.  However, module developers who modify code that is not in an
+		<code>internal</code> package must do so in a manner that ensures
+		<a href="http://java.sun.com/docs/books/jls/second_edition/html/binaryComp.doc.html">
+		Java binary compatibility</a>
+	</p>
                             </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>

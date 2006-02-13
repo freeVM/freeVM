@@ -31,20 +31,53 @@
 		The following documentation links are specific to the class library effort underway at Apache Harmony.
 	</p>
 	
+<subsection name="Developing and Building the code">
 	<ul>
 		<li><a href="build_classlib.html">Building the Classlibrary Code</a>
 			<p>
 				Describes how to download and build the class library code from source.
 			</p>
 			</li>
-		<br/>
 		<li><a href="dev_eclipse.html">Development with the Eclipse IDE</a>
 			<p>
 				Describes how to set up Eclipse to develop the class library code.
 			</p>
 			</li>
-		<br/>
 	</ul>
+</subsection>
+
+<subsection name="Project conventions">
+	<ul>
+		<li><a href="pkgnaming.html">Java package naming guidelines</a>
+			<p>
+				<b>Proposed</b> guidelines for package naming convention.
+			</p>
+			</li>
+	</ul>
+</subsection>
+
+<subsection name="Architecture and guides">
+	<ul>
+		<li>
+<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/vm_doc/html/index.html">
+			Class library porting documentation</a>
+			<p>
+				A porting guide aimed at developers interested in porting the classlib
+				code to a new VM.
+			</p></li>
+		<li>
+<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/vm_doc/html/group__Port.html">
+			The Harmony class library port layer</a>
+			<p>
+				A description of the functions in the class library portlayer aimed at
+				developers who are writing JNI code for use by the Harmony class libraries
+				and developers who are interested in porting the classlib code to a new
+				operating system.
+			</p>
+			</li>
+	</ul>
+</subsection>
+
 </section>
 
 </body>
