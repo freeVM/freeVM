@@ -45,12 +45,12 @@ _jc_stack_clip(_jc_env *env)
 #ifndef NDEBUG
     {
     	_jc_word diff;
-	const void *sp;
-	const void *here;
+	const char *sp;
+	const char *here;
 
 	/* Sanity check the _jc_jmpbuf_sp() function */
 	sp = _jc_jmpbuf_sp(cstack->regs);
-	here = &sp;
+	here = (char *)&sp;
 	diff = (sp > here) ? sp - here : here - sp;
 	_JC_ASSERT(diff < 0x100);
 
