@@ -31,5 +31,10 @@
 
 #define _JC_BIG_ENDIAN		0
 
+#ifdef __CYGWIN__
+#undef _JC_LIBRARY_FMT
+#define _JC_LIBRARY_FMT		"cyg%s.dll"
+#endif
+
 #endif	/* _ARCH_I386_DEFINITIONS_H_ */
 
