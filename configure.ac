@@ -52,6 +52,10 @@ AC_ARG_ENABLE(werror,
     AC_HELP_STRING([--enable-werror],
         [include -Werror GCC compiler flag (default NO)]),
     [test x"$enableval" = "xyes" && JC_CFLAGS="${JC_CFLAGS} -Werror"])
+AC_ARG_ENABLE(gprof,
+    AC_HELP_STRING([--enable-gprof],
+        [Compile and link with gprof(1) support (default NO)]),
+    [test x"$enableval" = "xyes" && JC_CFLAGS="${JC_CFLAGS} -pg"])
 
 # Check for required programs
 AC_PROG_INSTALL
