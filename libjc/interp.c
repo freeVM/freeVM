@@ -136,7 +136,6 @@ _jc_interp(_jc_env *const env, _jc_method *const method)
 {
 #define ACTION(name)  [_JC_ ## name]= (_jc_word)&&do_ ## name
 #define TARGET(name)  							\
-	_JC_ASSERT(JNI_FALSE);		/* should never fall through */	\
 	do_ ## name:   asm ("/***** " #name " *****/");
 	static const _jc_word actions[0x100] = {
 		ACTION(aaload),
