@@ -192,7 +192,7 @@ const jlong _jc_type_max_array_length[_JC_TYPE_MAX] = {
 /*
  * Field sorting order.
  *
- * This must sort the same as org.dellroad.jc.cgen.Util.OrderTypeSwitch.
+ * Fields with more stringent alignment requirements are sorted earlier.
  */
 const int _jc_field_type_sort[_JC_TYPE_MAX] = {
 	[_JC_TYPE_BOOLEAN]=	4,

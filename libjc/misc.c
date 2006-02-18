@@ -337,8 +337,9 @@ _jc_node_cmp(const void *item1, const void *item2)
 }
 
 /*
- * Compare two _jc_field **'s, sorting in the same way as
- * org.dellroad.jc.cgen.Util.fieldComparator.
+ * Sorts fields by staticness, type, name, then signature.
+ * In particular, fields with more stringent alignment requirements
+ * will be sorted earlier.
  */
 int
 _jc_field_compare(const void *v1, const void *v2)
@@ -361,8 +362,7 @@ _jc_field_compare(const void *v1, const void *v2)
 }
 
 /*
- * Compare two _jc_method **'s, sorting in the same way as
- * org.dellroad.jc.cgen.Util.methodComparator.
+ * Sorts methods by name, then signature.
  */
 int
 _jc_method_compare(const void *v1, const void *v2)
