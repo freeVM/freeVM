@@ -53,6 +53,7 @@ _jc_derive_type_interp(_jc_env *env,
 	_jc_type_node *node;
 	size_t virtual_offset;
 	size_t static_offset;
+	int object_align;
 	int vtable_index;
 	_jc_type *type;
 	void *mark;
@@ -175,6 +176,7 @@ _jc_derive_type_interp(_jc_env *env,
 	    (type->superclass->u.nonarray.instance_size
 	      - ntype->num_virtual_refs * sizeof(void *)) : sizeof(_jc_object);
 	static_offset = 0;
+	object_align = _jc_type_align[_JC_TYPE_REFERENCE];
 	for (i = 0; i < ntype->num_fields; i++) {
 		_jc_field *const field = ntype->fields[i];
 		const u_char ptype = _jc_sig_types[(u_char)*field->signature];
@@ -197,6 +199,8 @@ _jc_derive_type_interp(_jc_env *env,
 				field->offset = virtual_offset;
 				virtual_offset += size;
 			}
+			if (align > object_align)
+				object_align = align;
 		}
 	}
 
@@ -208,7 +212,7 @@ _jc_derive_type_interp(_jc_env *env,
 
 	/* Initialize heap block size index skip word flag */
 	if (!_JC_ACC_TEST(type, ABSTRACT))
-		_jc_initialize_bsi(vm, type);
+		_jc_initialize_bsi(vm, type, object_align);
 
 	/* Allocate memory for static fields, if any */
 	if (static_offset > 0

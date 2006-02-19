@@ -579,12 +579,14 @@ _jc_heap_check_alloc(_jc_jvm *vm, _jc_object *obj)
 
 		object_size = _jc_array_head_sizes[elem_type]
 		    + array->length * _jc_type_sizes[elem_type];
-	} else
+		bsi = _jc_heap_block_size(vm, object_size);
+	} else {
 		object_size = type->u.nonarray.instance_size;
+		bsi = type->u.nonarray.block_size_index;
+	}
 
 	/* Find object start */
 	obj_start = ((_jc_word *)obj) - _jc_num_refs(obj);
-	bsi = _jc_heap_block_size(vm, object_size);
 
 	/* Get page info for page containing start of object */
 	page = (char *)((_jc_word)obj_start & ~(_JC_PAGE_SIZE - 1));
@@ -604,9 +606,16 @@ _jc_heap_check_alloc(_jc_jvm *vm, _jc_object *obj)
 	_JC_ASSERT(object_size <= block_size);
 
 	/* Determine if there is a skip word */
-	block_start = (block_size >= object_size + sizeof(_jc_word)
-	      && _jc_num_refs(obj) >= _JC_SKIPWORD_MIN_REFS) ?
-	    obj_start - 1 : obj_start;
+	block_start = obj_start;
+	if (block_size >= object_size + sizeof(_jc_word)) {
+		if (_JC_LW_TEST(obj->lockword, ARRAY)) {
+			if (_jc_num_refs(obj) >= _JC_SKIPWORD_MIN_REFS)
+				block_start--;
+		} else {
+			if _JC_FLG_TEST(obj->type, SKIPWORD)
+				block_start--;
+		}
+	}
 
 	/* Check alignment of object start */
 	if (bsi < 0) {
@@ -639,7 +648,6 @@ _jc_heap_check_block(_jc_jvm *vm, _jc_word *block, char *page, int bsi)
 	/* Check for possible skip word and find object header */
 	if (_JC_HEAP_EXTRACT(word, BTYPE) == _JC_HEAP_BLOCK_SKIP) {
 		skip = _JC_HEAP_EXTRACT(word, SKIP);
-		_JC_ASSERT(skip >= 1 + _JC_SKIPWORD_MIN_REFS);
 		obj = (_jc_object *)(block + skip);
 	} else {
 		skip = 0;
@@ -672,8 +680,10 @@ _jc_heap_check_block(_jc_jvm *vm, _jc_word *block, char *page, int bsi)
 	if (bsi < 0) {
 		_JC_ASSERT(obj_size + _JC_HEAP_BLOCK_OFFSET
 		    >= (-bsi - 1) * _JC_PAGE_SIZE);
-	} else if (bsi > 0)
-		_JC_ASSERT(obj_size > heap->sizes[bsi - 1].size);
+	} else if (bsi > 0) {
+		_JC_ASSERT(obj_size + (skip ? sizeof(_jc_word) : 0)
+		    > heap->sizes[bsi - 1].size);
+	}
 
 	/* Sanity check object itself */
 	_jc_heap_check_object(vm, obj, 1);

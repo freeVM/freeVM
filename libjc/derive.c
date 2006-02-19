@@ -453,9 +453,11 @@ no_superclass:
  * _JC_TYPE_SKIPWORD flag in type->flags if appropriate.
  */
 void
-_jc_initialize_bsi(_jc_jvm *vm, _jc_type *type)
+_jc_initialize_bsi(_jc_jvm *vm, _jc_type *type, int align)
 {
 	_jc_nonarray_type *const ntype = &type->u.nonarray;
+	int alloc_size = ntype->instance_size;
+	jboolean force_skip = JNI_FALSE;
 	int block_size;
 	int bsi;
 
@@ -463,17 +465,33 @@ _jc_initialize_bsi(_jc_jvm *vm, _jc_type *type)
 	_JC_ASSERT(!_JC_FLG_TEST(type, ARRAY));
 	_JC_ASSERT(!_JC_ACC_TEST(type, ABSTRACT));
 
+	/*
+	 * When object alignment is greater than reference word alignment,
+	 * an odd number of references will put the object out of alignment.
+	 * In that case, we force a skip word to align the object header.
+	 */
+	if (align > _jc_type_align[_JC_TYPE_REFERENCE]
+	    && ((ntype->num_virtual_refs * sizeof(_jc_word)) % align) != 0) {
+		_JC_ASSERT((ntype->num_virtual_refs & 1) != 0);
+		_JC_ASSERT((sizeof(_jc_word) * 2) % align == 0);
+		alloc_size += sizeof(_jc_word);
+		force_skip = JNI_TRUE;
+	}
+
 	/* Get block size index */
-	bsi = _jc_heap_block_size(vm, ntype->instance_size);
+	bsi = _jc_heap_block_size(vm, alloc_size);
 
 	/* Reverse-engineer actual block size */
 	block_size = bsi < 0 ?
 	    ((-bsi * _JC_PAGE_SIZE) - _JC_HEAP_BLOCK_OFFSET) :
 	    vm->heap.sizes[bsi].size;
+	_JC_ASSERT(!force_skip
+	    || block_size - sizeof(_jc_word) >= ntype->instance_size);
 
-	/* Determine if there's room for a skip word */
+	/* Determine if we want a skip word */
 	if (block_size - sizeof(_jc_word) >= ntype->instance_size
-	    && ntype->num_virtual_refs >= _JC_SKIPWORD_MIN_REFS)
+	    && (force_skip
+	      || ntype->num_virtual_refs >= _JC_SKIPWORD_MIN_REFS))
 		type->flags |= _JC_TYPE_SKIPWORD;
 
 	/* Done */

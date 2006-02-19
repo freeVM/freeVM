@@ -127,7 +127,8 @@ extern _jc_type		*_jc_derive_array_type(_jc_env *env,
 				_jc_class_loader *loader, const char *name);
 extern void		_jc_initialize_lockword(_jc_env *env, _jc_type *type,
 				_jc_type *stype);
-extern void		_jc_initialize_bsi(_jc_jvm *vm, _jc_type *type);
+extern void		_jc_initialize_bsi(_jc_jvm *vm, _jc_type *type,
+				int align);
 
 /* derive2.c */
 extern _jc_type		*_jc_derive_type_interp(_jc_env *env,

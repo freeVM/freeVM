@@ -43,7 +43,6 @@ _jc_create_vm(void *args, _jc_jvm **vmp, _jc_env **envp)
 	/* Static checks */
 	_JC_ASSERT(_JC_VMEXCEPTION_MAX <= 64);		/* must fit in jlong */
 	_JC_ASSERT(_JC_VERBOSE_MAX <= 32);		/* must fit in jint */
-	_JC_ASSERT(_JC_FULL_ALIGNMENT <= sizeof(_jc_word));
 	_JC_ASSERT(sizeof(void *) <= sizeof(jlong));
 	_JC_ASSERT(sizeof(_jc_word) == sizeof(void *));
 

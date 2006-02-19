@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- * $Id: inline.h,v 1.7 2005/11/09 18:14:22 archiecobbs Exp $
+ * $Id$
  */
 
 /*
@@ -32,8 +32,6 @@ _jc_find_object_head(volatile const void *block)
 		_JC_ASSERT(word != _JC_HEAP_BLOCK_FREE
 		    && word != _JC_HEAP_BLOCK_ALLOC);
 		if (_JC_HEAP_EXTRACT(word, BTYPE) == _JC_HEAP_BLOCK_SKIP) {
-			_JC_ASSERT(_JC_HEAP_EXTRACT(word, SKIP)
-			    >= 1 + _JC_SKIPWORD_MIN_REFS);
 			return (_jc_object *)((_jc_word *)block
 			    + _JC_HEAP_EXTRACT(word, SKIP));
 		}
