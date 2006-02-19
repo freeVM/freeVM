@@ -570,15 +570,55 @@ _jc_resolve_bytecode(_jc_env *env, _jc_method *const method,
 		/* Copy and resolve additional info, possibly changing opcode */
 		switch (opcode) {
 		case _JC_aload:
+		case _JC_aload_0:
+		case _JC_aload_1:
+		case _JC_aload_2:
+		case _JC_aload_3:
 		case _JC_astore:
+		case _JC_astore_0:
+		case _JC_astore_1:
+		case _JC_astore_2:
+		case _JC_astore_3:
 		case _JC_dload:
+		case _JC_dload_0:
+		case _JC_dload_1:
+		case _JC_dload_2:
+		case _JC_dload_3:
 		case _JC_dstore:
+		case _JC_dstore_0:
+		case _JC_dstore_1:
+		case _JC_dstore_2:
+		case _JC_dstore_3:
 		case _JC_fload:
+		case _JC_fload_0:
+		case _JC_fload_1:
+		case _JC_fload_2:
+		case _JC_fload_3:
 		case _JC_fstore:
+		case _JC_fstore_0:
+		case _JC_fstore_1:
+		case _JC_fstore_2:
+		case _JC_fstore_3:
 		case _JC_iload:
+		case _JC_iload_0:
+		case _JC_iload_1:
+		case _JC_iload_2:
+		case _JC_iload_3:
 		case _JC_istore:
+		case _JC_istore_0:
+		case _JC_istore_1:
+		case _JC_istore_2:
+		case _JC_istore_3:
 		case _JC_lload:
+		case _JC_lload_0:
+		case _JC_lload_1:
+		case _JC_lload_2:
+		case _JC_lload_3:
 		case _JC_lstore:
+		case _JC_lstore_0:
+		case _JC_lstore_1:
+		case _JC_lstore_2:
+		case _JC_lstore_3:
 		case _JC_ret:
 			info->local = cinsn->u.local.index;
 			break;
