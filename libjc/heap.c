@@ -28,6 +28,22 @@ static int	_jc_heap_gen_block_sizes(_jc_jvm *vm);
 static int	_jc_heap_roundup_block_size(_jc_jvm *vm, int size, int *nbp);
 
 /*
+ * The heap is one big memory region divided into VM pages. Pages are either
+ * free, small, or large. Small pages are divided up into two or more blocks
+ * of equal size. Large pages are used for large objects that require more
+ * than half a page. All pages except "interior" large pages (i.e., large pages
+ * that are not the first in their object) have a descriptor word at the start
+ * indicating what type of page it is.
+ *
+ * Since object headers are not necessarily at the beginning of an object's
+ * memory (when the object has reference fields), if doing so would not bump
+ * an object up to the next block size, or if required for alignment, then a
+ * "skip word" is prepended to the object. The skip word contains the number
+ * of references in the object, and by being at the start of the object's
+ * memory allows finding the head of the object in constant time.
+ */
+
+/*
  * Initialize a VM's heap.
  *
  * If unsuccessful an exception is stored.
