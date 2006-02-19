@@ -26,20 +26,47 @@
 
  <body>
 
-<section name="Classlibrary Package Status">
+<section name="Class Library Component Status">
+
+	<p>
+		The following table shows the basic status of each module in Harmony's
+		class library effort.  Each module represents
+		<a href="http://wiki.apache.org/harmony/componentization">a set of Java
+		API packages</a>.
+	</p>
 
 <table>
-<tr><th>Package Name</th><th>Status</th></tr>
-<tr><td>java.lang</td><td></td></tr>
-<tr><td>java.io</td><td></td></tr>
-<tr><td>java.math</td><td></td></tr>
-<tr><td>java.net</td><td></td></tr>
-<tr><td>java.nio</td><td></td></tr>
-<tr><td>java.nio.channels</td><td></td></tr>
-<tr><td>java.security</td><td></td></tr>
-<tr><td>java.util</td><td></td></tr>
-<tr><td>java.util.jar</td><td></td></tr>
-<tr><td>java.util.zip</td><td></td></tr>
+	<tr><th>Module Name</th>	<th>Status</th></tr>
+	<tr><td>ACCESSIBILITY</td>	<td>Missing</td></tr>
+	<tr><td>ANNOTATION</td>		<td>Missing</td></tr>
+	<tr><td>APPLET</td>			<td>Missing</td></tr>
+	<tr><td>ARCHIVE</td>		<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/archive/">archive</a></td></tr>
+	<tr><td>AWT</td>			<td>Missing</td></tr>
+	<tr><td>BEANS</td>			<td>Contributed in <a href="http://issues.apache.org/jira/browse/HARMONY-39">HARMONY-39</a></td></tr>
+	<tr><td>CONCURRENT</td>		<td>Missing</td></tr>
+	<tr><td>CRYPTO</td>			<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/security2/">security2</a></td></tr>
+	<tr><td>IMAGEIO</td>		<td>Missing</td></tr>
+	<tr><td>INSTRUMENT</td>		<td>Missing</td></tr>
+	<tr><td>JMX</td>			<td>Missing</td></tr>
+	<tr><td>JNDI</td>			<td>Contributed in <a href="http://issues.apache.org/jira/browse/HARMONY-88">HARMONY-88</a></td></tr>
+	<tr><td>LANG-MANAGEMENT</td><td>Missing</td></tr>
+	<tr><td>LOGGING</td>		<td>Contributed in <a href="http://issues.apache.org/jira/browse/HARMONY-88">HARMONY-88</a></td></tr>
+	<tr><td>LUNI</td>			<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/luni/">luni</a></td></tr>
+	<tr><td>MATH</td>			<td>Contributed in <a href="http://issues.apache.org/jira/browse/HARMONY-39">HARMONY-39</a></td></tr>
+	<tr><td>NIO-CHANNELS</td>	<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/nio/">nio</a></td></tr>
+	<tr><td>NIO-CHARSET</td>	<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/nio_char/">nio_char</a></td></tr>
+	<tr><td>ORB</td>			<td>Missing</td></tr>
+	<tr><td>PREFS</td>			<td>Contributed in <a href="http://issues.apache.org/jira/browse/HARMONY-88">HARMONY-88</a></td></tr>
+	<tr><td>PRINT</td>			<td>Missing</td></tr>
+	<tr><td>REGEX</td>			<td>Contributed in <a href="http://issues.apache.org/jira/browse/HARMONY-39">HARMONY-39</a></td></tr>
+	<tr><td>RMI</td>			<td>Missing</td></tr>
+	<tr><td>SECURITY</td>		<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/security2/">security2</a></td></tr>
+	<tr><td>SOUND</td>			<td>Missing</td></tr>
+	<tr><td>SQL</td>			<td>Contributed in <a href="http://issues.apache.org/jira/browse/HARMONY-88">HARMONY-88</a></td></tr>
+	<tr><td>SWING</td>			<td>Missing</td></tr>
+	<tr><td>TEXT</td>			<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/text/">text</a></td></tr>
+	<tr><td>X-NET</td>			<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/security2/">security2</a></td></tr>
+	<tr><td>XML</td>			<td>Intend to use <a href="http://xerces.apache.org/xerces2-j/">Apache Xerces</a></td></tr>
 </table>
 
  </section>
