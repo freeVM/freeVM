@@ -22,13 +22,51 @@
 
 #define DEFAULT_CLASSPATH	".:" _JC_BOOT_CLASS_PATH
 
+struct flagname {
+	int		flag;
+	const char	*name;
+};
+
 static void	dump_attr(_jc_env *env, int indent, _jc_classfile *cf,
 			_jc_cf_attr *attrs, int num);
 static void	dump_const(_jc_cf_constant *cp);
 static void	dump_string(const char *s);
+static const	char *dump_flags(int flags, const struct flagname *list);
 static void	dump_code(_jc_env *env, _jc_classfile *cfile,
 			_jc_cf_bytecode *bytecode);
 static void	usage(void) __attribute__ ((noreturn));
+
+#define FLAGNAME(x)	{ _JC_ACC_ ## x, #x }
+static const struct flagname class_flagnames[] = {
+	FLAGNAME(PUBLIC),
+	FLAGNAME(PRIVATE),
+	FLAGNAME(PROTECTED),
+	FLAGNAME(STATIC),
+	FLAGNAME(FINAL),
+	FLAGNAME(SUPER),
+	FLAGNAME(VOLATILE),
+	FLAGNAME(TRANSIENT),
+	FLAGNAME(NATIVE),
+	FLAGNAME(INTERFACE),
+	FLAGNAME(ABSTRACT),
+	FLAGNAME(STRICT),
+	{ 0, NULL }
+};
+static const struct flagname member_flagnames[] = {
+	FLAGNAME(PUBLIC),
+	FLAGNAME(PRIVATE),
+	FLAGNAME(PROTECTED),
+	FLAGNAME(STATIC),
+	FLAGNAME(FINAL),
+	FLAGNAME(SYNCHRONIZED),
+	FLAGNAME(VOLATILE),
+	FLAGNAME(TRANSIENT),
+	FLAGNAME(NATIVE),
+	FLAGNAME(INTERFACE),
+	FLAGNAME(ABSTRACT),
+	FLAGNAME(STRICT),
+	{ 0, NULL }
+};
 
 int
 main(int ac, char **av)
@@ -110,7 +148,8 @@ main(int ac, char **av)
 		dump_const(cp);
 		printf("\n");
 	}
-	printf("access_flags=\t0x%04x\n", cf->access_flags);
+	printf("access_flags=\t%s\n",
+	    dump_flags(cf->access_flags, class_flagnames));
 	printf("name=\t\t%s\n", cf->name);
 	printf("superclass=\t%s\n", cf->superclass ? cf->superclass : "<NONE>");
 	printf("num_interfaces=\t%d\n", cf->num_interfaces);
@@ -122,7 +161,8 @@ main(int ac, char **av)
 
 		printf("[%2d]\tname=\t\t%s\n", i, field->name);
 		printf("\tdescriptor=\t%s\n", field->descriptor);
-		printf("\taccess_flags=\t0x%04x\n", field->access_flags);
+		printf("\taccess_flags=\t%s\n",
+		    dump_flags(field->access_flags, member_flagnames));
 		printf("\tnum_attributes=\t%d\n", field->num_attributes);
 		dump_attr(env, 1, cf, field->attributes, field->num_attributes);
 	}
@@ -132,7 +172,8 @@ main(int ac, char **av)
 
 		printf("[%2d]\tname=\t\t%s\n", i, method->name);
 		printf("\tdescriptor=\t%s\n", method->descriptor);
-		printf("\taccess_flags=\t0x%04x\n", method->access_flags);
+		printf("\taccess_flags=\t%s\n",
+		    dump_flags(method->access_flags, member_flagnames));
 		printf("\tnum_attributes=\t%d\n", method->num_attributes);
 		dump_attr(env, 1, cf, method->attributes,
 		    method->num_attributes);
@@ -188,8 +229,9 @@ dump_attr(_jc_env *env, int indent, _jc_classfile *cf,
 				      inner->outer : "none");
 				printf("\t\t Name: %s\n",
 				    inner->name != NULL ? inner->name : "none");
-				printf("\t\tFlags: 0x%04x\n",
-				    inner->access_flags);
+				printf("\t\tFlags: %s\n",
+				    dump_flags(inner->access_flags,
+				    class_flagnames));
 			}
 		} else if (strcmp(attr->name, "Code") == 0)
 			dump_code(env, cf, &attr->u.Code);
@@ -281,6 +323,24 @@ dump_string(const char *s)
 		s++;
 	}
 	printf("\"");
+}
+
+static const char *
+dump_flags(int flags, const struct flagname *list)
+{
+	static char buf[200];
+	int i;
+
+	snprintf(buf, sizeof(buf), "0x%04x", flags);
+	for (i = 0; list[i].name != NULL; i++) {
+		if ((flags & list[i].flag) != 0) {
+			snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
+			    " %s", list[i].name);
+		}
+	}
+	for (i = 0; buf[i] != '\0'; i++)
+		buf[i] = tolower(buf[i]);
+	return buf;
 }
 
 static void
