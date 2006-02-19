@@ -234,8 +234,8 @@ _jc_heap_alloc_small_block(_jc_env *env, int bsi)
 	/* Sanity check */
 	_JC_ASSERT(bsi >= 0 && bsi < heap->num_sizes);
 	_JC_ASSERT(bs->hint == NULL
-	    || (((_jc_word)bs->hint & (_JC_PAGE_SIZE - 1)) % bs->size)
-	      == _JC_HEAP_BLOCK_OFFSET);
+	    || (((((_jc_word)bs->hint & (_JC_PAGE_SIZE - 1))
+	      - _JC_HEAP_BLOCK_OFFSET) % bs->size) == 0));
 	_JC_ASSERT(_JC_HEAP_SAME_PAGE(bs->hint,
 	    (char *)bs->hint + bs->size - 1));
 
@@ -597,8 +597,8 @@ _jc_heap_check_alloc(_jc_jvm *vm, _jc_object *obj)
 		_JC_ASSERT(((_jc_word)block_start & (_JC_PAGE_SIZE - 1))
 		    == _JC_HEAP_BLOCK_OFFSET);
 	} else {
-		_JC_ASSERT((((_jc_word)block_start & (_JC_PAGE_SIZE - 1))
-		    % block_size) == _JC_HEAP_BLOCK_OFFSET);
+		_JC_ASSERT(((((_jc_word)block_start & (_JC_PAGE_SIZE - 1))
+		    - _JC_HEAP_BLOCK_OFFSET) % block_size) == 0);
 	}
 }
 
