@@ -491,10 +491,14 @@ _jc_resolve_bytecode(_jc_env *env, _jc_method *const method,
 	_jc_cf_code code_mem;
 	_jc_cf_code *const code = &code_mem;
 	jboolean mutex_locked;
+	void *mark;
 	int i;
 
 	/* Sanity check */
 	_JC_ASSERT(!_JC_FLG_TEST(method->class, RESOLVED));
+
+	/* Mark uni allocator so we can free the parsed code when done */
+	mark = _jc_uni_mark(&cfile->uni);
 
 	/* Parse bytecode */
 	if (_jc_parse_code(env, cfile, bytecode, code) != JNI_OK) {
@@ -1048,7 +1052,7 @@ _jc_resolve_bytecode(_jc_env *env, _jc_method *const method,
 	}
 
 	/* Free parsed code */
-	_jc_destroy_code(code);
+	_jc_uni_reset(&cfile->uni, mark);
 
 	/* Done */
 	return JNI_OK;
@@ -1069,7 +1073,7 @@ fail:
 	_JC_MUTEX_UNLOCK(env, loader->mutex);
 
 	/* Free parsed code */
-	_jc_destroy_code(code);
+	_jc_uni_reset(&cfile->uni, mark);
 
 	/* Done */
 	return JNI_ERR;

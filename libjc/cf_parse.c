@@ -21,46 +21,48 @@
 #include "libjc.h"
 
 /* Internal functions */
-static int	_jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile);
-static int	_jc_parse_constant(_jc_cf_parse_state *s, _jc_cf_constant *cp);
-static int	_jc_parse_field(_jc_cf_parse_state *s, _jc_cf_field *field);
-static int	_jc_parse_method(_jc_cf_parse_state *s, _jc_cf_method *method);
-static int	_jc_parse_attribute(_jc_cf_parse_state *s, _jc_cf_attr *attr);
-static int	_jc_parse_inner_class(_jc_cf_parse_state *s,
+static void	_jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile);
+static void	_jc_parse_constant(_jc_cf_parse_state *s, _jc_cf_constant *cp);
+static void	_jc_parse_field(_jc_cf_parse_state *s, _jc_cf_field *field);
+static void	_jc_parse_method(_jc_cf_parse_state *s, _jc_cf_method *method);
+static void	_jc_parse_attribute(_jc_cf_parse_state *s, _jc_cf_attr *attr);
+static void	_jc_parse_inner_class(_jc_cf_parse_state *s,
 			_jc_cf_inner_class *inner);
-static int	_jc_parse_class(_jc_cf_parse_state *s, const char **classp,
+static void	_jc_parse_class(_jc_cf_parse_state *s, const char **classp,
 			int optional);
-static int	_jc_parse_fieldref(_jc_cf_parse_state *s, _jc_cf_ref **refp);
-static int	_jc_parse_methodref(_jc_cf_parse_state *s, _jc_cf_ref **refp);
-static int	_jc_parse_interfacemethodref(_jc_cf_parse_state *s,
+static void	_jc_parse_fieldref(_jc_cf_parse_state *s, _jc_cf_ref **refp);
+static void	_jc_parse_methodref(_jc_cf_parse_state *s, _jc_cf_ref **refp);
+static void	_jc_parse_interfacemethodref(_jc_cf_parse_state *s,
 			_jc_cf_ref **refp);
-static int	_jc_parse_bytecode(_jc_cf_parse_state *s, _jc_cf_code *code,
+static void	_jc_parse_bytecode(_jc_cf_parse_state *s, _jc_cf_code *code,
 			_jc_uint16 *offset_map, _jc_uint16 length);
-static int	_jc_map_offset(_jc_env *env, _jc_cf_code *code, _jc_uint16 length,
-			_jc_uint16 *offset_map, _jc_uint16 *targetp);
-static int	_jc_parse_local8(_jc_cf_parse_state *s, _jc_cf_code *code,
+static void	_jc_map_offset(_jc_cf_parse_state *s, _jc_cf_code *code,
+			_jc_uint16 length, _jc_uint16 *offset_map,
+			_jc_uint16 *targetp);
+static void	_jc_parse_local8(_jc_cf_parse_state *s, _jc_cf_code *code,
 			_jc_uint16 *indexp);
-static int	_jc_parse_local16(_jc_cf_parse_state *s, _jc_cf_code *code,
+static void	_jc_parse_local16(_jc_cf_parse_state *s, _jc_cf_code *code,
 			_jc_uint16 *indexp);
-static int	_jc_parse_cpool_index8(_jc_cf_parse_state *s, int types,
+static void	_jc_parse_cpool_index8(_jc_cf_parse_state *s, int types,
 			_jc_cf_constant **ptr, int optional);
-static int	_jc_parse_cpool_index16(_jc_cf_parse_state *s, int types,
+static void	_jc_parse_cpool_index16(_jc_cf_parse_state *s, int types,
 			_jc_cf_constant **ptr, int optional);
-static int	_jc_parse_cpool_index(_jc_cf_parse_state *s, int types,
+static void	_jc_parse_cpool_index(_jc_cf_parse_state *s, int types,
 			_jc_cf_constant **ptr, _jc_uint16 index);
-static int	_jc_parse_string(_jc_cf_parse_state *s, const char **utfp,
+static void	_jc_parse_string(_jc_cf_parse_state *s, const char **utfp,
 			int optional);
-static int	_jc_parse_integer(_jc_cf_parse_state *s, jint *value);
-static int	_jc_parse_float(_jc_cf_parse_state *s, jfloat *valuep);
-static int	_jc_parse_long(_jc_cf_parse_state *s, jlong *valuep);
-static int	_jc_parse_double(_jc_cf_parse_state *s, jdouble *valuep);
-static int	_jc_parse_utf8(_jc_cf_parse_state *s, const u_char **utfp,
+static void	_jc_parse_integer(_jc_cf_parse_state *s, jint *value);
+static void	_jc_parse_float(_jc_cf_parse_state *s, jfloat *valuep);
+static void	_jc_parse_long(_jc_cf_parse_state *s, jlong *valuep);
+static void	_jc_parse_double(_jc_cf_parse_state *s, jdouble *valuep);
+static void	_jc_parse_utf8(_jc_cf_parse_state *s, const u_char **utfp,
 			_jc_uint16 *lengthp);
-static int	_jc_parse_uint32(_jc_cf_parse_state *s, _jc_uint32 *valuep);
-static int	_jc_parse_uint16(_jc_cf_parse_state *s, _jc_uint16 *valuep);
-static int	_jc_parse_uint8(_jc_cf_parse_state *s, u_char *valuep);
-static int	_jc_scan_constant(_jc_cf_parse_state *s, size_t *lenp);
-static void	_jc_free_attribute(_jc_cf_attr *attr);
+static void	_jc_parse_uint32(_jc_cf_parse_state *s, _jc_uint32 *valuep);
+static void	_jc_parse_uint16(_jc_cf_parse_state *s, _jc_uint16 *valuep);
+static void	_jc_parse_uint8(_jc_cf_parse_state *s, u_char *valuep);
+static void	_jc_scan_constant(_jc_cf_parse_state *s, size_t *lenp);
+static void	*_jc_cf_alloc(_jc_cf_parse_state *s, size_t size);
+static void	*_jc_cf_zalloc(_jc_cf_parse_state *s, size_t size);
 static void	_jc_sub_state(_jc_cf_parse_state *s, _jc_cf_parse_state *t,
 			size_t length);
 static int	_jc_field_sorter(const void *item1, const void *item2);
@@ -93,43 +95,44 @@ _jc_parse_classfile(_jc_env *env, _jc_classbytes *bytes, int howmuch)
 
 	/* Create new classfile object */
 	if ((cfile = _jc_vm_zalloc(env, sizeof(*cfile))) == NULL)
-		goto fail;
+		return NULL;
+	_jc_uni_alloc_init(&cfile->uni, 1, NULL);
 	s.cfile = cfile;
 
+	/* Catch errors here */
+	if (sigsetjmp(s.jump, JNI_FALSE) != 0) {
+		_jc_destroy_classfile(&cfile);
+		return NULL;
+	}
+
 	/* Parse initial stuff */
-	if (_jc_parse_uint32(&s, &magic) != JNI_OK)
-		goto fail;
-	if (magic != 0xcafebabe) {
+	_jc_parse_uint32(&s, &magic);
+	if (_JC_UNLIKELY(magic != 0xcafebabe)) {
 		_JC_EX_STORE(env, ClassFormatError,
 		    "invalid magic number 0x%08x != 0x%08x", magic, 0xcafebabe);
-		goto fail;
+		siglongjmp(s.jump, 1);
 	}
-	if (_jc_parse_uint16(&s, &cfile->minor_version) != JNI_OK)
-		goto fail;
-	if (_jc_parse_uint16(&s, &cfile->major_version) != JNI_OK)
-		goto fail;
+	_jc_parse_uint16(&s, &cfile->minor_version);
+	_jc_parse_uint16(&s, &cfile->major_version);
 	if (!((cfile->major_version == 45 && cfile->minor_version >= 3)
 	    || (cfile->major_version >= 46 && cfile->major_version <= 49))) {
 		_JC_EX_STORE(env, UnsupportedClassVersionError,
 		    "%u.%u", cfile->major_version, cfile->minor_version);
-		goto fail;
+		siglongjmp(s.jump, 1);
 	}
 
 	/* Parse constant pool */
-	if (_jc_parse_cpool(&s, cfile) != JNI_OK)
-		goto fail;
+	_jc_parse_cpool(&s, cfile);
 
 	/* Get access flags and name */
-	if (_jc_parse_uint16(&s, &cfile->access_flags) != JNI_OK)
-		goto fail;
-	if (_jc_parse_class(&s, &cfile->name, JNI_FALSE) != JNI_OK)
-		goto fail;
+	_jc_parse_uint16(&s, &cfile->access_flags);
+	_jc_parse_class(&s, &cfile->name, JNI_FALSE);
 
 	/* Check stuff */
 	if (*cfile->name == '[' || strchr(cfile->name, '.') != NULL) {
 		_JC_EX_STORE(env, ClassFormatError,
 		    "invalid class name `%s'", cfile->name);
-		goto fail;
+		siglongjmp(s.jump, 1);
 	}
 	if (_JC_ACC_TEST(cfile, INTERFACE)) {
 		/*
@@ -141,7 +144,7 @@ _jc_parse_classfile(_jc_env *env, _jc_classbytes *bytes, int howmuch)
 			_JC_EX_STORE(env, ClassFormatError,
 			    "invalid interface access flags 0x%04x",
 			    cfile->access_flags);
-			goto fail;
+			siglongjmp(s.jump, 1);
 		}
 	} else {
 		if (_JC_ACC_TEST(cfile, FINAL)
@@ -149,7 +152,7 @@ _jc_parse_classfile(_jc_env *env, _jc_classbytes *bytes, int howmuch)
 			_JC_EX_STORE(env, ClassFormatError,
 			    "invalid class access flags 0x%04x",
 			    cfile->access_flags);
-			goto fail;
+			siglongjmp(s.jump, 1);
 		}
 	}
 
@@ -161,47 +164,41 @@ _jc_parse_classfile(_jc_env *env, _jc_classbytes *bytes, int howmuch)
 	if (strcmp(cfile->name, "java/lang/Object") == 0) {
 		_jc_uint16 cp_index;
 
-		if (_jc_parse_uint16(&s, &cp_index) != JNI_OK)
-			goto fail;
+		_jc_parse_uint16(&s, &cp_index);
 		if (cp_index != 0) {
 			_JC_EX_STORE(env, ClassFormatError,
 			    "superclass specified for `%s'", cfile->name);
-			goto fail;
+			siglongjmp(s.jump, 1);
 		}
 		if ((cfile->access_flags & (_JC_ACC_PUBLIC|_JC_ACC_ABSTRACT
 		    |_JC_ACC_INTERFACE|_JC_ACC_FINAL)) != _JC_ACC_PUBLIC) {
 			_JC_EX_STORE(env, ClassFormatError,
 			    "invalid class access flags 0x%04x for `%s'",
 			    cfile->access_flags, cfile->name);
-			goto fail;
+			siglongjmp(s.jump, 1);
 		}
 	} else {
-		if (_jc_parse_class(&s,
-		    &cfile->superclass, JNI_FALSE) != JNI_OK)
-			goto fail;
+		_jc_parse_class(&s, &cfile->superclass, JNI_FALSE);
 		if (*cfile->superclass == '[') {
 			_JC_EX_STORE(env, ClassFormatError,
 			    "invalid superclass `%s'", cfile->superclass);
-			goto fail;
+			siglongjmp(s.jump, 1);
 		}
 	}
 
 	/* Parse interfaces */
-	if (_jc_parse_uint16(&s, &cfile->num_interfaces) != JNI_OK)
-		goto fail;
-	if (cfile->num_interfaces > 0
-	    && (cfile->interfaces = _jc_vm_zalloc(env, cfile->num_interfaces
-	      * sizeof(*cfile->interfaces))) == NULL)
-		goto fail;
+	_jc_parse_uint16(&s, &cfile->num_interfaces);
+	if (cfile->num_interfaces > 0) {
+		cfile->interfaces = _jc_cf_zalloc(&s,
+		    cfile->num_interfaces * sizeof(*cfile->interfaces));
+	}
 	for (i = 0; i < cfile->num_interfaces; i++) {
-		if (_jc_parse_class(&s,
-		    &cfile->interfaces[i], JNI_FALSE) != JNI_OK)
-			goto fail;
+		_jc_parse_class(&s, &cfile->interfaces[i], JNI_FALSE);
 		if (*cfile->interfaces[i] == '[') {
 			_JC_EX_STORE(env, ClassFormatError,
 			    "invalid superinterface `%s'",
 			    cfile->interfaces[i]);
-			goto fail;
+			siglongjmp(s.jump, 1);
 		}
 	}
 
@@ -210,72 +207,62 @@ _jc_parse_classfile(_jc_env *env, _jc_classbytes *bytes, int howmuch)
 		return cfile;
 
 	/* Parse fields */
-	if (_jc_parse_uint16(&s, &cfile->num_fields) != JNI_OK)
-		goto fail;
-	if (cfile->num_fields > 0
-	    && (cfile->fields = _jc_vm_zalloc(env, cfile->num_fields
-	      * sizeof(*cfile->fields))) == NULL)
-		goto fail;
-	for (i = 0; i < cfile->num_fields; i++) {
-		if (_jc_parse_field(&s, &cfile->fields[i]) != JNI_OK)
-			goto fail;
+	_jc_parse_uint16(&s, &cfile->num_fields);
+	if (cfile->num_fields > 0) {
+		cfile->fields = _jc_cf_zalloc(&s,
+		    cfile->num_fields * sizeof(*cfile->fields));
 	}
+	for (i = 0; i < cfile->num_fields; i++)
+		_jc_parse_field(&s, &cfile->fields[i]);
 
 	/* Sort fields */
 	qsort(cfile->fields, cfile->num_fields,
 	    sizeof(*cfile->fields), _jc_field_sorter);
 
 	/* Parse methods */
-	if (_jc_parse_uint16(&s, &cfile->num_methods) != JNI_OK)
-		goto fail;
-	if (cfile->num_methods > 0
-	    && (cfile->methods = _jc_vm_zalloc(env, cfile->num_methods
-	      * sizeof(*cfile->methods))) == NULL)
-		goto fail;
-	for (i = 0; i < cfile->num_methods; i++) {
-		if (_jc_parse_method(&s, &cfile->methods[i]) != JNI_OK)
-			goto fail;
+	_jc_parse_uint16(&s, &cfile->num_methods);
+	if (cfile->num_methods > 0) {
+		cfile->methods = _jc_cf_zalloc(&s,
+		    cfile->num_methods * sizeof(*cfile->methods));
 	}
+	for (i = 0; i < cfile->num_methods; i++)
+		_jc_parse_method(&s, &cfile->methods[i]);
 
 	/* Sort methods */
 	qsort(cfile->methods, cfile->num_methods,
 	    sizeof(*cfile->methods), _jc_method_sorter);
 
 	/* Parse attributes */
-	if (_jc_parse_uint16(&s, &cfile->num_attributes) != JNI_OK)
-		goto fail;
-	if (cfile->num_attributes > 0
-	    && (cfile->attributes = _jc_vm_zalloc(env, cfile->num_attributes
-	      * sizeof(*cfile->attributes))) == NULL)
-		goto fail;
+	_jc_parse_uint16(&s, &cfile->num_attributes);
+	if (cfile->num_attributes > 0) {
+		cfile->attributes = _jc_cf_zalloc(&s,
+		    cfile->num_attributes * sizeof(*cfile->attributes));
+	}
 	for (i = 0; i < cfile->num_attributes; i++) {
+		void *const mark = _jc_uni_mark(&s.cfile->uni);
 		_jc_cf_attr *const attr = &cfile->attributes[i];
 
-		if (_jc_parse_attribute(&s, attr) != JNI_OK)
-			goto fail;
-		if (strcmp(attr->name, "InnerClasses") == 0)
+		_jc_parse_attribute(&s, attr);
+		if (strcmp(attr->name, _JC_CF_INNER_CLASSES) == 0)
 			cfile->inner_classes = &attr->u.InnerClasses;
-		else if (strcmp(attr->name, "SourceFile") == 0)
+		else if (strcmp(attr->name, _JC_CF_SOURCE_FILE) == 0)
 			cfile->source_file = attr->u.SourceFile;
+		else
+			_jc_uni_reset(&s.cfile->uni, mark);
 	}
 
 	/* Disallow any extra garbage in the class file */
 	if (s.pos != s.length) {
 		_JC_EX_STORE(env, ClassFormatError,
 		    "extra garbage at end of classfile");
-		goto fail;
+		siglongjmp(s.jump, 1);
 	}
 
 	/* Done */
 	return cfile;
-
-fail:
-	/* Clean up after failure */
-	_jc_destroy_classfile(&cfile);
-	return NULL;
 }
 
-static int
+static void
 _jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile)
 {
 	size_t strings_size;
@@ -283,18 +270,16 @@ _jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile)
 	int i;
 
 	/* Get number of constants */
-	if (_jc_parse_uint16(s, &cfile->num_constants) != JNI_OK)
-		goto fail;
+	_jc_parse_uint16(s, &cfile->num_constants);
 	if (cfile->num_constants == 0) {
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid constant pool count of zero");
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
 
 	/* Allocate constants array */
-	if ((cfile->constants = _jc_vm_alloc(s->env,
-	    (cfile->num_constants - 1) * sizeof(*cfile->constants))) == NULL)
-		goto fail;
+	cfile->constants = _jc_cf_alloc(s,
+	    (cfile->num_constants - 1) * sizeof(*cfile->constants));
 	memset(cfile->constants, 0,
 	    (cfile->num_constants - 1) * sizeof(*cfile->constants));
 
@@ -305,8 +290,7 @@ _jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile)
 		size_t const_size;
 
 		constant->type = s->bytes[s->pos];
-		if (_jc_scan_constant(s, &const_size) != JNI_OK)
-			goto fail;
+		_jc_scan_constant(s, &const_size);
 		switch (constant->type) {
 		case CONSTANT_Utf8:
 			strings_size += (const_size - 3) + 1;
@@ -316,7 +300,7 @@ _jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile)
 			if (++i >= cfile->num_constants) {
 				_JC_EX_STORE(s->env, ClassFormatError,
 				    "long/double constant at last index");
-				goto fail;
+				siglongjmp(s->jump, 1);
 			}
 			break;
 		default:
@@ -325,9 +309,8 @@ _jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile)
 	}
 
 	/* Copy and nul-terminate all UTF-8 strings */
-	if (strings_size > 0
-	    && (cfile->string_mem = _jc_vm_alloc(s->env, strings_size)) == NULL)
-		goto fail;
+	if (strings_size > 0)
+		cfile->string_mem = _jc_cf_alloc(s, strings_size);
 	s->pos = cpool_start;
 	for (strings_size = 0, i = 1; i < cfile->num_constants; i++) {
 		_jc_cf_constant *const constant = &cfile->constants[i - 1];
@@ -337,8 +320,7 @@ _jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile)
 		switch (constant->type) {
 		case CONSTANT_Utf8:
 			s->pos++;
-			if (_jc_parse_utf8(s, &utf, &utf_len) != JNI_OK)
-				goto fail;
+			_jc_parse_utf8(s, &utf, &utf_len);
 			constant->u.Utf8 = cfile->string_mem + strings_size;
 			memcpy(cfile->string_mem + strings_size, utf, utf_len);
 			cfile->string_mem[strings_size + utf_len] = '\0';
@@ -362,8 +344,7 @@ _jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile)
 		switch (constant->type) {
 		case CONSTANT_Class:
 		case CONSTANT_String:
-			if (_jc_parse_constant(s, constant) != JNI_OK)
-				goto fail;
+			_jc_parse_constant(s, constant);
 			break;
 		case CONSTANT_Long:
 		case CONSTANT_Double:
@@ -382,8 +363,7 @@ _jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile)
 
 		switch (constant->type) {
 		case CONSTANT_NameAndType:
-			if (_jc_parse_constant(s, constant) != JNI_OK)
-				goto fail;
+			_jc_parse_constant(s, constant);
 			break;
 		case CONSTANT_Long:
 		case CONSTANT_Double:
@@ -412,103 +392,74 @@ _jc_parse_cpool(_jc_cf_parse_state *s, _jc_classfile *cfile)
 			i++;
 			/* FALL THROUGH */
 		default:
-			if (_jc_parse_constant(s, constant) != JNI_OK)
-				goto fail;
+			_jc_parse_constant(s, constant);
 			break;
 		}
 	}
-
-	/* Done */
-	return JNI_OK;
-
-fail:
-	_jc_vm_free(&cfile->string_mem);
-	_jc_vm_free(&cfile->constants);
-	cfile->num_constants = 0;
-	return JNI_ERR;
 }
 
-static int
+static void
 _jc_parse_constant(_jc_cf_parse_state *s, _jc_cf_constant *cp)
 {
 	_jc_cf_constant *cp2;
 
-	if (_jc_parse_uint8(s, &cp->type) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_uint8(s, &cp->type);
 	switch (cp->type) {
 	case CONSTANT_Class:
-		if (_jc_parse_cpool_index16(s,
-		    1 << CONSTANT_Utf8, &cp2, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_cpool_index16(s, 1 << CONSTANT_Utf8, &cp2, JNI_FALSE);
 		cp->u.Class = cp2->u.Utf8;
 		break;
 	case CONSTANT_Fieldref:
 	case CONSTANT_Methodref:
 	case CONSTANT_InterfaceMethodref:
-		if (_jc_parse_cpool_index16(s,
-		    1 << CONSTANT_Class, &cp2, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_cpool_index16(s,
+		    1 << CONSTANT_Class, &cp2, JNI_FALSE);
 		cp->u.Ref.class = cp2->u.Class;
-		if (_jc_parse_cpool_index16(s,
-		    1 << CONSTANT_NameAndType, &cp2, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_cpool_index16(s,
+		    1 << CONSTANT_NameAndType, &cp2, JNI_FALSE);
 		cp->u.Ref.name = cp2->u.NameAndType.name;
 		cp->u.Ref.descriptor = cp2->u.NameAndType.descriptor;
 		break;
 	case CONSTANT_String:
-		if (_jc_parse_cpool_index16(s,
-		    1 << CONSTANT_Utf8, &cp2, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_cpool_index16(s, 1 << CONSTANT_Utf8, &cp2, JNI_FALSE);
 		cp->u.String = cp2->u.Utf8;
 		break;
 	case CONSTANT_Integer:
-		if (_jc_parse_integer(s, &cp->u.Integer) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_integer(s, &cp->u.Integer);
 		break;
 	case CONSTANT_Float:
-		if (_jc_parse_float(s, &cp->u.Float) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_float(s, &cp->u.Float);
 		break;
 	case CONSTANT_Long:
-		if (_jc_parse_long(s, &cp->u.Long) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_long(s, &cp->u.Long);
 		break;
 	case CONSTANT_Double:
-		if (_jc_parse_double(s, &cp->u.Double) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_double(s, &cp->u.Double);
 		break;
 	case CONSTANT_NameAndType:
-		if (_jc_parse_cpool_index16(s,
-		    1 << CONSTANT_Utf8, &cp2, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_cpool_index16(s, 1 << CONSTANT_Utf8, &cp2, JNI_FALSE);
 		cp->u.NameAndType.name = cp2->u.Utf8;
-		if (_jc_parse_cpool_index16(s,
-		    1 << CONSTANT_Utf8, &cp2, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_cpool_index16(s, 1 << CONSTANT_Utf8, &cp2, JNI_FALSE);
 		cp->u.NameAndType.descriptor = cp2->u.Utf8;
 		break;
 	case CONSTANT_Utf8:
-		if (_jc_parse_utf8(s, NULL, NULL) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_utf8(s, NULL, NULL);
 		break;
 	default:
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid constant pool entry type %u", cp->type);
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
-
-	/* Done */
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_scan_constant(_jc_cf_parse_state *s, size_t *lenp)
 {
 	size_t length;
 
 	if (s->pos >= s->length) {
 		_JC_EX_STORE(s->env, ClassFormatError, "truncated class file");
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 	switch (s->bytes[s->pos]) {
 	case CONSTANT_Class:
@@ -532,29 +483,27 @@ _jc_scan_constant(_jc_cf_parse_state *s, size_t *lenp)
 		_jc_uint16 utf_len;
 
 		s->pos++;
-		if (_jc_parse_utf8(s, NULL, &utf_len) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_utf8(s, NULL, &utf_len);
 		if (lenp != NULL)
 			*lenp = 3 + utf_len;
-		return JNI_OK;
+		return;
 	    }
 	default:
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid constant pool entry type %u", s->bytes[s->pos]);
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 
 	/* Check length overflow */
 	if (s->pos + length > s->length) {
 		_JC_EX_STORE(s->env, ClassFormatError, "truncated class file");
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 
 	/* Done */
 	if (lenp != NULL)
 		*lenp = length;
 	s->pos += length;
-	return JNI_OK;
 }
 
 /*
@@ -564,82 +513,40 @@ void
 _jc_destroy_classfile(_jc_classfile **cfilep)
 {
 	_jc_classfile *cfile = *cfilep;
-	int i;
 
 	/* Sanity check */
 	if (cfile == NULL)
 		return;
 	*cfilep = NULL;
 
-	/* Free up resources */
-	_jc_vm_free(&cfile->interfaces);
-	for (i = 0; i < cfile->num_fields; i++) {
-		_jc_cf_field *const field = &cfile->fields[i];
-
-		while (field->num_attributes > 0) {
-			_jc_free_attribute(&field->attributes[
-			    --field->num_attributes]);
-		}
-		_jc_vm_free(&field->attributes);
-	}
-	_jc_vm_free(&cfile->fields);
-	for (i = 0; i < cfile->num_methods; i++) {
-		_jc_cf_method *const method = &cfile->methods[i];
-
-		while (method->num_attributes > 0) {
-			_jc_free_attribute(&method->attributes[
-			    --method->num_attributes]);
-		}
-		_jc_vm_free(&method->attributes);
-	}
-	_jc_vm_free(&cfile->methods);
-	while (cfile->num_attributes > 0)
-		_jc_free_attribute(&cfile->attributes[--cfile->num_attributes]);
-	_jc_vm_free(&cfile->attributes);
-	_jc_vm_free(&cfile->string_mem);
-	_jc_vm_free(&cfile->constants);
+	/* Free uni allocator memory and classfile */
+	_jc_uni_alloc_free(&cfile->uni);
 	_jc_vm_free(&cfile);
 }
 
 static void
-_jc_free_attribute(_jc_cf_attr *attr)
-{
-	if (strcmp(attr->name, "Exceptions") == 0)
-		_jc_vm_free(&attr->u.Exceptions.exceptions);
-	else if (strcmp(attr->name, "InnerClasses") == 0)
-		_jc_vm_free(&attr->u.InnerClasses.classes);
-	else if (strcmp(attr->name, "LineNumberTable") == 0)
-		_jc_vm_free(&attr->u.LineNumberTable.linenums);
-	else if (strcmp(attr->name, "Code") == 0)
-		_jc_vm_free(&attr->u.Code.bytecode);
-	memset(attr, 0, sizeof(*attr));
-}
-
-static int
 _jc_parse_field(_jc_cf_parse_state *s, _jc_cf_field *field)
 {
 	int i;
 
 	/* Parse the field */
-	if (_jc_parse_uint16(s, &field->access_flags) != JNI_OK)
-		goto fail;
-	if (_jc_parse_string(s, &field->name, JNI_FALSE) != JNI_OK)
-		goto fail;
-	if (_jc_parse_string(s, &field->descriptor, JNI_FALSE) != JNI_OK)
-		goto fail;
-	if (_jc_parse_uint16(s, &field->num_attributes) != JNI_OK)
-		goto fail;
-	if (field->num_attributes > 0
-	    && (field->attributes = _jc_vm_zalloc(s->env,
-	      field->num_attributes * sizeof(*field->attributes))) == NULL)
-		goto fail;
+	_jc_parse_uint16(s, &field->access_flags);
+	_jc_parse_string(s, &field->name, JNI_FALSE);
+	_jc_parse_string(s, &field->descriptor, JNI_FALSE);
+	_jc_parse_uint16(s, &field->num_attributes);
+	if (field->num_attributes > 0) {
+		field->attributes = _jc_cf_zalloc(s,
+		    field->num_attributes * sizeof(*field->attributes));
+	}
 	for (i = 0; i < field->num_attributes; i++) {
+		void *const mark = _jc_uni_mark(&s->cfile->uni);
 		_jc_cf_attr *const attr = &field->attributes[i];
 
-		if (_jc_parse_attribute(s, attr) != JNI_OK)
-			goto fail;
-		if (strcmp(attr->name, "ConstantValue") == 0)
+		_jc_parse_attribute(s, attr);
+		if (strcmp(attr->name, _JC_CF_CONSTANT_VALUE) == 0)
 			field->initial_value = attr->u.ConstantValue;
+		else
+			_jc_uni_reset(&s->cfile->uni, mark);
 	}
 
 	/* Check stuff */
@@ -649,14 +556,14 @@ _jc_parse_field(_jc_cf_parse_state *s, _jc_cf_field *field)
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid access flags 0x%04x for field `%s'",
 		    field->access_flags, field->name);
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
 	if ((field->access_flags & (_JC_ACC_FINAL|_JC_ACC_VOLATILE))
 	    == (_JC_ACC_FINAL|_JC_ACC_VOLATILE)) {
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid access flags 0x%04x for field `%s'",
 		    field->access_flags, field->name);
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
 	if (_JC_ACC_TEST(s->cfile, INTERFACE)
 	    && field->access_flags
@@ -664,14 +571,14 @@ _jc_parse_field(_jc_cf_parse_state *s, _jc_cf_field *field)
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid access flags 0x%04x for interface field `%s'",
 		    field->access_flags, field->name);
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
 
 	/* Check "ConstantValue" attributes */
 	for (i = 0; i < field->num_attributes; i++) {
 		_jc_cf_attr *const attr = &field->attributes[i];
 
-		if (strcmp(attr->name, "ConstantValue") == 0) {
+		if (strcmp(attr->name, _JC_CF_CONSTANT_VALUE) == 0) {
 			switch (attr->u.ConstantValue->type) {
 			case CONSTANT_Integer:
 				if (strcmp(field->descriptor, "Z") == 0
@@ -703,55 +610,44 @@ _jc_parse_field(_jc_cf_parse_state *s, _jc_cf_field *field)
 			}
 			_JC_EX_STORE(s->env, ClassFormatError,
 			    "mismatched type for `%s' attribute of field `%s'",
-			    "ConstantValue", field->name);
-			goto fail;
+			    _JC_CF_CONSTANT_VALUE, field->name);
+			siglongjmp(s->jump, 1);
 		}
 	}
-
-	/* Done */
-	return JNI_OK;
-
-fail:
-	/* Clean up after failure */
-	_jc_vm_free(&field->attributes);
-	memset(field, 0, sizeof(*field));
-	return JNI_ERR;
 }
 
-static int
+static void
 _jc_parse_method(_jc_cf_parse_state *s, _jc_cf_method *method)
 {
 	int i;
 
 	/* Parse the method */
-	if (_jc_parse_uint16(s, &method->access_flags) != JNI_OK)
-		goto fail;
-	if (_jc_parse_string(s, &method->name, JNI_FALSE) != JNI_OK)
-		goto fail;
-	if (_jc_parse_string(s, &method->descriptor, JNI_FALSE) != JNI_OK)
-		goto fail;
-	if (_jc_parse_uint16(s, &method->num_attributes) != JNI_OK)
-		goto fail;
-	if (method->num_attributes > 0
-	    && (method->attributes = _jc_vm_zalloc(s->env,
-	      method->num_attributes * sizeof(*method->attributes))) == NULL)
-		goto fail;
+	_jc_parse_uint16(s, &method->access_flags);
+	_jc_parse_string(s, &method->name, JNI_FALSE);
+	_jc_parse_string(s, &method->descriptor, JNI_FALSE);
+	_jc_parse_uint16(s, &method->num_attributes);
+	if (method->num_attributes > 0) {
+		method->attributes = _jc_cf_zalloc(s,
+		    method->num_attributes * sizeof(*method->attributes));
+	}
 	for (i = 0; i < method->num_attributes; i++) {
+		void *const mark = _jc_uni_mark(&s->cfile->uni);
 		_jc_cf_attr *const attr = &method->attributes[i];
 
-		if (_jc_parse_attribute(s, attr) != JNI_OK)
-			goto fail;
-		if (strcmp(attr->name, "Code") == 0) {
+		_jc_parse_attribute(s, attr);
+		if (strcmp(attr->name, _JC_CF_CODE) == 0) {
 			if (method->code != NULL) {
 				_JC_EX_STORE(s->env, ClassFormatError,
 				    "multiple `%s' attributes for method"
 				    " `%s%s'", attr->name, method->name,
 				    method->descriptor);
-				goto fail;
+				siglongjmp(s->jump, 1);
 			}
 			method->code = &attr->u.Code;
-		} else if (strcmp(attr->name, "Exceptions") == 0)
+		} else if (strcmp(attr->name, _JC_CF_EXCEPTIONS) == 0)
 			method->exceptions = &attr->u.Exceptions;
+		else
+			_jc_uni_reset(&s->cfile->uni, mark);
 	}
 	if ((_JC_ACC_TEST(method, NATIVE) || _JC_ACC_TEST(method, ABSTRACT))
 	    != (method->code == NULL)) {
@@ -760,7 +656,7 @@ _jc_parse_method(_jc_cf_parse_state *s, _jc_cf_method *method)
 		    method->code != NULL ? "non-" : "", method->name,
 		    method->descriptor, method->code == NULL ?
 		      "contains" : "is missing");
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
 
 	/* Check stuff */
@@ -770,14 +666,14 @@ _jc_parse_method(_jc_cf_parse_state *s, _jc_cf_method *method)
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid access flags 0x%04x for method `%s%s'",
 		    method->access_flags, method->name, method->descriptor);
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
 	if (strcmp(method->name, "<clinit>") == 0
 	    && !_JC_ACC_TEST(method, STATIC)) {
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid access flags 0x%04x for method `%s%s'",
 		    method->access_flags, method->name, method->descriptor);
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
 
 	if (_JC_ACC_TEST(method, PRIVATE)
@@ -786,7 +682,7 @@ _jc_parse_method(_jc_cf_parse_state *s, _jc_cf_method *method)
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid access flags 0x%04x for method `%s%s'",
 		    method->access_flags, method->name, method->descriptor);
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
 	if (_JC_ACC_TEST(method, ABSTRACT)
 	    && (method->access_flags & (_JC_ACC_FINAL|_JC_ACC_NATIVE
@@ -795,7 +691,7 @@ _jc_parse_method(_jc_cf_parse_state *s, _jc_cf_method *method)
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid access flags 0x%04x for method `%s%s'",
 		    method->access_flags, method->name, method->descriptor);
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
 	if (_JC_ACC_TEST(s->cfile, INTERFACE)
 	    && strcmp(method->name, "<clinit>") != 0
@@ -803,31 +699,21 @@ _jc_parse_method(_jc_cf_parse_state *s, _jc_cf_method *method)
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid access flags 0x%04x for interface method `%s%s'",
 		    method->access_flags, method->name, method->descriptor);
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
-
-	/* Done */
-	return JNI_OK;
-
-fail:
-	/* Clean up after failure */
-	_jc_vm_free(&method->attributes);
-	memset(method, 0, sizeof(*method));
-	return JNI_ERR;
 }
 
-static int
+static void
 _jc_parse_attribute(_jc_cf_parse_state *s, _jc_cf_attr *attr)
 {
 	_jc_cf_parse_state t;
 
-	if (_jc_parse_string(s, &attr->name, JNI_FALSE) != JNI_OK)
-		return JNI_ERR;
-	if (_jc_parse_uint32(s, &attr->length) != JNI_OK)
-		return JNI_ERR;
+	/* Parse attribute name and length */
+	_jc_parse_string(s, &attr->name, JNI_FALSE);
+	_jc_parse_uint32(s, &attr->length);
 	if (s->pos + attr->length > s->length) {
 		_JC_EX_STORE(s->env, ClassFormatError, "truncated class file");
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 
 	/* Initialize parsing of attribute */
@@ -835,119 +721,92 @@ _jc_parse_attribute(_jc_cf_parse_state *s, _jc_cf_attr *attr)
 	s->pos += attr->length;
 
 	/* Further parse individual attributes */
-	if (strcmp(attr->name, "ConstantValue") == 0) {
+	if (strcmp(attr->name, _JC_CF_CONSTANT_VALUE) == 0) {
 		_jc_cf_constant *cp;
 
 		if (attr->length != 2) {
 			_JC_EX_STORE(s->env, ClassFormatError,
 			    "invalid `%s' attribute length %u != %u",
 			    attr->name, attr->length, 2);
-			return JNI_ERR;
+			siglongjmp(s->jump, 1);
 		}
-		if (_jc_parse_cpool_index16(&t,
+		_jc_parse_cpool_index16(&t,
 		    (1 << CONSTANT_Long)
 		      | (1 << CONSTANT_Float)
 		      | (1 << CONSTANT_Double)
 		      | (1 << CONSTANT_Integer)
 		      | (1 << CONSTANT_String),
-		    &cp, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		    &cp, JNI_FALSE);
 		attr->u.ConstantValue = cp;
-	} else if (strcmp(attr->name, "SourceFile") == 0) {
+	} else if (strcmp(attr->name, _JC_CF_SOURCE_FILE) == 0) {
 		if (attr->length != 2) {
 			_JC_EX_STORE(s->env, ClassFormatError,
 			    "invalid `%s' attribute length %u != %u",
 			    attr->name, attr->length, 2);
-			return JNI_ERR;
+			siglongjmp(s->jump, 1);
 		}
-		if (_jc_parse_string(&t,
-		    &attr->u.SourceFile, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
-	} else if (strcmp(attr->name, "Exceptions") == 0) {
+		_jc_parse_string(&t, &attr->u.SourceFile, JNI_FALSE);
+	} else if (strcmp(attr->name, _JC_CF_EXCEPTIONS) == 0) {
 		_jc_cf_exceptions *const etab = &attr->u.Exceptions;
 		int i;
 
-		if (_jc_parse_uint16(&t,
-		    &etab->num_exceptions) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_uint16(&t, &etab->num_exceptions);
 		if (attr->length != 2 + 2 * etab->num_exceptions) {
 			_JC_EX_STORE(s->env, ClassFormatError,
 			    "invalid `%s' attribute length %u != %u",
 			    attr->name, attr->length,
 			    2 + 2 * etab->num_exceptions);
-			return JNI_ERR;
+			siglongjmp(s->jump, 1);
 		}
-		if ((etab->exceptions = _jc_vm_zalloc(s->env,
-		    etab->num_exceptions * sizeof(*etab->exceptions))) == NULL)
-			return JNI_ERR;
-		for (i = 0; i < etab->num_exceptions; i++) {
-			if (_jc_parse_class(&t,
-			    &etab->exceptions[i], JNI_FALSE) != JNI_OK)
-				return JNI_ERR;
-		}
-	} else if (strcmp(attr->name, "InnerClasses") == 0) {
+		etab->exceptions = _jc_cf_zalloc(&t,
+		    etab->num_exceptions * sizeof(*etab->exceptions));
+		for (i = 0; i < etab->num_exceptions; i++)
+			_jc_parse_class(&t, &etab->exceptions[i], JNI_FALSE);
+	} else if (strcmp(attr->name, _JC_CF_INNER_CLASSES) == 0) {
 		_jc_cf_inner_classes *const itab = &attr->u.InnerClasses;
 		int i;
 
-		if (_jc_parse_uint16(&t, &itab->num_classes) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_uint16(&t, &itab->num_classes);
 		if (attr->length != 2 + 8 * itab->num_classes) {
 			_JC_EX_STORE(s->env, ClassFormatError,
 			    "invalid `%s' attribute length %u != %u",
 			    attr->name, attr->length,
 			    2 + 8 * itab->num_classes);
-			return JNI_ERR;
+			siglongjmp(s->jump, 1);
 		}
-		if ((itab->classes = _jc_vm_zalloc(s->env,
-		    itab->num_classes * sizeof(*itab->classes))) == NULL)
-			return JNI_ERR;
-		for (i = 0; i < itab->num_classes; i++) {
-			if (_jc_parse_inner_class(&t,
-			    &itab->classes[i]) != JNI_OK)
-				return JNI_ERR;
-		}
-	} else if (strcmp(attr->name, "Code") == 0) {
+		itab->classes = _jc_cf_zalloc(&t,
+		    itab->num_classes * sizeof(*itab->classes));
+		for (i = 0; i < itab->num_classes; i++)
+			_jc_parse_inner_class(&t, &itab->classes[i]);
+	} else if (strcmp(attr->name, _JC_CF_CODE) == 0) {
 		_jc_cf_bytecode *const code = &attr->u.Code;
 
-		if ((code->bytecode = _jc_vm_alloc(s->env, t.length)) == NULL)
-			return JNI_ERR;
+		code->bytecode = _jc_cf_alloc(&t, t.length);
 		memcpy(code->bytecode, t.bytes, t.length);
 		code->length = t.length;
-	} else if (strcmp(attr->name, "LineNumberTable") == 0) {
+	} else if (strcmp(attr->name, _JC_CF_LINE_NUMBER_TABLE) == 0) {
 		_jc_cf_linenums *const ltab = &attr->u.LineNumberTable;
 		int i;
 
-		if (_jc_parse_uint16(&t, &ltab->length) != JNI_OK)
-			return JNI_ERR;
-		if ((ltab->linenums = _jc_vm_alloc(s->env,
-		    ltab->length * sizeof(*ltab->linenums))) == NULL)
-			return JNI_ERR;
+		_jc_parse_uint16(&t, &ltab->length);
+		ltab->linenums = _jc_cf_alloc(&t,
+		    ltab->length * sizeof(*ltab->linenums));
 		for (i = 0; i < ltab->length; i++) {
 			_jc_cf_linenum *const lnum = &ltab->linenums[i];
 
-			if (_jc_parse_uint16(&t, &lnum->offset) != JNI_OK)
-				return JNI_ERR;
-			if (_jc_parse_uint16(&t, &lnum->line) != JNI_OK)
-				return JNI_ERR;
+			_jc_parse_uint16(&t, &lnum->offset);
+			_jc_parse_uint16(&t, &lnum->line);
 		}
 	}
-
-	/* Ignore unknown attributes */
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_inner_class(_jc_cf_parse_state *s, _jc_cf_inner_class *inner)
 {
-	if (_jc_parse_class(s, &inner->inner, JNI_TRUE) != JNI_OK)
-		return JNI_ERR;
-	if (_jc_parse_class(s, &inner->outer, JNI_TRUE) != JNI_OK)
-		return JNI_ERR;
-	if (_jc_parse_string(s, &inner->name, JNI_TRUE) != JNI_OK)
-		return JNI_ERR;
-	if (_jc_parse_uint16(s, &inner->access_flags) != JNI_OK)
-		return JNI_ERR;
-	return JNI_OK;
+	_jc_parse_class(s, &inner->inner, JNI_TRUE);
+	_jc_parse_class(s, &inner->outer, JNI_TRUE);
+	_jc_parse_string(s, &inner->name, JNI_TRUE);
+	_jc_parse_uint16(s, &inner->access_flags);
 }
 
 /*
@@ -963,13 +822,11 @@ _jc_parse_code(_jc_env *env, _jc_classfile *cfile,
 {
 	_jc_cf_parse_state state;
 	_jc_cf_parse_state *const s = &state;
-	_jc_uint16 *offset_map = NULL;
-#if 0
-	_jc_cf_insn *new_insns;
-#endif
+	_jc_uint16 *offset_map;
 	_jc_uint16 code_length;
 	_jc_uint16 num_attrs;
 	_jc_uint32 u32;
+	void *mark;
 	int i;
 
 	/* Initialize parse state */
@@ -981,173 +838,125 @@ _jc_parse_code(_jc_env *env, _jc_classfile *cfile,
 	s->length = bytecode->length;
 	s->pos = 0;
 
+	/* Mark uni allocator */
+	mark = _jc_uni_mark(&s->cfile->uni);
+
+	/* Catch errors here */
+	if (sigsetjmp(s->jump, JNI_FALSE) != 0) {
+		_jc_uni_reset(&s->cfile->uni, mark);
+		return JNI_ERR;
+	}
+
 	/* Parse bytecode meta-info */
-	if (_jc_parse_uint16(s, &code->max_stack) != JNI_OK)
-		goto fail;
-	if (_jc_parse_uint16(s, &code->max_locals) != JNI_OK)
-		goto fail;
-	if (_jc_parse_uint32(s, &u32) != JNI_OK)
-		goto fail;
+	_jc_parse_uint16(s, &code->max_stack);
+	_jc_parse_uint16(s, &code->max_locals);
+	_jc_parse_uint32(s, &u32);
 	if ((_jc_uint16)u32 != u32) {
 		_JC_EX_STORE(s->env, ClassFormatError,
-		    "Illegal `Code' attribute bytecode length %u",
-		    (unsigned int)u32);
-		goto fail;
+		    "Illegal `%s' attribute bytecode length %u",
+		    _JC_CF_CODE, (unsigned int)u32);
+		siglongjmp(s->jump, 1);
 	}
 	code_length = (_jc_uint16)u32;
 	if (s->pos + code_length > s->length) {
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "`Code' attribute bytecode length overflow");
-		goto fail;
+		siglongjmp(s->jump, 1);
 	}
 
-	/* Allocate offset map and instruction array */
+	/* Allocate bytecode offset -> instruction index map and insns array */
 	if ((offset_map = _jc_vm_zalloc(s->env,
 	    code_length * sizeof(*offset_map))) == NULL)
-		goto fail;
-	if ((code->insns = _jc_vm_zalloc(s->env,
-	    code_length * sizeof(*code->insns))) == NULL)
-		goto fail;
+		siglongjmp(s->jump, 1);
+	code->insns = _jc_cf_zalloc(s, code_length * sizeof(*code->insns));
 
 	/* Parse bytecode */
-	if (_jc_parse_bytecode(s, code, offset_map, code_length) != JNI_OK)
-		goto fail;
-
-#if 0
-	/* Shorten up over-allocated instruction array */
-	if ((new_insns = _jc_vm_realloc(s->env, code->insns,
-	    code->num_insns * sizeof(*code->insns))) == NULL)
-		goto fail;
-	code->insns = new_insns;
-#endif
+	_jc_parse_bytecode(s, code, offset_map, code_length);
 
 	/* Parse trap table */
-	if (_jc_parse_uint16(s, &code->num_traps) != JNI_OK)
-		goto fail;
+	_jc_parse_uint16(s, &code->num_traps);
 	if (s->pos + code->num_traps * 8 > s->length) {
 		_JC_EX_STORE(s->env, ClassFormatError, "truncated class file");
 		goto fail;
 	}
-	if (code->num_traps > 0
-	    && (code->traps = _jc_vm_zalloc(s->env,
-	      code->num_traps * sizeof(*code->traps))) == NULL)
-		goto fail;
+	if (code->num_traps > 0) {
+		code->traps = _jc_cf_zalloc(s,
+		    code->num_traps * sizeof(*code->traps));
+	}
 	for (i = 0; i < code->num_traps; i++) {
 		_jc_cf_trap *const trap = &code->traps[i];
 
-		if (_jc_parse_uint16(s, &trap->start) != JNI_OK)
-			goto fail;
-		if (_jc_map_offset(s->env, code, code_length,
-		    offset_map, &trap->start) != JNI_OK)
-			goto fail;
-		if (_jc_parse_uint16(s, &trap->end) != JNI_OK)
-			goto fail;
+		_jc_parse_uint16(s, &trap->start);
+		_jc_map_offset(s, code, code_length, offset_map, &trap->start);
+		_jc_parse_uint16(s, &trap->end);
 		if (trap->end == code_length)
 			trap->end = code->num_insns;
-		else if (_jc_map_offset(s->env, code, code_length,
-		    offset_map, &trap->end) != JNI_OK)
-			goto fail;
-		if (_jc_parse_uint16(s, &trap->target) != JNI_OK)
-			goto fail;
-		if (_jc_map_offset(s->env, code, code_length,
-		    offset_map, &trap->target) != JNI_OK)
-			goto fail;
+		else {
+			_jc_map_offset(s, code, code_length,
+			    offset_map, &trap->end);
+		}
+		_jc_parse_uint16(s, &trap->target);
+		_jc_map_offset(s, code, code_length, offset_map, &trap->target);
 		if (trap->end <= trap->start) {
 			_JC_EX_STORE(s->env, ClassFormatError,
 			    "invalid trap table entry");
 			goto fail;
 		}
-		if (_jc_parse_class(s, &trap->type, JNI_TRUE) != JNI_OK)
-			goto fail;
+		_jc_parse_class(s, &trap->type, JNI_TRUE);
 	}
 
 	/* Find and parse the line number table (if any) */
-	if (_jc_parse_uint16(s, &num_attrs) != JNI_OK)
-		goto fail;
+	_jc_parse_uint16(s, &num_attrs);
 	for (i = 0; i < num_attrs; i++) {
+		void *const mark = _jc_uni_mark(&s->cfile->uni);
 		_jc_cf_linenums *linenums;
 		_jc_cf_attr attr;
 		int j;
 
 		/* Look for "LineNumberTable" */
 		memset(&attr, 0, sizeof(attr));
-		if (_jc_parse_attribute(s, &attr) != JNI_OK)
-			goto fail;
-		if (strcmp(attr.name, "LineNumberTable") != 0) {
-			_jc_free_attribute(&attr);
+		_jc_parse_attribute(s, &attr);
+		if (strcmp(attr.name, _JC_CF_LINE_NUMBER_TABLE) != 0) {
+			_jc_uni_reset(&s->cfile->uni, mark);
 			continue;
 		}
 
-		/* Allocate line number map */
+		/* We overwrite the _jc_cf_linenum's with _jc_cf_linemap's! */
+		_JC_ASSERT(sizeof(*code->linemaps)
+		    <= sizeof(*linenums->linenums));
 		linenums = &attr.u.LineNumberTable;
-		if (linenums->length > 0
-		    && (code->linemaps = _jc_vm_alloc(s->env,
-		      linenums->length * sizeof(*code->linemaps))) == NULL) {
-			_jc_free_attribute(&attr);
-			goto fail;
-		}
 		code->num_linemaps = linenums->length;
+		code->linemaps = (_jc_cf_linemap *)linenums->linenums;
 
 		/* Fill in map with offsets converted to instruction indicies */
 		for (j = 0; j < linenums->length; j++) {
-			_jc_cf_linenum *const linenum = &linenums->linenums[j];
+			const _jc_cf_linenum linenum = linenums->linenums[j];
 			_jc_cf_linemap *const linemap = &code->linemaps[j];
 
-			linemap->index = linenum->offset;
-			if (_jc_map_offset(s->env, code, code_length,
-			    offset_map, &linemap->index) != JNI_OK) {
-				_jc_free_attribute(&attr);
-				goto fail;
-			}
-			linemap->line = linenum->line;
+			linemap->index = linenum.offset;
+			_jc_map_offset(s, code, code_length,
+			    offset_map, &linemap->index);
+			linemap->line = linenum.line;
 		}
 
 		/* Done */
-		_jc_free_attribute(&attr);
 		break;
 	}
 
 	/* Done */
+	_jc_vm_free(&offset_map);
 	return JNI_OK;
 
 fail:
-	/* Clean up and exit */
+	/* Bail out */
 	_jc_vm_free(&offset_map);
-	return JNI_ERR;
-}
-
-/*
- * Free a previously parsed "Code" attribute.
- */
-void
-_jc_destroy_code(_jc_cf_code *code)
-{
-	int i;
-
-	/* Free stuff */
-	for (i = 0; i < code->num_insns; i++) {
-		_jc_cf_insn *const insn = &code->insns[i];
-
-		switch (insn->opcode) {
-		case _JC_lookupswitch:
-			_jc_vm_free(&insn->u.lookupswitch);
-			break;
-		case _JC_tableswitch:
-			_jc_vm_free(&insn->u.tableswitch);
-			break;
-		default:
-			break;
-		}
-	}
-	_jc_vm_free(&code->insns);
-	_jc_vm_free(&code->traps);
-	_jc_vm_free(&code->linemaps);
+	siglongjmp(s->jump, 1);
 }
 
 /*
  * Parse Java bytecode.
  */
-static int
+static void
 _jc_parse_bytecode(_jc_cf_parse_state *s, _jc_cf_code *code,
 	_jc_uint16 *offset_map, _jc_uint16 code_length)
 {
@@ -1160,8 +969,8 @@ _jc_parse_bytecode(_jc_cf_parse_state *s, _jc_cf_code *code,
 	int inum = 0;
 	int i;
 
-	/* Initialize mapping from offset -> instruction index */
-	memset(offset_map, 0, code_length * sizeof(*offset_map));
+	/* Mapping from offset -> instruction should be zeroed */
+	_JC_ASSERT(*offset_map == 0);
 
 loop:
 	/* Sanity check */
@@ -1185,7 +994,7 @@ loop:
 	if (_jc_bytecode_names[insn->opcode] == NULL) {
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid opcode 0x%02x", insn->opcode);
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 
 	/* Decode instructions, except leave target offsets alone */
@@ -1201,8 +1010,7 @@ loop:
 	case _JC_lload:
 	case _JC_lstore:
 	case _JC_ret:
-		if (_jc_parse_local8(s, code, &insn->u.local.index) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_local8(s, code, &insn->u.local.index);
 		break;
 	case _JC_aload_0:
 	case _JC_aload_1:
@@ -1268,20 +1076,17 @@ loop:
 	case _JC_checkcast:
 	case _JC_instanceof:
 	case _JC_new:
-		if (_jc_parse_class(s, &insn->u.type.name, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_class(s, &insn->u.type.name, JNI_FALSE);
 		break;
 	case _JC_bipush:
-		if (_jc_parse_uint8(s, &value8) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_uint8(s, &value8);
 		insn->u.immediate.value = (signed char)value8;
 		break;
 	case _JC_getfield:
 	case _JC_getstatic:
 	case _JC_putfield:
 	case _JC_putstatic:
-		if (_jc_parse_fieldref(s, &insn->u.fieldref.field) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_fieldref(s, &insn->u.fieldref.field);
 		break;
 	case _JC_goto:
 	case _JC_if_acmpeq:
@@ -1301,8 +1106,7 @@ loop:
 	case _JC_ifnonnull:
 	case _JC_ifnull:
 	case _JC_jsr:
-		if (_jc_parse_uint16(s, &value16) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_uint16(s, &value16);
 		insn->u.branch.target = insn_offset + (jshort)value16;
 		break;
 	case _JC_jsr_w:
@@ -1312,53 +1116,41 @@ loop:
 
 		_JC_ASSERT(_JC_jsr_w - _JC_jsr == _JC_goto_w - _JC_goto);
 		insn->opcode -= _JC_jsr_w - _JC_jsr;
-		if (_jc_parse_integer(s, &value32) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_integer(s, &value32);
 		insn->u.branch.target = insn_offset + value32;
 		break;
 	    }
 	case _JC_iinc:
-		if (_jc_parse_local8(s, code, &insn->u.iinc.index) != JNI_OK)
-			return JNI_ERR;
-		if (_jc_parse_uint8(s, &value8) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_local8(s, code, &insn->u.iinc.index);
+		_jc_parse_uint8(s, &value8);
 		insn->u.iinc.value = (signed char)value8;
 		break;
 	case _JC_invokeinterface:
-		if (_jc_parse_interfacemethodref(s,
-		    &insn->u.invoke.method) != JNI_OK)
-			return JNI_ERR;
-		if (_jc_parse_uint8(s, &value8) != JNI_OK)
-			return JNI_ERR;
-		if (_jc_parse_uint8(s, &value8) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_interfacemethodref(s,
+		    &insn->u.invoke.method);
+		_jc_parse_uint8(s, &value8);
+		_jc_parse_uint8(s, &value8);
 		break;
 	case _JC_invokespecial:
 	case _JC_invokestatic:
 	case _JC_invokevirtual:
-		if (_jc_parse_methodref(s, &insn->u.invoke.method) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_methodref(s, &insn->u.invoke.method);
 		break;
 	case _JC_ldc:
-		if (_jc_parse_cpool_index8(s, (1 << CONSTANT_Integer)
+		_jc_parse_cpool_index8(s, (1 << CONSTANT_Integer)
 		      | (1 << CONSTANT_Float) | (1 << CONSTANT_String)
-		      | (1 << CONSTANT_Class), &insn->u.constant,
-		    JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		      | (1 << CONSTANT_Class), &insn->u.constant, JNI_FALSE);
 		break;
 	case _JC_ldc_w:
-		if (_jc_parse_cpool_index16(s, (1 << CONSTANT_Integer)
+		_jc_parse_cpool_index16(s, (1 << CONSTANT_Integer)
 		      | (1 << CONSTANT_Float) | (1 << CONSTANT_String)
-		      | (1 << CONSTANT_Class), &insn->u.constant,
-		    JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		      | (1 << CONSTANT_Class), &insn->u.constant, JNI_FALSE);
 		insn->opcode = _JC_ldc;
 		break;
 	case _JC_ldc2_w:
-		if (_jc_parse_cpool_index16(s,
+		_jc_parse_cpool_index16(s,
 		    (1 << CONSTANT_Long) | (1 << CONSTANT_Double),
-		    &insn->u.constant, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
+		    &insn->u.constant, JNI_FALSE);
 		insn->opcode = _JC_ldc2_w;
 		break;
 	case _JC_lookupswitch:
@@ -1373,33 +1165,30 @@ loop:
 		/* Parse padding */
 		pad = 3 - (((s->pos - start) + 3) % 4);
 		for (i = 0; i < pad; i++) {
-			if (_jc_parse_uint8(s, &value8) != JNI_OK)
-				return JNI_ERR;
+			_jc_parse_uint8(s, &value8);
 			if (value8 != 0) {
 				_JC_EX_STORE(s->env, ClassFormatError,
 				    "non-zero %s pad byte", opname);
-				return JNI_ERR;
+				siglongjmp(s->jump, 1);
 			}
 		}
 
 		/* Parse default target offset */
-		if (_jc_parse_integer(s, &value32) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_integer(s, &value32);
 		default_target = insn_offset + value32;
 
 		/* Parse number of pairs */
-		if (_jc_parse_integer(s, &num_pairs) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_integer(s, &num_pairs);
 		if (num_pairs < 0) {
 			_JC_EX_STORE(s->env, ClassFormatError,
 			    "invalid %s #pairs %d", opname, (int)num_pairs);
-			return JNI_ERR;
+			siglongjmp(s->jump, 1);
 		}
 
 		/* Allocate structure */
-		if ((lsw = _jc_vm_alloc(s->env,
+		if ((lsw = _jc_cf_alloc(s,
 		    sizeof(*lsw) + num_pairs * sizeof(*lsw->pairs))) == NULL)
-			return JNI_ERR;
+			siglongjmp(s->jump, 1);
 		insn->u.lookupswitch = lsw;
 		lsw->default_target = default_target;
 		lsw->num_pairs = num_pairs;
@@ -1408,15 +1197,13 @@ loop:
 		for (i = 0; i < lsw->num_pairs; i++) {
 			_jc_cf_lookup *const lookup = &lsw->pairs[i];
 
-			if (_jc_parse_integer(s, &lookup->match) != JNI_OK)
-				return JNI_ERR;
+			_jc_parse_integer(s, &lookup->match);
 			if (i > 0 && (lookup - 1)->match >= lookup->match) {
 				_JC_EX_STORE(s->env, ClassFormatError,
 				    "misordered %s table", opname);
-				return JNI_ERR;
+				siglongjmp(s->jump, 1);
 			}
-			if (_jc_parse_integer(s, &value32) != JNI_OK)
-				return JNI_ERR;
+			_jc_parse_integer(s, &value32);
 			lookup->target = insn_offset + value32;
 		}
 		break;
@@ -1435,36 +1222,32 @@ loop:
 		/* Parse padding */
 		pad = 3 - (((s->pos - start) + 3) % 4);
 		for (i = 0; i < pad; i++) {
-			if (_jc_parse_uint8(s, &value8) != JNI_OK)
-				return JNI_ERR;
+			_jc_parse_uint8(s, &value8);
 			if (value8 != 0) {
 				_JC_EX_STORE(s->env, ClassFormatError,
 				    "non-zero %s pad byte", opname);
-				return JNI_ERR;
+				siglongjmp(s->jump, 1);
 			}
 		}
 
 		/* Parse default target offset */
-		if (_jc_parse_integer(s, &value32) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_integer(s, &value32);
 		default_target = insn_offset + value32;
 
 		/* Parse bounds */
-		if (_jc_parse_integer(s, &low) != JNI_OK)
-			return JNI_ERR;
-		if (_jc_parse_integer(s, &high) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_integer(s, &low);
+		_jc_parse_integer(s, &high);
 		if (high < low) {
 			_JC_EX_STORE(s->env, ClassFormatError,
 			    "reversed %s bounds", opname);
-			return JNI_ERR;
+			siglongjmp(s->jump, 1);
 		}
 		num_targets = high - low + 1;
 
 		/* Allocate structure */
-		if ((tsw = _jc_vm_alloc(s->env, sizeof(*tsw)
+		if ((tsw = _jc_cf_alloc(s, sizeof(*tsw)
 		    + num_targets * sizeof(*tsw->targets))) == NULL)
-			return JNI_ERR;
+			siglongjmp(s->jump, 1);
 		insn->u.tableswitch = tsw;
 		tsw->default_target = default_target;
 		tsw->high = high;
@@ -1472,22 +1255,17 @@ loop:
 
 		/* Parse targets */
 		for (i = 0; i < num_targets; i++) {
-			if (_jc_parse_integer(s, &value32) != JNI_OK)
-				return JNI_ERR;
+			_jc_parse_integer(s, &value32);
 			tsw->targets[i] = insn_offset + value32;
 		}
 		break;
 	    }
 	case _JC_multianewarray:
-		if (_jc_parse_class(s,
-		    &insn->u.multianewarray.type, JNI_FALSE) != JNI_OK)
-			return JNI_ERR;
-		if (_jc_parse_uint8(s, &insn->u.multianewarray.dims) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_class(s, &insn->u.multianewarray.type, JNI_FALSE);
+		_jc_parse_uint8(s, &insn->u.multianewarray.dims);
 		break;
 	case _JC_newarray:
-		if (_jc_parse_uint8(s, &value8) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_uint8(s, &value8);
 		switch (value8) {
 		case _JC_boolean:
 			insn->u.newarray.type = _JC_TYPE_BOOLEAN;
@@ -1516,17 +1294,15 @@ loop:
 		default:
 			_JC_EX_STORE(s->env, ClassFormatError,
 			    "invalide type %d for newarray", value8);
-			return JNI_ERR;
+			siglongjmp(s->jump, 1);
 		}
 		break;
 	case _JC_sipush:
-		if (_jc_parse_uint16(s, &value16) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_uint16(s, &value16);
 		insn->u.immediate.value = (jshort)value16;
 		break;
 	case _JC_wide:
-		if (_jc_parse_uint8(s, &value8) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_uint8(s, &value8);
 		switch (value8) {
 		case _JC_aload:
 		case _JC_astore:
@@ -1540,23 +1316,18 @@ loop:
 		case _JC_lstore:
 		case _JC_ret:
 			insn->opcode = value8;
-			if (_jc_parse_local16(s,
-			    code, &insn->u.local.index) != JNI_OK)
-				return JNI_ERR;
+			_jc_parse_local16(s, code, &insn->u.local.index);
 			break;
 		case _JC_iinc:
 			insn->opcode = value8;
-			if (_jc_parse_local16(s,
-			    code, &insn->u.iinc.index) != JNI_OK)
-				return JNI_ERR;
-			if (_jc_parse_uint16(s, &value16) != JNI_OK)
-				return JNI_ERR;
+			_jc_parse_local16(s, code, &insn->u.iinc.index);
+			_jc_parse_uint16(s, &value16);
 			insn->u.iinc.value = (jshort)value16;
 			break;
 		default:
 			_JC_EX_STORE(s->env, ClassFormatError,
 			    "invalid wide extension opcode 0x%02x", value8);
-			return JNI_ERR;
+			siglongjmp(s->jump, 1);
 		}
 		break;
 	default:
@@ -1592,23 +1363,19 @@ pass2:
 		case _JC_ifnonnull:
 		case _JC_ifnull:
 		case _JC_jsr:
-			if (_jc_map_offset(s->env, code, code_length,
-			    offset_map, &insn->u.branch.target) != JNI_OK)
-				return JNI_ERR;
+			_jc_map_offset(s, code, code_length,
+			    offset_map, &insn->u.branch.target);
 			break;
 		case _JC_lookupswitch:
 		    {
 			_jc_cf_lookupswitch *const lsw = insn->u.lookupswitch;
 			int j;
 
-			if (_jc_map_offset(s->env, code, code_length,
-			    offset_map, &lsw->default_target) != JNI_OK)
-				return JNI_ERR;
+			_jc_map_offset(s, code, code_length,
+			    offset_map, &lsw->default_target);
 			for (j = 0; j < lsw->num_pairs; j++) {
-				if (_jc_map_offset(s->env, code,
-				    code_length, offset_map,
-				    &lsw->pairs[j].target) != JNI_OK)
-					return JNI_ERR;
+				_jc_map_offset(s, code, code_length,
+				    offset_map, &lsw->pairs[j].target);
 			}
 			break;
 		    }
@@ -1618,13 +1385,11 @@ pass2:
 			const jint num_targets = tsw->high - tsw->low + 1;
 			int j;
 
-			if (_jc_map_offset(s->env, code, code_length,
-			    offset_map, &tsw->default_target) != JNI_OK)
-				return JNI_ERR;
+			_jc_map_offset(s, code, code_length,
+			    offset_map, &tsw->default_target);
 			for (j = 0; j < num_targets; j++) {
-				if (_jc_map_offset(s->env, code, code_length,
-				    offset_map, &tsw->targets[j]) != JNI_OK)
-					return JNI_ERR;
+				_jc_map_offset(s, code, code_length,
+				    offset_map, &tsw->targets[j]);
 			}
 			break;
 		    }
@@ -1632,108 +1397,98 @@ pass2:
 			break;
 		}
 	}
-
-	/* Done */
-	return JNI_OK;
 }
 
 /*
  * Convert a bytecode offset into an instruction index.
  */
-static int
-_jc_map_offset(_jc_env *env, _jc_cf_code *code, _jc_uint16 length,
+static void
+_jc_map_offset(_jc_cf_parse_state *s, _jc_cf_code *code, _jc_uint16 length,
 	_jc_uint16 *offset_map, _jc_uint16 *targetp)
 {
 	_jc_uint16 target = *targetp;
 
 	if (target == 0)
-		return JNI_OK;
+		return;
 	if (target >= length || offset_map[target] == 0) {
-		_JC_EX_STORE(env, ClassFormatError,
+		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid branch target %u", target);
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 	*targetp = offset_map[target];
-	return JNI_OK;
 }
 
 /*
  * Parse an 8 bit local index.
  */
-static int
+static void
 _jc_parse_local8(_jc_cf_parse_state *s, _jc_cf_code *code, _jc_uint16 *indexp)
 {
 	u_char index;
 
-	if (_jc_parse_uint8(s, &index) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_uint8(s, &index);
 	if (index >= code->max_locals) {
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "local index %u >= %u is out of range",
 		    index, code->max_locals);
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 	*indexp = index;
-	return JNI_OK;
 }
 
 /*
  * Parse an 16 bit local index.
  */
-static int
+static void
 _jc_parse_local16(_jc_cf_parse_state *s, _jc_cf_code *code, _jc_uint16 *indexp)
 {
 	_jc_uint16 index;
 
-	if (_jc_parse_uint16(s, &index) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_uint16(s, &index);
 	if (index >= code->max_locals) {
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "local index %u >= %u is out of range",
 		    index, code->max_locals);
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 	*indexp = index;
-	return JNI_OK;
 }
 
 /*
  * Parse an 8 bit constant pool index.
  */
-static int
+static void
 _jc_parse_cpool_index8(_jc_cf_parse_state *s, int types,
 	_jc_cf_constant **ptr, int optional)
 {
 	u_char cp_index;
 
-	if (_jc_parse_uint8(s, &cp_index) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_uint8(s, &cp_index);
 	if (cp_index == 0 && optional) {
 		*ptr = NULL;
-		return JNI_OK;
+		return;
 	}
-	return _jc_parse_cpool_index(s, types, ptr, cp_index);
+	_jc_parse_cpool_index(s, types, ptr, cp_index);
 }
 
 /*
  * Parse a 16 bit constant pool index.
  */
-static int
+static void
 _jc_parse_cpool_index16(_jc_cf_parse_state *s, int types,
 	_jc_cf_constant **ptr, int optional)
 {
 	_jc_uint16 cp_index;
 
-	if (_jc_parse_uint16(s, &cp_index) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_uint16(s, &cp_index);
 	if (cp_index == 0 && optional) {
 		*ptr = NULL;
-		return JNI_OK;
+		return;
 	}
-	return _jc_parse_cpool_index(s, types, ptr, cp_index);
+	_jc_parse_cpool_index(s, types, ptr, cp_index);
 }
 
-static int
+static void
 _jc_parse_cpool_index(_jc_cf_parse_state *s, int types,
 	_jc_cf_constant **ptr, _jc_uint16 cp_index)
 {
@@ -1744,107 +1499,87 @@ _jc_parse_cpool_index(_jc_cf_parse_state *s, int types,
 	if (cp_index < 1 || cp_index >= cfile->num_constants) {
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid constant pool index %u", cp_index);
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 	c = &cfile->constants[cp_index - 1];
 	if (types != 0 && ((1 << c->type) & types) == 0) {
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "unexpected constant pool type %u at index %u",
 		    c->type, cp_index);
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 	*ptr = c;
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_fieldref(_jc_cf_parse_state *s, _jc_cf_ref **refp)
 {
 	_jc_cf_constant *cp;
 
-	if (_jc_parse_cpool_index16(s,
-	    1 << CONSTANT_Fieldref, &cp, JNI_FALSE) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_cpool_index16(s, 1 << CONSTANT_Fieldref, &cp, JNI_FALSE);
 	*refp = &cp->u.Ref;
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_methodref(_jc_cf_parse_state *s, _jc_cf_ref **refp)
 {
 	_jc_cf_constant *cp;
 
-	if (_jc_parse_cpool_index16(s,
-	    1 << CONSTANT_Methodref, &cp, JNI_FALSE) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_cpool_index16(s, 1 << CONSTANT_Methodref, &cp, JNI_FALSE);
 	*refp = &cp->u.Ref;
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_interfacemethodref(_jc_cf_parse_state *s, _jc_cf_ref **refp)
 {
 	_jc_cf_constant *cp;
 
-	if (_jc_parse_cpool_index16(s,
-	    1 << CONSTANT_InterfaceMethodref, &cp, JNI_FALSE) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_cpool_index16(s,
+	    1 << CONSTANT_InterfaceMethodref, &cp, JNI_FALSE);
 	*refp = &cp->u.Ref;
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_class(_jc_cf_parse_state *s, const char **classp, int optional)
 {
 	_jc_cf_constant *cp;
 
-	if (_jc_parse_cpool_index16(s,
-	    1 << CONSTANT_Class, &cp, optional) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_cpool_index16(s, 1 << CONSTANT_Class, &cp, optional);
 	*classp = (cp != NULL) ? cp->u.Class : NULL;
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_string(_jc_cf_parse_state *s, const char **utfp, int optional)
 {
 	_jc_cf_constant *cp;
 
-	if (_jc_parse_cpool_index16(s,
-	    1 << CONSTANT_Utf8, &cp, optional) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_cpool_index16(s, 1 << CONSTANT_Utf8, &cp, optional);
 	*utfp = (cp != NULL) ? cp->u.Utf8 : NULL;
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_integer(_jc_cf_parse_state *s, jint *valuep)
 {
 	_jc_uint32 value;
 
-	if (_jc_parse_uint32(s, &value) != JNI_OK)
-		return JNI_ERR;
+	_jc_parse_uint32(s, &value);
 	if (valuep != NULL)
 		*valuep = (jint)value;
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_float(_jc_cf_parse_state *s, jfloat *valuep)
 {
 	u_char b[4];
 	int i;
 
-	for (i = 0; i < 4; i++) {
-		if (_jc_parse_uint8(s, &b[i]) != JNI_OK)
-			return JNI_ERR;
-	}
+	for (i = 0; i < 4; i++)
+		_jc_parse_uint8(s, &b[i]);
 	if (valuep != NULL)
 		*valuep = _JC_FCONST(b[0], b[1], b[2], b[3]);
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_long(_jc_cf_parse_state *s, jlong *valuep)
 {
 	_jc_uint64 value = 0;
@@ -1852,48 +1587,47 @@ _jc_parse_long(_jc_cf_parse_state *s, jlong *valuep)
 	int i;
 
 	for (i = 0; i < 8; i++) {
-		if (_jc_parse_uint8(s, &byte) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_uint8(s, &byte);
 		value = (value << 8) | byte;
 	}
 	if (valuep != NULL)
 		*valuep = value;
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_double(_jc_cf_parse_state *s, jdouble *valuep)
 {
 	u_char b[8];
 	int i;
 
-	for (i = 0; i < 8; i++) {
-		if (_jc_parse_uint8(s, &b[i]) != JNI_OK)
-			return JNI_ERR;
-	}
+	for (i = 0; i < 8; i++)
+		_jc_parse_uint8(s, &b[i]);
 	if (valuep != NULL) {
 		*valuep = _JC_DCONST(b[0], b[1], b[2], b[3],
 		    b[4], b[5], b[6], b[7]);
 	}
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_utf8(_jc_cf_parse_state *s, const u_char **utfp, _jc_uint16 *lengthp)
 {
 	_jc_uint16 length;
 	const u_char *utf;
 
 	/* Get length */
-	if (_jc_parse_uint16(s, &length) != JNI_OK)
-		return JNI_ERR;
-	if (s->pos + length > s->length)
-		goto truncated;
+	_jc_parse_uint16(s, &length);
+	if (s->pos + length > s->length) {
+		_JC_EX_STORE(s->env, ClassFormatError, "truncated class file");
+		siglongjmp(s->jump, 1);
+	}
 
 	/* Validate UTF-8 encoding */
 	utf = s->bytes + s->pos;
-	if (_jc_utf_decode(utf, length, NULL) == -1)
-		goto invalid;
+	if (_jc_utf_decode(utf, length, NULL) == -1) {
+		_JC_EX_STORE(s->env, ClassFormatError,
+		    "invalid UTF-8 string encoding");
+		siglongjmp(s->jump, 1);
+	}
 
 	/* Update position */
 	s->pos += length;
@@ -1903,19 +1637,9 @@ _jc_parse_utf8(_jc_cf_parse_state *s, const u_char **utfp, _jc_uint16 *lengthp)
 		*utfp = utf;
 	if (lengthp != NULL)
 		*lengthp = length;
-	return JNI_OK;
-
-truncated:
-	_JC_EX_STORE(s->env, ClassFormatError, "truncated class file");
-	return JNI_ERR;
-
-invalid:
-	_JC_EX_STORE(s->env, ClassFormatError,
-	    "invalid UTF-8 string encoding");
-	return JNI_ERR;
 }
 
-static int
+static void
 _jc_parse_uint32(_jc_cf_parse_state *s, _jc_uint32 *valuep)
 {
 	_jc_uint32 value = 0;
@@ -1923,16 +1647,14 @@ _jc_parse_uint32(_jc_cf_parse_state *s, _jc_uint32 *valuep)
 	int i;
 
 	for (i = 0; i < 4; i++) {
-		if (_jc_parse_uint8(s, &byte) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_uint8(s, &byte);
 		value = (value << 8) | byte;
 	}
 	if (valuep != NULL)
 		*valuep = value;
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_uint16(_jc_cf_parse_state *s, _jc_uint16 *valuep)
 {
 	_jc_uint16 value = 0;
@@ -1940,26 +1662,43 @@ _jc_parse_uint16(_jc_cf_parse_state *s, _jc_uint16 *valuep)
 	int i;
 
 	for (i = 0; i < 2; i++) {
-		if (_jc_parse_uint8(s, &byte) != JNI_OK)
-			return JNI_ERR;
+		_jc_parse_uint8(s, &byte);
 		value = (value << 8) | byte;
 	}
 	if (valuep != NULL)
 		*valuep = value;
-	return JNI_OK;
 }
 
-static int
+static void
 _jc_parse_uint8(_jc_cf_parse_state *s, u_char *valuep)
 {
 	if (s->pos >= s->length) {
 		_JC_EX_STORE(s->env, ClassFormatError, "truncated class file");
-		return JNI_ERR;
+		siglongjmp(s->jump, 1);
 	}
 	if (valuep != NULL)
 		*valuep = s->bytes[s->pos];
 	s->pos++;
-	return JNI_OK;
+}
+
+static void *
+_jc_cf_alloc(_jc_cf_parse_state *s, size_t size)
+{
+	void *mem;
+
+	if ((mem = _jc_uni_alloc(s->env, &s->cfile->uni, size)) == NULL)
+		siglongjmp(s->jump, 1);
+	return mem;
+}
+
+static void *
+_jc_cf_zalloc(_jc_cf_parse_state *s, size_t size)
+{
+	void *mem;
+
+	if ((mem = _jc_uni_zalloc(s->env, &s->cfile->uni, size)) == NULL)
+		siglongjmp(s->jump, 1);
+	return mem;
 }
 
 static void

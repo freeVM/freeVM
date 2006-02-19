@@ -418,6 +418,13 @@ struct _jc_cf_code {
  *			Non-bytecode information			*
  ************************************************************************/
 
+#define _JC_CF_INNER_CLASSES		"InnerClasses"
+#define _JC_CF_SOURCE_FILE		"SourceFile"
+#define _JC_CF_CONSTANT_VALUE		"ConstantValue"
+#define _JC_CF_CODE			"Code"
+#define _JC_CF_EXCEPTIONS		"Exceptions"
+#define _JC_CF_LINE_NUMBER_TABLE	"LineNumberTable"
+
 /* Fieldref, Methodref, or InterfaceMethodref constant */
 struct _jc_cf_ref {
 	const char	*class;
@@ -504,6 +511,7 @@ struct _jc_cf_attr {
 
 /* Parsed classfile */
 struct _jc_classfile {
+	_jc_uni_mem		uni;
 	_jc_uint16		minor_version;
 	_jc_uint16		major_version;
 	_jc_uint16		access_flags;
@@ -528,6 +536,7 @@ struct _jc_classfile {
 struct _jc_cf_parse_state {
 	_jc_env		*env;
 	_jc_classfile	*cfile;
+	sigjmp_buf	jump;
 	const u_char	*bytes;
 	size_t		length;
 	size_t		pos;
@@ -539,6 +548,5 @@ extern _jc_classfile	*_jc_parse_classfile(_jc_env *env,
 extern void		_jc_destroy_classfile(_jc_classfile **cfilep);
 extern int		_jc_parse_code(_jc_env *env, _jc_classfile *cfile,
 				_jc_cf_bytecode *bytecode, _jc_cf_code *code);
-extern void		_jc_destroy_code(_jc_cf_code *code);
 
 #endif	/* _CF_PARSE_H_ */

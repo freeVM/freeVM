@@ -69,7 +69,6 @@ typedef struct _jc_uni_pages _jc_uni_pages;
 TAILQ_HEAD(_jc_uni_page_list, _jc_uni_pages);
 SLIST_HEAD(_jc_native_frame_list, _jc_native_frame);
 
-#include "cf_parse.h"
 #include "zip.h"
 
 /************************************************************************
@@ -851,5 +850,7 @@ struct _jc_jvm {
 	volatile _jc_word		avail_loader_pages;
 	_jc_word			gc_stack_visited;
 };
+
+#include "cf_parse.h"
 
 #endif	/* _STRUCTURES_H_ */

@@ -348,7 +348,11 @@ dump_code(_jc_env *env, _jc_classfile *cf, _jc_cf_bytecode *bytecode)
 { 
 	_jc_cf_code codemem;
 	_jc_cf_code *const code = &codemem;
+	void *mark;
 	int i;
+
+	/* Mark allocator */
+	mark = _jc_uni_mark(&cf->uni);
 
 	/* Parse bytecode */
 	if (_jc_parse_code(env, cf, bytecode, code) != JNI_OK) {
@@ -511,7 +515,7 @@ dump_code(_jc_env *env, _jc_classfile *cf, _jc_cf_bytecode *bytecode)
 	}
 
 	/* Free parsed code */
-	_jc_destroy_code(code);
+	_jc_uni_reset(&cf->uni, mark);
 }
 
 static void
