@@ -31,9 +31,12 @@
 
 #define _JC_BIG_ENDIAN		0
 
+/* Fixes for Cygwin */
 #ifdef __CYGWIN__
 #undef _JC_LIBRARY_FMT
 #define _JC_LIBRARY_FMT		"cyg%s.dll"
+#define sched_get_priority_max(x)	(15)
+#define sched_get_priority_min(x)	(1)
 #endif
 
 #endif	/* _ARCH_I386_DEFINITIONS_H_ */
