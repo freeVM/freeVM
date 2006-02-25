@@ -263,13 +263,15 @@ enum {
  * Access to special object fields.
  */
 #ifndef NDEBUG
-#define _JC_VMFIELD(_vm, _obj, _class, _field, _type)			\
+#define _JC_VMFIELD(_vm, _obj0, _class, _field, _type)			\
     ({									\
+	_jc_object *const _obj = (_obj0);				\
 	_jc_field *const _f = _vm->boot.fields._class._field;		\
 									\
-	_JC_ASSERT(_jc_subclass_of((_obj), _f->class));			\
+	_JC_ASSERT(_obj->type != NULL);					\
+	_JC_ASSERT(_jc_subclass_of(_obj->type, _f->class));		\
 	_JC_ASSERT(!_JC_ACC_TEST(_f, STATIC));				\
-	(_type *)((char *)(_obj) + _f->offset);				\
+	(_type *)((char *)_obj + _f->offset);				\
     })
 #define _JC_VMSTATICFIELD(_vm, _class, _field, _type)			\
     ({									\

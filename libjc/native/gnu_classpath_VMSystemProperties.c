@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- * $Id: gnu_classpath_VMSystemProperties.c,v 1.2 2005/05/15 21:41:01 archiecobbs Exp $
+ * $Id$
  */
 
 #include "libjc.h"
@@ -44,7 +44,7 @@ JCNI_gnu_classpath_VMSystemProperties_preInit(_jc_env *env, _jc_object *props)
 		goto done;
 
 	/* Sanity check */
-	_JC_ASSERT(_jc_subclass_of(props, type));
+	_JC_ASSERT(_jc_subclass_of(props->type, type));
 	_JC_ASSERT(_JC_FLG_TEST(type, INITIALIZED));
 
 	/* Find Properties.setProperty() method */

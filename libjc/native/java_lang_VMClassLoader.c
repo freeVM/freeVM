@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- * $Id: java_lang_VMClassLoader.c,v 1.15 2005/11/09 18:14:22 archiecobbs Exp $
+ * $Id$
  */
 
 #include "libjc.h"
@@ -53,7 +53,7 @@ JCNI_java_lang_VMClassLoader_defineClass(_jc_env *env, _jc_object *cl,
 	if (cl == NULL)
 		loader = vm->boot.loader;
 	else {
-		_JC_ASSERT(_jc_subclass_of(cl,
+		_JC_ASSERT(_jc_subclass_of(cl->type,
 		    env->vm->boot.types.ClassLoader));
 		if ((loader = _jc_get_loader(env, cl)) == NULL)
 			goto done;
@@ -151,7 +151,7 @@ JCNI_java_lang_VMClassLoader_findLoadedClass(_jc_env *env,
 	if (loader_obj == NULL)
 		loader = vm->boot.loader;
 	else {
-		_JC_ASSERT(_jc_subclass_of(loader_obj,
+		_JC_ASSERT(_jc_subclass_of(loader_obj->type,
 		    env->vm->boot.types.ClassLoader));
 		if ((loader = _jc_get_loader(env, loader_obj)) == NULL)
 			_jc_throw_exception(env);

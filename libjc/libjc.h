@@ -188,7 +188,7 @@ extern int		_jc_instance_of(_jc_env *env, _jc_object *obj,
 				_jc_type *type);
 extern int		_jc_assignable_from(_jc_env *env, _jc_type *from,
 				_jc_type *to);
-extern jboolean		_jc_subclass_of(_jc_object *obj, _jc_type *type);
+extern jboolean		_jc_subclass_of(_jc_type *type, _jc_type *stype);
 
 /* interp.c */
 extern jboolean		_jc_interp_z(_jc_env *env, ...);

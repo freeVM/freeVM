@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- * $Id: gc_final.c,v 1.3 2005/03/16 15:31:12 archiecobbs Exp $
+ * $Id$
  */
 
 #include "libjc.h"
@@ -48,7 +48,7 @@ start_over:
 		/* Check for live, enqueable references */
 		if ((lockword & (_JC_LW_SPECIAL_BIT|_JC_LW_LIVE_BIT))
 		      == (_JC_LW_SPECIAL_BIT|_JC_LW_LIVE_BIT)
-		    && _jc_subclass_of(obj, vm->boot.types.Reference)
+		    && _jc_subclass_of(obj->type, vm->boot.types.Reference)
 		    && *_JC_VMFIELD(vm, obj,
 		      Reference, queue, _jc_object *) != NULL) {
 			_jc_object *referent;

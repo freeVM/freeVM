@@ -214,7 +214,8 @@ _jc_post_exception_object(_jc_env *env, _jc_object *exception)
 	_jc_jvm *const vm = env->vm;
 
 	/* Sanity check */
-	_JC_ASSERT(_jc_subclass_of(exception, env->vm->boot.types.Throwable));
+	_JC_ASSERT(_jc_subclass_of(exception->type,
+	    env->vm->boot.types.Throwable));
 
 	/* Verbosity */
 	if ((env->vm->verbose_flags & (1 << _JC_VERBOSE_EXCEPTIONS)) != 0) {
@@ -325,7 +326,7 @@ _jc_retrieve_exception(_jc_env *env, _jc_type *type)
 	_JC_ASSERT(e != NULL);
 
 	/* If type doesn't match, return NULL and leave it posted */
-	if (type != NULL && !_jc_subclass_of(e, type))
+	if (type != NULL && !_jc_subclass_of(e->type, type))
 		return NULL;
 
 	/* Verbosity */
@@ -407,7 +408,7 @@ _jc_fprint_exception_headline(_jc_env *env, FILE *fp, _jc_object *e)
 
 	/* Sanity check */
 	_JC_ASSERT(e != NULL);
-	_JC_ASSERT(_jc_subclass_of(e, vm->boot.types.Throwable));
+	_JC_ASSERT(_jc_subclass_of(e->type, vm->boot.types.Throwable));
 
 	/* Print exception class */
 	_jc_fprint_noslash(vm, fp, e->type->name);

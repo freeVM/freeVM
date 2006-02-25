@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- * $Id: java_lang_VMThread.c,v 1.7 2005/11/09 18:14:22 archiecobbs Exp $
+ * $Id$
  */
 
 #include "libjc.h"
@@ -198,7 +198,7 @@ JCNI_java_lang_VMThread_nativeStop(_jc_env *env,
 	}
 
 	/* Sanity check */
-	_JC_ASSERT(_jc_subclass_of(throwable, vm->boot.types.Throwable));
+	_JC_ASSERT(_jc_subclass_of(throwable->type, vm->boot.types.Throwable));
 
 	/* Lock VM so thread doesn't disappear */
 	_JC_MUTEX_LOCK(env, vm->mutex);

@@ -37,7 +37,7 @@ _jc_get_vm_pointer(_jc_jvm *vm, _jc_object *obj, _jc_field *field)
 
 	/* Sanity check */
 	_JC_ASSERT(obj != NULL && field != NULL);
-	_JC_ASSERT(_jc_subclass_of(obj, field->class));
+	_JC_ASSERT(_jc_subclass_of(obj->type, field->class));
 
 	/* Get reference to the Pointer object */
 	pobj = *((_jc_object **)((char *)obj + field->offset));
@@ -61,7 +61,7 @@ _jc_set_vm_pointer(_jc_env *env, _jc_object *obj, _jc_field *field, void *ptr)
 
 	/* Sanity check */
 	_JC_ASSERT(obj != NULL && field != NULL);
-	_JC_ASSERT(_jc_subclass_of(obj, field->class));
+	_JC_ASSERT(_jc_subclass_of(obj->type, field->class));
 
 	/* Handle easy case */
 	if (ptr == NULL) {

@@ -41,7 +41,7 @@ GetObjectField(JNIEnv *jenv, jobject obj, jfieldID field)
 	_JC_ASSERT(*obj != NULL);
 
 	/* Sanity check */
-	_JC_ASSERT(_jc_subclass_of(*obj, field->class));
+	_JC_ASSERT(_jc_subclass_of((*obj)->type, field->class));
 
 	/* Get object field */
 	fobj = *(_jc_object **)((char *)(*obj) + field->offset);
@@ -76,7 +76,7 @@ Get ## Type ## Field(JNIEnv *jenv, jobject obj, jfieldID field)		\
 	_JC_ASSERT(*obj != NULL);					\
 									\
 	/* Sanity check */						\
-	_JC_ASSERT(_jc_subclass_of(*obj, field->class));		\
+	_JC_ASSERT(_jc_subclass_of((*obj)->type, field->class));		\
 									\
 	/* Get field */							\
 	value = *(j ## _type *)((char *)(*obj) + field->offset);	\
@@ -117,7 +117,7 @@ SetObjectField(JNIEnv *jenv, jobject obj, jfieldID field, jobject value)
 	_JC_ASSERT(*obj != NULL);
 
 	/* Sanity check */
-	_JC_ASSERT(_jc_subclass_of(*obj, field->class));
+	_JC_ASSERT(_jc_subclass_of((*obj)->type, field->class));
 	_JC_ASSERT(value == NULL || *value != NULL);
 
 	/* Set field */
@@ -151,7 +151,7 @@ Set ## Type ## Field(JNIEnv *jenv, jobject obj,				\
 	_JC_ASSERT(*obj != NULL);					\
 									\
 	/* Sanity check */						\
-	_JC_ASSERT(_jc_subclass_of(*obj, field->class));		\
+	_JC_ASSERT(_jc_subclass_of((*obj)->type, field->class));		\
 									\
 	/* Set field */							\
 	*(j ## _type *)((char *)(*obj) + field->offset) = value;	\
@@ -1737,7 +1737,7 @@ Throw(JNIEnv *jenv, jthrowable obj)
 
 	/* Sanity check */
 	_JC_ASSERT(*obj != NULL);
-	_JC_ASSERT(_jc_subclass_of(*obj, env->vm->boot.types.Throwable));
+	_JC_ASSERT(_jc_subclass_of((*obj)->type, env->vm->boot.types.Throwable));
 
 	/* Post exception */
 	_jc_post_exception_object(env, *obj);

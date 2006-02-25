@@ -80,7 +80,8 @@ _jc_print_stack_trace(_jc_env *env, FILE *fp)
 
 again:
 	/* Sanity check */
-	_JC_ASSERT(_jc_subclass_of(e, vm->boot.types.Throwable));
+	_JC_ASSERT(e != NULL);
+	_JC_ASSERT(_jc_subclass_of(e->type, vm->boot.types.Throwable));
 
 	/* Print exception headling */
 	_jc_fprint_exception_headline(env, fp, e);

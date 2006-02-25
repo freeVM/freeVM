@@ -40,7 +40,7 @@ _jc_get_loader(_jc_env *env, _jc_object *obj)
 		_jc_post_exception(env, _JC_NullPointerException);
 		return NULL;
 	}
-	_JC_ASSERT(_jc_subclass_of(obj, vm->boot.types.ClassLoader));
+	_JC_ASSERT(_jc_subclass_of(obj->type, vm->boot.types.ClassLoader));
 
 	/* Lock VM */
 	_JC_MUTEX_LOCK(env, vm->mutex);

@@ -255,7 +255,7 @@ _jc_gc(_jc_env *env, jboolean urgent)
 			_jc_object **referent;
 
 			/* Rule out non-Reference objects */
-			if (!_jc_subclass_of(obj, vm->boot.types.Reference))
+			if (!_jc_subclass_of(obj->type, vm->boot.types.Reference))
 				goto keep_it;
 
 			/* Rule out referents already cleared or reachable */
@@ -270,14 +270,14 @@ _jc_gc(_jc_env *env, jboolean urgent)
 			 * then a soft reference's referent must be live.
 			 */
 			_JC_ASSERT(!trace->follow_soft
-			    || !_jc_subclass_of(obj,
+			    || !_jc_subclass_of(obj->type,
 			      vm->boot.types.SoftReference));
 
 			/*
 			 * Rule out phantom references if the referent
 			 * object is not recyclable yet.
 			 */
-			if (_jc_subclass_of(obj,
+			if (_jc_subclass_of(obj->type,
 			      vm->boot.types.PhantomReference)
 			    && ((*referent)->lockword
 			      & (_JC_LW_FINALIZE_BIT|_JC_LW_KEEP_BIT)) != 0)
@@ -687,13 +687,16 @@ do_normal_object:
 		 * Special case: soft/weak/phantom references.
 		 * We have to handle the 'referent' field specially.
 		 */
-		if (!_jc_subclass_of(obj, vm->boot.types.Reference))
+		if (!_jc_subclass_of(obj->type, vm->boot.types.Reference))
 			goto not_reference_object;
 
 		/* Sanity check */
-		_JC_ASSERT(_jc_subclass_of(obj, vm->boot.types.WeakReference)
-		    || _jc_subclass_of(obj, vm->boot.types.SoftReference)
-		    || _jc_subclass_of(obj, vm->boot.types.PhantomReference));
+		_JC_ASSERT(_jc_subclass_of(obj->type,
+		      vm->boot.types.WeakReference)
+		    || _jc_subclass_of(obj->type,
+		      vm->boot.types.SoftReference)
+		    || _jc_subclass_of(obj->type,
+		      vm->boot.types.PhantomReference));
 
 		/* If "referent" is null, treat object normally */
 		if ((referent = *_JC_VMFIELD(vm, obj,
@@ -702,7 +705,7 @@ do_normal_object:
 
 		/* If we're following soft references, treat them normally */
 		if (trace->follow_soft
-		    && _jc_subclass_of(obj, vm->boot.types.SoftReference))
+		    && _jc_subclass_of(obj->type, vm->boot.types.SoftReference))
 			goto do_normal_object;
 
 		/* Follow all object references except "referent" */
@@ -805,7 +808,7 @@ do_exception_loader:
 		 * the class loader associated with the ClassLoader object;
 		 * they may be different and neither be the boot loader.
 		 */
-		if (_jc_subclass_of(obj, vm->boot.types.ClassLoader)) {
+		if (_jc_subclass_of(obj->type, vm->boot.types.ClassLoader)) {
 			_jc_class_loader *cl_loader;
 
 			/* Get ClassLoader loader and normal object loader */

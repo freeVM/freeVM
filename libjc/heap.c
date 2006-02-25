@@ -705,7 +705,8 @@ _jc_heap_check_object(_jc_jvm *vm, _jc_object *obj, int recurse)
 		_jc_heap_check_alloc(vm, obj);
 	} else {
 		_JC_ASSERT(!_JC_LW_TEST(type->initial_lockword, FINALIZE));
-		_JC_ASSERT(!_jc_subclass_of(obj, vm->boot.types.Reference));
+		_JC_ASSERT(!_jc_subclass_of(obj->type,
+		    vm->boot.types.Reference));
 	}
 
 	/* Check lockword */

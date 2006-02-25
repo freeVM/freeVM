@@ -113,27 +113,20 @@ _jc_instance_of(_jc_env *env, _jc_object *obj, _jc_type *type)
 }
 
 /*
- * Determine if 'obj' is an instance of 'type' or any subclass thereof.
- *
- * This assumes that 'obj' is not NULL. If type is an interface
- * or array type then false is always returned.
+ * Determine if 'type' is 'stype' or any subclass thereof.
  */
 jboolean
-_jc_subclass_of(_jc_object *obj, _jc_type *type)
+_jc_subclass_of(_jc_type *type, _jc_type *stype)
 {
-	_jc_type *obj_type;
-
-	/* Sanity check */
-	_JC_ASSERT(obj != NULL);
-
-	/* Check superclasses */
-	for (obj_type = obj->type;
-	    obj_type != NULL; obj_type = obj_type->superclass) {
-		if (obj_type == type)
-			return JNI_TRUE;
+	/* Check superclasses of 'type' */
+	while (type != stype) {
+		type = type->superclass;
+		if (type == NULL)
+			return JNI_FALSE;
 	}
 
-	/* Not found */
-	return JNI_FALSE;
+	/* Match */
+	return JNI_TRUE;
 }
+
 

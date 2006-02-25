@@ -251,7 +251,8 @@ AttachCurrentThreadInternal(JavaVM *jvm,
 
 	/* Sanity check group */
 	_JC_ASSERT(args == NULL || args->group == NULL
-	    || _jc_subclass_of(*args->group, vm->boot.types.ThreadGroup));
+	    || _jc_subclass_of((*args->group)->type,
+	      vm->boot.types.ThreadGroup));
 
 	/* Create java.lang.Thread instance */
 	if (_jc_thread_create_instance(env,

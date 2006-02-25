@@ -167,7 +167,7 @@ _jc_thread_interrupt_instance(_jc_jvm *vm, _jc_object *instance)
 	_jc_object *vmt;
 
 	/* Sanity check */
-	_JC_ASSERT(_jc_subclass_of(instance, vm->boot.types.Thread));
+	_JC_ASSERT(_jc_subclass_of(instance->type, vm->boot.types.Thread));
 
 	/* Lock VM to keep thread from disappearing */
 	_JC_MUTEX_LOCK(_jc_get_current_env(), vm->mutex);
@@ -642,7 +642,7 @@ _jc_thread_start(void *arg)
 
 	/* Grab pointer to the VMThread */
 	vmt = env->retval.l;
-	_JC_ASSERT(_jc_subclass_of(vmt, vm->boot.types.VMThread));
+	_JC_ASSERT(_jc_subclass_of(vmt->type, vm->boot.types.VMThread));
 
 	/* Invoke VMThread.run() */
 	if (_jc_invoke_virtual(env,
@@ -1116,7 +1116,7 @@ _jc_internal_thread(_jc_env *env, const char *class)
 	}
 
 	/* Sanity check */
-	_JC_ASSERT(_jc_subclass_of(*ref, vm->boot.types.Thread));
+	_JC_ASSERT(_jc_subclass_of((*ref)->type, vm->boot.types.Thread));
 
 	/* Invoke constructor */
 	if (_jc_invoke_nonvirtual(env, constructor, *ref) != JNI_OK)

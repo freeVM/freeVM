@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- * $Id: new.c,v 1.12 2005/03/20 23:33:28 archiecobbs Exp $
+ * $Id$
  */
 
 #include "libjc.h"
@@ -197,7 +197,7 @@ _jc_init_object(_jc_env *env, void *mem, _jc_type *type)
 	obj->type = type;
 
 	/* Another sanity check */
-	_JC_ASSERT(!_jc_subclass_of(obj, env->vm->boot.types.Reference));
+	_JC_ASSERT(!_jc_subclass_of(type, env->vm->boot.types.Reference));
 
 	/* Done */
 	return obj;
