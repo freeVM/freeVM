@@ -61,6 +61,14 @@ _jc_jmpbuf_sp(const sigjmp_buf buf)
 	return (const void *)buf[0].__jmpbuf[4];
 }
 
+#elif defined(__CYGWIN__)
+
+extern inline const void *
+_jc_jmpbuf_sp(const sigjmp_buf buf)
+{
+	return (const void *)buf[7];
+}
+
 #else
 #error "Unsupported O/S for i386 machine context functions"
 #endif

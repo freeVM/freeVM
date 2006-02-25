@@ -127,9 +127,14 @@ _jc_set_system_properties(_jc_env *env)
 
 	/* Set user timezone */
 	now = time(NULL);
+#ifdef __CYGWIN__
+	if (_jc_set_property(env, "user.timezone", _tzname[0]) != JNI_OK)
+		return JNI_ERR;
+#else
 	if (_jc_set_property(env,
 	    "user.timezone", localtime(&now)->tm_zone) != JNI_OK)
 		return JNI_ERR;
+#endif
 
 	/* Set operating system info */
 	if (uname(&uts) == -1) {

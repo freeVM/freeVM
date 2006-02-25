@@ -110,7 +110,9 @@ static const	struct poptOption jc_popt_options[] = {
 	"Show additional options", NULL },
     {	"version",		'V', POPT_ARG_NONE,   NULL, OPT_VERSION,
 	"Display version and exit", NULL },
+#ifndef __CYGWIN__
 	POPT_AUTOHELP
+#endif
 	POPT_TABLEEND
 };
 static const	int jc_num_options
