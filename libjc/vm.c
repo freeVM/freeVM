@@ -84,8 +84,11 @@ _jc_create_vm(void *args, _jc_jvm **vmp, _jc_env **envp)
 		goto pfail1;
 	if (_jc_cond_init(env, &vm->all_halted) != JNI_OK)
 		goto pfail2;
+	if (_jc_cond_init(env, &vm->vm_destruction) != JNI_OK)
+		goto pfail3;
 	if (_jc_cond_init(env, &vm->world_restarted) != JNI_OK) {
-		_jc_cond_destroy(&vm->all_halted);
+		_jc_cond_destroy(&vm->vm_destruction);
+pfail3:		_jc_cond_destroy(&vm->all_halted);
 pfail2:		_jc_mutex_destroy(&vm->mutex);
 pfail1:		_jc_vm_free(&vm);
 		vm = &temp_vm;
@@ -331,6 +334,7 @@ _jc_free_vm(_jc_jvm **vmp)
 	_jc_mutex_destroy(&vm->mutex);
 	_jc_cond_destroy(&vm->all_halted);
 	_jc_cond_destroy(&vm->world_restarted);
+	_jc_cond_destroy(&vm->vm_destruction);
 
 	/* Free the heap */
 	_jc_heap_destroy(vm);
