@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- * $Id: zip.h,v 1.1 2005/05/24 01:09:38 archiecobbs Exp $
+ * $Id$
  */
 
 #ifndef _ZIP_H_
@@ -53,6 +53,12 @@ struct _jc_zip {
 	int		fd;
 	char		*path;
 	int		num_entries;
+#if !HAVE_PREAD
+	pthread_mutex_t	mutex;		/* protects seek pointer */
+#ifndef NDEBUG
+	_jc_env		*mutex_owner;
+#endif
+#endif
 	_jc_zip_entry	*entries;
 };
 

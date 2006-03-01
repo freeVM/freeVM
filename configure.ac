@@ -106,8 +106,9 @@ AC_FUNC_MMAP
 AC_CHECK_FUNCS([getcwd gettimeofday memmove memset munmap], , \
     [AC_MSG_ERROR([required function missing])])
 
-# See if pthread_attr_setstack() is available
+# Check for optional library functions
 AC_CHECK_FUNCS([pthread_attr_setstack])
+AC_CHECK_FUNCS([pread])
 
 # Check for declarations
 AC_CHECK_DECL(environ, [AC_DEFINE([HAVE_DECL_ENVIRON], [1],

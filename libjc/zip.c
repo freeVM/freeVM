@@ -47,8 +47,14 @@ _jc_zip_open(_jc_env *env, const char *path)
 
 	/* Create new zip structure */
 	if ((zip = _jc_vm_zalloc(env, sizeof(*zip))) == NULL)
-		goto fail;
+		return NULL;
 	zip->fd = -1;
+#if !HAVE_PREAD
+	if (_jc_mutex_init(env, &zip->mutex) != JNI_OK) {
+		_jc_vm_free(&zip);
+		return NULL;
+	}
+#endif
 	if ((zip->path = _jc_vm_strdup(env, path)) == NULL)
 		goto fail;
 
@@ -222,6 +228,9 @@ _jc_zip_close(_jc_zip **zipp)
 	_jc_vm_free(&zip->path);
 	if (zip->fd != -1)
 		close(zip->fd);
+#if !HAVE_PREAD
+	_jc_mutex_destroy(&zip->mutex);
+#endif
 	_jc_vm_free(&zip);
 }
 
@@ -295,6 +304,7 @@ _jc_zip_read(_jc_env *env, _jc_zip *zip, int indx, u_char *data)
 static jint
 _jc_zip_unstore(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 {
+	int status = JNI_ERR;
 	int i;
 	int r;
 
@@ -306,25 +316,50 @@ _jc_zip_unstore(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 		return JNI_ERR;
 	}
 
+#if !HAVE_PREAD
+	/* Lock file pointer, then change it */
+	_JC_MUTEX_LOCK(env, zip->mutex);
+	if (lseek(zip->fd, zent->offset, SEEK_SET) == (off_t)-1) {
+		_JC_EX_STORE(env, IOException, "can't seek to entry `%s'"
+		    " in ZIP file `%s': %s", zent->name, zip->path,
+		    strerror(errno));
+		goto fail;
+	}
+#endif
+
 	/* Read data */
 	for (i = 0; i < zent->comp_len; i += r) {
-		if ((r = pread(zip->fd, (char *)data + i,
-		    zent->comp_len - i, zent->offset + i)) == -1) {
+#if !HAVE_PREAD
+		r = read(zip->fd, (char *)data + i, zent->comp_len - i);
+#else
+		r = pread(zip->fd, (char *)data + i,
+		    zent->comp_len - i, zent->offset + i);
+#endif
+		if (r == -1) {
 			_JC_EX_STORE(env, IOException, "can't read entry `%s'"
 			    " in ZIP file `%s': %s", zent->name, zip->path,
 			    strerror(errno));
-			return JNI_ERR;
+			goto fail;
 		}
 		if (r == 0) {
 			_JC_EX_STORE(env, IOException, "premature EOF reading"
 			    " entry `%s' in ZIP file `%s'", zent->name,
 			    zip->path);
-			return JNI_ERR;
+			goto fail;
 		}
 	}
 
+	/* Success */
+	status = JNI_OK;
+
+fail:
+#if !HAVE_PREAD
+	/* Unlock file pointer */
+	_JC_MUTEX_UNLOCK(env, zip->mutex);
+#endif
+
 	/* Done */
-	return JNI_OK;
+	return status;
 }
 
 /*
@@ -360,6 +395,17 @@ _jc_zip_inflate(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 		_JC_ASSERT(JNI_FALSE);
 	}
 
+#if !HAVE_PREAD
+	/* Lock file pointer, then change it */
+	_JC_MUTEX_LOCK(env, zip->mutex);
+	if (lseek(zip->fd, zent->offset, SEEK_SET) == (off_t)-1) {
+		_JC_EX_STORE(env, IOException, "can't seek to entry `%s'"
+		    " in ZIP file `%s': %s", zent->name, zip->path,
+		    strerror(errno));
+		goto fail;
+	}
+#endif
+
 	/* Read and inflate data */
 	for (i = 0; i < zent->comp_len; i += r) {
 		char buf[512];
@@ -370,8 +416,12 @@ _jc_zip_inflate(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 		to_read = zent->comp_len - i;
 		if (to_read > sizeof(buf))
 			to_read = sizeof(buf);
-		if ((r = pread(zip->fd, buf,
-		    to_read, zent->offset + i)) == -1) {
+#if !HAVE_PREAD
+		r = read(zip->fd, buf, to_read);
+#else
+		r = pread(zip->fd, buf, to_read, zent->offset + i);
+#endif
+		if (r == -1) {
 			_JC_EX_STORE(env, IOException, "error reading entry"
 			    " `%s' in ZIP file `%s': %s", zent->name,
 			    zip->path, strerror(errno));
@@ -389,6 +439,9 @@ _jc_zip_inflate(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 		 * A bug in zlib somewhere causes this to happen sometimes.
 		 */
 		if (zs.avail_out == 0) {
+#if !HAVE_PREAD
+			_JC_MUTEX_UNLOCK(env, zip->mutex);
+#endif
 			r = inflateEnd(&zs);
 			_JC_ASSERT(r == Z_OK);
 			return JNI_OK;
@@ -406,6 +459,9 @@ _jc_zip_inflate(_jc_env *env, _jc_zip *zip, _jc_zip_entry *zent, void *data)
 		case Z_STREAM_END:
 			if (zs.avail_out != 0 || i + r != zent->comp_len)
 				goto bad_length;
+#if !HAVE_PREAD
+			_JC_MUTEX_UNLOCK(env, zip->mutex);
+#endif
 			r = inflateEnd(&zs);
 			_JC_ASSERT(r == Z_OK);
 			return JNI_OK;
@@ -433,6 +489,9 @@ bad_length:
 
 fail:
 	/* Clean up after failure */
+#if !HAVE_PREAD
+	_JC_MUTEX_UNLOCK(env, zip->mutex);
+#endif
 	inflateEnd(&zs);
 	return JNI_ERR;
 }
