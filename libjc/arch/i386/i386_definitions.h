@@ -34,6 +34,7 @@
 /* Fixes for Cygwin */
 #ifdef __CYGWIN__
 #undef _JC_LIBRARY_FMT
+#undef HAVE_PREAD
 #define _JC_LIBRARY_FMT			"cyg%s-0.dll"
 #define sched_get_priority_max(x)	(15)
 #define sched_get_priority_min(x)	(1)
