@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.1"?>
+<plugin>
+    
+<!-- Extensions -->
+<!-- Extension points -->
+   <extension
+         point="org.eclipse.jdt.launching.vmInstallTypes">
+      <vmInstallType
+            class="org.apache.harmony.eclipse.jdt.launching.HyVMInstallType"
+            id="org.apache.harmony.eclipse.jdt.launching.HyVMInstallType"/>
+   </extension>
+
+</plugin>

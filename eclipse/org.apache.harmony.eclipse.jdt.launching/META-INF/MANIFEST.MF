@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Harmony JRE Support
+Bundle-SymbolicName: org.apache.harmony.eclipse.jdt.launching; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.apache.harmony.eclipse.jdt.launching.HyLaunchingPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.debug.core,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.debug,
+ org.eclipse.jdt.launching
+Eclipse-LazyStart: true
