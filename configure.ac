@@ -78,8 +78,6 @@ AC_CHECK_LIB(m, fmod,,
 	[AC_MSG_ERROR([required library libm missing])])
 AC_CHECK_LIB(z, inflateInit_,,
 	[AC_MSG_ERROR([required library libz missing])])
-AC_CHECK_LIB(popt, poptGetContext,,
-	[AC_MSG_ERROR([required library libpopt missing])])
 AC_CHECK_LIB(pthread, pthread_create,,
 	[AC_MSG_ERROR([required library pthread missing])])
 AC_CHECK_LIB(dl, dlopen,,,)

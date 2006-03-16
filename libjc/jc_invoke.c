@@ -26,7 +26,6 @@
 #include <errno.h>
 #include <err.h>
 
-#include <popt.h>
 #include "config.h"
 #include "jni.h"
 #include "jc_invoke.h"
@@ -43,15 +42,14 @@
 /* JAR loader class */
 #define JC_JAR_LOADER_CLASS	"org.dellroad.jc.vm.JarLoader"
 
-enum cmdline_option {
-	OPT_CLASSPATH = 1,
-	OPT_LIBRARYPATH,
-	OPT_BOOTCLASSPATH,
-	OPT_JAR,
-	OPT_PROPERTY,
-	OPT_VERBOSE,
-	OPT_VERSION,
-	OPT_COMPATOPTS,
+/* Usage message */
+#define JC_USAGE		"jc [flag ...] <classname> [param ...]"
+
+struct flag_info {
+	char		sform;
+	const char	*lform;
+	const char	*arg;
+	const char	*desc;
 };
 
 struct flag_subst {
@@ -76,47 +74,32 @@ static const	char *const jc_verbose[] = {
 	NULL
 };
 
-/* Map command line option to VM args property */
-static const	char *const jc_opt2prop[] = {
-	[OPT_CLASSPATH]=	JAVA_CLASS_PATH,
-	[OPT_LIBRARYPATH]=	JAVA_LIBRARY_PATH,
-	[OPT_BOOTCLASSPATH]=	JAVA_BOOT_CLASS_PATH
-};
-
 /* Command line options */
-static const	struct poptOption jc_popt_options[] = {
-    {	"classpath",		'c', POPT_ARG_STRING, NULL, OPT_CLASSPATH,
-	"Set application class loader search path", "path" },
-    {	"bootclasspath",	'b', POPT_ARG_STRING, NULL, OPT_BOOTCLASSPATH,
-	"Set bootstrap class loader search path", "path" },
-    {	"librarypath",		'l', POPT_ARG_STRING, NULL, OPT_LIBRARYPATH,
-	"Set native library search path", "path" },
-    {	"property",		'p', POPT_ARG_STRING, NULL, OPT_PROPERTY,
-	"Set a system property", "name=value" },
-    {	"verbose",		'v', POPT_ARG_STRING, NULL, OPT_VERBOSE,
-	"Enable verbose output: "
-		" class=Class loading"
-		", jni=Native libraries"
-		", gc=Garbage collection"
-		", exceptions=Exceptions"
-		", resolution=Class resolution"
-		", jni-invoke=Native method calls"
-		", init=Class initialization"
-		".",
-		"opt1,opt2,..." },
-    {	"jar",			'j', POPT_ARG_NONE, NULL, OPT_JAR,
-	"Execute main class of JAR file", NULL },
-    {	"show-options",		'X', POPT_ARG_NONE,   NULL, OPT_COMPATOPTS,
-	"Show additional options", NULL },
-    {	"version",		'V', POPT_ARG_NONE,   NULL, OPT_VERSION,
-	"Display version and exit", NULL },
-#ifndef __CYGWIN__
-	POPT_AUTOHELP
-#endif
-	POPT_TABLEEND
+static const	struct flag_info jc_options[] = {
+    {	'c', "classpath",	"path",
+    	"Set application class loader search path" },
+    {	'b', "bootclasspath",	"path",
+	"Set bootstrap class loader search path" },
+    {	'l', "librarypath",	"path",
+	"Set native library search path" },
+    {	'p', "property",	"name=value",
+	"Set a system property" },
+    {	'v', "verbose",		"opt1,opt2,...",
+	"Enable verbose output: class=Class loading,\n"
+	"jni=Native libraries, gc=Garbage collection,\n"
+	"exceptions=Exceptions, resolution=Class resolution\n"
+	"jni-invoke=Native method calls,\n"
+	"init=Class initialization" },
+    {	'j', "jar",		NULL,
+	"Execute main class of JAR file" },
+    {	'X', "show-options",	NULL,
+	"Show additional options" },
+    {	'V', "version",		NULL,
+	"Display version and exit" },
+    {	'?', "help",		NULL,
+	"Display this help information" },
+    {	0, NULL, NULL, NULL }
 };
-static const	int jc_num_options
-			= sizeof(jc_popt_options) / sizeof(*jc_popt_options);
 
 /* JDK-compatible equivalent command line arguments */
 static const struct flag_subst jdk_flags[] = {
@@ -138,10 +121,9 @@ static const struct flag_subst jdk_flags[] = {
 };
 
 /* Internal functions */
-static int	jc_run(JNIEnv *env, const char *main_class,
-			int ac, const char **av);
-static int	jc_read_options(_jc_printer *printer, poptContext pctx,
-			const char *path);
+static int	jc_run(JNIEnv *env, const char *main_class, int ac, char **av);
+static int	jc_read_options(_jc_printer *printer, int *acp,
+			char ***avp, const char *path);
 static int	jc_process_verbose(JavaVMInitArgs *args,
 			_jc_printer *printer, const char *value);
 static int	jc_add_vm_property(JavaVMInitArgs *args, _jc_printer *printer,
@@ -165,20 +147,16 @@ _jc_invoke(int orig_ac, const char **orig_av,
 {
 	JavaVMInitArgs vm_args;
 	int rtn = _JC_RETURN_ERROR;
-	poptContext pctx = NULL;
 	jboolean jar = JNI_FALSE;
 	const char *classpath = ".";
 	const char *main_class;
 	const char *home_dir;
 	JavaVM *vm = NULL;
 	JNIEnv *env = NULL;
-	const char **params;
 	char **av = NULL;
-	int num_params;
 	char *temp;
 	void *envp;
 	int ac = 0;
-	int op;
 	int i;
 
 	/* Copy arguments so we can modify them */
@@ -206,21 +184,20 @@ _jc_invoke(int orig_ac, const char **orig_av,
 	/* Allow JDK-compatible command line flags */
 	for (i = 1; i < ac && *av[i] == '-'; i++) {
 		const char *const flag = av[i];
+		const struct flag_info *opt;
 		int j;
 
 		/* Skip normal options */
-		for (j = 0; j < jc_num_options; j++) {
-			const struct poptOption *const op = &jc_popt_options[j];
-
-			if ((op->longName != NULL
-			      && strcmp(flag, op->longName) == 0)
-			    || (flag[1] == op->shortName && flag[2] == '\0')) {
-				if (op->argInfo != POPT_ARG_NONE)
+		for (opt = jc_options; opt->sform != '\0'; opt++) {
+			if ((opt->lform != NULL
+			      && strcmp(flag, opt->lform) == 0)
+			    || (flag[1] == opt->sform && flag[2] == '\0')) {
+				if (opt->arg != NULL)
 					i++;
 				break;
 			}
 		}
-		if (j < jc_num_options)
+		if (opt->sform != '\0')
 			continue;
 
 		/* Handle -D flag (we have to separate & insert) */
@@ -310,17 +287,8 @@ _jc_invoke(int orig_ac, const char **orig_av,
 		}
 	}
 
-	/* Create option parsing context */
-	if ((pctx = poptGetContext(NULL, ac, (const char **)av,
-	    jc_popt_options, POPT_CONTEXT_POSIXMEHARDER)) == NULL) {
-		jc_print(printer, stderr, "jc: %s: %s\n",
-		    "poptGetContext", strerror(errno));
-		goto done;
-	}
-	poptSetOtherOptionHelp(pctx, "[flag ...] <classname> [param ...]");
-
 	/* Apply system-wide options */
-	if (jc_read_options(printer, pctx, JC_GLOBAL_CONFIG) != JNI_OK)
+	if (jc_read_options(printer, &ac, &av, JC_GLOBAL_CONFIG) != JNI_OK)
 		goto done;
 
 	/* Apply user options */
@@ -340,7 +308,7 @@ _jc_invoke(int orig_ac, const char **orig_av,
 		memcpy(path + hd_len + 1, JC_USER_CONFIG, cf_len + 1);
 
 		/* Apply user-specific options */
-		if (jc_read_options(printer, pctx, path) != JNI_OK) {
+		if (jc_read_options(printer, &ac, &av, path) != JNI_OK) {
 			free(path);
 			goto done;
 		}
@@ -348,27 +316,71 @@ _jc_invoke(int orig_ac, const char **orig_av,
 	}
 
 	/* Parse command line options */
-	while ((op = poptGetNextOpt(pctx)) > 0) {
-		const char *const value = poptGetOptArg(pctx);
+	for (i = 1; i < ac && av[i][0] == '-'; i++) {
+		const struct flag_info *opt;
+		const char *value = NULL;
 
-		switch (op) {
-		case OPT_CLASSPATH:
+		/* Match the flag */
+		switch (av[i][1]) {
+		case '-':
+			if (av[i][2] == '\0') {
+				opt = NULL;
+				i++;
+				break;
+			}
+			for (opt = jc_options; opt->sform != '\0'
+			    && strcmp(av[i] + 2, opt->lform) != 0; opt++);
+			break;
+		default:
+			for (opt = jc_options; opt->sform != '\0'
+			    && opt->sform != av[i][1]; opt++);
+			break;
+		}
+
+		/* Done parsing flags? */
+		if (opt == NULL)
+			break;
+
+		/* Unknown flag? */
+		if (opt->sform == '\0') {
+			jc_print(printer, stderr, "jc: Unknown flag"
+			    " \"%s\"\n", av[i]);
+usage:			jc_print(printer, stderr, "jc: Usage: %s\n", JC_USAGE);
+			jc_print(printer, stderr, "jc: %s\n",
+			     "Try \"jc --help\" for help");
+			goto done;
+		}
+
+		/* Need to get a parameter? */
+		if (opt->arg != NULL) {
+			if (i == ac - 1) {
+				jc_print(printer, stderr, "jc: missing"
+				    " argument to flag \"%s\"\n", av[i]);
+				goto usage;
+			}
+			value = av[++i];
+		}
+
+		/* Handle flag */
+		switch (opt->sform) {
+		case 'c':
 			classpath = value;
 			break;
-		case OPT_LIBRARYPATH:
-		case OPT_BOOTCLASSPATH:
+		case 'l':
+		case 'b':
 		    {
-			const char *const name = jc_opt2prop[op];
+			const char *const name = (opt->sform == 'b') ?
+			    JAVA_BOOT_CLASS_PATH : JAVA_LIBRARY_PATH;
 
 			if (jc_add_vm_property(&vm_args, printer,
 			    name, strlen(name), value) != JNI_OK)
 				goto done;
 			break;
 		    }
-		case OPT_JAR:
+		case 'j':
 			jar = JNI_TRUE;
 			break;
-		case OPT_PROPERTY:
+		case 'p':
 		    {
 			const char *eq;
 
@@ -383,7 +395,7 @@ _jc_invoke(int orig_ac, const char **orig_av,
 				goto done;
 			break;
 		    }
-		case OPT_VERBOSE:
+		case 'v':
 		    {
 			int status;
 
@@ -394,7 +406,7 @@ _jc_invoke(int orig_ac, const char **orig_av,
 				goto done;
 			break;
 		    }
-		case OPT_VERSION:
+		case 'V':
 			jc_print(printer, stdout,
 			    "JC virtual machine version %s (r%lu)\n"
 			    "Copyright (C) 2003-2006 Archie L. Cobbs\n"
@@ -402,10 +414,11 @@ _jc_invoke(int orig_ac, const char **orig_av,
 			    _jc_svn_revision);
 			rtn = _JC_RETURN_NORMAL;
 			goto done;
-		case OPT_COMPATOPTS:
+		case 'X':
 			jc_print(printer, stdout, "Additional options:\n");
 			jc_print(printer, stdout, "  %-16s", "-Dfoo=bar");
-			jc_print(printer, stdout, "Same as -p foo=bar\n");
+			jc_print(printer, stdout,
+			    "Same as --property %s=%s\n", "foo", "bar");
 			for (i = 0; jdk_flags[i].jdk != NULL; i++) {
 				const struct flag_subst *const sub
 				    = &jdk_flags[i];
@@ -413,21 +426,16 @@ _jc_invoke(int orig_ac, const char **orig_av,
 				jc_print(printer, stdout, "  %-16s", sub->jdk);
 				if (sub->prop == NULL) {
 					const char *jop = sub->jc;
-					int j;
 
 					if (sub->jc == NULL) {
 						jc_print(printer, stdout,
 						    "Ignored\n");
 						continue;
 					}
-					for (j = 0; jc_popt_options[j].longName
-					    != NULL; j++) {
-					    	const struct poptOption *const
-						  pop = &jc_popt_options[j];
-
-						if (sub->jc[1]
-						    == pop->shortName) {
-						    	jop = pop->longName;
+					for (opt = jc_options;
+					    opt->sform != '\0'; opt++) {
+						if (sub->jc[1] == opt->sform) {
+						    	jop = opt->lform;
 							break;
 						}
 					}
@@ -438,43 +446,56 @@ _jc_invoke(int orig_ac, const char **orig_av,
 					continue;
 				}
 				jc_print(printer, stdout,
-				    "Same as -p %s=%s\n", sub->prop,
+				    "Same as --property %s=%s\n", sub->prop,
 				    sub->jc != NULL ? sub->jc : "");
+			}
+			rtn = _JC_RETURN_NORMAL;
+			goto done;
+		case '?':
+			jc_print(printer, stderr, "jc: Usage: %s\n", JC_USAGE);
+			for (opt = jc_options; opt->sform != '\0'; opt++) {
+				const char *s;
+				const char *t;
+				char buf[30];
+
+				snprintf(buf, sizeof(buf),
+				    "  -%c --%s", opt->sform, opt->lform);
+				if (opt->arg != NULL) {
+					snprintf(buf + strlen(buf),
+					    sizeof(buf) - strlen(buf),
+					    " %s", opt->arg);
+				}
+				for (s = opt->desc; *s != '\0'; s = t) {
+					if ((t = strchr(s, '\n')) == NULL)
+						t = s + strlen(s);
+					jc_print(printer, stderr,
+					    "%-*s%.*s\n", sizeof(buf),
+					    buf, t - s, s);
+					if (*t != '\0')
+						t++;
+					*buf = '\0';
+				}
 			}
 			rtn = _JC_RETURN_NORMAL;
 			goto done;
 		}
 	}
-	if (op != -1) {
-		jc_print(printer, stderr, "jc: unknown option \"%s\": %s\n",
-		    poptBadOption(pctx, 0), poptStrerror(op));
+	if (i == ac)
 		goto usage;
-	}
-
-	/* Get class name and parameters */
-	params = poptGetArgs(pctx);
-	for (num_params = 0; params != NULL
-	    && params[num_params] != NULL; num_params++);
-	if (num_params == 0) {
-		poptPrintHelp(pctx, stderr, 0);
-		goto done;
-	}
 
 	/* For -jar, prepend JAR file to classpath */
 	if (jar) {
-		if ((temp = alloca(strlen(params[0]) + 1
+		if ((temp = alloca(strlen(av[i]) + 1
 		    + strlen(classpath) + 1)) == NULL) {
 			jc_print(printer, stderr,
 			    "jc: %s: %s\n", "alloca", strerror(errno));
 			goto done;
 		}
-		sprintf(temp, "%s:%s", params[0], classpath);
+		sprintf(temp, "%s:%s", av[i], classpath);
 		classpath = temp;
 		main_class = JC_JAR_LOADER_CLASS;
-	} else {
-		main_class = *params++;
-		num_params--;
-	}
+	} else
+		main_class = av[i++];
 
 	/* Set classpath property */
 	if (jc_add_vm_property(&vm_args, printer, JAVA_CLASS_PATH,
@@ -496,37 +517,26 @@ _jc_invoke(int orig_ac, const char **orig_av,
 
 	/* Run program */
 	if ((rtn = jc_run(env, main_class,
-	    num_params, params)) == _JC_RETURN_EXCEPTION)
+	    ac - i, av + i)) == _JC_RETURN_EXCEPTION)
 		(*env)->ExceptionDescribe(env);
-
-	/* Free parsing context */
-	poptFreeContext(pctx);
-	pctx = NULL;
 
 done:
 	/* Clean up and return */
 	if (vm != NULL && (*vm)->DestroyJavaVM(vm) != 0)
 		warnx("DestroyJavaVM failed");
-	if (pctx != NULL)
-		poptFreeContext(pctx);
 	while (vm_args.nOptions > 0)
 		free(vm_args.options[--vm_args.nOptions].optionString);
 	free(vm_args.options);
 	while (ac > 0)
 		free(av[--ac]);
 	return rtn;
-
-usage:
-	/* Bad command line argument */
-	jc_print(printer, stderr, "jc: try \"jc --help\" for help\n");
-	goto done;
 }
 
 /*
  * Run the Java program.
  */
 static int
-jc_run(JNIEnv *env, const char *main_class, int ac, const char **av)
+jc_run(JNIEnv *env, const char *main_class, int ac, char **av)
 {
 	jclass string_class;
 	jarray param_array;
@@ -584,7 +594,7 @@ jc_run(JNIEnv *env, const char *main_class, int ac, const char **av)
  * to the supplied parsing context.
  */
 static int
-jc_read_options(_jc_printer *printer, poptContext pctx, const char *path)
+jc_read_options(_jc_printer *printer, int *acp, char ***avp, const char *path)
 {
 	char **options = NULL;
 	int num_options = 0;
@@ -592,7 +602,7 @@ jc_read_options(_jc_printer *printer, poptContext pctx, const char *path)
 	char line[1024];
 	int line_num;
 	FILE *fp;
-	int r;
+	int i;
 
 	/* Open file */
 	if ((fp = fopen(path, "r")) == NULL) {
@@ -607,6 +617,7 @@ jc_read_options(_jc_printer *printer, poptContext pctx, const char *path)
 	for (line_num = 1; fgets(line, sizeof(line), fp) != NULL; line_num++) {
 		size_t len = strlen(line);
 		char *opt;
+		char *eq;
 		char *s;
 
 		/* Check for line too long */
@@ -634,6 +645,12 @@ jc_read_options(_jc_printer *printer, poptContext pctx, const char *path)
 		    sizeof(*options), num_options) != JNI_OK)
 			goto done;
 
+		/* Check for equals sign */
+		if ((eq = strchr(s, '=')) != NULL) {
+			len = eq - s;
+			*eq++ = '\0';
+		}
+
 		/* Prepend '--' to the option */
 		if ((opt = malloc(2 + len + 1)) == NULL) {
 			jc_print(printer, stderr,
@@ -642,11 +659,23 @@ jc_read_options(_jc_printer *printer, poptContext pctx, const char *path)
 		}
 		opt[0] = '-';
 		opt[1] = '-';
-		memcpy(opt + 2, s, len);
-		opt[2 + len] = '\0';
+		strcpy(opt + 2, s);
 
 		/* Add option to the list */
 		options[num_options++] = opt;
+
+		/* Add argument too, if any */
+		if (eq != NULL) {
+			if (jc_extend_array(printer, &options,
+			    sizeof(*options), num_options) != JNI_OK)
+				goto done;
+			if ((opt = strdup(eq)) == NULL) {
+				jc_print(printer, stderr,
+				    "jc: %s: %s\n", "strdup", strerror(errno));
+				goto done;
+			}
+			options[num_options++] = opt;
+		}
 	}
 
 	/* Terminate option list with a NULL */
@@ -655,12 +684,11 @@ jc_read_options(_jc_printer *printer, poptContext pctx, const char *path)
 		goto done;
 	options[num_options] = NULL;
 
-	/* Insert options into parsing context */
-	if (num_options > 0
-	    && (r = poptStuffArgs(pctx, (const char **)options)) < 0) {
-		jc_print(printer, stderr, "jc: %s: %s\n",
-		    "poptStuffArgs", poptStrerror(r));
-		goto done;
+	/* Prepend options into command line */
+	for (i = 0; i < num_options; i++) {
+		if (jc_insert_opt(printer, acp,
+		    avp, i + 1, options[i]) != JNI_OK)
+			goto done;
 	}
 
 	/* OK */
