@@ -15,6 +15,8 @@
 
 package org.apache.harmony.eclipse.jdt.launching;
 
+import java.util.List;
+
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.launching.AbstractVMInstall;
 import org.eclipse.jdt.launching.IVMInstallType;
@@ -75,7 +77,7 @@ public class HyVMInstall extends AbstractVMInstall {
 		}
 
 		// Build a library location for the kernel classes
-		LibraryLocation kernel = kernelLocation(subdir, vminame);
+		LibraryLocation[] kernel = kernelLocation(subdir, vminame);
 		LibraryLocation[] stdDefaults = getVMInstallType()
 				.getDefaultLibraryLocations(getInstallLocation());
 
@@ -84,7 +86,7 @@ public class HyVMInstall extends AbstractVMInstall {
 		for (int i = 0; i < stdDefaults.length; i++) {
 			LibraryLocation location = stdDefaults[i];
 			if (location.getSystemLibraryPath().equals(
-					kernel.getSystemLibraryPath())) {
+					kernel[0].getSystemLibraryPath())) {
 				found = true;
 				break;
 			}
@@ -93,16 +95,23 @@ public class HyVMInstall extends AbstractVMInstall {
 		if (found) {
 			super.setLibraryLocations(null);
 		} else {
-			LibraryLocation[] allLibs = new LibraryLocation[stdDefaults.length + 1];
-			allLibs[0] = kernel;
-			System.arraycopy(stdDefaults, 0, allLibs, 1, stdDefaults.length);
+			LibraryLocation[] allLibs = new LibraryLocation[kernel.length + stdDefaults.length];
+			System.arraycopy(kernel, 0, allLibs, 0, kernel.length);
+			System.arraycopy(stdDefaults, 0, allLibs, kernel.length, stdDefaults.length);
 			super.setLibraryLocations(allLibs);
 		}
 	}
 
-	private LibraryLocation kernelLocation(String subdir, String vmname) {
-		return ((HyVMInstallType) getVMInstallType()).getKernelLocation(
+	private LibraryLocation[] kernelLocation(String subdir, String vmname) {
+		List kernelLibraries = ((HyVMInstallType) getVMInstallType()).getKernelLibraries(
 				getInstallLocation(), subdir, vmname);
+
+		LibraryLocation[] kernelLibrariesLocation = new LibraryLocation[kernelLibraries.size()];
+		for (int i = 0; i < kernelLibraries.size(); i++) {
+			kernelLibrariesLocation[i] = (LibraryLocation) kernelLibraries.get(i);
+		}
+		
+		return kernelLibrariesLocation;
 	}
 
 	/*

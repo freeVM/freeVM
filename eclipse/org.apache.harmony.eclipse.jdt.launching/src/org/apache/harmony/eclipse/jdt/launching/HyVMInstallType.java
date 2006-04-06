@@ -111,9 +111,9 @@ public class HyVMInstallType extends AbstractVMInstallType {
 	public LibraryLocation[] getDefaultLibraryLocations(File installLocation) {
 
 		// Find kernel types
-		LibraryLocation kernel = getKernelLocation(installLocation,
+		List kernelLibraries = getKernelLibraries(installLocation,
 				"default", "clearvm"); //$NON-NLS-1$ //$NON-NLS-2$
-		if (kernel == null) {
+		if (kernelLibraries == null) {
 			return new LibraryLocation[] {};
 		}
 
@@ -126,13 +126,16 @@ public class HyVMInstallType extends AbstractVMInstallType {
 		List extensions = getExtensionLibraries(installLocation);
 
 		// Combine the libraries result
-		LibraryLocation[] allLibraries = new LibraryLocation[1
+		LibraryLocation[] allLibraries = new LibraryLocation[kernelLibraries.size()
 				+ bootLibraries.size() + extensions.size()];
 		
 		int libraryCount = 0;
 
-		// Start with the kernel library location
-		allLibraries[libraryCount++] = kernel;
+		// Start with the kernel library locations
+		for (int i = 0; i < kernelLibraries.size(); i++) {
+			allLibraries[libraryCount++] = (LibraryLocation) kernelLibraries
+					.get(i);
+		}
 
 		// Append the boot libraries
 		for (int i = 0; i < bootLibraries.size(); i++) {
@@ -167,7 +170,7 @@ public class HyVMInstallType extends AbstractVMInstallType {
 			return null;
 		}
 
-		List bootOrder = findBootOrder(bootclasspathProperties);
+		List bootOrder = findBootOrder(bootclasspathProperties, "bootclasspath.");
 		if (bootOrder == null) {
 			return null;
 		}
@@ -207,11 +210,16 @@ public class HyVMInstallType extends AbstractVMInstallType {
 				sourcePath = new Path(""); //$NON-NLS-1$
 			} else {
 				File sourceFile = new File(bootDirectory, sourceLocation);
-				try {
-					sourcePath = new Path(sourceFile.getCanonicalPath());
-				} catch (IOException exception1) {
-					// If we cannot find the source, we default to missing token
-					sourcePath = new Path(""); //$NON-NLS-1$
+				if (!sourceFile.exists()) {
+					// If we cannot find the source jar, we default to missing token
+					sourcePath = new Path("");
+				} else {
+					try {
+						sourcePath = new Path(sourceFile.getCanonicalPath());
+					} catch (IOException exception1) {
+						// If we cannot find the source, we default to missing token
+						sourcePath = new Path(""); //$NON-NLS-1$
+					}
 				}
 			}
 
@@ -231,24 +239,27 @@ public class HyVMInstallType extends AbstractVMInstallType {
 		return bootLibraries;
 	}
 
-	private List findBootOrder(Properties bootclasspathProperties) {
+	private List findBootOrder(Properties bootclasspathProperties, final String propertyStartsWith) {
 
-		// Only keep keys that are "bootclasspath.<something>"
+		// Only keep keys that are propertyStartsWith."<something>"
 		Set allKeys = bootclasspathProperties.keySet();
 		Set bootKeys = new HashSet(allKeys.size());
 		for (Iterator iter = allKeys.iterator(); iter.hasNext();) {
 			String key = (String) iter.next();
-			if ((key.startsWith("bootclasspath.") && //$NON-NLS-1$
-			(key.indexOf('.', 14) == -1))) { // Ensure there are no more '.'s
+			if ((key.startsWith(propertyStartsWith) &&
+				(key.indexOf('.', propertyStartsWith.length()) == -1))) { // Ensure there are no more '.'s
 				bootKeys.add(key);
 			}
 		}
+		
 		// Now order the keys by their numerical postfix.
 		SortedSet bootOrder = new TreeSet(new Comparator() {
 			public int compare(Object object1, Object object2) {
-				// Here '14' is the offset past "bootclasspath."
-				String str1 = ((String) object1).substring(14);
-				String str2 = ((String) object2).substring(14);
+				// Use propertyStartsWith.length() to get the offset for the end of
+				// e.g. "bootclasspath."
+				String str1 = ((String) object1).substring(propertyStartsWith.length());
+				String str2 = ((String) object2).substring(propertyStartsWith.length());
+				
 				// Puts entries to the end, in any order, if they do not
 				// parse.
 				int first, second;
@@ -322,12 +333,13 @@ public class HyVMInstallType extends AbstractVMInstallType {
 		return ext;
 	}
 
-	
-	LibraryLocation getKernelLocation(File installLocation, String vmdir,
+	List getKernelLibraries(File installLocation, String vmdir,
 			String vmname) {
 		Properties kernelProperties = new Properties();
-		File propertyFile = new File(installLocation, "bin" + File.separator + //$NON-NLS-1$
-				vmdir + File.separator + vmname + ".properties"); //$NON-NLS-1$
+		File kernelDirectory = new File(installLocation, "bin" + File.separator +
+				vmdir);
+		File propertyFile = new File(kernelDirectory, vmname + ".properties"); //$NON-NLS-1$
+				
 		try {
 			FileInputStream propsFile = new FileInputStream(propertyFile);
 			kernelProperties.load(propsFile);
@@ -337,30 +349,103 @@ public class HyVMInstallType extends AbstractVMInstallType {
 					.println("Warning: could not open properties file " + propertyFile.getPath()); //$NON-NLS-1$
 			return null;
 		}
+		
+		// If we have a VME v1 style kernel (ie single kernel) then read its location
+		if (kernelProperties.getProperty("bootclasspath.kernel") != null) {
+			List kernelLibraries = new ArrayList(1);
+					
+			String libStr = tokenReplace(installLocation, kernelProperties
+					.getProperty("bootclasspath.kernel")); //$NON-NLS-1$
+			IPath libraryPath = new Path(libStr);
 
-		String libStr = tokenReplace(installLocation, kernelProperties
-				.getProperty("bootclasspath.kernel")); //$NON-NLS-1$
-		IPath libPath = new Path(libStr);
+			String srcStr = tokenReplace(installLocation, kernelProperties
+					.getProperty("bootclasspath.source.kernel")); //$NON-NLS-1$
+			IPath sourcePath;
+			if (srcStr == null) {
+				sourcePath = Path.EMPTY;
+			} else {
+				File sourceFile = new File(srcStr);
+				if (!sourceFile.exists()) {
+					sourcePath = Path.EMPTY;
+				} else {
+					sourcePath = new Path(srcStr);
+				}
+			}
 
-		String srcStr = tokenReplace(installLocation, kernelProperties
-				.getProperty("bootclasspath.source.kernel")); //$NON-NLS-1$
-		IPath srcPath;
-		if (srcStr == null) {
-			srcPath = Path.EMPTY;
-		} else {
-			srcPath = new Path(srcStr);
+			String rootStr = tokenReplace(installLocation, kernelProperties
+					.getProperty("bootclasspath.source.packageroot.kernel")); //$NON-NLS-1$
+			IPath sourceRootPath;
+			if (rootStr == null) {
+				sourceRootPath = Path.ROOT;
+			} else {
+				sourceRootPath = new Path(rootStr);
+			}
+			
+			// We have everything we need to build up a library location
+			LibraryLocation libLocation = new LibraryLocation(libraryPath,
+					sourcePath, sourceRootPath);
+			kernelLibraries.add(libLocation);
+
+			return kernelLibraries;
+		} // endif VME v1
+		
+		
+		// We have a VME v2 style split kernel (luni and security). Prepare to read in
+		// multiple kernel locations 
+		List bootOrder = findBootOrder(kernelProperties, "bootclasspath.kernel.");
+		if (bootOrder == null) {
+			return null;
 		}
+		
+		List kernelLibraries = new ArrayList(bootOrder.size());
 
-		String rootStr = tokenReplace(installLocation, kernelProperties
-				.getProperty("bootclasspath.source.packageroot.kernel")); //$NON-NLS-1$
-		IPath rootPath;
-		if (rootStr == null) {
-			rootPath = Path.ROOT;
-		} else {
-			rootPath = new Path(rootStr);
+		// Interpret the key values, in order, as library locations
+		for (Iterator bootOrderKeyItr = bootOrder.iterator(); bootOrderKeyItr
+				.hasNext();) {
+			String bootOrderKey = (String) bootOrderKeyItr.next();
+			// Here '21' is the offset past "bootclasspath.kernel."
+			String orderSuffix = bootOrderKey.substring(21);
+			
+			String kernelLibraryLocation = tokenReplace(installLocation, kernelProperties
+					.getProperty(bootOrderKey)); //$NON-NLS-1$
+			File libraryFile = new File(kernelLibraryLocation);
+			if (!libraryFile.exists()) {
+				// Ignore library descriptions for files that don't exist
+				continue;
+			}
+			IPath libraryPath = new Path(kernelLibraryLocation);
+
+			String sourceLocation = tokenReplace(installLocation, kernelProperties
+					.getProperty("bootclasspath.kernel.source." + orderSuffix)); //$NON-NLS-1$
+			IPath sourcePath;
+			if (sourceLocation == null) {
+				sourcePath = Path.EMPTY;
+			} else {
+				File sourceFile = new File(sourceLocation);
+				if (!sourceFile.exists()) {
+					sourcePath = Path.EMPTY;
+				} else {
+					sourcePath = new Path(sourceLocation);
+				}
+			}
+
+			String rootStr = tokenReplace(installLocation, kernelProperties
+					.getProperty("bootclasspath.kernel.source.packageroot." + orderSuffix)); //$NON-NLS-1$
+			IPath sourceRootPath;
+			if (rootStr == null) {
+				sourceRootPath = Path.ROOT;
+			} else {
+				sourceRootPath = new Path(rootStr);
+			}
+			
+			// We have everything we need to build up a library location
+			LibraryLocation libLocation = new LibraryLocation(libraryPath,
+					sourcePath, sourceRootPath);
+			kernelLibraries.add(libLocation);
+			
 		}
-
-		return new LibraryLocation(libPath, srcPath, rootPath);
+		return kernelLibraries;
+		
 	}
 
 	private String tokenReplace(File installLocation, String str) {
