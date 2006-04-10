@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use strict;
+use Getopt::Std;
 use POSIX qw/strftime/;
 use File::Find;
 use Cwd;
@@ -11,19 +12,28 @@ keywdscan.pl - Perl script for keyword scanning
 
 =head1 SYNOPSIS
 
-  #Scan using the file "config_file"
+  # Scan using the file "config_file"
   keywdscan.pl config_file
+  
+  # Scan ignoring case using the root "/harmony", keywords in
+  # "keywords.txt", with output to "hykeywords.csv" and warn about the
+  # types "zip,jar"
+  keywdscan.pl -i -r /harmony -k keywords.txt -o hykeywords.csv -t zip,jar
+  
   
 =head1 DESCRIPTION
 
-Takes one command line parameter - the name of the configuration file. See C<KEYWD_CONFIG> for a sample. If no
-file name is supplied it will look for a file called C<KEYWD_CONFIG> in the same directory as it's being run from.
+Takes one command line parameter - the name of the configuration
+file. See C<KEYWD_CONFIG> for a sample. If no file name is supplied it
+will look for a file called C<KEYWD_CONFIG> in the same directory as
+it's being run from.
 
-The list of words to be scanned for are read from C< KeywordInputFileName>.
+The list of words to be scanned for are read from C<KeywordInputFileName>.
 
-Scans source code files in directories under C<ScanRootDirectory> looking for occurrences of keywords.
-Will scan all text files and (optionally) warn about the existence of files which may contain source (eg gzip, tar)
-
+Scans source code files in directories under C<ScanRootDirectory>
+looking for occurrences of keywords.  Will scan all text files and
+(optionally) warn about the existence of files which may contain
+source (eg gzip, tar)
 
 Output is written to C<ReportFileName> as a CSV file in the form:
 
@@ -32,7 +42,8 @@ File name
    Line number, line, matched word
    ....
    
-Note that in "line" any commas are changed to : so as to preserve the format of the CSV file.
+Note that in "line" any commas are changed to : so as to preserve the
+format of the CSV file.
 
 Case sensitive searching is optional.
 
@@ -40,26 +51,8 @@ Case sensitive searching is optional.
 
 =cut
 
-#
-my $config_file = shift;
-
-if ( !defined $config_file ) {
-	my $config_path = getcwd();
-	print "Looking for config file in local directory $config_path\n";
-	$config_file = catfile( $config_path, "KEYWD_CONFIG" );
-}
-
-if ( !-e "$config_file" ) {
-	die "Config file ($config_file)does not exist.\n";
-}
-
-#
-#
-# Read the config file
-#
-#
-print "Using Config file $config_file \n";
-open( CONF, "$config_file" ) || die "Can't open KEYWD_CONFIG file $!\n";
+my %opt;
+getopts('ir:o:k:t:', \%opt);
 
 my $keywd_infile;
 my $keywd_outfile;
@@ -68,13 +61,37 @@ my $case_ins = 0;
 my @filetypes;
 my %warning;
 
-while (<CONF>) {
+my $config_file = shift;
+
+if ( !defined $config_file ) {
+	my $config_path = getcwd();
+	print "Looking for config file in local directory $config_path\n";
+	$config_file = catfile( $config_path, "KEYWD_CONFIG" );
+}
+
+if ( -e "$config_file" ) {
+  #	die "Config file ($config_file)does not exist.\n";
+  
+  # Read the config file
+  #
+  print "Using Config file $config_file \n";
+  open( CONF, "$config_file" ) || die "Can't open KEYWD_CONFIG file $!\n";
+  while (<CONF>) {
 	if (/^KeywordInputFileName:(.*)/) { $keywd_infile  = $1; }
 	if (/^ReportFileName:(.*)/)       { $keywd_outfile = $1; }
 	if (/^ScanRootDirectory:(.*)/)    { $scan_root     = $1; }
 	if (/^CaseInsensitive/)           { $case_ins      = 1; }
 	if (/^FileTypes:(.*)/)            { @filetypes     = split /,/, $1; }
+  }	
+} else {
+  print "No Config file found \n";
 }
+
+$case_ins = 1 if (exists $opt{'i'});
+$scan_root = $opt{'r'} if (exists $opt{'r'});
+$keywd_outfile = $opt{'o'} if (exists $opt{'o'});
+$keywd_infile = $opt{'k'} if (exists $opt{'k'});
+@filetypes = split /,/, $opt{'t'} if (exists $opt{'t'});
 
 #
 # Get date
