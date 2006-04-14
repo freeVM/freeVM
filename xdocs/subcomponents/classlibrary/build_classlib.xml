@@ -61,7 +61,13 @@
 	    		</ul>
 		    </li>
 		</ul>
-	</p>
+
+        <i><b>Please Note :</b></i> Please use <a href="http://ant.apache.org">Ant</a>
+        version 1.6.5 or later - earlier versions
+        (ex. 1.6.2) have been reported to handle the .svn directory incorractly, resulting
+        in double-scanning file systems during build.
+
+    </p>
 	<p>
 		You can build the latest version of the class library code in three simple steps:
 		<ol>
