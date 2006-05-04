@@ -37,7 +37,7 @@ limitations under the License.
             
             
             
-            <title>Apache Harmony - Apache Harmony</title>
+            <title>Apache Harmony - Testing conventions in the Apache Harmony Classlib</title>
         </head>
 
         <body bgcolor="#ffffff" text="#000000" link="#525D76">        
@@ -195,34 +195,59 @@ limitations under the License.
                                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#525D76">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Apache Harmony Class Library"><strong>Apache Harmony Class Library</strong></a>
+          <a name="Testing conventions used in the Apache Harmony Class Library"><strong>Testing conventions used in the Apache Harmony Class Library</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
                                     <p>
-		The following documentation links are specific to the class library effort underway at Apache Harmony.
+		This document describes placement and package naming conventions for
+                different types of Harmony class library tests.
+	</p>
+                                                <p>
+		The Harmony class library code is organized into modules that might have their own
+                specifics. This document provides general guidlines and recomendations that might be
+                adapted/modified to reflect module specifics.
 	</p>
                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#828DA6">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Developing and Building the code"><strong>Developing and Building the code</strong></a>
+          <a name="Location of the tests in the directory tree"><strong>Location of the tests in the directory tree</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
-                                    <ul>
-		<li><a href="build_classlib.html">Building the Classlibrary Code</a>
-			<p>
-				Describes how to download and build the class library code from source.
-			</p>
-			</li>
-		<li><a href="dev_eclipse.html">Development with the Eclipse IDE</a>
-			<p>
-				Describes how to set up Eclipse to develop the class library code.
-			</p>
-			</li>
-	</ul>
+                                    <p>
+		Each Java class belongs to a specific module of the Harmony class library. Tests against
+                classes belonging to a module belong to the same module. Tests, their resources, and support
+                classes are located under
+			<blockquote>
+				<code>&lt;modulename&gt;/src/tests</code>
+			</blockquote>
+		Tests that are specific for Harmony, testing Harmony implementation details, and may fail
+                on RI or other compliant implementations are separated from the imlpementation-independent
+                tests that must pass on RI and all conformant implementations. 
+			<blockquote>
+				<code>&lt;modulename&gt;/src/tests/<b>impl</b></code> - Harmony specific tests<br />
+				<code>&lt;modulename&gt;/src/tests/<b>api</b></code> - Implementation-independent tests
+			</blockquote>
+                Special-purpose tests like stress tests or tests that require special configuration are 
+                separated from general-purpose tests.
+			<blockquote>
+				<code>&lt;modulename&gt;/src/tests/<b>stress</b></code>
+			</blockquote>
+
+                Tests are not separated by functionality under test, e.g. tests against <code>clone()</code>
+                methods are <b>not</b> separated from tests against <code>equals()</code> methods.
+
+                Some modules might have platform specific tests that are in the case separated on a directory 
+                level:
+			<blockquote>
+				<code>&lt;modulename&gt;/src/tests/api/<b>common</b></code><br />
+				<code>&lt;modulename&gt;/src/tests/api/<b>windows</b></code><br />
+				<code>&lt;modulename&gt;/src/tests/api/<b>linux</b></code>
+			</blockquote>
+	</p>
                             </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>
@@ -230,64 +255,43 @@ limitations under the License.
                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#828DA6">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Project Conventions"><strong>Project Conventions</strong></a>
+          <a name="Package names for different types of the tests"><strong>Package names for different types of the tests</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
-                                    <ul>
-		<li><a href="pkgnaming.html">Java package naming guidelines</a>
-			<p>
-				Guidelines for Harmony package naming convention.
-			</p>
-			</li>
+                                    <p>
+		If the test is designed to be run from bootclasspath then its package is the same
+                as the package of the class under test
+	</p>
+                                                <p>
+		If the test is designed to be run from classpath then:<br />
+                If the package under test belongs to a public package (i.e. that is a part of the API specification)
+                then the test's package is 
+			<blockquote>
+				<code>org.apache.harmony.&lt;modulename&gt;.tests.<b>&lt;package under test&gt;</b></code>
+			</blockquote>
+                Example: 
+			<blockquote>
+				<code>org.apache.harmony.luni.tests.<b>java.lang</b></code><br />
+				<code>org.apache.harmony.crypto.tests.<b>javax.crypto</b></code><br />
+				<code>org.apache.harmony.auth.tests.<b>org.ietf.jgss</b></code>
+			</blockquote>
 
-		<li><a href="testing.html">Testing conventions in the Apache Harmony Classlib</a>
-			<p>
-                                Placement and package naming conventions for different 
-                                types of Harmony class library tests.
-
-			</p>
-			</li>
-
-		<li><a href="compat.html">Compatibility guidelines</a>
-			<p>
-				<b>Proposed</b> guidelines for ensuring that the Harmony class library is compatible
-				with other Java implementations.
-			</p>
-			</li>
-	</ul>
-                            </blockquote>
-      </td></tr>
-      <tr><td><br/></td></tr>
-    </table>
-                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
-      <tr><td bgcolor="#828DA6">
-        <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Architecture and guides"><strong>Architecture and guides</strong></a>
-        </font>
-      </td></tr>
-      <tr><td>
-        <blockquote>
-                                    <ul>
-		<li>
-<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/vm_doc/html/index.html">
-			Class library porting documentation</a>
-			<p>
-				A porting guide aimed at developers interested in porting the classlib
-				code to a new VM.
-			</p></li>
-		<li>
-<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/vm_doc/html/group__Port.html">
-			The Harmony class library port layer</a>
-			<p>
-				A description of the functions in the class library portlayer aimed at
-				developers who are writing JNI code for use by the Harmony class libraries
-				and developers who are interested in porting the classlib code to a new
-				operating system.
-			</p>
-			</li>
-	</ul>
+                If the package under test belongs to <code>org.apache.harmony</code> namespace so that class's package is
+			<blockquote>
+				<code>org.apache.harmony.&lt;modulename&gt;.<b>&lt;rest of the package name&gt;</b></code>
+			</blockquote>
+                then the test's package is 
+			<blockquote>
+				<code>org.apache.harmony.&lt;modulename&gt;.tests.<b>&lt;rest of the package name&gt;</b></code>
+			</blockquote>
+                Example: 
+			<blockquote>
+				<code>org.apache.harmony.luni.internal.net.www.protocol</code> - package under test<br />
+				<code>org.apache.harmony.luni.tests.internal.net.www.protocol</code> - package for the test
+			</blockquote>
+	</p>
                             </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>

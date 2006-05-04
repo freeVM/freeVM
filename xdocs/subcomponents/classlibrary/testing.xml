@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+    Copyright 2006 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Testing conventions in the Apache Harmony Classlib</title>
+  <author email="harmony-dev@incubator.apache.org">Harmony Documentation Team</author>
+ </properties>
+
+<body>
+
+<section name="Testing conventions used in the Apache Harmony Class Library">
+	<p>
+		This document describes placement and package naming conventions for
+                different types of Harmony class library tests.
+	</p>
+	<p>
+		The Harmony class library code is organized into modules that might have their own
+                specifics. This document provides general guidlines and recomendations that might be
+                adapted/modified to reflect module specifics.
+	</p>
+
+<subsection name="Location of the tests in the directory tree">
+	<p>
+		Each Java class belongs to a specific module of the Harmony class library. Tests against
+                classes belonging to a module belong to the same module. Tests, their resources, and support
+                classes are located under
+			<blockquote>
+				<code>&lt;modulename&gt;/src/tests</code>
+			</blockquote>
+		Tests that are specific for Harmony, testing Harmony implementation details, and may fail
+                on RI or other compliant implementations are separated from the imlpementation-independent
+                tests that must pass on RI and all conformant implementations. 
+			<blockquote>
+				<code>&lt;modulename&gt;/src/tests/<b>impl</b></code> - Harmony specific tests<br/>
+				<code>&lt;modulename&gt;/src/tests/<b>api</b></code> - Implementation-independent tests
+			</blockquote>
+                Special-purpose tests like stress tests or tests that require special configuration are 
+                separated from general-purpose tests.
+			<blockquote>
+				<code>&lt;modulename&gt;/src/tests/<b>stress</b></code>
+			</blockquote>
+
+                Tests are not separated by functionality under test, e.g. tests against <code>clone()</code>
+                methods are <b>not</b> separated from tests against <code>equals()</code> methods.
+
+                Some modules might have platform specific tests that are in the case separated on a directory 
+                level:
+			<blockquote>
+				<code>&lt;modulename&gt;/src/tests/api/<b>common</b></code><br/>
+				<code>&lt;modulename&gt;/src/tests/api/<b>windows</b></code><br/>
+				<code>&lt;modulename&gt;/src/tests/api/<b>linux</b></code>
+			</blockquote>
+	</p>
+</subsection>
+
+<subsection name="Package names for different types of the tests">
+	<p>
+		If the test is designed to be run from bootclasspath then its package is the same
+                as the package of the class under test
+	</p>
+	<p>
+		If the test is designed to be run from classpath then:<br/>
+                If the package under test belongs to a public package (i.e. that is a part of the API specification)
+                then the test's package is 
+			<blockquote>
+				<code>org.apache.harmony.&lt;modulename&gt;.tests.<b>&lt;package under test&gt;</b></code>
+			</blockquote>
+                Example: 
+			<blockquote>
+				<code>org.apache.harmony.luni.tests.<b>java.lang</b></code><br/>
+				<code>org.apache.harmony.crypto.tests.<b>javax.crypto</b></code><br/>
+				<code>org.apache.harmony.auth.tests.<b>org.ietf.jgss</b></code>
+			</blockquote>
+
+                If the package under test belongs to <code>org.apache.harmony</code> namespace so that class's package is
+			<blockquote>
+				<code>org.apache.harmony.&lt;modulename&gt;.<b>&lt;rest of the package name&gt;</b></code>
+			</blockquote>
+                then the test's package is 
+			<blockquote>
+				<code>org.apache.harmony.&lt;modulename&gt;.tests.<b>&lt;rest of the package name&gt;</b></code>
+			</blockquote>
+                Example: 
+			<blockquote>
+				<code>org.apache.harmony.luni.internal.net.www.protocol</code> - package under test<br/>
+				<code>org.apache.harmony.luni.tests.internal.net.www.protocol</code> - package for the test
+			</blockquote>
+	</p>
+</subsection>
+</section>
+</body>
+</document>
