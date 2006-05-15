@@ -125,8 +125,8 @@
 		Harmony
 		<b>classlib</b> developers write test cases that deliberately cause exceptions to be thrown
 		so that we can match exception behaviour like-for-like.  Harmony class library code should
-		throw exceptions of the same type as the RI, other than in cases where the RI throws non-public
-		types whereupon Harmony will throw an exception with the same public supertype.
+		throw exceptions of the same runtime class (or a subtype of that runtime class) as the RI, other than
+        in cases where the RI throws non-public types whereupon Harmony will throw an exception with the same public supertype.
 	</p>
 </subsection>
 
