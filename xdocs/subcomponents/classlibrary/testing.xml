@@ -61,6 +61,14 @@
                 Tests are not separated by functionality under test, e.g. tests against <code>clone()</code>
                 methods are <b>not</b> separated from tests against <code>equals()</code> methods.
 
+                Classpath tests are separated from bootclasspath tests on a directory level:
+			<blockquote>
+				<code>&lt;modulename&gt;/src/tests/api/<b>java</b></code> - Classpath tests<br/>
+				<code>&lt;modulename&gt;/src/tests/api/<b>java.injected</b></code> - Bootclasspath tests<br/>
+			</blockquote>
+                More details below.<br/><br/>
+
+
                 Some modules might have platform specific tests that are in the case separated on a directory 
                 level:
 			<blockquote>
@@ -71,7 +79,7 @@
 	</p>
 </subsection>
 
-<subsection name="Package names for different types of the tests">
+<subsection name="Package and class names for different types of the tests">
 	<p>
 		If the test is designed to be run from bootclasspath then its package is the same
                 as the package of the class under test
@@ -103,6 +111,18 @@
 				<code>org.apache.harmony.luni.internal.net.www.protocol</code> - package under test<br/>
 				<code>org.apache.harmony.luni.tests.internal.net.www.protocol</code> - package for the test
 			</blockquote>
+
+
+	</p>
+	<p>
+                To avoid collision of test results for various type of tests, test type might be reflected in test name
+                for example, to separate impl test results from api test results impl test names end with 
+                <code>_ImplTest</code>
+			<blockquote>
+				<code>javax.crypto.<b>CipherTest</b></code> - Implementation independent bootclasspath test for <code>javax.crypto.Cipher</code><br/>
+				<code>javax.crypto.<b>Cipher_ImplTest</b></code> - Implementation specific bootclasspath test for <code>javax.crypto.Cipher</code><br/>
+			</blockquote>
+
 	</p>
 </subsection>
 </section>
