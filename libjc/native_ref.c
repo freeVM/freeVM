@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- * $Id: native_ref.c,v 1.3 2004/07/05 21:03:27 archiecobbs Exp $
+ * $Id$
  */
 
 #include "libjc.h"
@@ -33,7 +33,8 @@
  * Internal functions
  */
 static void		_jc_pop_native_frame(_jc_native_frame_list *list);
-static jobject		_jc_new_native_ref(_jc_native_frame *frame);
+static jobject		_jc_new_native_ref(_jc_native_frame *frame,
+				jboolean weak);
 static void		_jc_free_native_ref(jobject obj);
 
 /*
@@ -55,7 +56,7 @@ _jc_new_local_native_ref(_jc_env *env, _jc_object *obj)
 
 	/* Find a free reference in the current local native reference frame */
 	SLIST_FOREACH(frame, &env->native_locals, link) {
-		if ((ref = _jc_new_native_ref(frame)) != NULL)
+		if ((ref = _jc_new_native_ref(frame, JNI_FALSE)) != NULL)
 			break;
 		if ((frame->flags & _JC_NATIVE_REF_EXTENSION) == 0)
 			break;
@@ -119,7 +120,7 @@ _jc_free_all_native_local_refs(_jc_env *env)
  * NOTE: The global VM mutex should not be acquired when calling this.
  */
 jobject
-_jc_new_global_native_ref(_jc_env *env, _jc_object *obj)
+_jc_new_global_native_ref(_jc_env *env, _jc_object *obj, jboolean weak)
 {
 	_jc_jvm *const vm = env->vm;
 	_jc_native_frame *frame;
@@ -135,7 +136,7 @@ _jc_new_global_native_ref(_jc_env *env, _jc_object *obj)
 
 	/* Find a free reference in any global native reference frame */
 	SLIST_FOREACH(frame, &vm->native_globals, link) {
-		if ((ref = _jc_new_native_ref(frame)) != NULL)
+		if ((ref = _jc_new_native_ref(frame, weak)) != NULL)
 			break;
 	}
 
@@ -144,7 +145,7 @@ _jc_new_global_native_ref(_jc_env *env, _jc_object *obj)
 		if ((frame = _jc_add_native_frame(env,
 		    &vm->native_globals)) == NULL)
 			goto fail;
-		ref = _jc_new_native_ref(frame);
+		ref = _jc_new_native_ref(frame, weak);
 		_JC_ASSERT(ref != NULL);
 	}
 
@@ -370,7 +371,7 @@ _jc_pop_native_frame(_jc_native_frame_list *list)
  * Returns NULL (without posting any exceptions) if unable.
  */
 static jobject
-_jc_new_native_ref(_jc_native_frame *frame)
+_jc_new_native_ref(_jc_native_frame *frame, jboolean weak)
 {
 	int i;
 
@@ -385,7 +386,7 @@ _jc_new_native_ref(_jc_native_frame *frame)
 	_JC_ASSERT(i >= 0 && i < _JC_NATIVE_REFS_PER_FRAME);
 
 	/* Mark reference in use */
-	_JC_NATIVE_REF_MARK_IN_USE(frame, i);
+	_JC_NATIVE_REF_MARK_IN_USE(frame, i, weak);
 
 	/* Done */
 	return &frame->refs[i];

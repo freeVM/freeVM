@@ -343,7 +343,7 @@ _jc_bootstrap_classes(_jc_env *env)
 
 		/* Wrap it in a global native reference */
 		if ((ref = _jc_new_global_native_ref(env,
-		    vm->boot.objects.vmex[i])) == NULL) {
+		    vm->boot.objects.vmex[i], JNI_FALSE)) == NULL) {
 			_jc_post_exception_info(env);
 			goto fail;
 		}

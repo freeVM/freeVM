@@ -50,6 +50,7 @@ _jc_gc(_jc_env *env, jboolean urgent)
 	_jc_trace_info *trace = NULL;
 	struct timeval start_time;
 	_jc_class_loader *loader;
+	_jc_native_frame *frame;
 	char *last_small_page;
 	int root_set_length;
 	_jc_heap_sweep sweep;
@@ -227,6 +228,28 @@ _jc_gc(_jc_env *env, jboolean urgent)
 		/* Repair count of finalizable objects */
 		_JC_ASSERT(trace->num_finalizable == 0);
 		trace->num_finalizable = num_finalizable;
+	}
+
+	/* Clear JNI weak references pointing to unreachable objects */
+	SLIST_FOREACH(frame, &vm->native_globals, link) {
+
+		/* Skip empty frames */
+		if (!_JC_NATIVE_REF_ANY_USED(frame))
+			continue;
+
+		/* Look for any weak references in this frame */
+		for (i = 0; i < _JC_NATIVE_REFS_PER_FRAME; i++) {
+			if (_JC_NATIVE_REF_IS_WEAK(frame, i)) {
+				_jc_object *const obj = frame->refs[i];
+
+				/* Sanity check */
+				_JC_ASSERT(!_JC_NATIVE_REF_IS_FREE(frame, i));
+
+				/* If not keepable, clear the reference */
+				if (!_JC_LW_TEST(obj->lockword, KEEP))
+					_JC_NATIVE_REF_MARK_FREE(frame, i);
+			}
+		}
 	}
 
 	/* Now recycle unreachable blocks and pages */
@@ -517,8 +540,7 @@ _jc_gc_mark_object(_jc_trace_info *trace, _jc_object *obj)
 	if (!_JC_IN_HEAP(trace->heap, obj)) {
 
 		/* Is object already marked? */
-		if ((lockword & _JC_LW_VISITED_BIT)
-		    == trace->gc_stack_visited)
+		if ((lockword & _JC_LW_VISITED_BIT) == trace->gc_stack_visited)
 		    	return 1;
 
 		/* Sanity check that this is the first GC cycle */

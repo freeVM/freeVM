@@ -193,7 +193,7 @@ pfail1:		_jc_vm_free(&vm);
 
 	/* Wrap it in a global native reference */
 	if (_jc_new_global_native_ref(env,
-	    vm->boot.objects.systemThreadGroup) == NULL)
+	    vm->boot.objects.systemThreadGroup, JNI_FALSE) == NULL)
 		goto fail;
 
 	/* Create java.lang.Thread instance for this thread */

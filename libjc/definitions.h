@@ -395,9 +395,18 @@ enum {
 	(((frame)->flags & _JC_NATIVE_REF_FREE_BITS)			\
 	    != _JC_NATIVE_REF_FREE_BITS)
 #define _JC_NATIVE_REF_MARK_FREE(frame, i)				\
-	((frame)->flags |= (1 << (i + 3)))
-#define _JC_NATIVE_REF_MARK_IN_USE(frame, i)				\
-	((frame)->flags &= ~(1 << (i + 3)))
+    do {								\
+	((frame)->flags |= (1 << (i + 3)));				\
+	((frame)->weak &= (1 << (i + 3)));				\
+    } while (0)
+#define _JC_NATIVE_REF_MARK_IN_USE(frame, i, weak)			\
+    do {								\
+	((frame)->flags &= ~(1 << (i + 3)));				\
+	if (weak)							\
+	    ((frame)->weak |= (1 << (i + 3)));				\
+    } while (0)
+#define _JC_NATIVE_REF_IS_WEAK(frame, i)				\
+	(((frame)->weak & (1 << (i + 3))) != 0)
 
 /* Size of one page */
 #define _JC_PAGE_SIZE			(1 << _JC_PAGE_SHIFT)

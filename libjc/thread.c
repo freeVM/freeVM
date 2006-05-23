@@ -1144,7 +1144,7 @@ _jc_internal_thread(_jc_env *env, const char *class)
 
 	/* Instantiate one and wrap in a global native reference */
 	if ((ref = _jc_new_global_native_ref(env,
-	    _jc_new_object(env, type))) == NULL) {
+	    _jc_new_object(env, type), JNI_FALSE)) == NULL) {
 		_jc_post_exception_info(env);
 		goto fail;
 	}

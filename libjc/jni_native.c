@@ -923,7 +923,7 @@ Get ## Type ## ArrayElements(JNIEnv *jenv, j ## _type ## Array array,	\
 	 * at the beginning of the buffer.				\
 	 */								\
 	if ((buf->l = _jc_new_global_native_ref(env,			\
-	    (_jc_object *)a)) == NULL) {				\
+	    (_jc_object *)a, JNI_FALSE)) == NULL) {			\
 		_jc_post_exception_info(env);				\
 		_jc_vm_free(&buf);					\
 		goto done;						\
@@ -1291,7 +1291,7 @@ NewGlobalRef(JNIEnv *jenv, jobject obj)
 	_jc_resuming_java(env, &cstack);
 
 	/* Get new reference */
-	if ((ref = _jc_new_global_native_ref(env, *obj)) == NULL)
+	if ((ref = _jc_new_global_native_ref(env, *obj, JNI_FALSE)) == NULL)
 		_jc_post_exception_info(env);
 
 	/* Returning to native code */
@@ -1358,23 +1358,26 @@ NewWeakGlobalRef(JNIEnv *jenv, jobject obj)
 {
 	_jc_env *const env = _JC_JNI2ENV(jenv);
 	_jc_c_stack cstack;
+	jobject ref;
 
 	/* Returning from native code */
 	_jc_resuming_java(env, &cstack);
 
-	_jc_fatal_error(env->vm, "%s: unimplemented", __FUNCTION__);
+	/* Get new weak global reference */
+	if ((ref = _jc_new_global_native_ref(env, *obj, JNI_TRUE)) == NULL)
+		_jc_post_exception_info(env);
+
+	/* Returning to native code */
+	_jc_stopping_java(env, &cstack, NULL);
+
+	/* Done */
+	return ref;
 }
 
 static void
 DeleteWeakGlobalRef(JNIEnv *jenv, jweak obj)
 {
-	_jc_env *const env = _JC_JNI2ENV(jenv);
-	_jc_c_stack cstack;
-
-	/* Returning from native code */
-	_jc_resuming_java(env, &cstack);
-
-	_jc_fatal_error(env->vm, "%s: unimplemented", __FUNCTION__);
+	DeleteGlobalRef(jenv, obj);
 }
 
 static jint

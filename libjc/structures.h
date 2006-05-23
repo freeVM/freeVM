@@ -159,6 +159,7 @@ struct _jc_uni_mem {
  */
 struct _jc_native_frame {
 	SLIST_ENTRY(_jc_native_frame)	link;
+	_jc_word			weak;	/* for JNI weak global refs */
 	_jc_word			flags;
 	_jc_object			*refs[_JC_NATIVE_REFS_PER_FRAME];
 };

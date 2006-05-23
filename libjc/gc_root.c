@@ -120,7 +120,7 @@ _jc_locate_object(_jc_jvm *vm, const _jc_word *info, const void *ptr)
 /*
  * Compute the root set of references. Returns the number of references,
  * or -1 if there was an error. The caller must free the returned array.
- * Ths stack of the current thread must be clipped.
+ * The stack of the current thread must be clipped.
  *
  * If unsuccessful an exception is stored.
  *
@@ -365,6 +365,8 @@ _jc_scan_c_stack(_jc_jvm *vm, _jc_c_stack *cstack,
 
 /*
  * Walk all objects in a native reference list.
+ *
+ * We skip JNI weak references; they're handled explicitly in the GC scan.
  */
 static int
 _jc_root_walk_native_refs(_jc_native_frame_list *list, _jc_object ***refsp)
@@ -381,9 +383,10 @@ _jc_root_walk_native_refs(_jc_native_frame_list *list, _jc_object ***refsp)
 		if (!_JC_NATIVE_REF_ANY_USED(frame))
 			continue;
 
-		/* Iterate references in this frame */
+		/* Iterate non-weak references in this frame */
 		for (i = 0; i < _JC_NATIVE_REFS_PER_FRAME; i++) {
-			if (!_JC_NATIVE_REF_IS_FREE(frame, i)) {
+			if (!_JC_NATIVE_REF_IS_FREE(frame, i)
+			    && !_JC_NATIVE_REF_IS_WEAK(frame, i)) {
 				_jc_object *const obj = frame->refs[i];
 
 				if (obj != NULL) {

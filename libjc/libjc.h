@@ -337,7 +337,7 @@ extern jobject		_jc_new_local_native_ref(_jc_env *env, _jc_object *obj);
 extern _jc_object	*_jc_free_local_native_ref(jobject *obj);
 extern void		_jc_free_all_native_local_refs(_jc_env *env);
 extern jobject		_jc_new_global_native_ref(_jc_env *env,
-				_jc_object *obj);
+				_jc_object *obj, jboolean weak);
 extern _jc_object	*_jc_free_global_native_ref(jobject *obj);
 extern void		_jc_free_all_native_global_refs(_jc_jvm *vm);
 extern jint		_jc_push_local_native_frame(_jc_env *env, int num_refs);
