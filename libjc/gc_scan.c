@@ -246,8 +246,9 @@ _jc_gc(_jc_env *env, jboolean urgent)
 				_JC_ASSERT(!_JC_NATIVE_REF_IS_FREE(frame, i));
 
 				/* If not keepable, clear the reference */
-				if (!_JC_LW_TEST(obj->lockword, KEEP))
-					_JC_NATIVE_REF_MARK_FREE(frame, i);
+				if (obj != NULL
+				    && !_JC_LW_TEST(obj->lockword, KEEP))
+					frame->refs[i] = NULL;
 			}
 		}
 	}
