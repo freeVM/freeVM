@@ -37,7 +37,7 @@ limitations under the License.
             
             
             
-            <title>Apache Harmony - Apache Harmony</title>
+            <title>Apache Harmony - Harmony Development Kit for the Apache Harmony Class Library</title>
         </head>
 
         <body bgcolor="#ffffff" text="#000000" link="#525D76">        
@@ -195,105 +195,69 @@ limitations under the License.
                                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#525D76">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Apache Harmony Class Library"><strong>Apache Harmony Class Library</strong></a>
+          <a name="Harmony Development Kit for the Apache Harmony Class Library"><strong>Harmony Development Kit for the Apache Harmony Class Library</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
                                     <p>
-		The following documentation links are specific to the class library effort underway at Apache Harmony.
+		<big><em>The following Harmony Development Kit is currently PROPOSED and being 
+		discussed on the development mailing list <code>harmony-dev@incubator.apache.org</code>.  
+		Please direct comments and questions there.</em></big>
+	</p>
+                                                <p>
+		The Harmony Development Kit (HDK) allows a Harmony developer to 
+		rebuild	any module of the Harmony Classlib in a standalone way by providing all the 
+		necesary supplementary binaries and header files. This document describes the layout 
+		of such an HDK and its contents.
 	</p>
                                                     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="#828DA6">
         <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Developing and Building the code"><strong>Developing and Building the code</strong></a>
+          <a name="Layout of the HDK"><strong>Layout of the HDK</strong></a>
         </font>
       </td></tr>
       <tr><td>
         <blockquote>
-                                    <ul>
-		<li><a href="build_classlib.html">Building the Classlibrary Code</a>
-			<p>
-				Describes how to download and build the class library code from source.
-			</p>
+                                    <p>
+		An HDK contains all the header files and binaries, both native and Java, required
+		for a Harmony classlib developer to build against. The directory structure for an
+		HDK is as follows:
+		<blockquote>
+		<pre>
+&lt;hdkbase&gt;
+     |---jdk
+     |    |---jre
+     |    |
+     |    \---include
+     |
+     |---include
+     |
+     \---lib
+		</pre>
+		</blockquote>
+		
+		The directories laid out above are used in the following manner:
+		
+		<ul>
+			<li><code>&lt;hdkbase&gt;/jdk/jre</code> - this directory contains the standard
+			jre layout, including <code>bin</code> and <code>lib</code> directories.
 			</li>
-		<li><a href="dev_eclipse.html">Development with the Eclipse IDE</a>
-			<p>
-				Describes how to set up Eclipse to develop the class library code.
-			</p>
+			
+			<li><code>&lt;hdkbase&gt;/jdk/include</code> - this directory contains the standard
+			jdk header files. For example, jni.h is held here.
 			</li>
-		<li><a href="hdk.html">Harmony Development Kit</a>
-			<p>
-				<b>Proposed</b> description of a Harmony Development Kit, which enables a developer to 
-				rebuild a standalone classlib module.
-			</p>
+			
+			<li><code>&lt;hdkbase&gt;/include</code> - this directory contains header files that
+			are Harmony specific and are used across multiple classlib modules.
 			</li>
-	</ul>
-                            </blockquote>
-      </td></tr>
-      <tr><td><br/></td></tr>
-    </table>
-                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
-      <tr><td bgcolor="#828DA6">
-        <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Project Conventions"><strong>Project Conventions</strong></a>
-        </font>
-      </td></tr>
-      <tr><td>
-        <blockquote>
-                                    <ul>
-		<li><a href="pkgnaming.html">Java package naming guidelines</a>
-			<p>
-				Guidelines for Harmony package naming convention.
-			</p>
+			
+			<li><code>&lt;hdkbase&gt;/lib</code> - this directory is used in HDKs on Windows for
+			.lib files and on Linux for .a files necessary for linking during compilation of 
+			classlib natives.
 			</li>
-
-		<li><a href="testing.html">Testing conventions in the Apache Harmony Classlib</a>
-			<p>
-                                <b>Proposed</b> placement and package naming conventions for different 
-                                types of Harmony class library tests.
-
-			</p>
-			</li>
-
-		<li><a href="compat.html">Compatibility guidelines</a>
-			<p>
-				<b>Proposed</b> guidelines for ensuring that the Harmony class library is compatible
-				with other Java implementations.
-			</p>
-			</li>
-	</ul>
-                            </blockquote>
-      </td></tr>
-      <tr><td><br/></td></tr>
-    </table>
-                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
-      <tr><td bgcolor="#828DA6">
-        <font color="#ffffff" face="arial,helvetica,sanserif">
-          <a name="Architecture and guides"><strong>Architecture and guides</strong></a>
-        </font>
-      </td></tr>
-      <tr><td>
-        <blockquote>
-                                    <ul>
-		<li>
-<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/vm_doc/html/index.html">
-			Class library porting documentation</a>
-			<p>
-				A porting guide aimed at developers interested in porting the classlib
-				code to a new VM.
-			</p></li>
-		<li>
-<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/vm_doc/html/group__Port.html">
-			The Harmony class library port layer</a>
-			<p>
-				A description of the functions in the class library portlayer aimed at
-				developers who are writing JNI code for use by the Harmony class libraries
-				and developers who are interested in porting the classlib code to a new
-				operating system.
-			</p>
-			</li>
-	</ul>
+		</ul>
+	</p>
                             </blockquote>
       </td></tr>
       <tr><td><br/></td></tr>
