@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  *
- * $Id: java_lang_VMSystem.c,v 1.6 2005/05/15 21:41:01 archiecobbs Exp $
+ * $Id$
  */
 
 #include "libjc.h"
@@ -150,91 +150,5 @@ jint _JC_JCNI_ATTR
 JCNI_java_lang_VMSystem_identityHashCode(_jc_env *env, _jc_object *obj)
 {
 	return (jint)obj;
-}
-
-/*
- * static final native void setIn(InputStream)
- */
-void _JC_JCNI_ATTR
-JCNI_java_lang_VMSystem_setIn(_jc_env *env, _jc_object *is)
-{
-	_jc_jvm *const vm = env->vm;
-
-	*_JC_VMSTATICFIELD(vm, System, in, _jc_object *) = is;
-}
-
-/*
- * static final native void setOut(PrintStream)
- */
-void _JC_JCNI_ATTR
-JCNI_java_lang_VMSystem_setOut(_jc_env *env, _jc_object *ps)
-{
-	_jc_jvm *const vm = env->vm;
-
-	*_JC_VMSTATICFIELD(vm, System, out, _jc_object *) = ps;
-}
-
-/*
- * static final native void setErr(PrintStream)
- */
-void _JC_JCNI_ATTR
-JCNI_java_lang_VMSystem_setErr(_jc_env *env, _jc_object *ps)
-{
-	_jc_jvm *const vm = env->vm;
-
-	*_JC_VMSTATICFIELD(vm, System, err, _jc_object *) = ps;
-}
-
-/*
- * public static final native long currentTimeMillis()
- */
-jlong _JC_JCNI_ATTR
-JCNI_java_lang_VMSystem_currentTimeMillis(_jc_env *env)
-{
-	struct timeval tv;
-
-	if (gettimeofday(&tv, NULL) == -1) {
-		_jc_post_exception_msg(env, _JC_InternalError,
-		    "%s: %s", "gettimeofday", strerror(errno));
-		_jc_throw_exception(env);
-	}
-	return ((jlong)tv.tv_sec * 1000) + ((jlong)tv.tv_usec / 1000);
-}
-
-/*
- * static native String getenv()
- */
-_jc_object * _JC_JCNI_ATTR
-JCNI_java_lang_VMSystem_getenv(_jc_env *env, _jc_object *name)
-{
-	_jc_object *string;
-	const char *value;
-	char *namebuf;
-	size_t len;
-
-	/* Check for null */
-	if (name == NULL) {
-		_jc_post_exception(env, _JC_NullPointerException);
-		_jc_throw_exception(env);
-	}
-
-	/* Convert String to UTF-8 */
-	len = _jc_decode_string_utf8(env, name, NULL);
-	if ((namebuf = _JC_STACK_ALLOC(env, len + 1)) == NULL) {
-		_jc_post_exception_info(env);
-		_jc_throw_exception(env);
-	}
-	_jc_decode_string_utf8(env, name, namebuf);
-
-	/* Get environment variable */
-	if ((value = getenv(namebuf)) == NULL)
-		return NULL;
-
-	/* Convert to string */
-	if ((string = _jc_new_string(env, value, strlen(value))) == NULL)
-		_jc_throw_exception(env);
-
-	/* Return result */
-	return string;
 }
 

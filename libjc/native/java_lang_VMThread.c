@@ -69,7 +69,13 @@ done:
 _jc_object * _JC_JCNI_ATTR
 JCNI_java_lang_VMThread_currentThread(_jc_env *env)
 {
-	_JC_ASSERT(env->instance != NULL);
+	/* Create instance if needed (native threads only) */
+	if (env->instance == NULL
+	    && _jc_thread_create_instance(env, NULL, env->name,
+	      java_lang_Thread_NORM_PRIORITY, env->daemon) != JNI_OK)
+		_jc_throw_exception(env);
+
+	/* Done */
 	return env->instance;
 }
 

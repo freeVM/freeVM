@@ -241,7 +241,7 @@ AttachCurrentThreadInternal(JavaVM *jvm,
 
 	/* Create and attach a new thread structure to the current thread */
 	_JC_MUTEX_LOCK(NULL, vm->mutex);
-	env = _jc_attach_thread(vm, &einfo, &cstack);
+	env = _jc_attach_thread(vm, NULL, JNI_FALSE, &einfo, &cstack);
 	_JC_MUTEX_UNLOCK(NULL, vm->mutex);
 	if (env == NULL) {
 		_jc_eprintf(vm, "%s: %s: %s\n", __FUNCTION__,
@@ -256,8 +256,7 @@ AttachCurrentThreadInternal(JavaVM *jvm,
 
 	/* Create java.lang.Thread instance */
 	if (_jc_thread_create_instance(env,
-	    (args != NULL && args->group != NULL) ?
-	      *args->group : vm->boot.objects.systemThreadGroup,
+	    (args != NULL && args->group != NULL) ? *args->group : NULL,
 	    (args != NULL && args->name != NULL) ? args->name : NULL,
 	    vm->threads.java_prio_norm, daemon) != JNI_OK)
 		goto fail;

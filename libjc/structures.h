@@ -250,6 +250,7 @@ struct _jc_env {
 	jint				thread_id;	/* unique thread id */
 	_jc_object			*instance;	/* java.lang.Thread */
 	char				text_status[_JC_MAX_TEXT_STATUS];
+	const char			*name;		/* native threads */
 
 	/* Lock info */
 	_jc_word			thinlock_id;
@@ -288,6 +289,7 @@ struct _jc_env {
 	/* Thread flags */
 	jboolean			out_of_memory;
 	jboolean			handling_signal;
+	jboolean			daemon;		/* native threads */
 #ifndef NDEBUG
 	jboolean			interpreting;
 #endif

@@ -480,7 +480,8 @@ extern _jc_env		*_jc_allocate_thread(_jc_env *env);
 extern void		_jc_free_thread(_jc_env **envp, int cachable);
 extern void		_jc_free_thread_stacks(_jc_jvm *vm);
 extern void		_jc_destroy_thread(_jc_env **envp);
-extern _jc_env		*_jc_attach_thread(_jc_jvm *vm, _jc_ex_info *ex,
+extern _jc_env		*_jc_attach_thread(_jc_jvm *vm, const char *name,
+				jboolean daemon, _jc_ex_info *ex,
 				_jc_c_stack *cstack);
 extern void		_jc_detach_thread(_jc_env **envp);
 extern jint		_jc_thread_create_instance(_jc_env *env,

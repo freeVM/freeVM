@@ -113,7 +113,8 @@ pfail1:		_jc_vm_free(&vm);
 
 	/* Create and attach a new thread structure to the current thread */
 	_JC_MUTEX_LOCK(NULL, vm->mutex);
-	if ((env = _jc_attach_thread(vm, &temp_env.ex, &cstack)) == NULL) {
+	if ((env = _jc_attach_thread(vm, "main",
+	    JNI_FALSE, &temp_env.ex, &cstack)) == NULL) {
 		_JC_MUTEX_UNLOCK(NULL, vm->mutex);
 		env = &temp_env;
 		goto fail_info;
@@ -156,10 +157,6 @@ pfail1:		_jc_vm_free(&vm);
 	    vm->boot.loader, _JC_INTERNAL_NATIVE_LIBRARY) != JNI_OK)
 		goto fail_info;
 
-	/* Load bootstrap Java classes, methods, etc. */
-	if (_jc_bootstrap_classes(env) != JNI_OK)
-		goto fail;
-
 	/* Get min and max scheduler scheduling priorities */
 	if ((vm->threads.prio_min = sched_get_priority_min(SCHED_RR)) == -1) {
 		_JC_EX_STORE(env, InternalError,
@@ -178,27 +175,8 @@ pfail1:		_jc_vm_free(&vm);
 	vm->threads.java_prio_max = java_lang_Thread_MAX_PRIORITY;
 	vm->threads.java_prio_norm = java_lang_Thread_NORM_PRIORITY;
 
-	/* Create system ThreadGroup */
-	if ((sref = _jc_new_local_native_ref(env,
-	    _jc_new_string(env, _JC_SYSTEM_THREADGROUP_NAME,
-	      sizeof(_JC_SYSTEM_THREADGROUP_NAME) - 1))) == NULL)
-		goto fail;
-	if ((vm->boot.objects.systemThreadGroup = _jc_new_object(env,
-	    vm->boot.types.ThreadGroup)) == NULL)
-		goto fail;
-	if (_jc_invoke_nonvirtual(env, vm->boot.methods.ThreadGroup.init,
-	    vm->boot.objects.systemThreadGroup, *_JC_VMSTATICFIELD(vm,
-	      ThreadGroup, root, _jc_object *), *sref) != JNI_OK)
-		goto fail;
-
-	/* Wrap it in a global native reference */
-	if (_jc_new_global_native_ref(env,
-	    vm->boot.objects.systemThreadGroup, JNI_FALSE) == NULL)
-		goto fail;
-
-	/* Create java.lang.Thread instance for this thread */
-	if (_jc_thread_create_instance(env, vm->boot.objects.systemThreadGroup,
-	    "main", vm->threads.java_prio_norm, JNI_FALSE) != JNI_OK)
+	/* Load bootstrap Java classes, methods, etc. */
+	if (_jc_bootstrap_classes(env) != JNI_OK)
 		goto fail;
 
 	/* Start debug thread */

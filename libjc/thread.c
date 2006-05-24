@@ -577,18 +577,54 @@ _jc_resuming_java(_jc_env *env, _jc_c_stack *cstack)
 
 /*
  * Create the java.lang.Thread instance associated with a native thread.
+ * A native thread is one not created by an invocation of Thread.start().
  */
 jint
 _jc_thread_create_instance(_jc_env *env, _jc_object *group,
 	const char *name, jint priority, jboolean daemon)
 {
 	_jc_jvm *const vm = env->vm;
-	jobject sref = NULL;
 	jobject vtref = NULL;
+	jobject sref = NULL;
 
 	/* Sanity check */
-	_JC_ASSERT(group != NULL);
 	_JC_ASSERT(env->instance == NULL);
+
+	/* Default ThreadGroup is the system ThreadGroup */
+	if (group == NULL)
+		group = vm->boot.objects.systemThreadGroup;
+
+	/* Create system ThreadGroup if necessary */
+	if (group == NULL) {
+		_jc_object *root;
+		jobject gref;
+
+		/* Create system ThreadGroup, wrapped in a global native ref */
+		_JC_ASSERT(sref == NULL);
+		if ((sref = _jc_new_local_native_ref(env,
+		    _jc_new_string(env, _JC_SYSTEM_THREADGROUP_NAME,
+		      sizeof(_JC_SYSTEM_THREADGROUP_NAME) - 1))) == NULL)
+			goto fail;
+		if ((gref = _jc_new_global_native_ref(env, _jc_new_object(env,
+		    vm->boot.types.ThreadGroup), JNI_FALSE)) == NULL)
+			goto fail;
+		vm->boot.objects.systemThreadGroup = *gref;
+
+		/* Get root ThreadGroup */
+		root = *_JC_VMSTATICFIELD(vm, ThreadGroup, root, _jc_object *);
+		_JC_ASSERT(root != NULL);
+
+		/* Create system ThreadGroup with root ThreadGroup as parent */
+		if (_jc_invoke_nonvirtual(env, vm->boot.methods.ThreadGroup.init,
+		    *gref, root, *sref) != JNI_OK) {
+			_jc_free_global_native_ref(&gref);
+			goto fail;
+		}
+		_jc_free_local_native_ref(&sref);
+
+		/* Now use system ThreadGroup */
+		group = vm->boot.objects.systemThreadGroup;
+	}
 
 	/* Create String from supplied name, if any */
 	if (name != NULL
@@ -597,6 +633,7 @@ _jc_thread_create_instance(_jc_env *env, _jc_object *group,
 		goto fail;
 
 	/* Create new Thread object for this thread */
+	_JC_ASSERT(env->instance == NULL);
 	if ((env->instance = _jc_new_object(env,
 	    vm->boot.types.Thread)) == NULL)
 		goto fail;
@@ -701,7 +738,8 @@ _jc_thread_start(void *arg)
  * NOTE: This assumes the VM global mutex is held.
  */
 _jc_env *
-_jc_attach_thread(_jc_jvm *vm, _jc_ex_info *ex, _jc_c_stack *cstack)
+_jc_attach_thread(_jc_jvm *vm, const char *name, jboolean daemon,
+	_jc_ex_info *ex, _jc_c_stack *cstack)
 {
 	_jc_env temp_env;
 	_jc_env *env;
@@ -727,6 +765,8 @@ _jc_attach_thread(_jc_jvm *vm, _jc_ex_info *ex, _jc_c_stack *cstack)
 	/* Get a new thread structure */
 	if ((env = _jc_allocate_thread(&temp_env)) == NULL)
 		goto fail;
+	env->name = name;
+	env->daemon = daemon;
 
 	/* Remember that this thread structure goes with the current thread */
 	_jc_set_current_env(vm, env);
@@ -875,7 +915,8 @@ _jc_thread_shutdown(_jc_env **envp)
 	}
 
 	/* Re-attach this thread */
-	if ((env = _jc_attach_thread(vm, NULL, &cstack)) == NULL)
+	if ((env = _jc_attach_thread(vm, "shutdown",
+	    JNI_FALSE, NULL, &cstack)) == NULL)
 		_jc_fatal_error(vm, "can't reattach shutdown thread");
 
 	/* Stop the world */
