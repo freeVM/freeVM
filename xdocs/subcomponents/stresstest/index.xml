@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+
+    Copyright 2006 The Apache Software Foundation
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+<properties>
+	<title>Stress test framework</title>
+	<author email="harmony-dev@incubator.apache.org">Harmony Documentation Team</author>
+</properties>
+
+<body>
+
+<section name="Test Design">
+	<p>
+		<big><em>The following guidelines are currently PROPOSED and being discussed on the
+		development mailing list <code>harmony-dev@incubator.apache.org</code>.  Please
+		direct comments and questions there.</em></big>
+	</p>
+<P>
+<UL>
+<LI>Stress tests are built from simple building blocks according to configuration strings.
+</LI>
+<LI>Tests have junit interface.
+<BLOCKQUOTE>
+       [Case study] Imagine someone puts tests into SVN which implements
+different test interface. To reuse them we can add another generator to
+ convert these tests to junit interface.
+</BLOCKQUOTE>
+</LI>
+<LI>Configuration string list is maintained manually. If we plan to use
+ junit runner to launch a sequent of the stress tests, then the most
+ straightforward model is to wrap configuration strings into junit test
+cases and put documentation into javadoc for these test cases.
+</LI>
+</UL>
+</P>
+</section>
+
+<section name="Further Steps">
+<P>
+<UL>
+<LI>Stress tests are expected to generate relevant bugs. Since
+usually stress behavior is unspecified, we need to introduce something
+measurable instead of pass/fail result for the stress tests. See 
+<a href="#Comparative Approach">comparative approach</a> below.
+</LI>
+<LI>All should create tests and run them against Harmony VM and RI.
+This would be a real-life testing for our approach.
+</LI>
+</UL>
+</P>
+</section>
+
+<section name="Comparative Approach">
+<P>
+ The simplest example of comparative apporach is the following.
+</P>
+<BLOCKQUOTE>
+ 	Tester: My test fails on Harmony VM and passes on RI. Please,
+ fix Harmony VM.
+</BLOCKQUOTE>
+<P>
+ This usually does not work for stress tests.
+</P>
+<BLOCKQUOTE>
+ 	Developer: Who told you that OutOfMemoryError should be thrown
+ in your thread? My finalizer thread is just a normal java thread, like
+ yours, and it can fail as well. You have a bug in your test. 
+</BLOCKQUOTE>
+<P>
+ 
+ There are multiple reasons why we always will have such bugs in the
+ tests.
+</P>
+<UL>
+<LI>These bugs keep showing up. The time to fix all these bugs
+ regularly is too high.
+</LI>
+<LI>Stress testing reuses tests which are usually not designed for
+ stress execution, for example, multithread execution.
+</LI>
+<LI>These bugs are dependent on VM internal structure. Test authors do
+ not posess sufficient knowledge of the problem and the structure.
+</LI>
+<LI>Sometimes Java is not rich enough.
+</LI>
+</UL>
+ 
+<P>
+ How can we have a maintainable test product takung all this limitation
+ into account? We need to learn how to live with occasional failures of
+ the stress tests. This means, instead of fail, the test should better
+ report how good it is on Harmony VM compared to RI:
+</P>
+<UL>
+<LI>Failures with the worst relative metric can be evaluated first</LI>
+<LI>We can detect that a relative metric for a test worsened on the recent build</LI>
+</UL>
+ 
+<P>
+Developers are better convinsed to fix "the worst issue" or "dergadation" instead of "some issue".
+</P>
+<P>
+
+Several metrics for each test:
+<UL>
+<LI>Pass rate: assuming the test is 100% reliable on RI we can
+ calculate a percentage of failures.
+</LI>
+<LI>Number of times the test can be executed sequentionally before a fail
+</LI>
+<LI>Memory consumption: a generator can preallocate more and more
+ memory before launching the test in a loop.
+</LI>
+<LI>Max threads supported: a generator can exponentially increase
+ number of threads launching the test in parallel.
+</LI>
+<LI>Execution time: all this apparatus is quite
+ close to performance testing methodology. There is no need to compete
+ with them in their field though.
+</LI>
+</UL>
+</P>
+
+</section>
+
+
+</body>
+</document>
