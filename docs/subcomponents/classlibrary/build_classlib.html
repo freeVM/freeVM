@@ -201,7 +201,7 @@ limitations under the License.
       <tr><td>
         <blockquote>
                                     <p>
-		The Harmony class library code is a subset of the Java(tm) SE 1.4.2 APIs currently
+		The Harmony class library code is a subset of the Java(tm) SE 1.5 APIs currently
 		being developed in the <a href="http://incubator.apache.org/harmony/">
 		Apache Harmony project</a>. This page describes how to build the class library code,
 		and includes links to pre-built versions of the code.
@@ -232,7 +232,7 @@ limitations under the License.
 		The following prerequisite tools must be available on the path in order to build
 		the Harmony classlib code from source.
 		<ul>
-			<li>All platforms require Subversion client, Apache Ant, Java 1.4.2 JDK
+			<li>All platforms require Subversion client, Apache Ant, Java 1.5 JDK
 				(i.e. including javac) in addition
 				<ul>
 	    			<li>Windows platforms : Microsoft Visual C++, and nmake. </li>
@@ -259,7 +259,7 @@ ant</pre>
 			</li>
 			<li><a href="#Obtaining_a_VM">Get a VM suitable for running the class library
 				code</a>, and
-				expand it over the top of the Harmony directory (so that the 'jre'
+				expand it over the top of the Harmony directory (so that the 'jdk'
 				directories line-up)
 			<pre>unzip &lt;path_to_vm_zip&gt; -d ../.. (on Windows)</pre>
 			<pre>tar xzf &lt;path_to_vm_tarball&gt; --directory ../.. (on Linux)</pre>
@@ -302,7 +302,7 @@ ant</pre>
    			<li>Simply expand the classlib archive and the VM archive from the
    				same directory. They should create a subdirectory called "Harmony"
    				with files from each archive overlaid (so that the
-   				'Harmony/deploy/jre'-s line-up).</li>
+   				'Harmony/deploy/jdk'-s line-up).</li>
    				On Windows:
    				<pre>unzip &lt;path_to_classlib_zip&gt; (on Windows)
 unzip &lt;path_to_vm_zip&gt;</pre>
@@ -340,8 +340,8 @@ tar xzf &lt;path_to_vm_tarball&gt;</pre>
                                                 <p>
 		Once you have obtained the IBM VM you should have one of the following files:
 		<ul>
-			<li>on Windows "Harmony-vme-win.IA32-v1.zip"</li>
-			<li>on Linux "Harmony-vme-linux.IA32-v1.tar.gz"</li>
+			<li>on Windows "Harmony-vme-win.IA32-v3.zip"</li>
+			<li>on Linux "Harmony-vme-linux.IA32-v3.tar.gz"</li>
 		</ul>
 	</p>
                             </blockquote>
@@ -359,13 +359,13 @@ tar xzf &lt;path_to_vm_tarball&gt;</pre>
                                     <a name="Running_Java" />
                                                 <p>
 		Ensure that the <code>JAVA_HOME</code> environment variable is unset, or pointing
-		to the <code>Harmony/deploy/jre</code> directory.
+		to the <code>Harmony/deploy/jdk/jre</code> directory.
 	</p>
                                                 <p>
-		Run Java applications as usual, using the launcher in Harmony/deploy/jre/bin:
+		Run Java applications as usual, using the launcher in Harmony/deploy/jdk/jre/bin:
 		<pre>&gt; jre\bin\java -showversion -jar helloworld.jar
-java version 1.4.2 (subset)
-(c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable.
+java version 1.5 (subset)
+(c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable.
 Hello world!
 </pre>
 	</p>
