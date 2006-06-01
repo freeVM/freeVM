@@ -92,6 +92,34 @@ JCNI_java_lang_VMThrowable_getStackTrace(_jc_env *env, _jc_object *this,
 		    (_jc_word)bytes->elems, _JC_FULL_ALIGNMENT);
 	}
 
+	/* Skip [VM]Throwable.fillInStackTrace(), initial constructor frames */
+	_JC_ASSERT(num_frames > 0);
+	for (i = 0; i < num_frames; i++) {
+		_jc_saved_frame *frame = &frames[i];
+		_jc_method *method;
+
+		/* Get method */
+		method = frame->method;
+		_JC_ASSERT(method != NULL && method->class != NULL);
+
+		/* Is it [VM]Throwable.fillInStackTrace()? */
+		if (strcmp(method->name, "fillInStackTrace") == 0
+		    && (method->class == vm->boot.types.Throwable
+		      || method->class == vm->boot.types.VMThrowable))
+		      	continue;
+
+		/* Is it a (super)class constructor? */
+		if (!_JC_ACC_TEST(method, STATIC)
+		    && *method->name == '<'
+		    && _jc_subclass_of(throwable->type, method->class))
+		    	continue;
+
+		/* No more skipping */
+		break;
+	}
+	frames += i;
+	num_frames -= i;
+
 	/* Create array */
 	if ((array_ref = _jc_new_local_native_ref(env,
 	    (_jc_object *)_jc_new_array(env,
