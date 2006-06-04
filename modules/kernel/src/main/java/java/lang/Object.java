@@ -156,10 +156,9 @@ public class Object {
 	 * @return String a printable representation for the receiver.
 	 */
 	public String toString() {
-        int hc = VMSystem.identityHashCode(this);
-        Integer ihc = new Integer(hc);
-		String retVal = new String(ihc.toString());
-        return retVal;
+        int hash = hashCode();
+        String className = getClass().getName();
+        return className + "@" + Integer.toHexString(hash);
 	}
 
 	/**

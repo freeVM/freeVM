@@ -19,8 +19,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.security.ProtectionDomain;
 import java.util.Enumeration;
-
-
+import java.util.HashMap;
+import java.util.Collection;
+import gnu.classpath.VMStackWalker;
 
 /**
  * This class must be implemented by the vm vendor. The documented methods and
@@ -31,9 +32,8 @@ import java.util.Enumeration;
  */
 public /*abstract*/ class ClassLoader {
 
-	static ClassLoader systemClassLoader;
-
-    ClassLoader parent; // jchevm/libcj/bootstrap.c requires the presence of this particular field
+    ClassLoader parent;
+    static ClassLoader systemClassLoader;
     Object vmdata; // jchevm/libcj/bootstrap.c requires the presence of this particular field
 
 	static final void initializeClassLoaders() {
@@ -41,6 +41,10 @@ public /*abstract*/ class ClassLoader {
         //for now, simply return.  Simple "hello world" is OK with this
 		return;
 	}
+
+    static {
+        setupSystemClassLoader();
+    }
 
 	/**
 	 * Constructs a new instance of this class with the system class loader as
@@ -51,7 +55,7 @@ public /*abstract*/ class ClassLoader {
 	 *                creation of new ClassLoaders.
 	 */
 	protected ClassLoader() {
-        super();
+        parent = getSystemClassLoader();
 	}
 
 	/**
@@ -68,8 +72,9 @@ public /*abstract*/ class ClassLoader {
 	 *                if the parent is null.
 	 */
 	protected ClassLoader(ClassLoader parentLoader) {
-        // fixit -- need to verify this is correct code
-		super();
+        if (parentLoader == null)
+            parentLoader = systemClassLoader;
+        parent = parentLoader;
 	}
 
 	/**
@@ -86,9 +91,7 @@ public /*abstract*/ class ClassLoader {
 	 */
 	protected final Class defineClass(byte[] classRep, int offset, int length)
 			throws ClassFormatError {
-        // fixit -- need to add the correct code
-        // returning null works OK for simple "hello world" demo
-		return null;
+		return defineClass(null, classRep, offset, length);
 	}
 
 	/**
@@ -147,7 +150,7 @@ public /*abstract*/ class ClassLoader {
 	 */
 	protected Class findClass(String className) throws ClassNotFoundException {
         // fixit -- returning null allows "hello world" to work but is incorrect
-		return null;
+		throw new ClassNotFoundException(className);
 	}
 
 	/**
@@ -160,7 +163,6 @@ public /*abstract*/ class ClassLoader {
 	 *            String the name of the class to search for.
 	 */
 	protected final Class findLoadedClass(String className) {
-        //System.out.println("ClassLoader.findLoadedClass(String) -- is not implemented");
 		return VMClassLoader.findLoadedClass(this, className);
 	};
 
@@ -177,7 +179,8 @@ public /*abstract*/ class ClassLoader {
 	protected final Class findSystemClass(String className)
 			throws ClassNotFoundException {
         // fixit -- confirm that only the system class loader is being used
-		return VMClassLoader.findLoadedClass(this, className);
+		return VMClassLoader.findLoadedClass(
+                systemClassLoader, className);
 	}
 
 	/**
@@ -189,8 +192,7 @@ public /*abstract*/ class ClassLoader {
 	 *                parent loader to be retrieved.
 	 */
 	public final ClassLoader getParent() {
-        //fixit ----   probably need a security expert to help out here
-		return null;
+		return parent;
 	}
 
 	/**
@@ -204,9 +206,9 @@ public /*abstract*/ class ClassLoader {
 	 * @see Class#getResource
 	 */
 	public URL getResource(String resName) {
-        //fixit -- the above says default behavior is to just return null
-        // is returning null good enough for all cases?
-		return null;
+        URL resource = parent.getResource(resName);
+        if (resource != null) return resource;
+        return findResource(resName);
 	}
 
 	/**
@@ -219,9 +221,7 @@ public /*abstract*/ class ClassLoader {
 	 *            String the name of the resource to find.
 	 */
 	public final Enumeration getResources(String resName) throws IOException {
-        //fixit -- apparently Resources are not needed for simple "hello world"
-        //maybe find someone who knows resources to figure this one out?
-		return null;
+        throw new RuntimeException("not implemented");
 	}
 
 	/**
@@ -235,9 +235,13 @@ public /*abstract*/ class ClassLoader {
 	 * @see Class#getResourceAsStream
 	 */
 	public InputStream getResourceAsStream(String resName) {
-        //fixit -- apparently Resources are not needed for simple "hello world"
-        //maybe find someone who knows resources to figure this one out?
-		return null;
+        try {
+            URL url = getResource(resName);
+            if (url == null) return null;
+            return url.openStream();
+        } catch (IOException ioe) {
+            return null;
+        }
 	}
 
 	/**
@@ -257,16 +261,24 @@ public /*abstract*/ class ClassLoader {
 	 *                to the system class loader.
 	 */
 	public static ClassLoader getSystemClassLoader() {
-        try 
-        {
-            if (systemClassLoader == null) 
-            {
-                systemClassLoader = new ClassLoader();
-            }
-        } 
-        catch (Exception e) { return null;}
         return systemClassLoader;
 	}
+
+    static void setupSystemClassLoader() {
+        String name = null;
+        try {
+            name = System.getProperty("java.system.class.loader",
+                    "java.lang.SystemClassLoader");
+            Class clzz = VMClassLoader.loadClass(name, true);
+            ClassLoader cl = (ClassLoader) clzz.newInstance();
+            // FIXME: security checks and so on
+            systemClassLoader = cl;
+        } catch (Throwable t) {
+            System.err.println("error instantiating system classloader: " + name);
+            t.printStackTrace();
+            throw new RuntimeException(t);
+        }
+    }
 
 	/**
 	 * Answers an URL specifing a resource which can be found by looking up
@@ -278,9 +290,7 @@ public /*abstract*/ class ClassLoader {
 	 * @see Class#getResource
 	 */
 	public static URL getSystemResource(String resName) {
-        //fixit -- apparently Resources are not needed for simple "hello world"
-        //maybe find someone who knows resources to figure this one out?
-		return null;
+        return BootstrapClassLoader.getBootstrapClassLoader().getResource(resName);
 	}
 
 	/**
@@ -296,7 +306,8 @@ public /*abstract*/ class ClassLoader {
 			throws IOException {
         //fixit -- apparently Resources are not needed for simple "hello world"
         //maybe find someone who knows resources to figure this one out?
-		return null;
+        throw new RuntimeException("not implemented");
+		//return null;
 	}
 
 	/**
@@ -311,9 +322,7 @@ public /*abstract*/ class ClassLoader {
 	 * @see Class#getResourceAsStream
 	 */
 	public static InputStream getSystemResourceAsStream(String resName) {
-        //fixit -- apparently Resources are not needed for simple "hello world"
-        //maybe find someone who knows resources to figure this one out?
-		return null;
+        return BootstrapClassLoader.getBootstrapClassLoader().getResourceAsStream(resName);
 	}
 
 	/**
@@ -327,10 +336,7 @@ public /*abstract*/ class ClassLoader {
 	 *                If the class could not be found.
 	 */
 	public Class loadClass(String className) throws ClassNotFoundException {
-        //fixit -- resolveIt should probably be set to true
-        // but for "hello world", it was accidentally set to false
-        boolean resolveIt = true;
-		return VMClassLoader.loadClass(className, resolveIt);
+		return loadClass(className, false);
 	}
 
 	/**
@@ -347,9 +353,27 @@ public /*abstract*/ class ClassLoader {
 	 * @exception ClassNotFoundException
 	 *                If the class could not be found.
 	 */
-	protected Class loadClass(String className, boolean resolveClass)
+	protected Class loadClass(String className, boolean resolve)
 			throws ClassNotFoundException {
-		return VMClassLoader.loadClass(className, resolveClass);
+        Class clazz = findLoadedClass(className);
+        if (clazz != null) {
+            if (resolve) resolveClass(clazz);
+            return clazz;
+        }
+
+        try {
+            if (parent == null) {
+                clazz = VMClassLoader.loadClass(className, resolve);
+            } else {
+                clazz = parent.loadClass(className, false);
+            }
+            if (resolve) resolveClass(clazz);
+            return clazz;
+        } catch (ClassNotFoundException e) {}
+
+        clazz = findClass(className);
+        if (resolve) resolveClass(clazz);
+        return clazz;
 	}
 
 	/**
@@ -382,8 +406,8 @@ public /*abstract*/ class ClassLoader {
 	 * @see Class#getClassLoaderImpl()
 	 */
 	final boolean isSystemClassLoader() {
-        //fixit -- this gets security out of the way for simple "hello world"
-		return true;
+        throw new RuntimeException("what's here?");
+		//return true;
 	}
 
 	/**
@@ -398,8 +422,8 @@ public /*abstract*/ class ClassLoader {
 	 * @return boolean true if the receiver is ancestor of the parameter
 	 */
 	final boolean isAncestorOf(ClassLoader child) {
-        //fixit -- this gets security out of the way for simple "hello world"
-		return false;
+        throw new RuntimeException("what's here?");
+		//return false;
 	}
 
 	/**
@@ -414,8 +438,6 @@ public /*abstract*/ class ClassLoader {
 	 *					the name of the resource to find.
 	 */
 	protected URL findResource(String resName) {
-        //fixit -- apparently Resources are not needed for simple "hello world"
-        //maybe find someone who knows resources to figure this one out?
 		return null;
 	}
 
@@ -452,6 +474,8 @@ public /*abstract*/ class ClassLoader {
 		return null;
 	}
 
+    HashMap packages = new HashMap();
+
 	/**
 	 * Attempt to locate the requested package. If no package information can be
 	 * located, null is returned.
@@ -461,8 +485,10 @@ public /*abstract*/ class ClassLoader {
 	 * @return The package requested, or null
 	 */
 	protected Package getPackage(String name) {
-        //fixit -- returning null allows simple "hello world" to work
-		return null;
+        synchronized (packages) {
+            Package p = (Package) packages.get(name);
+            return p;
+        }
 	}
 
 	/**
@@ -471,8 +497,10 @@ public /*abstract*/ class ClassLoader {
 	 * @return All the packages known to this classloader
 	 */
 	protected Package[] getPackages() {
-        //fixit -- returning null allows simple "hello world" to work
-		return null;
+        synchronized (packages) {
+            Collection col = packages.values();
+            return (Package[]) col.toArray();
+        }
 	}
 
 	/**
@@ -500,8 +528,21 @@ public /*abstract*/ class ClassLoader {
 			String specVersion, String specVendor, String implTitle,
 			String implVersion, String implVendor, URL sealBase)
 			throws IllegalArgumentException {
-        //fixit -- returning null allows simple "hello world" to work
-		return null;
+        // FIXME: not sure
+        // FIXME: race condition adding packages
+        Package p = (Package) packages.get(name);
+        if (p == null) {
+            Package newPackage = 
+                    new Package(name, specTitle, specVersion, specVendor, implTitle,
+                    implVersion, implVendor, sealBase);
+            synchronized (packages) {
+                packages.put(name, newPackage);
+                p = newPackage;
+            }
+        } else {
+            System.err.println("package " + name + " already defined");
+        }
+        return p;
 	}
 
 	/**
@@ -552,8 +593,7 @@ public /*abstract*/ class ClassLoader {
 	 * @return the ClassLoader at the specified depth
 	 */
 	static final ClassLoader getStackClassLoader(int depth) {
-        //fixit -- returning null allows simple "hello world" to work
-		return null;
+        throw new RuntimeException("not implemented");
 	};
 
 	/**
@@ -567,8 +607,8 @@ public /*abstract*/ class ClassLoader {
 	 * @return a ClassLoader or null for the bootstrap ClassLoader
 	 */
 	static ClassLoader callerClassLoader() {
-        //fixit -- returning null allows simple "hello world" to work
-		return null;
+        Class[] classes = VMStackWalker.getClassContext();
+        return classes[2].getClassLoader();
 	}
 
 	/**
@@ -588,12 +628,7 @@ public /*abstract*/ class ClassLoader {
 	 *                if the library was not allowed to be loaded
 	 */
 	static void loadLibraryWithClassLoader(String libName, ClassLoader loader) {
-        try 
-        {
-            VMClassLoader.loadClass(libName, true);
-        } 
-        catch (Exception e) { return;}
-		return;
+        throw new RuntimeException("not implemented");
 	}
 
 	/**

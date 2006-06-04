@@ -14,10 +14,10 @@
  */
 package java.lang;
 
-public class VMThrowable 
+final class VMThrowable 
 {
-    private Object vmdata;  //  jchevm/libjc/bootstrap.c needs to resolve this field for "hello world to work"
-    static public final native Throwable fillInStackTrace(Throwable thr); // corresponds to jchevm/libjc/native/java_lang_VMThrowable.c
+    Object vmdata;
+    static public final native VMThrowable fillInStackTrace(Throwable thr); // corresponds to jchevm/libjc/native/java_lang_VMThrowable.c
     final public native StackTraceElement[] getStackTrace(Throwable thr); // corresponds to jchevm/libjc/native/java_lang_VMThrowable.c
 }
 

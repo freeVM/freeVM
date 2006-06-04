@@ -17,30 +17,18 @@ package java.lang;
 public class VMRuntime 
 {
     //this class was created by looking at the native methods contained in Apache JCHEVM
-    static public final native int availableProcessors();
-
-    static public final native void exit(int code);
-
-    static public final native long freeMemory();
-
-    static public final native void gc();
-
-    static public final native String mapLibraryName(String ss);
-
-    static public final native long maxMemory();
-
-    static public final native int nativeLoad(String ss, ClassLoader cl);
-
-    static public final native void runFinalization();
-
-    static public final native void runFinalizationForExit();
-
-    static public final native void runFinalizersOnExit(boolean bb);
-
-    static public final native long totalMemory();
-
-    static public final native void traceInstructions(boolean bb);
-
-    static public final native void traceMethodCalls(boolean bb);
+    static final native int availableProcessors();
+    static final native void exit(int code);
+    static final native long freeMemory();
+    static final native void gc();
+    static final native String mapLibraryName(String ss);
+    static final native long maxMemory();
+    static final native int nativeLoad(String ss, ClassLoader cl);
+    static final native void runFinalization();
+    static final native void runFinalizationForExit();
+    static final native void runFinalizersOnExit(boolean bb);
+    static final native long totalMemory();
+    static final native void traceInstructions(boolean bb);
+    static final native void traceMethodCalls(boolean bb);
 
 }

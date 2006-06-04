@@ -23,7 +23,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Properties;
-import java.util.PropertyPermission;
+import gnu.classpath.VMSystemProperties;
 
 
 /**
@@ -51,9 +51,6 @@ public final class System {
 	 */
 	public static final PrintStream err;
 
-	// Get a ref to the Runtime instance for faster lookup
-	private static final Runtime RUNTIME = Runtime.getRuntime();
-
 	// The System Properties table
 	private static Properties systemProperties;
 
@@ -62,31 +59,27 @@ public final class System {
 
 	// Initialize all the slots in System on first use.
 	static {
-        //fixit -- temporarily hard code the path to a DLL library that holds a native method for simple character output
-        int tt = VMRuntime.nativeLoad("/cygdrive/c/temp2/Harmony/native-src/linux.IA32/luni_gnuclasspathadapter/libOSFileSystem.a", ClassLoader.systemClassLoader);
-		// Fill in the properties from the VM information.
 		ensureProperties();
+        System.loadLibrary("hyluni");
+        System.loadLibrary("hyarchive");
+        System.loadLibrary("hyauth");
+        System.loadLibrary("hyprt");
+        System.loadLibrary("hysig");
+        System.loadLibrary("hytext");
+        System.loadLibrary("hythr");
+        System.loadLibrary("hyzlib");
+		// Fill in the properties from the VM information.
 		// Set up standard in, out, and err.
-		err = new String.ConsolePrintStream(new BufferedOutputStream(
-				new FileOutputStream(FileDescriptor.err)));
-        VMSystem.setErr(err);
-
+		err = new String.ConsolePrintStream(new FileOutputStream(FileDescriptor.err));
 		out = new String.ConsolePrintStream(new BufferedOutputStream(
 				new FileOutputStream(FileDescriptor.out)));
-        VMSystem.setOut(out);
-
-        /*   toss this
-        int xx;
-        for (xx = 0; xx < 100; xx++) 
-        {
-            // the below is a test that verifies System.out is initialized properly
-            out.write(0x41); out.write(0x42); out.write(0x43);
-        }
-        */
-
 		in = new BufferedInputStream(new FileInputStream(FileDescriptor.in));
-        VMSystem.setIn(in);
+        systemProperties.setProperty("user.dir", getcwd());
+        ClassLoader.setupSystemClassLoader();
 	}
+
+    // FIXME: should be somewhere in jchevm or classlib
+    private static native String getcwd();
 
 	/**
 	 * Sets the value of the static slot "in" in the receiver to the passed in
@@ -96,10 +89,7 @@ public final class System {
 	 *            the new value for in.
 	 */
 	public static void setIn(InputStream newIn) {
-		//SecurityManager secMgr = System.getSecurityManager();
-		//setFieldImpl("in", newIn);
-        //fixit -- get security out of the way while bringing up simple "hello world" demo
-        VMSystem.setIn(newIn);
+        throw new RuntimeException("not implemented");
 	}
 
 	/**
@@ -110,10 +100,7 @@ public final class System {
 	 *            the new value for out.
 	 */
 	public static void setOut(java.io.PrintStream newOut) {
-		//SecurityManager secMgr = System.getSecurityManager();
-		//setFieldImpl("out", newOut);
-        //fixit -- get security out of the way while bringing up simple "hello world" demo
-        VMSystem.setOut(newOut);
+        throw new RuntimeException("not implemented");
 	}
 
 	/**
@@ -124,10 +111,7 @@ public final class System {
 	 *            the new value for err.
 	 */
 	public static void setErr(java.io.PrintStream newErr) {
-		//SecurityManager secMgr = System.getSecurityManager();
-        //fixit -- get security out of the way while bringing up simple "hello world" demo
-        VMSystem.setErr(newErr);
-
+        throw new RuntimeException("not implemented");
 	}
 
 	/**
@@ -154,309 +138,7 @@ public final class System {
 	 */
 	public static void arraycopy(Object array1, int start1, Object array2,
 			int start2, int length) {
-		// sending getClass() to both arguments will check for null
-		Class type1 = array1.getClass();
-		Class type2 = array2.getClass();
-		if (!type1.isArray() || !type2.isArray())
-			throw new ArrayStoreException();
-		Class componentType1 = type1.getComponentType();
-		Class componentType2 = type2.getComponentType();
-		if (!componentType1.isPrimitive()) {
-			if (componentType2.isPrimitive())
-				throw new ArrayStoreException();
-			arraycopy((Object[]) array1, start1, (Object[]) array2, start2,
-					length);
-		} else {
-			if (componentType2 != componentType1)
-				throw new ArrayStoreException();
-			if (componentType1 == Integer.TYPE) {
-				arraycopy((int[]) array1, start1, (int[]) array2, start2,
-						length);
-			} else if (componentType1 == Byte.TYPE) {
-				arraycopy((byte[]) array1, start1, (byte[]) array2, start2,
-						length);
-			} else if (componentType1 == Long.TYPE) {
-				arraycopy((long[]) array1, start1, (long[]) array2, start2,
-						length);
-			} else if (componentType1 == Short.TYPE) {
-				arraycopy((short[]) array1, start1, (short[]) array2, start2,
-						length);
-			} else if (componentType1 == Character.TYPE) {
-				arraycopy((char[]) array1, start1, (char[]) array2, start2,
-						length);
-			} else if (componentType1 == Boolean.TYPE) {
-				arraycopy((boolean[]) array1, start1, (boolean[]) array2,
-						start2, length);
-			} else if (componentType1 == Double.TYPE) {
-				arraycopy((double[]) array1, start1, (double[]) array2, start2,
-						length);
-			} else if (componentType1 == Float.TYPE) {
-				arraycopy((float[]) array1, start1, (float[]) array2, start2,
-						length);
-			}
-		}
-	}
-
-	/**
-	 * Private version of the arraycopy method (used by the jit for reference arraycopies)
-	 */
-	private static void arraycopy(Object[] A1, int offset1, Object[] A2,
-			int offset2, int length) {
-		if (offset1 >= 0 && offset2 >= 0 && length >= 0
-				&& length <= A1.length - offset1
-				&& length <= A2.length - offset2) {
-			// Check if this is a forward or backwards arraycopy
-			if (A1 != A2 || offset1 > offset2 || offset1 + length <= offset2) {
-				for (int i = 0; i < length; ++i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			} else {
-				for (int i = length - 1; i >= 0; --i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
-	}
-
-	/**
-	 * Copies the contents of <code>A1</code> starting at offset <code>offset1</code>
-	 * into <code>A2</code> starting at offset <code>offset2</code> for
-	 * <code>length</code> elements.
-	 *
-	 * @param		A1 			the array to copy out of
-	 * @param		offset1 	the starting index in array1
-	 * @param		A2 			the array to copy into
-	 * @param		offset2 	the starting index in array2
-	 * @param		length 		the number of elements in the array to copy
-	 */
-	private static void arraycopy(int[] A1, int offset1, int[] A2, int offset2,
-			int length) {
-		if (offset1 >= 0 && offset2 >= 0 && length >= 0
-				&& length <= A1.length - offset1
-				&& length <= A2.length - offset2) {
-			// Check if this is a forward or backwards arraycopy
-			if (A1 != A2 || offset1 > offset2 || offset1 + length <= offset2) {
-				for (int i = 0; i < length; ++i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			} else {
-				for (int i = length - 1; i >= 0; --i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
-	}
-
-	/**
-	 * Copies the contents of <code>A1</code> starting at offset <code>offset1</code>
-	 * into <code>A2</code> starting at offset <code>offset2</code> for
-	 * <code>length</code> elements.
-	 *
-	 * @param		A1 			the array to copy out of
-	 * @param		offset1 	the starting index in array1
-	 * @param		A2 			the array to copy into
-	 * @param		offset2 	the starting index in array2
-	 * @param		length 		the number of elements in the array to copy
-	 */
-	private static void arraycopy(byte[] A1, int offset1, byte[] A2,
-			int offset2, int length) {
-		if (offset1 >= 0 && offset2 >= 0 && length >= 0
-				&& length <= A1.length - offset1
-				&& length <= A2.length - offset2) {
-			// Check if this is a forward or backwards arraycopy
-			if (A1 != A2 || offset1 > offset2 || offset1 + length <= offset2) {
-				for (int i = 0; i < length; ++i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			} else {
-				for (int i = length - 1; i >= 0; --i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
-	}
-
-	/**
-	 * Copies the contents of <code>A1</code> starting at offset <code>offset1</code>
-	 * into <code>A2</code> starting at offset <code>offset2</code> for
-	 * <code>length</code> elements.
-	 *
-	 * @param		A1 			the array to copy out of
-	 * @param		offset1 	the starting index in array1
-	 * @param		A2 			the array to copy into
-	 * @param		offset2 	the starting index in array2
-	 * @param		length 		the number of elements in the array to copy
-	 */
-	private static void arraycopy(short[] A1, int offset1, short[] A2,
-			int offset2, int length) {
-		if (offset1 >= 0 && offset2 >= 0 && length >= 0
-				&& length <= A1.length - offset1
-				&& length <= A2.length - offset2) {
-			// Check if this is a forward or backwards arraycopy
-			if (A1 != A2 || offset1 > offset2 || offset1 + length <= offset2) {
-				for (int i = 0; i < length; ++i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			} else {
-				for (int i = length - 1; i >= 0; --i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
-	}
-
-	/**
-	 * Copies the contents of <code>A1</code> starting at offset <code>offset1</code>
-	 * into <code>A2</code> starting at offset <code>offset2</code> for
-	 * <code>length</code> elements.
-	 *
-	 * @param		A1 			the array to copy out of
-	 * @param		offset1 	the starting index in array1
-	 * @param		A2 			the array to copy into
-	 * @param		offset2 	the starting index in array2
-	 * @param		length 		the number of elements in the array to copy
-	 */
-	private static void arraycopy(long[] A1, int offset1, long[] A2,
-			int offset2, int length) {
-		if (offset1 >= 0 && offset2 >= 0 && length >= 0
-				&& length <= A1.length - offset1
-				&& length <= A2.length - offset2) {
-			// Check if this is a forward or backwards arraycopy
-			if (A1 != A2 || offset1 > offset2 || offset1 + length <= offset2) {
-				for (int i = 0; i < length; ++i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			} else {
-				for (int i = length - 1; i >= 0; --i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
-	}
-
-	/**
-	 * Copies the contents of <code>A1</code> starting at offset <code>offset1</code>
-	 * into <code>A2</code> starting at offset <code>offset2</code> for
-	 * <code>length</code> elements.
-	 *
-	 * @param		A1 			the array to copy out of
-	 * @param		offset1 	the starting index in array1
-	 * @param		A2 			the array to copy into
-	 * @param		offset2 	the starting index in array2
-	 * @param		length 		the number of elements in the array to copy
-	 */
-	private static void arraycopy(char[] A1, int offset1, char[] A2,
-			int offset2, int length) {
-		if (offset1 >= 0 && offset2 >= 0 && length >= 0
-				&& length <= A1.length - offset1
-				&& length <= A2.length - offset2) {
-			// Check if this is a forward or backwards arraycopy
-			if (A1 != A2 || offset1 > offset2 || offset1 + length <= offset2) {
-				for (int i = 0; i < length; ++i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			} else {
-				for (int i = length - 1; i >= 0; --i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
-	}
-
-	/**
-	 * Copies the contents of <code>A1</code> starting at offset <code>offset1</code>
-	 * into <code>A2</code> starting at offset <code>offset2</code> for
-	 * <code>length</code> elements.
-	 *
-	 * @param		A1 			the array to copy out of
-	 * @param		offset1 	the starting index in array1
-	 * @param		A2 			the array to copy into
-	 * @param		offset2 	the starting index in array2
-	 * @param		length 		the number of elements in the array to copy
-	 */
-	private static void arraycopy(boolean[] A1, int offset1, boolean[] A2,
-			int offset2, int length) {
-		if (offset1 >= 0 && offset2 >= 0 && length >= 0
-				&& length <= A1.length - offset1
-				&& length <= A2.length - offset2) {
-			// Check if this is a forward or backwards arraycopy
-			if (A1 != A2 || offset1 > offset2 || offset1 + length <= offset2) {
-				for (int i = 0; i < length; ++i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			} else {
-				for (int i = length - 1; i >= 0; --i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
-	}
-
-	/**
-	 * Copies the contents of <code>A1</code> starting at offset <code>offset1</code>
-	 * into <code>A2</code> starting at offset <code>offset2</code> for
-	 * <code>length</code> elements.
-	 *
-	 * @param		A1 			the array to copy out of
-	 * @param		offset1 	the starting index in array1
-	 * @param		A2 			the array to copy into
-	 * @param		offset2 	the starting index in array2
-	 * @param		length 		the number of elements in the array to copy
-	 */
-	private static void arraycopy(double[] A1, int offset1, double[] A2,
-			int offset2, int length) {
-		if (offset1 >= 0 && offset2 >= 0 && length >= 0
-				&& length <= A1.length - offset1
-				&& length <= A2.length - offset2) {
-			// Check if this is a forward or backwards arraycopy
-			if (A1 != A2 || offset1 > offset2 || offset1 + length <= offset2) {
-				for (int i = 0; i < length; ++i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			} else {
-				for (int i = length - 1; i >= 0; --i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
-	}
-
-	/**
-	 * Copies the contents of <code>A1</code> starting at offset <code>offset1</code>
-	 * into <code>A2</code> starting at offset <code>offset2</code> for
-	 * <code>length</code> elements.
-	 *
-	 * @param		A1 			the array to copy out of
-	 * @param		offset1 	the starting index in array1
-	 * @param		A2 			the array to copy into
-	 * @param		offset2 	the starting index in array2
-	 * @param		length 		the number of elements in the array to copy
-	 */
-	private static void arraycopy(float[] A1, int offset1, float[] A2,
-			int offset2, int length) {
-		if (offset1 >= 0 && offset2 >= 0 && length >= 0
-				&& length <= A1.length - offset1
-				&& length <= A2.length - offset2) {
-			// Check if this is a forward or backwards arraycopy
-			if (A1 != A2 || offset1 > offset2 || offset1 + length <= offset2) {
-				for (int i = 0; i < length; ++i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			} else {
-				for (int i = length - 1; i >= 0; --i) {
-					A2[offset2 + i] = A1[offset1 + i];
-				}
-			}
-		} else
-			throw new ArrayIndexOutOfBoundsException();
+        VMSystem.arraycopy(array1, start1, array2, start2, length);
 	}
 
 	/**
@@ -465,10 +147,7 @@ public final class System {
 	 * 
 	 * @return the time in milliseconds.
 	 */
-    public static  long currentTimeMillis() 
-    {
-        return VMSystem.currentTimeMillis();
-    }
+    public static native long currentTimeMillis();
 
 	private static final int InitLocale = 0;
 
@@ -483,8 +162,7 @@ public final class System {
 	 * provided by the virtual machine.
 	 */
 	private static void ensureProperties() {
-		systemProperties = new Properties();
-
+		systemProperties = VMSystemProperties.getSystemProperties();
 		String platformEncoding = null;
 		String fileEncoding, osEncoding = null;
 		String definedFileEncoding = getEncoding(FileEncoding);
@@ -512,16 +190,6 @@ public final class System {
 
 		systemProperties.put("file.encoding", fileEncoding);
 
-		systemProperties.put("java.version", "1.4.2 subset");
-		systemProperties.put("java.specification.version", "1.4");
-
-		systemProperties.put("java.specification.vendor",
-				"Sun Microsystems Inc.");
-		systemProperties.put("java.specification.name",
-				"Java Platform API Specification");
-
-		systemProperties.put("com.ibm.oti.configuration", "clear");
-		systemProperties.put("com.ibm.oti.configuration.dir", "jclClear");
 
 		String[] list = getPropertyList();
 		for (int i = 0; i < list.length; i += 2) {
@@ -538,8 +206,10 @@ public final class System {
 				platformEncoding = getEncoding(PlatformEncoding);
 			consoleEncoding = platformEncoding;
 			systemProperties.put("console.encoding", consoleEncoding);
-		}
+        }
 
+		systemProperties.put("com.ibm.oti.configuration", "clear");
+		systemProperties.put("com.ibm.oti.configuration.dir", "jclClear");
 		systemProperties.put("com.ibm.oti.jcl.build", "plugin");
 	}
 
@@ -727,7 +397,8 @@ public final class System {
 	//fixit  below is a non-native version for getting "hello world" to work ---- private static native String getEncoding(int type);
     private static String getEncoding(int type) 
     {
-        return "java.lang.System.getEncoding()";
+        // FIXME: not correct, need to get from system
+        return "ISO-8859-1";
         /*
         String str = "java.lang.System.getEncoding() type = ???";
         if (type == 0)
@@ -770,6 +441,7 @@ public final class System {
         return hash;
     }
 
+
 	/**
 	 * Loads the specified file as a dynamic library.
 	 * 
@@ -777,14 +449,9 @@ public final class System {
 	 *            the path of the file to be loaded
 	 */
 	public static void load(String pathName) {
-        //fixit -- set aside security while bringing up simple "hello world" demo
-		/*
-        SecurityManager smngr = System.getSecurityManager();
-		if (smngr != null)
-			smngr.checkLink(pathName);
-        */
-		ClassLoader.loadLibraryWithPath(pathName, ClassLoader
-				.callerClassLoader(), null);
+        // FIXME: all the security checks
+        ClassLoader classLoader = ClassLoader.callerClassLoader();
+        Runtime.getRuntime().loadInternal(pathName, classLoader);
 	}
 
 	/**
@@ -799,8 +466,9 @@ public final class System {
 	 *             if the library was not allowed to be loaded
 	 */
 	public static void loadLibrary(String libName) {
-		ClassLoader.loadLibraryWithClassLoader(libName, ClassLoader
-				.callerClassLoader());
+        // FIXME: all the security checks
+        ClassLoader classLoader = ClassLoader.callerClassLoader();
+        Runtime.getRuntime().loadLibraryInternal(libName, classLoader);
 	}
 
 	/**
@@ -859,7 +527,7 @@ public final class System {
 	 *             if the security manager has already been set.
 	 */
 	public static void setSecurityManager(final SecurityManager s) {
-		final SecurityManager currentSecurity = security;
+		//final SecurityManager currentSecurity = security;
 		try {
 			// Preload classes used for checkPackageAccess(),
 			// otherwise we could go recursive
@@ -880,9 +548,8 @@ public final class System {
 	 */
 	//fixit -- the original stub declares this routine a native method.  Is this required?
     // public static native String mapLibraryName(String userLibName);
-    public static String mapLibraryName(String userLibName) 
-    {
-        return "System.mapLibraryName() is not implemented";
+    public static String mapLibraryName(String libName) {
+        return VMRuntime.mapLibraryName(libName);
     }
 
 	/**
@@ -896,10 +563,10 @@ public final class System {
 	 */
 	//fixit -- the original stub declares this routine a native method.  Is this required?
 	//private static native void setFieldImpl(String fieldName, Object stream);
-    private static void setFieldImpl(String fieldName, Object stream) 
+    /*private static void setFieldImpl(String fieldName, Object stream) 
     {
         return;
-    }
+    }*/
 
 }
 

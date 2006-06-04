@@ -29,6 +29,7 @@ public abstract class Reference extends Object {
 
     Object referent;
     ReferenceQueue queue;
+    private static ReferenceQueue dummy = new ReferenceQueue();
 
 	/**
 	 * Make the referent null. This does not force the reference object to be
@@ -36,6 +37,7 @@ public abstract class Reference extends Object {
 	 * 
 	 */
 	public void clear() {
+        referent = null;
 		return;
 	}
 
@@ -46,7 +48,20 @@ public abstract class Reference extends Object {
 	 * @return boolean true if Reference is enqueued. false otherwise.
 	 */
 	public boolean enqueue() {
-		return false;
+        ReferenceQueue q;
+        synchronized (this) {
+            if (queue == null || queue == dummy) return false;
+            q = queue;
+            queue = null;
+        }
+
+        try {
+            q.enqueue(this);
+            return true;
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        return false;
 	}
 
 	/**
@@ -56,7 +71,7 @@ public abstract class Reference extends Object {
 	 *         been cleared.
 	 */
 	public Object get() {
-		return null;
+		return referent;
 	}
 
 	/**
@@ -65,17 +80,7 @@ public abstract class Reference extends Object {
 	 * @return boolean true if Reference has been enqueued. false otherwise.
 	 */
 	public boolean isEnqueued() {
-		return false;
-	}
-
-	/**
-	 * Enqueue the reference object on the associated queue.
-	 * 
-	 * @return boolean true if the Reference was successfully enqueued. false
-	 *         otherwise.
-	 */
-	boolean enqueueImpl() {
-		return false;
+		return queue == null;
 	}
 
 	/**
@@ -95,6 +100,8 @@ public abstract class Reference extends Object {
 	 *            the referent
 	 */
 	void initReference(Object r) {
+        referent = r;
+        queue = dummy;
 		return;
 	}
 
@@ -109,6 +116,8 @@ public abstract class Reference extends Object {
 	 *            the ReferenceQueue
 	 */
 	void initReference(Object r, ReferenceQueue q) {
+        referent = r;
+        queue = q;
 		return;
 	}
 
@@ -119,6 +128,5 @@ public abstract class Reference extends Object {
 	void dequeue() {
 		return;
 	}
-
 }
 

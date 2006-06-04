@@ -18,6 +18,7 @@ package java.lang;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.StringTokenizer;
 
 
 /**
@@ -187,14 +188,73 @@ public class Runtime {
 		return;
 	};
 
+    private static Runtime runtime;
+
+    static {
+        runtime = new Runtime();
+    }
+
+    private Runtime() {}
+
 	/**
 	 * Return the single Runtime instance
 	 * 
 	 */
 	public static Runtime getRuntime() {
-        //fixit -- always returning "null" is good enough to allow simple "hello world" to work
-		return null;
+        // FIXME: all the security checks
+        return runtime;
 	}
+
+    /**
+     * Implementation of Runtime.load() without security checks.
+     * For java.lang.* classes.
+     * @param ClassLoader the classloader of class who initiated the loading.
+     */
+    void loadInternal(String pathName, ClassLoader classLoader) {
+        VMRuntime.nativeLoad(
+                pathName, classLoader);
+    }
+
+    /**
+     * Implementation of Runtime.loadLibrary() without security checks.
+     * For java.lang.* classes.
+     */
+    void loadLibraryInternal(String libName, ClassLoader classLoader) {
+        String path = null;
+        if (classLoader != null) {
+            path = classLoader.findLibrary(libName);
+        }
+
+        if (path != null) {
+            VMRuntime.nativeLoad(
+                    path, classLoader);
+            return;
+        }
+
+        String fileName = System.mapLibraryName(libName);
+        String libraryPath = System.getProperty("java.library.path");
+        String pathSeparator = System.getProperty("path.separator");
+        String fileSeparator = System.getProperty("file.separator");
+
+        StringTokenizer tokens = new StringTokenizer(libraryPath, pathSeparator);
+
+        // FIXME: too many exceptions thrown here, should be other way
+        UnsatisfiedLinkError ule = null;
+        while (tokens.hasMoreElements()) {
+            String dir = tokens.nextToken();
+            path = dir + fileSeparator + fileName;
+            try {
+                int res = VMRuntime.nativeLoad(
+                        path, classLoader);
+                if (res == 0) continue;
+                return;
+            } catch (UnsatisfiedLinkError e) {
+                ule = e;
+            }
+        }
+        if (ule != null) throw ule;
+        throw new UnsatisfiedLinkError("failed loading " + fileName + " java.library.path=" + libraryPath);
+    }
 
 	/**
 	 * Loads and links the library specified by the argument.
@@ -208,8 +268,9 @@ public class Runtime {
 	 *                if the library was not allowed to be loaded
 	 */
 	public void load(String pathName) {
-        VMRuntime.nativeLoad(pathName, ClassLoader.systemClassLoader);
-		return;
+        // FIXME: all the security checks
+        ClassLoader classLoader = ClassLoader.callerClassLoader();
+        loadInternal(pathName, classLoader);
 	}
 
 	/**
@@ -223,8 +284,9 @@ public class Runtime {
 	 *                if the library was not allowed to be loaded
 	 */
 	public void loadLibrary(String libName) {
-        //fixit -- always returning "null" is good enough to allow simple "hello world" to work
-		return;
+        // FIXME: all the security checks
+        ClassLoader classLoader = ClassLoader.callerClassLoader();
+        loadLibraryInternal(libName, classLoader);
 	}
 
 	/**

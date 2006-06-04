@@ -11,7 +11,7 @@ class DirectByteBufferImpl
 
     public void doit()
     {
-        ReadWrite kk = new ReadWrite();
+        new ReadWrite();
     }
 
     static final class ReadWrite extends DirectByteBufferImpl

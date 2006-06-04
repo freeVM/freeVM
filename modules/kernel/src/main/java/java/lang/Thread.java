@@ -46,7 +46,7 @@ public class Thread implements Runnable {
     /////ThreadGroup threadGroupSlot;  //maybe same as next one
     ThreadGroup group;
     ////VMThread threadSlot;  //maybe same as next one
-    VMThread vmThread;  
+    final VMThread vmThread;  
     ///boolean isDaemonSlot;  //maybe this is the same as daemon
     boolean daemon;
     ThreadLocal threadLocalSlot;
@@ -54,13 +54,6 @@ public class Thread implements Runnable {
     int priority;
 
 
-	/**
-	 * Constructs a new Thread with no runnable object and a newly generated
-	 * name. The new Thread will belong to the same ThreadGroup as the Thread
-	 * calling this constructor.
-	 * 
-	 * @see java.lang.ThreadGroup
-	 */
     public Thread(VMThread vmt1, String s1, int i1, boolean b1) 
     {
         super();
@@ -69,9 +62,17 @@ public class Thread implements Runnable {
         priority = i1;
         daemon = b1;
     }
+
+	/**
+	 * Constructs a new Thread with no runnable object and a newly generated
+	 * name. The new Thread will belong to the same ThreadGroup as the Thread
+	 * calling this constructor.
+	 * 
+	 * @see java.lang.ThreadGroup
+	 */
 	public Thread() {
         super();
-        vmThread = new VMThread();
+        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -88,7 +89,7 @@ public class Thread implements Runnable {
 	public Thread(Runnable runnable) {
 		super();
         runnableSlot = runnable;
-        vmThread = new VMThread();
+        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -108,7 +109,7 @@ public class Thread implements Runnable {
 		super();
         runnableSlot = runnable;
         name = threadName;
-        vmThread = new VMThread();
+        vmThread = new VMThread(this);
 
 	}
 
@@ -125,7 +126,7 @@ public class Thread implements Runnable {
 	public Thread(String threadName) {
         super();
         name = threadName;
-        vmThread = new VMThread();
+        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -151,7 +152,7 @@ public class Thread implements Runnable {
         super();
         group = gr;
         runnableSlot = runnable;
-        vmThread = new VMThread();
+        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -183,7 +184,7 @@ public class Thread implements Runnable {
         group = gr;
         runnableSlot = runnable;
         name = threadName;
-        vmThread = new VMThread();
+        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -212,7 +213,7 @@ public class Thread implements Runnable {
         group = gr;
         runnableSlot = runnable;
         name = threadName;
-        vmThread = new VMThread();
+        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -236,7 +237,7 @@ public class Thread implements Runnable {
 		super();
         group = gr;
         name = threadName;
-        vmThread = new VMThread();
+        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -298,7 +299,11 @@ public class Thread implements Runnable {
 	 * 
 	 */
 	public static void dumpStack() {
-		//VMThrowable.getStackTrace(this);  // fixit -- not required for simple "hello world" demo
+        try {
+            throw new Exception("stack dump");
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
 	}
 
 	/**
@@ -338,7 +343,7 @@ public class Thread implements Runnable {
 	 * @return the receiver's name (a java.lang.String)
 	 */
 	public final String getName() {
-        String ss = name + this.toString();
+        //String ss = name + this.toString();
 		return this.toString();  // fixit -- find out the proper construction for thread names
 	}
 
@@ -417,7 +422,7 @@ public class Thread implements Runnable {
 	 * @see Thread#start
 	 */
 	public final boolean isAlive() {
-		return false;  //fixit -- obviously incorrect but probably OK for simple "hello world" demo
+		return vmThread.isAlive();
 	}
 
 	/**
@@ -657,26 +662,22 @@ public class Thread implements Runnable {
 	 * @see Thread#run
 	 */
 	public void start() {
-        //debugging aid -- the s1 and s2 strings are easy to spot in jchevm since string creation calls into the jvm
-        String s1 = "Thread.start() -- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT";
         int stackSize = 1024 * 64;
-        vmThread.thread = this;
         if (java.lang.ThreadGroup.root == null) 
         {
             java.lang.ThreadGroup tg = new java.lang.ThreadGroup();
             java.lang.ThreadGroup.root = tg;
         }
         group = java.lang.ThreadGroup.root; //wjw temporary, during bringup
-        vmThread.start(stackSize);
-        String s2 = "Thread.start() -- BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
-        int xx = 0;
-        /*
-         while (true)
-        {
-            xx++;
+        try {
+            synchronized (vmThread) {
+                vmThread.start(stackSize);
+                vmThread.wait();
+            }
+        } catch (Throwable t) {
+            System.err.println("error starting thread");
+            t.printStackTrace();
         }
-        */
-		return;
 	}
 
 	/**

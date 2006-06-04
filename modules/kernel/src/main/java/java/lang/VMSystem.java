@@ -14,20 +14,12 @@
  */
 package java.lang;
 
-import java.io.*;
-
 public class VMSystem 
 {
     //VMSystem was created by looking at Apache JCHEVM native methods
-    // not necessary for simple "hello world" demo --> static final native void arraycopy(Object obj, int ii, Object obj2, int jj, int kk);
+    static final native void arraycopy(Object obj, int ii, Object obj2, int jj, int kk);
 
     static public final native int identityHashCode(Object obj);
-
-    static public final native void setIn(InputStream is);
-
-    static public final native void setOut(PrintStream ps);
-
-    static public final native void setErr(PrintStream ps);
 
     public static final native long currentTimeMillis();
 

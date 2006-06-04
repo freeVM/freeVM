@@ -23,6 +23,16 @@ package java.lang.reflect;
  */
 public final class Constructor extends AccessibleObject implements Member {
 
+        private Class clazz;            //required by JCHEVM's bootstrap.c
+        private int slot;               //required by JCHEVM's bootstrap.c
+
+        // FIXME: security violation: should be package private or private
+        public Constructor(Class c1, int i1) {
+            clazz = c1;
+            slot = i1;
+        }
+
+
 	/**
 	 * Compares the specified object to this Constructor and answer if they are
 	 * equal. The object must be an instance of Constructor with the same
@@ -35,15 +45,9 @@ public final class Constructor extends AccessibleObject implements Member {
 	 * @see #hashCode
 	 */
 
-    Constructor(Class c1, int i1) 
-    {
-    }
-
-    Class clazz;            //required by JCHEVM's bootstrap.c
-    int slot;               //required by JCHEVM's bootstrap.c
 
 	public boolean equals(Object object) {
-		return false;
+        throw new RuntimeException("not implemented");
 	}
 
 	/**
@@ -53,7 +57,7 @@ public final class Constructor extends AccessibleObject implements Member {
 	 * @return the declaring class
 	 */
 	public Class getDeclaringClass() {
-		return null;
+		return clazz;
 	}
 
 	/**
@@ -64,9 +68,7 @@ public final class Constructor extends AccessibleObject implements Member {
 	 * 
 	 * @return the declared exception classes
 	 */
-	public Class[] getExceptionTypes() {
-		return null;
-	}
+	public native Class[] getExceptionTypes();
 
 	/**
 	 * Return the modifiers for the modelled constructor. The Modifier class
@@ -75,9 +77,7 @@ public final class Constructor extends AccessibleObject implements Member {
 	 * @return the modifiers
 	 * @see java.lang.reflect.Modifier
 	 */
-	public int getModifiers() {
-		return 0;
-	}
+	public native int getModifiers();
 
 	/**
 	 * Return the name of the modelled constructor. This is the name of the
@@ -86,7 +86,7 @@ public final class Constructor extends AccessibleObject implements Member {
 	 * @return the name
 	 */
 	public String getName() {
-		return null;
+		return clazz.getName();
 	}
 
 	/**
@@ -96,9 +96,7 @@ public final class Constructor extends AccessibleObject implements Member {
 	 * 
 	 * @return the parameter types
 	 */
-	public Class[] getParameterTypes() {
-		return null;
-	}
+	public native Class[] getParameterTypes();
 
 	/**
 	 * Answers an integer hash code for the receiver. Objects which are equal
@@ -109,7 +107,7 @@ public final class Constructor extends AccessibleObject implements Member {
 	 * @see #equals
 	 */
 	public int hashCode() {
-		return 0;
+		return getName().hashCode();
 	}
 
 	/**
@@ -157,8 +155,11 @@ public final class Constructor extends AccessibleObject implements Member {
 	public Object newInstance(Object args[]) throws InstantiationException,
 			IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
-		return null;
+            // FIXME: no corresponding checks is done
+            return constructNative(args, clazz, slot);
 	}
+
+    private native Object constructNative(Object[] args, Class c, int slot);
 
 	/**
 	 * Answers a string containing a concise, human-readable description of the
@@ -170,7 +171,12 @@ public final class Constructor extends AccessibleObject implements Member {
 	 * @return a printable representation for the receiver
 	 */
 	public String toString() {
-		return null;
+        throw new RuntimeException("not implemented");
 	}
+
+    public boolean isSynthetic() {
+        // FIXME: not implemented
+        return false;
+    }
 }
 

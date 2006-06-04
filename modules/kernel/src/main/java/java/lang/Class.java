@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.security.ProtectionDomain;
 
@@ -66,7 +67,7 @@ import java.security.ProtectionDomain;
  * </dl>
  * 
  */
-public final class Class implements java.io.Serializable {
+public final class Class<T> implements java.io.Serializable {
 	private static final long serialVersionUID = 3206093459760846163L;
 
     Object vmdata;
@@ -86,7 +87,7 @@ public final class Class implements java.io.Serializable {
 	 */
 	public static Class forName(String className) throws ClassNotFoundException {
         boolean initializeBoolean = true; // a guess that somehow allows "hello world" to work on jchevm
-        ClassLoader classloader = null;  // a guess that somehow allows "hello world" to work on jchevm
+        ClassLoader classloader = ClassLoader.callerClassLoader();
 		return VMClass.forName(className, initializeBoolean, classloader);
 	}
 
@@ -206,26 +207,40 @@ public final class Class implements java.io.Serializable {
 	 *             if member access is not allowed
 	 * @see #getConstructors
 	 */
-	public Constructor getConstructor(Class parameterTypes[])
+	public Constructor getConstructor(Class[] parameterTypes)
 			throws NoSuchMethodException, SecurityException {
- 
-        boolean publicOnly = true;  //fixit -- find out what publicOnly should be set to
+        return getDeclaredConstructor(parameterTypes, true);
+	}
+
+    private Constructor getDeclaredConstructor(Class[] parameterTypes, boolean publicOnly)
+        throws NoSuchMethodException, SecurityException {
         Constructor[] conArray = VMClass.getDeclaredConstructors(this, publicOnly);
+
+outer:
         for (int ii = 0; ii < conArray.length; ii++)
         {
-            Class [] ca = conArray[ii].getParameterTypes();
-            int jj;
-            for (jj = 0; jj < ca.length; jj++) 
-            {
-                if (parameterTypes[jj] != ca[jj])
-                    break;
+            Constructor c = (Constructor) conArray[ii];
+
+            Class [] ca = c.getParameterTypes();
+
+            if (parameterTypes == null) {
+                if (ca == null || ca.length != 0) return c;
+            } else if (ca == null) {
+                if (parameterTypes.length == 0) return c;
+            } else {
+                if (ca.length != parameterTypes.length) continue;
+
+                for (int i = 0; i < ca.length; i++) 
+                {
+                    if (!ca[i].equals(parameterTypes[i]))
+                        continue outer;
+                }
             }
-            if (jj == parameterTypes.length)  // its an exact match
-                return conArray[jj];
+            return c;
         }
         NoSuchMethodException nsme = new NoSuchMethodException();
         throw nsme;
-	}
+    }
 
 	/**
 	 * Answers an array containing Constructor objects describing all
@@ -237,8 +252,7 @@ public final class Class implements java.io.Serializable {
 	 * @see #getMethods
 	 */
 	public Constructor[] getConstructors() throws SecurityException {
-        boolean publicOnly = false;  // fixit -- find out what publicOnly should be set to
-		return VMClass.getDeclaredConstructors(this, publicOnly);
+		return VMClass.getDeclaredConstructors(this, true);
 	}
 
 	/**
@@ -269,25 +283,11 @@ public final class Class implements java.io.Serializable {
 	 *             if member access is not allowed
 	 * @see #getConstructors
 	 */
-	public Constructor getDeclaredConstructor(Class parameterTypes[])
+	public Constructor getDeclaredConstructor(Class[] parameterTypes)
 			throws NoSuchMethodException, SecurityException {
-        boolean publicOnly = true;  //fixit -- find out what publicOnly should be set to
-        Constructor[] conArray = VMClass.getDeclaredConstructors(this, publicOnly);
-
-        for (int ii = 0; ii < conArray.length; ii++)
-        {
-            Class [] ca = conArray[ii].getParameterTypes();
-            int jj;
-            for (jj = 0; jj < ca.length; jj++) 
-            {
-                if (parameterTypes[jj] != ca[jj])
-                    break;
-            }
-            if (jj == parameterTypes.length)  // its an exact match
-                return conArray[jj];
-        }
-        NoSuchMethodException nsme = new NoSuchMethodException();
-        throw nsme;
+        // FIXME security
+        
+        return getDeclaredConstructor(parameterTypes, false);
 	}
 
 	/**
@@ -302,8 +302,7 @@ public final class Class implements java.io.Serializable {
 	 * @see #getMethods
 	 */
 	public Constructor[] getDeclaredConstructors() throws SecurityException {
-        boolean publicOnly = false;  // fixit -- find out what publicOnly should be set to
-        return VMClass.getDeclaredConstructors(this, publicOnly);
+        return VMClass.getDeclaredConstructors(this, false);
 	}
 
 	/**
@@ -322,14 +321,17 @@ public final class Class implements java.io.Serializable {
 	 */
 	public Field getDeclaredField(String name) throws NoSuchFieldException,
 			SecurityException {
-        boolean publicOnly = false;  //fixit -- find out what public only should be set to
+        // FIXME: security
+        return getDeclaredField(name, false);
+	}
+
+	private Field getDeclaredField(String name, boolean publicOnly)
+        throws NoSuchFieldException {
         Field [] fields = VMClass.getDeclaredFields(this, publicOnly);
-        for (int ii = 0; ii < fields.length; ii++) 
-        {
-            if (fields[ii].toString() == name) return fields[ii];
+        for (int ii = 0; ii < fields.length; ii++) {
+            if (fields[ii].getName().equals(name)) return fields[ii];
         }
-		NoSuchFieldException nsfe = new NoSuchFieldException();
-        throw nsfe;
+		throw new NoSuchFieldException(name);
 	}
 
 	/**
@@ -343,8 +345,7 @@ public final class Class implements java.io.Serializable {
 	 * @see #getFields
 	 */
 	public Field[] getDeclaredFields() throws SecurityException {
-        boolean publicOnly = false;  // fixit -- find out what publicOnly should be set to
-        return VMClass.getDeclaredFields(this, publicOnly);
+        return VMClass.getDeclaredFields(this, false);
 	}
 
 	/**
@@ -363,17 +364,9 @@ public final class Class implements java.io.Serializable {
 	 *             If member access is not allowed
 	 * @see #getMethods
 	 */
-	public Method getDeclaredMethod(String name, Class parameterTypes[])
+	public Method getDeclaredMethod(String name, Class[] parameterTypes)
 			throws NoSuchMethodException, SecurityException {
-        boolean publicOnly = false;  //fixit -- find out what publicOnly should be set to
-        Method [] methods = VMClass.getDeclaredMethods(this, publicOnly);
-        for (int ii = 0; ii < methods.length; ii++) 
-        {
-            //fixit ---- oops, need to match on parameterTypes also
-            if (methods[ii].toString() == name) return methods[ii];
-        }
-        NoSuchMethodException nsme = new NoSuchMethodException();
-        throw nsme;
+        return getDeclaredMethod(name, parameterTypes, false);
 	}
 
 	/**
@@ -387,8 +380,7 @@ public final class Class implements java.io.Serializable {
 	 * @see #getMethods
 	 */
 	public Method[] getDeclaredMethods() throws SecurityException {
-        boolean publicOnly = false;  //fixit -- find out what publicOnly should be set to
-        return VMClass.getDeclaredMethods(this, publicOnly);
+        return VMClass.getDeclaredMethods(this, false);
 	}
 
 	/**
@@ -416,14 +408,7 @@ public final class Class implements java.io.Serializable {
 	 */
 	public Field getField(String name) throws NoSuchFieldException,
 			SecurityException {
-        boolean publicOnly = true;  //fixit -- find out what publicOnly should be set to
-        Field [] fields = VMClass.getDeclaredFields(this, publicOnly);
-        for (int ii = 0; ii < fields.length; ii++) 
-        {
-            if (fields[ii].toString() == name) return fields[ii];
-        }
-		NoSuchFieldException nsfe = new NoSuchFieldException();
-        throw nsfe;
+        return getDeclaredField(name, true);
 	}
 
 	/**
@@ -436,8 +421,7 @@ public final class Class implements java.io.Serializable {
 	 * @see #getDeclaredFields
 	 */
 	public Field[] getFields() throws SecurityException {
-        boolean publicOnly = true;  //fixit -- find out what publicOnly should be set to
-        Field[] fld = VMClass.getDeclaredFields(this, publicOnly);
+        Field[] fld = VMClass.getDeclaredFields(this, true);
         return fld;
 	}
 
@@ -468,25 +452,32 @@ public final class Class implements java.io.Serializable {
 	 */
 	public Method getMethod(String name, Class parameterTypes[])
 			throws NoSuchMethodException, SecurityException {
-        boolean publicOnly = false;  //fixit -- find out what publicOnly should be set to
+        return getDeclaredMethod(name, parameterTypes, true);
+	}
+
+    private Method getDeclaredMethod(String name, Class[] parameterTypes, boolean publicOnly)
+           throws NoSuchMethodException {
         Method [] methods = VMClass.getDeclaredMethods(this, publicOnly);
+
+outer:
         for (int ii = 0; ii < methods.length; ii++) 
         {
-            // fixit need to add code that matches on parameterTypes also
-            if (methods[ii].toString() == name) 
-            {
-                Class [] paramArray = methods[ii].getParameterTypes();
-                for (int jj = 0; jj < paramArray.length; jj++) 
-                {
-                   if (paramArray[jj] != parameterTypes[jj])
-                       break;
+            Method m = methods[ii];
+
+            if (!m.getName().equals(name)) continue;
+            Class[] args = m.getParameterTypes();
+            if (parameterTypes == null) {
+                if (args.length != 0) continue;
+            } else {
+                if (args.length != parameterTypes.length) continue;
+                for (int i = 0; i < args.length; i++) {
+                    if (!args[i].equals(parameterTypes[i])) continue outer;
                 }
-                return methods[ii];
             }
+            return m;
         }
-        NoSuchMethodException nsme = new NoSuchMethodException();
-        throw nsme;
-	}
+        throw new NoSuchMethodException();
+    }
 
 	/**
 	 * Answers an array containing Method objects describing all methods which
@@ -498,8 +489,7 @@ public final class Class implements java.io.Serializable {
 	 * @see #getDeclaredMethods
 	 */
 	public Method[] getMethods() throws SecurityException {
-        boolean publicOnly = false;  //fixit -- find out what publicOnly should be set to
-        return VMClass.getDeclaredMethods(this, publicOnly);
+        return VMClass.getDeclaredMethods(this, true);
 	}
 
 	/**
@@ -557,6 +547,11 @@ public final class Class implements java.io.Serializable {
 		return null;
 	};
 
+    private String getResourceName(String path) {
+        if (path.charAt(0) == '/') return path.substring(1, path.length());
+        return getPackageName().replace('.', '/') + "/" + path;
+    }
+
 	/**
 	 * Answers a read-only stream on the contents of the resource specified by
 	 * resName. The mapping between the resource name and the stream is managed
@@ -568,9 +563,13 @@ public final class Class implements java.io.Serializable {
 	 * @see java.lang.ClassLoader
 	 */
 	public URL getResource(String resName) {
-        // fixit -- need to find an expert on getResource()
-        // for "hello world", returning null works OK
-		return null;
+        ClassLoader cl = getClassLoader();
+        String name = getResourceName(resName);
+        if (cl != null) {
+            return cl.getResource(name);
+        } else {
+            return ClassLoader.getSystemResource(name);
+        }
 	}
 
 	/**
@@ -584,9 +583,13 @@ public final class Class implements java.io.Serializable {
 	 * @see java.lang.ClassLoader
 	 */
 	public InputStream getResourceAsStream(String resName) {
-        // fixit -- need to find an expert on getResource()
-        // for "hello world", returning null works OK
-		return null;
+        ClassLoader cl = getClassLoader();
+        String name = getResourceName(resName);
+        if (cl != null) {
+            return cl.getResourceAsStream(name);
+        } else {
+            return ClassLoader.getSystemResourceAsStream(name);
+        }
 	}
 
 	/**
@@ -690,11 +693,22 @@ public final class Class implements java.io.Serializable {
 	 * @throws InstantiationException
 	 *             if the instance could not be created.
 	 */
+    static int num = 0;
 	public Object newInstance() throws IllegalAccessException,
-			InstantiationException {
-        // fixit -- returning null works OK for simple "hello world"
-		return null;
-	}
+               InstantiationException {
+            try {
+                Constructor c = getDeclaredConstructor(new Class[0]);
+                return c.newInstance(new Object[0]);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+            throw new InstantiationException();
+        }
+
 
 	/**
 	 * Answers a string containing a concise, human-readable description of the
@@ -703,9 +717,13 @@ public final class Class implements java.io.Serializable {
 	 * @return a printable representation for the receiver.
 	 */
 	public String toString() {
-        //System.out.println("Class.toString() -- not implemented");
-        return this.toString();  /// is this right???????
+        return "class " + getName();
 	}
+
+    private String getPackageName() {
+        String name = getName();
+        return name.substring(0, name.lastIndexOf('.'));
+    }
 
 	/**
 	 * Returns the Package of which this class is a member. A class has a
@@ -714,8 +732,9 @@ public final class Class implements java.io.Serializable {
 	 * @return Package the Package of which this class is a member or null
 	 */
 	public Package getPackage() {
-        // fixit -- returning null works OK for simple "hello world" app
-		return null;
+        ClassLoader cl = getClassLoader();
+        if (cl == null) return null;
+        return cl.getPackage(getPackageName());
 	}
 
 	/**
@@ -768,5 +787,9 @@ public final class Class implements java.io.Serializable {
 		return null;
 	};
 
+    public boolean isSynthetic() {
+        // FIXME: not implemented
+        return false;
+    }
 }
 

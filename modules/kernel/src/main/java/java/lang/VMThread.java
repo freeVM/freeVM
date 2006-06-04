@@ -16,26 +16,50 @@ package java.lang;
 
 class VMThread 
 {
-    //VMThread was created by looking at the native methods for Apache JCHEVM
     VMThread(Thread t1) 
     {
         this.thread = t1;
-        //the below is a diagnostic/debug aid (you can set breakpoint in JCHEVM where this string object is created
-        String s1 = "VMThread.<init>(Thread) is not fully implemented";
+        this.vmdata = null;
     }
-    VMThread()
-    {
-        //the below is a diagnostic/debug aid (you can set breakpoint in JCHEVM where this string object is created
-        String s1 = "VMThread.<init>() is not fully implemented";
-    }
-    Thread thread;
+
+    final Thread thread;
     Object vmdata;
-    void run() 
-    {
-        //the below is a diagnostic/debug aid (you can set breakpoint in JCHEVM where this string object is created
-        String s1 = "NNNNNNNNNNNNNNNN VMThread.run() has been called";
-        thread.run();
+    private boolean started = false;
+    private boolean running = false;
+
+    void run() {
+        attach();
+        try {
+            synchronized (this) {
+                if (started) return;
+                started = true;
+                running = true;
+                notifyAll();
+            }
+
+            thread.run();
+
+            synchronized (this) {
+                running = false;
+                notifyAll();
+            }
+        } catch (Throwable t) {
+            System.err.println("Thread dead with exception:");
+            t.printStackTrace();
+        }
+        destroy();
     }
+
+    final boolean isAlive() {
+        synchronized (this) {
+            return running;
+        }
+    }
+
+    private final native void attach();
+    private final native void destroy();
+
+
     final native int countStackFrames();
 
     static final native Thread currentThread();

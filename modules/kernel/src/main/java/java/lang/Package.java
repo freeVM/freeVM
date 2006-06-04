@@ -34,6 +34,22 @@ import java.net.URL;
  */
 public class Package {
 
+    private final String name, specTitle, specVersion, specVendor, implTitle,
+            implVersion, implVendor;
+    //private final URL sealBase;
+
+    Package(String name, String specTitle, String specVersion, String specVendor,
+            String implTitle, String implVersion, String implVendor, URL sealBase) {
+        this.name = name;
+        this.specTitle = specTitle;
+        this.specVersion = specVersion;
+        this.specVendor = specVendor;
+        this.implTitle = implTitle;
+        this.implVersion = implVersion;
+        this.implVendor = implVendor;
+        //this.sealBase = sealBase;
+    }
+
 	/**
 	 * Return the title of the implementation of this package, or null if this
 	 * is unknown. The format of this string is unspecified.
@@ -41,8 +57,7 @@ public class Package {
 	 * @return The implementation title, or null
 	 */
 	public String getImplementationTitle() {
-        //fixit -- returning "null" is good enough to get simple "hello world" to work
-		return null;
+		return implTitle;
 	}
 
 	/**
@@ -53,8 +68,7 @@ public class Package {
 	 * @return The implementation vendor name, or null
 	 */
 	public String getImplementationVendor() {
-        //fixit -- returning "null" is good enough to get simple "hello world" to work
-		return null;
+		return implVendor;
 	}
 
 	/**
@@ -64,8 +78,7 @@ public class Package {
 	 * @return The implementation version, or null
 	 */
 	public String getImplementationVersion() {
-        //fixit -- returning "null" is good enough to get simple "hello world" to work
-		return null;
+		return implVersion;
 	}
 
 	/**
@@ -75,8 +88,7 @@ public class Package {
 	 * @return The name of this package
 	 */
 	public String getName() {
-        //fixit -- returning "null" is good enough to get simple "hello world" to work
-		return null;
+		return name;
 	}
 
 	/**
@@ -90,8 +102,8 @@ public class Package {
 	 * @see ClassLoader#getPackage
 	 */
 	public static Package getPackage(String packageName) {
-        //fixit -- returning "null" is good enough to get simple "hello world" to work
-		return null;
+        ClassLoader classloader = ClassLoader.callerClassLoader();
+		return classloader.getPackage(packageName);
 	}
 
 	/**
@@ -102,8 +114,8 @@ public class Package {
 	 * @see ClassLoader#getPackages
 	 */
 	public static Package[] getPackages() {
-        //fixit -- returning "null" is good enough to get simple "hello world" to work
-		return null;
+        ClassLoader classloader = ClassLoader.callerClassLoader();
+        return classloader.getPackages();
 	}
 
 	/**
@@ -113,8 +125,7 @@ public class Package {
 	 * @return The specification title, or null
 	 */
 	public String getSpecificationTitle() {
-        //fixit -- returning "null" is good enough to get simple "hello world" to work
-		return null;
+		return specTitle;
 	}
 
 	/**
@@ -124,8 +135,7 @@ public class Package {
 	 * @return The specification vendor name, or null
 	 */
 	public String getSpecificationVendor() {
-        //fixit -- returning "null" is good enough to get simple "hello world" to work
-		return null;
+		return specVendor;
 	}
 
 	/**
@@ -136,8 +146,7 @@ public class Package {
 	 * @return The specification version string, or null
 	 */
 	public String getSpecificationVersion() {
-        //fixit -- returning "null" is good enough to get simple "hello world" to work
-		return null;
+		return specVersion;
 	}
 
 	/**
@@ -148,8 +157,7 @@ public class Package {
 	 * @return the receiver's hash
 	 */
 	public int hashCode() {
-        //fixit -- always returning zero makes for a lousy hash but is good enough to get simple "hello world" to work
-		return 0;
+		return name.hashCode();
 	}
 
 	/**
@@ -168,7 +176,7 @@ public class Package {
 	public boolean isCompatibleWith(String version)
 			throws NumberFormatException {
         //fixit -- always returning "false" is good enough for simple "hello world" application
-		return false;
+		throw new RuntimeException("not implemented");
 	}
 
 	/**
@@ -177,8 +185,7 @@ public class Package {
 	 * @return true if this package is sealed, false otherwise
 	 */
 	public boolean isSealed() {
-        //fixit -- always returning "false" is good enough for simple "hello world" application
-		return false;
+		throw new RuntimeException("not implemented");
 	}
 
 	/**
@@ -191,7 +198,8 @@ public class Package {
 	 */
 	public boolean isSealed(URL url) {
         //fixit -- always returning "false" is good enough for simple "hello world" application
-		return false;
+		//return false;
+		throw new RuntimeException("not implemented");
 	}
 
 	/**
@@ -202,7 +210,8 @@ public class Package {
 	 */
 	public String toString() {
         //fixit -- always returning "false" is good enough for simple "hello world" application
-		return null;
+        // FIXME
+		return "package " + name;
 	}
 }
 

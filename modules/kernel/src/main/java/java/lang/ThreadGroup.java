@@ -67,7 +67,7 @@ public class ThreadGroup {
 	private boolean isDestroyed = false;
 
 	// Memory space to associate all new threads with
-	private long memorySpace;
+	//private long memorySpace;
 
 	/**
 	 * Used by the JVM to create the "system" ThreadGroup. Construct a

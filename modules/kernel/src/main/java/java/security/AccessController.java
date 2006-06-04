@@ -75,9 +75,11 @@ public final class AccessController {
 	 *         the other elements are ProtectionsDomain.
 	 */
 
-    private static Object[] getProtectionDomains(int depth) 
-    {
-        return null;  //this incorrect code is good enough for simple "hello world" demo
+    private static Object[] getProtectionDomains(int depth) {
+        // FIXME: not quite understand what should be here
+        return new Object[] {
+            new AccessControlContext(new ProtectionDomain[0], false)
+        };
     }
 
 	/**

@@ -33,7 +33,10 @@ public final class StackTraceElement implements java.io.Serializable {
 
     StackTraceElement(String s1, int i1, String s2, String s3, boolean b1)
     {
-        System.out.println("StackTraceElement<init> called, not implemented"); //wjw
+        declaringClass = s2;
+	methodName = s3;
+	fileName = s1;
+	lineNumber = i1;
     }
 	/**
 	 * Create a StackTraceElement from the parameters.
@@ -200,4 +203,3 @@ public final class StackTraceElement implements java.io.Serializable {
 		return buf.toString();
 	}
 }
-

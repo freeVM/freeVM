@@ -23,6 +23,10 @@ package java.lang.reflect;
  */
 public final class Field extends AccessibleObject implements Member {
 
+    String name;
+    Class declaringClass;           //required by JCHEVM's bootstrap.c
+    int slot;                       //required by JCHEVN's bootstrap.c
+
 	/**
 	 * Compares the specified object to this Field and answer if they are equal.
 	 * The object must be an instance of Field with the same defining class and
@@ -34,14 +38,15 @@ public final class Field extends AccessibleObject implements Member {
 	 *         otherwise
 	 * @see #hashCode
 	 */
-    Field (Class c1, String s1, int i1) 
-    {
+    Field (Class clss, String name, int slot) {
+        this.declaringClass = clss;
+        this.name = name;
+        this.slot = slot;
     }
+
 	public boolean equals(Object object) {
-		return false;
+        throw new RuntimeException("not implemented");
 	}
-    Class declaringClass;           //required by JCHEVM's bootstrap.c
-    int slot;                       //required by JCHEVN's bootstrap.c
 
 	/**
 	 * Return the value of the field in the specified object. This reproduces
@@ -157,7 +162,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @return the declaring class
 	 */
 	public Class getDeclaringClass() {
-		return null;
+		return declaringClass;
 	}
 
 	/**
@@ -279,7 +284,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @return the name
 	 */
 	public String getName() {
-		return null;
+		return name;
 	}
 
 	/**
@@ -309,16 +314,12 @@ public final class Field extends AccessibleObject implements Member {
 	public native short getShort(Object object) throws IllegalAccessException,
 			IllegalArgumentException;
 
-	native String getSignature();
-
 	/**
 	 * Return the java.lang.Class associated with the type of this field.
 	 * 
 	 * @return the type
 	 */
-	public Class getType() {
-		return null;
-	}
+	public native Class getType();
 
 	/**
 	 * Answers an integer hash code for the receiver. Objects which are equal
@@ -330,7 +331,7 @@ public final class Field extends AccessibleObject implements Member {
 	 * @see #equals
 	 */
 	public int hashCode() {
-		return 0;
+		return name.hashCode();
 	}
 
 	/**
@@ -624,7 +625,12 @@ public final class Field extends AccessibleObject implements Member {
 	 * @return a printable representation for the receiver
 	 */
 	public String toString() {
-		return null;
+        throw new RuntimeException("not implemented");
 	}
+
+    public boolean isSynthetic() {
+        // FIXME: not implemented
+        return false;
+    }
 }
 

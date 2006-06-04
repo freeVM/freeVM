@@ -22,6 +22,10 @@ package java.lang.reflect;
  * 
  */
 public final class Method extends AccessibleObject implements Member {
+    Class declaringClass;  //required by JCHEVM's bootstrap.c
+    int slot;               // required by JCHEVM's bootstrap.c
+    String name;
+
 	/**
 	 * Compares the specified object to this Method and answer if they are
 	 * equal. The object must be an instance of Method with the same defining
@@ -33,14 +37,15 @@ public final class Method extends AccessibleObject implements Member {
 	 *         otherwise
 	 * @see #hashCode
 	 */
-    Method (Class c1, String s1, int i1) 
+    Method (Class declaringClass, String name, int slot) 
     {
+        this.declaringClass = declaringClass;
+        this.name = name;
+        this.slot = slot;
     }
-    Class declaringClass;  //required by JCHEVM's bootstrap.c
-    int slot;               // required by JCHEVM's bootstrap.c
 
 	public boolean equals(Object object) {
-		return false;
+        throw new RuntimeException("not implemented");
 	}
 
 	/**
@@ -50,7 +55,7 @@ public final class Method extends AccessibleObject implements Member {
 	 * @return the declaring class
 	 */
 	public Class getDeclaringClass() {
-		return null;
+		return declaringClass;
 	}
 
 	/**
@@ -60,9 +65,7 @@ public final class Method extends AccessibleObject implements Member {
 	 * 
 	 * @return the declared exception classes
 	 */
-	public Class[] getExceptionTypes() {
-		return null;
-	}
+	public native Class[] getExceptionTypes();
 
 	/**
 	 * Return the modifiers for the modelled constructor. The Modifier class
@@ -71,9 +74,7 @@ public final class Method extends AccessibleObject implements Member {
 	 * @return the modifiers
 	 * @see java.lang.reflect.Modifier
 	 */
-	public int getModifiers() {
-		return 0;
-	}
+	public native int getModifiers();
 
 	/**
 	 * Return the name of the modelled method.
@@ -81,7 +82,7 @@ public final class Method extends AccessibleObject implements Member {
 	 * @return the name
 	 */
 	public String getName() {
-		return null;
+		return name;
 	}
 
 	/**
@@ -91,9 +92,7 @@ public final class Method extends AccessibleObject implements Member {
 	 * 
 	 * @return the parameter types
 	 */
-	public Class[] getParameterTypes() {
-		return null;
-	}
+	public native Class[] getParameterTypes();
 
 	/**
 	 * Return the java.lang.Class associated with the return type of this
@@ -101,9 +100,7 @@ public final class Method extends AccessibleObject implements Member {
 	 * 
 	 * @return the return type
 	 */
-	public Class getReturnType() {
-		return null;
-	}
+	public native Class getReturnType();
 
 	/**
 	 * Answers an integer hash code for the receiver. Objects which are equal
@@ -114,7 +111,7 @@ public final class Method extends AccessibleObject implements Member {
 	 * @see #equals
 	 */
 	public int hashCode() {
-		return 0;
+		return name.hashCode();
 	}
 
 	/**
@@ -173,8 +170,12 @@ public final class Method extends AccessibleObject implements Member {
 	public Object invoke(Object receiver, Object args[])
 			throws IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
-		return null;
+        // FIXME access control
+        return invokeNative(receiver, args, declaringClass, slot);
 	}
+
+    private final native Object invokeNative(Object obj, Object[] args, Class cl, int slt)
+        throws IllegalAccessException, InvocationTargetException;
 
 	/**
 	 * Answers a string containing a concise, human-readable description of the
@@ -187,7 +188,12 @@ public final class Method extends AccessibleObject implements Member {
 	 * @return a printable representation for the receiver
 	 */
 	public String toString() {
-		return null;
+        throw new RuntimeException("not implemented");
 	}
+
+    public boolean isSynthetic() {
+        // FIXME: not implemented
+        return false;
+    }
 }
 

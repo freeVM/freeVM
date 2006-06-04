@@ -50,7 +50,7 @@ public class Throwable implements java.io.Serializable {
 	 * An object which describes the walkback. This field is stored by the
 	 * fillInStackTrace() native, and used by the getStackTraceImpl() native.
 	 */
-	private transient Object walkback;
+	//private transient Object walkback;
 
 	/**
 	 * The cause of this Throwable. Null when there is no cause.
@@ -63,9 +63,7 @@ public class Throwable implements java.io.Serializable {
 	 * Constructs a new instance of this class with its walkback filled in.
 	 */
 	public Throwable() {
-		super();
-        //fixit -- is the below code correct?
-		fillInStackTrace();
+		this((String)null);
 	}
 
 	/**
@@ -76,9 +74,15 @@ public class Throwable implements java.io.Serializable {
 	 *            String The detail message for the exception.
 	 */
 	public Throwable(String detailMessage) {
-		this();
 		this.detailMessage = detailMessage;
+		fillInStackTrace();
+        /*num++;
+        if (num > 100
+                && !(this instanceof ClassNotFoundException)
+                && !(this instanceof NoClassDefFoundError))
+            printStackTrace();*/
 	}
+    //static int num = 0;
 
 	/**
 	 * Constructs a new instance of this class with its walkback, message and
@@ -119,11 +123,10 @@ public class Throwable implements java.io.Serializable {
 	 * 
 	 * @return the receiver
 	 */
-	//  this is a native instance method, wrong!  ---->public native Throwable fillInStackTrace();
     public Throwable fillInStackTrace() 
     {
-        Throwable thr = VMThrowable.fillInStackTrace(this);
-        return thr;
+        vmState = VMThrowable.fillInStackTrace(this);
+        return this;
     }
 
 	/**
@@ -162,9 +165,7 @@ public class Throwable implements java.io.Serializable {
 	//  this is a native instance method, wrong!  ----> private native StackTraceElement[] getStackTraceImpl();
     private StackTraceElement[] getStackTraceImpl()
     {
-        // fixit -- commented out the below line to get simple "hello world" demo to work
-        //VMThrowable.getStackTrace(this);
-        return null;
+        return vmState.getStackTrace(this);
     }
 	/**
 	 * Answers an array of StackTraceElement. Each StackTraceElement represents
