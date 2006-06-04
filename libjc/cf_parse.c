@@ -138,9 +138,11 @@ _jc_parse_classfile(_jc_env *env, _jc_classbytes *bytes, int howmuch)
 		/*
 		 * Note: _JC_ACC_SUPER should not be allowed for interfaces
 		 * (JVMS 4.1) but we allow it here because jikes 1.15 sets it.
+		 * In addition, some compilers fail to add _JC_ACC_ABSTRACT.
 		 */
-		if ((cfile->access_flags & ~(_JC_ACC_PUBLIC|_JC_ACC_SUPER))
-		    != (_JC_ACC_INTERFACE|_JC_ACC_ABSTRACT)) {
+		if ((cfile->access_flags
+		      & ~(_JC_ACC_ABSTRACT|_JC_ACC_PUBLIC|_JC_ACC_SUPER))
+		    != _JC_ACC_INTERFACE) {
 			_JC_EX_STORE(env, ClassFormatError,
 			    "invalid interface access flags 0x%04x",
 			    cfile->access_flags);
