@@ -194,9 +194,9 @@ _jc_resolve_vtable(_jc_jvm *vm, _jc_type *type)
 
 /*
  * Resolve a field per JVMS section 5.4.3.2.
- * Note the static-ness of the field is not checked.
  *
- * Returns NULL and stores a NoSuchFieldError upon failure.
+ * Returns NULL and stores a NoSuchFieldError upon failure
+ * (with the message containing java/lang/Object as the type name).
  */
 _jc_field *
 _jc_resolve_field(_jc_env *env, _jc_type *type,
@@ -222,13 +222,10 @@ _jc_resolve_field(_jc_env *env, _jc_type *type,
 			return field;
 	}
 
-	/* Search for field in superclasses */
-	while (JNI_TRUE) {
-		if ((type = type->superclass) == NULL)
-			break;
-		if ((field = _jc_get_declared_field(env,
-		    type, name, sig, is_static)) != NULL)
-			return field;
+	/* Recurse to superclass */
+	if (type->superclass != NULL) {
+		return _jc_resolve_field(env,
+		    type->superclass, name, sig, is_static);
 	}
 
 	/* Not found */

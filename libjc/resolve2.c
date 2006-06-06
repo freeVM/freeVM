@@ -688,7 +688,10 @@ _jc_resolve_bytecode(_jc_env *env, _jc_method *const method,
 			/* Resolve field */
 			if ((field = _jc_resolve_field(env, type,
 			    ref->name, ref->descriptor, is_static)) == NULL) {
-				env->ex.num = _JC_IncompatibleClassChangeError;
+				_JC_EX_STORE(env, IncompatibleClassChangeError,
+				    "%s.%s (type `%s'%s)", type->name,
+				    ref->name, ref->descriptor,
+				    is_static ? ", static" : "");
 				goto post_fail;
 			}
 

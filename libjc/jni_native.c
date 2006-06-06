@@ -773,6 +773,8 @@ GetEitherFieldID(JNIEnv *jenv, jclass class, const char *name,
 	/* Search for field */
 	if ((field = _jc_resolve_field(env,
 	    type, name, sig, is_static)) == NULL) {
+		_JC_EX_STORE(env, NoSuchFieldError, "%s.%s (type `%s'%s)",
+		    type->name, name, sig, is_static ? ", static" : "");
 		_jc_post_exception_info(env);
 		goto done;
 	}

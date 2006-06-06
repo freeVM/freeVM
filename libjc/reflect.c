@@ -120,8 +120,8 @@ _jc_get_declared_field(_jc_env *env, _jc_type *type, const char *name,
 
 fail:
 	/* Not found */
-	_JC_EX_STORE(env, NoSuchFieldError, "%s.%s (type `%s', %sstatic)",
-	    type->name, name, sig, is_static ? "" : "non-");
+	_JC_EX_STORE(env, NoSuchFieldError, "%s.%s (type `%s'%s)",
+	    type->name, name, sig, is_static ? ", static" : "");
 	return NULL;
 }
 
