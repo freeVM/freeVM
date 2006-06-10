@@ -36,7 +36,7 @@ public class Package {
 
     private final String name, specTitle, specVersion, specVendor, implTitle,
             implVersion, implVendor;
-    //private final URL sealBase;
+    private final URL sealBase;
 
     Package(String name, String specTitle, String specVersion, String specVendor,
             String implTitle, String implVersion, String implVendor, URL sealBase) {
@@ -47,7 +47,7 @@ public class Package {
         this.implTitle = implTitle;
         this.implVersion = implVersion;
         this.implVendor = implVendor;
-        //this.sealBase = sealBase;
+        this.sealBase = sealBase;
     }
 
 	/**
@@ -185,7 +185,7 @@ public class Package {
 	 * @return true if this package is sealed, false otherwise
 	 */
 	public boolean isSealed() {
-		throw new RuntimeException("not implemented");
+                return sealBase != null;
 	}
 
 	/**
@@ -197,9 +197,7 @@ public class Package {
 	 * @return true if this package is sealed, false otherwise
 	 */
 	public boolean isSealed(URL url) {
-        //fixit -- always returning "false" is good enough for simple "hello world" application
-		//return false;
-		throw new RuntimeException("not implemented");
+                return sealBase != null && sealBase.sameFile(url);
 	}
 
 	/**
