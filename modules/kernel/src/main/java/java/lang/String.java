@@ -81,7 +81,6 @@ import java.util.Comparator;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.WeakHashMap;
-import java.lang.ref.WeakReference;
 
 /**
  * @com.intel.drl.spec_ref 
@@ -1328,22 +1327,16 @@ public final class String implements Serializable, Comparable, CharSequence {
         }
     }
 
-    private static WeakHashMap strings = new WeakHashMap(4096);
+    private static WeakHashMap internedStrings = new WeakHashMap(4096);
 
     public String intern() {
-        synchronized (strings) {
-            WeakReference ref =
-                (WeakReference) strings.get(this);
-            String str = null;
-
-            if (ref != null) {
-                str = (String) ref.get();
+        synchronized (internedStrings) {
+            String i = (String)internedStrings.get(this);
+            if (i == null) {
+		internedStrings.put(this, this);
+                i = this;
             }
-
-            if (str != null) return str;
-
-            strings.put(this, new WeakReference(this));
-            return this;
+            return i;
         }
     }
 }
