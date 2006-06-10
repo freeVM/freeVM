@@ -96,6 +96,8 @@ static const	struct flag_info jc_options[] = {
 	"Show additional options" },
     {	'V', "version",		NULL,
 	"Display version and exit" },
+    {	'S', "showversion",	NULL,
+	"Display version then proceed" },
     {	'?', "help",		NULL,
 	"Display this help information" },
     {	0, NULL, NULL, NULL }
@@ -109,6 +111,7 @@ static const struct flag_subst jdk_flags[] = {
     {	"-cp",		"-c",		0,	NULL },
     {	"-classpath",	"-c",		0,	NULL },
     {	"-version",	"-V",		0,	NULL },
+    {	"-showversion",	"-S",		0,	NULL },
     {	"-help",	"-?",		0,	NULL },
     {	"-jar",		"-j",		0,	NULL },
     {	"-mx",		NULL,		0,	"jc.heap.size" },
@@ -406,14 +409,18 @@ usage:			jc_print(printer, stderr, "jc: Usage: %s\n", JC_USAGE);
 				goto done;
 			break;
 		    }
+		case 'S':
 		case 'V':
 			jc_print(printer, stdout,
 			    "JC virtual machine version %s (r%lu)\n"
-			    "Copyright (C) 2003-2006 Archie L. Cobbs\n"
+			    "Copyright (C) 2003-2006 Archie L. Cobbs.\n"
 			    "All rights reserved.\n", VERSION,
 			    _jc_svn_revision);
-			rtn = _JC_RETURN_NORMAL;
-			goto done;
+			if (opt->sform == 'V') {
+			    rtn = _JC_RETURN_NORMAL;
+			    goto done;
+			}
+			break;
 		case 'X':
 			jc_print(printer, stdout, "Additional options:\n");
 			jc_print(printer, stdout, "  %-16s", "-Dfoo=bar");
