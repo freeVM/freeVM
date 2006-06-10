@@ -100,7 +100,7 @@ public final class System {
 	 *            the new value for out.
 	 */
 	public static void setOut(java.io.PrintStream newOut) {
-        throw new RuntimeException("not implemented");
+            setPrintStream("out", newOut);
 	}
 
 	/**
@@ -111,8 +111,11 @@ public final class System {
 	 *            the new value for err.
 	 */
 	public static void setErr(java.io.PrintStream newErr) {
-        throw new RuntimeException("not implemented");
+            setPrintStream("err", newErr);
 	}
+
+        private static native void setPrintStream(String field,
+                                                  java.io.PrintStream stream);
 
 	/**
 	 * Prevents this class from being instantiated.

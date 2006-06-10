@@ -273,16 +273,38 @@ extern "C" {
     }
 
     /*
-     *  * Class:     java_lang_System
-     *   * Method:    currentTimeMillis
-     *    * Signature: ()J
-     *     */
+     * Class:     java_lang_System
+     * Method:    currentTimeMillis
+     * Signature: ()J
+     */
     JNIEXPORT jlong JNICALL Java_java_lang_System_currentTimeMillis
         (JNIEnv *, jclass)
     {
         struct timeval tv;
         gettimeofday(&tv, NULL);
         return tv.tv_sec * (jlong)1000 + tv.tv_usec / 1000;
+    }
+
+    /*
+     * Class:     java_lang_System
+     * Method:    setPrintStream
+     * Signature: (Ljava/lang/String;Ljava/io/PrintStream;)V
+     */
+    JNIEXPORT void JNICALL Java_java_lang_System_setPrintStream
+        (JNIEnv *env, jclass c, jstring field, jobject stream)
+    {
+        jfieldID fid;
+        const char *field_name = env->GetStringUTFChars(field, 0);
+        if (!field_name) {
+            return;
+        }
+        fid = env->GetStaticFieldID(c, field_name, "Ljava/io/PrintStream;");
+        env->ReleaseStringUTFChars(field, field_name);
+        if (!fid) {
+            return;
+        }
+        env->SetStaticObjectField(c, fid, stream);
+        return;
     }
 
     JNIEXPORT void JNICALL Java_java_lang_VMThread_attach
