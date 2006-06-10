@@ -28,12 +28,17 @@
     <property name="build.classes" location="${build.output}/classes" />
     <property environment="env" />
     <property name="classlib.home.default" location="../classlib" />
-    <condition property="classlib.home" value="${env.CLASSLIB_HOME}"
-               else="${classlib.home.default}">
+    <condition property="classlib.home" value="${env.CLASSLIB_HOME}">
         <isset property="env.CLASSLIB_HOME" />
     </condition>
-    <condition property="make" value="nmake" else="make">
+    <condition property="classlib.home" value="${classlib.home.default}">
+        <not><isset property="env.CLASSLIB_HOME" /></not>
+    </condition>
+    <condition property="make" value="nmake">
         <os family="Windows" />
+    </condition>
+    <condition property="make" value="make">
+        <not><os family="Windows" /></not>
     </condition>
 
     <available file="${classlib.home}/deploy/jdk/include/jni.h" type="file"
