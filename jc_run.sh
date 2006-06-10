@@ -1,7 +1,18 @@
 #!/bin/bash
 
-export JCHEVM_HOME=/home/ivan/experiments/harmony/jchevm/inst
-export CLASSLIB_HOME=/home/ivan/experiments/harmony/CLASSLIB/deploy/jdk/jre
+if [ "${CLASSLIB_HOME}" = "" ]; then
+    echo "Please define CLASSLIB_HOME" 2>&1
+    exit 1
+fi
+CLASSLIB_HOME="${CLASSLIB_HOME}/deploy/jdk/jre"
+
+if [ "${JCHEVM_HOME}" = "" ]; then
+    JCHEVM_HOME=/usr/local
+fi
+
+echo Using CLASSLIB_HOME = "${CLASSLIB_HOME}"
+echo Using JCHEVM_HOME = "${JCHEVM_HOME}"
+
 ADAPTER=$(dirname $0)
 
 JC=$JCHEVM_HOME/bin/jc

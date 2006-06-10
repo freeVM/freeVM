@@ -34,10 +34,10 @@ NIO=$DIR/modules/nio/src/main/java
 
 BOOT=$CLASSLIB_HOME/deploy/jdk/jre/lib/boot
 CP=$BOOT/nio.jar:$BOOT/luni.jar:$BOOT/annotation.jar:$KERNEL
-JAVAC="java -jar $CLASSLIB_HOME/depends/jars/ecj_3.2RC5/ecj_3.2RC5.jar -source 1.5 -target jsr14"
+#JAVAC="java -jar $CLASSLIB_HOME/depends/jars/ecj_3.2RC5/ecj_3.2RC5.jar -source 1.5 -target jsr14"
+JAVAC="javac -source 1.5 -target jsr14"
 
 (cd $KERNEL; $JAVAC -classpath $CP $(find . -name *.java)) || die
 (cd $NIO; $JAVAC -classpath $CP $(find . -name *.java)) || die
 
-
-g++ -Wall -shared -o libvmi.so vmi/*.cpp -I$CLASSLIB_HOME/deploy/include -I$CLASSLIB_HOME/native-src/linux.IA32/include -I$CLASSLIB_HOME/native-src/shared/include -DLINUX -L$CLASSLIB_HOME/deploy/jdk/jre/bin -lhyprt -lhythr -lhysig -L$CLASSLIB_HOME/native-src/linux.IA32/lib -lhyzip -lhypool 
+g++ -Wall -shared -o libvmi.so vmi/*.cpp -I$CLASSLIB_HOME/deploy/include -I$CLASSLIB_HOME/deploy/jdk/include -I$CLASSLIB_HOME/native-src/linux.IA32/include -I$CLASSLIB_HOME/native-src/shared/include -DLINUX -L$CLASSLIB_HOME/deploy/jdk/jre/bin -lhyprt -lhythr -lhysig -L$CLASSLIB_HOME/native-src/linux.IA32/lib -lhyzip -lhypool 

@@ -14,7 +14,7 @@
  */
 package java.lang;
 
-class VMThread 
+final class VMThread 
 {
     VMThread(Thread t1) 
     {
@@ -39,47 +39,91 @@ class VMThread
 
             thread.run();
 
+        } catch (Throwable t) {
+			try {
+				if (thread.group != null)
+					thread.group.uncaughtException(thread, t);
+			} catch(Throwable ignore) {
+				// ignore double fault
+			}
+        } finally {
             synchronized (this) {
                 running = false;
                 notifyAll();
             }
-        } catch (Throwable t) {
-            System.err.println("Thread dead with exception:");
-            t.printStackTrace();
-        }
+		}
         destroy();
     }
 
-    final boolean isAlive() {
+    boolean isAlive() {
         synchronized (this) {
             return running;
         }
     }
 
-    private final native void attach();
-    private final native void destroy();
+	void stop(Throwable t) {
+		nativeStop(t);
+	}
 
+    synchronized void join(long millis, int nanos) throws InterruptedException {
+		if (nanos != 0)
+			millis++;		// we only use millisecond precision
+		long finish = 0;
+		if (millis != 0) {
+			long now = System.currentTimeMillis();
+			finish = now + millis;
+			if (finish < now)
+				finish = Long.MAX_VALUE;	// handle overflow
+		}
+		for (long remain = millis; !started || running; ) {
+			wait(remain);
+			if (finish != 0) {
+				remain = finish - System.currentTimeMillis();
+				if (remain <= 0)
+					break;
+			}
+		}
+	}
 
-    final native int countStackFrames();
+    static void sleep(long millis, int nanos) throws InterruptedException {
+		if (nanos != 0)
+			millis++;		// we only use millisecond precision
+		long now = System.currentTimeMillis();
+		long finish = now + millis;
+		if (finish < now)
+			finish = Long.MAX_VALUE;	// handle overflow
+		Object sleeper = new Object();
+		synchronized (sleeper) {
+			while (now < finish) {
+				sleeper.wait(finish - now, 0);
+				now = System.currentTimeMillis();
+			}
+		}
+	}
 
-    static final native Thread currentThread();
+    private native void attach();
+    private native void destroy();
 
-    final native void interrupt();
+    native int countStackFrames();
 
-    static final native boolean interrupted();
+    static native Thread currentThread();
 
-    final native boolean isInterrupted();
+    native void interrupt();
 
-    final native void nativeSetPriority(int pri);
+    static native boolean interrupted();
 
-    final native void nativeStop(Throwable thr);
+    native boolean isInterrupted();
 
-    final native void resume();
+    native void nativeSetPriority(int pri);
 
-    final native void start(long stacklength);
+    native void nativeStop(Throwable thr);
 
-    final native void suspend();
+    native void resume();
 
-    static final native void yield();
+    native void start(long stacklength);
 
+    native void suspend();
+
+    static native void yield();
 }
+

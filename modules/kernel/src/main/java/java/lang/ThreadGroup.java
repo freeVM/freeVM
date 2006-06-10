@@ -111,12 +111,8 @@ public class ThreadGroup {
 	 * @throws		IllegalThreadStateException 	if <code>parent<code> has been destroyed already
 	 */
 	public ThreadGroup(ThreadGroup parent, String name) {
-		super();
-		if (Thread.currentThread() != null) {
-			// If parent is null we must throw NullPointerException, but that
-			// will be done "for free" with the message send below
+		if (parent != null)
 			parent.checkAccess();
-		}
 
 		this.name = name;
 		this.setParent(parent);

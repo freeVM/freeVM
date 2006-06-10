@@ -15,6 +15,8 @@
 
 package java.lang;
 
+import java.util.WeakHashMap;
+
 /**
  * This class must be implemented by the vm vendor. The documented methods must
  * be implemented to support other provided class implementations in this
@@ -40,6 +42,8 @@ public class Thread implements Runnable {
 	// a thread
 	public final static int NORM_PRIORITY = 5; // Normal priority for a thread
 
+	static int threadCounter;
+
     Runnable runnableSlot;
     //////String threadNameSlot;  //maybe same as next one
     String name;
@@ -49,18 +53,19 @@ public class Thread implements Runnable {
     final VMThread vmThread;  
     ///boolean isDaemonSlot;  //maybe this is the same as daemon
     boolean daemon;
-    ThreadLocal threadLocalSlot;
+    WeakHashMap threadLocals;
+	ClassLoader contextClassLoader;
     long stackSlot;
     int priority;
 
 
-    public Thread(VMThread vmt1, String s1, int i1, boolean b1) 
-    {
-        super();
-        vmThread = vmt1;
-        name = s1;
-        priority = i1;
-        daemon = b1;
+    public Thread(VMThread vmThread, String name,
+	  int priority, boolean daemon) {
+        this.vmThread = vmThread;
+        this.name = name;
+        this.priority = priority;
+        this.daemon = daemon;
+		contextClassLoader = ClassLoader.getSystemClassLoader();
     }
 
 	/**
@@ -71,8 +76,15 @@ public class Thread implements Runnable {
 	 * @see java.lang.ThreadGroup
 	 */
 	public Thread() {
-        super();
         vmThread = new VMThread(this);
+		Thread current = currentThread();
+		priority = current.priority;
+		daemon = current.daemon;
+		int threadNumber = ++Thread.threadCounter;	// race condition
+		name = "Thread-" + threadNumber;
+	    //group = current.group;
+		//group.addThread(this);
+		contextClassLoader = current.contextClassLoader;
 	}
 
 	/**
@@ -87,9 +99,8 @@ public class Thread implements Runnable {
 	 * @see java.lang.Runnable
 	 */
 	public Thread(Runnable runnable) {
-		super();
+		this();
         runnableSlot = runnable;
-        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -106,11 +117,9 @@ public class Thread implements Runnable {
 	 * @see java.lang.Runnable
 	 */
 	public Thread(Runnable runnable, String threadName) {
-		super();
+		this();
         runnableSlot = runnable;
         name = threadName;
-        vmThread = new VMThread(this);
-
 	}
 
 	/**
@@ -124,9 +133,8 @@ public class Thread implements Runnable {
 	 * @see java.lang.Runnable
 	 */
 	public Thread(String threadName) {
-        super();
+		this();
         name = threadName;
-        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -149,10 +157,9 @@ public class Thread implements Runnable {
 	 * @see java.lang.SecurityManager
 	 */
 	public Thread(ThreadGroup gr, Runnable runnable) {
-        super();
+		this();
         group = gr;
         runnableSlot = runnable;
-        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -180,11 +187,10 @@ public class Thread implements Runnable {
 	 */
 	public Thread(ThreadGroup gr, Runnable runnable, String threadName,
 			long stack) {
-		super();
+		this();
         group = gr;
         runnableSlot = runnable;
         name = threadName;
-        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -209,11 +215,10 @@ public class Thread implements Runnable {
 	 * @see java.lang.SecurityManager
 	 */
 	public Thread(ThreadGroup gr, Runnable runnable, String threadName) {
-        super();
+		this();
         group = gr;
         runnableSlot = runnable;
         name = threadName;
-        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -234,10 +239,9 @@ public class Thread implements Runnable {
 	 * @see java.lang.SecurityManager
 	 */
 	public Thread(ThreadGroup gr, String threadName) {
-		super();
+		this();
         group = gr;
         name = threadName;
-        vmThread = new VMThread(this);
 	}
 
 	/**
@@ -288,10 +292,9 @@ public class Thread implements Runnable {
 
 	/**
 	 * Destroys the receiver without any monitor cleanup. Not implemented.
-	 * 
 	 */
 	public void destroy() {
-		return;  //fixit -- a "nop" is a reasonable implementation of a seldom used API, its never called for simple "hello world" app
+		throw new NoSuchMethodError();
 	}
 
 	/**
@@ -299,11 +302,7 @@ public class Thread implements Runnable {
 	 * 
 	 */
 	public static void dumpStack() {
-        try {
-            throw new Exception("stack dump");
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
+		new Throwable("stack dump").printStackTrace();
 	}
 
 	/**
@@ -322,7 +321,7 @@ public class Thread implements Runnable {
 	 * @see java.lang.SecurityManager
 	 */
 	public static int enumerate(Thread[] threads) {
-		return 0;  //fixit -- returning zero is good enough for simple "hello world" demo
+		return currentThread().group.enumerate(threads);
 	}
 
 	/**
@@ -333,8 +332,7 @@ public class Thread implements Runnable {
 	 * @see #getContextClassLoader()
 	 */
 	public ClassLoader getContextClassLoader() {
-        //fixit -- returning null is good enough for simple "hello world" demo
-		return null;
+		return contextClassLoader;
 	}
 
 	/**
@@ -343,8 +341,7 @@ public class Thread implements Runnable {
 	 * @return the receiver's name (a java.lang.String)
 	 */
 	public final String getName() {
-        //String ss = name + this.toString();
-		return this.toString();  // fixit -- find out the proper construction for thread names
+		return name;
 	}
 
 	/**
@@ -354,7 +351,7 @@ public class Thread implements Runnable {
 	 * @see Thread#setPriority
 	 */
 	public final int getPriority() {
-		return 0;  //fixit -- correct thread priority is not essential to demoing simple "hello world"
+		return priority;
 	}
 
 	/**
@@ -363,7 +360,7 @@ public class Thread implements Runnable {
 	 * @return the receiver's ThreadGroup
 	 */
 	public final ThreadGroup getThreadGroup() {
-		return group;  //fixit -- ThreadGroups are not essential to demoing simple "hello world"
+		return group;
 	}
 
 	/**
@@ -378,7 +375,9 @@ public class Thread implements Runnable {
 	 * @see #setThreadLocal
 	 */
 	Object getThreadLocal(ThreadLocal local) {
-        return threadLocalSlot.get();  //fixit -- this code looks correct.  It needs to be verified/confirmed it is correct
+		if (threadLocals == null)
+			return null;
+		return threadLocals.get(local);
 	}
 
 	/**
@@ -463,8 +462,7 @@ public class Thread implements Runnable {
 	 * @see java.lang.ThreadDeath
 	 */
 	public final void join() throws InterruptedException {
-        //fixit -- obviously incorrect but it seems OK for simple "hello world" demo
-		return;
+		join(0, 0);
 	}
 
 	/**
@@ -482,8 +480,7 @@ public class Thread implements Runnable {
 	 */
 	public final void join(long timeoutInMilliseconds)
 			throws InterruptedException {
-        //fixit -- obviously incorrect but it seems OK for simple "hello world" demo
-		return;
+		join(timeoutInMilliseconds, 0);
 	}
 
 	/**
@@ -501,10 +498,11 @@ public class Thread implements Runnable {
 	 * @see Object#notifyAll
 	 * @see java.lang.ThreadDeath
 	 */
-	public final void join(long timeoutInMilliseconds, int nanos)
-			throws InterruptedException {
-        //fixit -- obviously incorrect but it seems OK for simple "hello world" demo
-		return;
+	public final void join(long millis, int nanos) throws InterruptedException {
+		if (millis < 0 || nanos < 0 || nanos > 999999)
+		    throw new IllegalArgumentException();
+		if (vmThread != null)
+		    vmThread.join(millis, nanos);
 	}
 
 	/**
@@ -519,8 +517,8 @@ public class Thread implements Runnable {
 	 * @deprecated Used with deprecated method Thread.suspend().
 	 */
 	public final void resume() {
-        //fixit -- obviously incorrect but it seems OK for simple "hello world" demo
-		return;
+		if (vmThread != null)
+			vmThread.resume();
 	}
 
 	/**
@@ -544,8 +542,7 @@ public class Thread implements Runnable {
 	 * @see #getContextClassLoader()
 	 */
 	public void setContextClassLoader(ClassLoader cl) {
-        //fixit -- this incorrect code is good enough to allow simple "hello world" demo to run
-		return;
+		this.contextClassLoader = cl;
 	}
 
 	/**
@@ -559,8 +556,8 @@ public class Thread implements Runnable {
 	 *                SecurityException
 	 * @see Thread#isDaemon
 	 */
-	public final void setDaemon(boolean isDaemon) {
-		daemon = isDaemon;
+	public final void setDaemon(boolean daemon) {
+		this.daemon = daemon;
 	}
 
 	/**
@@ -573,8 +570,8 @@ public class Thread implements Runnable {
 	 *                SecurityException
 	 * @see Thread#getName
 	 */
-	public final void setName(String threadName) {
-		name = threadName;
+	public final void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -595,7 +592,6 @@ public class Thread implements Runnable {
 	 */
 	public final void setPriority(int priority) {
         vmThread.nativeSetPriority(priority);
-		return;  //fixit -- this is incorrect code but its good enough for simple "hello world" demo
 	}
 
 	/**
@@ -611,8 +607,9 @@ public class Thread implements Runnable {
 	 * @see #getThreadLocal
 	 */
 	void setThreadLocal(ThreadLocal local, Object value) {
-        threadLocalSlot.set(value);
-		return;
+		if (threadLocals == null)
+			threadLocals = new WeakHashMap();
+		threadLocals.put(local, value);
 	}
 
 	/**
@@ -628,9 +625,8 @@ public class Thread implements Runnable {
 	 * @see Thread#interrupt()
 	 */
 
-	public static void sleep(long time) throws InterruptedException {
-        //fixit -- this is incorrect code that is good enough to allow simple "hello world" demo to run
-		return;
+	public static void sleep(long millis) throws InterruptedException {
+		sleep(millis, 0);
 	}
 
 	/**
@@ -647,10 +643,11 @@ public class Thread implements Runnable {
 	 *                while it was sleeping
 	 * @see Thread#interrupt()
 	 */
-	public static void sleep(long time, int nanos) throws InterruptedException {
-        //fixit -- this is incorrect code that is good enough to allow simple "hello world" demo to run
-		return;
-	};
+	public static void sleep(long millis, int nanos) throws InterruptedException {
+		if (millis < 0 || nanos < 0 || nanos > 999999)
+			throw new IllegalArgumentException();
+		VMThread.sleep(millis, nanos);
+	}
 
 	/**
 	 * Starts the new Thread of execution. The <code>run()</code> method of
@@ -691,8 +688,7 @@ public class Thread implements Runnable {
 	 * @deprecated
 	 */
 	public final void stop() {
-        //fixit -- doing a "nop" will allow simple "hello world" app to run
-		return;
+		stop(new ThreadDeath());
 	}
 
 	/**
@@ -711,8 +707,10 @@ public class Thread implements Runnable {
 	 * @deprecated
 	 */
 	public final void stop(Throwable throwable) {
-        //fixit -- doing a "nop" will allow simple "hello world" app to run
-		return;
+		if (throwable == null)
+			throw new NullPointerException();
+		if (vmThread != null)
+			vmThread.stop(throwable);
 	}
 
 	/**
@@ -729,8 +727,8 @@ public class Thread implements Runnable {
 	 * @deprecated May cause deadlocks.
 	 */
 	public final void suspend() {
-        //fixit -- doing a "nop" will allow simple "hello world" app to run
-		return;
+		if (vmThread != null)
+			vmThread.suspend();
 	}
 
 	/**
@@ -740,7 +738,7 @@ public class Thread implements Runnable {
 	 * @return a printable representation for the receiver.
 	 */
 	public String toString() {
-		return name.toString();
+		return name;
 	}
 
 	/**
@@ -763,8 +761,12 @@ public class Thread implements Runnable {
 	 *         object
 	 */
 	public static boolean holdsLock(Object object) {
-		return false;  //fixit -- simply returning "false" is good enough to get simple "hello world" demo going
+		try {
+			object.notify();
+		} catch (IllegalMonitorStateException e) {
+			return false;
+		}
+		return true;
 	};
-
 }
 
