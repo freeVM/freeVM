@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+     Copyright 2006 The Apache Software Foundation or its licensors,
+     as applicable
+     
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+
+  -->
+
+<project name="build-classlibadapter" default="default" basedir=".">
+    <description>
+    	Build the classlibadapter
+    </description>
+
+    <property name="build.output" location="build" />
+    <property name="build.classes" location="${build.output}/classes" />
+    <property environment="env" />
+    <property name="classlib.home.default" location="../classlib" />
+    <condition property="classlib.home" value="${env.CLASSLIB_HOME}"
+               else="${classlib.home.default}">
+        <isset property="env.CLASSLIB_HOME" />
+    </condition>
+    <condition property="make" value="nmake" else="make">
+        <os family="Windows" />
+    </condition>
+
+    <available file="${classlib.home}/deploy/jdk/include/jni.h" type="file"
+               property="classlib.home.is.valid" />
+
+    <path id="classlib.boot">
+        <fileset dir="${classlib.home}/deploy/jdk/jre/lib/boot">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <target name="default" depends="build" />
+
+    <target name="build" depends="check-classlib-home">
+        <mkdir dir="${build.classes}" />
+        <javac destdir="${build.classes}" source="1.5" target="jsr14">
+            <src path="modules/kernel/src/main/java" />
+            <src path="modules/nio/src/main/java" />
+            <classpath refid="classlib.boot" />
+        </javac>
+
+        <exec executable="${make}" dir="vmi">
+            <env key="CLASSLIB_HOME" path="${classlib.home}" />
+        </exec>
+
+    </target>
+
+    <target name="check-classlib-home">
+        <fail unless="classlib.home.is.valid">
+...
+
+CLASSLIB_HOME (or the ant property "classlib.home") should be set to
+point to the root of the Harmony classlib.
+
+        </fail>
+
+        <echo>classlib.home = ${classlib.home}</echo>
+
+    </target>
+    
+    <target name="test">
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.classes}" />
+        <exec executable="${make}" dir="vmi">
+            <arg value="clean" />
+        </exec>
+    </target>
+
+</project>
