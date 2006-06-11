@@ -25,10 +25,10 @@ package java.lang.ref;
  * 
  * @since JDK1.2
  */
-public abstract class Reference extends Object {
+public abstract class Reference<T> extends Object {
 
-    Object referent;
-    ReferenceQueue queue;
+    T referent;
+    ReferenceQueue<T> queue;
     private static ReferenceQueue dummy = new ReferenceQueue();
 
 	/**
@@ -48,7 +48,7 @@ public abstract class Reference extends Object {
 	 * @return boolean true if Reference is enqueued. false otherwise.
 	 */
 	public boolean enqueue() {
-        ReferenceQueue q;
+        ReferenceQueue<T> q;
         synchronized (this) {
             if (queue == null || queue == dummy) return false;
             q = queue;
@@ -70,7 +70,7 @@ public abstract class Reference extends Object {
 	 * @return Object Referent to which reference refers, or null if object has
 	 *         been cleared.
 	 */
-	public Object get() {
+	public T get() {
 		return referent;
 	}
 
@@ -99,7 +99,7 @@ public abstract class Reference extends Object {
 	 * @param r
 	 *            the referent
 	 */
-	void initReference(Object r) {
+	void initReference(T r) {
         referent = r;
         queue = dummy;
 		return;
@@ -115,7 +115,7 @@ public abstract class Reference extends Object {
 	 * @param q
 	 *            the ReferenceQueue
 	 */
-	void initReference(Object r, ReferenceQueue q) {
+	void initReference(T r, ReferenceQueue<T> q) {
         referent = r;
         queue = q;
 		return;
