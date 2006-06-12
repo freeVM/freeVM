@@ -40,4 +40,4 @@ JAVAC="javac -source 1.5 -target jsr14"
 (cd $KERNEL; $JAVAC -classpath $CP $(find . -name *.java)) || die
 (cd $NIO; $JAVAC -classpath $CP $(find . -name *.java)) || die
 
-g++ -Wall -shared -o libvmi.so vmi/*.cpp -I$CLASSLIB_HOME/deploy/include -I$CLASSLIB_HOME/deploy/jdk/include -I$CLASSLIB_HOME/native-src/linux.IA32/include -I$CLASSLIB_HOME/native-src/shared/include -DLINUX -L$CLASSLIB_HOME/deploy/jdk/jre/bin -lhyprt -lhythr -lhysig -L$CLASSLIB_HOME/native-src/linux.IA32/lib -lhyzip -lhypool 
+g++ -Wall -shared -o libvmi.so vmi/*.cpp -I$CLASSLIB_HOME/deploy/include -I$CLASSLIB_HOME/deploy/jdk/include -DLINUX -L$CLASSLIB_HOME/deploy/jdk/jre/bin -lhyprt -lhythr -lhysig -L$CLASSLIB_HOME/deploy/lib -lhyzip -lhypool 

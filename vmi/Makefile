@@ -6,7 +6,7 @@ CXXFLAGS = \
 
 LDFLAGS= \
   -L$(CLASSLIB_HOME)/deploy/jdk/jre/bin -lhyprt -lhythr -lhysig \
-  -L$(CLASSLIB_HOME)/native-src/linux.IA32/lib -lhyzip -lhypool
+  -L$(CLASSLIB_HOME)/deploy/lib -lhyzip -lhypool
 
 OBJ=vmi.o java_lang_reflect_Array.o
 
