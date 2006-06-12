@@ -74,13 +74,14 @@ package java.lang;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Comparator;
 import java.util.Locale;
-import java.util.regex.Pattern;
 import java.util.WeakHashMap;
+import java.util.regex.Pattern;
 
 /**
  * @com.intel.drl.spec_ref 
@@ -1331,12 +1332,14 @@ public final class String implements Serializable, Comparable, CharSequence {
 
     public String intern() {
         synchronized (internedStrings) {
-            String i = (String)internedStrings.get(this);
-            if (i == null) {
-		internedStrings.put(this, this);
-                i = this;
+            WeakReference ref = (WeakReference)internedStrings.get(this);
+            if (ref != null) {
+		String s = (String)ref.get();	// this could return null
+		if (s != null)
+		    return s;
             }
-            return i;
+	    internedStrings.put(this, new WeakReference(this));
+	    return this;
         }
     }
 }
