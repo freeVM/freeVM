@@ -50,10 +50,13 @@
 #define _JC_ACC_INTERFACE		0x0200
 #define _JC_ACC_ABSTRACT		0x0400
 #define _JC_ACC_STRICT			0x0800
-#define _JC_ACC_MASK			0x0fff
+#define _JC_ACC_SYNTHETIC		0x1000
+#define _JC_ACC_ANNOTATION		0x2000
+#define _JC_ACC_ENUM			0x4000
+#define _JC_ACC_MASK			0x7fff
 
 /* Additional flags stored with access flags */
-#define _JC_ACC_JCNI			0x1000	/* JCNI native method (!JNI) */
+#define _JC_ACC_JCNI			0x8000	/* JCNI native method (!JNI) */
 
 /*
  * Flags for 'flags' field of the '_jc_type' structure,

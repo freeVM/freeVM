@@ -664,7 +664,7 @@ _jc_parse_method(_jc_cf_parse_state *s, _jc_cf_method *method)
 	/* Check stuff */
 	if (strcmp(method->name, "<init>") == 0
 	    && (method->access_flags & ~(_JC_ACC_PRIVATE|_JC_ACC_PROTECTED
-	      |_JC_ACC_PUBLIC|_JC_ACC_STRICT)) != 0) {
+	      |_JC_ACC_PUBLIC|_JC_ACC_STRICT|_JC_ACC_SYNTHETIC)) != 0) {
 		_JC_EX_STORE(s->env, ClassFormatError,
 		    "invalid access flags 0x%04x for method `%s%s'",
 		    method->access_flags, method->name, method->descriptor);
