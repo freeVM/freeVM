@@ -224,19 +224,19 @@ limitations under the License.
                 classes belonging to a module belong to the same module. Tests, their resources, and support
                 classes are located under
 			<blockquote>
-				<code>&lt;modulename&gt;/src/tests</code>
+				<code>&lt;modulename&gt;/src/test</code>
 			</blockquote>
 		Tests that are specific for Harmony, testing Harmony implementation details, and may fail
                 on RI or other compliant implementations are separated from the imlpementation-independent
                 tests that must pass on RI and all conformant implementations. 
 			<blockquote>
-				<code>&lt;modulename&gt;/src/tests/<b>impl</b></code> - Harmony specific tests<br />
-				<code>&lt;modulename&gt;/src/tests/<b>api</b></code> - Implementation-independent tests
+				<code>&lt;modulename&gt;/src/test/<b>impl</b></code> - Harmony specific tests<br />
+				<code>&lt;modulename&gt;/src/test/<b>api</b></code> - Implementation-independent tests
 			</blockquote>
                 Special-purpose tests like stress tests or tests that require special configuration are 
                 separated from general-purpose tests.
 			<blockquote>
-				<code>&lt;modulename&gt;/src/tests/<b>stress</b></code>
+				<code>&lt;modulename&gt;/src/test/<b>stress</b></code>
 			</blockquote>
 
                 Tests are not separated by functionality under test, e.g. tests against <code>clone()</code>
@@ -244,8 +244,8 @@ limitations under the License.
 
                 Classpath tests are separated from bootclasspath tests on a directory level:
 			<blockquote>
-				<code>&lt;modulename&gt;/src/tests/api/<b>java</b></code> - Classpath tests<br />
-				<code>&lt;modulename&gt;/src/tests/api/<b>java.injected</b></code> - Bootclasspath tests<br />
+				<code>&lt;modulename&gt;/src/test/api/<b>java</b></code> - Classpath tests<br />
+				<code>&lt;modulename&gt;/src/test/api/<b>java.injected</b></code> - Bootclasspath tests<br />
 			</blockquote>
                 More details below.<br /><br />
 
@@ -253,9 +253,9 @@ limitations under the License.
                 Some modules might have platform specific tests that are in the case separated on a directory 
                 level:
 			<blockquote>
-				<code>&lt;modulename&gt;/src/tests/api/<b>common</b></code><br />
-				<code>&lt;modulename&gt;/src/tests/api/<b>windows</b></code><br />
-				<code>&lt;modulename&gt;/src/tests/api/<b>linux</b></code>
+				<code>&lt;modulename&gt;/src/test/api/<b>common</b></code><br />
+				<code>&lt;modulename&gt;/src/test/api/<b>windows</b></code><br />
+				<code>&lt;modulename&gt;/src/test/api/<b>linux</b></code>
 			</blockquote>
 	</p>
                             </blockquote>
