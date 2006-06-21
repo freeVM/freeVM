@@ -307,6 +307,23 @@ extern "C" {
         return;
     }
 
+    /*
+     * Class:     java_lang_System
+     * Method:    setInImpl
+     * Signature: (Ljava/io/InputStream;)V
+     */
+    JNIEXPORT void JNICALL Java_java_lang_System_setInImpl
+        (JNIEnv *env, jclass c, jobject stream)
+    {
+        jfieldID fid;
+        fid = env->GetStaticFieldID(c, "in", "Ljava/io/InputStream;");
+        if (!fid) {
+            return;
+        }
+        env->SetStaticObjectField(c, fid, stream);
+        return;
+    }
+
     JNIEXPORT void JNICALL Java_java_lang_VMThread_attach
         (JNIEnv *env, jobject) {
         hythread_attach(NULL);

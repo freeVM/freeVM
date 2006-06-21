@@ -89,8 +89,10 @@ public final class System {
 	 *            the new value for in.
 	 */
 	public static void setIn(InputStream newIn) {
-        throw new RuntimeException("not implemented");
+            setInImpl(newIn);
 	}
+
+        private static native void setInImpl(InputStream newIn);
 
 	/**
 	 * Sets the value of the static slot "out" in the receiver to the passed in
