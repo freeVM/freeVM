@@ -11,7 +11,7 @@ LDFLAGS= \
 OBJ=vmi.o java_lang_reflect_Array.o
 
 ../libvmi.so: $(OBJ)
-	$(CXX) -shared $< -o $@ $(LDFLAGS)
+	$(CXX) -shared $+ -o $@ $(LDFLAGS)
 
 clean:
 	-rm -f *.o ../libvmi.so
