@@ -206,9 +206,14 @@ public /*abstract*/ class ClassLoader {
 	 * @see Class#getResource
 	 */
 	public URL getResource(String resName) {
-        URL resource = parent.getResource(resName);
-        if (resource != null) return resource;
-        return findResource(resName);
+            URL resource = null;
+            if (parent == null) {
+                resource = systemClassLoader.getResource(resName);
+            } else {
+                resource = parent.getResource(resName);
+            }
+            if (resource != null) return resource;
+            return findResource(resName);
 	}
 
 	/**
