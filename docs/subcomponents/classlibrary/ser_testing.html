@@ -218,6 +218,90 @@ limitations under the License.
       <tr><td>
         <blockquote>
                                     <p>
+		The testing framework provides support class <code>tests.util.SerializationTest</code>
+		for serialization testing.
+	</p>
+                                                <p>
+	    <b>1) Compatibility testing</b><br />
+		Verifies that an object serialized on certified implementation is
+		correctly deserialized on Harmony implementation.<br /><br />
+		The support class provides 4 methods for compatibility testing:
+		<ul>
+			<li><code>verifyGolden(TestCase, Object)</code></li>
+			<li><code>verifyGolden(TestCase, Object, SerializableAssert)</code></li>
+			<li><code>verifyGolden(TestCase, Object[])</code></li>
+			<li><code>verifyGolden(TestCase, Object[], SerializableAssert)</code></li>
+		</ul>
+		The first parameter <code>TestCase</code> is used to locate resource
+		file(s) that contains serialized object(s). The second parameter is an object
+		or an array of objects to be compared with object(s) deserialized from
+		resource file(s). And the third parameter is optional. It should be
+		provided in case if class of object(s) to be compared doesn't have
+		equals(Object) method or the testing framework can not find appropriate
+		comparator.<br /><br />
+		
+		So to create a <em>compatibility</em> test for selected class a developer should:
+		<ul>
+			<li>
+			serialize object(s) on certified implementation, store serialized
+			form(s) in resource file(s) and place it(them) according to conventions
+			below
+			</li>
+			
+			<li>
+			add to an unit test a method: <code>testSerializationCompatibility</code>
+			</li>
+			
+			<li>
+			invoke one of the above methods with corresponding arguments
+			</li>
+		</ul>
+		
+		For example,
+		<pre>
+public void testSerializationCompatibility()
+        throws Exception {
+
+    SerializationTest.verifyGolden(new SomeSerializableClass());
+}
+		</pre>
+	</p>
+                                                <p>
+		<b>2) Self testing</b><br />
+		Verifies that an object can be smoothly serialized and deserialized on
+		Harmony implementation<br /><br />
+		The support class provides 4 methods for self-testing:
+		<ul>
+			<li>verifySelf(Object)</li>
+			<li>verifySelf(Object, SerializableAssert)</li>
+			<li>verifySelf(Object[])</li>
+			<li>verifySelf(Object[], SerializableAssert)</li>
+		</ul>
+		The provided object(s) is(are) serialized/deserialized and compared with
+		initial object(s).<br /><br />
+
+		So to create a <em>self</em> test for selected class a developer should:
+		<ul>
+			<li>
+			add to an unit test a method: <code>testSerializationSelf</code>
+			</li>
+			
+			<li>
+			invoke one of the above methods with corresponding arguments
+			</li>
+		</ul>
+
+		For example,
+		<pre>
+public void testSerializationSelf() throws Exception {
+
+    SerializationTest.verifySelf(new SomeSerializableClass(),
+            new MyComparator());
+}
+		</pre>
+	</p>
+                                                <p>
+		<b>3) Negative testing</b><br />
 		<big><em>TBD</em></big>
 	</p>
                             </blockquote>
