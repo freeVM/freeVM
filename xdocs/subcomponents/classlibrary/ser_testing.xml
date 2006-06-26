@@ -48,19 +48,16 @@
 		Verifies that an object serialized on certified implementation is
 		correctly deserialized on Harmony implementation.<br/><br/>
 		The support class provides 4 methods for compatibility testing:
-		<ul>
-			<li><code>verifyGolden(TestCase, Object)</code></li>
-			<li><code>verifyGolden(TestCase, Object, SerializableAssert)</code></li>
-			<li><code>verifyGolden(TestCase, Object[])</code></li>
-			<li><code>verifyGolden(TestCase, Object[], SerializableAssert)</code></li>
-		</ul>
+		<ul><code>
+			<li>verifyGolden(TestCase, Object)</li>
+			<li>verifyGolden(TestCase, Object, <a href="#assert">SerializableAssert</a>)</li>
+			<li>verifyGolden(TestCase, Object[])</li>
+			<li>verifyGolden(TestCase, Object[], <a href="#assert">SerializableAssert</a>)</li>
+		</code></ul>
 		The first parameter <code>TestCase</code> is used to locate resource
 		file(s) that contains serialized object(s). The second parameter is an object
 		or an array of objects to be compared with object(s) deserialized from
-		resource file(s). And the third parameter is optional. It should be
-		provided in case if class of object(s) to be compared doesn't have
-		equals(Object) method or the testing framework can not find appropriate
-		comparator.<br/><br/>
+		resource file(s). And the third parameter is optional.<br/><br/>
 		
 		So to create a <em>compatibility</em> test for selected class a developer should:
 		<ul>
@@ -93,12 +90,12 @@ public void testSerializationCompatibility()
 		Verifies that an object can be smoothly serialized and deserialized on
 		Harmony implementation<br/><br/>
 		The support class provides 4 methods for self-testing:
-		<ul>
+		<ul><code>
 			<li>verifySelf(Object)</li>
-			<li>verifySelf(Object, SerializableAssert)</li>
+			<li>verifySelf(Object, <a href="#assert">SerializableAssert</a>)</li>
 			<li>verifySelf(Object[])</li>
-			<li>verifySelf(Object[], SerializableAssert)</li>
-		</ul>
+			<li>verifySelf(Object[], <a href="#assert">SerializableAssert</a>)</li>
+		</code></ul>
 		The provided object(s) is(are) serialized/deserialized and compared with
 		initial object(s).<br/><br/>
 
@@ -125,6 +122,16 @@ public void testSerializationSelf() throws Exception {
 	<p>
 		<b>3) Negative testing</b><br/>
 		<big><em>TBD</em></big>
+	</p>
+	<p>
+		<a name="assert"><big><em>Interface SerializableAssert</em></big></a><br/>
+		A test has to implement the interface in case if class of object(s)
+		to be compared doesn't have equals(Object) method or the testing
+		framework can not find appropriate comparator. The interface has only
+		one method to be implemented:<br/><br/>
+		<code>
+			void assertDeserialized(Serializable reference, Serializable test);
+		</code>
 	</p>
 </subsection>
 
