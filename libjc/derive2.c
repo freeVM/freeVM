@@ -35,11 +35,13 @@ static jint	_jc_derive_methods(_jc_env *env, _jc_type *type);
  * available, so we have to create the type structure at runtime and
  * interpret the class' bytecode for method execution.
  *
+ * If successful, we take responsibility for freeing "cfile".
+ *
  * If unsuccessful, an exception is stored.
  */
 _jc_type *
 _jc_derive_type_interp(_jc_env *env,
-	_jc_class_loader *loader, _jc_classbytes *cbytes)
+	_jc_class_loader *loader, _jc_classfile *cfile)
 {
 	_jc_jvm *const vm = env->vm;
 	int num_class_vmethods;
@@ -48,7 +50,6 @@ _jc_derive_type_interp(_jc_env *env,
 	_jc_nonarray_type *ntype;
 	_jc_type **interfaces;
 	_jc_type *superclass;
-	_jc_classfile *cfile;
 	_jc_type_node node_key;
 	_jc_type_node *node;
 	size_t virtual_offset;
@@ -58,10 +59,6 @@ _jc_derive_type_interp(_jc_env *env,
 	_jc_type *type;
 	void *mark;
 	int i;
-
-	/* Parse class file */
-	if ((cfile = _jc_parse_classfile(env, cbytes, 2)) == NULL)
-		return NULL;
 
 	/* Lock loader */
 	_JC_MUTEX_LOCK(env, loader->mutex);
@@ -288,9 +285,6 @@ skip_vtable:
 fail:
 	/* Give back class loader memory */
 	_jc_uni_reset(&loader->uni, mark);
-
-	/* Free parsed class file */
-	_jc_destroy_classfile(&cfile);
 
 	/* Unlock loader */
 	_JC_MUTEX_UNLOCK(env, loader->mutex);

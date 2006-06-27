@@ -132,8 +132,7 @@ extern void		_jc_initialize_bsi(_jc_jvm *vm, _jc_type *type,
 
 /* derive2.c */
 extern _jc_type		*_jc_derive_type_interp(_jc_env *env,
-				_jc_class_loader *loader,
-				_jc_classbytes *cbytes);
+				_jc_class_loader *loader, _jc_classfile *cfile);
 
 /* exception.c */
 extern void		_jc_post_exception_object(_jc_env *env,

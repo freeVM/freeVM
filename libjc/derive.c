@@ -58,7 +58,7 @@ _jc_derive_type_from_classfile(_jc_env *env, _jc_class_loader *loader,
 	int i;
 
 	/* Parse class file */
-	if ((cfile = _jc_parse_classfile(env, cbytes, 1)) == NULL) {
+	if ((cfile = _jc_parse_classfile(env, cbytes, 2)) == NULL) {
 		_jc_post_exception_info(env);
 		goto fail;
 	}
@@ -163,10 +163,11 @@ no_superclass:
 	}
 
 	/* Derive type */
-	if ((type = _jc_derive_type_interp(env, loader, cbytes)) == NULL) {
+	if ((type = _jc_derive_type_interp(env, loader, cfile)) == NULL) {
 		_jc_post_exception_info(env);
 		goto fail;
 	}
+	cfile = NULL;
 	goto done;
 
 fail:
