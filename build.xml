@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+     
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+-->
+
+<project name="buildtestinfra" default="default" basedir=".">
+	
+    <description>
+		CI/built/test system for Apache Harmony
+		http://incubator.apache.org/harmony
+    </description>
+
+	<!-- files we need -->
+	<property name="cc.filename" value="cruisecontrol-bin-2.5" />
+	<property name="junitjar.filename" value="ant-junit-1.6.5" />
+	
+	<!-- where to fetch from -->
+	<property name="cc.location" value="http://umn.dl.sourceforge.net/sourceforge/cruisecontrol/" />
+	<property name="junitjar.location" value="http://www.ibiblio.org/maven/ant/jars/"/>
+	
+	<!-- where to assemble all the pieces -->
+	<property name="target.dir" value="cc"/>
+	
+	<!-- url of the classlib and drlvm in SVN -->
+	<property name="svn.classlib.url" value="https://svn.apache.org/repos/asf/incubator/harmony/enhanced/classlib/trunk"/>
+	<property name="svn.drlvm.url" value="https://svn.apache.org/repos/asf/incubator/harmony/enhanced/drlvm/trunk"/>
+	
+    <condition property="is.windows">
+        <os family="Windows" />
+    </condition>
+
+	<!-- ==========================================
+	       Kick off CC w/ all tests
+	     ========================================== -->
+	<target name="default" description="Start CruiseControl with full test suite" depends="pre-copy,start-win,start-other">
+	</target>
+		
+	<target name="pre-copy">
+		<echo>Copying full test configuration for CruiseControl from /config/config-full.xml</echo>
+		<copy file="config/config-full.xml" tofile="${target.dir}/config.xml" />
+
+	</target>
+	
+	<target name="start-win" if="is.windows">
+		<exec executable="cmd" dir="${target.dir}">
+			<arg line="cruisecontrol.bat"/>
+		</exec>
+	</target>
+		
+	<target name="start-other" unless="is.windows">
+		<exec executable="sh" dir="${target.dir}">
+			<arg line="cruisecontrol.sh"/>
+		</exec>
+	</target>
+	
+	<!-- ==========================================
+	     Main setup - download, unpack, checkout
+	     ========================================== -->
+	<target name="setup" description="fetch and setup build/test/ci system">
+		
+		<!-- get the version of CruiseControl unless we have the zip locally -->
+		
+		<get src="${cc.location}${cc.filename}.zip"
+			 dest="${cc.filename}.zip" 
+			 usetimestamp="true"
+			 verbose="true" />
+	
+		<get src="${junitjar.location}${junitjar.filename}.jar"
+			 dest="${junitjar.filename}.jar" 
+			 usetimestamp="true"
+			 verbose="true" />
+		
+		<!-- unzip it, rename, add ant-junit jar and cleanout the junk -->
+		
+		<unzip src="${cc.filename}.zip" dest="." />
+		
+		<move file="${cc.filename}" tofile="${target.dir}"/>
+
+		<delete dir="${target.dir}/projects/connectfour" includeEmptyDirs="true" verbose="false"/>		
+		<delete dir="${target.dir}/logs/connectfour" includeEmptyDirs="true" verbose="false"/>		
+		<delete file="${target.dir}/config.xml"/>
+		
+		<!-- copy the ant-junit jar to cc/lib -->
+	
+		<copy file="${junitjar.filename}.jar" todir="${target.dir}/lib"/>
+		
+		<!-- copy the config we want to use, and make target dirs for the checkouts -->
+		<copy file="config/config-full.xml" tofile="${target.dir}/config.xml" />
+		
+		<mkdir dir="${target.dir}/projects/classlib"/>
+		<mkdir dir="${target.dir}/projects/drlvm"/>
+				
+		<!-- now do the checkouts -->
+	
+		<antcall target="co-classlib"/>
+		<antcall target="co-drlvm"/>
+	</target>
+
+	<!-- ================================================
+	      Checkout classlib trunk tree into place for CC
+	     ================================================ -->
+	<target name="co-classlib">
+		<echo>Checking out Harmony classlib.  This can take a while.  Please be patient...</echo>
+
+		<exec executable="svn" dir="${target.dir}/projects/classlib" failonerror="true">
+			<arg line="co"/>
+			<arg line="${svn.classlib.url}"/>
+		</exec>
+	</target>
+
+	<!-- ================================================
+	      Checkout DRLVM trunk tree into place for CC
+	     ================================================ -->
+	<target name="co-drlvm">
+		<echo>Checking out Harmony DRLVM.  This can take a while.  Please be patient...</echo>
+
+		<exec executable="svn" dir="${target.dir}/projects/drlvm" failonerror="true">
+			<arg line="co"/>
+			<arg line="${svn.drlvm.url}"/>
+		</exec>
+	</target>
+
+	<!-- =========================================================
+	     cleanup to new state.  Leaves the .zip around to save 
+	     time on a setup
+	     ========================================================= -->
+	<target name="clean" description="reset to clean state">
+		<delete dir="${target.dir}" includeEmptyDirs="true"/>				
+	</target>
+</project>

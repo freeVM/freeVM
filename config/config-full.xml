@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cruisecontrol>
+
+    <project name="classlib-deps">
+
+        <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
+        </listeners>
+
+        <bootstrappers>
+            <svnbootstrapper localWorkingCopy="projects/classlib/trunk" />
+        </bootstrappers>
+
+        <modificationset quietperiod="60">
+            <svn localWorkingCopy="projects/classlib/trunk"/>
+        </modificationset>
+
+        <schedule interval="300">
+        	<ant antWorkingDir="projects/classlib/trunk" target="fetch-depends"/>
+        </schedule>
+
+        <log>
+            <merge dir="projects/${project.name}/target/test-results"/>
+        </log>
+    </project>
+
+    <project name="classlib">
+
+        <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
+        </listeners>
+
+        <bootstrappers>
+            <svnbootstrapper localWorkingCopy="projects/${project.name}/trunk" />
+        </bootstrappers>
+
+	    <modificationset>
+	        <buildstatus logdir="logs/classlib-deps"/>
+	    </modificationset>
+
+        <schedule interval="300">
+        	<ant antWorkingDir="projects/${project.name}/trunk" />
+        </schedule>
+
+        <log>
+            <merge dir="projects/${project.name}/target/test-results"/>
+        </log>
+
+    </project>
+
+    <project name="classlib-tests">
+
+        <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
+        </listeners>
+
+        <bootstrappers>
+            <svnbootstrapper localWorkingCopy="projects/classlib/trunk" />
+        </bootstrappers>
+
+	    <modificationset>
+	        <buildstatus logdir="logs/classlib"/>
+	    </modificationset>
+
+        <schedule interval="300">
+        	<ant target="test" antWorkingDir="projects/classlib/trunk">
+        	    <jvmarg arg="-Xmx384M"/>
+        	</ant>
+        </schedule>
+
+        <log>
+            <merge dir="projects/${project.name}/target/test-results"/>
+        </log>
+
+    </project>
+   
+    <project name="drlvm-deps">
+
+        <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
+        </listeners>
+
+        <bootstrappers>
+            <svnbootstrapper localWorkingCopy="projects/drlvm/trunk" />
+        </bootstrappers>
+
+        <modificationset quietperiod="30">
+	        <buildstatus logdir="logs/classlib"/>
+            <svn localWorkingCopy="projects/drlvm/trunk"/>
+        </modificationset>
+
+        <schedule interval="300">
+        	<exec command="sh" args="build.sh update"  workingdir="projects/drlvm/trunk/build" />
+        </schedule>
+
+        <log>
+            <merge dir="projects/${project.name}/target/test-results"/>
+        </log>
+
+    </project>
+    
+    <project name="drlvm">
+
+        <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
+        </listeners>
+
+        <bootstrappers>
+            <svnbootstrapper localWorkingCopy="projects/${project.name}/trunk" />
+        </bootstrappers>
+
+        <modificationset quietperiod="30">
+	        <buildstatus logdir="logs/drlvm-deps"/>
+            <svn localWorkingCopy="projects/${project.name}/trunk"/>
+        </modificationset>
+
+        <schedule interval="300">
+        	<exec command="sh" args="build.sh"  workingdir="projects/drlvm/trunk/build" />
+        </schedule>
+
+        <log>
+            <merge dir="projects/${project.name}/target/test-results"/>
+        </log>
+
+    </project>
+
+    <project name="drlvm-tests">
+
+        <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
+        </listeners>
+
+        <bootstrappers>
+            <svnbootstrapper localWorkingCopy="projects/drlvm/trunk" />
+        </bootstrappers>
+
+        <modificationset quietperiod="30">
+	        <buildstatus logdir="logs/drlvm"/>
+            <svn localWorkingCopy="projects/drlvm/trunk"/>
+        </modificationset>
+
+        <schedule interval="300">
+        	<exec command="sh" args="build.sh test"  workingdir="projects/drlvm/trunk/build" />
+        </schedule>
+
+        <log>
+            <merge dir="projects/${project.name}/target/test-results"/>
+        </log>
+
+    </project>
+    
+</cruisecontrol>
