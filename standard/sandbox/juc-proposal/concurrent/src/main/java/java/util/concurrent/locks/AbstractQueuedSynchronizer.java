@@ -1,18 +1,3 @@
-/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /*
  * Written by Doug Lea with assistance from members of JCP JSR-166
  * Expert Group and released to the public domain, as explained at
@@ -20,12 +5,10 @@
  */
 
 package java.util.concurrent.locks;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
-
-import org.apache.harmony.concurrent.AtomicSupport;
+import sun.misc.Unsafe;
 
 /**
  * Provides a framework for implementing blocking locks and related
@@ -265,8 +248,6 @@ import org.apache.harmony.concurrent.AtomicSupport;
  */
 public abstract class AbstractQueuedSynchronizer implements java.io.Serializable {
     private static final long serialVersionUID = 7373984972572414691L;
-    
-    private static final AtomicSupport SUPPORT = AtomicSupport.getInstance();
 
     /**
      * Creates a new <tt>AbstractQueuedSynchronizer</tt> instance
@@ -522,7 +503,7 @@ public abstract class AbstractQueuedSynchronizer implements java.io.Serializable
      */
     protected final boolean compareAndSetState(int expect, int update) {
         // See below for intrinsics setup to support this
-        return SUPPORT.compareAndSet(this, STATE_FIELD, expect, update);
+        return unsafe.compareAndSwapInt(this, stateOffset, expect, update);
     }
 
     // Queuing utilities
@@ -2002,33 +1983,38 @@ public abstract class AbstractQueuedSynchronizer implements java.io.Serializable
      * are at it, we do the same for other CASable fields (which could
      * otherwise be done with atomic field updaters).
      */
-
-    private static final Field STATE_FIELD;
-    private static final Field HEAD_FIELD;
-    private static final Field TAIL_FIELD;
-    private static final Field WAIT_STATUS_FIELD;
+    private static final Unsafe unsafe =  Unsafe.getUnsafe();
+    private static final long stateOffset;
+    private static final long headOffset;
+    private static final long tailOffset;
+    private static final long waitStatusOffset;
 
     static {
         try {
-            STATE_FIELD = AbstractQueuedSynchronizer.class.getDeclaredField("state");
-            HEAD_FIELD = AbstractQueuedSynchronizer.class.getDeclaredField("head");
-            TAIL_FIELD = AbstractQueuedSynchronizer.class.getDeclaredField("tail");
-            WAIT_STATUS_FIELD = Node.class.getDeclaredField("waitStatus");
-        } catch(Exception ex) { throw new AssertionError(ex); }
+            stateOffset = unsafe.objectFieldOffset
+                (AbstractQueuedSynchronizer.class.getDeclaredField("state"));
+            headOffset = unsafe.objectFieldOffset
+                (AbstractQueuedSynchronizer.class.getDeclaredField("head"));
+            tailOffset = unsafe.objectFieldOffset
+                (AbstractQueuedSynchronizer.class.getDeclaredField("tail"));
+            waitStatusOffset = unsafe.objectFieldOffset
+                (Node.class.getDeclaredField("waitStatus"));
+            
+        } catch(Exception ex) { throw new Error(ex); }
     }
 
     /**
      * CAS head field. Used only by enq
      */
     private final boolean compareAndSetHead(Node update) {
-        return SUPPORT.compareAndSet(this, HEAD_FIELD, null, update);
+        return unsafe.compareAndSwapObject(this, headOffset, null, update);
     }
     
     /**
      * CAS tail field. Used only by enq
      */
     private final boolean compareAndSetTail(Node expect, Node update) {
-        return SUPPORT.compareAndSet(this, TAIL_FIELD, expect, update);
+        return unsafe.compareAndSwapObject(this, tailOffset, expect, update);
     }
 
     /**
@@ -2037,7 +2023,8 @@ public abstract class AbstractQueuedSynchronizer implements java.io.Serializable
     private final static boolean compareAndSetWaitStatus(Node node, 
                                                          int expect, 
                                                          int update) {
-        return SUPPORT.compareAndSet(node, WAIT_STATUS_FIELD, expect, update);
+        return unsafe.compareAndSwapInt(node, waitStatusOffset, 
+                                        expect, update);
     }
 
 }

@@ -1,18 +1,3 @@
-/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /*
  * Written by Doug Lea with assistance from members of JCP JSR-166
  * Expert Group and released to the public domain, as explained at
@@ -20,9 +5,8 @@
  */
 
 package java.util.concurrent.atomic;
-import java.util.Arrays;
-
-import org.apache.harmony.concurrent.AtomicSupport;
+import sun.misc.Unsafe;
+import java.util.*;
 
 /**
  * An array of object references in which elements may be updated
@@ -35,21 +19,27 @@ import org.apache.harmony.concurrent.AtomicSupport;
  */
 public class AtomicReferenceArray<E> implements java.io.Serializable { 
     private static final long serialVersionUID = -6209656149925076980L;
-    
-    private static final AtomicSupport SUPPORT = AtomicSupport.getInstance();
 
-    private final E[] array;
+    private static final Unsafe unsafe =  Unsafe.getUnsafe();
+    private static final int base = unsafe.arrayBaseOffset(Object[].class);
+    private static final int scale = unsafe.arrayIndexScale(Object[].class);
+    private final Object[] array;
+
+    private long rawIndex(int i) {
+        if (i < 0 || i >= array.length)
+            throw new IndexOutOfBoundsException("index " + i);
+        return base + i * scale;
+    }
 
     /**
      * Create a new AtomicReferenceArray of given length.
      * @param length the length of the array
      */
     public AtomicReferenceArray(int length) {
-        array = (E[]) new Object[length];
+        array = new Object[length];
         // must perform at least one volatile write to conform to JMM
-        if (length > 0) {
-            SUPPORT.volatileSet(array, 0, null);
-        }
+        if (length > 0) 
+            unsafe.putObjectVolatile(array, rawIndex(0), null);
     }
 
     /**
@@ -63,14 +53,14 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
         if (array == null) 
             throw new NullPointerException();
         int length = array.length;
-        this.array = (E[]) new Object[length];
+        this.array = new Object[length];
         if (length > 0) {
             int last = length-1;
             for (int i = 0; i < last; ++i)
                 this.array[i] = array[i];
             // Do the last write as volatile
             E e = array[last];
-            SUPPORT.volatileSet(this.array, last, e);
+            unsafe.putObjectVolatile(this.array, rawIndex(last), e);
         }
     }
 
@@ -90,7 +80,7 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * @return the current value
      */
     public final E get(int i) {
-        return (E)SUPPORT.volatileGet(array, i);
+        return (E) unsafe.getObjectVolatile(array, rawIndex(i));
     }
  
     /**
@@ -100,7 +90,7 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * @param newValue the new value
      */
     public final void set(int i, E newValue) {
-        SUPPORT.volatileSet(array, i, newValue);
+        unsafe.putObjectVolatile(array, rawIndex(i), newValue);
     }
   
     /**
@@ -129,7 +119,8 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * the actual value was not equal to the expected value.
      */
     public final boolean compareAndSet(int i, E expect, E update) {
-        return SUPPORT.compareAndSet(array, i, expect, update);
+        return unsafe.compareAndSwapObject(array, rawIndex(i), 
+                                         expect, update);
     }
 
     /**

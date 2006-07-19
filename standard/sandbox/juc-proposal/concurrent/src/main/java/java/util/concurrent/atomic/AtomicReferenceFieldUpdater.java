@@ -1,18 +1,3 @@
-/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /*
  * Written by Doug Lea with assistance from members of JCP JSR-166
  * Expert Group and released to the public domain, as explained at
@@ -20,10 +5,8 @@
  */
 
 package java.util.concurrent.atomic;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
-import org.apache.harmony.concurrent.AtomicSupport;
+import sun.misc.Unsafe;
+import java.lang.reflect.*;
 
 /**
  * A reflection-based utility that enables atomic updates to
@@ -63,8 +46,6 @@ import org.apache.harmony.concurrent.AtomicSupport;
  */
 public abstract class AtomicReferenceFieldUpdater<T, V>  {
 
-    private static final AtomicSupport SUPPORT = AtomicSupport.getInstance();
-    
     /**
      * Creates an updater for objects with the given field.  The Class
      * arguments are needed to check that reflective types and generic
@@ -154,7 +135,8 @@ public abstract class AtomicReferenceFieldUpdater<T, V>  {
      * Standard hotspot implementation using intrinsics
      */
     private static class AtomicReferenceFieldUpdaterImpl<T,V> extends AtomicReferenceFieldUpdater<T,V> {
-        private final Field field;
+        private static final Unsafe unsafe =  Unsafe.getUnsafe();
+        private final long offset;
         private final Class<T> tclass;
         private final Class<V> vclass;
 
@@ -176,7 +158,7 @@ public abstract class AtomicReferenceFieldUpdater<T, V>  {
 
             this.tclass = tclass;
             this.vclass = vclass;
-            this.field = field;
+            offset = unsafe.objectFieldOffset(field);
         }
         
 
@@ -184,7 +166,7 @@ public abstract class AtomicReferenceFieldUpdater<T, V>  {
             if (!tclass.isInstance(obj) ||
                 (update != null && !vclass.isInstance(update)))
                 throw new ClassCastException();
-            return SUPPORT.compareAndSet(obj, field, expect, update);
+            return unsafe.compareAndSwapObject(obj, offset, expect, update);
         }
 
         public boolean weakCompareAndSet(T obj, V expect, V update) {
@@ -192,7 +174,7 @@ public abstract class AtomicReferenceFieldUpdater<T, V>  {
             if (!tclass.isInstance(obj) ||
                 (update != null && !vclass.isInstance(update)))
                 throw new ClassCastException();
-            return SUPPORT.compareAndSet(obj, field, expect, update);
+            return unsafe.compareAndSwapObject(obj, offset, expect, update);
         }
 
 
@@ -200,15 +182,13 @@ public abstract class AtomicReferenceFieldUpdater<T, V>  {
             if (!tclass.isInstance(obj) ||
                 (newValue != null && !vclass.isInstance(newValue)))
                 throw new ClassCastException();
-            
-            SUPPORT.volatileSetObject(obj, field, newValue);
+            unsafe.putObjectVolatile(obj, offset, newValue);
         }
 
         public V get(T obj) {
             if (!tclass.isInstance(obj))
                 throw new ClassCastException();
-            
-            return (V)SUPPORT.volatileGetObject(obj, field);
+            return (V)unsafe.getObjectVolatile(obj, offset);
         }
     }
 }

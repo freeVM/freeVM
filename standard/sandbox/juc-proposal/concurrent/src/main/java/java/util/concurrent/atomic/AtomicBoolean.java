@@ -1,18 +1,3 @@
-/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /*
  * Written by Doug Lea with assistance from members of JCP JSR-166
  * Expert Group and released to the public domain, as explained at
@@ -20,9 +5,7 @@
  */
 
 package java.util.concurrent.atomic;
-import java.lang.reflect.Field;
-
-import org.apache.harmony.concurrent.AtomicSupport;
+import sun.misc.Unsafe;
 
 /**
  * A <tt>boolean</tt> value that may be updated atomically. See the
@@ -37,19 +20,18 @@ import org.apache.harmony.concurrent.AtomicSupport;
  */
 public class AtomicBoolean implements java.io.Serializable {
     private static final long serialVersionUID = 4654671469794556979L;
+    // setup to use Unsafe.compareAndSwapInt for updates
+    private static final Unsafe unsafe =  Unsafe.getUnsafe();
+    private static final long valueOffset;
 
-    private static final AtomicSupport SUPPORT = AtomicSupport.getInstance();
-    
-    private static final Field VALUE_FIELD;
     static {
-        try {
-            VALUE_FIELD = AtomicBoolean.class.getDeclaredField("value");
-        } catch (Exception ex) {
-            throw new AssertionError(ex);
-        }
+      try {
+        valueOffset = unsafe.objectFieldOffset
+            (AtomicBoolean.class.getDeclaredField("value"));
+      } catch (Exception ex) { throw new Error(ex); }
     }
 
-    private volatile boolean value;
+    private volatile int value;
 
     /**
      * Creates a new <tt>AtomicBoolean</tt> with the given initial value.
@@ -57,7 +39,7 @@ public class AtomicBoolean implements java.io.Serializable {
      * @param initialValue the initial value
      */
     public AtomicBoolean(boolean initialValue) {
-        value = initialValue;
+        value = initialValue ? 1 : 0;
     }
 
     /**
@@ -72,7 +54,7 @@ public class AtomicBoolean implements java.io.Serializable {
      * @return the current value
      */
     public final boolean get() {
-        return value;
+        return value != 0;
     }
 
     /**
@@ -88,7 +70,9 @@ public class AtomicBoolean implements java.io.Serializable {
      * @return true if successful
      */
     public final boolean compareAndSet(boolean expect, boolean update) {
-        return SUPPORT.compareAndSet(this, VALUE_FIELD, expect, update);
+        int e = expect ? 1 : 0;
+        int u = update ? 1 : 0;
+        return unsafe.compareAndSwapInt(this, valueOffset, e, u);
     }
 
     /**
@@ -100,7 +84,9 @@ public class AtomicBoolean implements java.io.Serializable {
      * @return true if successful.
      */
     public boolean weakCompareAndSet(boolean expect, boolean update) {
-        return SUPPORT.compareAndSet(this, VALUE_FIELD, expect, update);
+        int e = expect ? 1 : 0;
+        int u = update ? 1 : 0;
+        return unsafe.compareAndSwapInt(this, valueOffset, e, u);
     }
 
     /**
@@ -109,7 +95,7 @@ public class AtomicBoolean implements java.io.Serializable {
      * @param newValue the new value
      */
     public final void set(boolean newValue) {
-        value = newValue;
+        value = newValue ? 1 : 0;
     }
 
     /**

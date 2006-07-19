@@ -1,18 +1,3 @@
-/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /*
  * Written by Doug Lea with assistance from members of JCP JSR-166
  * Expert Group and released to the public domain, as explained at
@@ -20,10 +5,8 @@
  */
 
 package java.util.concurrent.atomic;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
-import org.apache.harmony.concurrent.AtomicSupport;
+import sun.misc.Unsafe;
+import java.lang.reflect.*;
 
 /**
  * A reflection-based utility that enables atomic updates to
@@ -43,9 +26,6 @@ import org.apache.harmony.concurrent.AtomicSupport;
  * @param <T> The type of the object holding the updatable field
  */
 public abstract class  AtomicIntegerFieldUpdater<T>  {
-    
-    private static final AtomicSupport SUPPORT = AtomicSupport.getInstance();
-    
     /**
      * Creates an updater for objects with the given field.  The Class
      * argument is needed to check that reflective types and generic
@@ -223,8 +203,12 @@ public abstract class  AtomicIntegerFieldUpdater<T>  {
         }
     }
 
+    /**
+     * Standard hotspot implementation using intrinsics
+     */
     private static class AtomicIntegerFieldUpdaterImpl<T> extends AtomicIntegerFieldUpdater<T> {
-        private final Field field;
+        private static final Unsafe unsafe =  Unsafe.getUnsafe();
+        private final long offset;
         private final Class<T> tclass;
 
         AtomicIntegerFieldUpdaterImpl(Class<T> tclass, String fieldName) {
@@ -243,33 +227,31 @@ public abstract class  AtomicIntegerFieldUpdater<T>  {
                 throw new IllegalArgumentException("Must be volatile type");
          
             this.tclass = tclass;
-            this.field = field;
+            offset = unsafe.objectFieldOffset(field);
         }
 
         public boolean compareAndSet(T obj, int expect, int update) {
             if (!tclass.isInstance(obj))
                 throw new ClassCastException();
-            return SUPPORT.compareAndSet(obj, field, expect, update);
+            return unsafe.compareAndSwapInt(obj, offset, expect, update);
         }
 
         public boolean weakCompareAndSet(T obj, int expect, int update) {
             if (!tclass.isInstance(obj))
                 throw new ClassCastException();
-            return SUPPORT.compareAndSet(obj, field, expect, update);
+            return unsafe.compareAndSwapInt(obj, offset, expect, update);
         }
 
         public void set(T obj, int newValue) {
             if (!tclass.isInstance(obj))
                 throw new ClassCastException();
-            
-            SUPPORT.volatileSetInt(obj, field, newValue);
+            unsafe.putIntVolatile(obj, offset, newValue);
         }
 
         public final int get(T obj) {
             if (!tclass.isInstance(obj))
                 throw new ClassCastException();
-            
-            return SUPPORT.volatileGetInt(obj, field);
+            return unsafe.getIntVolatile(obj, offset);
         }
     }
 }

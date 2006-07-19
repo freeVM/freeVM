@@ -1,18 +1,3 @@
-/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /*
  * Written by Doug Lea with assistance from members of JCP JSR-166
  * Expert Group and released to the public domain, as explained at
@@ -20,9 +5,7 @@
  */
 
 package java.util.concurrent.atomic;
-import java.lang.reflect.Field;
-
-import org.apache.harmony.concurrent.AtomicSupport;
+import sun.misc.Unsafe;
 
 /**
  * A <tt>long</tt> value that may be updated atomically.  See the
@@ -39,16 +22,30 @@ import org.apache.harmony.concurrent.AtomicSupport;
  */
 public class AtomicLong extends Number implements java.io.Serializable { 
     private static final long serialVersionUID = 1927816293512124184L;
-    
-    private static final AtomicSupport SUPPORT = AtomicSupport.getInstance();
 
-    private static final Field VALUE_FIELD;
+    // setup to use Unsafe.compareAndSwapLong for updates
+    private static final Unsafe unsafe =  Unsafe.getUnsafe();
+    private static final long valueOffset;
+
+    /**
+     * Record whether the underlying JVM supports lockless
+     * CompareAndSet for longs. While the unsafe.CompareAndSetLong
+     * method works in either case, some constructions should be
+     * handled at Java level to avoid locking user-visible locks.
+     */
+    static final boolean VM_SUPPORTS_LONG_CAS = VMSupportsCS8();
+
+    /**
+     * Returns whether underlying JVM supports lockless CompareAndSet
+     * for longs. Called only once and cached in VM_SUPPORTS_LONG_CAS.
+     */
+    private static native boolean VMSupportsCS8();
+
     static {
-        try {
-            VALUE_FIELD = AtomicLong.class.getDeclaredField("value");
-        } catch (Exception ex) {
-            throw new AssertionError(ex);
-        }
+      try {
+        valueOffset = unsafe.objectFieldOffset
+            (AtomicLong.class.getDeclaredField("value"));
+      } catch(Exception ex) { throw new Error(ex); }
     }
 
     private volatile long value;
@@ -109,7 +106,7 @@ public class AtomicLong extends Number implements java.io.Serializable {
      * the actual value was not equal to the expected value.
      */
     public final boolean compareAndSet(long expect, long update) {
-      return SUPPORT.compareAndSet(this, VALUE_FIELD, expect, update);
+      return unsafe.compareAndSwapLong(this, valueOffset, expect, update);
     }
 
     /**
@@ -121,7 +118,7 @@ public class AtomicLong extends Number implements java.io.Serializable {
      * @return true if successful.
      */
     public final boolean weakCompareAndSet(long expect, long update) {
-        return SUPPORT.compareAndSet(this, VALUE_FIELD, expect, update);
+      return unsafe.compareAndSwapLong(this, valueOffset, expect, update);
     }
   
     /**

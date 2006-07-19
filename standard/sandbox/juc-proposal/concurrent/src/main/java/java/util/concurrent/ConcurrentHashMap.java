@@ -1,18 +1,3 @@
-/* Copyright 2006 The Apache Software Foundation or its licensors, as applicable
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /*
  * Written by Doug Lea with assistance from members of JCP JSR-166
  * Expert Group and released to the public domain, as explained at
@@ -835,7 +820,8 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
      * @param t Mappings to be stored in this map.
      */
     public void putAll(Map<? extends K, ? extends V> t) {
-        for (Map.Entry<? extends K, ? extends V> e : t.entrySet()) {
+        for (Iterator<? extends Map.Entry<? extends K, ? extends V>> it = (Iterator<? extends Map.Entry<? extends K, ? extends V>>) t.entrySet().iterator(); it.hasNext(); ) {
+            Entry<? extends K, ? extends V> e = it.next();
             put(e.getKey(), e.getValue());
         }
     }
