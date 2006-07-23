@@ -11,7 +11,8 @@
 
 <section name="Project Downloads">
 	<p>
-		Apache Harmony comprises efforts in the virtual machine and class library areas.
+		Apache Harmony's primary goal is a complete Java SE 5 implemention, including
+        virtual machine, class library areas, and all related and commont tooling.
 	</p>
 	<p>
 		Access to <a href="svn.html">the code repository</a> is available to all, and we have
@@ -19,25 +20,59 @@
 		virtual machine code and <a href="documentation/build_classlib.html">
 		building the class library code</a>.
 	</p>
-	
-	<subsection name="Snapshot Builds">
+
+    <p>
+        However, if you dont't want to build it, we now offer snapshots of our JRE and HDK
+        for the Linux and Windows platforms.
+    </p>
+
+    <subsection name="Snapshot Builds">
+
+    <p>
+        We offer the following
+        <a href="http://people.apache.org/dist/incubator/harmony/snapshots/">snapshots</a> :
+    </p>
+
+    <strong>Java Runtime Environment (JRE)</strong>
+
+    <p>
+        The JRE lets you build and run your Java programs.
+    </p>
+
+    <ul>
+        <li>
+            <a href="http://people.apache.org/dist/incubator/harmony/snapshots/latest-jre-linux.tar.gz">Latest Linux JRE (tar.gz)</a>
+            <a href="http://people.apache.org/dist/incubator/harmony/snapshots/latest-jre-linux.tar.gz.md5">(MD5)</a>
+        </li>
+        <li>
+            <a href="http://people.apache.org/dist/incubator/harmony/snapshots/latest-jre-windows.zip">Latest Windows JRE (zip)</a>
+            <a href="http://people.apache.org/dist/incubator/harmony/snapshots/latest-jre-windows.zip.md5">(MD5)</a>
+        </li>
+    </ul>
+
+    <strong>Harmony Development Kit (HDK)</strong>
+
+    <p>
+        The HDK is targetted at Harmony developers.  It includes the pre-built class library and VM binaries,
+        necessary include files, test cases, and dependencies. It is not a replacement for the common JDK.
+    </p>
+
+    <ul>
+        <li>
+            <a href="http://people.apache.org/dist/incubator/harmony/snapshots/latest-hdk-linux.tar.gz">Latest Linux HDK (tar.gz)</a>
+            <a href="http://people.apache.org/dist/incubator/harmony/snapshots/latest-hdk-linux.tar.gz.md5">(MD5)</a>
+        </li>
+        <li>
+            <a href="http://people.apache.org/dist/incubator/harmony/snapshots/latest-hdk-windows.zip">Latest Windows HDK (zip)</a>
+            <a href="http://people.apache.org/dist/incubator/harmony/snapshots/latest-hdk-windows.zip.md5">(MD5)</a>
+        </li>
+    </ul>
+
 	
 	<p>
-	In order to make Apache Harmony easier to experiement with, we are making 
-	<a href="http://cvs.apache.org/dist/incubator/harmony/snapshots/"> snapshot builds</a>
-	available.
-	</p>
-	
-	<p>
-	Please note that they are not releases, but arbitrary point in time snapshots that
-	will be updated as the committers see fit.  This will usually happen when signficant
-	features or stability has been added.
-	</p>
-	
-	<p>
-	Again, these are not official releases of the Apache Software Foundation, nor are they
-	complete or compatible with the Java specification.  They are provided to make testing 
-	and experimentation easier.
+	These are not official releases of the Apache Software Foundation, nor are they
+	complete or compatible with the Java specification.  They are snapshots provided
+    to make testing and experimentation easier.
 	</p>
 	
 	</subsection>
