@@ -230,20 +230,38 @@ limitations under the License.
 		<blockquote>
 		<pre>
 &lt;hdkbase&gt;
+     |
+     |---build
+     |     |---make
+     |     |---patternsets
+     |     \---test
+     |
      |---jdk
      |    |---jre
-     |    |
      |    \---include
      |
      |---include
      |
      \---lib
+     
 		</pre>
 		</blockquote>
 		
 		The directories laid out above are used in the following manner:
 		
 		<ul>
+			<li><code>&lt;hdkbase&gt;/build/make</code> - this directory contains include
+			files used by native makefiles.
+			</li>
+			
+			<li><code>&lt;hdkbase&gt;/build/patternsets</code> - this directory contains
+			patternsets describing jar content.
+			</li>
+			
+			<li><code>&lt;hdkbase&gt;/build/test</code> - this directory contains test
+			support classes, bundled up into a jar file.
+			</li>
+			
 			<li><code>&lt;hdkbase&gt;/jdk/jre</code> - this directory contains the standard
 			jre layout, including <code>bin</code> and <code>lib</code> directories.
 			</li>
@@ -261,6 +279,54 @@ limitations under the License.
 			classlib natives.
 			</li>
 		</ul>
+	</p>
+                            </blockquote>
+      </td></tr>
+      <tr><td><br/></td></tr>
+    </table>
+                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#828DA6">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="Building Classlib Against an HDK"><strong>Building Classlib Against an HDK</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                    <p>
+		<i>Note: The HDK and relevant build system changes are work in progress. 
+		Not all of the Ant targets/properties described	exist yet, and thus not 
+		all of what is described below currently works. This disclaimer will be 
+		removed once work on the HDK is completed.</i><br />
+		<br />
+		The Harmony Class Library can be built at the global or modular level.
+		At the modular level, there are three ways to build:
+		<ul>
+			<li><b>Building the default target</b> - An HDK is not required here, and the class
+			library is built against and into the default (deploy) directory. This is the
+			standard way to build, and is what happens when you just run "ant" at the
+			command line.</li>
+			<li><b>Building against an HDK</b> - The location of an HDK must be specified at
+			the Ant command line, and the ouptut will be built into the default (deploy)
+			directory. The command line for this is "ant -DHY.HDK=path/to/HDK".</li>
+			<li><b>Building against an HDK and into a target directory</b> - The location of
+			an HDK and of a target directory must be specified on the Ant command line.
+			The Class Library code will be compiled against the libraries contained in
+			the HDK, and the output of those compiles will be placed into the specified
+			target directory. The command line for this is "ant -DHY.HDK=path/to/HDK
+			-DHY.TARGET=path/to/target".</li>
+		</ul>
+		
+		So, for example, if you wanted to build only the luni module against
+		an HDK, and put the resulting artifacts into a separate target directory,
+		you would do the following:
+		<ol>
+			<li>Checkout the luni module</li>
+			<li>cd into the root directory of the module</li>
+			<li>Execute "ant -DHY.HDK=path/to/hdk -DHY.TARGET=path/to/target"</li>
+		</ol>
+		The luni Java and native code will be built against the HDK location
+		specified, and all produced binaries placed under the target directory, laid
+		out in the HDK structure described at the top of this page.
 	</p>
                             </blockquote>
       </td></tr>
