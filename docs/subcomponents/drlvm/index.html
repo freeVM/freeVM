@@ -38,6 +38,8 @@ limitations under the License.
             
             
             <title>Apache Harmony - Apache Harmony</title>
+
+                                    
         </head>
 
         <body bgcolor="#ffffff" text="#000000" link="#525D76">        
@@ -209,14 +211,93 @@ limitations under the License.
       </td></tr>
       <tr><td>
         <blockquote>
-                                    <p>
-</p>
+                                    <p> 
+    DRLVM stands for Dynamic Runtime Layer Virtual Machine, a clean-room implementation of the J2SE 1.5.0. 
+    <br />
+    Key goals of DRL include the following: 
+    </p>
+                                                <ul>
+        <li><em>Modularity:</em> Functionality is grouped into a limited number of 
+        coarse-grained modules with well defined interfaces. </li>
+        <li><em>Pluggability:</em> Module implementations can be replaced at compile time or run time. 
+        Multiple implementations of a given module are possible. </li>
+        <li><em>Consistency:</em> Interfaces are consistent across platforms. </li>
+        <li><em>Performance:</em> Interfaces fully enable implementation of modules optimized for specific target platforms.</li>
+    </ul>
+                                                <p>
+		The following documentation links are specific to the class library effort underway at Apache Harmony.
+	</p>
+                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#828DA6">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="Developing and Building the code"><strong>Developing and Building the code</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                    <ul>
+            <li>
+                <a href="https://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/drlvm/trunk/README.txt" target="_blank">README</a>
+                <blockquote>
+                    Building instructions for the VM source code.
+                </blockquote>
+            </li>
+            <li> Debugging VM and JIT
+                <blockquote>
+                    Guide to debugging VM and Jitrino.JET source code covering
+                    basic actions and some useful tips <br /> Currently, 
+                    <a href="http://issues.apache.org/jira/browse/HARMONY-626" target="_blank">JIRA issue 626</a>
+                </blockquote>
+            </li>
+        </ul>
+                            </blockquote>
+      </td></tr>
+      <tr><td><br/></td></tr>
+    </table>
+                                                    <table border="0" cellspacing="0" cellpadding="2" width="100%">
+      <tr><td bgcolor="#828DA6">
+        <font color="#ffffff" face="arial,helvetica,sanserif">
+          <a name="Architecture and guides"><strong>Architecture and guides</strong></a>
+        </font>
+      </td></tr>
+      <tr><td>
+        <blockquote>
+                                    <ul>
+            <li>
+                <a href="https://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/drlvm/trunk/vm/doc/GettingStarted.htm" target="_blank">
+                Getting Started</a>
+                <blockquote>
+                    Basic usage scenarios of VM and lists standard
+                    and non-standard supported options.
+                </blockquote>
+            </li>
+            <li>
+                <a href="https://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/drlvm/trunk/vm/doc/DeveloperGuide.htm" target="_blank">Developer's Guide</a>
+                <blockquote>
+                    In-depth description of the DRLVM internal architecture and components' interaction
+                </blockquote>
+            </li>
+            <li>
+                How to write DRL GC
+                <blockquote>
+                    Instructions on creating a custom garbage collector implementation in C++ 
+                    and configuring the DRL virtual machine to use it with a real-life example
+                    of a copying GC implementation (source included) <br />
+                    Currently, <a href="http://issues.apache.org/jira/browse/HARMONY-951" target="_blank">JIRA issue 951</a>
+                </blockquote>
+            </li>
+        </ul>
+                            </blockquote>
+      </td></tr>
+      <tr><td><br/></td></tr>
+    </table>
                             </blockquote>
         </p>
       </td></tr>
       <tr><td><br/></td></tr>
     </table>
-                                        </td>
+                    
+                                                            </td>
                 </tr>
 
                 <!-- FOOTER -->
@@ -232,6 +313,8 @@ limitations under the License.
         </body>
     </html>
 <!-- end the processing -->
+
+
 
 
 
