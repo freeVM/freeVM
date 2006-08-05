@@ -169,6 +169,13 @@ limitations under the License.
     </table>
 #end
 
+
+#macro (docinclude $name)
+<div>
+#include($name)
+</div>
+#end
+
 #macro ( section $section)
     <table border="0" cellspacing="0" cellpadding="2" width="100%">
       <tr><td bgcolor="$bannerbg">
@@ -268,6 +275,12 @@ limitations under the License.
             #end
 
             <title>$project.getChild("title").getText() - $root.getChild("properties").getChild("title").getText()</title>
+
+            #set ($links = $root.getChild("properties").getChildren("link"))
+            #foreach ( $link in $links )
+            $link
+            #end
+            
         </head>
 
         <body bgcolor="$bodybg" text="$bodyfg" link="$bodylink">        
@@ -309,6 +322,11 @@ limitations under the License.
                     #set ($allSections = $root.getChild("body").getChildren("section"))
                     #foreach ( $section in $allSections )
                         #section ($section)
+                    #end
+
+                    #set ($allInclude = $root.getChild("body").getChildren("docinclude"))
+                    #foreach($inc in $allInclude)
+                        #docinclude($inc.getAttributeValue("name"))
                     #end
                     </td>
                 </tr>
