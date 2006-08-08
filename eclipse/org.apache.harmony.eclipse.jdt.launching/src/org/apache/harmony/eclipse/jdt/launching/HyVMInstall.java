@@ -1,4 +1,4 @@
-/* Copyright 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public class HyVMInstall extends AbstractVMInstall {
 
 		// find the vm subdir and VMI name
 		String subdir = "default"; //$NON-NLS-1$
-		String vminame = "clearvm"; //$NON-NLS-1$
+		String vminame = "harmonyvm"; //$NON-NLS-1$
 		String[] args = getVMArguments();
 		if (args != null) {
 			for (int i = 0; i < args.length; i++) {

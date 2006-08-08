@@ -1,4 +1,4 @@
-/* Copyright 2000, 2005 The Apache Software Foundation or its licensors, as applicable
+/* Copyright 2000, 2006 The Apache Software Foundation or its licensors, as applicable
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,7 +112,7 @@ public class HyVMInstallType extends AbstractVMInstallType {
 
 		// Find kernel types
 		List kernelLibraries = getKernelLibraries(installLocation,
-				"default", "clearvm"); //$NON-NLS-1$ //$NON-NLS-2$
+				"default", "harmonyvm"); //$NON-NLS-1$ //$NON-NLS-2$
 		if (kernelLibraries == null) {
 			return new LibraryLocation[] {};
 		}
