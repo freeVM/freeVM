@@ -89,6 +89,64 @@ well.</p>
   <li>View the <a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/">harmony-dev@incubator.apache.org archives</a></li>
 </ul>
 
+<p>
+    Please note that at this time, we are keeping all developer traffic on one list,
+    for classlibrary, virtual machine, doc, site and tool development, in order to
+    help build one contiguous community.  It is expected that at some point in the
+    near future, we'll be splitting off into technical domains.
+</p>
+<p>
+    In order to help people sort and make sense of the traffic, please prefix your
+    subject line with an appropriate token :
+</p>
+    <ul>
+        <li>
+            [general] - for things of general interest
+        </li>
+        <li>
+            [announce] - announcements
+        </li>
+        <li>
+            [legal] - discussion about legal issues
+        </li>
+        <li>
+            [classlib]<i>[module]</i> - for classlibrary-related
+             issues (and you can optionally specify the specific module)
+        </li>
+        <li>
+            [drlvm]<i>[module]</i> - for DRLVM-related
+             issues (and you can optionally specify the specific module)
+        </li>
+        <li>
+            [jchevm]<i>[module]</i> - for jchevm-related
+             issues (and you can optionally specify the specific module)
+        </li>
+        <li>
+            [bootvm]<i>[module]</i> - for bootvm-related
+             issues (and you can optionally specify the specific module)
+        </li>
+        <li>
+            [doc] - for documentation-related issues
+        </li>
+        <li>
+            [tools] - for tools-related issues
+        </li>
+        <li>
+            [testing] or [qa] - for tools-related issues
+        </li>
+    </ul>
+
+    <p>
+        Simply add the token to the start of your subject line.  For example :
+   </p>
+
+    <source>
+        To : harmony-dev@incubator.apache.org
+        From : harmony_user@openjava.org
+        Subject : [classlib][io] Problem with java.io.OutputSocket
+
+        ....
+    </source>
 </subsection>
 
 <subsection name="Source Control Mailing List">
