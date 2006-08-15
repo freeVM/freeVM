@@ -250,9 +250,58 @@ limitations under the License.
 		More helpful error messages</a>)
 		</li>
 
-		<li>We clarify/add Harmony classlib specific to javadoc, provide examples. Also javadoc should contain a reference to Sun's javadoc
+		<li>We clarify/add Harmony classlib specific to javadoc, provide examples.
+		Also javadoc should contain a reference to Sun's javadoc
 		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200601.mbox/%3c43C38BCC.6070308@gmail.com%3e">
 		Writing JavaDoc</a>)
+		</li>
+
+		<li>Implementation code should not contain logging.
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200605.mbox/%3c447C3186.4000208@gmail.com%3e">
+		[classlib] JNDI provider's dependency on logging</a>) and
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200605.mbox/%3c447C6E8B.8020202@pobox.com%3e">
+		[classlib] logging from within our implementation</a>)
+		</li>
+
+		<li>java.util.concurrent issue was resolved by taking code from
+		independent source(Doug Lea). And we'll offer fixes made in Harmony back to
+		original repository.
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200606.mbox/%3c4486FEAE.5000607@pobox.com%3e">
+		[classlib] proposal - resolution to java.util.concurrent issue</a>),
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200607.mbox/%3c005401c6a56e$79234ce0$0c01a8c0@LITTLEGUY%3e">
+		[classlib][concurrent] java.util.concurrent module proposal</a>) and
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200607.mbox/%3c44B60C4E.80003@gmail.com%3e">
+		[legal] taking concurrency utils code into the project</a>)
+		</li>
+
+		<li>Ant build files should use 1.6 style (using macros and avoiding
+		antcall invocations).
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200606.mbox/%3c20060629155612.72153.qmail@web55112.mail.re4.yahoo.com%3e">
+		[classlib] build file stuff</a>)
+		</li>
+
+		<li>It is OK to use Sun's messages for expections and toString() methods
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200607.mbox/%3c44BAE039.3060903@pobox.com%3e">
+		[general] Sun's permission to use exception messages and toString() formats</a>)
+		</li>
+
+		<li>We use Apache Yoko as CORBA for Harmony
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200607.mbox/%3cc3755b3a0607180804r2ac264aei8adb967e6e64ae35@mail.gmail.com%3e">
+		[classlib] Using Yoko as CORBA for Harmony</a>).
+		And CORBA v.2.4 is acceptable (1.5 spec requires CORBA v.2.3.1).
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200607.mbox/%3cc3755b3a0607260005j6c51c983k511828945dbf4412@mail.gmail.com%3e">
+		Yoko is CORBA 2.4. Is this acceptable for Harmony?</a>).
+		</li>
+
+		<li>We will support 3.2 and 4.01 versions of HTML (RI is based on 3.2)
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200607.mbox/%3c9b6bea40607211316t36e7c665g7452feea3f99b8ce@mail.gmail.com%3e">
+		[classlib][html] HTML 3.2 or 4.01</a>)
+		</li>
+
+		<li>sun.* classes issue was resolved by creating suncompat.jar that is
+		unused in JRE by default.
+		(<a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/200608.mbox/%3c44DB0537.6090408@gmail.com%3e">
+		[classlib][suncompat] created</a>)
 		</li>
 	</ul>
                             </blockquote>
