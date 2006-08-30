@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2005-2006 The Apache Software Foundation or its licensors, as applicable.
+  
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!--
+Author: Victor A. Martynov
+Version: $Revision: 1.2 $
+-->
+
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="org.apache.harmony.x.management.console.plugin.application"
+         name="JMX Console Application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.apache.harmony.x.management.console.plugin.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.apache.harmony.x.management.console.plugin.Perspective"
+            icon="icons/7_16x16.PNG"
+            id="org.apache.harmony.x.management.console.plugin.perspective"
+            name="JMX Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.apache.harmony.x.management.console.plugin.view.category"
+            class="org.apache.harmony.x.management.console.plugin.MBeanTreeView"
+            icon="icons/9_16x16.PNG"
+            id="org.apache.harmony.x.management.console.plugin.view.mbeantree"
+            name="MBean Tree View">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.apache.harmony.x.management.console.plugin.view.category"
+            class="org.apache.harmony.x.management.console.plugin.AttributeView"
+            icon="icons/4_16x16.PNG"
+            id="org.apache.harmony.x.management.console.plugin.view.attribute"
+            name="MBean Attribute View">
+      </view>
+      <category
+            id="org.apache.harmony.x.management.console.plugin.view.category"
+            name="JMX Console"/>
+      <view
+            category="org.apache.harmony.x.management.console.plugin.view.category"
+            class="org.apache.harmony.x.management.console.plugin.VMView"
+            id="org.apache.harmony.x.management.console.view.vm"
+            name="JVM View"/>
+      <view
+            allowMultiple="false"
+            category="org.apache.harmony.x.management.console.plugin.view.category"
+            class="org.apache.harmony.x.management.console.plugin.OperationView"
+            icon="icons/5_16x16.PNG"
+            id="org.apache.harmony.x.management.console.plugin.view.operation"
+            name="MBean Operations View"/>
+      <view
+            allowMultiple="false"
+            category="org.apache.harmony.x.management.console.plugin.view.category"
+            class="org.apache.harmony.x.management.console.plugin.NotificationView"
+            icon="icons/6_16x16.PNG"
+            id="org.apache.harmony.x.management.console.plugin.view.notification"
+            name="MBean Notification Table"/>
+      <view
+            allowMultiple="false"
+            category="org.apache.harmony.x.management.console.plugin.view.category"
+            class="org.apache.harmony.x.management.console.plugin.IndicatorView"
+            id="org.apache.harmony.x.management.console.view.indicator"
+            name="Connection Indicator"/>
+      <view
+            category="org.apache.harmony.x.management.console.plugin.view.category"
+            class="org.apache.harmony.x.management.console.plugin.OutputView"
+            id="org.apache.harmony.x.management.console.plugin.view.output"
+            name="Output"/>
+   </extension>
+
+ <extension point="org.eclipse.ui.newWizards"> 
+      <category 
+        id="org.apache.harmony.x.management.console.plugin.wizard.category" 
+        name="JMX Console"> 
+      </category> 
+      <wizard
+            category="org.apache.harmony.x.management.console.plugin.wizard.category"
+            class="org.apache.harmony.x.management.console.plugin.ConnectWizard"
+            descriptionImage="icons/8_320x213.PNG"
+            icon="icons/1_16x16.PNG"
+            id="org.apache.harmony.x.management.console.wizard.new"
+            name="JMX Connection Wizard"> 
+          <description> 
+              Create a JMX Connection and set initial content 
+          </description> 
+           <selection
+                 class="org.eclipse.core.resources.IResource"
+                 name="JMX Connection Wizard"/>          
+      </wizard> 
+   </extension>
+</plugin>

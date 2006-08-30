@@ -1,0 +1,576 @@
+<!--
+    Copyright 2005-2006 The Apache Software Foundation or its licensors, as applicable.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+	Portions, Copyright C 1991-2005 Unicode, Inc. The following applies to Unicode.
+
+	COPYRIGHT AND PERMISSION NOTICE
+    Copyright C 1991-2005 Unicode, Inc. All rights reserved. Distributed under the Terms of Use
+	in http://www.unicode.org/copyright.html.
+    Permission is hereby granted, free of charge, to any person obtaining a copy of the Unicode data files
+	and any associated documentation (the "Data Files") or Unicode software and any associated documentation
+	(the "Software") to deal in the Data Files or Software without restriction, including without limitation
+	the rights to use, copy, modify, merge, publish, distribute, and/or sell copies of the Data Files or Software,
+	and to permit persons to whom the Data Files or Software are furnished to do so, provided that
+	(a) the above copyright notice(s) and this permission notice appear with all copies of the Data Files or Software,
+	(b) both the above copyright notice(s) and this permission notice appear in associated documentation, and
+	(c) there is clear notice in each modified Data File or in the Software as well as in the documentation associated with
+	the Data File(s) or Software that the data or software has been modified.
+    THE DATA FILES AND SOFTWARE ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+	INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+	AND NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED
+	IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER
+	RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+	ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THE DATA FILES OR SOFTWARE.
+    Except as contained in this notice, the name of a copyright holder shall not be used in advertising or otherwise
+	to promote the sale, use or other dealings in these Data Files or Software without prior written authorization
+	of the copyright holder.
+    2. Additional terms from the Database:
+    Copyright C 1995-1999 Unicode, Inc. All Rights reserved.
+    Disclaimer
+    The Unicode Character Database is provided as is by Unicode, Inc. No claims are made as to fitness for
+	any particular purpose. No warranties of any kind are expressed or implied. The recipient agrees to determine
+	applicability of information provided. If this file has been purchased on magnetic or optical media from Unicode, Inc.,
+	the sole remedy for any claim will be exchange of defective media within 90 days of receipt.
+    This disclaimer is applicable for all other data files accompanying the Unicode Character Database,
+	some of which have been compiled by the Unicode Consortium, and some of which have been supplied by other sources.
+    Limitations on Rights to Redistribute This Data
+	Recipient is granted the right to make copies in any form for internal distribution and to freely use
+	the information supplied in the creation of products supporting the UnicodeTM Standard.
+	The files in the Unicode Character Database can be redistributed to third parties or other organizations
+	(whether for profit or not) as long as this notice and the disclaimer notice are retained.
+	Information can be extracted from these files and used in documentation or programs, as long as there is
+	an accompanying notice indicating the source.
+
+-->
+
+<!--
+Author: Victor A. Martynov, Svetlana Konovalova
+Version: $Revision: 1.2 $
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content=
+"HTML Tidy for Windows (vers 1st February 2003), see www.w3.org"
+name="generator">
+<meta http-equiv="Content-Type" content=
+"text/html; charset=us-ascii">
+<title>DRL Java* Management Extensions Console</title>
+<link href="drl.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<h1 align="center"><a name="top"></a>DRL Java* Management
+Extensions Console</h1>
+<p class="TOCHeading"><a href="#Revision_History">Revision
+History</a></p>
+<p class="TOCHeading"><a href="#Disclaimer_and_Legal">Disclaimer
+and Legal Information</a></p>
+<p class="TOCHeading"><a href="#About_This_Document">About This
+Document</a></p>
+<p class="TOC"><a href="#Purpose">Purpose</a></p>
+<p class="TOC"><a href="#Intended_Audience">Intended
+Audience</a></p>
+<p class="TOC"><a href="#Documentation_Conventions">Documentation
+Conventions</a></p>
+<p class="TOCHeading"><a href=
+"#Introduction_to_the_JMX*_Console">Introduction to the JMX*
+Console</a></p>
+<p class="TOCHeading"><a href="#JMX*_Console_in_DRL">JMX* Console
+in DRL</a></p>
+<p class="TOC"><a href="#About">About</a></p>
+<p class="TOC"><a href="#Inside_the_JMX*_Console">Inside the JMX*
+Console</a></p>
+<blockquote>
+<p class="toc"><a href=
+"#Controller">Controller</a></p></blockquote>
+<blockquote>
+<p class="toc"><a href="#User_Interface_Extension">User Interface
+Extension</a></p></blockquote>
+<p class="TOC"><a href="#How_to_Use_the_JMX*_Console">How to Use
+the JMX* Console</a></p>
+<blockquote>
+<p class="toc"><a href=
+"#Building_and_Installing_the_JMX*_Console">Building and Installing
+the JMX* Console</a></p></blockquote>
+<blockquote>
+<p class="toc"><a href=
+"#Connecting_the_JMX*_Console_to_the_MBean_Server">Connecting the
+JMX* Console to the MBean Server</a></p></blockquote>
+<blockquote>
+<p class="toc"><a href="#Managing_MBeans">Managing
+MBeans</a></p></blockquote>
+<blockquote>
+<p class="toc"><a href="#Managing_Attributes">Managing
+Attributes</a></p></blockquote>
+<blockquote>
+<p class="toc"><a href="#Managing_Operations">Managing
+Operations</a></p></blockquote>
+<blockquote>
+<p class="toc"><a href="#Managing_Notifications">Managing
+Notifications</a></p></blockquote>
+<p class="TOCHeading"><a href="#References">References</a></p>
+<h1><a name="Revision_History"></a>Revision History</h1>
+<table border="0" cellpadding="0" width="100%">
+<tr>
+<td width="24%" class="TableHeading">Version</td>
+<td width="49%" class="TableHeading">Version Information</td>
+<td class="TableHeading">Date</td></tr>
+<tr>
+<td width="24%" class="TableCell">Initial version</td>
+<td width="49%" class="TableCell">Victor Martynov, Svetlana
+Konovalova: document created.</td>
+<td class="TableCell">July 4, 2006</td></tr></table>
+<h1><a name="Disclaimer_and_Legal"></a>Disclaimer and Legal
+Information</h1>
+<p>Copyright 2005-2006 The Apache Software Foundation or its
+licensors, as applicable.</p>
+<p>Licensed under the Apache License, Version 2.0 (the License);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at <a href=
+"http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>.</p>
+<p>Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an AS IS
+BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+or implied. See the License for the specific language governing
+permissions and limitations under the License.</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h1><a name="About_this_document"></a>About this document</h1>
+<h2><a name="Purpose"></a>Purpose</h2>
+<p>This document introduces the DRL implementation of the
+Java<a href="#*">*</a> Management Extensions (JMX<a href=
+"#*">*</a>) Console. The document gives details on the
+   JMX<a href="#*">*</a> Console design, includes an overall
+   description of the package and points out basic user's actions
+   while dealing with the two versions of the implementation.</p>
+<h2><a name="Intended_Audience"></a>Intended Audience</h2>
+<p>The target audience for the documentation includes a wide
+community of engineers interested in using the JMX<a href=
+"#*">*</a> Console in their applications and in future work with
+the product to contribute to its development. The document assumes
+that the readers are familiar with the JMX<a href="#*">*</a>
+technology and the Java<a href="#*">*</a> programming language.</p>
+<h2><a name="Documentation_Conventions"></a>Documentation
+Conventions</h2>
+<p>This document uses the <a href="conventions.html" target=
+"_blank">unified conventions</a> for the DRL documentation kit.</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h1><a name="Introduction_to_the_JMX*_Console"></a>Introduction to
+the JMX<a href="#*">*</a> Console</h1>
+<p>JMX<a href="#*">*</a> introduces a new sort of applications,
+called manageable. This invention effects many aspects of software
+design and development. The JMX<a href="#*">*</a> application is
+easy-manageable due to the control panel, a so called console,
+showing the status of the application and distributing commands.
+The JMX<a href="#*">*</a> console enables management of all
+JMX<a href="#*">*</a> compliant systems and provides flexible and
+intuitive interface for users.</p>
+<h1><a name="JMX*_Console_in_DRL"></a>JMX<a href="#*">*</a> Console
+in DRL</h1>
+<p>The DRL JMX<a href="#*">*</a> console is the application
+intended for managing of various JMX<a href="#*">*</a> compliant
+systems.</p>
+<h2><a name="About"></a>About</h2>
+<p>The JMX<a href="#*">*</a> console is an open-source clean-room
+tool targeted at managing Java<a href="#*">*</a> objects, so called
+MBeans, registered in the MBean server. For more details on
+JMX<a href="#*">*</a> refer to [<a href="#JMX*">1</a>] and
+   [<a href="#JMX*Spec">2</a>].</p>
+<p>The JMX<a href="#*">*</a> console exists in two versions
+provided in the current implementation:</p>
+<table border="1" cellpadding="0" align="center" width="80%">
+<tr>
+<td width="30%" class="TableHeading">JMX* Console Version</td>
+<td width="30%" class="TableHeading">Compatibility</td></tr>
+<tr>
+<td width="30%" class="TableCell">Standalone Standard Widget
+Toolkit (SWT)</td>
+<td width="30%" class="TableCell">SWT 3.1.1</td></tr>
+<tr>
+<td width="30%" class="TableCell">Eclipse<a href="#*">*</a>
+plug-in</td>
+<td width="30%" class="TableCell">Eclipse<a href="#*">*</a> SDK,
+versions 3.1.0 and 3.1.1</td></tr></table>
+<p>You may use the console with other versions of SWT and
+Eclipse<a href="#*">*</a> SDK, but success is not guaranteed.</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h2><a name="Inside_the_JMX*_Console"></a>Inside the JMX<a href=
+"#*">*</a> Console</h2>
+<p>The JMX<a href="#*">*</a> console is developed according to the
+Model View Controller (MVC) architectural pattern and consists of
+the following components:</p>
+<ul>
+<li><b>Model</b> represented by the MBean server</li>
+<li><b>View</b> represented by the
+<code>org.apache.harmony.x.management.console.standalone</code>
+package when used as the standalone console and by the
+<code>org.apache.harmony.x.management.console.plugin</code> package
+when used as the plug-in</li>
+<li><b>Controller</b> represented by the
+<code>org.apache.harmony.x.management.controller</code>
+package</li></ul>
+<p>The MBean server is not described in the document. For
+information on it see [<a href="#MBeanServerInt">4</a>].</p>
+<h3><a name="Controller"></a>Controller</h3>
+<p>The controller interface serves as an abstraction from the
+JMX<a href="#*">*</a> semantics. This component acts just like the
+MBean Server, but makes its activities fully transparent and,
+therefore, requires no knowledge of JMX<a href="#*">*</a>
+specifics. This can save some of your time.</p>
+<p>The Controller can connect to any JMX<a href="#*">*</a>
+compliant server and expose its content. The interface and its
+supporting classes are designed in a handy way for data
+presentation in the Graphical User Interface (GUI).</p>
+<p>The Controller provides a generalized view of the JMX<a href=
+"#*">*</a> server. This interface presents the registered MBeans as
+objects with attributes, operations and notifications without
+distinguishing them by their special meanings, if there are any, to
+the MBean Server.</p>
+<p>Another view is a specific MBean server "vision" of certain
+MBeans, such as the MLet Service or the relation service. Note that
+this feature is only declared in the interface and has no specific
+implementation in the current version of the JMX<a href="#*">*</a>
+console.</p>
+<p>For details on the Controller, see the API documentation of the
+package
+<code>org.apache.harmony.x.management.controller</code>.</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h3><a name="User_Interface_Extension"></a>User Interface
+Extension</h3>
+<p>The user interface is an Eclipse<a href="#*">*</a> plug-in using
+the Controller to obtain, send and receive data from the MBean
+Server, to execute operations and to obtain notifications.
+Currently, the user interface has two aspects for the further
+development and extension: to add new Eclipse<a href="#*">*</a>
+views depending on the <code>MBeanTreeView</code> class and to add
+attribute editors to show or edit the attribute of a new type.</p>
+<p class="class">New Eclipse<a href="#*">*</a> View
+Implementation</p>
+<p>The standard procedure of extending the Eclipse<a href=
+"#*">*</a> plug-in is to create a new extension at a certain
+extension point. To extend the JMX<a href="#*">*</a> console, use
+the <code>org.eclipse.ui.views</code> point [<a href=
+"#JMX*">5</a>].</p>
+<p class="note">Note</p>
+<p class="notetext">Further in the document, this extension and the
+class corresponding to it are referred to as <code>view</code>.</p>
+<p>The <code>view</code> class extends the
+<code>org.eclipse.ui.part.ViewPart</code> class and implements the
+<code>org.apache.harmony.x.management.ui.IMBeanTreeDependant</code>
+interface. This enables the <code>view</code> class to receive
+callbacks from the MBean tree while browsing it. For more
+information, see the API documentation of the
+<code>org.apache.harmony.x.management.ui</code> package and the
+implementation patterns used in the
+<code>org.apache.harmony.x.management.ui.AttributeView</code>
+class.</p>
+<p class="class">New Attribute Editor Implementation</p>
+<p>The attribute editors are located in the package
+<code>org.apache.harmony.x.management.ui.editor</code>. Currently,
+the implementation has certain editors for individual attribute
+types:</p>
+<ul>
+<li><b>BooleanEditor</b> for boolean attributes</li>
+<li><b>NumericEditor</b> for numbers</li>
+<li><b>ArrayEditor</b> for arrays</li>
+<li><b>CommonEditor</b> for all other types</li></ul>
+<p>To create a new attribute editor for the type not covered by the
+aforementioned editors, extend <b>AbstractEditor</b>. For details,
+refer to the API documentation of the
+<code>org.apache.harmony.x.management.ui.editor</code> package and
+follow the implementation pattern from the
+<code>org.apache.harmony.x.management.ui.editor.NumericEditor</code>
+class.</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h2><a name="How_to_Use_the_JMX*_Console"></a>How to Use the
+JMX<a href="#*">*</a> Console</h2>
+<p>This section describes two basic scenarios of using the two
+versions of the JMX<a href="#*">*</a> console implementation: how
+to start, connect and use the JMX<a href="#*">*</a> console. From
+this part of the document, you will get certain information about
+usage of the console. After performing all the operations described
+below, you will be able to experience all the advantages of the
+JMX<a href="#*">*</a> console.</p>
+<h3><a name="Building_and_Installing_the_JMX*_Console"></a>Building
+and Installing the JMX<a href="#*">*</a> Console</h3>
+<p>To start working with the JMX<a href="#*">*</a> console, follow
+the instructions below according to the implementation version in
+use:</p>
+<table border="0" cellpadding="0" width="60%">
+<tr>
+<td width="33%" class="TableHeading">JMX<a href="#*">*</a> Console
+Plug-in</td>
+<td width="33%" class="TableHeading">Standalone JMX<a href=
+"#*">*</a> Console</td></tr>
+<tr>
+<td width="33%" class="TableCell">1. Install Eclipse<a href=
+"#*">*</a> SDK 3.1.1 into a folder &lt;ECLIPSE_HOME&gt;.</td>
+<td width="33%" class="TableCell">1. Install SWT 3.1.1 into a
+folder &lt;SWT_HOME&gt;.</td></tr>
+<tr>
+<td width="33%" class="TableCell">2. Unzip the JMX<a href=
+"#*">*</a> console bundle into a folder &lt;CONSOLE_HOME&gt;.</td>
+<td width="33%" class="TableCell">2. Unzip the JMX<a href=
+"#*">*</a> console bundle into a folder
+&lt;CONSOLE_HOME&gt;.</td></tr>
+<tr>
+<td width="33%" class="TableCell">3. Change the current directory
+to &lt;CONSOLE_HOME&gt;/Harmony/make.</td>
+<td width="33%" class="TableCell">3. Change the current directory
+to &lt;CONSOLE_HOME&gt;/Harmony/make.</td></tr>
+<tr>
+<td width="33%" class="TableCell">4. Build the plug-in console .jar
+file running the following command: 
+<blockquote>
+<pre>
+ant jar.plugin
+</pre></blockquote></td>
+<td width="33%" class="TableCell">4. Build the standalone console
+.jar file running the following command: 
+<blockquote>
+<pre>
+ant jar.pluginant  jar.standalone
+</pre></blockquote></td></tr>
+<tr>
+<td width="33%" height="142" class="TableCell">5. To install the
+implementation, copy
+<code>org.apache.harmony.x.management.console_3.1.1.jar</code> from
+&lt;CONSOLE_HOME&gt;/Harmony/build/jar/ into the plugins/ folder
+and restart Eclipse<a href="#*">*</a>.<br>
+ 
+<p>As the result, the new JMX<a href="#*">*</a> perspective will
+become available.</p></td>
+<td width="33%" class="TableCell">5. Start the JMX<a href=
+"#*">*</a> console running the command below: 
+<pre>
+java -Djava.library.path=&lt;SWT_HOME&gt; -classpath &lt;SWT_HOME&gt;/swt.jar;<br>&lt;CONSOLE_HOME&gt;/Harmony/build/jar/JMXConsole.jar<br> org/apache/harmony/x/management/console/standalone/Main
+</pre>
+<p>As the result, the unconnected console appears.</p></td></tr>
+<tr>
+<td width="33%" class="TableCell">6. Switch to the mentioned
+perspective:<br>
+ Choose <b>Window &gt; Open Perspective &gt; Other... &gt; JMX
+Perspective</b>.</td>
+<td width="33%" class="TableCell"></td></tr></table>
+<p>Figure 1 shows the structure of the unconnected console plug-in
+interface consisting of four main views conveniently grouped into
+perspective.</p>
+<p align="center"><img src="images/Unconnected%20JMX%20Console.PNG"
+alt="package" width="599" height="467"></p>
+<p class="special">Figure 1: Unconnected JMX<a href="#*">*</a>
+Console Plug-in</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h3><a name=
+"Connecting_the_JMX*_Console_to_the_MBean_Server"></a>Connecting
+the JMX<a href="#*">*</a> Console to the MBean Server</h3>
+<p>To connect the JMX<a href="#*">*</a> console to the MBean
+Server, follow the instructions below.</p>
+<ol>
+<li>Create a new connection:<br>
+ 
+<p><i>For the plug-in mode,</i> using the JMX<a href="#*">*</a>
+Connection Wizard select:<br>
+ <b>File &gt; New &gt; Other... &gt; JMX Console &gt; New
+Connection Wizard</b></p>
+<p><i>For the standalone mode,</i> select:<br>
+ <b>Connection &gt; New Connection</b></p>
+<p align="center"><img src=
+"images/Starting%20JMX%20Connection%20wizard.PNG" alt=
+"package"></p>
+<p class="special">Figure 2: Starting the JMX<a href="#*">*</a>
+Connection Wizard</p></li>
+<li>Select one of three modes appropriate for your purpose. 
+<p class="note">Note</p>
+<p class="notetext">The JMX<a href="#*">*</a> Connection Wizard
+enables the user to create a new JMX<a href="#*">*</a> connection
+using one of three following modes:</p>
+<ol class="notetext">
+<li>The remote URL mode enables the user to connect to the MBean
+server if its URL is known.</li>
+<li>The new server mode enables the user to create a new MBean
+server with selected parameters.</li>
+<li>The local VM mode enables the user to connect to local VM in
+which the using Eclipse<a href="#*">*</a> is running.</li></ol>
+<br>
+<br>
+ 
+<p align="center"><img src="images/Remote%20URL%20tab.PNG"
+     alt="package" height="393" width="477"></p>
+<p class="special">Figure 3: JMX<a href="#*">*</a> Connection
+Wizard: Remote URL tab</p>
+<p align="center"><img src="images/New%20Server%20tab.PNG"
+     alt="package" height="393" width="477"></p>
+<p class="special">Figure 4: JMX<a href="#*">*</a> Connection
+Wizard: New Server tab</p>
+<p align="center"><img src="images/Local%20VM%20tab.PNG" alt=
+"package" height="393" width="477"></p>
+<p class="special">Figure 5: JMX<a href="#*">*</a> Connection
+Wizard: Local VM tab</p></li>
+<li>Connect to the MBean server following the instructions given
+below according to the selected mode.</li></ol>
+<table border="0" cellpadding="0" width="100%">
+<tr>
+<td width="33%" class="TableHeading">Remote URL</td>
+<td width="33%" class="TableHeading">New Server</td>
+<td width="33%" class="TableHeading">Local VM</td></tr>
+<tr>
+<td width="33%" class="TableCell">1. Select the <b>Remote URL</b>
+tab.</td>
+<td width="33%" class="TableCell">1. Select the <b>New Server</b>
+tab.</td>
+<td width="33%" class="TableCell">1. Select the <b>Local VM</b>
+tab.</td></tr>
+<tr>
+<td width="33%" class="TableCell">2. Enter URL of the
+   JMX<a href="#*">*</a> connector in the appropriate field.</td>
+<td width="33%" class="TableCell">2. Type in the default server
+domain.</td>
+<td width="33%" class="TableCell">2. <i>For the plug-in mode,</i>
+click the <b>Finish</b> button to connect to local Java<a href=
+"#*">*</a> VM.<br>
+<i>For the standalone mode,</i> click <b>Connect</b>.<br>
+See figure 5.</td></tr>
+<tr>
+<td width="33%" class="TableCell">3. <i>For the plug-in mode,</i>
+click the <b>Finish</b> button.<br>
+ <i>For the standalone mode,</i> click <b>Connect</b>. 
+<p class="note">Note</p>
+<p class="notetext">If the MBean server was started in secure mode,
+enter user credentials here.</p>
+See figure 3.</td>
+<td width="33%" class="TableCell">3. To start the the
+   JMX<a href="#*">*</a> RMI Connector, select the <b>Start
+   JMX<a href="#*">*</a> Connector check box</b>, and enter port,
+   where it should start.</td>
+<td width="33%" class="TableCell"></td></tr>
+<tr>
+<td width="33%" class="TableCell"></td>
+<td width="33%" class="TableCell">4. <i>For the plug-in mode,</i>
+click the <b>Finish</b> button to create a new MBean Server.<br>
+<i>For the standalone mode,</i> click <b>Connect</b>. 
+<p class="note">Note</p>
+<p class="notetext">If the <b>Start JMX<a href="#*">*</a>
+Connector</b> option is selected, the JMX* RMI Connector is started
+on the given port.</p>
+See figure 4.</td>
+<td width="33%" class="TableCell"></td></tr></table>
+<p>When the console is connected to the MBean server, the
+implementation is ready for the application management.</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h3><a name="Managing_MBeans"></a>Managing MBeans</h3>
+<p>After the console is connected to the MBean server, the view
+containing the tree of all MBeans registered in this MBean server
+appears on the screen. The domains of MBeans are the branches of
+the first layer and MBeans themselves are branches of the second
+layer. If you select any MBean, the information about it is shown
+in the <b>Attribute</b> and <b>Operation</b> views.</p>
+<dl>
+<dt>Example</dt></dl>
+<p>JVM<a href="#*">*</a> is the classical manageable application,
+which starts the internal MBean server and registers a number of
+MBeans in it [<a href="#Package">3</a>] .</p>
+<p align="center"><img src="images/Connected%20console.PNG"
+     alt="package" height="465" width="597"></p>
+<p class="special">Figure 6: Connected console</p>
+<p>Figure 6 shows managing the MemoryManage MBean, containing a
+number of attributes and one operation - garbage
+collection(gc).</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h3><a name="Managing_Attributes"></a>Managing Attributes</h3>
+<p>Three types of the MBean attributes exist: readable, writable or
+both. The read-only attributes are shown in the <b>Attributes</b>
+view as a grayed text box and can be copied and pasted into other
+applications, but cannot be edited. Readable and writable
+attributes can undergo all kinds of editing. If the value of the
+attribute is large, the <b>Collapse/Expand</b> button appears after
+the name of the attribute.</p>
+<p align="center"><img src=
+"images/MBean%20ThreadStackDump%20attribute.PNG" alt="package"
+height="700" width="667"></p>
+<p class="special">Figure 7: "java.lang:type=Threading" MBean
+ThreadStackDump attribute</p>
+<p align="center"><img src="images/Attributes.PNG" alt="package"
+width="663" height="469"></p>
+<p class="special">Figure 8: Attributes of
+"java.lang:type=OperatingSystem" MBean</p>
+<p>Figure 8 demonstrates the standalone console with the attributes
+pane opened.</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h3><a name="Managing_Operations"></a>Managing Operations</h3>
+<p>Figure 9 demonstrates the typical view of <b>MBean
+Operations</b>, where as a list of operations with text fields to
+type in the operation parameters is shown. To execute an operation,
+click the <b>Invoke</b> button.</p>
+<p align="center"><img src=
+"images/The%20operations%20of%20MBean.PNG" alt="package"
+     height="543" width="511"></p>
+<p class="special">Figure 9: The operations of MBean</p>
+<p>After the invocation of the operation, the <b>Result</b> dialog
+box appears, showing what operation was invoked and its result.</p>
+<dl>
+<dt>Example</dt></dl>
+<p>If the garbage collection in the
+<code>java.lang:type=Memory</code> MBean is invoked, the
+<b>Result</b> dialog box appears on the screen, shown in Figure
+10.</p>
+<p align="center"><img src="images/Result%20dialog%20box.PNG"
+     alt="package" height="197" width="546"></p>
+<p class="special">Figure 10: Result dialog box</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h3><a name="Managing_Notifications"></a>Managing
+Notifications</h3>
+<p>The interface of the <b>MBean Notification Table</b> consists of
+the following elements:</p>
+<ul>
+<li>The checkbox indicating whether you are subscribed to
+notifications emitted by the selected MBean or not</li>
+<li>The <b>Clear List</b> button that can remove all received
+notifications</li>
+<li>The <b>Update</b> button that reads all received notifications
+and shows them in the table</li></ul>
+<p>Figure 11 demonstrates the notifications emitted by
+StringMonitor.</p>
+<p align="center"><img src="images/Notification%20table.PNG"
+     alt="package" height="178" width="603"></p>
+<p class="special">Figure 11: Notification table</p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<h1><a name="References"></a>References</h1>
+<p>[<a name="JMX*">1</a>] Sun about JMX<a href="#*">*</a>,
+   <a href="http://java.sun.com/products/JavaManagement/" target=
+   "_blank">http://java.sun.com/products/JavaManagement/</a></p>
+<p>[<a name="JMX*Spec">2</a>] JMX<a href="#*">*</a> Specification,
+<a href="http://www.jcp.org/en/jsr/detail?id=3" target=
+"_blank">http://www.jcp.org/en/jsr/detail?id=3</a></p>
+<p>[<a name="Package">3</a>] Package java.lang.management
+(Java<a href="#*">*</a> 2 Platform SE 5.0), <a href=
+"http://java.sun.com/j2se/1.5.0/docs/api/java/lang/management/package-summary.html"
+   target=
+   "_blank">http://java.sun.com/j2se/1.5.0/docs/api/java/lang/management/package-summary.html</a></p>
+<p>[<a name="MBeanServerInt">4</a>] MBeanServer Interface,
+   <a href="http://java.sun.com/j2se/1.5.0/docs/api/javax/management/MBeanServer.html"
+   target=
+   "_blank">http://java.sun.com/j2se/1.5.0/docs/api/javax/management/MBeanServer.html</a></p>
+<p>[<a name="JMX*">5</a>] Extension Points:
+<code>org.eclipse.ui.views</code>, <a href=
+"http://help.eclipse.org/help31/topic/org.eclipse.platform.doc.isv/reference/extension-points/org_eclipse_ui_views.html"
+   target=
+   "_blank">http://help.eclipse.org/help31/topic/org.eclipse.platform.doc.isv/reference/extension-points/org_eclipse_ui_views.html</a></p>
+<p class="backtotop"><a href="#top">Back to Top</a></p>
+<p>(C) Copyright 2005-2006 Intel Corporation</p>
+<p><a name="*">*</a> Other brands and names are the property of
+their respective owners.</p>
+</body>
+</html>

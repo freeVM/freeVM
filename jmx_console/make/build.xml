@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2005-2006 The Apache Software Foundation or its licensors, as applicable.
+  
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!--
+Author:  Victor A. Martynov
+Version: $Revision: 1.11 $
+-->
+<project basedir="../" default="all" name="JMXConsole">
+
+    <property file="make/external_tools.properties"/>
+    <property name="src.dir" value="src"/>
+    <property name="base.dir" value="org/apache/harmony/x/management/console"/>
+    <property name="icons.dir" value="icons"/>
+
+	<property name="build.dir" value="build"/>
+	<property name="classes.dir" value="${build.dir}/classes"/>
+	<property name="jar.dir" value="${build.dir}/jar"/>
+	<property name="doc.dir" value="${build.dir}/doc"/>
+
+    <property name="standalone.dir" value="${base.dir}/standalone"/>
+    <property name="plugin.dir" value="${base.dir}/plugin"/>
+    <property name="controller.dir" value="${base.dir}/controller"/>
+    <property name="system.dir" value="${base.dir}/system"/>
+    
+    <property name="jar.name.console.plugin" value="org.apache.harmony.x.management.console_3.1.1.jar"/>
+    <property name="jar.name.console.standalone" value="JMXConsole.jar"/>
+    
+
+    <path id="project.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="${eclipse.path}/plugins/org.eclipse.ui_3.1.1.jar"/>
+        <pathelement location="${eclipse.path}/plugins/org.eclipse.swt_3.1.0.jar"/>
+        <pathelement location="${eclipse.path}/plugins/org.eclipse.swt.win32.win32.x86_3.1.1.jar"/>
+        <pathelement location="${eclipse.path}/plugins/org.eclipse.swt.gtk.linux.x86_3.1.1.jar"/>
+        <pathelement location="${eclipse.path}/plugins/org.eclipse.jface_3.1.1.jar"/>
+        <pathelement location="${eclipse.path}/plugins/org.eclipse.core.commands_3.1.0.jar"/>
+        <pathelement location="${eclipse.path}/plugins/org.eclipse.ui.workbench_3.1.1.jar"/>
+        <pathelement location="${eclipse.path}/plugins/org.eclipse.core.runtime_3.1.1.jar"/>
+        <pathelement location="${eclipse.path}/plugins/org.eclipse.osgi_3.1.1.jar"/>
+    </path>
+	
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${jar.dir}"/>
+        <mkdir dir="${doc.dir}"/>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+    
+    <target name="compile" depends="init" >
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac destdir="${classes.dir}" 
+               target="1.5"
+               source="1.5"
+               debug="true">
+            <src path="${src.dir}"/>
+            <classpath refid="project.classpath"/>
+        </javac>
+    </target>
+    
+	<target name="copyIcons" description="Copies the icons needed for console.">
+		<copy todir="${classes.dir}"
+		      overwrite="false" 
+	          failonerror="true"> 
+
+			<fileset dir="src">
+    			<include name="**/*.PNG"/>
+			</fileset>
+		</copy>
+	</target>
+
+    <target name="doc" description="Builds JAVADOC documentation for console.">
+    	<javadoc packagenames="org.*"
+    	           sourcepath="src"
+    	           defaultexcludes="yes"
+    	           destdir="${build.dir}/doc"
+    	           author="true"
+    	           version="true"
+    	           use="true"
+    	           windowtitle="JMX Administrative Console">
+    	  </javadoc>
+    </target>
+
+    <target name="jar.standalone" 
+            depends="compile, copyIcons" 
+            description="Creates standalone SWT console">
+
+		<mkdir dir="${jar.dir}"/>
+		
+       	<jar destfile="${jar.dir}/${jar.name.console.standalone}"
+       	      basedir="${classes.dir}"
+       	      includes="${standalone.dir}/**/*.class,
+       	                ${controller.dir}/**/*.class,
+       					**/*.PNG"
+        />
+    </target>
+
+	
+    <target name="jar.plugin" 
+            depends="compile, copyIcons" 
+            description="Creates Eclipse plugin console bundle">
+
+    	<mkdir dir="${jar.dir}"/>
+		<copy file="${src.dir}/org/apache/harmony/x/management/console/plugin/resources/MANIFEST.MF" 
+		      tofile="${classes.dir}/META-INF/MANIFEST.MF"/>
+		<copy file="${src.dir}/org/apache/harmony/x/management/console/plugin/resources/plugin.xml" 
+		      tofile="${classes.dir}/plugin.xml"/>
+		      
+        <jar destfile="${jar.dir}/${jar.name.console.plugin}"
+             basedir="${classes.dir}"
+             includes="${controller.dir}/**/*.class,
+             		   ${plugin.dir}/**/*.class,
+                       *.xml,
+                       **/*.PNG" 
+             manifest="${classes.dir}/META-INF/MANIFEST.MF"
+        />
+    </target>
+    
+    <target name="all" depends="jar.plugin, jar.standalone, doc"/>
+    
+</project>
