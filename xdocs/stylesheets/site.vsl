@@ -16,19 +16,6 @@ limitations under the License.
 -->
 
 
-<!-- Content Stylesheet for Site -->
-
-    ## Defined variables
-    #set ($bodybg = "#ffffff")
-    #set ($bodyfg = "#000000")
-    #set ($bodylink = "#525D76")
-    #set ($bannerbg = "#525D76")
-    #set ($bannerfg = "#ffffff")
-    #set ($subbannerbg = "#828DA6")
-    #set ($subbannerfg = "#ffffff")
-    #set ($tablethbg = "#039acc")
-    #set ($tabletdbg = "#a0ddf0")
-    
 <!-- start the processing -->
 #document()
 <!-- end the processing -->
@@ -64,14 +51,13 @@ limitations under the License.
 #if ($value.getAttributeValue("rowspan"))
 #set ($rowspan = $value.getAttributeValue("rowspan"))
 #end
-<td bgcolor="$tabletdbg" colspan="$!colspan" rowspan="$!rowspan" valign="top" align="left">
-    <font color="#000000" size="-1" face="arial,helvetica,sanserif">
+<td class="TableCell" colspan="$!colspan" rowspan="$!rowspan" >
+    
         #if ($value.getText().length() != 0 || $value.hasChildren())
         $value.getContent()
         #else
         &nbsp;
         #end
-    </font>
 </td>
 #end
 
@@ -82,14 +68,12 @@ limitations under the License.
 #if ($value.getAttributeValue("rowspan"))
 #set ($rowspan = $value.getAttributeValue("rowspan"))
 #end
-<th bgcolor="$tablethbg" colspan="$!colspan" rowspan="$!rowspan" valign="top" align="left">
-    <font color="#000000" size="-1" face="arial,helvetica,sanserif">
+<th class="TableHeading" colspan="$!colspan" rowspan="$!rowspan">
         #if ($value.getText().length() != 0 || $value.hasChildren())
         $value.getContent()
         #else
         &nbsp;
         #end
-    </font>
 </th>
 #end
 
@@ -122,36 +106,36 @@ limitations under the License.
 #end
 
 #macro ( source $value)
-    <div align="left">
-    <table cellspacing="4" cellpadding="0" border="0">
+    <div>
+    <table cellspacing="4" cellpadding="0" >
     <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" border="0"/></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" border="0"/></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" border="0"/></td>
+      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
+      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
+      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
     </tr>
     <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" border="0"/></td>
+      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
       <td bgcolor="#ffffff"><pre>$escape.getText($value.getText())</pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" border="0"/></td>
+      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
     </tr>
     <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" border="0"/></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" border="0"/></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" border="0"/></td>
+      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
+      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
+      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
     </tr>
     </table>
     </div>
 #end
 
 #macro ( subsection $subsection)
-    <table border="0" cellspacing="0" cellpadding="2" width="100%">
-      <tr><td bgcolor="$subbannerbg">
-        <font color="$subbannerfg" face="arial,helvetica,sanserif">
-          <a name="$subsection.getAttributeValue("name")"><strong>$subsection.getAttributeValue("name")</strong></a>
-        </font>
+    
+      <tr><td>
+            <h2>
+          <a name="$subsection.getAttributeValue("name")">$subsection.getAttributeValue("name")</a>
+            </h2>
       </td></tr>
       <tr><td>
-        <blockquote>
+        
         #foreach ( $items in $subsection.getChildren() )
             #if ($items.getName().equals("img"))
                 #image ($items)
@@ -163,10 +147,9 @@ limitations under the License.
                 $items
             #end
         #end
-        </blockquote>
+        
       </td></tr>
-      <tr><td><br/></td></tr>
-    </table>
+       
 #end
 
 
@@ -177,14 +160,13 @@ limitations under the License.
 #end
 
 #macro ( section $section)
-    <table border="0" cellspacing="0" cellpadding="2" width="100%">
-      <tr><td bgcolor="$bannerbg">
-        <font color="$bannerfg" face="arial,helvetica,sanserif">
-          <a name="$section.getAttributeValue("name")"><strong>$section.getAttributeValue("name")</strong></a>
-        </font>
+    <table  cellspacing="0" cellpadding="2" width="100%">
+      <tr><td>
+        <h1>
+          <a name="$section.getAttributeValue("name")">$section.getAttributeValue("name")</a>
+        </h1>
       </td></tr>
       <tr><td>
-        <blockquote>
         #foreach ( $items in $section.getChildren() )
             #if ($items.getName().equals("img"))
                 #image ($items)
@@ -198,11 +180,10 @@ limitations under the License.
                 $items
             #end
         #end
-        </blockquote>
-        </p>
+       
       </td></tr>
-      <tr><td><br/></td></tr>
     </table>
+    <p><a href="top">Back to top</a></p>
 #end
 
 #macro ( makeProject )
@@ -211,20 +192,22 @@ limitations under the License.
 
     #set ($menus = $project.getChild("body").getChildren("menu"))
     #foreach ( $menu in $menus )
-        <p><strong>$menu.getAttributeValue("name")</strong></p>
+        <p class="menuItem"><strong>$menu.getAttributeValue("name")</strong></p>
         <ul>
         #foreach ( $item in $menu.getChildren() )
             #set ($name = $item.getAttributeValue("name"))
-            <li>#projectanchor($name $item.getAttributeValue("href"))</li>
+            <li class="menuItem">#projectanchor($name $item.getAttributeValue("href"))</li>
             
-            <table>
+           
             #foreach ( $subitem in $item.getChildren() )
               #set ($name = $subitem.getAttributeValue("name"))
-              <tr><td>
-                &nbsp;&nbsp;#projectanchor($name $subitem.getAttributeValue("href"))
-              </td></tr>
+               <table>
+              <tr><td class="menuItem">
+                &nbsp;&nbsp;&nbsp;&nbsp;#projectanchor($name $subitem.getAttributeValue("href"))
+                </td></tr>
+              </table>
             #end            
-            </table>
+            
         #end
         </ul>
     #end
@@ -233,11 +216,11 @@ limitations under the License.
 #macro (getProjectImage)
 #if ($project.getChild("logo"))
 #set ( $logoString = $project.getChild("logo").getAttributeValue("href") )
-<td align="left">
+<td>
 #if ( $logoString.startsWith("/") )
-<a href="$project.getAttributeValue("href")"><img  src="$relativePath$logoString" alt="$project.getChild("logo").getText()" border="0"/></a>
+<a href="$project.getAttributeValue("href")"><img  src="$relativePath$logoString" alt="$project.getChild("logo").getText()" /></a>
 #else
-<a href="$project.getAttributeValue("href")"><img  src="$relativePath/$logoString" alt="$project.getChild("logo").getText()" border="0"/></a>
+<a href="$project.getAttributeValue("href")"><img  src="$relativePath/$logoString" alt="$project.getChild("logo").getText()" /></a>
 #end
 </td>
 #end
@@ -280,11 +263,11 @@ limitations under the License.
             #foreach ( $link in $links )
             $link
             #end
-            
+        <link rel="Stylesheet" type="text/css" href="../../site.css"/>
         </head>
 
-        <body bgcolor="$bodybg" text="$bodyfg" link="$bodylink">        
-            <table border="0" width="100%" cellspacing="0">
+        <body>        
+            <table  width="100%" cellspacing="0">
                 <!-- TOP IMAGE -->
                 <tr>
                     <td align='LEFT'>
@@ -295,30 +278,30 @@ limitations under the License.
                     <td align='RIGHT'>
                     <a href="$project.getAttributeValue("href")">
                     <img src="http://incubator.apache.org/harmony/images/apache-incubator-logo.png"
-                    	alt="$project.getChild("logo").getText()" border="0"/></a>                    
+                    	alt="$project.getChild("logo").getText()" /></a>                    
                     </td>
                 </tr>
             </table>
-            <table border="0" width="100%" cellspacing="4">
+            <table width="100%" cellspacing="4">
                 <tr><td colspan="2">
                     <hr noshade="" size="1"/>
                 </td></tr>
 
                 <tr>
                     <!-- LEFT SIDE NAVIGATION -->
-                    <td width="20%" valign="top" nowrap="true">
+                    <td class="menuItem" width="20%" nowrap="true">
 
                     <!-- special ACon Logo - leave here for next time -->
                     <a href="http://www.us.apachecon.com/">
                         <img src="http://www.apache.org/ads/ApacheCon/240x120-2006-us.gif"
-                             border="0" alt="ApacheCon US 2006" />
+                             alt="ApacheCon US 2006" />
                     </a>
 
                    <!-- regular menu -->
 
                     #makeProject()
                     </td>
-                    <td width="80%" align="left" valign="top">
+                    <td width="80%" valign="top"><a name="top"></a>
                     #set ($allSections = $root.getChild("body").getChildren("section"))
                     #foreach ( $section in $allSections )
                         #section ($section)
@@ -336,9 +319,9 @@ limitations under the License.
                     <hr noshade="" size="1"/>
                 </td></tr>
                 <tr><td colspan="2">
-                    <div align="center"><font color="$bodylink" size="-1"><em>
+                    <div class="special"><em>
                     Copyright &#169; 2003-2006, The Apache Software Foundation
-                    </em></font></div>
+                    </em></div>
                 </td></tr>
             </table>
         </body>

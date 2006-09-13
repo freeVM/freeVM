@@ -82,13 +82,11 @@
            </fileset>
       </copy>
   
-      <!-- In case we have CSS someday
       <copy todir="${docs.dest}" filtering="no">
           <fileset dir="${docs.src}">
               <include name="**/*.css"/>
           </fileset>
       </copy>
-      -->
   </target>
     
 </project>
