@@ -1,4 +1,4 @@
- body {
+body {
  	background-color: white;
  	color: black;
  	text-align: left;
@@ -32,7 +32,7 @@ h2 {
   	background-color: #828DA6;
   	color: white;
   	text-indent: 2pt;
-	margin-left: 20pt;  	
+	margin-left: 10pt;  	
 }
 
 h3 {
@@ -54,13 +54,6 @@ p {
 	margin-left: 20pt;
 }
 
-li {
-	padding-left: 2pt;
-	padding-top: 1pt;
-	padding-bottom: 1pt;
-	padding-right: 0pt;
-}
-
 td.TableCell {
 	vertical-align: top;
 	text-align: left;
@@ -76,7 +69,7 @@ th.TableHeading {
 }
 
 table {
-	margin-left: 20pt;
+	margin-left: 0pt;
 	margin-right: 0pt;
 }
 
@@ -98,6 +91,7 @@ pre {
 
 .class {
 	font-weight: bold; 
+    font-size: 10pt;
 	font-family: Arial;
 	border-top: none;
 	border-right: none;
@@ -109,10 +103,10 @@ pre {
 	font-weight: bold;
 	text-align: center;
 	color: #525D76; 
-	line-height: 1.25;
 	margin-top: 3pt;
 	margin-bottom: 3pt;
 	font-family: Arial, helvetica, sans-serif;
+    font-size: 10pt;
 }
 
 .backtotop {
@@ -124,25 +118,25 @@ pre {
 	color: red;
 	font-weight: bolder;
 	font-family: Arial, helvetica, sans-serif;
+    font-size: 10pt;
 }
 
 .notetext {
-	margin-left: 30pt;
-	margin-right: 30pt;
+	padding-left: 20pt;
 	margin-top: 0pt;
 	margin-bottom: 0pt;
 	font-family: Arial, helvetica, sans-serif;
-  	font-size: 11pt;
+  	font-size: 10pt;
 }
 
 .example {
 	font-weight: bolder;
-	padding: 4pt;
 	font-family: Arial, helvetica, sans-serif;
+    font-size: 10pt;
 }
 
 .exampletext {
-	padding-left: 40pt;
+	margin-left: 40pt;
 }
 
 .TOCHeading {
@@ -176,6 +170,13 @@ pre {
 	font-style: italic;
 }
 
+li {
+	margin-left: 20pt;
+    padding-left: 1pt;
+	padding-top: 1pt;
+	padding-bottom: 1pt;
+	padding-right: 0pt;
+}
 
 ol li {
 	list-style-type: decimal;
@@ -194,7 +195,7 @@ dl {
 }
 
 dd {
-	margin-left: 65pt;
+	margin-left: 30pt;
 	margin-top: 5pt;
 	margin-right: 20pt;
 	margin-bottom: 5pt;

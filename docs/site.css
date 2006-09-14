@@ -1,4 +1,4 @@
- body {
+body {
  	background-color: white;
  	color: black;
  	text-align: left;
@@ -32,7 +32,7 @@ h2 {
   	background-color: #828DA6;
   	color: white;
   	text-indent: 2pt;
-	margin-left: 20pt;  	
+	margin-left: 10pt;  	
 }
 
 h3 {
@@ -54,13 +54,6 @@ p {
 	margin-left: 20pt;
 }
 
-li {
-	padding-left: 2pt;
-	padding-top: 1pt;
-	padding-bottom: 1pt;
-	padding-right: 0pt;
-}
-
 td.TableCell {
 	vertical-align: top;
 	text-align: left;
@@ -76,7 +69,7 @@ th.TableHeading {
 }
 
 table {
-	margin-left: 20pt;
+	margin-left: 0pt;
 	margin-right: 0pt;
 }
 
@@ -110,7 +103,6 @@ pre {
 	font-weight: bold;
 	text-align: center;
 	color: #525D76; 
-	line-height: 1.25;
 	margin-top: 3pt;
 	margin-bottom: 3pt;
 	font-family: Arial, helvetica, sans-serif;
@@ -178,6 +170,13 @@ pre {
 	font-style: italic;
 }
 
+li {
+	margin-left: 20pt;
+    padding-left: 1pt;
+	padding-top: 1pt;
+	padding-bottom: 1pt;
+	padding-right: 0pt;
+}
 
 ol li {
 	list-style-type: decimal;
