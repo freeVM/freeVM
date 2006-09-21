@@ -35,22 +35,22 @@
 	<ul>
 		<li>
             <a href="build_classlib.html">Building the Classlibrary Code</a>
-			<blockquote>
+			<br />
                 Describes how to download and build the class library code from source.
-            </blockquote>
+
         </li>
 		<li>
             <a href="dev_eclipse.html">Development with the Eclipse IDE</a>
-			<blockquote>
+			<br />
                 Describes how to set up Eclipse to develop the class library code.
-            </blockquote>
+
         </li>
 		<li>
             <a href="hdk.html">Harmony Development Kit</a>
-            <blockquote>
+            <br />
                 Development bundle providing all jars, native binaries, dependencies and
                 header files to aid in Harmony development.
-            </blockquote>
+
         </li>
 	</ul>
 </subsection>
@@ -58,37 +58,39 @@
 <subsection name="Project Conventions">
 	<ul>
 		<li><a href="pkgnaming.html">Java package naming guidelines</a>
-			<blockquote>
-				Guidelines for Harmony package naming convention.
-			</blockquote>
-			</li>
+      <br />
+      Guidelines for Harmony package naming convention.
+      
+    </li>
 
-		<li><a href="testing.html">Testing conventions in the Apache Harmony Classlib</a>
-			<blockquote>
-                Placement and package naming conventions for different
-                types of Harmony class library tests.
-			</blockquote>
-			</li>
+    <li>
+      <a href="testing.html">Testing conventions in the Apache Harmony Classlib</a>
+      <br />
+      Placement and package naming conventions for different
+      types of Harmony class library tests.
 
-		<li><a href="compat.html">Compatibility guidelines</a>
-			<blockquote>
-				Guidelines for ensuring that the Harmony class library is compatible
-				with other Java implementations.
-			</blockquote>
+    </li>
+
+    <li>
+      <a href="compat.html">Compatibility guidelines</a>
+      <br />
+      Guidelines for ensuring that the Harmony class library is compatible
+      with other Java implementations.
+      
 			</li>
 
 		<li><a href="ser_testing.html">Framework for testing serialization</a>
-			<blockquote>
-	            Approach for testing serialization compatibility with other
-				certified implementations, Harmony backward compatibility, placement and
-				naming conventions for resource files.
-			</blockquote>
+      <br />
+      Approach for testing serialization compatibility with other
+      certified implementations, Harmony backward compatibility, placement and
+      naming conventions for resource files.
+      
 			</li>
 
 		<li><a href="agreements.html">Harmony-dev agreements</a>
-			<blockquote>
-				Summary of agreements and recommendations worked out on harmony-dev mailing list.
-			</blockquote>
+      <br />
+      Summary of agreements and recommendations worked out on harmony-dev mailing list.
+      
 			</li>
 	</ul>
 </subsection>
@@ -96,30 +98,44 @@
 <subsection name="Architecture and guides">
 	<ul>
 		<li>
-<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/vm_doc/html/index.html">
-			Class library porting documentation</a>
-			<blockquote>
-				A porting guide aimed at developers interested in porting the classlib
-				code to a new VM.
-			</blockquote>
-        </li>
-		<li>
-<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/vm_doc/html/group__Port.html">
-			The Harmony class library port layer</a>
-			<blockquote>
-				A description of the functions in the class library portlayer aimed at
-				developers who are writing JNI code for use by the Harmony class libraries
-				and developers who are interested in porting the classlib code to a new
-				operating system.
-			</blockquote>
-        </li>
-		<li>
-<a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/tools/Keytool/Keytool_help.html">
-			Keytool user's guide draft</a>
-			<blockquote>
-				A draft of description of Keytool utility.
-			</blockquote>
-        </li>
+      
+        <a href="asn1_framework.html">Harmony ASN1 Framework</a>
+        <br />
+        Introduction to the ASN.1 (Abstract Syntax Notation) framework with
+        an overview of ASN.1 types and encoding rules focusing on the characteristics
+        of the current implementation.
+
+      </li>
+      <li>
+        <a href="regexp.html">Harmony Regular Expression Framework</a>
+        <br />
+        Overview of the java.util.regex package and implementation architecture
+        focusing on the performance improvement aspects.
+
+      </li>
+      <li>
+        <a href="dns_support.html">Harmony DNS Service Provider</a>
+        <br />
+        Implementation description of the DNS service provider for the Java* Naming Directory Interface (JNDI)
+        including a package overview, a design description and a guide to using the provider.
+
+      </li>
+      <li>
+        <a href="awt.html">Harmony Abstract Window Toolkit Framework</a>
+        <br />
+        Description of the AWT (Abstract Window Toolkit) framework covering
+        major design features and internal implementation specifics, such as
+        the event handling mechanism, the focus dispatching flow, appearance handling
+        with custom visual themes and multi-threading support
+
+      </li>
+      <li>
+        <a href="java2d.html">Harmony Java 2D implementation</a>
+        <br />
+        Introduction to the Java two-dimensional (2D) graphics and image processing
+        technology implementation focusing on the internal specifics of implementation
+
+      </li>
 
 	</ul>
 </subsection>
