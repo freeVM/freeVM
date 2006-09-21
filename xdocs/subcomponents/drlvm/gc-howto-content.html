@@ -305,24 +305,23 @@ in C++ and configuring the DRL virtual machine to use it. The document describes
 the major steps of this procedure, namely:</p>
 <ul>
 <li>
-<p>
 Establishing the build infrastructure
-</p>
+
 </li>
 <li>
-<p>
+
 Implementing the GC interface
-</p>
+
 </li>
 <li>
-<p>
+
 Implementing the garbage collector algorithm
-</p>
+
 </li>
 <li>
-<p>
+
 Running the VM with the custom GC
-</p>
+
 </li>
 </ul>
 <div class="title">Note</div>
@@ -426,75 +425,75 @@ the Developer's Guide and documentation in <tt>gc.h</tt> and <tt>vm_gc.h</tt>.</
 <h3>2.1. GC lifecycle</h3>
 <ul>
 <li>
-<p>
+
 <tt>gc_init()</tt> initializes the garbage collector
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_wrapup()</tt> shuts down the GC
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_vm_initialized()</tt> notifies the GC about the VM transition from the
   initialization stage to running user applications
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_thread_init()</tt> and <tt>gc_thread_kill()</tt> notify the GC about creation and
   termination of user threads that may request memory allocation or other GC
   services
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_class_prepared()</tt> notifies the GC about loaded and prepared classes
-</p>
+
 </li>
 </ul>
 <h3>2.2. Object allocation</h3>
 <ul>
 <li>
-<p>
+
 <tt>gc_alloc()</tt> performs slow allocation, can trigger garbage collection
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_alloc_fast()</tt> performs faster allocation, should not trigger garbage
   collection
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_add_root_set_entry()</tt> is responsible for enumeration
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_add_root_set_entry()</tt> enumerates one root pointer
-</p>
+
 </li>
 </ul>
 <p>See the Root set enumeration section in the Developer's Guide for details.</p>
 <h3>2.3. Miscellaneous</h3>
 <ul>
 <li>
-<p>
+
 <tt>gc_supports_compressed_references()</tt> indicates whether GC supports compressed references
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_is_object_pinned()</tt> indicates whether the GC will move an object or not
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_force_gc()</tt> forces a garbage collection
-</p>
+
 </li>
 </ul>
 <h3>2.4. Optional</h3>
@@ -502,48 +501,48 @@ the Developer's Guide and documentation in <tt>gc.h</tt> and <tt>vm_gc.h</tt>.</
 will be unavailable.</p>
 <ul>
 <li>
-<p>
+
 <tt>gc_free_memory()</tt> returns the estimated amount of memory available for allocation
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_pin_object()</tt>  requests that the GC does not move an object
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_unpin_object()</tt>  removes the restriction on not moving an object
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_get_next_live_object()</tt>  iterates over live objects during the stop-the-world
   phase of garbage collection
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_finalize_on_exit()</tt>  transfers finalizable queue contents to the VM core on
   shutdown
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_time_since_last_gc()</tt> returns the amount of time that elapsed since the
   previous collection, in milliseconds
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_total_memory()</tt> returns the overall amount of memory used for the Java heap
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>gc_max_memory()</tt> returns the maximum amount of memory that can be used for the
   Java heap
-</p>
+
 </li>
 </ul>
 <h3>2.5. The <tt>VM_GC</tt> interface</h3>
@@ -568,15 +567,15 @@ or running.</p>
 enumeration simultaneously:</p>
 <ul>
 <li>
-<p>
+
 <tt>vm_enumerate_root_set_all_threads()</tt> suspends all user threads and initiates
   root set enumeration
-</p>
+
 </li>
 <li>
-<p>
+
 <tt>vm_resume_threads_after()</tt> resumes execution of user threads
-</p>
+
 </li>
 </ul>
 <p>These functions effectively restrict the garbage collector to stop-the-world algorithms only.</p>

@@ -239,15 +239,34 @@ limitations under the License.
                                     <ul>
             <li>
                 <a href="https://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/drlvm/trunk/README.txt" target="_blank">README</a>
-                <blockquote>
-                    Building instructions for the VM source code.
-                </blockquote>
+              <br />
+              Source package and building instructions for the VM source code.
+              </li>
+            <li>
+              <a href="getting_started.html">
+                Getting Started
+              </a>
+              <br />
+              Basic usage scenarios of VM and lists standard
+              and non-standard supported options.
             </li>
             <li> <a href="debugging_VM_and_JIT.html">Debugging VM and JIT</a>
-                <blockquote>
-                    Guide to debugging VM and Jitrino.JET source code covering
-                    basic actions and some useful tips
-                </blockquote>
+              <br />
+              Guide to debugging VM and Jitrino.JET source code covering
+              basic actions and some useful tips
+            </li>
+            <li>
+              <a href="emguide.html">Configuring Execution Manager</a>
+              <br />
+              Guide to Execution Manager (EM) options and configuration file format.<br />
+            </li>
+            <li>
+              <a href="gc-howto.html">How to write DRL GC</a>
+              <br />
+              Instructions on creating a custom garbage collector implementation in C++
+              and configuring the DRL virtual machine to use it with a real-life example
+              of a copying GC implementation (source included)
+
             </li>
         </ul>
                             
@@ -256,39 +275,30 @@ limitations under the License.
                                                     
       <tr><td>
             <h2>
-          <a name="Architecture and guides">Architecture and guides</a>
+          <a name="Architecture and Component Documentation">Architecture and Component Documentation</a>
             </h2>
       </td></tr>
       <tr><td>
         
                                     <ul>
-            <li>
-                <a href="https://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/drlvm/trunk/vm/doc/GettingStarted.htm" target="_blank">
-                Getting Started</a>
-                <blockquote>
-                    Basic usage scenarios of VM and lists standard
-                    and non-standard supported options.
-                </blockquote>
-            </li>
+
             <li>
                 <a href="https://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/drlvm/trunk/vm/doc/DeveloperGuide.htm" target="_blank">Developer's Guide</a>
-                <blockquote>
-                    In-depth description of the DRLVM internal architecture and components' interaction
-                </blockquote>
+                <br />
+                In-depth description of the DRLVM internal architecture and components' interaction
+                <br />
+                Now with additions in separate documents:
             </li>
+          <ul>
             <li>
-                <a href="gc-howto.html">How to write DRL GC</a>
-                <blockquote>
-                    Instructions on creating a custom garbage collector implementation in C++ 
-                    and configuring the DRL virtual machine to use it with a real-life example
-                    of a copying GC implementation (source included)
-                </blockquote>
+              <a href="EM.html">Execution Manager Component Description</a>
+              <br />
+              Detailed description of the Execution Manager current implementation
+              <br />
+              Invalidates implementation-specific info in the DRLVM Developer's guide
             </li>
-            <li> <a href="emguide.html" target="_blank">Configuring Execution Manager</a>
-                <blockquote>
-                    Guide to Execution Manager (EM) options and configuration file format.<br />
-                </blockquote>
-            </li>
+          </ul>
+          
         </ul>
                             
       </td></tr>
