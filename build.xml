@@ -67,8 +67,20 @@
            templatePath="xdocs/stylesheets">
       </anakia>
 
+      <!-- top level images -->
+
       <copy todir="${docs.dest}/images" filtering="no">
           <fileset dir="${docs.src}/images">
+              <include name="**/*.gif"/>
+              <include name="**/*.jpeg"/>
+              <include name="**/*.jpg"/>
+              <include name="**/*.png"/>
+          </fileset>
+      </copy>
+
+      <!-- images for drlvm sub component -->
+      <copy todir="${docs.dest}/subcomponents/drlvm/images" filtering="no">
+          <fileset dir="${docs.src}/subcomponents/drlvm/images">
               <include name="**/*.gif"/>
               <include name="**/*.jpeg"/>
               <include name="**/*.jpg"/>

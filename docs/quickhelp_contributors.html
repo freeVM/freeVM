@@ -273,7 +273,7 @@ limitations under the License.
                                                     <div>
 <pre>
  $ svn co https://svn.apache.org/repos/asf/incubator/harmony/enhanced/trunk
-        </pre></td>
+        </pre>
     </div>
                                                 <p>
             This will checkout a directory structure that contains a <code>working_classlib</code>
@@ -305,7 +305,7 @@ limitations under the License.
                                                     <div>
 <pre>
 $ ant populate_source
-         </pre></td>
+         </pre>
     </div>
                                                 <p>
             This will checkout classlib and DRLVM into the working_classlib and working_vm
@@ -325,7 +325,7 @@ $ ant populate_source
 <pre>
 $ cd working_classlib
 $ svn update
-        </pre></td>
+        </pre>
     </div>
                                                 <p>
             These are full, valid checkouts of the classlibrary and DRLVM.  Any modifications
@@ -361,7 +361,7 @@ $ svn update
 $ cd working_classlib
 $ ant fetch-depends
 $ ant
-        </pre></td>
+        </pre>
     </div>
                                                 <p>
             If the above succeeds, you now have built the Apache Harmony classlibrary, both
@@ -379,7 +379,7 @@ $ ant
                                                     <div>
 <pre>
  $ ant test
-        </pre></td>
+        </pre>
     </div>
                                                 <p>
             Which will run the full testsuite for the classlibrary.
@@ -394,7 +394,7 @@ $ ant
 <pre>
  $ cd working_vm
  $ cd build
-        </pre></td>
+        </pre>
     </div>
                                                 <p>
             The first thing we have to do is tell the DRLVM build where to find the class library.
@@ -407,7 +407,7 @@ $ ant
                                                     <div>
 <pre>
  $ cp drlvm.properties.example drlvm.properties
-        </pre></td>
+        </pre>
     </div>
                                                 <p>
             If you are a windows user, note that you <i>must</i> be working from the Visual
@@ -419,7 +419,7 @@ $ ant
                                                     <div>
 <pre>
  C:...\trunk\working_vm\build&gt; set CXX=msvc
-        </pre></td>
+        </pre>
     </div>
                                                 <p>
             Now you are ready to build.  To do so, we first fetch our dependencies.  Please note that this
@@ -432,7 +432,7 @@ $ sh build.sh update
 
 On Windows :
 C:...\trunk\working_vm\build&gt;build.bat update
-        </pre></td>
+        </pre>
     </div>
                                                 <p>
             Once we have obtained our dependencies, we can proceed with the build :
@@ -444,7 +444,7 @@ $ sh build.sh
 
 On Windows :
 C:...\trunk\working_vm\build&gt;build.bat
-        </pre></td>
+        </pre>
     </div>
                                                 <p>
             and when complete, with the tests :
@@ -456,7 +456,7 @@ $ sh build.sh test
 
 On Windows :
 C:...\trunk\working_vm\build&gt;build.bat test
-        </pre></td>
+        </pre>
     </div>
                                                 <p>
             Note that the so-called "kernel" tests don't currently pass.  If you get through the
@@ -476,7 +476,7 @@ java version &quot;1.5.0&quot;
 pre-alpha : not complete or compatible
 svn = r448280, (Sep 21 2006), Linux/ia32/gcc 3.4.6, debug build
 http://incubator.apache.org/harmon
-        </pre></td>
+        </pre>
     </div>
                             
       </td></tr>

@@ -1,0 +1,660 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type"
+      content="text/html; charset=windows-1251" />
+      <link rel="Stylesheet" type="text/css" href="site.css" />
+      <title>
+         DRLVM Execution Manager
+      </title>
+   </head>
+   <body>
+      <h1>
+         <a id="top" name="top"></a>Execution Manager Component Description
+      </h1>
+      <p class="TOCHeading">
+         <a href="#About_this_document">1. About this Document</a>
+      </p>
+      <p class="TOC">
+         <a href="#Purpose">1.1 Purpose</a>
+      </p>
+      <p class="TOC">
+         <a href="#Intended_Audience">1.2 Intended Audience</a>
+      </p>
+      <p class="TOC">
+         <a href="#Using_this_document">1.3 Using This Document</a>
+      </p>
+      <p class="TOC">
+         <a href="#Conventions_and_Symbols">1.4 Conventions and Symbols</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#Overview">2. Overview</a>
+      </p>
+      <p class="TOC">
+         <a href="#Key_features">2.1 Key Features</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#Architecture">3. Architecture</a>
+      </p>
+      <p class="TOC">
+         <a href="#EM">3.1 Execution Manager in VM</a>
+      </p>
+      <p class="TOC">
+         <a href="#PC">3.2 Profile Collector</a>
+      </p>
+      <blockquote>
+         <p class="TOC">
+            <a href="#EM_PC">3.2.1 EM_PC Interface</a>
+         </p>
+         <p class="TOC">
+            <a href="#PlugIn_PC">3.2.2 How to plug in a custom PC</a>
+         </p>
+      </blockquote>
+      <p class="TOC">
+         <a href="#Profiler_thread">3.3 Profiler Thread</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#Processes">4. Processes</a>
+      </p>
+      <p class="TOC">
+         <a href="#Recompilation">4.1 Recompilation</a>
+      </p>
+      <p class="TOC">
+         <a href="#Execution_Management">4.2 Execution Management</a>
+      </p>
+      <blockquote>
+         <p class="TOC">
+            <a href="#Instantiation">4.2.1 Instantiation</a>
+         </p>
+         <p class="TOC">
+            <a href="#Method_Execution">4.2.2 Method Execution</a>
+         </p>
+      </blockquote>
+      <p class="TOCHeading">
+         <a href="#Interfaces">5. Public Interfaces</a>
+      </p>
+      <p class="TOC">
+         <a href="#EM_VM">5.1 EM_VM Interface</a>
+      </p>
+      <p class="TOC">
+         <a href="#EM_JIT">5.2 EM_JIT Interface</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#References">6. References</a>
+      </p>
+      <h1>
+         <a id="About_this_document" name="About_this_document"></a>1. About
+         this document
+      </h1>
+      <h2>
+         <a id="Purpose" name="Purpose"></a>1.1 Purpose
+      </h2>
+      <p>
+         This document describes the internal structure of the execution
+         manager component deployed with the virtual machine as part of the DRL
+         (Dynamic Runtime Layer) initiative. The description covers the
+         internal design of the execution manager and its interaction with
+         other DRLVM components. The document is targeted at DRLVM developers
+         with special interest in code execution algorithms. The information
+         can be helpful for future development of DRL execution management
+         techniques and can serve as an example for those implementing an
+         execution manager from scratch.
+      </p>
+      <p>
+         In this document, you can find implementation-specific details of the
+         execution manager. General information on the EM role in overall
+         virtual machine design and VM-level requirements are out of scope of
+         this document and are covered in the <i>DRLVM Developer's Guide</i>
+         [<a href="#DRLDevGuide">3</a>] .
+      </p>
+      <h2>
+         <a id="Intended_Audience" name="Intended_Audience"></a>1.2 Intended
+         Audience
+      </h2>
+      <p>
+         The target audience for the document includes a wide community of
+         engineers interested in using DRLVM and in working further with the
+         product to contribute to its development. The document assumes that
+         readers understand the concepts of dynamic optimizations,
+         recompilation and profile collection.
+      </p>
+      <h2>
+         <a id="Using_this_document" name="Using_this_document"></a>1.3 Using
+         This Document
+      </h2>
+      <p>
+         The DRLVM execution manager description has the following major
+         sections:
+      </p>
+      <ul>
+         <li>
+            <a href="#Overview">Overview</a>: a definition of the execution
+            manager component and its key features
+         </li>
+         <li>
+            <a href="#Architecture">Architecture</a>: a description of EM
+            internal architecture, its profile collector subcomponent and the
+            interfaces it uses, as well as other implementation-specific data
+         </li>
+         <li>
+            <a href="#Processes">Processes</a>: an overview and a step-by-step
+            description of dynamic recompilation, the central EM process
+         </li>
+         <li>
+            <a href="#Interfaces">Public interfaces</a>: a definition of major
+            functional groups that the execution manager exports for
+            interaction with other components <br />
+            <br />
+         </li>
+      </ul>
+      <h2>
+         <a id="Conventions_and_Symbols" name="Conventions_and_Symbols"></a>1.4
+         Conventions and Symbols
+      </h2>
+      <p>
+         This document uses the <a href="conventions.htm">unified
+         conventions</a> for the DRL documentation kit.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Overview" name="Overview"></a>2. Overview
+      </h1>
+      <p>
+         The execution manager is responsible for selecting execution engines
+         (a JIT compiler or an interpreter) for method compilation and
+         execution at run time. The execution manager (EM) takes input from its
+         configuration settings and run-time profile information. The DRL
+         execution manager also uses <a href="#PC">profile collectors</a> to
+         gather run-time data associated with method code and the just-in-time
+         (JIT) compiler that produced the code. The execution manager, profile
+         collectors, and execution engines plugged in VM make up the <i>dynamic
+         optimization</i> subsystem [<a href="#DynOpt_ref">1</a>], [<a
+         href="#SurveyOpt_ref">2</a>].
+      </p>
+      <p>
+         The execution manager instantiates execution engines depending on its
+         configuration [<a href="#DRLEmGuide">4</a>] and the current VM mode.
+      </p>
+      <ul>
+         <li>
+            In the <i>interpreter</i> mode, EM delegates execution of all
+            methods to interpreter
+         </li>
+         <li>
+            In the <i>JIT compiler</i> mode, EM does the following: 
+            <ul>
+               <li>
+                  Instantiates and configures profile collectors
+               </li>
+               <li>
+                  Configures execution engines to enable using profile
+                  collectors as required
+               </li>
+               <li>
+                  Defines the (re)compilation and dynamic optimization logic
+                  using method profiles
+               </li>
+            </ul>
+         </li>
+      </ul>
+      <p>
+         For a definition of the role of EM in the architecture of DRLVM [<a
+         href="#DRLDevGuide">3</a>].
+      </p>
+      <h2>
+         <a id="Key_features" name="Key_features"></a>2.1 Key Features
+      </h2>
+      <p>
+         The key features of the DRL execution manager include the following:
+      </p>
+      <ul>
+         <li>
+            Clear interfaces to plug in new profile collectors and execution
+            engines
+         </li>
+         <li>
+            An i nterface for method profile access
+         </li>
+         <li>
+            Support for time-based sampling profile collectors
+</li>
+         <li>
+            Configurable selection of an execution engine per method by using
+            method filters
+         </li>
+         <li>
+            Configurable recompilation scenarios
+         </li>
+      </ul>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Architecture" name="Architecture"></a>3. Architecture
+      </h1>
+      <p>
+         This section of the document describes the internal architecture of
+         the execution manager and its external connections with other
+         components of the virtual machine. In brief, EM communicates with the
+         VM core and with execution engine(s) at the VM level. Internally, the
+         execution manager has a profile collector as its subcomponent, and
+         uses internal functional interfaces to communicate with it, as
+         described in section 3.2 <a href="#PC">Profile Collector</a>.
+      </p>
+      <h2>
+         <a id="EM" name="EM"></a>3.1 Execution Manager in VM
+      </h2>
+      <p>
+         The VM core component sends requests to EM to execute methods. VM
+         passes a method handle and parameters to the execution manager through
+         the <code><a href="#EM_VM">EM_VM</a></code> interface. EM selects the
+         engine for compiling the method and sends a compilation request to VM
+         to compile the method with the selected engine.
+      </p>
+      <p>
+         Instantiating and configuring JIT compilers goes through
+         the <code>JIT_EM</code> interface [<a href="#DRLDevGuide">3</a>]. In
+         its turn, the execution manager exports the <code>EM_JIT</code>
+         interface for accessing method profiles and profile collectors.
+         Specifically, the <a href="#EM_JIT">EM_JIT</a> interface consists of
+         two parts:
+      </p>
+      <ul>
+         <li>
+            The <i>profile access interface</i> is the generic interface for
+            accessing method profiles. Via this interface, a JIT compiler can
+            get basic profile properties, such as the profile type.
+         </li>
+         <li>
+            The <i>custom profile collector interface</i> is a custom extension
+            of the profile access interface. This interface provides access to
+            method profiles of a specific type.
+         </li>
+      </ul>
+      <p>
+         These interface interactions are shown in Figure 1 and described in
+         detail in section 5 <a href="#Interfaces">Public Interfaces</a>.
+      </p>
+      <p style="text-align: center">
+         <img border="0" src="images/EM_interfaces.gif"
+         alt="Interaction between Execution Manager, JIT, and VM" />
+      </p>
+      <p class="special">
+         Figure 1. Execution Manager Interfaces
+      </p>
+      <p class="notetext">
+         In the figure, several blocks of the same type identify instances of
+         the same component, as in the case with profile collectors and JIT
+         compilers. For details on interfaces displayed in the figure, see
+         section <a href="#Interfaces">Public Interfaces</a>.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="PC" name="PC"></a>3.2 Profile Collector
+      </h2>
+      <p>
+         The <i>profile collector</i> (PC) is a subcomponent of the execution
+         manager that collects method profiles for Java<a href="#*">*</a>
+         methods compiled by a JIT or executed by the interpreter. DRL EM
+         instantiates and configures profile collectors according to the
+         settings of its configuration file.
+      </p>
+      <p>
+         The profile collector can collect method profiles only for the methods
+         compiled by a single JIT. To collect the same type of profile
+         information for methods compiled by different JIT compilers, the
+         execution manager uses different PC instances.
+      </p>
+      <p>
+         After PC collects a method profile, subsequent JIT compilers in the
+           <a href="#Recompilation">recompilation chain</a> can re-use this profile. A JIT can only use a
+         collected method profile if it is explicitly indicated in the EM
+         configuration file [<a href="#DRLEmGuide">4</a>]. If a JIT compiler is
+         expected to use a method profile, the execution manager defines the
+         <i>JIT role</i>, that is, configures the JIT compiler to generate or
+         to use a specific profile in the file <code>include/open/em.h</code>
+         using the following format:
+      </p>
+<pre>
+enum EM_JIT_PC_Role {
+
+ EM_JIT_PROFILE_ROLE_GEN=1,
+
+ EM_JIT_PROFILE_ROLE_USE=2
+
+ };
+</pre>
+      <p>
+         With this model, instances of the compiler work independently of each
+         other at run time. A JIT compiler can always use a PC handle to access
+         the profile data that is assigned to be collected or used by this JIT
+         compiler.<br />
+          The profile collector does not trigger method recompilation. Instead,
+         PC notifies the execution manager that a method profile is ready. To
+         detect profile readiness, PC uses its own heuristics and configuration
+         settings passed from EM during profile collector initialization. When
+         the profile is ready, EM initiates recompilation of the method.
+      </p>
+      <h3>
+         <a id="EM_PC" name="EM_PC"></a>3.2.1 EM_PC interface
+      </h3>
+      <p>
+         The <code>EM_PC</code> interface handles interaction between the
+         execution manager and the profile collectors and consists of the
+         following function groups:
+      </p>
+      <ul>
+         <li>
+            The <i>time-based sampling support</i> interface (TBS) enables EM
+            to register time-based sampling callbacks and to configure settings
+            of method profiles. The profile collector checks readiness of
+            method profiles by using this interface.
+         </li>
+         <li>
+            The <i>profile-related events</i> interface enables PC to report to
+            the execution manager when a method profile is ready.
+         </li>
+      </ul>
+      <p>
+         For details on the <code>EM_PC</code> interface functions, generate
+         from the <code>include/open/em_profile_access.h</code> header file by
+         using Doxygen.
+      </p>
+      <h3>
+         <a id="PlugIn_PC" name="PlugIn_PC"></a>3.2.2 How to Plug in a Custom
+         PC
+      </h3>
+      <p>
+         Currently, EM supports only statically linked profile collectors. To
+         add a new profile collector, you must add the profile
+         collector&rsquo;s code to the EM package, add the methods specific for
+         the new profile collector to the profile access interface and enable
+         EM to create the new profile collector. Follow this step-by-step
+         instruction to plug in your new profile collector into the current EM
+         package.
+      </p>
+      <ol>
+         <li>
+            Extend the <code>ProfileCollector</code> abstract class and define
+            all pure virtual methods. This class is in the
+            <code>em/src/DrlProfileCollectionFramework.h</code> file.
+         </li>
+         <li>
+            Add methods specific for the new profile collector to the
+            <code>include/open/em_profile_access.h</code> file and register its
+            new <code>EM_PCTYPE</code>.
+         </li>
+         <li>
+            Adjust <code>em/src/DrlEMImpl.cpp::initProfileAccess()</code> to
+            initialize access methods to the new profiler type with valid
+            function pointers.
+         </li>
+         <li>
+            Adjust <code>em/src/DrlEMImpl.cpp::createProfileCollector()</code>
+            factory method to create the new profile collector type if its name
+            is specified in the configuration file.
+         </li>
+      </ol>
+      <p>
+         As an example, you can use one of the two profiler collectors in the
+         current EM package: the entry-backedge profile collector and the edge
+         profile collector. The entry-backedge profile collector can work in
+         the synchronous and asynchronous modes. The synchronous mode means
+         that the profile is checked for readiness in a user Java<a
+         href="#*">*</a> thread during code execution. The asynchronous mode
+         means that the profile readiness is checked and hot methods are
+         detected and recompiled in a separate provider thread managed by EM.
+      </p>
+      <h2>
+         <a id="Profiler_thread" name="Profiler_thread"></a>3.3 Profiler Thread
+      </h2>
+      <p>
+         To enable a profile collector to check profile readiness
+         asynchronously, the execution manager requires a special thread
+         created by the VM core. This thread must be an ordinary Java<a
+         href="#*">*</a> thread because method compilation may result in
+         execution of JIT-compiled code during class resolution or side-effect
+         analysis.
+      </p>
+      <p>
+         After loading all core classes and before executing the method
+         <code>main()</code>, the execution manager starts the recompilation
+         thread. EM configures this thread to call back in a specified period
+         of time. During this callback, the execution manger requests profile
+         collectors to check profiles and runs method recompilation as
+         required.
+      </p>
+      <p>
+         The execution manager only starts the profiler thread when the profile
+         collector requires asynchronous support. For example, no profiler
+         thread support is needed when the profile check goes in parallel with
+         code execution or is done by an external event from the PMU driver.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Processes" name="Processes"></a>4. Processes
+      </h1>
+      <h2>
+         <a id="Recompilation" name="Recompilation"></a>4.1 Recompilation
+      </h2>
+      <p>
+         Optimization of compiled code may result in recompilation of Java<a
+         href="#*">*</a> code. The execution manager determines the
+         recompilation logic using <i>recompilation chains</i> that can connect
+         multiple profile-compatible JIT compilers into a single recompilation
+         queue. Recompilation chains are static and defined in the EM
+         configuration file [<a href="#DRLEmGuide">4</a>]. A method is
+         permanently matched against one recompilation chain.
+      </p>
+      <p>
+         To compile a method for the first time, the execution manager calls
+         the first JIT compiler in the chain. After profiling information about
+         the method is collected, the next JIT in the chain is ready to
+         recompile the method applying more aggressive optimizations. The data
+         from the method profile can be used during method recompilation to
+         adjust custom optimization parameters.
+      </p>
+      <p>
+         Recompilation chains can be useful in different modes of VM operation,
+         as illustrated in the examples below.
+      </p>
+      <p class="example">
+         Example 1. Custom profiling mode
+      </p>
+      <p class="exampletext">
+         If a compiler JIT1 does the initial method compilation with
+         instrumentation enabled and a compiler JIT2 does the recompilation,
+         you can avoid recompilation by redirecting certain methods to be
+         initially compiled by a third compiler JIT3 without instrumentation.
+         In this case, EM creates two compilation chains: the first chain
+         contains JIT1 and JIT2, and the second chain contains JIT3. To select
+         the chain for compiling a method, use method filters.<br />
+          You may want to avoid instrumentation for class initializers or
+         methods that already have a persistent profile collected during the
+         previous session.
+      </p>
+      <p class="example">
+         Example 2. Bug-fixing mode
+      </p>
+      <p class="exampletext">
+         A stable compiler JIT1 is used for compiling all methods except
+         problem ones, and another one JIT2 compiles problem methods
+         only.<br />
+          This mode can be useful for localizing specific problems in a new
+         JIT.
+      </p>
+      <p>
+         If multiple recompilation chains co-exist at run time, EM selects the
+         appropriate recompilation chain to initially compile a method. Method
+         filters associated with chains can configure the execution manager to
+         use a specific chain for method compilation. Method filters can
+         identify a method by its name, class name, signature or ordinal
+         compilation number.
+      </p>
+      <h2>
+         <a id="Execution_Management" name="Execution_Management"></a>4.2
+         Execution Management
+      </h2>
+      <p>
+         This section describes how the execution manager is involved in DRLVM
+         operation.
+      </p>
+      <h3>
+         <a id="Instantiation" name="Instantiation"></a>4.2.1 Instantiation
+      </h3>
+      <p>
+         Before loading an execution engine, the VM core creates an instance of
+         the execution manager. This is the only instance used during the VM
+         lifetime. Depending on its configuration, the execution manager
+         initializes execution engines and profile collectors.
+      </p>
+      <p>
+         During JIT compiler instantiation, the execution manager:
+      </p>
+      <ol>
+         <li>
+            Provides the JIT with a name and registers a run-time JIT handle
+            for it. The JIT can now use this name to distinguish its persistent
+            settings from settings of other execution engines. A compiler can
+            also use the handle to distinguish itself from other JIT compilers
+            at run time.
+         </li>
+         <li>
+            Configures the JIT to generate a new profile or to use an existing
+            profile via the <a href="#EM_JIT">profile access interface</a>. 
+            <p>
+               When the JIT is configured to use or generate a profile, it
+               checks the compatibility with the given profile type. If the JIT
+               does not support the given profile type, it can reject profile
+               generation or usage.
+            </p>
+         </li>
+      </ol>
+      <h3>
+         <a id="Method_Execution" name="Method_Execution"></a>4.2.2 Method
+         Execution
+      </h3>
+      <p>
+         In DRLVM, execution of a method goes as follows:
+      </p>
+      <ol>
+         <li>
+            VM calls the execution manager to execute a method.
+         </li>
+         <li>
+            EM uses method filters to select the appropriate recompilation
+            chain for each method.
+         </li>
+         <li>
+            EM instructs the first JIT in the chain to compile a method.
+         </li>
+         <li>
+            After the method is compiled, VM proceeds with its execution.
+         </li>
+         <li>
+            For hot methods, EM initiates recompilation by the next JIT in the
+            compilation chain.
+         </li>
+      </ol>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         A method is <i>hot</i> when a profile associated with it satisfies
+         specific parameters in the PC configuration settings. For example, for
+         an entry and back-edge profile collector, these parameters are the
+         entry and back-edge counters' limits. When a counter value reaches the
+         limit, the method becomes hot.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Interfaces" name="Interfaces"></a>5. Public Interfaces
+      </h1>
+      <p>
+         The execution manager interacts with the virtual machine and JIT
+         compilers by using specific interfaces. In addition to these external
+         interfaces, EM uses its internal interface to communicate with profile
+         collectors. This section describes the functional interfaces that the
+         execution manager exports for the VM core and the JIT compilers.
+      </p>
+      <h2>
+         <a id="EM_VM" name="EM_VM"></a>5.1 EM_VM Interface
+      </h2>
+      <p>
+         The execution manager exports this interface to provide VM with method
+         compilation and execution functions. For a detailed description of the
+         interface, generate documentation from the <code>em_vm.h</code> header
+         file by using Doxygen. For a description of the <code>VM_EM</code>
+         interface made up of functions that the virtual machine exports for
+         the execution manager, see the <em>DRLVM Developer's Guide</em> [<a
+         href="#DRLDevGuide">3</a>].
+      </p>
+      <h2>
+         <a id="EM_JIT" name="EM_JIT"></a>5.2 EM_JIT Interface
+      </h2>
+      <p>
+         The execution manager exports this interface to enable JIT compilers
+         to access method profiles. For details on the interface functions,
+         generate reference documentation from files
+         <code>em_profile_access.h</code> and <code>ee_em_intf.h</code> by
+         using Doxygen. For a description of the <code>JIT_EM</code> interface
+         made up of functions that the virtual machine exports for the
+         execution manager, see the <em>DRLVM Developer's Guide</em> [<a
+         href="#DRLDevGuide">3</a>].
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="References" name="References"></a>6. References
+      </h1>
+      <p>
+         [<a id="DynOpt_ref" name="DynOpt_ref"></a>1] Toshio Suganuma, Toshiaki
+         Yasue, A dynamic optimization framework for a Java just-in-time
+         compiler, <a href="http://portal.acm.org/citation.cfm?id=504296"
+         target="_blank">http://portal.acm.org/citation.cfm?id=504296</a>
+      </p>
+      <p>
+         [<a id="SurveyOpt_ref" name="SurveyOpt_ref"></a>2] A Survey of
+         Adaptive Optimization in Virtual Machines (2004) Matthew Arnold,
+         Stephen J. Fink, David Grove, Michael Hind, Peter F. Sweeney <a
+         href="http://citeseer.ist.psu.edu/arnold04survey.html"
+         target="_blank">http://citeseer.ist.psu.edu/arnold04survey.html</a>
+      </p>
+      <p>
+         [<a name="DRLDevGuide" id="DRLDevGuide"></a>3] DRLVM Developer's
+         Guide, <a
+         href="http://incubator.apache.org/harmony/subcomponents/drlvm/index.html"
+          target="_blank">http://incubator.apache.org/harmony/subcomponents/drlvm/index.html</a>
+      </p>
+      <p>
+         [<a name="DRLEmGuide" id="DRLEmGuide"></a>4] Guide to Execution
+         Manager Configuration, <a
+         href="http://incubator.apache.org/harmony/subcomponents/drlvm/emguide.html"
+          target="_blank">http://incubator.apache.org/harmony/subcomponents/drlvm/emguide.html</a>
+      </p>
+      <p>
+          
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <p>
+         (C) Copyright 2006 Intel Corporation
+      </p>
+      <p>
+         <a id="*" name="*">*</a> Other brands and names are the property of
+         their respective owners.
+      </p>
+   </body>
+</html>
+
