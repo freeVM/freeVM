@@ -81,12 +81,14 @@
               <include name="**/*.txt"/>
            </fileset>
       </copy>
-  
-      <copy todir="${docs.dest}" filtering="no">
-          <fileset dir="${docs.src}">
-              <include name="**/*.css"/>
-          </fileset>
-      </copy>
+
+      <copy file="${docs.src}/site.css" todir="${docs.dest}/"/>
+      <copy file="${docs.src}/site.css" todir="${docs.dest}/subcomponents/classlibrary/"/>
+      <copy file="${docs.src}/site.css" todir="${docs.dest}/subcomponents/drlvm/"/>
+      <copy file="${docs.src}/site.css" todir="${docs.dest}/subcomponents/buildtest/"/>
+      <copy file="${docs.src}/site.css" todir="${docs.dest}/subcomponents/jchevm/"/>
+      <copy file="${docs.src}/site.css" todir="${docs.dest}/subcomponents/stresstest/"/>
+
   </target>
     
 </project>
