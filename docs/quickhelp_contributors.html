@@ -239,6 +239,12 @@ limitations under the License.
                                                 <strong>Windows</strong>
                                                 <p>
             <i>Windows deps go here</i>
+
+            <ul>
+                <li>
+                    Microsoft Visual Studio .NET 2003
+                 </li>
+            </ul>
         </p>
                                                 <p>
             The remaining instructions assume the above are installed on your platform.
@@ -265,25 +271,9 @@ limitations under the License.
             First, checkout the federated build :
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
  $ svn co https://svn.apache.org/repos/asf/incubator/harmony/enhanced/trunk
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
             This will checkout a directory structure that contains a <code>working_classlib</code>
@@ -313,25 +303,9 @@ limitations under the License.
             root directory of the federated build :
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
 $ ant populate_source
          </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
             This will checkout classlib and DRLVM into the working_classlib and working_vm
@@ -348,26 +322,10 @@ $ ant populate_source
             revision simply by doing a <code>svn update</code> in either directory.
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
 $ cd working_classlib
 $ svn update
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
             These are full, valid checkouts of the classlibrary and DRLVM.  Any modifications
@@ -399,27 +357,11 @@ $ svn update
             step periodically.
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
 $ cd working_classlib
 $ ant fetch-depends
 $ ant
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
             If the above succeeds, you now have built the Apache Harmony classlibrary, both
@@ -435,25 +377,9 @@ $ ant
             Once you have a VM installed, you can run the tests very easily :
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
  $ ant test
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
             Which will run the full testsuite for the classlibrary.
@@ -465,26 +391,10 @@ $ ant
             working_vm directory.  Then switch into DRLVM's build directory.
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
  $ cd working_vm
  $ cd build
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
             The first thing we have to do is tell the DRLVM build where to find the class library.
@@ -495,135 +405,58 @@ $ ant
             if you want to point to another build of the classlib.
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
  $ cp drlvm.properties.example drlvm.properties
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
-            If you are a windows user, you will need to set the "CXX" environment variable to "msvc"
-            to indicate to the build which compiler is being used.  Again, for windows only users :
+            If you are a windows user, note that you <i>must</i> be working from the Visual
+            Studio .NET Command Promt (you'll see it - it's installed with the Visual Studio mentioned
+            above).  As of now, you cannot build from a Cygwin or other alternative shell. Also, you
+            will need to set the "CXX" environment variable to "msvc" to indicate to the build
+            which compiler is being used.  Again, for windows only users :
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
  C:...\trunk\working_vm\build&gt; set CXX=msvc
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
             Now you are ready to build.  To do so, we first fetch our dependencies.  Please note that this
             can take a long time.  Be patient :
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
 On Linux :
 $ sh build.sh update
 
 On Windows :
 C:...\trunk\working_vm\build&gt;build.bat update
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
             Once we have obtained our dependencies, we can proceed with the build :
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
 On Linux :
 $ sh build.sh
 
 On Windows :
 C:...\trunk\working_vm\build&gt;build.bat
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
             and when complete, with the tests :
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
 On Linux :
 $ sh build.sh test
 
 On Windows :
 C:...\trunk\working_vm\build&gt;build.bat test
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                                                 <p>
             Note that the so-called "kernel" tests don't currently pass.  If you get through the
@@ -635,15 +468,7 @@ C:...\trunk\working_vm\build&gt;build.bat test
             You can simply
         </p>
                                                     <div>
-    <table cellspacing="4" cellpadding="0" >
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#ffffff"><pre>
+<pre>
 $ cd deploy/jre/bin
 $ ./java -version
 Apache Harmony Launcher : (c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable.
@@ -652,14 +477,6 @@ pre-alpha : not complete or compatible
 svn = r448280, (Sep 21 2006), Linux/ia32/gcc 3.4.6, debug build
 http://incubator.apache.org/harmon
         </pre></td>
-      <td bgcolor="#023264" width="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    <tr>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-      <td bgcolor="#023264" width="1" height="1"><img src="/images/void.gif" width="1" height="1" vspace="0" hspace="0" /></td>
-    </tr>
-    </table>
     </div>
                             
       </td></tr>
