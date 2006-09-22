@@ -124,9 +124,52 @@
 	<p>
 		Harmony
 		<b>classlib</b> developers write test cases that deliberately cause exceptions to be thrown
-		so that we can match exception behaviour like-for-like.  Harmony class library code should
-		throw exceptions of the same runtime class (or a subtype of that runtime class) as the RI, other than
+		so that we can match exception behaviour like-for-like.  Harmony class library code throws exceptions 
+		of the same runtime class (or a subtype of that runtime class) as the RI, other than
         in cases where the RI throws non-public types whereupon Harmony will throw an exception with the same public supertype.
+	</p>
+	<p>
+		Generally, we could refer to the following steps.
+	<ul>
+		<li><b>If RI is compliant with the Java Specification</b>
+		<p>
+		We shall follow RI's behavior, that is, throws exactly the same exception or a subclass of the exception.
+		<ul>
+			<li>But there are some cases that RI throws an implementation specific exception, 
+			which is not in the Java Specification, we shall throw an equivalent Harmony specific exception, 
+			or its superclass in the Java Specification.
+			<p><i>
+			e.g., If RI throws sun.io.MalformedInputException, 
+			we could throw org.apache.harmony.io.MalformedInputException or java.io.CharConversionException.
+			</i></p>
+			</li>
+		</ul>
+		</p>
+		</li>
+		<li><b>If RI is not compliant with the Java Specification</b>
+		<p>
+		<ul>
+		<li>If the Java Specification describes the exceptional situation explicitly, 
+		and RI throws different kind of exception or even does not throw any exception, 
+		we shall discuss them case by case in harmony-dev mailing list.
+			<ul>
+				<li>If we decide to follow RI, we will raise an "Non-bug differences from Spec" JIRA.</li>
+				<li>If we decide to follow the Java Specification, we will raise an "Non-bug differences from RI" JIRA.</li>
+			</ul>
+		</li>
+		<li>If the Java Specification does NOT describe the exceptional situation explicitly, 
+		and RI's behavior is either hard to reproduce or illogical, we shall discuss them case by case.
+		And we may decide to:
+			<ul>
+				<li>Follow RI</li>
+				<li>Follow the Java Specification</li>
+				<li>Implement the functions in our own way</li>
+			</ul>
+		</li>
+		</ul>
+		</p>
+		</li>
+	</ul>
 	</p>
 </subsection>
 
