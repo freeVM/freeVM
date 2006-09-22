@@ -88,6 +88,16 @@
           </fileset>
       </copy>
 
+      <!-- images for classlibrary sub component -->
+      <copy todir="${docs.dest}/subcomponents/classlibrary/images" filtering="no">
+          <fileset dir="${docs.src}/subcomponents/classlibrary/images">
+              <include name="**/*.gif"/>
+              <include name="**/*.jpeg"/>
+              <include name="**/*.jpg"/>
+              <include name="**/*.png"/>
+          </fileset>
+      </copy>
+
       <copy todir="${docs.dest}/" filtering="no">
            <fileset dir="${docs.src}">
               <include name="**/*.txt"/>

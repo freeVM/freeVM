@@ -106,9 +106,7 @@ limitations under the License.
 #end
 
 #macro ( source $value)
-    <div>
 <pre>$escape.getText($value.getText())</pre>
-    </div>
 #end
 
 #macro ( subsection $subsection)

@@ -270,11 +270,9 @@ limitations under the License.
                                                 <p>
             First, checkout the federated build :
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
  $ svn co https://svn.apache.org/repos/asf/incubator/harmony/enhanced/trunk
         </pre>
-    </div>
                                                 <p>
             This will checkout a directory structure that contains a <code>working_classlib</code>
             directory, which after the next step will be the checkout of the classlib SVN tree
@@ -302,11 +300,9 @@ limitations under the License.
             created to help populate the source trees.  To do so, just do the following in the
             root directory of the federated build :
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
 $ ant populate_source
          </pre>
-    </div>
                                                 <p>
             This will checkout classlib and DRLVM into the working_classlib and working_vm
             directories, respectively, at the same SVN version of the build.xml file.  Please
@@ -321,12 +317,10 @@ $ ant populate_source
             that at any time going forward, you can bring either directory to current SVN
             revision simply by doing a <code>svn update</code> in either directory.
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
 $ cd working_classlib
 $ svn update
         </pre>
-    </div>
                                                 <p>
             These are full, valid checkouts of the classlibrary and DRLVM.  Any modifications
             made to the SVN repository will be reflected in your tree after a <code>svn update</code>.
@@ -356,13 +350,11 @@ $ svn update
             dependency is added, the build will tell you what to do, so you may have to do this
             step periodically.
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
 $ cd working_classlib
 $ ant fetch-depends
 $ ant
         </pre>
-    </div>
                                                 <p>
             If the above succeeds, you now have built the Apache Harmony classlibrary, both
             the Java code as well as the native code for your platform.  To run the test suite,
@@ -376,11 +368,9 @@ $ ant
                                                 <p>
             Once you have a VM installed, you can run the tests very easily :
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
  $ ant test
         </pre>
-    </div>
                                                 <p>
             Which will run the full testsuite for the classlibrary.
         </p>
@@ -390,12 +380,10 @@ $ ant
             JRE as well.  To do this, return to the root of the federated build and switch into the
             working_vm directory.  Then switch into DRLVM's build directory.
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
  $ cd working_vm
  $ cd build
         </pre>
-    </div>
                                                 <p>
             The first thing we have to do is tell the DRLVM build where to find the class library.
             We can do this simply by renaming the file <code>drlvm.properties.example</code> in
@@ -404,11 +392,9 @@ $ ant
             <code>working_classlib</code>.  If you need to, you can override this on the command line
             if you want to point to another build of the classlib.
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
  $ cp drlvm.properties.example drlvm.properties
         </pre>
-    </div>
                                                 <p>
             If you are a windows user, note that you <i>must</i> be working from the Visual
             Studio .NET Command Promt (you'll see it - it's installed with the Visual Studio mentioned
@@ -416,48 +402,40 @@ $ ant
             will need to set the "CXX" environment variable to "msvc" to indicate to the build
             which compiler is being used.  Again, for windows only users :
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
  C:...\trunk\working_vm\build&gt; set CXX=msvc
         </pre>
-    </div>
                                                 <p>
             Now you are ready to build.  To do so, we first fetch our dependencies.  Please note that this
             can take a long time.  Be patient :
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
 On Linux :
 $ sh build.sh update
 
 On Windows :
 C:...\trunk\working_vm\build&gt;build.bat update
         </pre>
-    </div>
                                                 <p>
             Once we have obtained our dependencies, we can proceed with the build :
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
 On Linux :
 $ sh build.sh
 
 On Windows :
 C:...\trunk\working_vm\build&gt;build.bat
         </pre>
-    </div>
                                                 <p>
             and when complete, with the tests :
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
 On Linux :
 $ sh build.sh test
 
 On Windows :
 C:...\trunk\working_vm\build&gt;build.bat test
         </pre>
-    </div>
                                                 <p>
             Note that the so-called "kernel" tests don't currently pass.  If you get through the
             "C Unit" and "Smoke" tests, you are doing ok.
@@ -467,8 +445,7 @@ C:...\trunk\working_vm\build&gt;build.bat test
             <code>deploy/jre</code> subdirectory of the <code>build</code> directory.
             You can simply
         </p>
-                                                    <div>
-<pre>
+                                                <pre>
 $ cd deploy/jre/bin
 $ ./java -version
 Apache Harmony Launcher : (c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable.
@@ -477,7 +454,6 @@ pre-alpha : not complete or compatible
 svn = r448280, (Sep 21 2006), Linux/ia32/gcc 3.4.6, debug build
 http://incubator.apache.org/harmon
         </pre>
-    </div>
                             
       </td></tr>
        
