@@ -166,6 +166,15 @@ $ ant
         </source>
 
         <p>
+            Note that if you are working from behind a firewall, you may need to configure
+            ant to use a proxy via the ANT_OPTS environment variable.  For example
+        </p>
+
+        <source>
+<![CDATA[$ export ANT_OPTS='-Dhttp.proxyHost=<proxy.host> -Dhttp.proxyPort=<proxy port>']]>
+        </source>
+
+        <p>
             If the above succeeds, you now have built the Apache Harmony classlibrary, both
             the Java code as well as the native code for your platform.  To run the test suite,
             you will first need a virtual machine.  As the DRLVM isn't yet complete,

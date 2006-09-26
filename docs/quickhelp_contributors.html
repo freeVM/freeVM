@@ -356,6 +356,13 @@ $ ant fetch-depends
 $ ant
         </pre>
                                                 <p>
+            Note that if you are working from behind a firewall, you may need to configure
+            ant to use a proxy via the ANT_OPTS environment variable.  For example
+        </p>
+                                                <pre>
+$ export ANT_OPTS='-Dhttp.proxyHost=&lt;proxy.host&gt; -Dhttp.proxyPort=&lt;proxy port&gt;'
+        </pre>
+                                                <p>
             If the above succeeds, you now have built the Apache Harmony classlibrary, both
             the Java code as well as the native code for your platform.  To run the test suite,
             you will first need a virtual machine.  As the DRLVM isn't yet complete,
