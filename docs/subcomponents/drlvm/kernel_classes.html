@@ -1,0 +1,777 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Copyright 1999-2004 The Apache Software Foundation
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="harmony-dev@incubator.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Thread Manager</title>
+
+                                <link rel="Stylesheet" type="text/css" href="site.css"/>
+        </head>
+
+        <body>        
+            <table  width="100%" cellspacing="0">
+                <!-- TOP IMAGE -->
+                <tr>
+                    <td align='LEFT'>
+                    <table><tr><td>
+                    <td>
+<a href="http://incubator.apache.org/harmony/"><img  src="../../images/harmony-logo.png" alt="Apache Harmony" /></a>
+</td>
+</td>
+                    </td></tr></table>
+                    </td>
+                    <td align='RIGHT'>
+                    <a href="http://incubator.apache.org/harmony/">
+                    <img src="http://incubator.apache.org/harmony/images/apache-incubator-logo.png"
+                    	alt="Apache Harmony" /></a>                    
+                    </td>
+                </tr>
+            </table>
+            <table width="100%" cellspacing="4">
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+
+                <tr>
+                    <!-- LEFT SIDE NAVIGATION -->
+                    <td class="menuItem" width="20%" nowrap="true">
+
+                    <!-- special ACon Logo - leave here for next time -->
+                    <a href="http://www.us.apachecon.com/">
+                        <img src="http://www.apache.org/ads/ApacheCon/240x120-2006-us.gif"
+                             alt="ApacheCon US 2006" />
+                    </a>
+
+                   <!-- regular menu -->
+
+                    
+    <!-- ============================================================ -->
+
+                <p class="menuItem"><strong>General</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../license.html">License</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../guidelines.html">Project Guidelines</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/">ASF</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../downloads.html">Downloads</a>
+</li>
+            
+           
+                        
+                </ul>
+            <p class="menuItem"><strong>Community</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Committers</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../documentation/documentation.html">Documentation</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+            
+           
+                        
+                </ul>
+            <p class="menuItem"><strong>Development</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../status.html">How Are We Doing?</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Road Map / TODO</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">JIRA</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+            
+           
+                        
+                </ul>
+            <p class="menuItem"><strong>Subcomponents</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-Test Framework</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+            
+           
+                           <table>
+              <tr><td class="menuItem">
+                &nbsp;&nbsp;&nbsp;&nbsp;    <a href="../../subcomponents/classlibrary/status.html">Status</a>
+                </td></tr>
+              </table>
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/jchevm/index.html">JCHEVM</a>
+</li>
+            
+           
+                        
+                </ul>
+                        </td>
+                    <td width="80%" valign="top"><a name="top"></a>
+                                        
+                                                                <div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type"
+      content="text/html; charset=windows-1251" />
+      <title>
+         DRLVM Kernel Classes
+      </title>
+      <link href="site.css" rel="stylesheet" type="text/css" />
+   </head>
+   <body>
+      <h1>
+         <a id="top" name="top"></a>Kernel Classes
+      </h1>
+      <p class="TOCHeading">
+         <a href="#About_This_Document">1. About this document</a>
+      </p>
+      <p class="TOC">
+         <a href="#Purpose">1.1 Purpose</a>
+      </p>
+      <p class="TOC">
+         <a href="#Intended_Audience">1.2 Intended Audience</a>
+      </p>
+      <p class="TOC">
+         <a href="#Documentation_Conventions">1.3 Conventions</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#Overview">2. Overview</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#Architecture">3. Architecture</a>
+      </p>
+      <p class="TOC">
+         <a href="#Exported_Interfaces">3.1 Exported Interface</a>
+      </p>
+      <p class="TOC">
+         <a href="#Internal_Structure">3.2 Internal Structure</a>
+      </p>
+      <blockquote>
+         <p class="TOC">
+            <a href="#Kernel_Classes_Java">3.2.1 Kernel Java* Classes</a>
+         </p>
+         <p class="TOC">
+            <a href="#Kernel_Class_Natives">3.2.2 Kernel Class Natives</a>
+         </p>
+         <p class="TOC">
+            <a href="#API2VM">3.2.3 API2VM Internal Interface</a>
+         </p>
+      </blockquote>
+      <p class="TOCHeading">
+         <a href="#Processes">4. Processes</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#Kernel_Specifics">5. DRL Kernel Specifics</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#References">6. References</a>
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="About_This_Document" name="About_This_Document"></a>1. About
+         this document
+      </h1>
+      <h2>
+         <a id="Purpose" name="Purpose"></a>1.1 Purpose
+      </h2>
+      <p>
+         This document is targeted at developers of the DRL kernel classes. The
+         document describes the kernel classes&rsquo; internal design and
+         interaction with the DRL virtual machine. The information can be
+         helpful for future development of DRL kernel classes and can serve as
+         an example for those implementing the kernel classes&rsquo; interface
+         from scratch.
+      </p>
+      <h2>
+         <a id="Intended_Audience" name="Intended_Audience"></a>1.2 Intended
+         Audience
+      </h2>
+      <p>
+         The target audience for the document includes a wide community of
+         engineers interested in using DRLVM and in working further with the
+         product to contribute to its development. The document assumes that
+         readers understand the kernel classes&rsquo; concept [<a
+         href="#HarmonyClasslib_ref">1</a>].
+      </p>
+      <h2>
+         <a id="Documentation_Conventions"
+         name="Documentation_Conventions"></a>1.3 Conventions
+      </h2>
+      <p>
+         This document uses the <a href="conventions.htm">unified
+         conventions</a> for the DRL documentation kit.
+      </p>
+      <h1>
+         <a id="Overview" name="Overview"></a>2. Overview
+      </h1>
+      <p>
+         Kernel classes serve as glue between Java class
+         libraries (JCL) and native VM code. These are Java
+         API classes, members of which use or are used by the virtual machine.
+         Examples of kernel classes include <code>java.lang.Object</code> and
+         <code>java.lang.reflect.Field</code>. Because they have data on the VM
+         internals, the kernel classes are delivered with the VM.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Architecture" name="Architecture"></a>3. Architecture
+      </h1>
+      <p>
+         This part of the document describes the internal structure of the
+         DRLVM Kernel Classes component.
+      </p>
+      <h2>
+         <a id="Exported_Interfaces" name="Exported_Interfaces"></a>3.1
+         Exported Interface
+      </h2>
+      <p>
+         In DRLVM, kernel classes export <i>the kernel classes interface</i>
+         for interaction with JCL. The kernel classes make part of the VM core
+         and use its internal structures and interfaces to interact with other
+         VM components, namely, the garbage collector, class support, stack
+         support, exception handling, and object layout support.
+      </p>
+      <h2>
+         <a id="Internal_Structure" name="Internal_Structure"></a>3.2 Internal
+         Structure
+      </h2>
+      <p>
+         The DRL kernel classes component consists of the <a
+         href="#Kernel_Class_Natives">kernel class natives</a> and the <a
+         href="#Kernel_Classes_Java">kernel Java classes</a> with an internal
+         interface, API2VM, linking the two tiers, as shown in Figure 1. The
+         current implementation of the kernel Java
+          classes is
+         based on the Harmony Class Library Porting Documentation [<a
+         href="#HarmonyClasslib_ref">1</a>] with the amendments described in
+         section <a href="#Kernel_Specifics">7. DRL Kernel Specifics</a>. This
+         implementation is aimed at reducing porting effort of Java
+         APIs to different virtual machines. The kernel class
+         natives also use the thread management functionality. The interaction
+         between the kernel classes and VM components is based on specific
+         internal interfaces of the virtual machine.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         The current implementation of kernel class natives is based on JNI and
+         uses JNI functions. As a result, kernel class native functions are
+         exported as ordinary native methods from the VM executable as
+         specified by the JNI specification [<a href="#JNI_ref">2</a>]. For
+         example, when the <code>VMThreadManager</code> Java
+         class from the kernel classes component defines the method
+         <code>static native Thread currentThread()</code>, the kernel class
+         native interface implements the function
+         <code>Java_java_lang_VMThreadManager_currentThread()</code>.
+      </p>
+      <p style="text-align: center">
+         <img
+         alt="Components and interfaces of VM involved in interaction with kernel classes"
+          border="0" src="images/kc_arch.gif" />
+      </p>
+      <p class="special">
+         Figure 1: Kernel classes in DRL Architecture
+      </p>
+      <h3>
+         <a id="Kernel_Classes_Java" name="Kernel_Classes_Java"></a>3.2.1
+         Kernel Java Classes
+      </h3>
+      <p>
+         DRL kernel classes fully comply with the Harmony Kernel classes
+         documentation [<a href="#HarmonyClasslib_ref">1</a>] with the
+         exceptions listed in section <a href="#Kernel_Specifics">7. DRL Kernel
+         Specifics</a>.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="Kernel_Class_Natives" name="Kernel_Class_Natives"></a>3.2.2
+         Kernel Class Natives
+      </h3>
+      <p>
+         Currently, the kernel class natives component consists of the
+         following:
+      </p>
+      <dl>
+         <dt>
+            Simple wrappers
+         </dt>
+         <dd>
+            Are used for interfaces of different VM components. These
+            constitute the main part of kernel class natives, as shown in the
+            example below. 
+            <p class="example">
+               Example
+            </p>
+<pre class="exampletext">
+jobject
+Java_java_lang_VMThreadManager_currentThread(JNIEnv *jenv, jclass)
+{ 
+ return thread_current_thread();
+}
+</pre>
+         </dd>
+         <dt>
+            Complex wrappers
+         </dt>
+         <dd>
+            Are responsible for data conversion between Java
+            objects and VM internal data structures, as well as for error
+            checking and processing. These wrappers also provide the
+            functionality not directly available in VM components interfaces. 
+            <p class="example">
+               Example
+            </p>
+            <p class="exampletext">
+               For method <code>VMClassRegistry.findLoadedClass(String name,
+               ClassLoader loader)</code>, the wrapper checks the loader
+               parameter and determines further activities. If this parameter
+               has a non-null value, the corresponding class loader is used for
+               class lookup. If it is null, the Java
+               execution stack is examined in order to obtain context class
+               loader if any, otherwise the system class loader is used.
+            </p>
+         </dd>
+         <dt>
+            Specific functions
+         </dt>
+         <dd>
+            Consist of the following groups: 
+            <ul>
+               <li>
+                  <strong>Lazy stack inspection for exception
+                  objects</strong><br />
+                   This mechanism is used for all descendants of class
+                  <code>java.lang.Throwable</code>. When a Java<a
+                  href="#*">*</a> exception object is created, this mechanism
+                  prepares and stores the snapshot of the stack trace; this is
+                  a fast operation.<br />
+                   The more computation intensive operations, such as snapshot
+                  parsing and creating a stack trace element array (the
+                  <code>java.lang.StackTraceElement</code> array) are only
+                  performed when the exception data is actually required, for
+                  example when the <code>printStackTrace()</code> method of the
+                  <code>Throwable</code> class is called.
+               </li>
+               <li>
+                  <strong>Reflection support</strong><br />
+                   This mechanism is an implementation of standard Java<a
+                  href="#*">*</a> reflection API represented by classes in the
+                  <code>java.lang.reflection</code> package [<a
+                  href="#Java_api_ref">3</a>].<br />
+                   This mechanism is responsible for providing access to
+                  methods and fields of a class by using their symbolic names,
+                  as well as for data conversions between the
+                  <code>java.lang.Object</code> type and the VM internal type
+                  representation required for operations with fields and
+                  methods. This mechanism also communicates with the JIT or the
+                  interpreter to perform the actual execution of methods.
+               </li>
+               <li>
+                  <strong>Hidden synthetic fields processing</strong><br />
+                   These fields are used for linking Java
+                  objects of certain kernel classes, such as
+                  <code>java.lang.Thread</code> and
+                  <code>java.lang.reflect.Field</code>, with the corresponding
+                  VM internal data structures. When the classes are loaded, the
+                  VM class support component adds the fields to the classes,
+                  and the kernel class natives component uses the fields to
+                  store the links to the corresponding VM internal data. Note
+                  that these fields are not accessible from Java<a
+                  href="#*">*</a> code.
+               </li>
+               <li>
+                  <strong>Debug printing</strong><br />
+                   This mechanism can be used for development process only and
+                  is not required for the release version of DRL. In this
+                  mechanism, the native method print of the class
+                  <code>VMDebug</code> allows printing messages to the standard
+                  output before printing can be done through the
+                  <code>java.lang.System.out/err</code> channel.
+               </li>
+            </ul>
+         </dd>
+      </dl>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="API2VM" name="API2VM"></a>3.2.3 API2VM Internal Interface
+      </h3>
+      <p>
+         The API2VM internal interface is used to access VM-specific
+         information, which is not directly available on the Java<a
+         href="#*">*</a> level and provides external data to the VM. For
+         example, API2VM includes the method
+         <code>VMClassRegistry.defineClass()</code> for defining new classes.
+      </p>
+      <p>
+         The internal interface does the following:
+      </p>
+      <ul>
+         <li>
+            <i>Ensures the security of the execution environment</i>. Exporting
+            rules only allow trusted classes to access VM internal data
+            structures. To restrict access by the whole Java
+            API, the kernel classes external interface is encapsulated in
+            package-private classes.
+         </li>
+         <li>
+            <i>Enables localization</i>. Interface functions are mostly in the
+            <code>java.lang.VM*</code> classes.
+         </li>
+         <li>
+            <i>Fully enables JIT optimization for the interfaces</i>. All
+            interface methods of kernel classes can be in-lined and further
+            optimized per JIT capacities.
+         </li>
+         <li>
+            <i>Relies on JIT optimization instead of calling native
+            methods.</i> Kernel classes&rsquo; methods never duplicate
+            equivalent Java functionality.
+         </li>
+      </ul>
+      <p>
+         The API2VM internal interface includes the following:
+      </p>
+      <ul>
+         <li>
+            All methods in the classes: <code><br />
+             java.lang.Compiler<br />
+             java.lang.VMClassRegistry<br />
+             java.lang.VMExecutionManager<br />
+             java.lang.VMMemoryManager<br />
+             java.lang.VMThreadManager<br />
+             java.lang.reflect.VMReflection<br />
+             org.apache.harmony.vm.VMStack</code>
+         </li>
+         <li>
+            The <code>referent</code> field of the
+            <code>java.lang.ref.Reference</code> class
+         </li>
+         <li>
+            The <code>intern()</code> method of the
+            <code>java.lang.String</code> class
+         </li>
+         <li>
+            Constructors <code>Constructor(Object obj)</code>,
+            <code>Method(Object obj)</code> and <code>Field(Object obj)</code>
+            and <code>getHandle()</code> method of classes
+            <code>java.lang.reflect.Constructor</code>,
+            <code>java.lang.reflect.Method</code>, and
+            <code>java.lang.reflect.Field</code>
+         </li>
+         <li>
+            The constructor <code>StackTraceElement</code> of the
+            <code>java.lang.StackTraceElement</code>
+         </li>
+      </ul>
+      <p>
+         Out of these methods, the majority is package-private. The exceptions
+         consist of the class <code>java.lang.Compiler</code> declared as
+         public in the spec and another commonly accessed class
+         <code>org.apache.harmony.vm.VMStack</code>.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Processes" name="Processes"></a>4. Processes
+      </h1>
+      <p>
+         This section illustrates the role of kernel classes in the interaction
+         between user applications code and the virtual machine. The section
+         aims to demonstrate internal processes going on inside the kernel
+         classes component during this interaction.
+      </p>
+      <p style="text-align: center">
+         <img
+         alt="Getting a Class Object for an application involving kernel classes"
+          src="images/kc_process.gif" />
+      </p>
+      <p class="special">
+         Figure 2: Operation of Kernel Classes
+      </p>
+      <p>
+         Figure 2 shows an example of kernel classes in action. In this
+         example, a user application needs to get a <code>Class</code> object
+         by the full class name, which involves the VM kernel classes. This
+         request goes through the following stages:
+      </p>
+      <ol>
+         <li>
+            The application calls the static public
+            <code>Class.forName(className)</code> method.
+         </li>
+         <li>
+            Before loading the class, the virtual machine checks security
+            permissions for the class object, as follows: 
+            <ol>
+               <li>
+                  Kernel Java class <code>Class</code> calls
+                  the native <code>VMStack.getCallerClass()</code> method to
+                  get the caller&rsquo;s <code>Class</code> object.
+               </li>
+               <li>
+                  The kernel class natives component implementing the
+                  <code>getCallClass()</code> functionality calls the
+                  <code>st_get_frame(depth)</code> interface function of the
+                  stack support VM core component to get the stack frame
+                  representation for the specified depth. The kernel classes
+                  use this frame to retrieve the <code>Class</code> object
+                  corresponding to it.
+               </li>
+               <li>
+                  Kernel classes natives return the retrieved object to the
+                  <code>getCallerClass()</code> method.
+               </li>
+               <li>
+                  Kernel Java classes component can now get
+                  the class loader that loaded the caller&rsquo;s class. For
+                  that, this component calls the native
+                  <code>VMClassRegistry.getClassLoader(class)</code> method.
+               </li>
+               <li>
+                  After the kernel class natives return the class loader for
+                  the caller&rsquo;s class, VM checks whether the caller has
+                  permissions for loading the requested <code>Class</code>
+                  object.
+               </li>
+            </ol>
+         </li>
+         <li>
+            If the loader is permitted to load the <code>Class</code> object,
+            the VM kernel classes component loads the requested class to the
+            application.
+         </li>
+      </ol>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Kernel_Specifics" name="Kernel_Specifics"></a>5. DRL Kernel
+         Specifics
+      </h1>
+      <p>
+         The current implementation of the Kernel Java
+         classes interface in DRLVM contains certain specifics due to
+         incomplete specifications or inter-package dependencies.
+      </p>
+      <ol>
+         <li>
+            The Harmony Class Library Porting Documentation [<a
+            href="#HarmonyClasslib_ref">1</a>] does not state clearly whether
+            <code>java.lang.System</code> is a kernel class or not. The DRL
+            implementation provides this class as kernel.
+         </li>
+         <li>
+            The Harmony Class Library Porting Documentation does not include
+            the <code>java.lang.ref.ReferenceQueue</code> specification. The
+            DRL implementation provides the whole <code>java.lang.ref</code>
+            package.
+         </li>
+         <li>
+            The DRL implementation of the
+            <code>java.lang.Class.getStackClasses()</code> method does not
+            completely correspond to the Harmony Class Library Porting
+            Documentation: 
+            <ol>
+               <li>
+                  When <code>stopAtPrivileged</code> is <code>TRUE</code>, the
+                  method adds two frames to the bottom of the resulting array,
+                  so that the caller of the privileged frame is the last
+                  included frame.
+               </li>
+               <li>
+                  The API2VM interface has a copy of the method
+                  <code>java.lang.Class.getStackClasses()</code>. This copy
+                  method
+                  <code>org.apache.harmony.vm.VMStack.getClasses()</code> is
+                  used in <code>java.lang.security.AccessController</code> and
+                  has public visibility<code>.</code>
+               </li>
+            </ol>
+         </li>
+         <li>
+            The DRL implementation of <code>com.ibm.oti.vm.VM</code> does not
+            include VM initialization methods.
+         </li>
+         <li>
+            DRLVM does not support the shutdown procedure as described in the
+            specification. Namely, the
+            <code>com.ibm.oti.vm.VM.shutdown()</code> method is not called upon
+            VM shutdown. Instead, API2VM provides an alternative shutdown
+            cleanup mechanism. The implementation closes opened connections and
+            deletes temporary files on exit.
+         </li>
+      </ol>
+      <h1>
+         <a id="References" name="References"></a>6. References
+      </h1>
+      <p>
+         [<a id="HarmonyClasslib_ref" name="HarmonyClasslib_ref"></a>1] Harmony
+         Class Library Porting Documentation, <a target="_blank"
+         href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/kernel_doc/html/index.html">
+         http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/classlib/trunk/doc/kernel_doc/html/index.html</a>
+      </p>
+      <p>
+         [<a id="JNI_ref" name="JNI_ref" target="_blank"></a>2] Java Native Interface Specification, <a
+         href="http://java.sun.com/j2se/1.5.0/docs/guide/jni/spec/jniTOC.html"
+         target="_blank">http://java.sun.com/j2se/1.5.0/docs/guide/jni/spec/jniTOC.html</a>
+      </p>
+      <p>
+         [<a id="Java_api_ref" name="Java_api_ref" target="_blank"></a>3]Java API Specification, <a
+         href="http://java.sun.com/j2se/1.5.0/docs/api"
+         target="_blank">http://java.sun.com/j2se/1.5.0/docs/api</a>
+      </p>
+      <p>
+          
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+   </body>
+</html>
+
+</div>
+                                        </td>
+                </tr>
+
+                <!-- FOOTER -->
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+                <tr><td colspan="2">
+                    <div class="special"><em>
+                    Copyright &#169; 2003-2006, The Apache Software Foundation
+                    </em></div>
+                </td></tr>
+            </table>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
