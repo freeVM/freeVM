@@ -23,6 +23,8 @@ import java.util.concurrent.locks.*;
 import java.util.*;
 import java.io.Serializable;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * A hash table supporting full concurrency of retrievals and
@@ -724,8 +726,10 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
         final Segment[] segments = this.segments;
         int[] mc = new int[segments.length];
         for (;;) {
+            int sum = 0;
             int mcsum = 0;
             for (int i = 0; i < segments.length; ++i) {
+                int c = segments[i].count;
                 mcsum += mc[i] = segments[i].modCount;
                 if (segments[i].containsValue(value))
                     return true;
@@ -733,6 +737,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
             boolean cleanSweep = true;
             if (mcsum != 0) {
                 for (int i = 0; i < segments.length; ++i) {
+                    int c = segments[i].count;
                     if (mc[i] != segments[i].modCount) {
                         cleanSweep = false;
                         break;

@@ -143,9 +143,6 @@ public class FutureTask<V> implements Future<V>, Runnable {
      * Uses AQS sync state to represent run status
      */
     private final class Sync extends AbstractQueuedSynchronizer {
-
-        private static final long serialVersionUID = -7828117401763700385L;
-
         /** State value representing that task is running */
         private static final int RUNNING   = 1;
         /** State value representing that task ran */

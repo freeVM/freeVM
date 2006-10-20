@@ -7,6 +7,7 @@
 package java.util.concurrent.locks;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
 
 /**
  * A reentrant mutual exclusion {@link Lock} with the same basic
@@ -168,9 +169,6 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * Sync object for non-fair locks
      */
     final static class NonfairSync extends Sync {
-
-        private static final long serialVersionUID = 7316153563782823691L;
-
         /**
          * Perform lock.  Try immediate barge, backing up to normal
          * acquire on failure.
@@ -191,9 +189,6 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * Sync object for fair locks
      */
     final static class FairSync  extends Sync {
-
-        private static final long serialVersionUID = -3000897897090466540L;
-
         final void lock() { 
             acquire(1); 
         }
