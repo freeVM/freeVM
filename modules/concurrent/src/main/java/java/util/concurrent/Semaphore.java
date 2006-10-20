@@ -7,7 +7,6 @@
 package java.util.concurrent;
 import java.util.*;
 import java.util.concurrent.locks.*;
-import java.util.concurrent.atomic.*;
 
 /**
  * A counting semaphore.  Conceptually, a semaphore maintains a set of
@@ -178,6 +177,9 @@ public class Semaphore implements java.io.Serializable {
      * NonFair version
      */
     final static class NonfairSync extends Sync {
+
+        private static final long serialVersionUID = -2694183684443567898L;
+
         NonfairSync(int permits) {
             super(permits);
         }
@@ -191,6 +193,9 @@ public class Semaphore implements java.io.Serializable {
      * Fair version
      */
     final static class FairSync extends Sync {
+
+        private static final long serialVersionUID = 2014338818796000944L;
+
         FairSync(int permits) {
             super(permits);
         }

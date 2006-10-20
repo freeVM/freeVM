@@ -549,7 +549,6 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
         try {
             int i = takeIndex;
             int n = 0;
-            int sz = count;
             int max = (maxElements < count)? maxElements : count;
             while (n < max) {
                 c.add(items[i]);
