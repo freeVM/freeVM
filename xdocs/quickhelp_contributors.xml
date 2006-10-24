@@ -28,85 +28,138 @@
 <body>
 
 	<section name="Getting Started For Contributors">
-
-        <p>
-            This document explains how to get configured to build and
-            work with the Apache Harmony source code.
-        </p>
+   
+    <p>
+      This document explains how to get configured to build and
+      work with the Apache Harmony source code.
+    </p>
 
     <subsection name="Prerequisites">
 
-        <p>
-            Basic prequisites for working with Apache Harmony are :
-        </p>
-
+    <p>
+    <i>Basic</i> prerequisites for working with Apache Harmony are:
+    </p>
+      
+    <ul>
+     <li>
+      <a href="http://ant.apache.org/">Apache Ant</a> version 1.6.5 or later
+     </li>
+     <li>
+      <a href="http://subversion.tigris.org/">Subversion</a>
+     </li>
+      <li>
+        <a href="">Java SE 5 JDK</a>
+      </li>
+    </ul>
+      
+      <p>
+        The other prerequisites for building Harmony differ by the platform:
+      </p>
+      
+      <strong>
+        Windows
+      </strong>
+     
         <ul>
-            <li><a href="http://ant.apache.org/">Apache Ant</a> version 1.6.5 or later</li>
-            <li><a href="http://subversion.tigris.org/">Subversion</a></li>
-            <li>Java SE 5 JDK</li>
+          <li>Microsoft 32-bit C/C++ Compiler, version 7 or higher</li>
+          
+          <li>Windows platform SDK</li>
+          
+          <li>
+          <a href="http://www.intel.com/cd/software/products/asmo-na/eng/compilers/index.htm">
+          Intel C++ Compiler</a>, version 9.0
+          </li>
+          <li>
+          <a href="http://www.microsoft.com/products">Microsoft Visual Studio.NET 
+          2003</a> or higher
+          </li>
         </ul>
-
-        <p>
-            The other prerequistes for building Harmony differ by platform :
-        </p>
-
-        <strong>Linux</strong>
-
-        <p>
-          The following is the sequence of things you need to do to setup a linux box
-          to build Harmony.  The following instructions have been tested on Ubuntu 6, 
-          so simply adapt for the package management system on your distro.  There are 
-          some repeats of the prereqs listed above
-        </p>
-        
-        <ol>
-        <li> Install subversion (ex : $ sudo apt-get install subversion)</li>
-        <li> Install gcc (ex. : $ sudo apt-get install gcc)</li>
-        <li> Install g++ (ex. : $ sudo apt-get install g++) </li>
-        <li> Install make (ex. : $ sudo apt-get install make) </li>
-        <li> Install Java (from Sun or BEA or IBM).  Version 1.5.0_9 preferred</li>
-        <li> Install binutils (ex : $    apt-get install binutils-dev )</li>
-        <li> Get JUnit (http://www.junit.org) and drop the junit-VERSION.jar in $ANT_HOME/lib</li>
-        <li> Install dependencies for Swing/AWT : 
-            <ul>
-               <li>apt-get install liblcms1-dev</li>
-			   <li>apt-get install libpng12-dev</li>
-		   	   <li>apt-get install libjpeg62-dev</li>
-         	   <li>apt-get install libx11-dev</li>
-               <li>apt-get install libxft-dev</li>
-            </ul>
+         
+      <strong>
+        Linux
+      </strong>
+      
+        <ul>
+          <li><a href="">GCC Compiler</a></li>
+          <li>libxml2 package</li>
+        </ul>
+      
+      <p>
+        <i>Additional</i> software and libraries that the building system 
+        will download from the Internet are the following.  There is no need for 
+        you to do this - this list is here for your reference.
+      </p>
+      <ul>
+        <li>
+          <a href="http://xml.apache.org/xalan-j/">Xalan-Java</a>, 
+          version 2.7.0
         </li>
-        </ol>
+        <li>
+          <a href="http://download.eclipse.org/eclipse/downloads/">Eclipse
+          SDK</a>, version 3.1.1
+        </li>
+        <li>
+          <a href="http://sourceforge.net/project/showfiles.php?group_id=36177">
+          Cpp Tasks</a> collection, version 1.0 beta 3 or higher
+        </li>
+        <li>
+          <a href="http://sourceforge.net/project/showfiles.php?group_id=36177">
+          Ant-Contrib</a> collection of tasks, version 0.6 or higher
+        </li>
+        <li>
+          <a href="http://www.zlib.net">Zlib</a> library, binaries, 
+           version 1.2.1 or higher
+        </li>
+        <li>
+          <a href="http://apr.apache.org/download.cgi">Apache Portable 
+          Runtime</a>, version 1.2.6
+        </li>
+        <li>
+          <a href="http://apr.apache.org/download.cgi">APR-util</a>, 
+          version 1.2.6
+        </li>
+        <li>
+          <a href="http://apr.apache.org/download.cgi">APR-iconv</a>, 
+          version 1.1.1
+        </li>
+        <li>
+          <a href="http://svn.apache.org/repos/asf/logging/log4cxx/trunk">
+          Log4cxx</a>, latest log4cxx, SVN revision 365029
+        </li>
+      </ul>
+      
+      <p class="note">Note</p>
+      <p class="notetext">
+        The PATH environment variable must include the location of SVN tool set.
+        Run SVN manually at least once prior to build, since it may ask to 
+        accept the certificates from Apache site in an interactive manner.
+      </p>
 
-        <strong>Windows</strong>
+      <p>
+        Alternatively, you can download these resources prior to building DRLVM,
+        unpack these, and specify the resulting location by using the 
+        environment variables, as described in the
+        <a href="http://svn.apache.org/viewvc/incubator/harmony/enhanced/drlvm/trunk/README.txt?view=co">
+        README file</a>, step 3.3.1. In this 
+        <a href="http://svn.apache.org/viewvc/incubator/harmony/enhanced/drlvm/trunk/README.txt?view=co">
+        README file</a> you can find instructions on how to point to local 
+        versions instead of making the build download new ones from the net.
+      </p>
 
-        <p>
-            <i>Windows deps go here</i>
-
-            <ul>
-                <li>
-                    Microsoft Visual Studio .NET 2003
-                 </li>
-            </ul>
-        </p>
-
-        <p>
-            The remaining instructions assume the above are installed on your platform.
-        </p>
     </subsection>
 
     <subsection name="Checking out the Federated Build Tree">
 
         <p>
-            The Harmony codebase is divided into many separate parts.  To create a working
-            JRE, you'll need the  class library and a virtual machine.  Currently, the
-            easiest way to do this is uing the "federated build" tree and then working
-            within the class library directory and the VM directory as you choose.
-            Currently, the federated build uses the DRLVM virtuaal machine.
+          The Harmony codebase is divided into many separate parts. To create 
+          a working JRE, you need a class library and a virtual machine. To 
+          obtain these tools, use the <i>federated build</i> tree and then work
+          within the class library directory and the VM directory as you choose.
+          Currently, the federated build uses the DRLVM virtual machine.
         </p>
 
         <p>
-            First, checkout the federated build :
+            First, checkout the federated build:
         </p>
 
         <source>
@@ -114,24 +167,28 @@
         </source>
 
         <p>
-            This will checkout a directory structure that contains a <code>working_classlib</code>
-            directory, which after the next step will be the checkout of the classlib SVN tree
-            and <code>working_vm</code>, which after the next step will be the checkout
+            The given command will checkout a directory structure that 
+            contains <code>working_classlib</code> and <code>working_vm</code>
+            directories. After the next step <code>working_classlib</code>
+            will be the checkout of the class library SVN tree
+            and <code>working_vm</code> will be the checkout
             of the DRLVM SVN tree.
         </p>
 
-        <p>
-            Note that if you type "ant" in this directory, you will checkout, build and
-            package snapshots of the JRE and HDK.  However, this isn't a convenient
-            way to work for a developer, so please continue with the next steps.
-        </p>
+      <p class="note">Note</p>
+      <p class="notetext">
+        If you type <code>ant</code> in this directory, you will checkout, 
+        build, and package snapshots of the JRE and HDK. However, this way 
+        is inconvenient for a developer, so please continue with the next steps.
+      </p>
     </subsection>
 
-    <subsection name="Populating the VM and Classlib Source Trees">
+    <subsection name="Populating the VM and ClassLibrary Source Trees">
         <p>
-            The federated build <code>build.xml</code> script contains a useful target
-            created to help populate the source trees.  To do so, just do the following in the
-            root directory of the federated build :
+            To help populate the source trees, use the target located
+            in the federated build <code>build.xml</code> script. 
+            Type the following command in the root directory of the 
+            federated build:
         </p>
 
          <source>
@@ -139,18 +196,22 @@ $ ant populate_source
          </source>
 
         <p>
-            This will checkout classlib and DRLVM into the working_classlib and working_vm
-            directories, respectively, at the same SVN version of the build.xml file.  Please
-            note that the source trees are large, and that a checkout can take a very long time.
-            Also, not that due to limits of the Windows filesystem, if the root of the
-            federated build is multiple levels deep in your filesystem, the very long paths within
-            classlibrary might result in a SVN checkout failure on Windows.  The solution is to move the
-            tree upwards in your filesystem (or switch operating systems).
+            The given command will checkout class library and DRLVM into the 
+            <code>working_classlib</code> and <code>working_vm</code>
+            directories respectively, at the same SVN version of the 
+            <code>build.xml</code> file. The source trees are large, 
+            therefore a checkout can take a very long time.</p>
+      
+            <p class="note">Note</p>
+          <p class="notetext">
+            If the root of the federated build is multiple levels deep in 
+            your filesystem, the very long paths within class library might 
+            result in a SVN checkout failure on Windows. The solution is to 
+            move the tree upwards in your filesystem, or switch operating systems.
         </p>
         <p>
-            Note
-            that at any time going forward, you can bring either directory to current SVN
-            revision simply by doing a <code>svn update</code> in either directory.
+           Any time going forward, you can bring any directory to current SVN
+           revision simply by doing <code>svn update</code> in any directory.
         </p>
 
         <source>
@@ -159,29 +220,29 @@ $ svn update
         </source>
 
         <p>
-            These are full, valid checkouts of the classlibrary and DRLVM.  Any modifications
-            made to the SVN repository will be reflected in your tree after a <code>svn update</code>.
-            If you are a project committer, you can make commits from within this tree - it's
-            a normal SVN checkout.
+            The aforementioned commands are valid checkouts of the class library 
+            and DRLVM. After executing <code>svn update</code>, your tree will 
+            reflect any modifications made to the SVN repository. If you are a 
+            project committer, you can make commits from within this tree, as it 
+            is a normal SVN checkout.
         </p>
-
 
     </subsection>
 
     <subsection name="Building the Code">
 
         <p>
-            Now you should be ready to build the code.  The DRLVM has a dependency on the
-            class library and also assembles a working JRE as part of it's build, so you should
-            build the classlibrary first.
+            Now you should be ready to build the code. First of all, you should
+            build the class library, since the DRLVM has a dependency on the
+            class library and also assembles a working JRE as part of its build. 
          </p>
 
         <strong>Building the Class Library</strong>
         <p>
-            For the first time you build, you'll want to
-            fetch all the classlib dependencies.   If you don't, or if in the future a new
-            dependency is added, the build will tell you what to do, so you may have to do this
-            step periodically.
+            For the first time you build, you might want to fetch all the 
+            class-library dependencies. If you do not, or if in the future a new
+            dependency is added, the build will tell you what to do, so that you 
+            can do this step periodically.
         </p>
 
         <source>
@@ -190,42 +251,53 @@ $ ant fetch-depends
 $ ant
         </source>
 
-        <p>
-            Note that if you are working from behind a firewall, you may need to configure
-            ant to use a proxy via the ANT_OPTS environment variable.  For example
-        </p>
-
-        <source>
+      <p>
+        If you are working from behind a firewall, you may need to configure
+        <code>ant</code> to use a proxy via the <code>ANT_OPTS</code> 
+        environment variable.</p>
+      
+      <p class="example">Example</p>
+      <p class="notetext">
+       
+         <source>
 <![CDATA[$ export ANT_OPTS='-Dhttp.proxyHost=<proxy.host> -Dhttp.proxyPort=<proxy port>']]>
         </source>
-
-        <p>
-            If the above succeeds, you now have built the Apache Harmony classlibrary, both
-            the Java code as well as the native code for your platform.  To run the test suite,
-            you will first need a virtual machine.  As the DRLVM isn't yet complete,
-            you can use the
+       
+            If the aforementioned command succeeds, build the Apache Harmony 
+            class library, the Java and the native code for your platform. 
+            To run the test suite, you need a virtual machine. As the DRLVM is 
+            yet incomplete, you can use the
             <a href="http://www-128.ibm.com/developerworks/java/jdk/harmony/index.html">
-            IBM J9 virtual machine</a> generously made available for the project's development needs
-            by IBM under a non-open source, binary evaluation license.  Please install according to
-            the instructions that accompany that VM.
-        </p>
+            IBM J9 virtual machine</a> generously made available for the project's
+        development needs by IBM under a non-open source, binary evaluation license.
+        To install the VM, follow the instructions that accompany that VM.
+       You can expand the class library code over the top of the Harmony directory (so that the 'jdk'
+          directories line-up)</p>
+      <source>
+unzip &lt;path_to_vm_zip&gt; -d ../.. (on Windows)
+tar xzf &lt;path_to_vm_tarball&gt; --directory ../.. (on Linux)
+      </source>
+        
+        
 
         <p>
-            Once you have a VM installed, you can run the tests very easily :
+            Once you have a VM installed, you can run the tests:
         </p>
         <source>
  $ ant test
         </source>
 
         <p>
-            Which will run the full testsuite for the classlibrary.
+            The given command will run the full testsuite for the class library.
         </p>
 
         <strong>Building DRLVM</strong>
         <p>
-            Now that classlibrary is built, we can build the DRLVM, which will assemble a working
-            JRE as well.  To do this, return to the root of the federated build and switch into the
-            working_vm directory.  Then switch into DRLVM's build directory.
+            When the class library is built, you should build the DRLVM 
+            assembling a working JRE as well. To build the DRLVM, return 
+            to the root of the federated build and switch into the
+            <code>working_vm</code> directory. Then switch into DRLVM build
+            directory.
         </p>
 
         <source>
@@ -234,74 +306,126 @@ $ ant
         </source>
 
         <p>
-            The first thing we have to do is tell the DRLVM build where to find the class library.
-            We can do this simply by renaming the file <code>drlvm.properties.example</code> in
-            the DRLVM <code>build</code> directory to <code>drlvm.properties</code>.  This file
-            containes a property definition that tells DRLVM build to use the classlib in
-            <code>working_classlib</code>.  If you need to, you can override this on the command line
-            if you want to point to another build of the classlib.
+            First of all, tell the DRLVM build where to find the class library:
+            rename the file <code>drlvm.properties.example</code> in the DRLVM
+            <code>build</code> directory to <code>drlvm.properties</code>. 
+            This file containes a property definition that tells DRLVM build to 
+            use the class library in <code>working_classlib</code>. 
+            If you want to point to another build of the class library, override 
+            the given file on the command line.
         </p>
 
         <source>
  $ cp drlvm.properties.example drlvm.properties
         </source>
 
-        <p>
-            If you are a windows user, note that you <i>must</i> be working from the Visual
-            Studio .NET Command Promt (you'll see it - it's installed with the Visual Studio mentioned
-            above).  As of now, you cannot build from a Cygwin or other alternative shell. Also, you
-            will need to set the "CXX" environment variable to "msvc" to indicate to the build
-            which compiler is being used.  Again, for windows only users :
-        </p>
+        <p class="note">Note</p>
+      <p class="notetext">
+        If you are a Windows user, you <i>must</i> work from the Visual
+        Studio .NET Command Prompt installed with the Visual Studio.
+        As for now, you cannot build from a Cygwin or other alternative shell. 
+        Set the <code>CXX</code> environment variable to <code>msvc</code> 
+        to indicate to the build used by the compiler:
+      </p>
 
         <source>
  C:...\trunk\working_vm\build> set CXX=msvc
         </source>
-
+     <p> You can switch between the different compilers and modes by using 
+         the environment variables, as follows:
+      </p>
+     <p> <table width="100%">
+        <tr>
+          <th class="TableHeading">
+            Compiler
+          </th>
+          <th class="TableHeading">
+            On Windows
+          </th>
+          <th class="TableHeading">
+            On Linux
+          </th>
+        </tr>
+        <tr>
+          <td class="TableCell">
+            MSVC compiler
+          </td>
+          <td class="TableCell">
+            set CXX=msvc
+          </td>
+          <td class="TableCell">
+            N/A
+          </td>
+        </tr>
+        <tr>
+          <td class="TableCell">
+            Intel(R) compiler
+          </td>
+          <td class="TableCell">
+            set CXX=icl
+          </td>
+          <td class="TableCell">
+            export CXX=icc
+          </td>
+        </tr>
+        <tr>
+          <td class="TableCell">
+            GCC compiler
+          </td>
+          <td class="TableCell">
+            N/A
+          </td>
+          <td class="TableCell">
+            export CXX=gcc
+          </td>
+        </tr>
+      </table></p>
         <p>
-            Now you are ready to build.  To do so, we first fetch our dependencies.  Please note that this
-            can take a long time.  Be patient :
+            Now you are ready to build. To start the build, fetch the 
+            dependencies. Note that this can take a long time.
         </p>
         <source>
-On Linux :
+On Linux:
 $ sh build.sh update
 
-On Windows :
+On Windows:
 C:...\trunk\working_vm\build>build.bat update
         </source>
 
         <p>
-            Once we have obtained our dependencies, we can proceed with the build :
-        </p>
+            When you have obtained the dependencies, you can proceed 
+            with the build:</p>
+        
         <source>
-On Linux :
+On Linux:
 $ sh build.sh
 
-On Windows :
+On Windows:
 C:...\trunk\working_vm\build>build.bat
         </source>
 
         <p>
-            and when complete, with the tests :
+            To complete the operation, run the following tests:
         </p>
         <source>
-On Linux :
+On Linux:
 $ sh build.sh test
 
-On Windows :
+On Windows:
 C:...\trunk\working_vm\build>build.bat test
         </source>
 
-        <p>
-            Note that the so-called "kernel" tests don't currently pass.  If you get through the
-            "C Unit" and "Smoke" tests, you are doing ok.
+        <p class="note">Note</p>
+      <p class="notetext">The <code>kernel</code> tests do not currently pass. 
+                          To succeed use <code>C Unit</code> and 
+                          <code>Smoke</code> tests.
         </p>
 
         <p>
-            At this point, the DRLVM build is complete.  There is a full JRE in the
-            <code>deploy/jre</code> subdirectory of the <code>build</code> directory.
-            You can simply
-        </p>
+            At this point, the DRLVM build is complete. A full JRE is in the
+            <code>deploy/jre</code> subdirectory of the <code>build</code> 
+            directory.
+                   </p>
 
         <source>
 $ cd deploy/jre/bin
@@ -318,21 +442,34 @@ http://incubator.apache.org/harmon
     <subsection name="Using the Built Code">
 
         <p>
-            There are two ways developers use the code.  Class library developers tend
-            to install the IBM J9 VM in the <code>working_classlib/deploy/jdk/jre</code>
-            so they can use it as a "known good" VM for unit testing.  DRLVM developers
-            tend to work with the result of the DRLVM build step, which is a JRE
-            containing the DRLVM and the class library.
+            Developers refer to one of the two ways of using code. Class 
+            library developers install the IBM J9 VM in the 
+            <code>working_classlib/deploy/jdk/jre</code>, so they can use 
+            it as a well-known VM for unit testing. To work with the class 
+            library, refer to the 
+            <a href="subcomponents/classlibrary/index.html">classlibrary 
+            subcomponent</a>. DRLVM developers work with the result of the 
+            DRLVM build step, which is a JRE containing the DRLVM and the 
+            class library. To work with the DRLVM, set 
+            <code>JAVA_HOME</code> to the <code>deploy/jre</code>.
         </p>
+    </subsection>
 
-        <p>
-            To work with the classlibrary, please continue with the material found
-            in our <a href="subcomponents/classlibrary/index.html">classlibrary subcomponent</a>.
-        </p>
-
-        <p>
-            To work with the DRLVM, you can simple set JAVA_HOME to the <code>deploy/jre</code>
-        </p>
+    <subsection name="Running Java Applications">
+    
+      <p>
+        Ensure that the <code>JAVA_HOME</code> environment variable is unset, or pointing
+        to the <code>Harmony/deploy/jdk/jre</code> directory.
+      </p>
+      <p>
+        Run Java applications as usual, using the launcher in Harmony/deploy/jdk/jre/bin:</p>
+        <source>
+> jre\bin\java -showversion -jar helloworld.jar
+java version 1.5 (subset)
+(c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable.
+Hello world!
+        </source>
+     
     </subsection>
     </section>
 </body>
