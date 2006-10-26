@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<project name="msgstool" default="jar" basedir=".">
+
+    <target name="prepare.build">
+        <property file="${basedir}/build.properties" />
+
+        <property name="java.compile.debug" value="false" />
+        <property name="java.compile.optimize" value="true" />
+        <property name="java.compile.deprecation" value="false" />
+        <property name="java.compile.verbose" value="false" />
+
+        <property name="dir.build" location="${basedir}/bin" />
+        <property name="dir.build.classes" location="${dir.build}/classes" />
+
+        <path id="id.classpath">
+            <pathelement path="${dir.build.classes}"/>
+        </path>
+
+        <tstamp />
+        <mkdir dir="${dir.build}" />
+        <mkdir dir="${dir.build.classes}" />
+    </target>
+
+    <target name="build" depends="prepare.build">
+
+        <javac srcdir="${basedir}" 
+               destdir="${dir.build.classes}" 
+               deprecation="${java.compile.deprecation}" 
+               debug="${java.compile.debug}" 
+               optimize="${java.compile.optimize}" 
+               verbose="${java.compile.verbose}">
+
+            <classpath refid="id.classpath" />
+
+            <include name="src/**" />
+        </javac>
+    
+        <copy todir="${dir.build.classes}">
+            <fileset dir="${basedir}/src" casesensitive="yes">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+
+    </target>
+
+    <target name="jar" depends="build">
+
+        <jar destfile="${dir.build}/msgstool.jar" basedir="${dir.build.classes}">
+            <manifest>
+                <attribute name="Main-Class" value="org.apache.harmony.tools.msgstool.Main" />
+            </manifest>
+        </jar>
+
+    </target>
+
+</project>
