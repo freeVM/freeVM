@@ -55,12 +55,12 @@
    </ul>
 
    <p>
-       Also we aimed to support wide range of different platforms. The main criteria
-       if platform is supported or not is that there are people interesting in
-       running test on regular base, reporting build status, finding and fixing
-       bugs for that platform. 
-       <a href="http://wiki.apache.org/harmony/Platforms_to_Run_Harmony_Development_Kit_on">Here</a>
-        a list of platforms we currently intresting in.
+       We aim to support wide range of different platforms.  The main criteria
+       for whether a particular platform is supported or not is the involvement
+       of people in running tests on regular base, reporting build status, finding
+       and fixing bugs for that platform, and so on.  We have
+       <a href="http://wiki.apache.org/harmony/Platforms_to_Run_Harmony_Development_Kit_on">a
+       list of platforms</a> we are actively maintaining at the moment.
    </p>
 
    <p>
@@ -70,7 +70,7 @@
    <ul>
        <li>
            <a href="quickhelp_users.html">Getting Started for Harmony Users</a> : for those
-           that wish to user our <a href="downloads.html">pre-built snapshots</a> of Apache Harmony
+           that wish to use <a href="downloads.html">pre-built snapshots</a> of Apache Harmony
        </li>
        <li>
            <a href="quickhelp_contributors.html">Getting Started for Harmony Contributors</a> : for those
@@ -80,7 +80,6 @@
 </section>
 
 <section name="Project Status">
-
 
     <p>
         How are we doing?  We're making steady progress : 
@@ -102,11 +101,13 @@
             <blockquote>
                 Our <a href="downloads.html">latest snapshots</a> have
                 lots of new fixes and features.  The VM has a new GC,
-                almost complete JVMTI, and now can co-exist with the IBM J9 VM in
+                almost complete JVMTI, and now can co-exist with
+                <a href="http://www.ibm.com/developerworks/java/jdk/harmony">the IBM VME</a> in
                 the Harmony JRE structure.  Our classlibrary continues to grow with new
                 classes, notably CORBA, thanks to <a href="http://incubator.apache.org/yoko">
                 Apache Yoko</a>.  Also, the classlibrary includes many new fixes and updates.
-                Choose the JRE to test your favorite acdpplications and give us feeback on how
+                Choose the JRE to test your favorite applications, and
+                <a href="http://incubator.apache.org/harmony/mailing.html">give us feedback</a> on how
                 we are doing, or use the HDK to enable faster development of the Harmony classlibrary.
                 (<i>2006-09-28</i>)
             </blockquote>

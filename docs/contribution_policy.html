@@ -253,9 +253,10 @@ In summary :
       <tr><td>
         
                                     <p>
-  We have divided our Subversion(SVN) repository into sections.  There are two 
-  main sections, the "standard" section, for which the standard Apache process 
-  applies (namely, the standard 
+  We have divided
+  <a href="http://incubator.apache.org/harmony/svn.html">our Subversion(SVN)
+  repository</a> into sections.  There are two main sections, the "standard"
+  section, for which the standard Apache process applies (namely, the standard 
   <a href="http://www.apache.org/licenses/icla.txt">Apache ICLA</a>
   is all that is required) and the "enhanced" section, which requires any
   committer to also be an Authorized Contributor.  Project code is in the
@@ -263,33 +264,36 @@ In summary :
   the "standard" section.  For the purposes of illustration :
 </p>
                                                 <pre>
+enhanced
+    /admin
+    /classlib
+        /branches
+        /tags
+        /trunk
+           /modules
+              /applet
+              /awt
+              /beans
+              /...
+    /drlvm
+       /trunk
+           /build
+           /src
+           /vm
+    /jchevm
+    /tools
+    /...
 
-enhanced/JVM
-         /VM
-         /JIT
-         /GC
-         /...
-         /vm/lib interface
-enhanced/classlib
-            /tags
-            /branches
-            /trunk
-               /modules
-                  /applet
-                  /awt
-                  /beans
-                  /...
-               /...
-            /...
-standard/website and Documentation
-standard/Legal and administrative
-
+standard/
+    /sandbox
+    /site
+    /tools
+    /...
 </pre>
                                                 <p>
-  and we limit access within the enhanced part of the SVN 
-  using information provided by Authorized Contributors, as defined below.
-  Access to different parts of the repository is controlled by fine-grained
-  access control lists.
+  and we limit access within the enhanced part of the SVN by fine-grained
+  access control lists using information provided by Authorized Contributors,
+  as defined below.
 </p>
                                                 <p>
   We will be as liberal as possible - if your status as an Authorized Contributor
