@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
@@ -30,13 +29,6 @@
 <section name="Class Library Component Status">
 
 	<p>
-		The following table shows the basic status of each module in Harmony's
-		class library effort.  Each module represents
-		<a href="http://wiki.apache.org/harmony/componentization">a set of Java
-		API packages</a>.
-	</p>
-	
-	<p>
 	    Stuart Ballard of the Kaffe project is generously creating automated coverage comparisons
 	    of 
 	    <a href="http://www.kaffe.org/~stuart/japi/htmlout/h-jdk14-harmony.html">JDK 1.4</a>
@@ -45,41 +37,6 @@
 	    against the
 	    <a href="http://cvs.apache.org/dist/incubator/harmony/snapshots/">Harmony class library snapshots.</a>
 	</p>
-	
-<table>
-	<tr><th>Module Name</th>		<th>Status</th></tr>
-	<tr><td>ACCESSIBILITY</td>		<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/accessibility/">accessibility</a></td></tr>
-	<tr><td>ANNOTATION</td>			<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/annotation/">annotation</a></td></tr>
-	<tr><td>APPLET</td>             <td>Missing</td></tr>
-	<tr><td>ARCHIVE</td>            <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/archive/">archive</a></td></tr>
-	<tr><td>AUTH</td>               <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/auth/">auth</a></td></tr>
-	<tr><td>AWT</td>            <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/awt/">awt</a></td></tr>
-	<tr><td>BEANS</td>              <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/beans/">beans</a></td></tr>
-	<tr><td>CONCURRENT</td>			<td>Missing</td></tr>
-	<tr><td>CRYPTO</td>             <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/crypto/">crypto</a></td></tr>
-	<tr><td>IMAGEIO</td>			<td>Missing</td></tr>
-	<tr><td>INSTRUMENT</td>			<td>Missing</td></tr>
-	<tr><td>JMX</td>                <td>Missing</td></tr>
-	<tr><td>JNDI</td>               <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/jndi/">jndi</a></td></tr>
-	<tr><td>LANG-MANAGEMENT</td>    <td>Missing</td></tr>
-	<tr><td>LOGGING</td>            <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/logging/">logging</a></td></tr>
-	<tr><td>LUNI</td>               <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/luni/">luni</a></td></tr>
-	<tr><td>MATH</td>               <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/math/">math</a></td></tr>
-	<tr><td>NIO-CHANNELS</td>		<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/nio/">nio</a></td></tr>
-	<tr><td>NIO-CHARSET</td>		<td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/nio_char/">nio_char</a></td></tr>
-	<tr><td>ORB</td>                <td>Missing</td></tr>
-	<tr><td>PREFS</td>              <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/prefs/">prefs</a></td></tr>
-	<tr><td>PRINT</td>              <td>Missing</td></tr>
-	<tr><td>REGEX</td>              <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/regex/">regex</a></td></tr>
-	<tr><td>RMI</td>                <td>Contributed in <a href="http://issues.apache.org/jira/browse/HARMONY-221">HARMONY-221</a> and <a href="http://issues.apache.org/jira/browse/HARMONY-337">HARMONY-337</a></td></tr>
-	<tr><td>SECURITY</td>           <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/security/">security</a></td></tr>
-	<tr><td>SOUND</td>              <td>Missing</td></tr>
-	<tr><td>SQL</td>                <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/sql/">sql</a></td></tr>
-	<tr><td>SWING</td>              <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/swing/">swing</a></td></tr>
-	<tr><td>TEXT</td>               <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/text/">text</a></td></tr>
-	<tr><td>X-NET</td>              <td>Present as module <a href="http://svn.apache.org/viewcvs.cgi/incubator/harmony/enhanced/classlib/trunk/modules/x-net/">x-net</a></td></tr>
-	<tr><td>XML</td>                <td>Intend to use <a href="http://xerces.apache.org/xerces2-j/">Apache Xerces</a></td></tr>
-</table>
 
  </section>
 
