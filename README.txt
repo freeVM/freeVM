@@ -5,7 +5,7 @@ of Java and Ant installed.
 
 1) **Temporarily** update the link to the CSS so you can
     preview the site in a local browser:
-    1) Go to line 266 in file xdocs/stylesheets/site.vsl
+    1) Go to line 250 in file xdocs/stylesheets/site.vsl
     2) Edit the path to site.css.  Specify an absolute path. 
        e.g. from
 
