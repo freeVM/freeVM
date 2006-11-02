@@ -36,7 +36,7 @@ limitations under the License.
             
             
             
-            <title>Apache Harmony - Thread Manager</title>
+            <title>Apache Harmony - Execution Manager</title>
 
                                 <link rel="Stylesheet" type="text/css" href="site.css"/>
         </head>
@@ -424,7 +424,7 @@ limitations under the License.
             engines
          </li>
          <li>
-            An i nterface for method profile access
+            An interface for method profile access
          </li>
          <li>
             Support for time-based sampling profile collectors
@@ -616,7 +616,7 @@ enum EM_JIT_PC_Role {
          that the profile is checked for readiness in a user Java<a
          href="#*">*</a> thread during code execution. The asynchronous mode
          means that the profile readiness is checked and hot methods are
-         detected and recompiled in a separate provider thread managed by EM.
+         detected and recompiled in a separate profiler thread managed by EM.
       </p>
       <h2>
          <a id="Profiler_thread" name="Profiler_thread"></a>3.3 Profiler Thread
@@ -653,8 +653,8 @@ enum EM_JIT_PC_Role {
          <a id="Recompilation" name="Recompilation"></a>4.1 Recompilation
       </h2>
       <p>
-         Optimization of compiled code may result in recompilation of Java<a
-         href="#*">*</a> code. The execution manager determines the
+         For frequently executed methods, makes sense to recompile them 
+         and to apply more aggressive optimizations. The execution manager determines the
          recompilation logic using <i>recompilation chains</i> that can connect
          multiple profile-compatible JIT compilers into a single recompilation
          queue. Recompilation chains are static and defined in the EM
