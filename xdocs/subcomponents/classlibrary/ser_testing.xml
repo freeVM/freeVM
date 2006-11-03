@@ -21,13 +21,13 @@
 <document>
 
  <properties>
-  <title>Framework for testing serialization</title>
+  <title>Framework for Testing Serialization</title>
   <author email="harmony-dev@incubator.apache.org">Harmony Documentation Team</author>
  </properties>
 
 <body>
 
-<section name="Framework for testing serialization">
+<section name="Framework for Testing Serialization">
 	<p>
 		<big><em>The framework for testing serialization is currently PROPOSED and being 
 		discussed on the development mailing list <code>harmony-dev@incubator.apache.org</code>.  
@@ -36,150 +36,151 @@
 	<p>
 		The framework for testing serialization is intended to simplify and formalize
 		development of serialization tests. This document contains guidelines for
-		creating tests and conventions for resource files.
+		creating tests and <a href="#conventions">conventions</a> for resource files.
 	</p>
 
-<subsection name="Guidelines for developing serialization tests">
+<subsection name="Guidelines for Developing Serialization Tests">
 	<p>
-		The testing framework provides support class
+		The testing framework provides the support class
 		<code>org.apache.harmony.testframework.serialization.SerializationTest</code>
 		for serialization testing.
 	</p>
-	<p>
-	    <b>1) Compatibility testing</b><br/>
-		Verifies that an object serialized on certified implementation is
-		correctly deserialized on Harmony implementation.<br/><br/>
-		The support class provides 4 methods for compatibility testing:
+    <h3>Compatibility Testing</h3>
+		<p>Verifies that an object serialized on certified implementation is
+		correctly deserialized on Harmony implementation.<br/>
+		The support class provides four methods for compatibility testing:
 		<ul><code>
 			<li>verifyGolden(TestCase, Object)</li>
 			<li>verifyGolden(TestCase, Object, <a href="#assert">SerializableAssert</a>)</li>
 			<li>verifyGolden(TestCase, Object[])</li>
 			<li>verifyGolden(TestCase, Object[], <a href="#assert">SerializableAssert</a>)</li>
-		</code></ul>
-		The first parameter <code>TestCase</code> is used to locate resource
-		file(s) that contains serialized object(s). The second parameter is an object
+		</code></ul></p>
+		<p>The first parameter <code>TestCase</code> is used to locate resource
+		file(s) that contains serialized object(s).<br/>
+    The second parameter is an object
 		or an array of objects to be compared with object(s) deserialized from
-		resource file(s). And the third parameter is optional.<br/><br/>
+		resource file(s).<br/>
+    The third parameter is optional.</p>
 		
-		So to create a <em>compatibility</em> test for selected class a developer should:
+		<p>To create a <em>compatibility</em> test for selected class, a developer should:</p>
 		<ul>
 			<li>
-			serialize object(s) on certified implementation, store serialized
-			form(s) in resource file(s) and place it(them) according to conventions
-			below
+			Serialize object(s) on certified implementation, store serialized
+			form(s) in resource file(s) and place it(them) according to the <a href="#conventions">
+       conventions</a> </li>
+			
+			<li>
+			Add the <code>testSerializationCompatibility</code> method to a unit test 
 			</li>
 			
 			<li>
-			add to an unit test a method: <code>testSerializationCompatibility</code>
-			</li>
-			
-			<li>
-			invoke one of the above methods with corresponding arguments
+			Invoke one of the methods, mentioned above, with corresponding arguments
 			</li>
 		</ul>
-		
-		For example,
-		<pre>
-public void testSerializationCompatibility()
+
+  <p class="example">Example</p>
+  
+<pre>		
+    public void testSerializationCompatibility()
         throws Exception {
 
     SerializationTest.verifyGolden(this, new SomeSerializableClass());
 }
-		</pre>
-	</p>
-	<p>
-		<b>2) Self testing</b><br/>
-		Verifies that an object can be smoothly serialized and deserialized on
-		Harmony implementation<br/><br/>
-		The support class provides 4 methods for self-testing:
+</pre>
+		
+	
+    	<h3>Self-Testing</h3>
+		<p>Verifies that an object can be smoothly serialized and deserialized on
+		Harmony implementation.<br/>
+		The support class provides four methods for self-testing:</p>
 		<ul><code>
 			<li>verifySelf(Object)</li>
 			<li>verifySelf(Object, <a href="#assert">SerializableAssert</a>)</li>
 			<li>verifySelf(Object[])</li>
 			<li>verifySelf(Object[], <a href="#assert">SerializableAssert</a>)</li>
 		</code></ul>
-		The provided object(s) is(are) serialized/deserialized and compared with
-		initial object(s).<br/><br/>
+		<p>The provided object(s) is(are) serialized/deserialized and compared with
+		initial object(s).</p>
 
-		So to create a <em>self</em> test for selected class a developer should:
+		<p>To create a <em>self</em> test for a selected class, a developer should:</p>
 		<ul>
 			<li>
-			add to an unit test a method: <code>testSerializationSelf</code>
+			Add the <code>testSerializationSelf</code> method to a unit test
 			</li>
 			
 			<li>
-			invoke one of the above methods with corresponding arguments
+			Invoke one of the methods with corresponding arguments
 			</li>
 		</ul>
 
-		For example,
-		<pre>
-public void testSerializationSelf() throws Exception {
+  <p class="example">Example</p>
+     <pre>  
+     public void testSerializationSelf() throws Exception {
 
-    SerializationTest.verifySelf(new SomeSerializableClass(),
-            new MyComparator());
+     SerializationTest.verifySelf(new SomeSerializableClass(),
+     new MyComparator());
 }
-		</pre>
-	</p>
-	<p>
-		<b>3) Negative testing</b><br/>
+</pre>
+    
+
+  <h3>Negative Testing</h3>
 		<big><em>TBD</em></big>
-	</p>
-	<p>
-		<a name="assert"><big><em>Interface SerializableAssert</em></big></a><br/>
-		A test has to implement the interface in case if class of object(s)
-		to be compared doesn't have equals(Object) method or the testing
-		framework can not find appropriate comparator. The interface has only
-		one method to be implemented:<br/><br/>
-		<code>
-			void assertDeserialized(Serializable reference, Serializable test);
-		</code>
-	</p>
+
+
+    <p class="class">Interface <a name="assert"><code>SerializableAssert</code></a></p>
+    <p> If a class of object(s) to be compared does not have 
+    equals(Object) method or the testing framework can not find appropriate comparator, a 
+    test has to implement the interface. The interface has only
+		one method to be implemented:</p>
+		
+      <pre>void assertDeserialized(Serializable reference, Serializable test);</pre>
+		
+	
 </subsection>
 
-<subsection name="Placement and naming conventions for resource files">
+<subsection name="Placement and Naming Conventions for Resource Files">
 	<p>
-		The resource files should follow the next conventions:
+		The resource files should follow the next <a name="conventions">conventions</a>:</p>
 		
 		<ul>
 			<li>Root folder for resource files is <code>&lt;module root&gt;/src/test/resources/serialization</code>
 			</li>
 			
-			<li>Relative path to a resource file <em>MUST</em> match a test's package name.
+			<li>Relative path to a resource file <em>MUST</em> match a test's package name
 			</li>
 			
-			<li>A resource file <em>MUST</em> start with a test's name.
+			<li>A resource file <em>MUST</em> start with a test's name
 			</li>
 			
-			<li>A resource file <em>MUST</em> contain keywords pointing out to testing scenario.
+			<li>A resource file <em>MUST</em> contain keywords pointing out to testing scenario
 				<ol>
 
 				<li><code>&lt;golden&gt;</code> keyword is used for files generated on RI
 				</li>
 
 				<li><code>&lt;harmony&gt;</code> keyword is used for files generated on
-				Harmony	implementation.
+				Harmony	implementation
 				</li>
 
 				<li><code>&lt;negative&gt;</code> keyword is used for files that contain
-				broken serial form.
+				broken serial form
 				</li>
 
 				</ol>
 			</li>
 			
-			<li>A resource file name <em>MUST</em> contain some index.<br/>
-			<em>Note:</em> if there is only one file the index is not required
+			<li>A resource file name <em>MUST</em> contain some index
+      <p class="note">Note</p>
+        <p class="notetext">If only one file exists, the index is not required.</p>
+		 
 			</li>
 
-			<li>Extension for resource files is 'ser'.
-			</li>
-
-		</ul>
-		
-		For example, for test org.apache.harmony.tests.java.lang.SomeClassTest we have following:
-		<blockquote>
-		<pre>
+			<li>Extension for resource files is <code>ser</code>
+			
+  <p class="example">Example</p>
+		<p class="exampletext">For the test <code>org.apache.harmony.tests.java.lang.SomeClassTest</code>,
+      we have the following resource files:</p>
+    		<pre>
 modules/luni/src/test/resources/serialization
      |
      \---org/apache/harmony/tests/java/lang
@@ -190,10 +191,9 @@ modules/luni/src/test/resources/serialization
               SomeClassTest.harmony.0.ser
               SomeClassTest.harmony.1.ser
               SomeClassTest.negative.ser
-		</pre>
-		</blockquote>
+		</pre></li>
 
-	</p>		
+		</ul>
 </subsection>
 </section>
 </body>

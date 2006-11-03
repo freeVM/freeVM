@@ -31,7 +31,7 @@
 
 <subsection name="Building">
 	<p>
-		The following tools are required to build the Harmony website
+		The following tools are required to build the Harmony website:
 		
 		<ul>
 		    <li>
@@ -46,24 +46,25 @@
 		</ul>
 	</p>
 	
-	<p>
+
 		<ol>
 			<li>
-			   Download the website source from Harmony subversion repository
+			   Download the website source from Harmony subversion repository:</li>
 			   <pre>$ svn checkout https://svn.apache.org/repos/asf/incubator/harmony/standard/site</pre>
-			</li>
+		
 			
 			<li>
-			   Change into the site directory and run the default ant script target
-			  <pre>$ cd site</pre>
-			  <pre>$ ant</pre>
-			</li>
+			   Change into the site directory:
+     <pre>$ cd site</pre> </li>
+      <li>Run the default ant script target:</li>
+			 <pre>$ ant</pre>
+			
 	    </ol>
-	</p>
+
 	
 	<p>
-	  At this point, you have a complete generated website and documentation in the <i>site/docs</i>
-	   subdirectory.  Open the <i>index.html</i> page and start browsing.
+	  At this point, you have a complete generated website and documentation in the 
+    <code>site/docs</code> subdirectory. Open the <code>index.html</code> page and start browsing.
 	</p>
 
 </subsection>
@@ -71,13 +72,14 @@
 <subsection name="Making Changes">
 
   <p>
-    Making changes is straightforward.  All edits are made to the contents of the <i>xdocs/</i> 
-    subdirectory, and then rendered via the procedure above into the <i>docs/</i> directory.
-  </p>
+    Making changes is straightforward.  All edits are made to the contents of the <code>xdocs/</code> 
+    subdirectory, and then rendered via the procedure above into the <code>docs/</code> directory.
+  
+</p>
   
   <p>
-    If you are a Harmony committer, you can simply checkin your changes.  If you are not 
-    a committer, any updates and additions to the site are very welcome.  Please
+    If you are a Harmony committer, you can simply checkin your changes. If you are not 
+    a committer, any updates and additions to the site are very welcome. Please
     see our <a href="../get-involved.html">Get Involved</a> page for instructions
     on how to contribute your changes.
   </p>
@@ -88,31 +90,30 @@
 
   <p>
     If you are a Harmony Committer, you can commit your changes into SVN and then
-    publish to the project website.  Once the changes are in SVN, simply :
+    publish to the project website. Once the changes are in SVN, do the following:
   </p>
   
-  <p>
     <ol>
       <li>
-        SSH to minotaur.apache.org
+        SSH to <code>minotaur.apache.org</code>. Your login name will of course be your own.</li>
         <pre>$ ssh geirm@minotaur.apache.org </pre>
-        Your login name will of course be your own.
-      </li>
+        
       <li>
-        Go to the project website directory.
+        Go to the project website directory:</li>
         <pre>$ cd /www/incubator.apache.org/harmony/</pre>
-      </li>
+      
       <li>
-        Update the local copy.  There are two ways.  A simple
+        Update the local copy in one of two ways:
         <pre>$ svn update</pre>
-        will update the local copy.  If you need to delete the HTML and 
-        re-checout use 
-        <pre>$ `cat UPDATE`</pre>
-        as the UPDATE file has the command used to do a fresh svn checkout.
-      </li>
+        If you need to delete the HTML and 
+        re-checkout, use: 
+        <pre>$ `cat UPDATE`</pre></li>
+        <p class="note">Note</p>
+        <p class="notetext">The <code>UPDATE</code> file has the command performing a fresh svn checkout.</p> 
+     
         
     </ol>
-  </p>
+  
   
 </subsection>
 </section>

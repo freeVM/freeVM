@@ -36,7 +36,7 @@ limitations under the License.
             
             
             
-            <title>Apache Harmony - Testing conventions in the Apache Harmony Classlib</title>
+            <title>Apache Harmony - Testing Conventions in the Apache Harmony Classlib</title>
 
                                 <link rel="Stylesheet" type="text/css" href="site.css"/>
         </head>
@@ -207,7 +207,7 @@ limitations under the License.
                                                                     <table  cellspacing="0" cellpadding="2" width="100%">
       <tr><td>
         <h1>
-          <a name="Testing conventions used in the Apache Harmony Class Library">Testing conventions used in the Apache Harmony Class Library</a>
+          <a name="Testing Conventions Used in the Apache Harmony Class Library">Testing Conventions Used in the Apache Harmony Class Library</a>
         </h1>
       </td></tr>
       <tr><td>
@@ -221,12 +221,12 @@ limitations under the License.
                 adapted/modified to reflect module specifics.
 	</p>
                                                 <p>
-		See also: <a href="ser_testing.html">Framework for testing serialization</a>
+		See also: <a href="ser_testing.html">Framework for Testing Serialization</a>
 	</p>
                                                     
       <tr><td>
             <h2>
-          <a name="Location of the tests in the directory tree">Location of the tests in the directory tree</a>
+          <a name="Location of the Tests in the Directory Tree">Location of the Tests in the Directory Tree</a>
             </h2>
       </td></tr>
       <tr><td>
@@ -234,97 +234,77 @@ limitations under the License.
                                     <p>
 		Each Java class belongs to a specific module of the Harmony class library. Tests against
                 classes belonging to a module belong to the same module. Tests, their resources, and support
-                classes are located under
-			<blockquote>
-				<code>&lt;modulename&gt;/src/test</code>
-			</blockquote>
-		Tests that are specific for Harmony, testing Harmony implementation details, and may fail
+                classes are located under: </p>
+                                                <pre>&lt;modulename&gt;/src/test</pre>
+                                                <p>Tests that are specific for Harmony, testing Harmony implementation details, and may fail
                 on RI or other compliant implementations are separated from the imlpementation-independent
-                tests that must pass on RI and all conformant implementations. 
-			<blockquote>
-				<code>&lt;modulename&gt;/src/test/<b>impl</b></code> - Harmony specific tests<br />
-				<code>&lt;modulename&gt;/src/test/<b>api</b></code> - Implementation-independent tests
-			</blockquote>
-                Special-purpose tests like stress tests or tests that require special configuration are 
-                separated from general-purpose tests.
-			<blockquote>
-				<code>&lt;modulename&gt;/src/test/<b>stress</b></code>
-			</blockquote>
-
-                Tests are not separated by functionality under test, e.g. tests against <code>clone()</code>
+                tests that must pass on RI and all conformant implementations.</p>
+                                                <pre>&lt;modulename&gt;/src/test/<b>impl</b> - Harmony specific tests<br />
+&lt;modulename&gt;/src/test/<b>api</b> - Implementation-independent tests</pre>
+                                                <p>Special-purpose tests like stress tests or tests that require special configuration are 
+                separated from general-purpose tests.</p>
+                                                <pre>&lt;modulename&gt;/src/test/<b>stress</b></pre>
+                                                <p>Tests are not separated by functionality under test, for example, tests against <code>clone()</code>
                 methods are <b>not</b> separated from tests against <code>equals()</code> methods.
 
-                Classpath tests are separated from bootclasspath tests on a directory level:
-			<blockquote>
-				<code>&lt;modulename&gt;/src/test/api/<b>java</b></code> - Classpath tests<br />
-				<code>&lt;modulename&gt;/src/test/api/<b>java.injected</b></code> - Bootclasspath tests<br />
-			</blockquote>
-                More details below.<br /><br />
-
-
-                Some modules might have platform specific tests that are in the case separated on a directory 
-                level:
-			<blockquote>
-				<code>&lt;modulename&gt;/src/test/api/<b>common</b></code><br />
-				<code>&lt;modulename&gt;/src/test/api/<b>windows</b></code><br />
-				<code>&lt;modulename&gt;/src/test/api/<b>linux</b></code>
-			</blockquote>
-	</p>
+                Classpath tests are separated from bootclasspath tests on a directory level:</p>
+                                                <pre>&lt;modulename&gt;/src/test/api/<b>java</b> - Classpath tests<br />
+&lt;modulename&gt;/src/test/api/<b>java.injected</b> - Bootclasspath tests</pre>
+                                                <p> Find more details <a href="#Package and Class Names for Different Types of the Tests">
+                 below</a>.</p>
+                                                <p>Some modules might have platform specific tests that are in the case separated on a directory 
+                level:</p>
+                                                <pre>&lt;modulename&gt;/src/test/api/<b>common</b><br />
+&lt;modulename&gt;/src/test/api/<b>windows</b><br />
+&lt;modulename&gt;/src/test/api/<b>linux</b></pre>
                             
       </td></tr>
        
                                                     
       <tr><td>
             <h2>
-          <a name="Package and class names for different types of the tests">Package and class names for different types of the tests</a>
+          <a name="Package and Class Names for Different Types of the Tests">Package and Class Names for Different Types of the Tests</a>
             </h2>
       </td></tr>
       <tr><td>
         
                                     <p>
-		If the test is designed to be run from bootclasspath then its package is the same
-                as the package of the class under test
+		If the test is designed to be run from bootclasspath, then its package is the same
+                as the package of the class under the test.
 	</p>
                                                 <p>
-		If the test is designed to be run from classpath then:<br />
-                If the package under test belongs to a public package (i.e. that is a part of the API specification)
-                then the test's package is 
-			<blockquote>
-				<code>org.apache.harmony.&lt;modulename&gt;.tests.<b>&lt;package under test&gt;</b></code>
-			</blockquote>
-                Example: 
-			<blockquote>
-				<code>org.apache.harmony.luni.tests.<b>java.lang</b></code><br />
-				<code>org.apache.harmony.crypto.tests.<b>javax.crypto</b></code><br />
-				<code>org.apache.harmony.auth.tests.<b>org.ietf.jgss</b></code>
-			</blockquote>
-
-                If the package under test belongs to <code>org.apache.harmony</code> namespace so that class's package is
-			<blockquote>
-				<code>org.apache.harmony.&lt;modulename&gt;.<b>&lt;rest of the package name&gt;</b></code>
-			</blockquote>
-                then the test's package is 
-			<blockquote>
-				<code>org.apache.harmony.&lt;modulename&gt;.tests.<b>&lt;rest of the package name&gt;</b></code>
-			</blockquote>
-                Example: 
-			<blockquote>
-				<code>org.apache.harmony.luni.internal.net.www.protocol</code> - package under test<br />
-				<code>org.apache.harmony.luni.tests.internal.net.www.protocol</code> - package for the test
-			</blockquote>
-
-
-	</p>
+		If the test is designed to be run from classpath then:</p>
+                                                <ol>
+                  <li>If the package under test belongs to a public package, for example, it 
+                  is a part of the API specification, then the test's package is: 
+			<pre>org.apache.harmony.&lt;modulename&gt;.tests.<b>&lt;package under test&gt;</b></pre>
+    <p class="example">Example</p>
+     
+			<pre>org.apache.harmony.luni.tests.<b>java.lang</b><br />
+org.apache.harmony.crypto.tests.<b>javax.crypto</b><br />
+org.apache.harmony.auth.tests.<b>org.ietf.jgss</b></pre>
+</li>
+    <li>If the package under test belongs to <code>org.apache.harmony</code> 
+    namespace so that class's package is:
+			<pre>org.apache.harmony.&lt;modulename&gt;.<b>&lt;rest of the package name&gt;</b></pre>
+                then the test's package is: 
+			<pre>org.apache.harmony.&lt;modulename&gt;.tests.<b>&lt;rest of the package name&gt;</b></pre> 
+    <p class="example">Example</p>
+      <p class="notetext">
+			<code>org.apache.harmony.luni.internal.net.www.protocol</code> - package under test<br />
+<code>org.apache.harmony.luni.tests.internal.net.www.protocol</code> - package for the test</p>
+			
+</li></ol>
                                                 <p>
-                To avoid collision of test results for various type of tests, test type might be reflected in test name
-                for example, to separate impl test results from api test results impl test names end with 
-                <code>_ImplTest</code>
-			<blockquote>
-				<code>javax.crypto.<b>CipherTest</b></code> - Implementation independent bootclasspath test for <code>javax.crypto.Cipher</code><br />
-				<code>javax.crypto.<b>Cipher_ImplTest</b></code> - Implementation specific bootclasspath test for <code>javax.crypto.Cipher</code><br />
-			</blockquote>
-
-	</p>
+   To avoid collision of test results for various type of tests, reflect a test type in a test name.</p>
+                                                <p class="example">Example</p>
+                                                <p class="notetext">To separate the <code>impl</code> test results from 
+    the <code>api</code> ones, the <code>impl</code> test names end with 
+                <code>_ImplTest</code>:<br />
+			<code>javax.crypto.<b>CipherTest</b></code> - Implementation independent bootclasspath 
+      test for <code>javax.crypto.Cipher</code><br />
+<code>javax.crypto.<b>Cipher_ImplTest</b></code> - Implementation specific bootclasspath 
+test for <code>javax.crypto.Cipher</code></p>
                             
       </td></tr>
        

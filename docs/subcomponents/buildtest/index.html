@@ -214,14 +214,14 @@ limitations under the License.
                                     <p>
     The
     <a href="http://svn.apache.org/viewvc/incubator/harmony/enhanced/buildtest/">
-    'build-test framework'</a> is a simple configuration of
-    <a href="http://cruisecontrol.sourceforge.net/">Cruise Control</a>,
-    a framework for continuous build process.  It also includes all the
+      <i>build-test framework</i></a> is a simple configuration of
+    <a href="http://cruisecontrol.sourceforge.net/"><code>CruiseControl</code></a>,
+    a framework for continuous build process. It also includes all the
     necessary support to simplify installation.
 </p>
                                                 <p>
-    Currently, the framework does these distinct tasks, in order :
-</p>
+    Currently, the framework does the following distinct tasks, in order,
+    and only when code changes in the repository:</p>
                                                 <ol>
         <li>Update the source for the class library from SVN</li>
         <li>Get any new dependencies needed for building the class library</li>
@@ -230,9 +230,6 @@ limitations under the License.
         <li>Get and build any new dependencies needed for DRLVM</li>
         <li>Build and test the DRLVM</li>
     </ol>
-                                                <p>
-        It does these tasks in-order, and only when code changes in the repository.
-    </p>
                            
       </td></tr>
     </table>
@@ -244,89 +241,102 @@ limitations under the License.
         </h1>
       </td></tr>
       <tr><td>
-                                    <strong>Pre-requisites</strong>
-                                                <p>
-    Basically, you need the tools needed to build the Apache Harmony
-    components, like Java, Ant, C/C++ compilers, etc.  Please see
-    the other parts of the project for information on the necessary
-    toolchains.  You need the following software installed :
+                                        
+      <tr><td>
+            <h2>
+          <a name="Prerequisites">Prerequisites</a>
+            </h2>
+      </td></tr>
+      <tr><td>
+        
+                                    <p>
+    Basically, you need the same tools, as for building the Apache Harmony
+    components, like Java, Ant, C/C++ compilers, etc. Install the following 
+    software:
     </p>
                                                 <ol>
         <li>Java JDK v5</li>
         <li><a href="http://ant.apache.org/">Apache Ant</a></li>
         <li><a href="http;//subversion.tigris.org/">Subversion Client</a></li>
     </ol>
-                                                <strong>Setup</strong>
+                                                <p>Please see the other parts of the project for information on the necessary
+    toolchains.</p>
+                            
+      </td></tr>
+       
+                                                    
+      <tr><td>
+            <h2>
+          <a name="Setup">Setup</a>
+            </h2>
+      </td></tr>
+      <tr><td>
+        
+                                    <p>
+       Get the <code>/harmony/enhanced/buildtest/</code> part of the Apache
+       Harmony project via <code>zip</code> or <code>tgz</code> files. You also can 
+       check it out from the project Subversion repository:</p>
+                                                <pre>svn co https://svn.apache.org/repos/asf/incubator/harmony/enhanced/buildtest/trunk</pre>
                                                 <p>
-       Get the /harmony/enhanced/buildtest/ part of the Apache
-       Harmony project.  If you are reading this, you either have
-       it via a zip or tgz, or have checked it out from the project
-       Subversion repository.  In the event that you don't have it
-       you can get it via subversion :
+       With Java, Ant and SVN installed, change into the <code>buildtest/trunk</code>
+       directory and type:
     </p>
-                                                <blockquote>
-         svn co https://svn.apache.org/repos/asf/incubator/harmony/enhanced/buildtest/trunk
-    </blockquote>
+                                                <pre>ant setup</pre>
                                                 <p>
-       With Java, Ant and SVN installed, change into the buildtest/trunk
-       directory and type
-    </p>
-                                                <blockquote>
-          ant setup
-    </blockquote>
-                                                <p>
-       This should fetch CruiseControl, set it up with the Apache Harmony
-       configuration, and checkout the software to be built and tested
+       This command fetches <code>CruiseControl</code>, sets it up with the Apache Harmony
+       configuration, and checks out the software for building and testing 
        from Apache Harmony.
     </p>
                                                 <p>
-       If you wish to have the tests run successfully, you need to do the
-       following manual steps for now :
+       To run the tests successfully, you need to do the
+       following manual steps for now:
     </p>
                                                 <ol>
       <li>
-         build the classlib to create the deploy/jdk tree in classlib, first
-         fetching the dependencies
-        <blockquote>
-           cd cc/projects/classlib/trunk
-           ant fetch-depends
-           ant
-        </blockquote>
+         Build the classlib to create the <code>deploy/jdk</code> tree in classlib, 
+         first fetching the dependencies:
+        <pre>cd cc/projects/classlib/trunk
+ant fetch-depends
+ant</pre>
       </li>
       <li>
-         get the appropriate IBM J9 VM for your platform (this will go
-         away when DRLVM is good enough
+         Get the appropriate IBM J9 VM for your platform (this will go
+         away when DRLVM is good enough):
 
-         <blockquote>
-           http://www-128.ibm.com/developerworks/java/jdk/harmony/index.html
-         </blockquote>
+         <pre>http://www-128.ibm.com/developerworks/java/jdk/harmony/index.html</pre>
        </li>
 
         <li>
-         unpack the above-fetched J9 distribution into the jdk directory (as
-         the distro assumes it's dropped into the jdk directory...)
+         Unpack the above-fetched J9 distribution into the <code>jdk</code> directory (as
+         the distro assumes it is dropped into the<code>jdk</code> directory):
 
-        <blockquote>
-           cd cc/projects/classlib/trunk/deploy/jdk/ <br />
-           tar zxf Harmony-vme-linux.IA32-v4.tar.gz
-        </blockquote>
+        <pre>cd cc/projects/classlib/trunk/deploy/jdk/
+tar zxf Harmony-vme-linux.IA32-v4.tar.gz</pre>
         </li>
 
     </ol>
-                                                <strong>Starting CruiseControl</strong>
-                                                <p>
-        To start the system, just type :
+                            
+      </td></tr>
+       
+                                                    
+      <tr><td>
+            <h2>
+          <a name="Starting CruiseControl">Starting CruiseControl</a>
+            </h2>
+      </td></tr>
+      <tr><td>
+        
+                                    <p>
+        To start the system, type the following command in 
+        <code>buildtest/trunk</code>: 
     </p>
-                                                <blockquote>
-         ant
-     </blockquote>
-                                                <p>
-       in buildtest/trunk and that will launch CC with the full test set.
-       To check status, point your browser to
-    </p>
-                                                <blockquote>
-       http://localhost:8080/
-   </blockquote>
+                                                <pre>ant</pre>
+                                                <p>The given command launches <code>CruiseControl</code> with the full test set. 
+    To check status, point your browser to:</p>
+                                                <pre>http://localhost:8080/</pre>
+                            
+      </td></tr>
+       
                            
       </td></tr>
     </table>
