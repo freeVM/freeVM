@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+<properties>
+	<title>Good Issue Resolution Guideline</title>
+	<author email="harmony-dev@incubator.apache.org">Harmony Documentation Team</author>
+</properties>
+
+<body>
+
+	<section name="Preface">
+    <p>
+        This guideline covers a wide range of issues but not all of them.
+        If you cannot do one of the steps, then write a comment to the issue.
+    </p>
+    <p>
+        Use your common sense!
+    </p>
+    </section>
+    
+    <section name="Issue reporter">
+    <p>
+    <ol>
+        <li>Explicitly state the expected behavior and the</li>
+            actual behavior of Harmony code. Use links to specs, rfcs, etc.
+        <li>Try to create as small test case as possible. A patch
+            to test will be highly appreciated.</li>
+        <li>Provide max. information about steps necessary to recreate the bug.
+            If a patch for the test has not been supplied, provide as much
+            diagnostic information about the failure as possible (stack trace,
+            failure output, expected output etc).</li>
+        <li>Remember to use issue links if applicable.</li>
+        <li>Check the issue resolution when it is committed. Add a comment.</li>
+    </ol>
+    </p>
+    </section>
+
+    <section name="Resolution provider :)">
+    <p>
+        Depending on the type of issue, do the following:
+    <ol>
+        <li>
+            Issue is probably a non-bug difference, not a bug or invalid:
+            <ol>
+                <li>Discuss on the dev list.</li>
+                <li>Add a link to the discussion thread as a comment to issue.</li>
+            </ol>
+        </li>
+        <li>
+            Issue is a bug:
+            <ol>
+                <li>Notify the community that you started investigation by adding
+                a comment to the issue and send a message to dev list. If you cannot
+                produce a patch, add another comment with the results of your investigation.</li>
+                <li>If reporter did not provide a patch to test:
+                    <ol>
+                        <li>Try to create a patch to test.</li>
+                        <li>If you cannot produce a patch, write a comment about it.</li>
+                    </ol>
+                </li>
+                <li>Create a patch to fix the issue. Any concerns? Discuss on the dev list. 
+                Add a link to discussion as a comment.</li>
+                <li>All the pacthes (test and fix) should be relative to the directory where 
+                the main build.xml is: https://svn.apache.org/repos/asf/incubator/harmony/enhanced/classlib/trunk.
+                Or to the module root directory.</li>
+                <li>Test and fix patches should be in different files.</li>
+                <li>If the patch requires to add, remove or move some files in the repository, add the appropriate script.</li>
+                <li>Check that all unit tests pass.</li>
+                <li>If it is an application-oriented issue, check the application.</li>
+                <li>Remember to use issue links if applicable.</li>
+            </ol>
+        </li>
+    </ol>
+    </p>
+    </section>
+
+    <section name="Committer">
+    <p>
+        Depending on the issue type, do:
+        <ol>
+            <li>Issue is a non-bug difference, not a bug or invalid: close the issue.</li>
+            <li>Issue is a bug:
+                <ol>
+                    <li>If a patch to test is available, apply it.</li>
+                    <li>Check that the test fails.</li>
+                    <li>Apply the fix for the issue.</li>
+                    <li>Check that test succeeds now.</li>
+                    <li>Make sure that all unit tests pass.</li>
+                    <li>For application-oriented issues, check the application.</li>
+                    <li>If there are problems on previous steps, post a comment to
+                    JIRA and let "resolution provider" to resolve.</li>
+                    <li>Make sure that the issue reporter is happy with the resolution.</li>
+                    <li>Add revision info into JIRA issue.</li>
+                </ol>
+            </li>
+        </ol>
+    </p>
+    </section>
+</body>
+</document>
