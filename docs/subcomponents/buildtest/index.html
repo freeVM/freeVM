@@ -204,14 +204,10 @@ limitations under the License.
                 </ul>
                         </td>
                     <td width="80%" valign="top"><a name="top"></a>
-                                                                    <table  cellspacing="0" cellpadding="2" width="100%">
-      <tr><td>
-        <h1>
-          <a name="Build-Test Framework">Build-Test Framework</a>
-        </h1>
-      </td></tr>
-      <tr><td>
-                                    <p>
+                                                                    <h1>
+      <a name="Build-Test Framework">Build-Test Framework</a>
+    </h1>
+                        <p>
     The
     <a href="http://svn.apache.org/viewvc/incubator/harmony/enhanced/buildtest/">
       <i>build-test framework</i></a> is a simple configuration of
@@ -219,10 +215,10 @@ limitations under the License.
     a framework for continuous build process. It also includes all the
     necessary support to simplify installation.
 </p>
-                                                <p>
+                                <p>
     Currently, the framework does the following distinct tasks, in order,
     and only when code changes in the repository:</p>
-                                                <ol>
+                                <ol>
         <li>Update the source for the class library from SVN</li>
         <li>Get any new dependencies needed for building the class library</li>
         <li>Build and test the class library</li>
@@ -230,59 +226,44 @@ limitations under the License.
         <li>Get and build any new dependencies needed for DRLVM</li>
         <li>Build and test the DRLVM</li>
     </ol>
-                           
-      </td></tr>
-    </table>
-    <p><a href="#top">Back to top</a></p>
-                                                <table  cellspacing="0" cellpadding="2" width="100%">
-      <tr><td>
-        <h1>
-          <a name="Setup and Configuration">Setup and Configuration</a>
-        </h1>
-      </td></tr>
-      <tr><td>
-                                        
-      <tr><td>
-            <h2>
-          <a name="Prerequisites">Prerequisites</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>You need to obtain and install the same <a href="../../../docs/quickhelp_contributors.html">tools</a>, 
+                <p><a href="#top">Back to top</a></p>
+                                                <h1>
+      <a name="Setup and Configuration">Setup and Configuration</a>
+    </h1>
+                            
+    <h2>
+        <a name="Prerequisites">Prerequisites</a>
+    </h2>
+      
+                        <p>You need to obtain and install the same <a href="../../../docs/quickhelp_contributors.html">tools</a>, 
     as for building the Apache Harmony
     components.</p>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="Setup">Setup</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="Setup">Setup</a>
+    </h2>
+      
+                        <p>
        Get the <code>/harmony/enhanced/buildtest/</code> part of the Apache
        Harmony project via <code>zip</code> or <code>tgz</code> files. You also can 
        check it out from the project Subversion repository:</p>
-                                                <pre>svn co https://svn.apache.org/repos/asf/incubator/harmony/enhanced/buildtest/trunk</pre>
-                                                <p>
+                                <pre>svn co https://svn.apache.org/repos/asf/incubator/harmony/enhanced/buildtest/trunk</pre>
+                                <p>
        With Java, Ant and SVN installed, change into the <code>buildtest/trunk</code>
        directory and type:
     </p>
-                                                <pre>ant setup</pre>
-                                                <p>
+                                <pre>ant setup</pre>
+                                <p>
        This command fetches <code>CruiseControl</code>, sets it up with the Apache Harmony
        configuration, and checks out the software for building and testing 
        from Apache Harmony.
     </p>
-                                                <p>
+                                <p>
        To run the tests successfully, you need to do the
        following manual steps for now:
     </p>
-                                                <ol>
+                                <ol>
       <li>
          Build the classlib to create the <code>deploy/jdk</code> tree in classlib, 
          first fetching the dependencies:
@@ -306,32 +287,22 @@ tar zxf Harmony-vme-linux.IA32-v4.tar.gz</pre>
         </li>
 
     </ol>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="Starting CruiseControl">Starting CruiseControl</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="Starting CruiseControl">Starting CruiseControl</a>
+    </h2>
+      
+                        <p>
         To start the system, type the following command in 
         <code>buildtest/trunk</code>: 
     </p>
-                                                <pre>ant</pre>
-                                                <p>The given command launches <code>CruiseControl</code> with the full test set. 
+                                <pre>ant</pre>
+                                <p>The given command launches <code>CruiseControl</code> with the full test set. 
     To check status, point your browser to:</p>
-                                                <pre>http://localhost:8080/</pre>
-                            
-      </td></tr>
-       
-                           
-      </td></tr>
-    </table>
-    <p><a href="#top">Back to top</a></p>
+                                <pre>http://localhost:8080/</pre>
+                   
+                <p><a href="#top">Back to top</a></p>
                     
                                                             </td>
                 </tr>

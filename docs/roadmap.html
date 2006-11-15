@@ -204,39 +204,28 @@ limitations under the License.
                 </ul>
                         </td>
                     <td width="80%" valign="top"><a name="top"></a>
-                                                                    <table  cellspacing="0" cellpadding="2" width="100%">
-      <tr><td>
-        <h1>
-          <a name="Roadmap and TODO">Roadmap and TODO</a>
-        </h1>
-      </td></tr>
-      <tr><td>
-                                    <p>
+                                                                    <h1>
+      <a name="Roadmap and TODO">Roadmap and TODO</a>
+    </h1>
+                        <p>
       Are roadmap and goals are always subject to discussion on the
       <a href="mailing.html">developer's list.</a>  As new people join with new focus and
       interests, the things we do as a project adapt.
     </p>
-                                                <p>
+                                <p>
          If you have an idea, come join the community and talk about it.  Note that you will
          need to subscribe to the <a href="mailing.html">mail list</a>
      </p>
-                           
-      </td></tr>
-    </table>
-    <p><a href="#top">Back to top</a></p>
-                                                <table  cellspacing="0" cellpadding="2" width="100%">
-      <tr><td>
-        <h1>
-          <a name="High-Level Roadmap">High-Level Roadmap</a>
-        </h1>
-      </td></tr>
-      <tr><td>
-                                    <p>
+                <p><a href="#top">Back to top</a></p>
+                                                <h1>
+      <a name="High-Level Roadmap">High-Level Roadmap</a>
+    </h1>
+                        <p>
          Our project goal is an open source, compatible implementation of Java SE 5.
          It's a major task being done by a community of volunteers.  Thus, the following
          is an approximate roadmap for what the project hopes to achieve in the next year.
          </p>
-                                                <ul>
+                                <ul>
              <li>
                  <font color="green"><b>DONE</b></font>  <strike>Aug 2006 : 85% of Java SE 5 class library coverage </strike>
              </li>
@@ -282,29 +271,22 @@ limitations under the License.
                  Q2 2007 : Apache Harmony SE 5 JDK and JRE released
              </li>
          </ul>
-                           
-      </td></tr>
-    </table>
-    <p><a href="#top">Back to top</a></p>
-                                                <table  cellspacing="0" cellpadding="2" width="100%">
-      <tr><td>
-        <h1>
-          <a name="TODO List">TODO List</a>
-        </h1>
-      </td></tr>
-      <tr><td>
-                                    <p>
+                <p><a href="#top">Back to top</a></p>
+                                                <h1>
+      <a name="TODO List">TODO List</a>
+    </h1>
+                        <p>
              The following is a collection of things that the project community
              has listed as needing to be done.  This list is not exhaustive.  If
              you wish to add an item to this list, or discuss or even volunteer
              to work on an item, please join us on the <a href="mailing.html">Harmony
              mail list.</a>
          </p>
-                                                <p>
+                                <p>
              The following sections describe the high-level areas of effort, and
              tasks that have been identified for those areas.
          </p>
-                                                <ol>
+                                <ol>
              <li><a href="#General">General</a></li>
              <li><a href="#Build Engineering">Build Engineering</a></li>
              <li><a href="#Build-Test Framework">Build-Test Framework</a></li>
@@ -315,22 +297,19 @@ limitations under the License.
              <li><a href="#Application-Driven Project Advancement">Application-Driven Project Advancement</a></li>
 
              </ol>
-                                                    
-      <tr><td>
-            <h2>
-          <a name="General">General</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <strong>1. Switch To Java 5</strong>
-                                                <p>
+                                    
+    <h2>
+        <a name="General">General</a>
+    </h2>
+      
+                        <strong>1. Switch To Java 5</strong>
+                                <p>
               We neeed to complete our transition to Java 5, in both the class library
               as well as the projects virtual machines.  Currently, the DRLVM virtual
               machine can accept Java 5 class file format, although it doesn't yet
               have full support of Java 5.  So to finish, we need :
           </p>
-                                                <ul>
+                                <ul>
               <li>
                   Full support for Java 5 in DRLVM
               </li>
@@ -341,8 +320,8 @@ limitations under the License.
                   Continue to complete the new Java 5 additions to the classlibrary.
               </li>
           </ul>
-                                                <strong>2. JDK tools</strong>
-                                                <p>
+                                <strong>2. JDK tools</strong>
+                                <p>
               As part of the JDK that Harmony will distribute, we'll include
               the full set of tools that Java programmers expect to find in
               any JDK.  For maximum portablility, we plan to write all of the
@@ -350,7 +329,7 @@ limitations under the License.
               code that starts the VM and invokes the tool.  Currently, we have
               javac completed via the Eclipse compiler, but we need the following :
           </p>
-                                                <ul>
+                                <ul>
               <li>
                   javac (Done), javadoc, apt, appletviewer, jar, jdb, javah, javap, extcheck
               </li>
@@ -370,47 +349,42 @@ limitations under the License.
                   htmlconverter, javaws
               </li>
           </ul>
-                                                <p>
+                                <p>
               Again, we have the portable launcher framework - we just need volunteers.
           </p>
-                                                <strong>3. Modularity</strong>
-                                                <p>
+                                <strong>3. Modularity</strong>
+                                <p>
             From the beginning of our project, we've had a strong interest and focus
             on modularity  This dedication has paid off in our class library development,
             as we've been able to evaluate competing implementations of RMI and math, as
             well as allow developers to isolate development on one module.
         </p>
-                                                <p>
+                                <p>
              The modularity story for the class library is reasonable complete at this
              point, as we have completed the modularization of the native code as well.
              However, there is plenty of work to be done with our virtual machines - the
              goal being able to define a set of standard interfaces to which modular
              VM components can be written.
          </p>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="Build Engineering">Build Engineering</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="Build Engineering">Build Engineering</a>
+    </h2>
+      
+                        <p>
           Build engineering in Harmony is a complicated subject, as we are building
           on multiple platforms in multiple languages.  So far, we have support for
           our Windows and Linux ports, but our porting plans indiciate that we'll need
           to revisit given the differnet toolchains.  There are many things to do
           in this area, many not listed.
        </p>
-                                                <p>
+                                <p>
           Currently, the project has been releasing snapshots of our class library,
           but now that we have the DRLVM virtual machine, we can start doing complete
           snapshot builds of a JRE, as well as the HDK
       </p>
-                                                <ul>
+                                <ul>
         <li>
             Switch to use system libraries, dynamically where appropriate
             - libz, libpng, libjpeg, liblcms, libicu*, etc.
@@ -443,30 +417,25 @@ limitations under the License.
               linux.
           </li>
       </ul>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="Build-Test Framework">Build-Test Framework</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="Build-Test Framework">Build-Test Framework</a>
+    </h2>
+      
+                        <p>
       The goal of this part of the Harmony project, the build-test framework,
       is make it easy for anyone to setup the CI infrastructure for the
       project and submit automated reports on building and testing of the
       project codebase on that platform.
     </p>
-                                                <p>
+                                <p>
         There is an
         <a href="http://svn.apache.org/viewvc/incubator/harmony/enhanced/buildtest/">
         initial implementation</a> in place in SVN, but much more work is needed.
         Ideas include :
     </p>
-                                                <ul>
+                                <ul>
       <li>
           Send mail to project on success/fail transition
       </li>
@@ -489,24 +458,19 @@ limitations under the License.
            Externalize local properties into a 'test.properties' file for easy of localization.
        </li>
       </ul>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="Performance, Stability and Reliability">Performance, Stability and Reliability</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="Performance, Stability and Reliability">Performance, Stability and Reliability</a>
+    </h2>
+      
+                        <p>
           Our goal is a high-performance, stable and compatible implementation of Java SE 5.
           While passing the TCK is a measure of compatibility with the standard,
           performance and stability is something that must be achieved independently.
           Currently, we have no performance activity in the project.  We are looking to :
        </p>
-                                                <ol>
+                                <ol>
           <li>
               Define a set of stress, stability and performance tests that are
               freely available and easy to automate in our
@@ -520,23 +484,18 @@ limitations under the License.
              Identify and fix stability and performance problems.
           </li>
       </ol>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="Class Library">Class Library</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="Class Library">Class Library</a>
+    </h2>
+      
+                        <p>
           The  class library is an important (and large!) part of the Java SE
           platform.  While we have made significant progress so far (~80% at last
           check), there are many, many interesting things remaining to be done
       </p>
-                                                <ul>
+                                <ul>
           <li>
               <a href="subcomponents/classlibrary/status.html">General package completion</a>
           </li>
@@ -563,35 +522,25 @@ limitations under the License.
               Make final decision on RMI, Math, and crypto implementations.
           </li>
       </ul>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="DRLVM">DRLVM</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="Porting Matrix">Porting Matrix</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="DRLVM">DRLVM</a>
+    </h2>
+      
+           
+                                    
+    <h2>
+        <a name="Porting Matrix">Porting Matrix</a>
+    </h2>
+      
+                        <p>
     Another motivation of the Harmony project is to provide a
       portable implementation that is available on many
       platforms and operating systems.  Currently, our interests
       are :
    </p>
-                                                <table>
+                                <table>
                         <tr>
                         <th class="TableHeading" colspan="" rowspan="">
                 Chipset
@@ -766,18 +715,13 @@ limitations under the License.
         </td>
             </tr>
             </table>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="Application-Driven Project Advancement">Application-Driven Project Advancement</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="Application-Driven Project Advancement">Application-Driven Project Advancement</a>
+    </h2>
+      
+                        <p>
           As we now have a fairly usable class library and virtual machine, we wish to
           make it easy for the broad Java user community to help us ensure that
           the Harmony class library supports the classes necessary for the most popular
@@ -787,7 +731,7 @@ limitations under the License.
           the project.  So far, there have been a few tools donated, but no concerted
           effort to package for ease of use.
       </p>
-                                                <ul>
+                                <ul>
           <li>
               Harmony-165 - tool to compare an applications required classes
               with what is available in Harmony
@@ -796,13 +740,8 @@ limitations under the License.
               Harmony-565 - another tool for reporting class coverage for apps
           </li>
       </ul>
-                            
-      </td></tr>
-       
-                           
-      </td></tr>
-    </table>
-    <p><a href="#top">Back to top</a></p>
+                   
+                <p><a href="#top">Back to top</a></p>
                     
                                                             </td>
                 </tr>

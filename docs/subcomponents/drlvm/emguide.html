@@ -204,39 +204,27 @@ limitations under the License.
                 </ul>
                         </td>
                     <td width="80%" valign="top"><a name="top"></a>
-                                                                    <table  cellspacing="0" cellpadding="2" width="100%">
-      <tr><td>
-        <h1>
-          <a name="Guide to Execution Manager Configuration">Guide to Execution Manager Configuration</a>
-        </h1>
-      </td></tr>
-      <tr><td>
-                                        
-      <tr><td>
-            <h2>
-          <a name="Contents">Contents</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <ol>
+                                                                    <h1>
+      <a name="Guide to Execution Manager Configuration">Guide to Execution Manager Configuration</a>
+    </h1>
+                            
+    <h2>
+        <a name="Contents">Contents</a>
+    </h2>
+      
+                        <ol>
 <li><a href="#1. What is EM?">What is EM?</a></li>
 <li><a href="#2. EM Configuration File">EM Configuration File</a></li>
 <li><a href="#3. EM Tracing Options">EM tracing options</a></li>
 <li><a href="#4. More EM Configuration Samples">More EM Configuration Samples</a></li>
 </ol>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="1. What is EM?">1. What is EM?</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="1. What is EM?">1. What is EM?</a>
+    </h2>
+      
+                        <p>
 Execution Manager (EM) is a component in DRLVM that controls 
 profile collection and recompilation processes.
 <br />
@@ -244,18 +232,13 @@ For detailed information on EM can be found, see the
  <a href="http://svn.apache.org/viewcvs.cgi/*checkout*/incubator/harmony/enhanced/drlvm/trunk/vm/doc/DeveloperGuide.htm#EM">
 DRLVM Developers Guide</a>
 </p>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="2. EM Configuration File">2. EM Configuration File</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="2. EM Configuration File">2. EM Configuration File</a>
+    </h2>
+      
+                        <p>
 The set of JIT compilers and profile collectors used at run time and their
  relations is stored in the <i>EM configuration file</i>.
 During the VM initialization phase, EM uses hard-coded configuration or reads 
@@ -268,13 +251,13 @@ configuration from the file:<br />
 or   <br />
 <code>-Dem.properties=&lt;configuration.file.path&gt;</code>
 </p>
-                                                <p>
+                                <p>
 The following is a line-by-line description of the default EM configuration. 
 These configuration settings can be used as a prototype to create 
 new custom EM configuration files.
 The default configuration is:
 </p>
-                                                <p><pre>
+                                <p><pre>
 chains=chain1,chain2
 
 chain1.jits=JET_CLINIT
@@ -295,22 +278,22 @@ JET_DPGO_PROFILE. mode=SYNC
 JET_DPGO_PROFILE.entryThreshold=10000
 JET_DPGO_PROFILE.backedgeThreshold=100000
 </pre></p>
-                                                <p>A line-by-line description of the settings follows. </p>
-                                                <pre>
+                                <p>A line-by-line description of the settings follows. </p>
+                                <pre>
 chains=chain1,chain2
 </pre>
-                                                <p>
+                                <p>
 Every EM configuration file must define the <code>chains</code> property 
 to indicate sequences of JIT compilers to be used to compile and/or recompile
  a method. In this example, two recompilation chains are set for the system: 
 <code>chain1</code> and <code>chain2</code>. EM analyzes chains until it has 
 chosen the chain for the method. 
 </p>
-                                                <pre>
+                                <pre>
 chain1.jits=JET_CLINIT
 chain2.jits=JET_DPGO,OPT
 </pre>
-                                                <p>
+                                <p>
 In this case, <code>chain1</code> has one JIT compiler 
 <code>JET_CLINIT</code>, and <code>chain2</code> has
  two compilers: <code>JET_DPGO</code> and <code>OPT</code>.
@@ -319,17 +302,17 @@ and passes the names to JIT instances during initialization.
 A compiler instance can use its name to distinguish between 
 its own properties and those of other JITs.  <br />
 </p>
-                                                <p>
+                                <p>
 <b>Note:</b> Jitrino, the current default DRLVM JIT compiler, 
 selects Jitrino.JET (fast, non-optimizing compiler) if the name 
 starts with the <code>JET</code> prefix. Otherwise, the JIT 
 instance is treated as Jitrino.OPT.
 </p>
-                                                <pre>
+                                <pre>
 chain1.filter=+::&lt;clinit&gt; 
 chain1.filter=-
 </pre>
-                                                <p>
+                                <p>
 Method filters are used to select methods that will be compiled
  by the first JIT in a chain. 
 In this example, the first line configures <code>chain1</code> 
@@ -349,8 +332,8 @@ that the method is accepted to be compiled by the chain.
 <br />
 Here is a format of all currently supported method filters. 
 </p>
-                                                <br />
-                                                <table>
+                                <br />
+                                <table>
                         <tr>
                         <td class="TableCell" colspan="" rowspan="" >
     
@@ -438,28 +421,28 @@ NUM or NUM..NUM
         </td>
             </tr>
             </table>
-                                                <br />
-                                                <p>
+                                <br />
+                                <p>
 <b>Note:</b> The sequential method number could be changed from run 
 to run in multithreaded environments. 
 </p>
-                                                <p><pre>
+                                <p><pre>
 JET_CLINIT.file=&lt;path to dll&gt;
 JET_DPGO.file=&lt;path to dll&gt;
 OPT.file=&lt;path to dll&gt;
 </pre></p>
-                                                <p>
+                                <p>
 For every JIT, the configuration file must define the location of the library
  file location.
 Multiple JIT compilers can be associated with the same library. 
 For example, all paths can point to the same jit.dll file. 
 </p>
-                                                <p><pre>
+                                <p><pre>
 JET_DPGO.genProfile=JET_DPGO_PROFILE
 JET_DPGO_PROFILE.profilerType=ENTRY_BACKEDGE_PROFILER
 OPT.useProfile=JET_DPGO_PROFILE
 </pre></p>
-                                                <p>
+                                <p>
 These settings define profile collection and recompilation event 
 configuration for two JIT compilers: <code>JET_DPGO</code> 
 and <code>OPT</code>.
@@ -483,12 +466,12 @@ profiles of this type. </li>
 <li>Registers the profile collector as active. </li>
 </ol>
 </p>
-                                                <p><pre>
+                                <p><pre>
 JET_DPGO_PROFILE. mode=SYNC
 JET_DPGO_PROFILE.entryThreshold=10000
 JET_DPGO_PROFILE.backedgeThreshold=100000 
 </pre></p>
-                                                <p>
+                                <p>
 The last 4 lines contain the configuration of the <code>JET_DPGO_PROFILE</code>
  profiler. These properties are specific for every profile collector type. 
 The first option runs entry-backedge profile mode in the SYNC mode: counters 
@@ -497,18 +480,13 @@ checking in a separate thread. The last 2 options set the profile readiness
 threshold. Once the profile is ready, EM dispatches the method for 
 recompilation with the next JIT in the current chain.
 </p>
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="3. EM Tracing Options">3. EM Tracing Options</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                   
+                                    
+    <h2>
+        <a name="3. EM Tracing Options">3. EM Tracing Options</a>
+    </h2>
+      
+                        <p>
 Use the following command-line options to trace EM events:
 <br />
 <code>-verbose:em</code> dumps all EM events.<br />
@@ -517,10 +495,10 @@ Use the following command-line options to trace EM events:
 <code>-verbose:em.profiler.PROFILER_NAME</code> dumps only profiler
  "<code>PROFILER_NAME</code>" related events.<br />
 </p>
-                                                <p class="example">
+                                <p class="example">
     Example
   </p>
-                                                <p class="exampletext">
+                                <p class="exampletext">
 For the default EM configuration file, 
 <br /><code>
 -verbose:em.OPT 
@@ -528,15 +506,15 @@ For the default EM configuration file,
 Jitrino.OPT. According to the configuration details, these methods 
 are hot methods.
 </p>
-                                                <p class="exampletext">Alternatively, you can get almost the same information by using 
+                                <p class="exampletext">Alternatively, you can get almost the same information by using 
 the following: 
 <br /><code>
 -verbose:em.profiler.JET_DPGO_PROFILE 
 </code><br /> additionally dumps information about hot method profiles.
 </p>
-                                                <p class="example">Examples of output:</p>
-                                                <br />
-                                                <code>
+                                <p class="example">Examples of output:</p>
+                                <br />
+                                <code>
 C:\tools\decapo&gt;c:\tools\harmony0706\bin\java.exe  -verbose:em.OPT -jar dacapo-beta051009.jar xalan<br />
 EM: recompile start:[OPT n=1] java/io/ByteArrayOutputStream::write(I)V<br />
 EM: recompile done:[OPT n=1] java/io/ByteArrayOutputStream::write(I)V<br />
@@ -555,19 +533,14 @@ EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/nio/Buffer::r
 EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/util/HashMap::getModuloHash(Ljava/lang/Object;)I<br />
 ...  <br />
 </code>
-                                                <br />
-                            
-      </td></tr>
-       
-                                                    
-      <tr><td>
-            <h2>
-          <a name="4. More EM Configuration Samples">4. More EM Configuration Samples</a>
-            </h2>
-      </td></tr>
-      <tr><td>
-        
-                                    <p>
+                                <br />
+                   
+                                    
+    <h2>
+        <a name="4. More EM Configuration Samples">4. More EM Configuration Samples</a>
+    </h2>
+      
+                        <p>
     DRLVM has several EM configurations supplied in the following files:
     <code>client.emconf</code> (the default), <code>opt.emconf</code>, <code>jet.emconf</code>,
     <code>server.emconf</code> and <code>server_static.emconf</code>.<br />
@@ -577,33 +550,33 @@ EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/util/HashMap:
     prefix in the name is a Jitrino.JET instance. <br />
     Another difference in these configurations are options passed to the JIT compiler.
   </p>
-                                                <p><i>These configurations have only one JIT and no profile collection or recompilation.</i></p>
-                                                <p><b>
+                                <p><i>These configurations have only one JIT and no profile collection or recompilation.</i></p>
+                                <p><b>
   <code>-Xem:jet</code> - the baseline compiler mode configuration</b></p>
-                                                <p><pre>
+                                <p><pre>
 chains=chain1
 chain1.jits=JET
 JET.file=&lt;path to dll&gt;
 </pre></p>
-                                                <p><b>
+                                <p><b>
   <code>-Xem:opt</code> - the client-static mode configuration</b></p>
-                                                <p><pre>
+                                <p><pre>
 chains=chain1
 chain1.jits=CS_OPT
 OPT.file=&lt;path to dll&gt;
 </pre></p>
-                                                <p><b>
+                                <p><b>
   <code>-Xem:server_static</code> - the server-static mode configuration</b></p>
-                                                <p><pre>
+                                <p><pre>
 chains=chain1
 chain1.jits=SS_OPT
 OPT.file=&lt;path to dll&gt;
 </pre></p>
-                                                <br />
-                                                <p><i>These configurations use recompilation and collect profiles.</i></p>
-                                                <p><b>
+                                <br />
+                                <p><i>These configurations use recompilation and collect profiles.</i></p>
+                                <p><b>
   <code>-Xem:client</code> - the default configuration, or client dynamic</b></p>
-                                                <p><pre>
+                                <p><pre>
 chains=chain1,chain2
 chain1.jits=JET_CLINIT
 chain2.jits=JET_DPGO,CD_OPT
@@ -629,9 +602,9 @@ EB_PROF.mode=SYNC
 EB_PROF.entryThreshold=10000
 EB_PROF.backedgeThreshold=100000
 </pre></p>
-                                                <p><b>
+                                <p><b>
   <code>-Xem:server</code> - the server mode configuration, or server dynamic</b></p>
-                                                <p><pre>
+                                <p><pre>
 chains=chain1,chain2
 chain1.jits=JET_CLINIT
 chain2.jits=SD1_OPT,SD2_OPT
@@ -653,18 +626,13 @@ EDGE_PROF.tbsInitialTimeout=0
 SD1_OPT.genProfile=EDGE_PROF
 SD2_OPT.useProfile=EDGE_PROF
 </pre></p>
-                                                <p class="note">Note</p>
-                                                <p class="notetext">To run VM in the intereter mode, use the <code>-Xint</code> 
+                                <p class="note">Note</p>
+                                <p class="notetext">To run VM in the intereter mode, use the <code>-Xint</code> 
 command-line option to override any other EM settings. Currently, DRLVM does
  not support the mixed mode of the JIT compiler plus interpreter.
 </p>
-                            
-      </td></tr>
-       
-                           
-      </td></tr>
-    </table>
-    <p><a href="#top">Back to top</a></p>
+                   
+                <p><a href="#top">Back to top</a></p>
                     
                                                             </td>
                 </tr>

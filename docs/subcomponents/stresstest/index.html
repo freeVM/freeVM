@@ -204,19 +204,15 @@ limitations under the License.
                 </ul>
                         </td>
                     <td width="80%" valign="top"><a name="top"></a>
-                                                                    <table  cellspacing="0" cellpadding="2" width="100%">
-      <tr><td>
-        <h1>
-          <a name="Test Design">Test Design</a>
-        </h1>
-      </td></tr>
-      <tr><td>
-                                    <p>
+                                                                    <h1>
+      <a name="Test Design">Test Design</a>
+    </h1>
+                        <p>
 		<big><em>The following guidelines are currently PROPOSED and being discussed on the
 		development mailing list <code>harmony-dev@incubator.apache.org</code>.  Please
 		direct comments and questions there.</em></big>
 	</p>
-                                                <P>
+                                <P>
 <UL>
 <LI>Stress tests are built from simple building blocks according to configuration strings.
 </LI>
@@ -234,18 +230,11 @@ cases and put documentation into javadoc for these test cases.
 </LI>
 </UL>
 </P>
-                           
-      </td></tr>
-    </table>
-    <p><a href="#top">Back to top</a></p>
-                                                <table  cellspacing="0" cellpadding="2" width="100%">
-      <tr><td>
-        <h1>
-          <a name="Further Steps">Further Steps</a>
-        </h1>
-      </td></tr>
-      <tr><td>
-                                    <P>
+                <p><a href="#top">Back to top</a></p>
+                                                <h1>
+      <a name="Further Steps">Further Steps</a>
+    </h1>
+                        <P>
 <UL>
 <LI>Stress tests are expected to generate relevant bugs. Since
 usually stress behavior is unspecified, we need to introduce something
@@ -257,38 +246,31 @@ This would be a real-life testing for our approach.
 </LI>
 </UL>
 </P>
-                           
-      </td></tr>
-    </table>
-    <p><a href="#top">Back to top</a></p>
-                                                <table  cellspacing="0" cellpadding="2" width="100%">
-      <tr><td>
-        <h1>
-          <a name="Comparative Approach">Comparative Approach</a>
-        </h1>
-      </td></tr>
-      <tr><td>
-                                    <P>
+                <p><a href="#top">Back to top</a></p>
+                                                <h1>
+      <a name="Comparative Approach">Comparative Approach</a>
+    </h1>
+                        <P>
  The simplest example of comparative apporach is the following.
 </P>
-                                                <BLOCKQUOTE>
+                                <BLOCKQUOTE>
  	Tester: My test fails on Harmony VM and passes on RI. Please,
  fix Harmony VM.
 </BLOCKQUOTE>
-                                                <P>
+                                <P>
  This usually does not work for stress tests.
 </P>
-                                                <BLOCKQUOTE>
+                                <BLOCKQUOTE>
  	Developer: Who told you that OutOfMemoryError should be thrown
  in your thread? My finalizer thread is just a normal java thread, like
  yours, and it can fail as well. You have a bug in your test. 
 </BLOCKQUOTE>
-                                                <P>
+                                <P>
  
  There are multiple reasons why we always will have such bugs in the
  tests.
 </P>
-                                                <UL>
+                                <UL>
 <LI>These bugs keep showing up. The time to fix all these bugs
  regularly is too high.
 </LI>
@@ -301,20 +283,20 @@ This would be a real-life testing for our approach.
 <LI>Sometimes Java is not rich enough.
 </LI>
 </UL>
-                                                <P>
+                                <P>
  How can we have a maintainable test product takung all this limitation
  into account? We need to learn how to live with occasional failures of
  the stress tests. This means, instead of fail, the test should better
  report how good it is on Harmony VM compared to RI:
 </P>
-                                                <UL>
+                                <UL>
 <LI>Failures with the worst relative metric can be evaluated first</LI>
 <LI>We can detect that a relative metric for a test worsened on the recent build</LI>
 </UL>
-                                                <P>
+                                <P>
 Developers are better convinsed to fix "the worst issue" or "dergadation" instead of "some issue".
 </P>
-                                                <P>
+                                <P>
 
 Several metrics for each test:
 <UL>
@@ -335,10 +317,7 @@ Several metrics for each test:
 </LI>
 </UL>
 </P>
-                           
-      </td></tr>
-    </table>
-    <p><a href="#top">Back to top</a></p>
+                <p><a href="#top">Back to top</a></p>
                     
                                                             </td>
                 </tr>
