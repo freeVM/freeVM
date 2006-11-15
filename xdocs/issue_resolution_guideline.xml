@@ -26,78 +26,78 @@
 
 <body>
 
-	<section name="Preface">
+	<section name="Good Issue Resolution Guideline">
     <p>
-        This guideline covers a wide range of issues but not all of them.
-        If you cannot do one of the steps, then write a comment to the issue.
+      This guideline provides step-by-step instructions on reporting, resolving 
+      and closing issues. If you cannot do one of the steps, then write a comment to the issue.
     </p>
-    <p>
-        Use your common sense!
-    </p>
-    </section>
+       
+    <subsection name="Reporting Issues">
     
-    <section name="Issue reporter">
-    <p>
     <ol>
-        <li>Explicitly state the expected behavior and the</li>
-            actual behavior of Harmony code. Use links to specs, rfcs, etc.
-        <li>Try to create as small test case as possible. A patch
-            to test will be highly appreciated.</li>
-        <li>Provide max. information about steps necessary to recreate the bug.
+        <li>State the expected behavior and the
+            actual behavior of Harmony code explicitly. Use links to 
+            specifications, references, etc.</li>
+        <li>Create a test case as small as possible. A patch
+            to test is highly appreciated.</li>
+        <li>Provide maximum information about steps necessary to reproduce the bug.
             If a patch for the test has not been supplied, provide as much
-            diagnostic information about the failure as possible (stack trace,
-            failure output, expected output etc).</li>
-        <li>Remember to use issue links if applicable.</li>
-        <li>Check the issue resolution when it is committed. Add a comment.</li>
+            diagnostic information about the failure as possible: stack trace,
+            failure output, expected output, etc.</li>
+        <li>Use issue links if applicable.</li>
+        <li>Check the issue resolution, when it is committed. Add a comment.</li>
     </ol>
-    </p>
-    </section>
+   
+    </subsection>
 
-    <section name="Resolution provider :)">
-    <p>
-        Depending on the type of issue, do the following:
-    <ol>
-        <li>
-            Issue is probably a non-bug difference, not a bug or invalid:
+    <subsection name="Resolving Issues">
+      <p>To resolve an issue, define its type first.</p>
+    <p>   
+            If <i>the issue is a non-bug difference, not a bug or invalid</i>,
+            you should do the following:</p>
             <ol>
-                <li>Discuss on the dev list.</li>
-                <li>Add a link to the discussion thread as a comment to issue.</li>
+                <li>Discuss the issue on the 
+                <a href="mailing.html">developer mailing list</a>.</li>
+                <li>Add a link to the discussion thread as a comment to the issue.</li>
             </ol>
-        </li>
-        <li>
-            Issue is a bug:
+        
+       <p>If <i>the issue is a bug</i>, you should do the following:</p>:
             <ol>
-                <li>Notify the community that you started investigation by adding
-                a comment to the issue and send a message to dev list. If you cannot
-                produce a patch, add another comment with the results of your investigation.</li>
+                <li>
+                  Notify the community that you started investigation by adding
+                  a comment to the issue and send a message to the 
+                  <a href="mailing.html">developer mailing list</a>.
+                  If you cannot create a patch, add another comment with your 
+                  investigation results.</li>
                 <li>If reporter did not provide a patch to test:
-                    <ol>
+                    <ul>
                         <li>Try to create a patch to test.</li>
-                        <li>If you cannot produce a patch, write a comment about it.</li>
-                    </ol>
+                        <li>If you cannot create a patch, write a comment about it.</li>
+                    </ul>
                 </li>
-                <li>Create a patch to fix the issue. Any concerns? Discuss on the dev list. 
-                Add a link to discussion as a comment.</li>
-                <li>All the pacthes (test and fix) should be relative to the directory where 
-                the main build.xml is: https://svn.apache.org/repos/asf/incubator/harmony/enhanced/classlib/trunk.
-                Or to the module root directory.</li>
+                <li>
+                  Create a patch to fix the issue. If you have any questions,
+                  discuss them on the <a href="mailing.html">developer mailing list</a>.
+                  Add a link to the discussion as a comment.</li>
+                <li>All pacthes, such as tests and fixes, should be relative to the directory where 
+                the main <code>build.xml</code> is:<br/>
+                <code>https://svn.apache.org/repos/asf/incubator/harmony/enhanced/classlib/trunk</code>,<br/>
+                or to the module root directory.</li>
                 <li>Test and fix patches should be in different files.</li>
-                <li>If the patch requires to add, remove or move some files in the repository, add the appropriate script.</li>
+                <li>If the patch requires adding, removing or moving some files in the repository, 
+                provide the appropriate script.</li>
                 <li>Check that all unit tests pass.</li>
-                <li>If it is an application-oriented issue, check the application.</li>
-                <li>Remember to use issue links if applicable.</li>
+                <li>If the issue is application-oriented, check the application.</li>
+                <li>Use issue links if applicable.</li>
             </ol>
-        </li>
-    </ol>
-    </p>
-    </section>
+      
+    </subsection>
 
-    <section name="Committer">
+    <subsection name="Closing Issues">
+      <p>To close an issue, define its type first.</p>
     <p>
-        Depending on the issue type, do:
-        <ol>
-            <li>Issue is a non-bug difference, not a bug or invalid: close the issue.</li>
-            <li>Issue is a bug:
+       If <i>the issue is a non-bug difference, not a bug or invalid</i>, you should close the issue.</p>
+            <p>If <i>the issue is a bug</i>, you should do the following: </p>
                 <ol>
                     <li>If a patch to test is available, apply it.</li>
                     <li>Check that the test fails.</li>
@@ -105,14 +105,13 @@
                     <li>Check that test succeeds now.</li>
                     <li>Make sure that all unit tests pass.</li>
                     <li>For application-oriented issues, check the application.</li>
-                    <li>If there are problems on previous steps, post a comment to
-                    JIRA and let "resolution provider" to resolve.</li>
+                    <li>If there are any problems on previous steps, post a comment to
+                    JIRA and let "resolution provider" resolve them.</li>
                     <li>Make sure that the issue reporter is happy with the resolution.</li>
-                    <li>Add revision info into JIRA issue.</li>
+                    <li>Add revision info into the JIRA issue.</li>
                 </ol>
-            </li>
-        </ol>
-    </p>
-    </section>
+         
+    </subsection>
+  </section>
 </body>
 </document>
