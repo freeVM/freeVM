@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cruisecontrol>
 
-    <project name="classlib-deps">
+    <!--The cc.property file contains the name and values of properties-->
+    <property file="cc.properties" />
+    <property name="cl.prefix" value="[continuum] ${os} ${cc}: classlib"/>
+    <property name="vm.prefix" value="[continuum] ${os} ${cc}: drlvm"/>
+
+
+    <project name="classlib">
 
         <listeners>
             <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
@@ -15,90 +21,45 @@
             <svn localWorkingCopy="projects/classlib/trunk"/>
         </modificationset>
 
-        <schedule interval="300">
-        	<ant antWorkingDir="projects/classlib/trunk" target="fetch-depends"/>
-        </schedule>
-
-        <log>
-            <merge dir="projects/${project.name}/target/test-results"/>
-        </log>
-    </project>
-
-    <project name="classlib">
-
-        <listeners>
-            <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
-        </listeners>
-
-        <bootstrappers>
-            <svnbootstrapper localWorkingCopy="projects/${project.name}/trunk" />
-        </bootstrappers>
-
-	    <modificationset>
-	        <buildstatus logdir="logs/classlib-deps"/>
-	    </modificationset>
-
-        <schedule interval="300">
-        	<ant antWorkingDir="projects/${project.name}/trunk" />
-        </schedule>
-
-        <log>
-            <merge dir="projects/${project.name}/target/test-results"/>
-        </log>
-
-    </project>
-
-    <project name="classlib-tests">
-
-        <listeners>
-            <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
-        </listeners>
-
-        <bootstrappers>
-            <svnbootstrapper localWorkingCopy="projects/classlib/trunk" />
-        </bootstrappers>
-
-	    <modificationset>
-	        <buildstatus logdir="logs/classlib"/>
-	    </modificationset>
-
-        <schedule interval="300">
-        	<ant target="test" antWorkingDir="projects/classlib/trunk">
-        	    <jvmarg arg="-Xmx384M"/>
+        <schedule interval="${timeout}">
+        	<ant target="fetch-depends rebuild test" antWorkingDir="projects/${project.name}/trunk" timeout="${ttimeout}" usedebug="false">
+        	    <property name="${proxy.host.property}" value="${proxy.value}"/>
+        	    <property name="${proxy.port.property}" value="${port.value}"/>
+        	    <jvmarg arg="-Dtest.jre.home=${wdir}/projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/deploy/jre" />
+        	    <jvmarg arg="-Dhy.test.forkmode=perTest" />
+        	    <jvmarg arg="-Xms200M" />
+        	    <jvmarg arg="-Xmx700M" />
         	</ant>
         </schedule>
 
-        <log>
-            <merge dir="projects/${project.name}/target/test-results"/>
+        <log dir="logs/${project.name}">
+            <merge dir="projects/${project.name}/trunk/build/test_report" pattern="TEST-*.xml" />
         </log>
 
-    </project>
-   
-    <project name="drlvm-deps">
+	<publishers>
+            <antpublisher   
+                 antworkingdir="."  
+                 buildfile="copyres.xml"  
+                 uselogger="true"  
+                 usedebug="false"  
+                 target="copy.res"> 
+                <property name="VM" value="drlvm"/> 
+            </antpublisher> 
+            <htmlemail mailhost="${server_addr}"
+                returnaddress="${report_from}"
+                subjectprefix="${cl.prefix}"
+                skipusers="true"
+                spamwhilebroken="false"
+                css="${cc_webcontent}/css/cruisecontrol.css"
+                xsldir="${cc_webcontent}/xsl"
+                logdir="logs/${project.name}">
 
-        <listeners>
-            <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
-        </listeners>
-
-        <bootstrappers>
-            <svnbootstrapper localWorkingCopy="projects/drlvm/trunk" />
-        </bootstrappers>
-
-        <modificationset quietperiod="30">
-	        <buildstatus logdir="logs/classlib"/>
-            <svn localWorkingCopy="projects/drlvm/trunk"/>
-        </modificationset>
-
-        <schedule interval="300">
-        	<exec command="sh" args="build.sh update"  workingdir="projects/drlvm/trunk/build" />
-        </schedule>
-
-        <log>
-            <merge dir="projects/${project.name}/target/test-results"/>
-        </log>
+                <failure address="${report_to}" reportWhenFixed="true"/>
+            </htmlemail>
+	</publishers>
 
     </project>
-    
+
     <project name="drlvm">
 
         <listeners>
@@ -106,47 +67,78 @@
         </listeners>
 
         <bootstrappers>
-            <svnbootstrapper localWorkingCopy="projects/${project.name}/trunk" />
+            <svnbootstrapper localWorkingCopy="projects/drlvm/trunk" />
         </bootstrappers>
 
         <modificationset quietperiod="30">
-	        <buildstatus logdir="logs/drlvm-deps"/>
-            <svn localWorkingCopy="projects/${project.name}/trunk"/>
+            <svn localWorkingCopy="projects/drlvm/trunk"/>
+            <buildstatus logdir="logs/classlib"/>
         </modificationset>
 
-        <schedule interval="300">
-        	<exec command="sh" args="build.sh"  workingdir="projects/drlvm/trunk/build" />
+        <schedule interval="${timeout}">
+        	<exec command="${sh}" args="${cmd.prefix} ${cmd} -D${proxy.host.vm}=${proxy.value} -D${proxy.port.vm}=${port.value} update clean build" workingdir="projects/${project.name}/trunk/build" timeout="${ttimeout}"/>
         </schedule>
 
-        <log>
-            <merge dir="projects/${project.name}/target/test-results"/>
-        </log>
+	<publishers>
+            <htmlemail mailhost="${server_addr}"
+                returnaddress="${report_from}"
+                subjectprefix="${vm.prefix}"
+                skipusers="true"
+                spamwhilebroken="false"
+                css="${cc_webcontent}/css/cruisecontrol.css"
+                xsldir="${cc_webcontent}/xsl"
+                logdir="logs/${project.name}">
+
+                <failure address="${report_to}" reportWhenFixed="true"/>
+            </htmlemail>
+	</publishers>
 
     </project>
 
-    <project name="drlvm-tests">
+    <project name="drlvm-test">
 
         <listeners>
             <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
         </listeners>
 
-        <bootstrappers>
-            <svnbootstrapper localWorkingCopy="projects/drlvm/trunk" />
-        </bootstrappers>
-
-        <modificationset quietperiod="30">
-	        <buildstatus logdir="logs/drlvm"/>
-            <svn localWorkingCopy="projects/drlvm/trunk"/>
+        <modificationset>
+            <buildstatus logdir="logs/drlvm"/>
         </modificationset>
 
-        <schedule interval="300">
-        	<exec command="sh" args="build.sh test"  workingdir="projects/drlvm/trunk/build" />
+        <schedule interval="${timeout}">
+        	<exec command="${sh}" args="${cmd.prefix} ${cmd} -Dvm.assert_dialog=false test" workingdir="projects/drlvm/trunk/build" timeout="${ttimeout}" errorstr="FAILED" />
         </schedule>
 
-        <log>
-            <merge dir="projects/${project.name}/target/test-results"/>
+        <log dir="logs/${project.name}">
+            <!--merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/vm/_smoke.tests/reports" pattern="*.*"/>
+            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/vm/_cunit.tests/report" pattern="*.*"/-->
+            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/jitrino.jet" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/jitrino.opt" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/interpreter" pattern="TEST-*.xml" />
         </log>
 
+	<publishers>
+            <antpublisher   
+                 antworkingdir="."  
+                 buildfile="copyres.xml"  
+                 uselogger="true"  
+                 usedebug="false"  
+                 target="copy.vm.res"> 
+                <property name="BUILD" value="${os}_ia32_${cc}_debug"/> 
+            </antpublisher> 
+            <htmlemail mailhost="${server_addr}"
+                returnaddress="${report_from}"
+                subjectprefix="${vm.prefix}"
+                skipusers="true"
+                spamwhilebroken="false"
+                css="${cc_webcontent}/css/cruisecontrol.css"
+                xsldir="${cc_webcontent}/xsl"
+                logdir="logs/${project.name}">
+
+                <failure address="${report_to}" reportWhenFixed="true"/>
+            </htmlemail>
+	</publishers>
+
     </project>
-    
+
 </cruisecontrol>

@@ -32,7 +32,9 @@ To Setup
    
      svn co https://svn.apache.org/repos/asf/incubator/harmony/enhanced/buildtest/trunk
      
-2) With Java, Ant and SVN installed, change into the buildtest/trunk
+2) Copy cc.properties.example to cc.properties, and update file with actual values.
+
+3) With Java, Ant and SVN installed, change into the buildtest/trunk
    directory and type 
    
       ant setup
@@ -40,28 +42,10 @@ To Setup
    This should fetch CruiseControl, set it up with the Apache Harmony 
    configuration, and checkout the software to be built and tested
    from Apache Harmony.
-   
-3) If you wish to have the tests run successfully, you need to do the 
-   following manual steps for now : 
-   
-   - build the classlib to create the deploy/jdk tree in classlib, first
-     fetching the dependencies
-   
-       cd cc/projects/classlib/trunk
-       ant fetch-depends
-       ant
-   
-   - get the appropriate IBM J9 VM for your platform (this will go 
-     away when DRLVM is good enough
-     
-       http://www-128.ibm.com/developerworks/java/jdk/harmony/index.html    
-     
-   - unpack the above-fetched J9 distribution into the jdk directory (as 
-     the distro assumes it's dropped into the jdk directory...)
-   
-       cd cc/projects/classlib/trunk/deploy/jdk/
-       tar zxf Harmony-vme-linux.IA32-v3.tar.gz
+   Also, as part of setup command the external libs for classlib and drlvm modules 
+   will be downloaded and these modules will be built first time.
 
+   
 To kickoff CruiseControl, just type :
 
       ant
@@ -76,11 +60,9 @@ To kickoff CruiseControl, just type :
  To Do
  -----
  
- 1) Configure CC to send mail to Apache mail lists on transitions
+ 1) Setup defaultcc.properties and personal buildcc.properties
  
- 2) Setup defaultcc.properties and personal buildcc.properties
+ 2) Integrate JAPI tool
  
- 3) Integrate JAPI tool
- 
- 4) Integrate X tool
- 
+ 3) Integrate X tool
+
