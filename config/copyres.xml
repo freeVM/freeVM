@@ -1,0 +1,24 @@
+<project name="copy_results" default="copy.res" basedir=".">
+
+    <tstamp>
+       <format property="timestamp" pattern="yyyyMMdd" />
+    </tstamp>
+
+    <target name="copy.res">
+       <delete file="projects/classlib/trunk/results_${VM}_${timestamp}.zip" failonerror="false" />
+       <zip destfile="projects/classlib/trunk/results_${VM}_${timestamp}.zip"  failonerror="false" >
+           <zipfileset dir="projects/classlib/trunk/build/test_report" includes="**/*.xml" />
+        </zip>
+    </target>
+    <target name="copy.vm.res">
+       <delete file="projects/drlvm/trunk/results_${timestamp}.zip" failonerror="false" />
+       <zip destfile="projects/drlvm/trunk/results_${timestamp}.zip" failonerror="false" >
+            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/vm/_smoke.tests/reports" prefix="smoke/" />
+            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/vm/_cunit.tests/report" prefix="cunit/" />
+            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/jitrino.jet" prefix="jet/" includes="**/*.xml" />
+            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/jitrino.opt" prefix="opt/" includes="**/*.xml" />
+            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/interpreter" prefix="int/" includes="**/*.xml" />
+        </zip>
+    </target>
+</project>
+
