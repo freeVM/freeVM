@@ -39,8 +39,8 @@
 	<mkdir dir="${target.dir}"/>
 	
 	<!-- url of the classlib and drlvm in SVN -->
-	<property name="svn.classlib.url" value="https://svn.apache.org/repos/asf/incubator/harmony/enhanced/classlib/trunk"/>
-	<property name="svn.drlvm.url" value="https://svn.apache.org/repos/asf/incubator/harmony/enhanced/drlvm/trunk"/>
+	<property name="svn.classlib.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk"/>
+	<property name="svn.drlvm.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk"/>
 
 	<condition property="is.windows">
         	<os family="Windows" />
