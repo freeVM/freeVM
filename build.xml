@@ -130,6 +130,8 @@ port.value=111
 		<delete dir="${target.dir}/logs/connectfour" includeEmptyDirs="true" verbose="false"/>		
 		<delete file="${target.dir}/config.xml"/>
 		<delete file="${target.dir}/copyres.xml"/>
+
+                <delete dir="${cc.filename}" includeEmptyDirs="true" verbose="false"/>
 		
 		<!-- copy the ant-junit jar to cc/lib -->
 	
