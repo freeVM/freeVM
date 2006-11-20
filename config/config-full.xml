@@ -19,6 +19,7 @@
 
         <modificationset quietperiod="60">
             <svn localWorkingCopy="projects/classlib/trunk"/>
+            <buildstatus logdir="logs/drlvm"/>
         </modificationset>
 
         <schedule interval="${timeout}">
