@@ -1,226 +1,225 @@
 body {
- 	background-color: white;
- 	color: black;
- 	text-align: left;
-	text-align: left;
-	font: "Times New Roman", serif;
-} 
-
-.menuItem {
-	vertical-align: top;
-	padding: 0pt;	
-	margin-top: 4pt;
-	margin-bottom: 4pt;
-	margin-right: 0pt;
-	margin-left: 0pt;
+    background-color: white;
+    color: black;
+    text-align: left;
+    text-align: left;
+    font: "Times New Roman", serif;
 }
 
- h1 {
-	font-family: Arial, helvetica, sans-serif;
-	font-weight: bold;
- 	font-size: 12pt;
-  	background-color: #525D76;
-  	color: white;
-  	text-indent: 2pt;
-	margin-left: 0pt;
+.menuItem {
+    vertical-align: top;
+    padding: 0pt;
+    margin-top: 4pt;
+    margin-bottom: 4pt;
+    margin-right: 0pt;
+    margin-left: 0pt;
+}
+
+h1 {
+    font-family: Arial, helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 12pt;
+    background-color: #525D76;
+    color: white;
+    text-indent: 2pt;
+    margin-left: 0pt;
 }
 
 h2 {
-  	font-family: Arial, helvetica, sans-serif;
-  	font-weight: bold;
-  	font-size: 12pt;
-  	background-color: #828DA6;
-  	color: white;
-  	text-indent: 2pt;
-	margin-left: 10pt;  	
+    font-family: Arial, helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 12pt;
+    background-color: #828DA6;
+    color: white;
+    text-indent: 2pt;
+    margin-left: 10pt;
 }
 
 h3 {
-	font-weight: bold;
-	margin-left: 20pt;
-	margin-top: 5pt;
-	margin-right: 0pt;
-	margin-bottom: 5pt;
-	text-transform: uppercase;
-	font-size: 11pt;
+    font-weight: bold;
+    margin-left: 20pt;
+    margin-top: 5pt;
+    margin-right: 0pt;
+    margin-bottom: 5pt;
+    text-transform: uppercase;
+    font-size: 11pt;
 }
 
 a:link {
-	color:#525D76;
+    color:#525D76;
 }
 
 p {
-	padding-left: 2pt;
-	margin-left: 20pt;
+    padding-left: 2pt;
+    margin-left: 20pt;
 }
 
 td.TableCell {
-	vertical-align: top;
-	text-align: left;
-	background-color: #a0ddf0;
+    vertical-align: top;
+    text-align: left;
+    background-color: #a0ddf0;
 }
 
 th.TableHeading {
     background-color: #039acc;
     text-align: center;
-	color: black;
-	font-family: Arial, Helvetica, sans-serif;
-	padding: 2pt;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 2pt;
 }
 
 table {
-	margin-left: 0pt;
-	margin-right: 0pt;
+    margin-left: 0pt;
+    margin-right: 0pt;
 }
 
-img 
-{
-	border: none;
+img {
+    border: none;
 }
 
 pre {
-	background: #F3F5F7;
-	border: thin solid;
-	border-color: #828DA6;
-	padding: 12pt;
-	font-size: 11.0pt;
-	font-family: Courier;
-	margin-right: 10pt;
-	margin-left: 25pt;
+    background: #F3F5F7;
+    border: thin solid;
+    border-color: #828DA6;
+    padding: 12pt;
+    font-size: 11.0pt;
+    font-family: Courier;
+    margin-right: 10pt;
+    margin-left: 25pt;
 }
 
 .class {
-	font-weight: bold; 
+    font-weight: bold;
     font-size: 10pt;
-	font-family: Arial;
-	border-top: none;
-	border-right: none;
-	border-left: none;
-	border-bottom: solid #525D76 2px;
+    font-family: Arial;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: solid #525D76 2px;
 }
 
 .special {
-	font-weight: bold;
-	text-align: center;
-	color: #525D76; 
-	margin-top: 3pt;
-	margin-bottom: 3pt;
-	font-family: Arial, helvetica, sans-serif;
+    font-weight: bold;
+    text-align: center;
+    color: #525D76;
+    margin-top: 3pt;
+    margin-bottom: 3pt;
+    font-family: Arial, helvetica, sans-serif;
     font-size: 10pt;
 }
 
 .backtotop {
-	font-weight: bold;
-	margin-left: 0pt;
+    font-weight: bold;
+    margin-left: 0pt;
 }
 
 .note {
-	color: red;
-	font-weight: bolder;
-	font-family: Arial, helvetica, sans-serif;
+    color: red;
+    font-weight: bolder;
+    font-family: Arial, helvetica, sans-serif;
     font-size: 10pt;
 }
 
 .notetext {
-	padding-left: 20pt;
-	margin-top: 0pt;
-	margin-bottom: 0pt;
-	font-family: Arial, helvetica, sans-serif;
-  	font-size: 10pt;
+    padding-left: 20pt;
+    margin-top: 0pt;
+    margin-bottom: 0pt;
+    font-family: Arial, helvetica, sans-serif;
+    font-size: 10pt;
 }
 
 .example {
-	font-weight: bolder;
-	font-family: Arial, helvetica, sans-serif;
+    font-weight: bolder;
+    font-family: Arial, helvetica, sans-serif;
     font-size: 10pt;
 }
 
 .exampletext {
-	margin-left: 40pt;
+    margin-left: 40pt;
 }
 
 .TOCHeading {
-	font-weight: bold;
-	font-size: 12pt;
-	text-align: left;
-	color: #000000;
-	font-family: Arial, helvetica, sans-serif;
-	padding-left: 15px;
-	margin-bottom: 5pt;
-	margin-top: 5pt;
-	margin-left: 5px;
-	margin-right: 0pt;
+    font-weight: bold;
+    font-size: 12pt;
+    text-align: left;
+    color: #000000;
+    font-family: Arial, helvetica, sans-serif;
+    padding-left: 15px;
+    margin-bottom: 5pt;
+    margin-top: 5pt;
+    margin-left: 5px;
+    margin-right: 0pt;
 }
 
 .TOC {
-	font-size: 11pt;
-	text-indent: 15pt;
-	color: white;
-	padding-left: 15px;
-	margin-left: 5px;
-	margin-right: 0.00px;
-	margin-top: 0px;
-	margin-bottom: 0px;
-	font-family: Arial, helvetica, sans-serif;
+    font-size: 11pt;
+    text-indent: 15pt;
+    color: white;
+    padding-left: 15px;
+    margin-left: 5px;
+    margin-right: 0.00px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-family: Arial, helvetica, sans-serif;
 }
 
 .update {
-	color: #A9A9A9;
-	font-size: smaller;
-	font-style: italic;
+    color: #A9A9A9;
+    font-size: smaller;
+    font-style: italic;
 }
 
 li {
-	margin-left: 20pt;
+    margin-left: 20pt;
     padding-left: 1pt;
-	padding-top: 1pt;
-	padding-bottom: 1pt;
-	padding-right: 0pt;
+    padding-top: 1pt;
+    padding-bottom: 1pt;
+    padding-right: 0pt;
 }
 
 ol li {
-	list-style-type: decimal;
+    list-style-type: decimal;
 }
 
 ul li {
-	list-style-type: square;
+    list-style-type: square;
 }
 
 li ul li {
-	list-style-type: disc;
+    list-style-type: disc;
 }
 
 dl {
-	margin: 5pt;
+    margin: 5pt;
 }
 
 dd {
-	margin-left: 30pt;
-	margin-top: 5pt;
-	margin-right: 20pt;
-	margin-bottom: 5pt;
-	border-right: none;
-	border-bottom: none;
-	border-left: none;
-	border-top: solid #828DA6 1px;
-	padding-bottom: 8px;
+    margin-left: 30pt;
+    margin-top: 5pt;
+    margin-right: 20pt;
+    margin-bottom: 5pt;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+    border-top: none;
+    padding-bottom: 8px;
 }
 
-dd p { 
-	margin-left: 0pt;
-	}
-
+dd p {
+    margin-left: 0pt;
+}
 
 dt {
-	font-size: 10pt;
-	font-family: Arial, helvetica, sans-serif;
-	font-weight: bolder;
-	margin-left: 20pt;
-	margin-top: 5pt;
-	margin-right: 0pt;
-	margin-bottom: 5pt;
-	border-top: none;
-	border-right: none;
-	border-bottom: none;
-	border-left: none;	
+    font-size: 10pt;
+    font-family: Arial, helvetica, sans-serif;
+    font-weight: bolder;
+    margin-left: 20pt;
+    margin-top: 5pt;
+    margin-right: 0pt;
+    margin-bottom: 5pt;
+    border-top: none;
+    border-right: none;
+    border-bottom: solid #828DA6 1px;
+    border-left: none;
+    padding-bottom: 3px;
 }
