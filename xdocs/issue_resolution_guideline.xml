@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
+<?xml version="1.0" encoding="iso-8859-1"?>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -21,7 +20,7 @@
 
 <properties>
 	<title>Good Issue Resolution Guideline</title>
-	<author email="harmony-dev@incubator.apache.org">Harmony Documentation Team</author>
+	<author email="dev@harmony.apache.org">Harmony Documentation Team</author>
 </properties>
 
 <body>
@@ -81,7 +80,7 @@
                   Add a link to the discussion as a comment.</li>
                 <li>All pacthes, such as tests and fixes, should be relative to the directory where 
                 the main <code>build.xml</code> is:<br/>
-                <code>https://svn.apache.org/repos/asf/incubator/harmony/enhanced/classlib/trunk</code>,<br/>
+                <code>https://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk</code>,<br/>
                 or to the module root directory.</li>
                 <li>Test and fix patches should be in different files.</li>
                 <li>If the patch requires adding, removing or moving some files in the repository, 

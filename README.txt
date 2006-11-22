@@ -18,7 +18,7 @@ of Java and Ant installed.
 
 6) ssh to minotaur
 
-7) cd /www/incubator.apache.org/harmony
+7) cd /www/harmony.apache.org
 
 8) execute 
     
@@ -29,7 +29,7 @@ of Java and Ant installed.
 9) Verify that all went as planned by browsing the live 
     site 
 
-      http://incubator.apache.org/harmony/
+      http://harmony.apache.org
 
     and look for the changes you made.  Note that it may take up
     to an hour after step (8) is complete before the changes are
