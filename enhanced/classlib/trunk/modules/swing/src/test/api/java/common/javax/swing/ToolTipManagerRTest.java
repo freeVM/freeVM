@@ -20,32 +20,13 @@
  */
 package javax.swing;
 
-public class JComponentRTest extends SwingTestCase {
-    public void testPaintDoubleBufferedForInvisibleComponent() throws Exception {
-        JButton b = new JButton();
-        b.paintDoubleBuffered(createTestGraphics());
-    }
-
-    public void testResetKeyboardActions() throws Exception {
-        JComponent c = new JComponent() {
-            private static final long serialVersionUID = 1L;
-        };
-        c.resetKeyboardActions();
-    }
-
-    public void testSetBounds() throws Throwable {
-        final Marker marker = new Marker();
-        final JComponent button = new JButton("JButton") {
-            private static final long serialVersionUID = 1L;
-
+public class ToolTipManagerRTest extends BasicSwingTestCase {
+    public void testUnregisterComponent() throws Exception {
+        testExceptionalCase(new NullPointerCase() {
             @Override
-            public void revalidate() {
-                marker.setOccurred();
-                super.revalidate();
+            public void exceptionalAction() throws Exception {
+                ToolTipManager.sharedInstance().unregisterComponent(null);
             }
-        };
-        marker.reset();
-        button.setSize(50, 500);
-        assertFalse(marker.isOccurred());
+        });
     }
 }

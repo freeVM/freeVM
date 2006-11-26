@@ -20,32 +20,25 @@
  */
 package javax.swing;
 
-public class JComponentRTest extends SwingTestCase {
-    public void testPaintDoubleBufferedForInvisibleComponent() throws Exception {
-        JButton b = new JButton();
-        b.paintDoubleBuffered(createTestGraphics());
+public class PopupFactoryRTest extends BasicSwingTestCase {
+    public PopupFactoryRTest(final String name) {
+        super(name);
     }
 
-    public void testResetKeyboardActions() throws Exception {
-        JComponent c = new JComponent() {
-            private static final long serialVersionUID = 1L;
-        };
-        c.resetKeyboardActions();
+    public void testGetPopup() throws Exception {
+        Popup p1 = PopupFactory.getSharedInstance().getPopup(null, new JPanel(), 10, 10);
+        p1.show();
+        p1.hide();
+        p1.hide();
+        Popup p11 = PopupFactory.getSharedInstance().getPopup(null, new JPanel(), 20, 20);
+        Popup p12 = PopupFactory.getSharedInstance().getPopup(null, new JPanel(), 20, 20);
+        if (isHarmony()) {
+            assertSame(p1, p11);
+        }
+        assertNotSame(p11, p12);
     }
 
-    public void testSetBounds() throws Throwable {
-        final Marker marker = new Marker();
-        final JComponent button = new JButton("JButton") {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void revalidate() {
-                marker.setOccurred();
-                super.revalidate();
-            }
-        };
-        marker.reset();
-        button.setSize(50, 500);
-        assertFalse(marker.isOccurred());
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(PopupFactoryRTest.class);
     }
 }

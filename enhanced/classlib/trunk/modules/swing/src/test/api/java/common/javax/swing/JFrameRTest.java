@@ -15,37 +15,32 @@
  *  limitations under the License.
  */
 /**
- * @author Anton Avtamonov
+ * @author Vadim L. Bogdanov
  * @version $Revision$
  */
 package javax.swing;
 
-public class JComponentRTest extends SwingTestCase {
-    public void testPaintDoubleBufferedForInvisibleComponent() throws Exception {
-        JButton b = new JButton();
-        b.paintDoubleBuffered(createTestGraphics());
+import javax.swing.plaf.metal.MetalLookAndFeel;
+
+public class JFrameRTest extends SwingTestCase {
+    public JFrameRTest(final String name) {
+        super(name);
     }
 
-    public void testResetKeyboardActions() throws Exception {
-        JComponent c = new JComponent() {
-            private static final long serialVersionUID = 1L;
-        };
-        c.resetKeyboardActions();
-    }
-
-    public void testSetBounds() throws Throwable {
-        final Marker marker = new Marker();
-        final JComponent button = new JButton("JButton") {
+    public void testInitDecorations() throws Exception {
+        UIManager.setLookAndFeel(new MetalLookAndFeel() {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void revalidate() {
-                marker.setOccurred();
-                super.revalidate();
+            public boolean getSupportsWindowDecorations() {
+                return false;
             }
-        };
-        marker.reset();
-        button.setSize(50, 500);
-        assertFalse(marker.isOccurred());
+        });
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        JFrame f = new JFrame();
+        assertFalse(f.isUndecorated());
+        JDialog.setDefaultLookAndFeelDecorated(true);
+        JDialog d = new JDialog();
+        assertFalse(d.isUndecorated());
     }
 }

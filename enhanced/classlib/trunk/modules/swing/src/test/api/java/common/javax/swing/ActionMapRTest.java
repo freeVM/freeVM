@@ -15,37 +15,30 @@
  *  limitations under the License.
  */
 /**
- * @author Anton Avtamonov
+ * @author Alexander T. Simbirtsev
  * @version $Revision$
  */
 package javax.swing;
 
-public class JComponentRTest extends SwingTestCase {
-    public void testPaintDoubleBufferedForInvisibleComponent() throws Exception {
-        JButton b = new JButton();
-        b.paintDoubleBuffered(createTestGraphics());
-    }
+import java.awt.event.ActionEvent;
 
-    public void testResetKeyboardActions() throws Exception {
-        JComponent c = new JComponent() {
+public class ActionMapRTest extends SwingTestCase {
+    public void testGet() {
+        ActionMap map = new ActionMap();
+        final AbstractAction action = new AbstractAction("result") {
             private static final long serialVersionUID = 1L;
-        };
-        c.resetKeyboardActions();
-    }
 
-    public void testSetBounds() throws Throwable {
-        final Marker marker = new Marker();
-        final JComponent button = new JButton("JButton") {
+            public void actionPerformed(ActionEvent e) {
+            }
+        };
+        map.setParent(new ActionMap() {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void revalidate() {
-                marker.setOccurred();
-                super.revalidate();
+            public Action get(Object key) {
+                return action;
             }
-        };
-        marker.reset();
-        button.setSize(50, 500);
-        assertFalse(marker.isOccurred());
+        });
+        assertSame(action, map.get("key"));
     }
 }
