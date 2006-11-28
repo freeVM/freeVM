@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+     Licensed to the Apache Software Foundation (ASF) under one or more
+     contributor license agreements.  See the NOTICE file distributed with
+     this work for additional information regarding copyright ownership.
+     The ASF licenses this file to You under the Apache License, Version 2.0
+     (the "License"); you may not use this file except in compliance with
+     the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+     build-native-source    
+     Compile the native source into component shared libs.
+     ====================================================================== -->
+<project name="build-native-source" default="default" basedir="..">
+    <description>
+		Compile the native source into component shared libs.
+    </description>
+
+    <!-- import common properties -->
+    <import file="${basedir}/make/properties.xml" />
+
+    <property file="make/depends.properties" />
+
+    <property name="hy.hdk" location="deploy" />
+    <property name="hy.jdk" location="deploy/jdk" />
+    <property name="depends.build" location="depends/build" />
+    <property name="depends.libs" location="depends/libs/${hy.platform}" />
+    <property name="depends.files" location="depends/files" />
+    <property name="native.lib.target" location="${hy.jdk}/lib" />
+
+    <!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="default" 
+        description="Compile the native source into component shared libs." 
+        depends="clean, build" />
+
+
+    <!-- ================================= 
+          target: build
+         ================================= -->
+    <target name="build"
+        depends=" make-all, layout" />
+
+
+    <!-- ================================= 
+          target: clean              
+         ================================= -->
+    <target name="clean"
+        depends="make-clean, clean-layout" />
+
+
+    <!-- This target invokes make on the all target to compile all natives -->
+    <target name="make-all" >
+    	<!-- Create the target directory structure -->
+        <mkdir dir="${hy.jdk}/jre/bin" />
+        <mkdir dir="${hy.jdk}/include" />
+    	<mkdir dir="${native.lib.target}"/>
+    	
+    	<!-- These module targets take care of building and copying
+             their shared libs -->
+    	<ant dir="modules/launcher" antfile="build.xml" target="build-native" />
+    </target>
+
+
+    <!-- ================================= 
+          target: make-clean              
+         ================================= -->
+    <target name="make-clean"
+        depends="-make-clean" />
+
+    <target name="-make-clean">
+    	<ant dir="modules/launcher" antfile="build.xml" target="clean-native" />
+    	<delete dir="${native.lib.target}" />
+    </target>
+
+
+    <!-- ================================= 
+          target: layout              
+         ================================= -->
+    <target name="layout" depends="layout.windows"
+        description="Construct the correct directory structure for native binaries">
+    </target>
+
+    <target name="layout.windows" if="is.windows">
+        <!-- workaround until msdll is moved. -->
+        <copy file="${msvcr71.dll}" todir="${hy.jdk}/jre/bin" overwrite="yes" />
+    </target>
+
+    <!-- ================================= 
+          target: clean-layout              
+         ================================= -->
+    <target name="clean-layout">
+        <delete includeemptydirs="true" failonerror="false">
+            <fileset dir="${hy.jdk}">
+                <include name="**/bin/java${exe.suffix}" />
+                <include name="**/bin/javaw${exe.suffix}" />
+                <include name="**/bin/*${shlib.suffix}*" />
+            	<include name="**/bin/harmony*.properties" />
+            </fileset>
+        </delete>
+    </target>
+
+
+</project>

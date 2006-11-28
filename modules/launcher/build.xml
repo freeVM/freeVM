@@ -28,7 +28,9 @@
 
     <property file="../../make/depends.properties" />
 
-    <!-- Build secondary native luni components -->
+    <target name="build-native" depends="build"/>
+    <target name="clean-native" depends="clean"/>
+
     <target name="build" >
 
         <!-- Build launcher executables -->
