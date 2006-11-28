@@ -1,0 +1,92 @@
+<!--
+    Copyright 2005-2006 The Apache Software Foundation or its licensors, as applicable.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!--
+Author:  Sergey V. Dmitriev
+Version: $Revision: 1.6.2.20 $
+-->
+
+<!--
+Description of the product deploy folder.
+-->
+
+<deploy>
+    <vm>
+        <encoder>
+            <static>bin/default:encoder</static>
+        </encoder>
+
+        <em>
+            <shared>bin/default:em</shared>
+        </em>
+
+        <vmcore>
+            <static>bin/default:harmonyvm</static>
+            <shared>bin/default:harmonyvm</shared>
+        </vmcore>
+
+        <interpreter>
+            <shared>bin/default:interpreter</shared>
+            <other>bin/default:*</other>
+        </interpreter>
+
+        <select arch="ia32,em64t">
+        <jitrino>
+            <shared>bin/default:jitrino</shared>
+            <other>bin/default:*</other>
+        </jitrino>
+        </select>
+
+        <gc_gen>
+            <shared>bin/default:gc_gen</shared>
+        </gc_gen>
+
+        <gc_cc>
+            <shared>bin/default:gc_cc</shared>
+            <jar>bin/default:gc_cc</jar>
+        </gc_cc>
+
+        <vmi>
+            <shared>bin/default:vmi</shared>
+        </vmi>
+
+        <kernel_classes>
+            <jar>bin/default:kernel</jar>
+        </kernel_classes>
+
+        <hythr>
+            <shared>bin/default:hythr</shared>
+        </hythr>
+     </vm>
+
+
+    <extra>
+        <eclipse_script>
+            <select os="win">
+                <other>bin/default:eclipse.bat</other>
+            </select>
+
+            <select os="lnx">
+                <other>bin/default:eclipse.sh</other>
+            </select>
+        </eclipse_script>
+        <select os="win">
+            <zlib>
+                <shared>bin/default:zlib1</shared>
+            </zlib>
+        </select>
+
+    </extra>
+</deploy>
