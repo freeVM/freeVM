@@ -16,8 +16,8 @@
     limitations under the License.
 -->
 
-<project name="ARCHIVE Build" default="build" basedir=".">
-    <description>Build for ARCHIVE component</description>
+<project name="JNDI Build" default="build" basedir=".">
+    <description>Build for JNDI component</description>
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
@@ -28,8 +28,8 @@
 
     <fileset id="classes" dir="${hy.build}">
         <or>
-            <present targetdir="${hy.archive.src.main.java}" />
-            <present targetdir="${hy.archive.src.main.java}">
+            <present targetdir="${hy.jndi.src.main.java}" />
+            <present targetdir="${hy.jndi.src.main.java}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -37,59 +37,7 @@
         </or>
     </fileset>
 
-    <property name="zlib.zip" location="${depends.oss}/zlib_1.2.3.zip" />
-
     <target name="build" depends="compile-java, copy-resources, build-jar" />
-    
-    <target name="copy-native-includes" depends="overlay-oss">
-        <copy todir="${hy.hdk}/include" overwrite="yes">
-            <fileset dir="${hy.archive.src.main.native}/include/shared">
-                <include name="zipsup.h" />
-            </fileset>
-            <fileset dir="${hy.archive.src.main.native}/zlib_dist">
-                <include name="zlib.h" />
-                <include name="zconf.h" />
-            </fileset>
-        </copy>
-    </target>
-    
-    <target name="overlay-oss">
-        <mkdir dir="${hy.archive.src.main.native}/zlib_dist" />
-        <unzip src="${zlib.zip}" dest="${hy.archive.src.main.native}/zlib_dist" />
-        <chmod dir="${hy.archive.src.main.native}/zlib_dist" perm="ugo+r" />
-    </target>
-    
-    <target name="clean-overlay-oss">
-        <delete dir="${hy.archive.src.main.native}/zlib_dist" quiet="true" />
-    </target>
-    
-    <!-- Build native code -->
-    <target name="build-native" >
-        <make dir="${hy.archive.src.main.native}/zip/${hy.os}" />
-        
-        <make dir="${hy.archive.src.main.native}/zlib/${hy.os}" />
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-        <fileset dir="${hy.archive.src.main.native}/zlib">
-                <patternset includes="*${shlib.suffix}*" />
-            </fileset>
-        </copy>
-        
-    <make dir="${hy.archive.src.main.native}/archive/${hy.os}" />
-    <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-        <fileset dir="${hy.archive.src.main.native}/archive">
-                <patternset includes="*${shlib.suffix}*" />
-            </fileset>
-        </copy>
-    </target>
-    
-    <!-- Clean natives -->
-    <target name="clean-native">
-        <make dir="${hy.archive.src.main.native}/zip/${hy.os}" target="clean" />
-        <make dir="${hy.archive.src.main.native}/zlib/${hy.os}"
-              target="clean" />
-        <make dir="${hy.archive.src.main.native}/archive/${hy.os}"
-              target="clean" />
-    </target>
 
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
@@ -106,30 +54,21 @@
     <target name="-test-module" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
-        <delete file="${hy.jdk}/jre/lib/boot/archive.jar" />
-        <delete file="${hy.jdk}/jre/lib/boot/archive-src.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/jndi.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/jndi-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.archive.bin.test}" />
+            <fileset dir="${hy.jndi.bin.test}" />
         </delete>
-        <antcall target="clean-native-includes" />
-    </target>
-
-    <target name="clean-native-includes">
-    <delete failonerror="false">
-        <fileset dir="${hy.hdk}/include">
-        <include name="zipsup.h" />
-        </fileset>
-    </delete>
     </target>
 
     <target name="compile-java">
-        <echo message="Compiling ARCHIVE classes" />
+        <echo message="Compiling JNDI classes" />
 
         <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
-               srcdir="${hy.archive.src.main.java}"
+               srcdir="${hy.jndi.src.main.java}"
                destdir="${hy.build}"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -138,7 +77,7 @@
                debug="${hy.javac.debug}">
 
             <compilerarg line="${build.compilerarg}" />
-
+            
             <bootclasspath>
                 <fileset dir="${hy.jdk}/jre/lib/boot">
                     <include name="**/*.jar" />
@@ -150,15 +89,15 @@
     <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.archive.src.main.java}">
+            <fileset dir="${hy.jndi.src.main.java}">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
     </target>
 
     <target name="build-jar" depends="svn-info">
-        <jar destfile="${hy.jdk}/jre/lib/boot/archive.jar"
-             manifest="${hy.archive}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/jndi.jar"
+             manifest="${hy.jndi}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
@@ -168,8 +107,8 @@
             <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/archive-src.jar">
-            <fileset dir="${hy.archive.src.main.java}" />
+        <jar destfile="${hy.jdk}/jre/lib/boot/jndi-src.jar">
+            <fileset dir="${hy.jndi.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -179,14 +118,14 @@
         </jar>
     </target>
 
-    <target name="compile-tests" depends="copy-test-resources">
-        <echo message="Compiling ARCHIVE tests" />
+    <target name="compile-tests" depends="copy-test-resources" >
+        <echo message="Compiling JNDI tests" />
 
-        <mkdir dir="${hy.archive.bin.test}" />
+        <mkdir dir="${hy.jndi.bin.test}" />
 
-        <javac srcdir="${hy.archive.src.test.java}"
-               destdir="${hy.archive.bin.test}"
-               sourcepath=""
+        <javac srcdir="${hy.jndi.src.test.java}"
+            destdir="${hy.jndi.bin.test}"
+            sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
                source="${hy.javac.source}" 
@@ -200,7 +139,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
+            <classpath location="../../build/tests" />
         </javac>
     </target>
 
@@ -211,8 +150,7 @@
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
         <junit fork="yes"
-               forkmode="${hy.test.forkmode}"
-               timeout="${hy.test.timeout}"
+               forkmode="perBatch"
                printsummary="withOutAndErr"
                errorproperty="test.errors"
                failureproperty="test.failures"
@@ -221,24 +159,52 @@
                jvm="${test.jre.home}/bin/java">
 
             <classpath>
-                <pathelement path="${hy.archive.bin.test}"/>
+                <pathelement path="${hy.jndi.bin.test}"/>
             </classpath>
             <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
 
             <formatter type="xml" />
 
             <test name="${test.case}" todir="${hy.tests.reports}"
                  if="test.case" />
 
+            
             <batchtest todir="${hy.tests.reports}" haltonfailure="no"
                 unless="test.case">
 
-                <fileset dir="${hy.archive.src.test.java}">
+                <fileset dir="${hy.jndi.src.test.java}">
                     <include name="**/*Test.java"/>
-		    <exclude name="org/apache/harmony/archive/tests/internal/pack200/SegmentTest.java" />
+                    <!--  These tests run in a separate jvm below -->
+                    <exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerBuilderTest.java" />
+                    <exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerTest.java" />
+                    <exclude name="org/apache/harmony/jndi/tests/javax/naming/spi/DirectoryManagerTest.java" />
                 </fileset>
             </batchtest>
+            
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
+                   unless="test.case">
+            
+            <fileset dir="${hy.jndi.src.test.java}">
+                <include name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerTest.java" />
+            </fileset>
+            </batchtest>
+            
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
+                   unless="test.case">
+            
+            <fileset dir="${hy.jndi.src.test.java}">
+                <include name="org/apache/harmony/jndi/tests/javax/naming/spi/NamingManagerBuilderTest.java" />
+            </fileset>
+            </batchtest>            
+            
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
+                   unless="test.case">
+            
+            <fileset dir="${hy.jndi.src.test.java}">
+                <include name="org/apache/harmony/jndi/tests/javax/naming/spi/DirectoryManagerTest.java" />
+            </fileset>
+            </batchtest>            
+            
         </junit>
         <antcall target="touch-failures-file" />
         <antcall target="touch-errors-file" />
@@ -246,19 +212,20 @@
 
     <target name="touch-failures-file" if="test.failures">
         <echo file="${hy.tests.reports}/test.failures"
-            append="true">archive${line.separator}</echo>
+            append="true">jndi${line.separator}</echo>
     </target>
 
     <target name="touch-errors-file" if="test.errors">
         <echo file="${hy.tests.reports}/test.errors"
-            append="true">archive${line.separator}</echo>
+            append="true">jndi${line.separator}</echo>
     </target>
 
     <target name="copy-test-resources">
-        <mkdir dir="${hy.archive.bin.test}" />
-        <copy todir="${hy.archive.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.archive.src.test.resources}">
+        <mkdir dir="${hy.jndi.bin.test}" />
+        <copy todir="${hy.jndi.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.jndi.src.test.resources}">
                 <exclude name="**/*.java" />
+                <exclude name="**/*.zip" />
             </fileset>
         </copy>
     </target>
