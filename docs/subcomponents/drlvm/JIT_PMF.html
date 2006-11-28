@@ -1,0 +1,2875 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Jitrino Pipeline Management Framework</title>
+
+                                <link rel="Stylesheet" type="text/css" href="site.css"/>
+        </head>
+
+        <body>        
+            <table  width="100%" cellspacing="0">
+                <!-- TOP IMAGE -->
+                <tr>
+                    <td align='LEFT'>
+                    <table><tr><td>
+                    <td>
+<a href="http://harmony.apache.org/"><img  src="../../images/harmony-logo-new.png" alt="Apache Harmony" /></a>
+</td>
+</td>
+                    </td></tr></table>
+                    </td>
+                    <td align='RIGHT'>
+<!--                    <a href="http://harmony.apache.org/">
+                    <img src="http://harmony.apache.org/images/apache-incubator-logo.png"
+                    	alt="Apache Harmony" /></a>                    
+-->                    </td>
+                </tr>
+            </table>
+            <table width="100%" cellspacing="4">
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+
+                <tr>
+                    <!-- LEFT SIDE NAVIGATION -->
+                    <td class="menuItem" width="20%" nowrap="true">
+
+                    <!-- special ACon Logo - leave here for next time
+                    <a href="http://www.us.apachecon.com/">
+                        <img src="http://www.apache.org/ads/ApacheCon/240x120-2006-us.gif"
+                             alt="ApacheCon US 2006" />
+                    </a> -->
+
+                   <!-- regular menu -->
+
+                    
+    <!-- ============================================================ -->
+
+                <p class="menuItem"><strong>General</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../license.html">License</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../guidelines.html">Project Guidelines</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/">ASF</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../downloads.html">Downloads</a>
+</li>
+            
+           
+                        
+                </ul>
+            <p class="menuItem"><strong>Community</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Committers</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../documentation/documentation.html">Documentation</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+            
+           
+                        
+                </ul>
+            <p class="menuItem"><strong>Development</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../status.html">How Are We Doing?</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Road Map / TODO</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">JIRA</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+            
+           
+                        
+                </ul>
+            <p class="menuItem"><strong>Subcomponents</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-Test Framework</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+            
+           
+                           <table>
+              <tr><td class="menuItem">
+                &nbsp;&nbsp;&nbsp;&nbsp;    <a href="../../subcomponents/classlibrary/status.html">Status</a>
+                </td></tr>
+              </table>
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/jchevm/index.html">JCHEVM</a>
+</li>
+            
+           
+                        
+                </ul>
+                        </td>
+                    <td width="80%" valign="top"><a name="top"></a>
+                                        
+                                                                <div>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type"
+          content="text/html; charset=us-ascii" />
+    <link rel="Stylesheet"
+          type="text/css"
+          href="site.css" />
+
+    <title>Jitrino Pipeline Management Framework</title>
+</head>
+
+<body>
+    <h1><a id="top"
+       name="top"></a>Jitrino Pipeline Management Framework</h1>
+
+    <p class="TOCHeading"><a href="#Revision_History">Revision
+    History</a></p>
+
+    <p class="TOCHeading"><a href="#About_This_Document">1. About
+    This Document</a></p>
+
+    <p class="TOC"><a href="#Purpose">1.1 Purpose</a></p>
+
+    <p class="TOC"><a href="#Intended_Audience">1.2 Intended
+    Audience</a></p>
+
+    <p class="TOC"><a href="#Documentation_Conventions">1.3
+    Documentation Conventions</a></p>
+
+    <p class="TOCHeading"><a href="#Overview">2. Overview</a></p>
+
+    <p class="TOC"><a href="#Key_Elements">2.1 Key Elements</a></p>
+
+    <p class="TOC"><a href="#Implementation_Notes">2.2
+    Implementation Notes</a></p>
+
+    <p class="TOC"><a href="#Pipeline_Life-cycle">2.3 Pipeline
+    Life-cycle</a></p>
+
+    <blockquote>
+        <p class="TOC"><a href="#Initialization">2.3.1
+        Initialization</a></p>
+
+        <p class="TOC"><a href="#Method_Compilation">2.3.2 Method
+        Compilation</a></p>
+
+        <p class="TOC"><a href="#De-initialization">2.3.3
+        De-initialization</a></p>
+    </blockquote>
+
+    <p class="TOCHeading"><a href="#Command-line_Interface">3.
+    Command-line Interface</a></p>
+
+    <p class="TOCHeading"><a href="#PMF_Commands">4. PMF
+    Commands</a></p>
+
+    <p class="TOC"><a href="#Path_Definition">4.1 Path
+    Definition</a></p>
+
+    <p class="TOC"><a href="#Filter_Definition">4.2 Filter
+    Definition</a></p>
+
+    <p class="TOC"><a href="#Argument_Definition">4.3 Argument
+    Definition</a></p>
+
+    <p class="TOCHeading"><a href="#Logging_System">5. Logging
+    System</a></p>
+
+    <p class="TOC"><a href="#Defining_Streams">5.1 Defining
+    Streams</a></p>
+
+    <p class="TOC"><a href="#Assigning_a_Stream_to_a_File">5.2
+    Assigning a Stream to a File</a></p>
+
+    <blockquote>
+        <p class="TOC"><a href="#Using_Filename_Masks">5.2.1 Using
+        Filename Masks</a></p>
+
+        <p class="TOC"><a href="#Filename_Review">5.2.2 Filename
+        Review</a></p>
+    </blockquote>
+
+    <p class="TOC"><a href="#Using_Streams">5.3 Using
+    Streams</a></p>
+
+    <p class="TOCHeading"><a href="#Appendix">6. Appendix</a></p>
+
+    <p class="TOC">
+    <a href="#General_Command-line_Syntax_Specification">6.1
+    General Command-line Syntax Specification</a></p>
+
+    <h1><a name="Revision_History"
+       id="Revision_History"></a>Revision History</h1>
+
+    <table border="0"
+           cellpadding="0"
+           width="100%">
+        <tr>
+            <th class="TableHeading">Version</th>
+
+            <th class="TableHeading">Version Information</th>
+
+            <th class="TableHeading">Date</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell">Initial version</td>
+
+            <td class="TableCell">Sergey Ivashin, Svetlana
+            Konovalova: document created.</td>
+
+            <td class="TableCell">October 30 , 2006</td>
+        </tr>
+    </table>
+
+    <h1><a name="About_This_Document"
+       id="About_This_Document"></a>1. About This Document</h1>
+
+    <h2><a name="Purpose"
+       id="Purpose"></a>1.1 Purpose</h2>
+
+    <p>The document is a comprehensive description of the
+    <i>pipeline management framework</i> that provides complete
+    control over just-in-time compilation process through the
+    Java<a href="#*">*</a> property mechanism. The description
+    covers the PMF application to the command-line interface and to
+    the Jitrino logging system.</p>
+
+    <p>PMF is introduced in the Jitrino component description,
+    whereas the current document gives details on its internal
+    design and specifics. The current document adds examples and
+    usage instructions to the general definition of PMF given in
+    the component description.</p>
+
+    <h2><a id="Intended_Audience"
+       name="Intended_Audience"></a>1.2 Intended Audience</h2>
+
+    <p>The target audience for the document includes a wide
+    community of DRLVM developers interested in understanding
+    Jitrino internals and in improving them. The document assumes
+    that readers understand the concepts of
+    <a href="#PMF_Commands">PMF</a> and just-in-time
+    compilation.</p>
+
+    <h2><a id="Documentation_Conventions"
+       name="Documentation_Conventions"></a>1.3 Documentation
+       Conventions</h2>
+
+    <p>This document uses the <a href="conventions.htm">unified
+    conventions</a> for the DRL documentation kit.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a id="Overview"
+       name="Overview"></a>2. Overview</h1>
+
+    <p>The document contains the detailed description of the
+    Jitrino pipeline management framework (PMF). For a high-level
+    PMF overview, refer to the <a href="#Jitrino.html">Jitrino
+    document</a>.</p>
+
+    <h2><a id="Key_Elements"
+       name="Key_Elements"></a>2.1 Key Elements</h2>
+
+    <p>This section contains a detailed description of the PMF key
+    elements.</p>
+
+    <dl>
+        <dt><a id="Pipeline"
+           name="Pipeline"></a>Pipeline</dt>
+
+        <dd>
+            <p>The <i>pipeline</i> is a sequence of steps
+            representing the compilation process for a set of
+            methods. You can create several pipelines for a single
+            JIT, targeting each to compile a particular set of
+            methods. Each instance of the JIT compiler has one
+            <i>common pipeline</i>, which has an empty method
+            filter. Thus, the common pipeline is applied if a
+            compiled method matched no method filter of other
+            pipelines. For more information on the common pipeline,
+            refer to the
+            <a href="#Initialization">Initialization</a> section of
+            the current document.</p>
+        </dd>
+
+        <dt><a id="Method_Filter"
+           name="Method_Filter"></a>Method Filter</dt>
+
+        <dd>
+            <p>The <i>method filter</i> is used to choose a
+            particular pipeline for a method being compiled. Filter
+            elements make up a filter expression, as follows:<br />
+             <code>&lt;<b>class_name</b>&gt;&lt;<b>method_name</b>&gt;&lt;<b>
+            method_signature</b>&gt;</code>.<br />
+             Any or all of these elements can be blank. If all
+            elements of a filter expression are empty strings, the
+            filter is empty. Empty filters are used in the
+            compilation of a common pipeline.</p>
+        </dd>
+
+        <dt><a id="Pipeline_Step"
+           name="Pipeline_Step"></a>Pipeline Step</dt>
+
+        <dd>
+            <p>The <i>pipeline step</i> is a pipeline element that
+            stores a reference to an action object and its full
+            name. In the pipeline definition a step is represented
+            by its textual name.</p>
+        </dd>
+
+        <dt><a id="Action"
+           name="Action"></a>Action</dt>
+
+        <dd>
+            <p>The <i>action</i> is an object representing a
+            certain independent transformation of compiled code.
+            Each action must be declared as a subclass of the
+            <code>Jitrino::Action</code> class. Therefore, all
+            actions have a common set of properties and methods,
+            namely:</p>
+
+            <ul>
+                <li>The <code>name</code> property used to assign a
+                unique name to each JIT action</li>
+
+                <li>The <code>init()</code> and
+                <code>deinit()</code> methods used to
+                <a href="#Initialization">initialize</a> and
+                <a href="#De-initialization">de-initialize</a> the
+                JIT</li>
+
+                <li>The <code>createSession()</code> method used to
+                create
+                <a href="#SessionAction"><code>SessionAction</code></a></li>
+            </ul>
+
+            <p class="note">Note</p>
+
+            <p class="notetext">Actions do not have the
+            <code>run()</code> method and cannot be called directly
+            in the pipeline. The <code>SessionAction</code> object
+            is used instead.</p>
+
+            <p>The system creates <code>Action</code> objects once
+            per JIT execution and uses them to store data between
+            compilation sessions.</p>
+
+            <p class="class"><a id="SessionAction"
+               a=""
+               name="SessionAction"><code>SessionAction</code></a></p>
+
+            <p>A <code>SessionAction</code> object created by PMF
+            to transform code in a particular compilation session.
+            <code>SessionAction</code> must be declared as a
+            subclass of the <code>Jitrino::SessionAction</code>
+            class, which has the following methods:</p>
+
+            <ul>
+                <li>The <code>getAction()</code> method to get the
+                reference to the parent <code>Action</code>
+                object</li>
+
+                <li>The <code>run()</code> method to do the work
+                for the action object</li>
+            </ul>
+
+            <p>Instances of <code>SessionAction</code> are created
+            at the start of method compilation and destroyed at the
+            end of compilation. In other words, they are created
+            and destroyed every time when a pipeline with the
+            corresponding action is selected for method
+            compilation. Therefore, no data can be saved in this
+            object between compilation sessions.</p>
+        </dd>
+
+        <dt><a id="IAction"
+           name="IAction"></a>IAction</dt>
+
+        <dd>
+            <p>The <code>IAction</code> class is a common ancestor
+            of the <code>Action</code> and
+            <code>SessionAction</code> classes, which contains
+            service methods that may be accessed from both child
+            classes; for example, argument processing methods or
+            methods for obtaining a reference to the corresponding
+            pipeline.</p>
+        </dd>
+    </dl>
+
+    <p style="text-align: center"><img src="images/Pipeline.PNG"
+         alt="package" /></p>
+
+    <p class="special">Figure 1: The Role of Pipelines in the JIT
+    Compilation Process</p>
+
+    <p>Figure 1 demonstrates the role of pipelines in the JIT
+    compilation process.</p>
+	  <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Implementation_Notes"
+       name="Implementation_Notes"></a>2.2 Implementation
+       Notes</h2>
+
+    <p>When using the PMF implementation, please note the
+    following:</p>
+
+    <ul>
+        <li>The common pipeline is mandatory, others are
+        optional.</li>
+
+        <li>An optional pipeline must be assigned to a unique and
+        non-empty filter expression.</li>
+
+        <li>Different pipeline steps can refer to the same
+        action.</li>
+
+        <li>Different pipelines can have different sets of steps
+        and different orders of steps.</li>
+
+        <li>Each pipeline step can be supplied with a unique
+        parameter.</li>
+    </ul>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Pipeline_Life-Cycle"
+       name="Pipeline_Life-cycle"></a>2.3 Pipeline Life-cycle</h2>
+
+    <h3><a id="Initialization"
+       name="Initialization"></a>2.3.1 Initialization</h3>
+
+    <p>The common pipeline is created at the JIT initialization.
+    All other pipelines are created just before their first use.
+    Therefore, an optional pipeline is only initialized when a
+    compiled method matches its filter.</p>
+
+    <p>During pipeline creation, the compiler iterates over all its
+    steps. For each step, the compiler creates an instance of the
+    referenced <code>Action</code> object and calls the
+    <code>Action::init() method</code>. At this point, all action
+    parameters are available and the <code>Action::init()</code>
+    method can use any of the <code>IAction::getArg</code> methods
+    to retrieve action parameters. For efficiency purposes,
+    parameters should be processed at the initialization phase, not
+    during compilation of each method.</p>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">You can call the
+    <code>IAction::getArg</code> method from
+    <code>SessionAction::run()</code> during compilation of a
+    method, but it is a less effective way of parameter processing.
+    The SessionAction object has access to its parent
+    <code>Action</code> object and therefore, can access data
+    prepared during the initialization phase.</p>
+
+    <h3><a id="Method_Compilation"
+       name="Method_Compilation"></a>2.3.2 Method Compilation</h3>
+
+    <p>At this stage, the compiler selects the pipeline for the
+    given method using the filter expression in the method filter
+    and proceeds to compile a method. If the method matches several
+    filters, then the pipeline with the longest filter expression
+    is selected, that is PMF always chooses the filter with more
+    characters in its expression. PMF prohibits creation of
+    different pipelines with the same filter expression.</p>
+
+    <p>To compile the method, JIT executes the selected pipeline:
+    iterates over all its steps, creates a
+    <code>SessionAction</code> object for each step, calls the
+    <code>run()</code> method in each object, and destroys it.</p>
+
+    <h3><a id="De-initialization"
+       name="De-initialization"></a>2.3.3 De-initialization</h3>
+
+    <p>At the JIT de-initialization phase all created pipelines are
+    destroyed. The <code>Action::deinit()</code> method is called
+    for every step in a pipeline during its de-initialization.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a id="Command-line_Interface"
+       name="Command-line_Interface"></a>3. Command-line
+       Interface</h1>
+
+    <p>The <i>command-line interface</i> is based on system
+    properties defined by "property = value" relations. At the
+    initialization phase, all properties are stored in the table of
+    VM properties. Depending on the configuration mode, VM can
+    create several JITs. In this case, each JIT reads this table
+    and selects properties independently; therefore, different JITs
+    have different property sets.</p>
+
+    <p>The general form of the JIT command is the following:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.&lt;<b>parameter</b>&gt;=&lt;<b>value</b>&gt;
+</pre>
+
+    <p>Where</p>
+
+    <ul>
+        <li>
+            <code>-Djit.</code> is the mandatory prefix enabling
+            JIT commands selection from VM commands. 
+
+            <p class="note">Note</p>
+
+            <p class="notetext">The Jitrino command-line interface
+            ignores all commands that do not start with this
+            prefix.</p>
+        </li>
+
+        <li>
+            <code>&lt;<b>JIT</b>&gt;</code> specifies the JIT name.
+            
+
+            <p class="note">Note</p>
+
+            <p class="notetext">JITs are created by
+            <a href="#EM.html">Execution Manager</a> (EM) using
+            information from the command line and/or
+            <a href="http://incubator.apache.org/harmony/subcomponents/drlvm/emguide.html">
+            <code>execution manager configuration</code>
+            file</a>.</p>
+        </li>
+
+        <li><code>&lt;<b>pipeline</b>&gt;</code> specifies the
+        pipeline name.</li>
+
+        <li><code>&lt;<b>parameter</b>&gt;</code> and
+        <code>&lt;<b>value</b>&gt;</code> are used to construct one
+        of the three available basic commands:
+        <a href="#Filter_Definition">filter definition</a>,
+        <a href="#Path_Definition">path definition</a> and
+        <a href="#Argument_Definition">argument
+        definition</a>.</li>
+    </ul>
+
+    <p>Both <code>&lt;<b>JIT</b>&gt;</code> and
+    <code>&lt;<b>pipeline</b>&gt;</code> elements define the
+    command scope in the following way:</p>
+
+    <ul>
+        <li>If the <code>&lt;<b>JIT</b>&gt;</code> element is
+        omitted, the scope of the command consists of all existing
+        JITs.</li>
+
+        <li>If the <code>&lt;<b>pipeline</b>&gt;</code> element is
+        omitted, the scope of the command consists of all pipelines
+        existing in the specified JIT.</li>
+
+        <li>If both <code>&lt;<b>JIT</b>&gt;</code> and
+        <code>&lt;<b>pipeline</b>&gt;</code> are omitted, the scope
+        of the command consists of all pipelines of all JITs.<br />
+        <br /></li>
+    </ul>
+
+    <p>Commands can be specified on the command line or in the EM
+    configuration file. Most important commands are usually placed
+    in the
+    <a href="http://incubator.apache.org/harmony/subcomponents/drlvm/emguide.html">
+    <code>EM configuration</code> file</a>, so Jitrino can be used
+    without any commands on the command line.</p>
+
+    <p>The order of commands on the command line and in the
+    external file is not significant.</p>
+
+    <p>Another way to deal with a set of commands is to store it in
+    a <i>command file</i> and read this file with a special <i>read
+    command</i>:</p>
+    <pre>
+-Djit.read=&lt;<b>command filename</b>&gt;
+</pre>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">Write commands in the command file without
+    the prefix <code>-Djit</code>. The <code>read</code> command
+    itself can be used in the command file. The command file can
+    contain empty lines and comment lines starting with
+    <code>#</code> or <code>//</code>.</p>
+
+    <p>For information on the general command line syntax
+    specification, refer to the
+    <a href="#Appendix">Appendix</a>.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a id="PMF_Commands"
+       name="PMF_Commands"></a>4. PMF Commands</h1>
+
+    <p>To control the JIT compilation process, PMF uses
+    <a href="#Path_Definition">path definition</a>,
+    <a href="#Filter_Definition">filter definition</a> and
+    <a href="#Argument_definition">argument definition</a>
+    commands.</p>
+
+    <h2><a id="Path_Definition"
+       name="Path_Definition"></a>4.1 Path Definition</h2>
+
+    <p>A pipeline can be described as an ordered set of terminal
+    leafs of a path tree. The tree is a purely abstract concept
+    introduced to describe the pipeline construction process. Each
+    non-terminal node of the tree is called a <i>path</i> and
+    defined by the following <i>path definition</i> command:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.path.&lt;<b>name</b>&gt;=&lt;<b>child1</b>&gt;,&lt;<b>child2</b>&gt;,...
+</pre>
+
+    <p>The given command introduces a node with the specified name
+    and enumerates all its direct descendants - children. If a
+    child is a terminal node, it is treated as the name of the
+    action; if not, then the child must be another path.</p>
+
+    <p>For each pipeline, define one path with the
+    &lt;<b>name</b>&gt; element omitted, which is called the
+    <i>root path</i>. Each path must have a unique definition.</p>
+
+    <p>Each action in the pipeline has a unique <i>full name</i>
+    consisting of all node names from the root to the action
+    itself. The root node is excluded because it has no name. More
+    than one instance of the same action can exist, as long as each
+    instance has a unique full name.</p>
+
+    <p class="example">Example</p>
+
+    <p class="exampletext"><code><b>OPT</b></code> is the JIT name
+    and <code><b>a</b></code>, <code><b>b</b></code> and
+    <code><b>c</b></code> are the action names.</p>
+    <pre>
+-Djit.OPT.path=M,N
+-Djit.OPT.path.M=a
+-Djit.OPT.path.N=b,c
+</pre>
+
+    <p class="exampletext">The given commands describe the simple
+    path tree:</p>
+
+    <p style="text-align: center"><img src="images/Pipeline1.png"
+         alt="package" /></p>
+
+    <p class="special">Figure 2: A Path Tree of a Common
+    Pipeline</p>
+
+    <p class="exampletext">The following resulting pipeline is
+    constructed from the aforementioned tree:<br />
+     <code><b>a</b></code>, <code><b>b</b></code>,
+    <code><b>c</b></code></p>
+
+    <p class="exampletext">The pipeline above is common, because it
+    has no method filter. Each action of the given pipeline has a
+    unique full name.</p>
+
+    <table width="31%"
+           height="161"
+           cellpadding="0">
+        <tr>
+            <th class="TableHeading">Action</th>
+
+            <th class="TableHeading">Full Name</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell">a</td>
+
+            <td class="TableCell">M.a</td>
+        </tr>
+
+        <tr>
+            <td width="30%"
+                class="TableCell">b</td>
+
+            <td width="30%"
+                class="TableCell">N.b</td>
+        </tr>
+
+        <tr>
+            <td width="30%"
+                class="TableCell">c</td>
+
+            <td width="30%"
+                class="TableCell">N.c</td>
+        </tr>
+    </table>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Filter_Definition"
+       name="Filter_Definition"></a>4.2 Filter Definition</h2>
+
+    <p>To define a filter, use the following command format:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.filter=&lt;<b>class</b>&gt;.&lt;<b>method</b>&gt;&lt;<b>signature</b>&gt;
+</pre>
+
+    <p>Where</p>
+
+    <ul>
+        <li>&lt;<code><b>pipeline</b></code>&gt; is the required
+        element, which cannot be omitted.</li>
+
+        <li>&lt;<code><b>class</b></code>&gt; is the name of the
+        class constituting the filter expression.</li>
+
+        <li>&lt;<code><b>method</b></code>&gt; is the name of the
+        method constituting the filter expression.</li>
+
+        <li>&lt;<code><b>signature</b></code>&gt; is the signature
+        of the method constituting the filter expression.</li>
+    </ul>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">In the filter definition, the
+    <code>method</code> and the <code>signature</code> elements
+    have no period <code>.</code> between them.</p>
+
+    <p>You must follow the VM notation for the described elements.
+    You are free to omit some elements, but at least one must be
+    present.</p>
+
+    <p>If each of three elements of the method name starts with the
+    corresponding element of the filter expression, the compiled
+    method matches the filter.</p>
+
+    <p class="example">Example</p>
+    <pre>
+-Djit.OPT.p.filter=java/lang/Thread.check
+</pre>
+
+    <p class="exampletext">The following methods can match the
+    given filter:<br />
+     <code>java/lang/ThreadGroup.checkAccess()V</code><br />
+     <code>java/lang/Thread.checkGCWatermark()V</code><br />
+     <code>java/lang/Thread.checkAccess()V</code></p>
+
+    <p>To continue the example, methods can equally match a less
+    detailed filter expression, such as
+    <code>java/lang.check</code>. However, PMF would use the more
+    specific filter, as described in the
+    <a href="#Method_Compilation">Method Compilation</a>
+    section.</p>
+
+    <p class="example">Example</p>
+    <pre>
+-Djit.OPT.path=M,N
+-Djit.OPT.path.M=a
+-Djit.OPT.path.N=b,c
+-Djit.OPT.p.path=M,N,O
+-Djit.OPT.p.path.O=a
+-Djit.OPT.p.filter=java/lang/Thread.check
+</pre>
+
+    <p class="exampletext">The commands above are associated with
+    the following path trees:</p>
+
+    <p style="text-align: center"><img src="images/Pipelines2.png"
+         alt="package" /></p>
+
+    <p class="special">Figure 3: An Example of Path Trees for
+    Multiple Pipelines</p>
+
+    <p class="exampletext">The following resulting pipelines are
+    constructed from the aforementioned trees:<br />
+     (<code>common</code>) <code><b>a</b></code>,
+    <code><b>b</b></code>, <code><b>c</b></code><br />
+     (<code>p</code>) &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+    <code><b>a</b></code>, <code><b>b</b></code>,
+    <code><b>c</b></code>, <code><b>a</b></code></p>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">Path definitions <code><b>M</b></code> and
+    <code><b>N</b></code> in the pipeline <code><b>p</b></code> are
+    inherited from the common pipeline, because they were defined
+    in commands with the pipeline element omitted, but the root
+    path definition in the <code><b>p</b></code> pipeline was
+    overridden.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Argument_Definition"
+       name="Argument_Definition"></a>4.3 Argument Definition</h2>
+
+    <p>To control the actions behavior, PMF supports an action
+    parameters passing convention. The parameter definition command
+    pattern is the following:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.&lt;<b>param</b>&gt;=&lt;<b>value</b>&gt;
+</pre>
+
+    <p>Where</p>
+
+    <ul>
+        <li>&lt;<b>param</b>&gt; and &lt;<b>value</b>&gt; are
+        mandatory elements.</li>
+
+        <li>&lt;<b>JIT</b>&gt;, &lt;<b>pipeline</b>&gt; and
+        &lt;<b>full name</b>&gt; are optional elements defining the
+        scope of the both.</li>
+    </ul>
+
+    <p>The &lt;<b>full name</b>&gt; element defines the parameter
+    scope in the following way:</p>
+
+    <ul>
+        <li>If &lt;<b>full name</b>&gt; addresses a certain action,
+        that is a terminal node, the parameter affects all
+        instances of this action.</li>
+
+        <li>If &lt;<b>full name</b>&gt; addresses not an action,
+        but a node with children, the parameter affects this node
+        and all its descendants.</li>
+
+        <li>If &lt;<b>full name</b>&gt; is omitted, the parameter
+        affects all actions in the pipeline.</li>
+    </ul>
+
+    <p class="example">Example</p>
+    <pre>
+-Djit.OPT.p.arg.a.verify=1
+</pre>
+
+    <p class="exampletext">The given command sets the
+    &lt;<b>verify</b>&gt; parameter for both <code><b>a</b></code>
+    instances, <code><b>M.a</b></code> and <code><b>O.a</b></code>,
+    to <b>1</b>. See Figure 3.</p>
+
+    <p>The table below gives several examples of essential commands
+    for the path trees based on Figure 3.</p>
+
+    <table>
+        <tr>
+            <th width="232"
+                class="TableHeading">Command</th>
+
+            <th width="98"
+                class="TableHeading">Omitted Element</th>
+
+            <th width="631"
+                class="TableHeading">Definition</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+            <code>-Djit.OPT.p.arg.N.b.verify=2</code></td>
+
+            <td class="TableCell">
+                <center>
+                    &#8212;
+                </center>
+            </td>
+
+            <td class="TableCell">The parameter <code>verify</code>
+            with value 2 is available only to action
+            <code><b>b</b></code> with the full name
+            <code><b>N.b</b></code> in pipeline
+            <code><b>p</b></code> of JIT
+            <code><b>OPT</b></code>.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+            <code>-Djit.OPT.p.arg.N.verify=2</code></td>
+
+            <td class="TableCell">
+                <center>
+                    &#8212;
+                </center>
+            </td>
+
+            <td class="TableCell">The parameter <code>verify</code>
+            is available for actions <code><b>b</b></code> and
+            <code><b>c</b></code> simultaneously.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+            <code>-Djit.OPT.p.arg.verify=2</code></td>
+
+            <td class="TableCell"><code>&lt;<b>full
+            name</b>&gt;</code></td>
+
+            <td class="TableCell">The parameter <code>verify</code>
+            is available for all actions <code><b>a</b></code>,
+            <code><b>b</b></code>, <code><b>c</b></code> and
+            <code><b>a</b></code> in pipeline
+            <code><b>p</b></code>.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+            <code>-Djit.OPT.arg.N.verify=2</code></td>
+
+            <td class="TableCell">
+            <code>&lt;<b>pipeline</b>&gt;</code></td>
+
+            <td class="TableCell">The parameter <code>verify</code>
+            is available for <code><b>b</b></code> and
+            <code><b>c</b></code> actions for common and
+            <code><b>p</b></code> pipelines of JIT
+            <code><b>OPT</b></code> .</td>
+        </tr>
+    </table>
+
+    <p>The special form of argument definition commands controls
+    the pipeline construction process:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;=on
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;=off
+</pre>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">In the given form of the argument
+    definition, the &lt;<b>param</b>&gt; element is absent and only
+    two values for &lt;<b>value</b>&gt; exist: <code>on</code> and
+    <code>off</code>.</p>
+
+    <p>The <code>off</code> value disables the addressed node and
+    all its descendants, while the <code>on</code> value enables
+    the node and its descendants. When constructed, a pipeline does
+    not include any disabled actions.</p>
+
+    <p class="example">Example</p>
+
+    <p class="exampletext">To exclude action <code><b>b</b></code>
+    from the pipeline, apply the following command:</p>
+    <pre>
+-Djit.OPT.p.arg.N.b=off
+</pre>
+
+    <p>To enable/disable nodes directly in the path definition
+    command, add state characters immediately after the node name,
+    videlicet:</p>
+
+    <table width="53%"
+           height="161"
+           cellpadding="0">
+        <tr>
+            <th class="TableHeading">Character</th>
+
+            <th class="TableHeading">Corresponding Node
+            Meaning</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+                <center>
+                    +
+                </center>
+            </td>
+
+            <td class="TableCell">enabled</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+                <center>
+                    &#8212;
+                </center>
+            </td>
+
+            <td class="TableCell">disabled</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+                <center>
+                    !
+                </center>
+            </td>
+
+            <td class="TableCell">cannot be disabled</td>
+        </tr>
+    </table>
+
+    <p>The following command states that <code>c1</code> is
+    enabled, <code>c2</code> is disabled and <code>c3</code> is
+    enabled and mandatory:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.path.&lt;<b>name</b>&gt;=c1+,c2-,c3!
+</pre>
+
+    <p>If you try to disable any mandatory node with the
+    <code>off</code> command, the fatal error occurs.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a id="Logging_System"
+       name="Logging_System"></a>5. Logging System</h1>
+
+    <p>The <i>logging system</i> supports diagnostic messages from
+    pipeline actions. The VM property mechanism fully controls the
+    system.</p>
+
+    <h2><a id="Stream_Definition"
+       name="Defining_Streams"></a>5.1 Defining Streams</h2>
+
+    <p>A set of <i>log streams</i> is used for logging in Jitrino.
+    Each log stream has a name. The name of the log stream is not
+    related to the name of the file, to which the stream is
+    assigned. The class <code>Jitrino::LogStream</code> is the
+    program representation of a log stream. This class is similar
+    to the <code>std::ostream</code> class in the defining operator
+    <code>&lt;&lt;</code> and other useful methods, such as
+    <code>printf()</code> and <code>flush()</code>. To obtain the
+    reference to the underlying <code>std::ostream</code> instance,
+    call the <code>out()</code> method.</p>
+
+    <p>Streams can be accessed by name or by ID. The stream ID can
+    be obtained from its name by using the
+    <code>IAction::getLogStreamID()</code> method. For performance
+    reasons, several most frequently used streams, so-called
+    <i>known</i> streams, have predefined IDs:</p>
+
+    <table>
+        <tr>
+            <th class="TableHeading">Stream Name</th>
+
+            <th class="TableHeading">Stream ID</th>
+
+            <th class="TableHeading">Output</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>info</code></td>
+
+            <td class="TableCell"><code>LogStream::INFO</code></td>
+
+            <td class="TableCell">The protocol of compilation: JIT
+            and pipeline names, the method name and number, and so
+            on.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>rt</code></td>
+
+            <td class="TableCell"><code>LogStream::RT</code></td>
+
+            <td class="TableCell">Run-time output not related to
+            compiled methods.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>ct</code></td>
+
+            <td class="TableCell"><code>LogStream::CT</code></td>
+
+            <td class="TableCell">Compile-time diagnostic.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>irdump</code></td>
+
+            <td class="TableCell">
+            <code>LogStream::IRDUMP</code></td>
+
+            <td class="TableCell">The dump of internal Jitrino
+            structures for a compiled method.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>dotdump</code></td>
+
+            <td class="TableCell">
+            <code>LogStream::DOTDUMP</code></td>
+
+            <td class="TableCell">The dump of internal Jitrino
+            structures in the <code>.dot</code> format.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>dbg</code></td>
+
+            <td class="TableCell"><code>LogStream::DBG</code></td>
+
+            <td class="TableCell">Debug information.</td>
+        </tr>
+    </table>
+
+    <p>To enable outputting log information to a stream, enter a
+    command of the following syntax:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log=&lt;<b>stream1</b>&gt;,&lt;<b>stream2</b>&gt;,...
+</pre>
+
+    <p>The left part of the command specifies the name of the JIT
+    compiler and the compilation pipeline to be used, whereas the
+    right part contains the names of the streams that you want to
+    enable. Use the same syntax to enable a custom stream: write an
+    arbitrary name for it and enable the stream with this
+    command.</p>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">If program output is directed to a disabled
+    stream, the output is lost and no error diagnostic is
+    produced.</p>
+
+    <p>The enabling command follows the general scope of rules: the
+    stream is enabled for the node specified in the command and all
+    its descendants.</p>
+
+    <p>Streams defined for different nodes are different streams,
+    though they can have the same name.</p>
+
+    <p class="example">Example</p>
+
+    <p class="exampletext">The following commands enable two
+    different streams, though both can be accessed from actions
+    <code><b>N.b</b></code> and <code><b>N.c</b></code> by the same
+    name. The streams can be assigned to different files.</p>
+    <pre>
+-Djit.OPT.p.arg.N.b.log=ct
+-Djit.OPT.p.arg.N.c.log=ct
+</pre>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Assigning_a_Stream_to_a_File"
+       name="Assigning_a_Stream_to_a _File"></a>5.2 Assigning a
+       Stream to a File</h2>
+
+    <p>To assign a stream to a file, use the following command
+    syntax:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.file=&lt;<b>filename mask</b>&gt;
+</pre>
+
+    <p>In the given command, the &lt;<b>filename mask</b>&gt;
+    element constructs a filename for the stream. All characters
+    from this mask are copied to the resulting filename literally
+    except macros, which are expanded and the result of expansion
+    is copied to the filename. Below is the list of available
+    macros.</p>
+
+    <table>
+        <tr>
+            <th class="TableHeading">Macro</th>
+
+            <th class="TableHeading">Expands To</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%jit%</code></td>
+
+            <td class="TableCell">The name of the JIT that is
+            compiling the method.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%class%</code></td>
+
+            <td class="TableCell">The method class name with
+            <code>/</code> changed to <code>_</code></td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%class_tree%</code></td>
+
+            <td class="TableCell">The method class name with
+            <code>/</code> preserved.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%method%</code></td>
+
+            <td class="TableCell">The method name and signature in
+            VM notation.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%seqnb%</code></td>
+
+            <td class="TableCell">The global sequential number of
+            the current compilation.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%log%</code></td>
+
+            <td class="TableCell">The name of the stream.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%thread%</code></td>
+
+            <td class="TableCell">The number of the thread
+            compiling the method.</td>
+        </tr>
+    </table>
+
+    <p>In most cases, a program can access the stream file from
+    concurrent threads, so that all stream operations are
+    synchronized. However, if a filename mask for the stream
+    contains the <code>%thread%</code> macro, this file is
+    thread-specific and access to it is not synchronized.</p>
+
+    <h3><a id="Using_File-name_Masks"
+       name="Using_Filename_Masks"></a>5.2.1 Using Filename
+       Masks</h3>
+
+    <p>For all streams, the following default filename mask is
+    used:</p>
+    <pre>
+log/%jit%/%class%/%method%/%log%.log
+</pre>
+
+    <p>For example, for an enabled stream <code>abc</code> with no
+    assigned filename mask, the log file is in the same directory
+    with other known stream files, and its name is
+    <code>abc.log</code>.</p>
+
+    <p>All known streams have hard-coded default filename masks,
+    described in the table below. These masks are used if no
+    assignment is made with the corresponding command.</p>
+
+    <table width="451">
+        <tr>
+            <th width="110"
+                class="TableHeading">Stream Name</th>
+
+            <th width="298"
+                class="TableHeading">Default Filename Mask</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>info</code></td>
+
+            <td class="TableCell"><code>log/info.log</code></td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>rt</code></td>
+
+            <td class="TableCell"><code>log/rt.log</code></td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>ct</code></td>
+
+            <td class="TableCell">
+            <code>log/%jit%/%class%/%method%/ct.log</code></td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>irdump</code></td>
+
+            <td class="TableCell">
+            <code>log/%jit%/%class%/%method%/irdump.log</code></td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>dotdump</code></td>
+
+            <td class="TableCell">
+            <code>log/%jit%/%class%/%method%/.dot [special
+            case]</code></td>
+        </tr>
+    </table>
+
+    <p class="example">Exception</p>
+
+    <p class="exampletext">Jitrino writes dot-dumps to the
+    <code>dotdump</code> stream and produces two <code>.dot</code>
+    files for each action: <i>before</i> and <i>after</i> execution
+    of an action. To handle these correctly, the enabled dot-dumper
+    opens the <code>dotdump</code> stream before executing the
+    action, writes to the stream and closes it. After executing the
+    action, the dot-dumper performs the same operation. Each time,
+    the dot-dumper adds a suffix that indicates the sequence of
+    actions to the tail of the stream filename <code>.dot</code>,
+    as follows:</p>
+    <pre>
+  .&lt;<b>action_nb</b>&gt;.&lt;<b>action_name</b>&gt;.before.dot
+  .&lt;<b>action_nb</b>&gt;.&lt;<b>action_name</b>&gt;.after.dot
+</pre>
+
+    <p>In the command above, the &lt;<b>action name</b>&gt; element
+    is the name of the action and &lt;<b>action_nb</b>&gt; is the
+    sequential number of the action in the current pipeline.</p>
+
+    <h3><a id="File_Name_Review"
+       name="Filename_Review"></a>5.2.2 Filename Review</h3>
+
+    <p>Names of all open stream files are reviewed at the beginning
+    of method compilation, because the stream file name can depend
+    on the name of the compiled method. If the name is changed as
+    the result of the dependency on the compiled method name, the
+    file is closed and another file with the new calculated name is
+    opened. If the name is not changed, no action is performed. If
+    the same file name is assigned to different streams, a single
+    file is opened and all the assigned streams use it.</p>
+
+    <p>If a file used for logging gets closed as the result of
+    filename recalculation, its name is saved in a special list
+    that PMF maintains. For every file opened for logging output,
+    the PMF checks the list. If the name is found, the file is
+    opened in the <i>append</i> mode. This approach prevents from
+    overwriting logging files during a single Jitrino run.</p>
+
+    <p>You can use the following commands to control the
+    append/truncate mode for the log files that are opened for the
+    first time:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.append=true
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.append=false
+</pre>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Using_Stream"
+       name="Using_Streams"></a>5.3 Using Streams</h2>
+
+    <p>A typical usage pattern for Jitrino action is the
+    following:</p>
+
+    <ol>
+        <li>Find the required stream using its name or ID.</li>
+
+        <li>(optional) Test whether the stream is enabled.</li>
+
+        <li>Output to the stream using the insertion operator
+        <code>&lt;&lt;</code> or <code>printf()</code> method.</li>
+    </ol>
+
+    <p class="example">Example</p>
+    <pre>
+    LogStream&amp; irdump = log(LogStream::IRDUMP);
+
+    if (irdump.isEnabled()) {
+        irdump &lt;&lt; "Opt:   Running " &lt;&lt; getName() &lt;&lt; stl::endl;
+    }
+</pre>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a id="Appendix"
+       name="Appendix"></a>6. Appendix</h1>
+
+    <h2><a id="General_Command-line_Syntax_Specification"
+       name="General_Command-line_Syntax_Specification"></a>6.1
+       General Command-line Syntax Specification</h2>
+    <pre>
+&lt;cmd&gt;                     :     &lt;prefix&gt; &lt;filter def&gt;
+                                &lt;prefix&gt; &lt;path def&gt;
+                                &lt;prefix&gt; &lt;arg def&gt;
+                                &lt;prefix&gt; &lt;file read&gt;
+
+&lt;prefix&gt;                  :     -Djit.
+
+&lt;base&gt;                    :     [ &lt;JIT&gt; . ] [ &lt;pipeline&gt; . ]
+
+&lt;JIT&gt;                     :     &lt;name&gt;
+
+&lt;pipeline&gt;                :     &lt;name&gt;
+
+
+&lt;filter def&gt;              :     &lt;base&gt; filter = &lt;filter spec&gt;
+
+&lt;filter spec&gt;             :     [ &lt;class&gt; ]  [ .  &lt;method&gt; [ &lt;signature&gt; ] ]
+                                [ &lt;class&gt; ]  [ :: &lt;method&gt; [ &lt;signature&gt; ] ]
+
+
+&lt;path def&gt;                :     &lt;base&gt; path . &lt;node&gt; = &lt;path items&gt;
+                                &lt;base&gt; path = &lt;path items&gt;
+
+&lt;path items&gt;              :     &lt;path item&gt;
+                                &lt;path items&gt; , &lt;path item&gt;
+
+&lt;path item&gt;               :     {&lt;node&gt; | &lt;action &gt;} [{ ! | + | - }]
+
+&lt;node&gt;                    :     &lt;name&gt;
+
+&lt;action&gt;                  :     &lt;name&gt;
+
+
+&lt;arg def&gt;                 :     &lt;base&gt; arg  [ &lt;full name&gt; . ] &lt;arg name&gt; = &lt;arg value&gt;
+                                &lt;base&gt; arg  &lt;full name&gt; = {off | on}
+
+&lt;full name&gt;               :     &lt;path item&gt;
+                                &lt;full name&gt; . &lt;path item&gt;
+
+&lt;arg name&gt;                :     &lt;name&gt;
+
+&lt;arg value&gt;               :     &lt;string&gt;
+
+
+&lt;file read&gt;               :     read = &lt;file name&gt;
+
+</pre>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <p><a id="*"
+       name="*">*</a> Other brands and names are the property of
+       their respective owners.</p>
+</body>
+</html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type"
+          content="text/html; charset=us-ascii" />
+    <link rel="Stylesheet"
+          type="text/css"
+          href="site.css" />
+
+    <title>Jitrino Pipeline Management Framework</title>
+</head>
+
+<body>
+    <h1><a id="top"
+       name="top"></a>Jitrino Pipeline Management Framework</h1>
+
+    <p class="TOCHeading"><a href="#Revision_History">Revision
+    History</a></p>
+
+    <p class="TOCHeading">
+    <a href="#Disclaimer_and_Legal">Disclaimer and Legal
+    Information</a></p>
+
+    <p class="TOCHeading"><a href="#About_This_Document">1. About
+    This Document</a></p>
+
+    <p class="TOC"><a href="#Purpose">1.1 Purpose</a></p>
+
+    <p class="TOC"><a href="#Intended_Audience">1.2 Intended
+    Audience</a></p>
+
+    <p class="TOC"><a href="#Documentation_Conventions">1.3
+    Documentation Conventions</a></p>
+
+    <p class="TOCHeading"><a href="#Overview">2. Overview</a></p>
+
+    <p class="TOC"><a href="#Key_Elements">2.1 Key Elements</a></p>
+
+    <p class="TOC"><a href="#Implementation_Notes">2.2
+    Implementation Notes</a></p>
+
+    <p class="TOC"><a href="#Pipeline_Life-cycle">2.3 Pipeline
+    Life-cycle</a></p>
+
+    <blockquote>
+        <p class="TOC"><a href="#Initialization">2.3.1
+        Initialization</a></p>
+
+        <p class="TOC"><a href="#Method_Compilation">2.3.2 Method
+        Compilation</a></p>
+
+        <p class="TOC"><a href="#De-initialization">2.3.3
+        De-initialization</a></p>
+    </blockquote>
+
+    <p class="TOCHeading"><a href="#Command-line_Interface">3.
+    Command-line Interface</a></p>
+
+    <p class="TOCHeading"><a href="#PMF_Commands">4. PMF
+    Commands</a></p>
+
+    <p class="TOC"><a href="#Path_Definition">4.1 Path
+    Definition</a></p>
+
+    <p class="TOC"><a href="#Filter_Definition">4.2 Filter
+    Definition</a></p>
+
+    <p class="TOC"><a href="#Argument_Definition">4.3 Argument
+    Definition</a></p>
+
+    <p class="TOCHeading"><a href="#Logging_System">5. Logging
+    System</a></p>
+
+    <p class="TOC"><a href="#Defining_Streams">5.1 Defining
+    Streams</a></p>
+
+    <p class="TOC"><a href="#Assigning_a_Stream_to_a_File">5.2
+    Assigning a Stream to a File</a></p>
+
+    <blockquote>
+        <p class="TOC"><a href="#Using_Filename_Masks">5.2.1 Using
+        Filename Masks</a></p>
+
+        <p class="TOC"><a href="#Filename_Review">5.2.2 Filename
+        Review</a></p>
+    </blockquote>
+
+    <p class="TOC"><a href="#Using_Streams">5.3 Using
+    Streams</a></p>
+
+    <p class="TOCHeading"><a href="#Appendix">6. Appendix</a></p>
+
+    <p class="TOC">
+    <a href="#General_Command-line_Syntax_Specification">6.1
+    General Command-line Syntax Specification</a></p>
+
+    <h1><a name="Revision_History"
+       id="Revision_History"></a>Revision History</h1>
+
+    <table border="0"
+           cellpadding="0"
+           width="100%">
+        <tr>
+            <th class="TableHeading">Version</th>
+
+            <th class="TableHeading">Version Information</th>
+
+            <th class="TableHeading">Date</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell">Initial version</td>
+
+            <td class="TableCell">Sergey Ivashin, Svetlana
+            Konovalova: document created.</td>
+
+            <td class="TableCell">October 30 , 2006</td>
+        </tr>
+    </table>
+
+    <h1><a name="Disclaimer_and_Legal"
+       id="Disclaimer_and_Legal"></a>Disclaimer and Legal
+       Information</h1>
+
+    <p>Copyright 2006 The Apache Software Foundation or its
+    licensors, as applicable.</p>
+
+    <p>Licensed under the Apache License, Version 2.0 (the
+    License); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+    <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>.</p>
+
+    <p>Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an AS
+    IS BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+    express or implied. See the License for the specific language
+    governing permissions and limitations under the License.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a name="About_This_Document"
+       id="About_This_Document"></a>1. About This Document</h1>
+
+    <h2><a name="Purpose"
+       id="Purpose"></a>1.1 Purpose</h2>
+
+    <p>The document is a comprehensive description of the
+    <i>pipeline management framework</i> that provides complete
+    control over just-in-time compilation process through the
+    Java<a href="#*">*</a> property mechanism. The description
+    covers the PMF application to the command-line interface and to
+    the Jitrino logging system.</p>
+
+    <p>PMF is introduced in the Jitrino component description,
+    whereas the current document gives details on its internal
+    design and specifics. The current document adds examples and
+    usage instructions to the general definition of PMF given in
+    the component description.</p>
+
+    <h2><a id="Intended_Audience"
+       name="Intended_Audience"></a>1.2 Intended Audience</h2>
+
+    <p>The target audience for the document includes a wide
+    community of DRLVM developers interested in understanding
+    Jitrino internals and in improving them. The document assumes
+    that readers understand the concepts of
+    <a href="#PMF_Commands">PMF</a> and just-in-time
+    compilation.</p>
+
+    <h2><a id="Documentation_Conventions"
+       name="Documentation_Conventions"></a>1.3 Documentation
+       Conventions</h2>
+
+    <p>This document uses the <a href="conventions.htm">unified
+    conventions</a> for the DRL documentation kit.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a id="Overview"
+       name="Overview"></a>2. Overview</h1>
+
+    <p>The document contains the detailed description of the
+    Jitrino pipeline management framework (PMF). For a high-level
+    PMF overview, refer to the <a href="#Jitrino.html">Jitrino
+    document</a>.</p>
+
+    <h2><a id="Key_Elements"
+       name="Key_Elements"></a>2.1 Key Elements</h2>
+
+    <p>This section contains a detailed description of the PMF key
+    elements.</p>
+
+    <dl>
+        <dt><a id="Pipeline"
+           name="Pipeline"></a>Pipeline</dt>
+
+        <dd>
+            <p>The <i>pipeline</i> is a sequence of steps
+            representing the compilation process for a set of
+            methods. You can create several pipelines for a single
+            JIT, targeting each to compile a particular set of
+            methods. Each instance of the JIT compiler has one
+            <i>common pipeline</i>, which has an empty method
+            filter. Thus, the common pipeline is applied if a
+            compiled method matched no method filter of other
+            pipelines. For more information on the common pipeline,
+            refer to the
+            <a href="#Initialization">Initialization</a> section of
+            the current document.</p>
+        </dd>
+
+        <dt><a id="Method_Filter"
+           name="Method_Filter"></a>Method Filter</dt>
+
+        <dd>
+            <p>The <i>method filter</i> is used to choose a
+            particular pipeline for a method being compiled. Filter
+            elements make up a filter expression, as follows:<br />
+             <code>&lt;<b>class_name</b>&gt;&lt;<b>method_name</b>&gt;&lt;<b>
+            method_signature</b>&gt;</code>.<br />
+             Any or all of these elements can be blank. If all
+            elements of a filter expression are empty strings, the
+            filter is empty. Empty filters are used in the
+            compilation of a common pipeline.</p>
+        </dd>
+
+        <dt><a id="Pipeline_Step"
+           name="Pipeline_Step"></a>Pipeline Step</dt>
+
+        <dd>
+            <p>The <i>pipeline step</i> is a pipeline element that
+            stores a reference to an action object and its full
+            name. In the pipeline definition a step is represented
+            by its textual name.</p>
+        </dd>
+
+        <dt><a id="Action"
+           name="Action"></a>Action</dt>
+
+        <dd>
+            <p>The <i>action</i> is an object representing a
+            certain independent transformation of compiled code.
+            Each action must be declared as a subclass of the
+            <code>Jitrino::Action</code> class. Therefore, all
+            actions have a common set of properties and methods,
+            namely:</p>
+
+            <ul>
+                <li>The <code>name</code> property used to assign a
+                unique name to each JIT action</li>
+
+                <li>The <code>init()</code> and
+                <code>deinit()</code> methods used to
+                <a href="#Initialization">initialize</a> and
+                <a href="#De-initialization">de-initialize</a> the
+                JIT</li>
+
+                <li>The <code>createSession()</code> method used to
+                create
+                <a href="#SessionAction"><code>SessionAction</code></a></li>
+            </ul>
+
+            <p class="note">Note</p>
+
+            <p class="notetext">Actions do not have the
+            <code>run()</code> method and cannot be called directly
+            in the pipeline. The <code>SessionAction</code> object
+            is used instead.</p>
+
+            <p>The system creates <code>Action</code> objects once
+            per JIT execution and uses them to store data between
+            compilation sessions.</p>
+
+            <p class="class"><a id="SessionAction"
+               a=""
+               name="SessionAction"><code>SessionAction</code></a></p>
+
+            <p>A <code>SessionAction</code> object created by PMF
+            to transform code in a particular compilation session.
+            <code>SessionAction</code> must be declared as a
+            subclass of the <code>Jitrino::SessionAction</code>
+            class, which has the following methods:</p>
+
+            <ul>
+                <li>The <code>getAction()</code> method to get the
+                reference to the parent <code>Action</code>
+                object</li>
+
+                <li>The <code>run()</code> method to do the work
+                for the action object</li>
+            </ul>
+
+            <p>Instances of <code>SessionAction</code> are created
+            at the start of method compilation and destroyed at the
+            end of compilation. In other words, they are created
+            and destroyed every time when a pipeline with the
+            corresponding action is selected for method
+            compilation. Therefore, no data can be saved in this
+            object between compilation sessions.</p>
+        </dd>
+
+        <dt><a id="IAction"
+           name="IAction"></a>IAction</dt>
+
+        <dd>
+            <p>The <code>IAction</code> class is a common ancestor
+            of the <code>Action</code> and
+            <code>SessionAction</code> classes, which contains
+            service methods that may be accessed from both child
+            classes; for example, argument processing methods or
+            methods for obtaining a reference to the corresponding
+            pipeline.</p>
+        </dd>
+    </dl>
+
+    <p style="text-align: center"><img src="images/Pipeline.PNG"
+         alt="package" /></p>
+
+    <p class="special">Figure 1: The Role of Pipelines in the JIT
+    Compilation Process</p>
+
+    <p>Figure 1 demonstrates the role of pipelines in the JIT
+    compilation process.</p>
+	  <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Implementation_Notes"
+       name="Implementation_Notes"></a>2.2 Implementation
+       Notes</h2>
+
+    <p>When using the PMF implementation, please note the
+    following:</p>
+
+    <ul>
+        <li>The common pipeline is mandatory, others are
+        optional.</li>
+
+        <li>An optional pipeline must be assigned to a unique and
+        non-empty filter expression.</li>
+
+        <li>Different pipeline steps can refer to the same
+        action.</li>
+
+        <li>Different pipelines can have different sets of steps
+        and different orders of steps.</li>
+
+        <li>Each pipeline step can be supplied with a unique
+        parameter.</li>
+    </ul>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Pipeline_Life-Cycle"
+       name="Pipeline_Life-cycle"></a>2.3 Pipeline Life-cycle</h2>
+
+    <h3><a id="Initialization"
+       name="Initialization"></a>2.3.1 Initialization</h3>
+
+    <p>The common pipeline is created at the JIT initialization.
+    All other pipelines are created just before their first use.
+    Therefore, an optional pipeline is only initialized when a
+    compiled method matches its filter.</p>
+
+    <p>During pipeline creation, the compiler iterates over all its
+    steps. For each step, the compiler creates an instance of the
+    referenced <code>Action</code> object and calls the
+    <code>Action::init() method</code>. At this point, all action
+    parameters are available and the <code>Action::init()</code>
+    method can use any of the <code>IAction::getArg</code> methods
+    to retrieve action parameters. For efficiency purposes,
+    parameters should be processed at the initialization phase, not
+    during compilation of each method.</p>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">You can call the
+    <code>IAction::getArg</code> method from
+    <code>SessionAction::run()</code> during compilation of a
+    method, but it is a less effective way of parameter processing.
+    The SessionAction object has access to its parent
+    <code>Action</code> object and therefore, can access data
+    prepared during the initialization phase.</p>
+
+    <h3><a id="Method_Compilation"
+       name="Method_Compilation"></a>2.3.2 Method Compilation</h3>
+
+    <p>At this stage, the compiler selects the pipeline for the
+    given method using the filter expression in the method filter
+    and proceeds to compile a method. If the method matches several
+    filters, then the pipeline with the longest filter expression
+    is selected, that is PMF always chooses the filter with more
+    characters in its expression. PMF prohibits creation of
+    different pipelines with the same filter expression.</p>
+
+    <p>To compile the method, JIT executes the selected pipeline:
+    iterates over all its steps, creates a
+    <code>SessionAction</code> object for each step, calls the
+    <code>run()</code> method in each object, and destroys it.</p>
+
+    <h3><a id="De-initialization"
+       name="De-initialization"></a>2.3.3 De-initialization</h3>
+
+    <p>At the JIT de-initialization phase all created pipelines are
+    destroyed. The <code>Action::deinit()</code> method is called
+    for every step in a pipeline during its de-initialization.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a id="Command-line_Interface"
+       name="Command-line_Interface"></a>3. Command-line
+       Interface</h1>
+
+    <p>The <i>command-line interface</i> is based on system
+    properties defined by "property = value" relations. At the
+    initialization phase, all properties are stored in the table of
+    VM properties. Depending on the configuration mode, VM can
+    create several JITs. In this case, each JIT reads this table
+    and selects properties independently; therefore, different JITs
+    have different property sets.</p>
+
+    <p>The general form of the JIT command is the following:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.&lt;<b>parameter</b>&gt;=&lt;<b>value</b>&gt;
+</pre>
+
+    <p>Where</p>
+
+    <ul>
+        <li>
+            <code>-Djit.</code> is the mandatory prefix enabling
+            JIT commands selection from VM commands. 
+
+            <p class="note">Note</p>
+
+            <p class="notetext">The Jitrino command-line interface
+            ignores all commands that do not start with this
+            prefix.</p>
+        </li>
+
+        <li>
+            <code>&lt;<b>JIT</b>&gt;</code> specifies the JIT name.
+            
+
+            <p class="note">Note</p>
+
+            <p class="notetext">JITs are created by
+            <a href="#EM.html">Execution Manager</a> (EM) using
+            information from the command line and/or
+            <a href="http://incubator.apache.org/harmony/subcomponents/drlvm/emguide.html">
+            <code>execution manager configuration</code>
+            file</a>.</p>
+        </li>
+
+        <li><code>&lt;<b>pipeline</b>&gt;</code> specifies the
+        pipeline name.</li>
+
+        <li><code>&lt;<b>parameter</b>&gt;</code> and
+        <code>&lt;<b>value</b>&gt;</code> are used to construct one
+        of the three available basic commands:
+        <a href="#Filter_Definition">filter definition</a>,
+        <a href="#Path_Definition">path definition</a> and
+        <a href="#Argument_Definition">argument
+        definition</a>.</li>
+    </ul>
+
+    <p>Both <code>&lt;<b>JIT</b>&gt;</code> and
+    <code>&lt;<b>pipeline</b>&gt;</code> elements define the
+    command scope in the following way:</p>
+
+    <ul>
+        <li>If the <code>&lt;<b>JIT</b>&gt;</code> element is
+        omitted, the scope of the command consists of all existing
+        JITs.</li>
+
+        <li>If the <code>&lt;<b>pipeline</b>&gt;</code> element is
+        omitted, the scope of the command consists of all pipelines
+        existing in the specified JIT.</li>
+
+        <li>If both <code>&lt;<b>JIT</b>&gt;</code> and
+        <code>&lt;<b>pipeline</b>&gt;</code> are omitted, the scope
+        of the command consists of all pipelines of all JITs.<br />
+        <br /></li>
+    </ul>
+
+    <p>Commands can be specified on the command line or in the EM
+    configuration file. Most important commands are usually placed
+    in the
+    <a href="http://incubator.apache.org/harmony/subcomponents/drlvm/emguide.html">
+    <code>EM configuration</code> file</a>, so Jitrino can be used
+    without any commands on the command line.</p>
+
+    <p>The order of commands on the command line and in the
+    external file is not significant.</p>
+
+    <p>Another way to deal with a set of commands is to store it in
+    a <i>command file</i> and read this file with a special <i>read
+    command</i>:</p>
+    <pre>
+-Djit.read=&lt;<b>command filename</b>&gt;
+</pre>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">Write commands in the command file without
+    the prefix <code>-Djit</code>. The <code>read</code> command
+    itself can be used in the command file. The command file can
+    contain empty lines and comment lines starting with
+    <code>#</code> or <code>//</code>.</p>
+
+    <p>For information on the general command line syntax
+    specification, refer to the
+    <a href="#Appendix">Appendix</a>.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a id="PMF_Commands"
+       name="PMF_Commands"></a>4. PMF Commands</h1>
+
+    <p>To control the JIT compilation process, PMF uses
+    <a href="#Path_Definition">path definition</a>,
+    <a href="#Filter_Definition">filter definition</a> and
+    <a href="#Argument_definition">argument definition</a>
+    commands.</p>
+
+    <h2><a id="Path_Definition"
+       name="Path_Definition"></a>4.1 Path Definition</h2>
+
+    <p>A pipeline can be described as an ordered set of terminal
+    leafs of a path tree. The tree is a purely abstract concept
+    introduced to describe the pipeline construction process. Each
+    non-terminal node of the tree is called a <i>path</i> and
+    defined by the following <i>path definition</i> command:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.path.&lt;<b>name</b>&gt;=&lt;<b>child1</b>&gt;,&lt;<b>child2</b>&gt;,...
+</pre>
+
+    <p>The given command introduces a node with the specified name
+    and enumerates all its direct descendants - children. If a
+    child is a terminal node, it is treated as the name of the
+    action; if not, then the child must be another path.</p>
+
+    <p>For each pipeline, define one path with the
+    &lt;<b>name</b>&gt; element omitted, which is called the
+    <i>root path</i>. Each path must have a unique definition.</p>
+
+    <p>Each action in the pipeline has a unique <i>full name</i>
+    consisting of all node names from the root to the action
+    itself. The root node is excluded because it has no name. More
+    than one instance of the same action can exist, as long as each
+    instance has a unique full name.</p>
+
+    <p class="example">Example</p>
+
+    <p class="exampletext"><code><b>OPT</b></code> is the JIT name
+    and <code><b>a</b></code>, <code><b>b</b></code> and
+    <code><b>c</b></code> are the action names.</p>
+    <pre>
+-Djit.OPT.path=M,N
+-Djit.OPT.path.M=a
+-Djit.OPT.path.N=b,c
+</pre>
+
+    <p class="exampletext">The given commands describe the simple
+    path tree:</p>
+
+    <p style="text-align: center"><img src="images/Pipeline1.png"
+         alt="package" /></p>
+
+    <p class="special">Figure 2: A Path Tree of a Common
+    Pipeline</p>
+
+    <p class="exampletext">The following resulting pipeline is
+    constructed from the aforementioned tree:<br />
+     <code><b>a</b></code>, <code><b>b</b></code>,
+    <code><b>c</b></code></p>
+
+    <p class="exampletext">The pipeline above is common, because it
+    has no method filter. Each action of the given pipeline has a
+    unique full name.</p>
+
+    <table width="31%"
+           height="161"
+           cellpadding="0">
+        <tr>
+            <th class="TableHeading">Action</th>
+
+            <th class="TableHeading">Full Name</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell">a</td>
+
+            <td class="TableCell">M.a</td>
+        </tr>
+
+        <tr>
+            <td width="30%"
+                class="TableCell">b</td>
+
+            <td width="30%"
+                class="TableCell">N.b</td>
+        </tr>
+
+        <tr>
+            <td width="30%"
+                class="TableCell">c</td>
+
+            <td width="30%"
+                class="TableCell">N.c</td>
+        </tr>
+    </table>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Filter_Definition"
+       name="Filter_Definition"></a>4.2 Filter Definition</h2>
+
+    <p>To define a filter, use the following command format:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.filter=&lt;<b>class</b>&gt;.&lt;<b>method</b>&gt;&lt;<b>signature</b>&gt;
+</pre>
+
+    <p>Where</p>
+
+    <ul>
+        <li>&lt;<code><b>pipeline</b></code>&gt; is the required
+        element, which cannot be omitted.</li>
+
+        <li>&lt;<code><b>class</b></code>&gt; is the name of the
+        class constituting the filter expression.</li>
+
+        <li>&lt;<code><b>method</b></code>&gt; is the name of the
+        method constituting the filter expression.</li>
+
+        <li>&lt;<code><b>signature</b></code>&gt; is the signature
+        of the method constituting the filter expression.</li>
+    </ul>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">In the filter definition, the
+    <code>method</code> and the <code>signature</code> elements
+    have no period <code>.</code> between them.</p>
+
+    <p>You must follow the VM notation for the described elements.
+    You are free to omit some elements, but at least one must be
+    present.</p>
+
+    <p>If each of three elements of the method name starts with the
+    corresponding element of the filter expression, the compiled
+    method matches the filter.</p>
+
+    <p class="example">Example</p>
+    <pre>
+-Djit.OPT.p.filter=java/lang/Thread.check
+</pre>
+
+    <p class="exampletext">The following methods can match the
+    given filter:<br />
+     <code>java/lang/ThreadGroup.checkAccess()V</code><br />
+     <code>java/lang/Thread.checkGCWatermark()V</code><br />
+     <code>java/lang/Thread.checkAccess()V</code></p>
+
+    <p>To continue the example, methods can equally match a less
+    detailed filter expression, such as
+    <code>java/lang.check</code>. However, PMF would use the more
+    specific filter, as described in the
+    <a href="#Method_Compilation">Method Compilation</a>
+    section.</p>
+
+    <p class="example">Example</p>
+    <pre>
+-Djit.OPT.path=M,N
+-Djit.OPT.path.M=a
+-Djit.OPT.path.N=b,c
+-Djit.OPT.p.path=M,N,O
+-Djit.OPT.p.path.O=a
+-Djit.OPT.p.filter=java/lang/Thread.check
+</pre>
+
+    <p class="exampletext">The commands above are associated with
+    the following path trees:</p>
+
+    <p style="text-align: center"><img src="images/Pipelines2.png"
+         alt="package" /></p>
+
+    <p class="special">Figure 3: An Example of Path Trees for
+    Multiple Pipelines</p>
+
+    <p class="exampletext">The following resulting pipelines are
+    constructed from the aforementioned trees:<br />
+     (<code>common</code>) <code><b>a</b></code>,
+    <code><b>b</b></code>, <code><b>c</b></code><br />
+     (<code>p</code>) &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+    <code><b>a</b></code>, <code><b>b</b></code>,
+    <code><b>c</b></code>, <code><b>a</b></code></p>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">Path definitions <code><b>M</b></code> and
+    <code><b>N</b></code> in the pipeline <code><b>p</b></code> are
+    inherited from the common pipeline, because they were defined
+    in commands with the pipeline element omitted, but the root
+    path definition in the <code><b>p</b></code> pipeline was
+    overridden.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Argument_Definition"
+       name="Argument_Definition"></a>4.3 Argument Definition</h2>
+
+    <p>To control the actions behavior, PMF supports an action
+    parameters passing convention. The parameter definition command
+    pattern is the following:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.&lt;<b>param</b>&gt;=&lt;<b>value</b>&gt;
+</pre>
+
+    <p>Where</p>
+
+    <ul>
+        <li>&lt;<b>param</b>&gt; and &lt;<b>value</b>&gt; are
+        mandatory elements.</li>
+
+        <li>&lt;<b>JIT</b>&gt;, &lt;<b>pipeline</b>&gt; and
+        &lt;<b>full name</b>&gt; are optional elements defining the
+        scope of the both.</li>
+    </ul>
+
+    <p>The &lt;<b>full name</b>&gt; element defines the parameter
+    scope in the following way:</p>
+
+    <ul>
+        <li>If &lt;<b>full name</b>&gt; addresses a certain action,
+        that is a terminal node, the parameter affects all
+        instances of this action.</li>
+
+        <li>If &lt;<b>full name</b>&gt; addresses not an action,
+        but a node with children, the parameter affects this node
+        and all its descendants.</li>
+
+        <li>If &lt;<b>full name</b>&gt; is omitted, the parameter
+        affects all actions in the pipeline.</li>
+    </ul>
+
+    <p class="example">Example</p>
+    <pre>
+-Djit.OPT.p.arg.a.verify=1
+</pre>
+
+    <p class="exampletext">The given command sets the
+    &lt;<b>verify</b>&gt; parameter for both <code><b>a</b></code>
+    instances, <code><b>M.a</b></code> and <code><b>O.a</b></code>,
+    to <b>1</b>. See Figure 3.</p>
+
+    <p>The table below gives several examples of essential commands
+    for the path trees based on Figure 3.</p>
+
+    <table>
+        <tr>
+            <th width="232"
+                class="TableHeading">Command</th>
+
+            <th width="98"
+                class="TableHeading">Omitted Element</th>
+
+            <th width="631"
+                class="TableHeading">Definition</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+            <code>-Djit.OPT.p.arg.N.b.verify=2</code></td>
+
+            <td class="TableCell">
+                <center>
+                    &#8212;
+                </center>
+            </td>
+
+            <td class="TableCell">The parameter <code>verify</code>
+            with value 2 is available only to action
+            <code><b>b</b></code> with the full name
+            <code><b>N.b</b></code> in pipeline
+            <code><b>p</b></code> of JIT
+            <code><b>OPT</b></code>.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+            <code>-Djit.OPT.p.arg.N.verify=2</code></td>
+
+            <td class="TableCell">
+                <center>
+                    &#8212;
+                </center>
+            </td>
+
+            <td class="TableCell">The parameter <code>verify</code>
+            is available for actions <code><b>b</b></code> and
+            <code><b>c</b></code> simultaneously.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+            <code>-Djit.OPT.p.arg.verify=2</code></td>
+
+            <td class="TableCell"><code>&lt;<b>full
+            name</b>&gt;</code></td>
+
+            <td class="TableCell">The parameter <code>verify</code>
+            is available for all actions <code><b>a</b></code>,
+            <code><b>b</b></code>, <code><b>c</b></code> and
+            <code><b>a</b></code> in pipeline
+            <code><b>p</b></code>.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+            <code>-Djit.OPT.arg.N.verify=2</code></td>
+
+            <td class="TableCell">
+            <code>&lt;<b>pipeline</b>&gt;</code></td>
+
+            <td class="TableCell">The parameter <code>verify</code>
+            is available for <code><b>b</b></code> and
+            <code><b>c</b></code> actions for common and
+            <code><b>p</b></code> pipelines of JIT
+            <code><b>OPT</b></code> .</td>
+        </tr>
+    </table>
+
+    <p>The special form of argument definition commands controls
+    the pipeline construction process:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;=on
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;=off
+</pre>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">In the given form of the argument
+    definition, the &lt;<b>param</b>&gt; element is absent and only
+    two values for &lt;<b>value</b>&gt; exist: <code>on</code> and
+    <code>off</code>.</p>
+
+    <p>The <code>off</code> value disables the addressed node and
+    all its descendants, while the <code>on</code> value enables
+    the node and its descendants. When constructed, a pipeline does
+    not include any disabled actions.</p>
+
+    <p class="example">Example</p>
+
+    <p class="exampletext">To exclude action <code><b>b</b></code>
+    from the pipeline, apply the following command:</p>
+    <pre>
+-Djit.OPT.p.arg.N.b=off
+</pre>
+
+    <p>To enable/disable nodes directly in the path definition
+    command, add state characters immediately after the node name,
+    videlicet:</p>
+
+    <table width="53%"
+           height="161"
+           cellpadding="0">
+        <tr>
+            <th class="TableHeading">Character</th>
+
+            <th class="TableHeading">Corresponding Node
+            Meaning</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+                <center>
+                    +
+                </center>
+            </td>
+
+            <td class="TableCell">enabled</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+                <center>
+                    &#8212;
+                </center>
+            </td>
+
+            <td class="TableCell">disabled</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell">
+                <center>
+                    !
+                </center>
+            </td>
+
+            <td class="TableCell">cannot be disabled</td>
+        </tr>
+    </table>
+
+    <p>The following command states that <code>c1</code> is
+    enabled, <code>c2</code> is disabled and <code>c3</code> is
+    enabled and mandatory:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.path.&lt;<b>name</b>&gt;=c1+,c2-,c3!
+</pre>
+
+    <p>If you try to disable any mandatory node with the
+    <code>off</code> command, the fatal error occurs.</p>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a id="Logging_System"
+       name="Logging_System"></a>5. Logging System</h1>
+
+    <p>The <i>logging system</i> supports diagnostic messages from
+    pipeline actions. The VM property mechanism fully controls the
+    system.</p>
+
+    <h2><a id="Stream_Definition"
+       name="Defining_Streams"></a>5.1 Defining Streams</h2>
+
+    <p>A set of <i>log streams</i> is used for logging in Jitrino.
+    Each log stream has a name. The name of the log stream is not
+    related to the name of the file, to which the stream is
+    assigned. The class <code>Jitrino::LogStream</code> is the
+    program representation of a log stream. This class is similar
+    to the <code>std::ostream</code> class in the defining operator
+    <code>&lt;&lt;</code> and other useful methods, such as
+    <code>printf()</code> and <code>flush()</code>. To obtain the
+    reference to the underlying <code>std::ostream</code> instance,
+    call the <code>out()</code> method.</p>
+
+    <p>Streams can be accessed by name or by ID. The stream ID can
+    be obtained from its name by using the
+    <code>IAction::getLogStreamID()</code> method. For performance
+    reasons, several most frequently used streams, so-called
+    <i>known</i> streams, have predefined IDs:</p>
+
+    <table>
+        <tr>
+            <th class="TableHeading">Stream Name</th>
+
+            <th class="TableHeading">Stream ID</th>
+
+            <th class="TableHeading">Output</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>info</code></td>
+
+            <td class="TableCell"><code>LogStream::INFO</code></td>
+
+            <td class="TableCell">The protocol of compilation: JIT
+            and pipeline names, the method name and number, and so
+            on.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>rt</code></td>
+
+            <td class="TableCell"><code>LogStream::RT</code></td>
+
+            <td class="TableCell">Run-time output not related to
+            compiled methods.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>ct</code></td>
+
+            <td class="TableCell"><code>LogStream::CT</code></td>
+
+            <td class="TableCell">Compile-time diagnostic.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>irdump</code></td>
+
+            <td class="TableCell">
+            <code>LogStream::IRDUMP</code></td>
+
+            <td class="TableCell">The dump of internal Jitrino
+            structures for a compiled method.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>dotdump</code></td>
+
+            <td class="TableCell">
+            <code>LogStream::DOthUMP</code></td>
+
+            <td class="TableCell">The dump of internal Jitrino
+            structures in the <code>.dot</code> format.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>dbg</code></td>
+
+            <td class="TableCell"><code>LogStream::DBG</code></td>
+
+            <td class="TableCell">Debug information.</td>
+        </tr>
+    </table>
+
+    <p>To enable outputting log information to a stream, enter a
+    command of the following syntax:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log=&lt;<b>stream1</b>&gt;,&lt;<b>stream2</b>&gt;,...
+</pre>
+
+    <p>The left part of the command specifies the name of the JIT
+    compiler and the compilation pipeline to be used, whereas the
+    right part contains the names of the streams that you want to
+    enable. Use the same syntax to enable a custom stream: write an
+    arbitrary name for it and enable the stream with this
+    command.</p>
+
+    <p class="note">Note</p>
+
+    <p class="notetext">If program output is directed to a disabled
+    stream, the output is lost and no error diagnostic is
+    produced.</p>
+
+    <p>The enabling command follows the general scope of rules: the
+    stream is enabled for the node specified in the command and all
+    its descendants.</p>
+
+    <p>Streams defined for different nodes are different streams,
+    though they can have the same name.</p>
+
+    <p class="example">Example</p>
+
+    <p class="exampletext">The following commands enable two
+    different streams, though both can be accessed from actions
+    <code><b>N.b</b></code> and <code><b>N.c</b></code> by the same
+    name. The streams can be assigned to different files.</p>
+    <pre>
+-Djit.OPT.p.arg.N.b.log=ct
+-Djit.OPT.p.arg.N.c.log=ct
+</pre>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Assigning_a_Stream_to_a_File"
+       name="Assigning_a_Stream_to_a _File"></a>5.2 Assigning a
+       Stream to a File</h2>
+
+    <p>To assign a stream to a file, use the following command
+    syntax:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.file=&lt;<b>filename mask</b>&gt;
+</pre>
+
+    <p>In the given command, the &lt;<b>filename mask</b>&gt;
+    element constructs a filename for the stream. All characters
+    from this mask are copied to the resulting filename literally
+    except macros, which are expanded and the result of expansion
+    is copied to the filename. Below is the list of available
+    macros.</p>
+
+    <table>
+        <tr>
+            <th class="TableHeading">Macro</th>
+
+            <th class="TableHeading">Expands To</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%jit%</code></td>
+
+            <td class="TableCell">The name of the JIT that is
+            compiling the method.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%class%</code></td>
+
+            <td class="TableCell">The method class name with
+            <code>/</code> changed to <code>_</code></td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%class_tree%</code></td>
+
+            <td class="TableCell">The method class name with
+            <code>/</code> preserved.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%method%</code></td>
+
+            <td class="TableCell">The method name and signature in
+            VM notation.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%seqnb%</code></td>
+
+            <td class="TableCell">The global sequential number of
+            the current compilation.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%log%</code></td>
+
+            <td class="TableCell">The name of the stream.</td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>%thread%</code></td>
+
+            <td class="TableCell">The number of the thread
+            compiling the method.</td>
+        </tr>
+    </table>
+
+    <p>In most cases, a program can access the stream file from
+    concurrent threads, so that all stream operations are
+    synchronized. However, if a filename mask for the stream
+    contains the <code>%thread%</code> macro, this file is
+    thread-specific and access to it is not synchronized.</p>
+
+    <h3><a id="Using_File-name_Masks"
+       name="Using_Filename_Masks"></a>5.2.1 Using Filename
+       Masks</h3>
+
+    <p>For all streams, the following default filename mask is
+    used:</p>
+    <pre>
+log/%jit%/%class%/%method%/%log%.log
+</pre>
+
+    <p>For example, for an enabled stream <code>abc</code> with no
+    assigned filename mask, the log file is in the same directory
+    with other known stream files, and its name is
+    <code>abc.log</code>.</p>
+
+    <p>All known streams have hard-coded default filename masks,
+    described in the table below. These masks are used if no
+    assignment is made with the corresponding command.</p>
+
+    <table width="451">
+        <tr>
+            <th width="110"
+                class="TableHeading">Stream Name</th>
+
+            <th width="298"
+                class="TableHeading">Default Filename Mask</th>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>info</code></td>
+
+            <td class="TableCell"><code>log/info.log</code></td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>rt</code></td>
+
+            <td class="TableCell"><code>log/rt.log</code></td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>ct</code></td>
+
+            <td class="TableCell">
+            <code>log/%jit%/%class%/%method%/ct.log</code></td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>irdump</code></td>
+
+            <td class="TableCell">
+            <code>log/%jit%/%class%/%method%/ct.log</code></td>
+        </tr>
+
+        <tr>
+            <td class="TableCell"><code>dotdump</code></td>
+
+            <td class="TableCell">
+            <code>log/%jit%/%class%/%method%/.dot [special
+            case]</code></td>
+        </tr>
+    </table>
+
+    <p class="example">Exception</p>
+
+    <p class="exampletext">Jitrino writes dot-dumps to the
+    <code>dotdump</code> stream and produces two <code>.dot</code>
+    files for each action: <i>before</i> and <i>after</i> execution
+    of an action. To handle these correctly, the enabled dot-dumper
+    opens the <code>dotdump</code> stream before executing the
+    action, writes to the stream and closes it. After executing the
+    action, the dot-dumper performs the same operation. Each time,
+    the dot-dumper adds a suffix that indicates the sequence of
+    actions to the tail of the stream filename <code>.dot</code>,
+    as follows:</p>
+    <pre>
+  .&lt;<b>action_nb</b>&gt;.&lt;<b>action_name</b>&gt;.before.dot
+  .&lt;<b>action_nb</b>&gt;.&lt;<b>action_name</b>&gt;.after.dot
+</pre>
+
+    <p>In the command above, the &lt;<b>action name</b>&gt; element
+    is the name of the action and &lt;<b>action_nb</b>&gt; is the
+    sequential number of the action in the current pipeline.</p>
+
+    <h3><a id="File_Name_Review"
+       name="Filename_Review"></a>5.2.2 Filename Review</h3>
+
+    <p>Names of all open stream files are reviewed at the beginning
+    of method compilation, because the stream file name can depend
+    on the name of the compiled method. If the name is changed as
+    the result of the dependency on the compiled method name, the
+    file is closed and another file with the new calculated name is
+    opened. If the name is not changed, no action is performed. If
+    the same file name is assigned to different streams, a single
+    file is opened and all the assigned streams use it.</p>
+
+    <p>If a file used for logging gets closed as the result of
+    filename recalculation, its name is saved in a special list
+    that PMF maintains. For every file opened for logging output,
+    the PMF checks the list. If the name is found, the file is
+    opened in the <i>append</i> mode. This approach prevents from
+    overwriting logging files during a single Jitrino run.</p>
+
+    <p>You can use the following commands to control the
+    append/truncate mode for the log files that are opened for the
+    first time:</p>
+    <pre>
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.append=true
+-Djit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.append=false
+</pre>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a id="Using_Stream"
+       name="Using_Streams"></a>5.3 Using Streams</h2>
+
+    <p>A typical usage pattern for Jitrino action is the
+    following:</p>
+
+    <ol>
+        <li>Find the required stream using its name or ID.</li>
+
+        <li>(optional) Test whether the stream is enabled.</li>
+
+        <li>Output to the stream using the insertion operator
+        <code>&lt;&lt;</code> or <code>printf()</code> method.</li>
+    </ol>
+
+    <p class="example">Example</p>
+    <pre>
+    LogStream&amp; irdump = log(LogStream::IRDUMP);
+
+    if (irdump.isEnabled()) {
+        irdump &lt;&lt; "Opt:   Running " &lt;&lt; getName() &lt;&lt; stl::endl;
+    }
+</pre>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h1><a id="Appendix"
+       name="Appendix"></a>6. Appendix</h1>
+
+    <h2><a id="General_Command-line_Syntax_Specification"
+       name="General_Command-line_Syntax_Specification"></a>6.1
+       General Command-line Syntax Specification</h2>
+    <pre>
+&lt;cmd&gt;                     :     &lt;prefix&gt; &lt;filter def&gt;
+                                &lt;prefix&gt; &lt;path def&gt;
+                                &lt;prefix&gt; &lt;arg def&gt;
+                                &lt;prefix&gt; &lt;file read&gt;
+
+&lt;prefix&gt;                  :     -Djit.
+
+&lt;base&gt;                    :     [ &lt;JIT&gt; . ] [ &lt;pipeline&gt; . ]
+
+&lt;JIT&gt;                     :     &lt;name&gt;
+
+&lt;pipeline&gt;                :     &lt;name&gt;
+
+
+&lt;filter def&gt;              :     &lt;base&gt; filter = &lt;filter spec&gt;
+
+&lt;filter spec&gt;             :     [ &lt;class&gt; ]  [ .  &lt;method&gt; [ &lt;signature&gt; ] ]
+                                [ &lt;class&gt; ]  [ :: &lt;method&gt; [ &lt;signature&gt; ] ]
+
+
+&lt;path def&gt;                :     &lt;base&gt; path . &lt;node&gt; = &lt;path items&gt;
+                                &lt;base&gt; path = &lt;path items&gt;
+
+&lt;path items&gt;              :     &lt;path item&gt;
+                                &lt;path items&gt; , &lt;path item&gt;
+
+&lt;path item&gt;               :     {&lt;node&gt; | &lt;action &gt;} [{ ! | + | - }]
+
+&lt;node&gt;                    :     &lt;name&gt;
+
+&lt;action&gt;                  :     &lt;name&gt;
+
+
+&lt;arg def&gt;                 :     &lt;base&gt; arg  [ &lt;full name&gt; . ] &lt;arg name&gt; = &lt;arg value&gt;
+                                &lt;base&gt; arg  &lt;full name&gt; = {off | on}
+
+&lt;full name&gt;               :     &lt;path item&gt;
+                                &lt;full name&gt; . &lt;path item&gt;
+
+&lt;arg name&gt;                :     &lt;name&gt;
+
+&lt;arg value&gt;               :     &lt;string&gt;
+
+
+&lt;file read&gt;               :     read = &lt;file name&gt;
+
+</pre>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <p>(C) Copyright 2006 Intel Corporation</p>
+
+    <p><a id="*"
+       name="*">*</a> Other brands and names are the property of
+       their respective owners.</p>
+</body>
+</html>
+</div>
+                                        </td>
+                </tr>
+
+                <!-- FOOTER -->
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+                <tr><td colspan="2">
+                    <div class="special"><em>
+                    Copyright &#169; 2003-2006, The Apache Software Foundation
+                    </em></div>
+                </td></tr>
+            </table>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,2769 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Jitrino Just-in-Time Compiler</title>
+
+                                <link rel="Stylesheet" type="text/css" href="site.css"/>
+        </head>
+
+        <body>        
+            <table  width="100%" cellspacing="0">
+                <!-- TOP IMAGE -->
+                <tr>
+                    <td align='LEFT'>
+                    <table><tr><td>
+                    <td>
+<a href="http://harmony.apache.org/"><img  src="../../images/harmony-logo-new.png" alt="Apache Harmony" /></a>
+</td>
+</td>
+                    </td></tr></table>
+                    </td>
+                    <td align='RIGHT'>
+<!--                    <a href="http://harmony.apache.org/">
+                    <img src="http://harmony.apache.org/images/apache-incubator-logo.png"
+                    	alt="Apache Harmony" /></a>                    
+-->                    </td>
+                </tr>
+            </table>
+            <table width="100%" cellspacing="4">
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+
+                <tr>
+                    <!-- LEFT SIDE NAVIGATION -->
+                    <td class="menuItem" width="20%" nowrap="true">
+
+                    <!-- special ACon Logo - leave here for next time
+                    <a href="http://www.us.apachecon.com/">
+                        <img src="http://www.apache.org/ads/ApacheCon/240x120-2006-us.gif"
+                             alt="ApacheCon US 2006" />
+                    </a> -->
+
+                   <!-- regular menu -->
+
+                    
+    <!-- ============================================================ -->
+
+                <p class="menuItem"><strong>General</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../license.html">License</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../guidelines.html">Project Guidelines</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/">ASF</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../downloads.html">Downloads</a>
+</li>
+            
+           
+                        
+                </ul>
+            <p class="menuItem"><strong>Community</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Committers</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../documentation/documentation.html">Documentation</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+            
+           
+                        
+                </ul>
+            <p class="menuItem"><strong>Development</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../status.html">How Are We Doing?</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Road Map / TODO</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">JIRA</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+            
+           
+                        
+                </ul>
+            <p class="menuItem"><strong>Subcomponents</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-Test Framework</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+            
+           
+                           <table>
+              <tr><td class="menuItem">
+                &nbsp;&nbsp;&nbsp;&nbsp;    <a href="../../subcomponents/classlibrary/status.html">Status</a>
+                </td></tr>
+              </table>
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+            
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/jchevm/index.html">JCHEVM</a>
+</li>
+            
+           
+                        
+                </ul>
+                        </td>
+                    <td width="80%" valign="top"><a name="top"></a>
+                                        
+                                                                <div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type"
+      content="text/html; charset=windows-1251" />
+      <link rel="Stylesheet" type="text/css" href="site.css" />
+      <title>
+         DRLVM Jitrino Just-in-time Compiler
+      </title>
+   </head>
+   <body>
+      <h1>
+         <a id="top" name="top"></a>DRLVM Jitrino Just-in-time Compiler
+      </h1>
+      <p class="TOCHeading">
+         <a href="#Revision_History">Revision History</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#About_this_document">1. About this Document</a>
+      </p>
+      <p class="TOC">
+         <a href="#Purpose">1.1 Purpose</a>
+      </p>
+      <p class="TOC">
+         <a href="#Intended_Audience">1.2 Intended Audience</a>
+      </p>
+      <p class="TOC">
+         <a href="#Using_this_document">1.3 Using This Document</a>
+      </p>
+      <p class="TOC">
+         <a href="#Conventions_and_Symbols">1.4 Conventions and Symbols</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#Overview">2. Overview</a>
+      </p>
+      <p class="TOC">
+         <a href="#Key_features">2.1 Key Features</a>
+      </p>
+      <p class="TOC">
+         <a href="#Compilation_Overview">2.2 About Compilation</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#OPT">3. Jitrino.OPT</a>
+      </p>
+      <p class="TOC">
+         <a href="#OPT_Architecture">3.1 Architecture</a>
+      </p>
+      <blockquote>
+         <p class="TOC">
+            <a href="#PMF">3.1.1 Pipeline Management Framework</a>
+         </p>
+         <p class="TOC">
+            <a href="#OPT_Components">3.1.2 Logical Components</a>
+         </p>
+         <p class="TOC">
+            <a href="#IR">3.1.3 Intermediate Representations</a>
+         </p>
+      </blockquote>
+      <p class="TOC">
+         <a href="#OPT_Processes">3.2 Processes</a>
+      </p>
+      <blockquote>
+         <p class="TOC">
+            <a href="#Bytecode_Translation">3.2.1 Bytecode Translation</a>
+         </p>
+         <p class="TOC">
+            <a href="#HIR_Optimizations">3.2.2 High-level Optimizations</a>
+         </p>
+         <p class="TOC">
+            <a href="#CodeSelection">3.2.3 Code Selection</a>
+         </p>
+         <p class="TOC">
+            <a href="#Code_Generation">3.2.4 Code generation</a>
+         </p>
+      </blockquote>
+      <p class="TOCHeading">
+         <a href="#JET">4. Jitrino.JET</a>
+      </p>
+      <p class="TOC">
+         <a href="#JET_Architecture">4.1 Architecture</a>
+      </p>
+      <blockquote>
+         <p class="TOC">
+            <a href="#JET_Runtime">4.1.1 Run-time Support</a>
+         </p>
+      </blockquote>
+      <p class="TOC">
+         <a href="#JET_Processes">4.2 Processes</a>
+      </p>
+      <blockquote>
+         <p class="TOC">
+            <a href="#Baseline_Compilation">4.2.1 Baseline Compilation</a>
+         </p>
+      </blockquote>
+      <p class="TOCHeading">
+         <a href="#JIT_utilities">5. Utilities</a>
+      </p>
+      <p class="TOC">
+         <a href="#Memory_Manager">5.1 Memory Manager</a>
+      </p>
+      <p class="TOC">
+         <a href="#Timers">5.2 Counters and Timers</a>
+      </p>
+      <p class="TOC">
+         <a href="#JIT_logging">5.3 Logging</a>
+      </p>
+      <p class="TOC">
+         <a href="#CFG">5.4 Control Flow Graph</a>
+      </p>
+      <blockquote>
+         <p class="TOC">
+            <a href="#CFGStructures">5.4.1 CFG structures</a>
+         </p>
+         <p class="TOC">
+            <a href="#CFGAlgorithms">5.4.2 Graph algorithms</a>
+         </p>
+         <p class="TOC">
+            <a href="#DominatorTree">5.4.3 Dominator Tree</a>
+         </p>
+         <p class="TOC">
+            <a href="#LoopTree">5.4.4 Loop Tree</a>
+         </p>
+      </blockquote>
+      <p class="TOCHeading">
+         <a href="#Interfaces">6. Public Interfaces</a>
+      </p>
+      <p class="TOC">
+         <a href="#JIT_VM">5.1 JIT_VM Interface</a>
+      </p>
+      <p class="TOC">
+         <a href="#JIT_EM">5.2 JIT_EM Interface</a>
+      </p>
+      <p class="TOCHeading">
+         <a href="#References">6. References</a>
+      </p>
+      <h1>
+         <a id="Revision_History" name="Revision_History"></a>Revision History
+      </h1>
+      <table cellpadding="0" width="100%">
+         <tr>
+            <th width="25%" class="TableHeading">
+               Version
+            </th>
+            <th width="50%" class="TableHeading">
+               Version Information
+            </th>
+            <th class="TableHeading">
+               Date
+            </th>
+         </tr>
+         <tr>
+            <td width="25%" class="TableCell">
+               Initial version
+            </td>
+            <td class="TableCell">
+               Intel, Nadya Morozova: document created.
+            </td>
+            <td class="TableCell">
+               October 30, 2006
+            </td>
+         </tr>
+      </table>
+    
+      <h1>
+         <a id="About_this_document" name="About_this_document"></a>1. About
+         this document
+      </h1>
+      <h2>
+         <a id="Purpose" name="Purpose"></a>1.1 Purpose
+      </h2>
+      <p>
+         This document describes the internal structure of the Jitrino
+         just-in-time compiler deployed with the virtual machine as part of the
+         DRL (Dynamic Runtime Layer) initiative. The description covers the
+         internal design of this JIT compiler and its interaction with other
+         DRLVM components. In this document, you can find
+         implementation-specific details of the Jitrino compiler. General
+         information on the JIT role in overall virtual machine design and
+         VM-level requirements are out of scope of this document and are
+         covered in the <a href="developers_guide.html">DRLVM Developer's
+         Guide</a> supplied with the VM source code package.
+      </p>
+      <h2>
+         <a id="Intended_Audience" name="Intended_Audience"></a>1.2 Intended
+         Audience
+      </h2>
+      <p>
+         The document is targeted at DRLVM developers with special interest in
+         code compilation algorithms. The information can be helpful for future
+         development of DRL compilation techniques and can serve as an example
+         for those implementing a JIT compiler from scratch. The document
+         assumes that readers understand the concepts of just-in-time
+         compilation and optimization algorithms.
+      </p>
+      <h2>
+         <a id="Using_this_document" name="Using_this_document"></a>1.3 Using
+         This Document
+      </h2>
+      <p>
+         The DRLVM just-in-time compiler description has the following major
+         sections:
+      </p>
+      <ul>
+         <li>
+            <a href="#Overview">Overview</a>: a definition of the JIT compiler
+            component and its key features
+         </li>
+         <li>
+            Jitrino.OPT: 
+            <ul>
+               <li>
+                  <a href="#OPT_Architecture">Architecture</a>: a description
+                  of the Jitrino.OPT internal architecture, its subcomponents
+                  and the interfaces it uses, as well as other
+                  implementation-specific data
+               </li>
+               <li>
+                  <a href="#OPT_Processes">Processes</a>: an overview and a
+                  step-by-step description of compilation, including
+                  optimizations and code generation
+               </li>
+            </ul>
+         </li>
+         <li>
+            Jitrino.JET: 
+            <ul>
+               <li>
+                  <a href="#JET_Architecture">Architecture</a>: a description
+                  of the Jitrino.OPT internal architecture, its subcomponents
+                  and the interfaces it uses, as well as other
+                  implementation-specific data
+               </li>
+               <li>
+                  <a href="#JET_Processes">Processes</a>: an overview and a
+                  step-by-step description of baseline compilation
+               </li>
+            </ul>
+         </li>
+         <li>
+            <a href="#JIT_utilities">Utilities:</a> a description of
+            JIT-specific utilities, such as the control flow graph, the timers,
+            and the memory manager
+         </li>
+         <li>
+            <a href="#Interfaces">Public interfaces</a>: a definition of major
+            functional groups that the JIT compiler exports for interaction
+            with other components
+         </li>
+      </ul>
+      <h2>
+         <a id="Conventions_and_Symbols" name="Conventions_and_Symbols"></a>1.4
+         Conventions and Symbols
+      </h2>
+      <p>
+         This document uses the <a href="conventions.htm">unified
+         conventions</a> for the DRL documentation kit.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Overview" name="Overview"></a>2. Overview
+      </h1>
+      <p>
+         Jitrino is the code name for the just-in-time (JIT) compiler [<a
+         href="#JIT_spec_ref">2</a>] currently shipped with DRLVM. Jitrino
+         comprises two distinct JIT compilers that share source code and are
+         packaged in a single library:
+      </p>
+      <ul>
+         <li>
+            <a href="#JET">Jitrino.JET</a> baseline compiler translates Java<a
+            href="#*">*</a> bytecode into native code with practically no
+            optimizations. The compiler emulates operations of the stack-based
+            machine using a combination of the native stack and registers.
+         </li>
+         <li>
+            <a href="#Architecture">Jitrino.OPT</a> optimizing compiler can
+            performs bytecode compilation with a variety of optimizations. The
+            compiler features two types of code <a href="#IR">intermediate
+            representation</a> (IR): platform-independent high-level IR (HIR)
+            and platform-dependent low-level IR (LIR). Jitrino.OPT incorporates
+            an extensive set of code optimizations for each IR type. This JIT
+            compiler has a distinct internal interface between the bytecode
+            translator operating on HIR and the code generator operating on
+            LIR. This enables easy re-targeting of Jitrino to different
+            processors and preserving all the optimizations done at the HIR
+            level.
+         </li>
+      </ul>
+      <p>
+         This document describes both compilers and their operation. All
+         references to Jitrino with no subtitle (JET or OPT) specified equally
+         apply to both compilers.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Key_features" name="Key_features"></a>2.1 Key features
+      </h2>
+      <p>
+         Key features of the JIT compiler include:
+      </p>
+      <ul>
+         <li>
+            A clear interface to plug in different front-end components
+         </li>
+         <li>
+            A clear interface to plug in code generators for different
+            platforms
+         </li>
+         <li>
+            High configurability via command-line options and a configuration
+            file
+         </li>
+      </ul>
+      <p>
+         Jitrino.OPT also features the following capabilities:
+      </p>
+      <ul>
+         <li>
+            A two-level intermediate representation with most optimizations run
+            at the platform-independent high level
+         </li>
+         <li>
+            The ability to plug in new optimization passes at both intermediate
+            representation levels
+         </li>
+         <li>
+            A flexible logging system enables tracing of major Jitrino
+            activities, including detailed IR dumps during compilation and
+            run-time interaction with other DRL components on the per-thread
+            basis, as well as gathering execution time statistics of compiler
+            code at a very fine granularity level
+         </li>
+         <li>
+            Configurable self-check capabilities to facilitate bug detection
+         </li>
+      </ul>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Compilation_Overview" name="Compilation_Overview"></a>2.2 About
+         the Compilation Process
+      </h2>
+      <p>
+         Jitrino compilers provide means to compile and optimize code
+         distributed for Java<a href="#*#*">*</a> run-time environments and to
+         adapt it to various hardware architectures. Figure 1 demonstrates the
+         architecture of the compilers and their interaction with the <a
+         href="developers_guide.html">virtual machine</a>.
+      </p>
+      <p>
+         Both Jitrino.JET and Jitrino.OPT compilers have a platform-independent
+         Java front-end and a platform-dependent back-end. Compilation connects
+         these and propagates type information extracted by the front-end from
+         the original bytecode to the platform-specific back-ends. Supporting a
+         new hardware platform requires implementation of a new
+         platform-dependent back-end.
+      </p>
+      <p>
+         Jitrino can follow different code compilation strategies. The
+         compilation process can be optimized for the smallest compilation
+         time, for the best performance or for a compromise of affordable
+         compilation time with reasonable performance. The compilation process
+         can involve the Jitrino.JET baseline compiler, Jitrino.OPT optimizing
+         compiler or both. In most applications, only a few methods consume the
+         majority of time at run time, so that overall performance benefits
+         when Jitrino aggressively optimizes these methods. The <a
+         href="EM.html">Execution Manager</a> defines the actual compilation
+         strategy.
+      </p>
+      <p>
+         The Jitrino.JET baseline compiler provides the fastest compilation
+         time by translating Java<a href="#*">*</a> bytecode directly to native
+         code. This compiler performs a very fast and simple compilation and
+         applies almost no optimizations.
+      </p>
+      <p>
+         Jitrino.OPT, the main Jitrino compilation engine, provides the most
+         optimized native code by the cost of greater compilation time. The
+         compilation process of the Jitrino.OPT is also shown in Figure 1, with
+         focus on the following:
+      </p>
+      <ol>
+         <li>
+            <p>
+               The run-time environment bytecode is translated into the
+               high-level intermediate representation (HIR) by the Java<a
+               href="#*#*">*</a> bytecode translator and then optimized by the
+               high-level optimizer. HIR and the optimizer make up the
+               language- and platform-independent part of the Jitrino.OPT.
+            </p>
+            <p class="note">
+               Note
+            </p>
+            <p class="notetext">
+               The Jitrino architecture is modular, which facilitates
+               implementation of more front-ends, such as the Common Language
+               Infrastructure (CLI) bytecode front-end.
+            </p>
+         </li>
+         <li>
+            After optimization, a platform-specific code generator translates
+            HIR into the platform-specific low-level intermediate
+            representation (LIR). The code generator then performs
+            platform-specific optimizations and register allocation over LIR,
+            and finally emits native code.
+         </li>
+      </ol>
+      <p>
+         This document describes the internal structure of the Jitrino.JET and
+         Jitrino.OPT compilers and the processes running inside them.
+      </p>
+      <p style="text-align: center">
+         <img src="images/compilation_process.gif" alt="JIT Architecture" />
+      </p>
+      <p class="special">
+         Figure 1. Jitrino Compiler Architecture
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="OPT" name="OPT"></a>3. Jitrino.OPT
+      </h1>
+      <h2>
+         <a id="OPT_Architecture" name="OPT_Architecture"></a>3.1 Architecture
+      </h2>
+      <p>
+         This part of the document describes the internals of the optimizing
+         compiler Jitrino.OPT.
+      </p>
+      <h3>
+         <a id="PMF" name="PMF"></a>3.1.1 Pipeline Management Framework
+      </h3>
+      <p>
+         The pipeline management framework (PMF) defines how the compilation
+         process goes inside Jitrino.OPT. With PMF, the compilation process is
+         represented as a <i>pipeline</i>, which is a linear sequence of steps.
+         Each step stores a reference to an action object, its parameters and
+         other information. <i>Actions</i> represent independent
+         transformations of code, such as optimization passes. Different steps
+         in a pipeline can reference to the same action, for example, to run
+         the same transformation several times. Sequences of steps can vary
+         between pipelines.
+      </p>
+      <p>
+         To select a pipeline for compiling a given Java<a title="#*"
+         href="#*">*</a> method, the system uses method filters consisting of
+         class and method names and method signatures as the selection
+         criteria. Each JIT instance has one common pipeline with an empty
+         method filter that accepts all methods for compilation. Additionally,
+         optional pipelines with unique and non-empty filter expressions can be
+         created for compiling specific Java <a title="#*" href="#*">*</a>
+         methods sets.
+      </p>
+      <p>
+         Pipelines in Jitrino.OPT are configured using the VM properties
+         mechanism. PMF parses properties, constructs pipelines and passes
+         parameters to actions. The OPT compiler has no hard-coded pipeline, so
+         you need to configure pipelines in EM configuration files or through
+         VM properties. Understanding pipeline configuration rules is required
+         for using the Jitrino command-line interface and effectively
+         exercising the Jitrino logging system. For details on PMF internals,
+         refer to the <a href="Jitrino_PMF.html">PMF Detailed Description</a>.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="OPT_Components" name="OPT_Components"></a>3.1.2 Logical
+         Components
+      </h3>
+      <p>
+         This section defines the key parts of the compiler. This is only an
+         abstract, logical division matching the key compilation stages. Each
+         logical component includes action(s) that are used consecutively in
+         compilation pipelines.
+      </p>
+      <dl>
+         <dt>
+            <a id="Front-end" name="Front-end"></a>Translator
+         </dt>
+         <dd>
+            <p>
+               The bytecode translator is responsible for converting incoming
+               bytecode instructions into a high-level intermediate
+               representation. This IR is of a lower level than the bytecode
+               and breaks complex bytecode operations into several simple
+               instructions to expose more opportunities to later high-level
+               optimization phases. For example, loading an object field is
+               broken up into operations that perform a null check of the
+               object reference, load the base address of the object, compute
+               the address of the field, and load the value at that computed
+               address.
+            </p>
+            <p>
+               For details on the conversion process, see section 3.2.1 <a
+               href="#Bytecode_Translation">Bytecode Translation</a>.
+            </p>
+         </dd>
+         <dt>
+            <a id="Optimizer" name="Optimizer"></a>Optimizer
+         </dt>
+         <dd>
+            <p>
+               The optimizer includes a set of optimizations independent of the
+               original Java<a href="#*">*</a> bytecode and the hardware
+               architecture. A single optimization framework for Java<a
+               href="#*">*</a> and CLI programs is used. The optimizer performs
+               a series of transformation passes to optimize the incoming
+               high-level intermediate representation. For a description of
+               applied transformations, see section 3.2.2 <a
+               href="#HIR_Optimizations">High-level Optimizations</a>.
+            </p>
+            <p>
+               <a name="CodeSelector" id="CodeSelector"></a>After the
+               high-level optimizations (HLO) are applied, the <em>code
+               selector</em> translates the high-level intermediate
+               representation to a low-level intermediate representation. The
+               component is designed so that code generators for different
+               architectures can be plugged into the compiler. To be pluggable,
+               a code generator must implement code selector callback
+               interfaces for each structural entity of a method, such as the
+               whole method, basic blocks, and instructions. During code
+               selection, the selector uses the callback interfaces to
+               translate these entities from HIR to LIR. See section <a
+               href="#CodeSelection">3.2.3 Code Selection</a> for details on
+               the process.
+            </p>
+         </dd>
+         <dt>
+            <a id="Back-end" name="Back-end"></a>Code Generator
+         </dt>
+         <dd>
+            <p>
+               The code generator (CG) is responsible for generation of machine
+               code out of the input high-level intermediate representation. CG
+               accepts the HIR information via the <a href="#CodeSelector">code
+               selector</a> callback interfaces. For details on how the
+               resulting code is produced, see section <a
+               href="#Code_Generation">3.2.4 Code Generation</a>.
+            </p>
+            <p>
+               The code generator also performs several auxiliary operations,
+               such as:
+            </p>
+            <ul>
+               <li>
+                  Creation of a data area with constants used in code
+               </li>
+               <li>
+                  Generation of auxiliary structures necessary for run-time
+                  support, such as the stack layout description, the GC map and
+                  registers
+               </li>
+               <li>
+                  Registration of exception handlers in VM
+               </li>
+               <li>
+                  Registration of direct calls for patching
+               </li>
+            </ul>
+         </dd>
+      </dl>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="IR" name="IR"></a>3.1.3 Internal Representations
+      </h3>
+      <p>
+         An intermediate representation (IR) is an internal compiler
+         representation for code being compiled. Jitrino.JET has no
+         intermediate representation of code and directly compiles bytecode
+         into the native code. Jitrino.OPT uses two IR forms: the high-level
+         intermediate representation (HIR) and the low-level intermediate
+         representation (LIR). To compile a method's code, the Jitrino.OPT
+         compiler translates Java<a href="#*">*</a> bytecode into a graph-based
+         structure with nodes, edges and instructions. The nodes and edges in
+         the graph denote the control flow of the program. Every node in the
+         graph is populated with instructions that denote the primitive
+         operations.
+      </p>
+      <p class="example">
+         Example
+      </p>
+      <p class="exampletext">
+         Here is an example of corresponding Java<a href="#*">*</a> code,
+         Java<a href="#*">*</a> bytecode and the low-level intermediate
+         representations used in Jitrino.OPT:
+      </p>
+      <p class="exampletext">
+         Java<a href="#*">*</a> code:
+      </p>
+<pre class="exampletext">
+    public static int max(int x, int y) {
+        if (x &gt; y) {
+            return x;
+        }
+        return y;
+    }
+</pre>
+      <p class="exampletext">
+         Java<a href="#*">*</a> bytecode:
+      </p>
+<pre class="exampletext">
+public static int max(int, int);
+  Code:
+   0:   iload_0
+   1:   iload_1
+   2:   if_icmple       7
+   5:   iload_0
+   6:   ireturn
+   7:   iload_1
+   8:   ireturn
+</pre>
+      <p class="exampletext">
+         Jitrino high-level intermediate representation of code:
+      </p>
+      <p class="exampletext">
+         <img alt="HIR representation of code - example"
+         src="images/HIR.png" />
+      </p>
+      <p class="exampletext">
+         Jitrino low-level intermediate representation of code:
+      </p>
+      <p class="exampletext">
+         <img alt="LIR representation of code - example"
+         src="images/LIR.png" />
+      </p>
+      <p>
+         Both HIR and LIR use a common Control Flow Graph structures and its
+         algorithms; see section 5.4 <a href="#CFG">Control Flow Graph</a> for
+         the details. This section describes the two intermediate
+         representations currently used in Jitrino in greater detail.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <dl>
+         <dt>
+            <a name="HIR" id="HIR"></a>High-Level IR
+         </dt>
+         <dd>
+            <p>
+               The Jitrino high-level intermediate representation (HIR) is a
+               platform-independent representation of the code being compiled.
+               In HIR, each basic block node consists of a list of
+               instructions, and each instruction includes an operator and a
+               set of operands. HIR supports a single static assignment (SSA)
+               form where each operand has exactly one assignment. The SSA form
+               provides explicit use-def links between operands and their
+               defining instructions, which simplifies and speeds up high-level
+               optimizations. Each HIR instruction and each operand have
+               detailed type information propagated to the back-end at further
+               compilation stages.
+            </p>
+            <p>
+               The compiler also maintains <a
+               href="#DominatorTree">dominator</a> and <a
+               href="#LoopTree">loop</a> structure information on HIR for use
+               in optimization and code generation.
+            </p>
+         </dd>
+      </dl>
+      <dl>
+         <dt>
+            <a name="LIR" id="LIR"></a>Low-level IR
+         </dt>
+         <dd>
+            <p>
+               Jitrino low-level intermediate representations (LIR) are
+               specific for code generators implementing them. The specifics of
+               the Jitrino IA-32/Intel&reg; 64 CG LIR is that unlike HIR, it
+               does not support SSA form and is designed to be very close to
+               the IA-32 and Intel&reg; 64 architectures.
+            </p>
+         </dd>
+      </dl>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="OPT_Processes" name="OPT_Processes"></a>3.2 Processes
+      </h2>
+      <p>
+         This part of the document describes the key processes that go inside
+         the Jitrino optimizing compiler.
+      </p>
+      <h3>
+         <a id="Bytecode_Translation" name="Bytecode_Translation"></a>3.2.1
+         Bytecode Translation
+      </h3>
+      <p>
+         The initial compilation step is the translation of bytecode into HIR,
+         which goes in the following phases:
+      </p>
+      <ol>
+         <li>
+            The bytecode translator establishes the basic block boundaries and
+            exception handling regions, and infers type information for
+            variables and operators. At this phase, the translator generates
+            type information for variables and virtual Java<a href="#*">*</a>
+            stack locations, similarly to the bytecode verification algorithm
+            described in the JVM specification [<a href="#JVM_spec_ref">1</a>].
+         </li>
+         <li>
+            The bytecode translator generates HIR and performs simple
+            optimizations, including constant and copy propagation, folding,
+            devirtualization and in-lining of method calls, elimination of
+            redundant class initialization checks, and value numbering-based
+            redundancy elimination [<a href="#Muchnik_ref">3</a>].
+         </li>
+      </ol>
+      <h3>
+         <a id="HIR_Optimizations" name="HIR_Optimizations"></a>3.2.2
+         High-level Optimizations
+      </h3>
+      <p>
+         High-level optimizations are platform-independent transformations
+         performed by the optimizer. The optimizer applies a set of classical
+         object-oriented optimizations balancing the effectiveness of
+         optimizations with their compilation time. Every high-level
+         optimization is represented as a separate transformation pass over
+         HIR. Each Jitrino.OPT optimization aims at one or more goals, as
+         follows:
+      </p>
+      <ul>
+         <li>
+            <a href="#Scope">Scope enhancement</a> extends the scope of other
+            optimizations.
+         </li>
+         <li>
+            <a href="#Redundancy">Redundancy elimination</a> gets rid of
+            redundant operations, which can be removed without changing code
+            semantics.
+         </li>
+         <li>
+            <a href="#JIT_simplification_pass">HIR simplification</a> cleans up
+            the intermediate representation between passes.
+         </li>
+      </ul>
+      <p class="class">
+         Optimization Modes
+      </p>
+      <p>
+         The Jitrino high-level optimizer supports various optimization modes,
+         which differ by the optimization path and profile used to optimize the
+         code. Different optimization modes are customized for different
+         application types: client applications usually require fast startup
+         time and reasonable response time, whereas server applications require
+         top-level performance in the long run. A particular optimization mode
+         is defined by the following:
+      </p>
+      <ul>
+         <li>
+            The optimization path - a part of the compilation pipeline
+            representing the set of optimization passes performed during
+            compilation of a method. The default optimization path set in the
+            configuration file is based on Java<a href="#*">*</a> properties.
+            You can override the default settings in the configuration file or
+            on the command line.
+         </li>
+         <li>
+            The profile - a static or a dynamic profile that a JIT compiler can
+            generate and use. Currently, Jitrino.JET provides the method
+            hotness/backedge profile, and Jitrino.OPT provides the edge
+            profile. For a description of profiles and profile-related
+            processes, see the <a href="EM.html">EM component description</a>.
+         </li>
+      </ul>
+      <p>
+         Several pre-defined Jitrino optimization modes are stored in the <a
+         href="emguide.html">execution manager configuration files</a>, as
+         follows:
+      </p>
+      <ul>
+         <li>
+            The <em>client</em> mode uses the dynamic method hotness/backedge
+            profile and is tuned for fast application startup and reasonable
+            performance. This is the default optimization mode.
+         </li>
+         <li>
+            The <em>server</em> mode is tuned for decent performance of
+            long-running server applications. This mode is represented in two
+            variants to play with: the <em>dynamic server mode</em> using the
+            dynamic edge profile and the <em>static server mode</em> using the
+            profile based on heuristics.
+         </li>
+      </ul>
+      <p>
+         You can define the profile to use on the command line. For example, to
+         set JIT to use the server dynamic mode, specify the following option:
+      </p>
+<pre>
+-Xem:server
+</pre>
+      <p>
+         This section defines all optimizations that are currently available in
+         the Jitrino.OPT compiler. Related optimizations are gathered in
+         groups, as follows:
+      </p>
+      <dl>
+         <dt>
+            <a id="Scope" name="Scope"></a>Scope Enhancement Passes
+         </dt>
+         <dd>
+            <p>
+               The high-level optimization begins with a set of transformations
+               to enhance the scope of further optimizations, as follows:
+            </p>
+            <ul>
+               <li>
+                  <strong>Guarded devirtualization</strong>
+                  (<code>devirt</code>) of virtual method calls reduces their
+                  run-time cost and enables the compiler to inline their
+                  targets.<br />
+                   Provided exact type information, this optimization can
+                  convert a virtual call into a more efficient direct call.
+                  When no type information is available, the most probable
+                  target of the virtual method can be predicted, and the
+                  optimization devirtualizes the call by guarding it with a
+                  cheap run-time class test to verify that the predicted method
+                  is in fact the target.
+               </li>
+               <li>
+                  <strong>Inlining</strong> (<code>inline</code>) removes the
+                  overhead of a direct call and builds the code of the called
+                  method into the code of the caller in place of its call site.
+                  Inlining is an iterative process involving other
+                  optimizations. Inlining goes as follows: 
+                  <ul>
+                     <li>
+                        The inliner selects candidates for inlining in the
+                        following sequence: 
+                        <ul>
+                           <li>
+                              Examines each direct call site in the IR form,
+                              including those exposed by guarded
+                              devirtualization.
+                           </li>
+                           <li>
+                              Heuristically estimates the potential benefit of
+                              inlining.
+                           </li>
+                           <li>
+                              Checks whether the benefit exceeds a certain
+                              threshold, and, if it does, registers the call in
+                              a priority queue.
+                           </li>
+                        </ul>
+                     </li>
+                     <li>
+                        The inliner selects the top candidate, if any, for
+                        inlining.
+                     </li>
+                     <li>
+                        The translator generates an intermediate representation
+                        for the method selected for inlining.
+                     </li>
+                     <li>
+                        The optimizer runs over HIR of the method using the
+                        inliner pipeline.
+                     </li>
+                     <li>
+                        <span
+                        style="FONT-SIZE: 10pt; FONT-FAMILY: Symbol"><span
+                        style="mso-list: Ignore"><span
+                        style="FONT: 7pt 'Times New Roman'"> </span></span></span>
+                        The inliner finds further inline candidates, if any, in
+                        the analyzed representation and replicates it in the
+                        representation of the caller.
+                     </li>
+                     <li>
+                        The inliner selects a new inline candidate from the
+                        queue and repeats the cycle.<br />
+                         The inliner stops its work when the queue is empty or
+                        after code IR reaches a certain size limit.
+                     </li>
+                  </ul>
+                  <p>
+                     The example below illustrates the inlining algorithm.
+                  </p>
+<pre>
+Inline(HIR_of_compiled_method) {
+    current_bytecode_size = HIR_of_compiled_method.get_method().bytecode_size()
+    find_inline_candidates(HIR_of_compiled_method)
+    while (true) {
+        callee = NULL
+        while (!inline_candidates.empty()) {
+            callee = inline_candidates.pop()   
+            callee_bytecode_size = callee.bytecode_size()
+            if ((current_bytecode_size + callee_bytecode_size) &lt; SIZE_THRESHOLD) {
+                current_bytecode_size = callee_bytecode_size
+                break;
+            }
+        }
+        if (callee = NULL) {
+            break;
+        }
+        HIR_of_callee = Translator.translate(callee)
+        Optimizer.optimize(HIR_of_callee, inliner_pipeline)
+        find_inline_candidates(HIR_of_callee)
+        HIR_of_compiled_method.integrate(HIR_of_callee)
+    }
+}
+
+find_inline_candidates(method_HIR) {
+    foreach direct_call in method_HIR {
+        inline_benefit = compute_inline_benefit(direct_call)
+        if (inline_benefit &gt; BENEFIT_THRESHOLD) {
+            inline_candidates.push(direct_call)
+        }
+    }
+}
+</pre>
+               </li>
+               <li>
+                  <strong>Lowering</strong> (<code>lower</code>) performs basic
+                  instruction-level transformations to replace common helper
+                  calls with the corresponding HIR code. A helper call
+                  generally is performance-expensive, so that inlining the
+                  operation performed by a helper method can improve
+                  performance. This is especially true for operations that are
+                  proved to be redundant afterwards.
+               </li>
+            </ul>
+         </dd>
+         <dt>
+            <a id="Redundancy" name="Redundancy"></a>Redundancy Elimination
+            Passes
+         </dt>
+         <dd>
+            <p>
+               This set of optimizations aims at eliminating redundant and
+               partially redundant operations. If JIT can prove that some
+               operations are redundant and have no side effects, they might be
+               removed from the code. This way, time for execution of the
+               redundant operations is saved and the resulting code executes
+               faster. This optimization group consists of the following
+               passes:
+            </p>
+            <ul>
+               <li>
+                  <strong>Memory optimization</strong> (<code>memopt</code>)
+                  reduces the number of operations with memory by removing
+                  redundant loading and storing instructions.<br />
+                   Firstly, <code>memopt</code> works on the SSA form to
+                  combine all locations of an object into one alias. After
+                  that, the optimization updates use-def dependencies with the
+                  alias instead of locations. According to these new
+                  dependencies, <code>memopt</code> deletes redundant stores.
+                  Finally, it performs scoped hash-value numbering on the
+                  resulting control flow graph to eliminate redundant load
+                  operations.
+               </li>
+               <li>
+                  <strong>Lazy exceptions optimization</strong>
+                  (<code>lazyexc</code>) eliminates redundant creation of
+                  exception objects. In cases when an exception object is not
+                  used in the exception handler, time spent on creating the
+                  exception object and creating and recording the stack trace
+                  in the exception object is wasted. If the constructor of the
+                  exception object has no side effects and the exception object
+                  is not used before it is thrown, then the creation of the
+                  exception object is delayed until the exception object is
+                  really used.
+               </li>
+               <li>
+                  Loop-oriented optimizations are the following: 
+                  <ul>
+                     <li>
+                        <strong>Loop peeling</strong> moves one or more
+                        iterations to the loop header to reduce the looping
+                        overhead for a small loop count and to enable
+                        optimizations in peeled iterations.
+                     </li>
+                     <li>
+                        <strong>Load invariant hoisting</strong> moves
+                        operations that are invariant across loop iterations
+                        outside the loop.
+                     </li>
+                     <li>
+                        <strong>Loop unrolling</strong> expands the loop body
+                        by combining several iterations into one to reduce the
+                        loop overhead and to expand the scope for optimizations
+                        in the loop body.
+                     </li>
+                  </ul>
+               </li>
+               <li>
+                  <strong>Array-bounds check elimination</strong>
+                  (<code>abcd</code>) analyzes method code and removes
+                  redundant checks of array bounds. Normally, these checks
+                  identify situations when a program tries to access an element
+                  beyond the array bounds, and throw
+                  <code>ArrayIndexOutOfBoundsException</code>. The JIT compiler
+                  inserts such checks before every access to an array element
+                  and some of these checks are redundant. [<a
+                  href="#arraybounds_ref">5</a>].
+               </li>
+               <li>
+                  <strong>Global code motion</strong> (<code>gcm</code>) moves
+                  computational instructions between basic blocks. The goal is
+                  to move each movable instruction to the basic block with
+                  minimal probability of execution. Probabilities are provided
+                  by a profile based on static heuristics or on run-time
+                  execution. To preserve semantics, only instructions without
+                  side effects are considered movable. Instructions can be
+                  moved up and down the dominator tree.
+               </li>
+               <li>
+                  <strong>Lowering</strong> (<code>lower</code>) performs basic
+                  instruction-level transformations to replace common helper
+                  calls with the corresponding HIR code. A helper call
+                  generally is performance-expensive, so that inlining the
+                  operation performed by a helper method can improve
+                  performance. This is especially true for operations that are
+                  proved to be redundant afterwards.
+               </li>
+            </ul>
+         </dd>
+      </dl>
+      <dl>
+         <dt>
+            <a id="JIT_simplification_pass"
+            name="JIT_simplification_pass"></a>HIR Simplification Passes
+         </dt>
+         <dd>
+            <p>
+               HIR simplification passes are a set of fast optimizations that
+               the Jitrino optimizer performs several times over the
+               intermediate representation to reduce its size and complexity.
+               Simplification passes improve code quality and efficiency of
+               more expensive optimizations. HIR simplifications are often
+               grouped in a series of simplification passes to be performed at
+               various points in the optimization path.
+            </p>
+            <ul>
+               <li>
+                  <strong>Unreachable code elimination</strong>
+                  (<code>uce</code>) detects and removes unreachable code by
+                  traversing the control flow graph.
+               </li>
+               <li>
+                  <strong>Dead code elimination</strong> detects and removes
+                  dead code by using a sparse liveness traversal over use-def
+                  links of the SSA form [<a href="#Muchnik_ref">3</a>].
+               </li>
+               <li>
+                  <strong>Simplification</strong> (<code>simplify</code>)
+                  includes the following: 
+                  <ul>
+                     <li>
+                        Simplification of arithmetic expressions
+                     </li>
+                     <li>
+                        Copy and constant propagation
+                     </li>
+                     <li>
+                        Constant folding
+                     </li>
+                     <li>
+                        Subexpression re-association
+                     </li>
+                     <li>
+                        Simplification of trivial branches and calls [<a
+                        href="#Muchnik_ref">3</a>]
+                     </li>
+                  </ul>
+               </li>
+               <li>
+                  <strong>Hash value numbering</strong> (<code>hvn</code>)
+                  eliminates common sub-expressions [<a
+                  href="#value_number_ref">4</a>]. This pass uses an in-order
+                  depth-first traversal of the dominator tree instead of the
+                  more expensive iterative data flow analysis. High-level value
+                  numbering effectively eliminates redundant address
+                  computation and check instructions. For example,
+                  <code>chkzero()</code>, <code>chknull()</code>, and
+                  <code>chkcast()</code> HIR instructions are redundant if
+                  guarded by explicit conditional branches.
+               </li>
+            </ul>
+         </dd>
+         <dt>
+            Static profile estimator (<code>statprof</code>)
+         </dt>
+         <dd>
+            <p>
+               Many optimizations can use the edge profile information for
+               greater efficiency. When the execution manager is configured to
+               use a dynamic profiling mode, the profile is gathered by the
+               JIT. But even in static mode, when a dynamic profile is not
+               available, Jitrino.OPT can use the <code>statprof</code>
+               optimization pass to update HIR with a profile based on
+               heuristics. In the dynamic profiling mode, some optimizations
+               may break profile information by changing the CFG structure. In
+               this case, <code>statprof</code> can be used to fix the profile
+               information and keep it consistent.
+            </p>
+         </dd>
+      </dl>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h3>
+         <a name="CodeSelection" id="CodeSelection"></a>3.2.3 Code Selection
+      </h3>
+      <p>
+         After the optimization passes, HIR is translated to LIR. This code
+         selection (CS) is based on the HIR hierarchical structure of the
+         compiled method, as shown in Figure 2.
+      </p>
+      <p style="text-align: center">
+         <img src="images/code_selector.gif"
+         alt="Code Selector work flow" />
+      </p>
+      <p class="special">
+         Figure 2. Code Selector Framework
+      </p>
+      <p class="notetext">
+         Where:
+      </p>
+      <ul>
+         <li>
+            White boxes indicate parts of the code selector. Nesting of boxes
+            reflects the hierarchy of elements, see details below.
+         </li>
+         <li>
+            Yellows boxes with dashed borders indicate IR entities analyzed or
+            created by the corresponding code selector parts.
+         </li>
+         <li>
+            Arrows indicate IR element conversion via callback interface calls.
+         </li>
+      </ul>
+      <p>
+         For the method, the set of operands of multiple definitions, the
+         control flow graph, and the set of CFG basic block nodes, the code
+         selector framework defines the following:
+      </p>
+      <ul>
+         <li>
+            An abstract class representing a code selector of the HIR element,
+            and the default implementation of the abstract class on the
+            optimizer side. This part of the implementation is responsible for
+            HIR traversal.
+         </li>
+         <li>
+            A callback interface to transform direct sub-elements of the
+            analyzed entity from HIR to LIR. The callback is implemented on the
+            code generator side. This part is responsible for LIR creation
+         </li>
+      </ul>
+      <p>
+         Thus, the CS framework establishes a well-defined boundary between the
+         optimizer and a pluggable code generator. The code selector framework
+         also enables a structural approach to IR conversion, which CG can
+         override at several levels.
+      </p>
+      <p>
+         Figure 3 shows the process of code selection, with loops highlighted
+         using the yellow color.
+      </p>
+      <p style="text-align: center">
+         <img src="images/code_selection_seq.gif"
+         alt="Sequence of code selection with objects and method calls shown" />
+      </p>
+      <p class="special">
+         Figure 3. The Code Selection Sequence Diagram
+      </p>
+      <p>
+         Figure 3 illustrates specifics of the conversion process, as follows:
+      </p>
+      <ul>
+         <li>
+            All instances of the code selector (CS) classes responsible for HIR
+            traversal are created on the optimizer side.
+         </li>
+         <li>
+            All instances of the callback interface implementations responsible
+            for building LIR are created on the CG side.
+         </li>
+         <li>
+            The top-down IR conversion is performed as follows: 
+            <ul>
+               <li>
+                  Variable CS traverses all HIR operands with multiple
+                  definitions and calls the Variable CS callback for each such
+                  operand to create the corresponding LIR operand.
+               </li>
+               <li>
+                  CFG CS traverses all HIR nodes and edges and calls methods
+                  from the CFG CS callback to create the corresponding LIR
+                  nodes and edges.
+               </li>
+               <li>
+                  For each basic block node, CFG CS creates an instance of
+                  Basic Block CS, which then calls methods of the Basic Block
+                  CS callback to translate HIR instructions from the basic
+                  block to LIR. Basic Block CS is also known as the Instruction
+                  Selector.
+               </li>
+            </ul>
+         </li>
+      </ul>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="Code_Generation" name="Code_Generation"></a>3.2.4 Code
+         generation
+      </h3>
+      <p>
+         The code generation process is specific to the pluggable code
+         generator implementing it. This section briefly describes the current
+         implementation of Jitrino IA-32/Intel&reg; 64 code generator, as well
+         as <a href="#CG_globalLock">measures taken to ensure that it is
+         thread-safe</a>.
+      </p>
+      <p>
+         To generate code for a method, the code generator performs a number of
+         steps that are roughly divided into the following stages:
+      </p>
+      <dl>
+         <dt>
+            LIR Creation
+         </dt>
+         <dd>
+            <p>
+               At this stage, the code generator creates the LIR corresponding
+               to the input HIR in its implementation of the code selector
+               callback interfaces. The resulting LIR is quite compact and
+               possesses the following properties:
+            </p>
+            <ol>
+               <li>
+                  Most 2-operand instructions are generated in the extended
+                  3-operand form with a separate destination operand.
+               </li>
+               <li>
+                  Each call site is represented as a single instruction without
+                  explicit stack creation for callee arguments.
+               </li>
+               <li>
+                  64-bit integer arithmetic is represented by
+                  pseudo-instructions (macros)
+               </li>
+               <li>
+                  Address arithmetic is mostly explicit without usage of the
+                  complex address forms
+               </li>
+               <li>
+                  Most operand copy instructions are represented by
+                  pseudo-instructions which do not impose any constraints on
+                  its operands
+               </li>
+            </ol>
+         </dd>
+         <dt>
+            LIR Transformations
+         </dt>
+         <dd>
+            <p>
+               At this stage, the code generator performs a number of
+               transformations and optimizations over LIR, as follows:
+            </p>
+            <ol>
+               <li>
+                  Inserts yield points at back branches of certain kinds of
+                  loops to enable safe thread suspension.
+               </li>
+               <li>
+                  Performs the first pass of GC safe-point analysis, which
+                  transforms code to ensure correct GC map creation at the end
+                  of the code generation process regardless of in-process
+                  transformations.
+               </li>
+               <li>
+                  Folds address arithmetic into complex address forms as
+                  needed.
+               </li>
+               <li>
+                  Expands pseudo-instructions for 64-bit integer arithmetic to
+                  real native instruction sequences with some optimizations
+                  applied.
+               </li>
+               <li>
+                  Translates LIR instructions from the extended 3-address form
+                  to the native 2-address form.
+               </li>
+               <li>
+                  Analyses instruction and calling convention constraints.
+                  Based on analysis results, the code generator splits operands
+                  so that each operand satisfies the constraints of the
+                  instructions where it is used.
+               </li>
+               <li>
+                  Performs global register allocation to assign most frequently
+                  used operands to general-purpose or XMM registers as needed.
+               </li>
+               <li>
+                  Performs local register allocation and spill-code generation
+                  on each basic block taking into account instruction
+                  constraints. This pass ensures that all operands are assigned
+                  to physical locations, in a register or on the stack. This
+                  pass can produce correct code with no prior global register
+                  allocation.
+               </li>
+               <li>
+                  Linearizes CFG basic blocks according to profile information,
+                  if any.
+               </li>
+               <li>
+                  Expands copy pseudo-instructions to real native instruction
+                  sequences. Copies of stack operands with non-overlapping live
+                  ranges are coalesced.
+               </li>
+               <li>
+                  Goes over the stack layout to assign offsets to stack
+                  operands and to create the stack layout description.
+               </li>
+            </ol>
+            <p>
+               The actual code generation process can also include different
+               optimization passes, such as constant and copy propagation, dead
+               code elimination, and redundant comparison elimination.
+               Optimizations are enabled via EM configuration files and the
+               command-line interface.
+            </p>
+         </dd>
+         <dt>
+            Code and Data Emission
+         </dt>
+         <dd>
+            <p>
+               At this stage, the code generator does the necessary
+               preparations and translates LIR into machine code, as follows:
+            </p>
+            <ol>
+               <li>
+                  Generates all required binary chunks from LIR and links the
+                  generated code to VM for further run-time support.
+                  Specifically, the code generator does the following: 
+                  <ol>
+                     <li>
+                        Creates a constant data area with switch tables,
+                        floating point constants, and other data that might be
+                        needed for CG debugging features.
+                     </li>
+                     <li>
+                        Links LIR to VM data structures and the constant data
+                        area.
+                     </li>
+                     <li>
+                        Translates LIR into machine code.
+                     </li>
+                     <li>
+                        Registers direct calls to other managed code to enable
+                        patching in case the target of a direct call is
+                        recompiled later.
+                     </li>
+                     <li>
+                        Registers try blocks and corresponding exception
+                        handlers with VM.
+                     </li>
+                     <li>
+                        Registers information about inlined methods with VM.
+                     </li>
+                  </ol>
+               </li>
+               <li>
+                  Updates the stack layout description with additional stack
+                  information, such as stack depth bound to offsets of
+                  <code>CALL</code> instructions.
+               </li>
+               <li>
+                  Creates the GC map to describe root set locations for each GC
+                  safe point. 
+                  <p class="note">
+                     Note
+                  </p>
+                  <p class="notetext">
+                     Only call sites are considered GC safe points in the
+                     current implementation
+                  </p>
+               </li>
+               <li>
+                  Writes the stack layout description, the GC map, and the
+                  bytecode map into the memory chunk associated with the
+                  compiled method. These data are further used at run time for
+                  the following: 
+                  <ul>
+                     <li>
+                        The stack layout description is used in stack unwinding
+                        for exception handling, GC root set enumeration, and
+                        other stack iteration operations.
+                     </li>
+                     <li>
+                        The GC map is used for root set enumeration by a
+                        precise garbage collector.
+                     </li>
+                     <li>
+                        The bytecode map is used for mapping between native
+                        code and Java* bytecode.
+                     </li>
+                  </ul>
+               </li>
+            </ol>
+         </dd>
+         <dt>
+            <a name="CG_globalLock" id="CG_globalLock"></a>Global Lock
+         </dt>
+         <dd>
+            <p>
+               Because memory allocation routines are not thread-safe in the
+               current VM implementation, Jitrino sets a global lock for the
+               code generation stage to ensure correct allocation of memory for
+               compiled method data. The global lock must be taken into account
+               when working in a multi-threaded environment, for example, when
+               compilation of a method starts simultaneously in several
+               threads. The global lock is shared between Jitrino.JET and
+               Jitrino.OPT and ensures that only a single thread tries to
+               allocate memory for a method at once. The lock is taken in the
+               <code>lock_method Action</code> object and released in the
+               <code>unlock_method Action</code> object.
+            </p>
+            <p>
+               The <code>lock_method</code> action also checks whether a code
+               block is already allocated by the current JIT instance for the
+               method being compiled. If the code block is already allocated,
+               the method has already been compiled in another thread. In this
+               case, the <code>lock_method</code> action does not place the
+               lock, but stops compilation with the
+               <code>COMPILATION_FINISHED</code> status. The action
+               <code>unlock_method</code> releases the lock taken by the
+               <code>lock_method</code> action.
+            </p>
+            <p>
+               The global lock imposes the following requirements:
+            </p>
+            <ul>
+               <li>
+                  No <code>Action</code> object in the code generator can stop
+                  compilation with the <code>COMPILATION_FINISHED</code> or
+                  <code>COMPILATION_FAILED</code> condition. Otherwise, the
+                  lock remains set and blocks method compilation in other
+                  threads.
+               </li>
+               <li>
+                  Resources with the live time equal to the method&rsquo;s life
+                  time must be allocated only in the code generator, and not in
+                  the optimizer.
+               </li>
+               <li>
+                  Code generation actions must not invoke VM methods that might
+                  lead to execution of Java code (for example,
+                  <code>resolve_static_method</code>); otherwise, the action
+                  might lead to a deadlock.
+               </li>
+            </ul>
+         </dd>
+      </dl>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="JET" name="JET"></a>4. JITRINO.JET
+      </h1>
+      <h2>
+         <a id="JET_Architecture" name="JET_Architecture"></a>4.1 Architecture
+      </h2>
+      <p>
+         The Jitrino.JET baseline compiler is the Jitrino subcomponent used for
+         translating Java<a href="#*">*</a> bytecode into native code with
+         practically no optimizations. The compiler emulates operations of
+         stack-based machine using a combination of the native stack and
+         registers.
+      </p>
+      <h3>
+         <a id="JET_Runtime" name="JET_Runtime"></a>4.1.1 Run-time Support
+      </h3>
+      <p>
+         During the code generation phase, the state of the method's operand
+         stack is mimic. This state helps to calculate the GC map, which is
+         used later at run time to support GC operation.
+      </p>
+      <p>
+         The GC map shows whether the local variables or the stack slots
+         contain an object. The GC map for local variables is updated on each
+         defining operation with a local slot, as follows:
+      </p>
+      <ul>
+         <li>
+            If an object is stored, the appropriate bit in the GC map is set
+            (code is generated to set the bit).
+         </li>
+         <li>
+            If a number is stored, the appropriate bit gets cleared.
+         </li>
+      </ul>
+      <p>
+         The GC map for the stack is updated only at GC points, that is, before
+         an instruction that may lead to a GC event, for example, a VM helper
+         call. The stack depth and the stack state calculated during method
+         compilation get saved before invocation: code is generated to save the
+         state. The state is saved into the special fields that are
+         pre-allocated on the native stack of the method. These fields include
+         GC information, namely the depth of operand stack, the stack GC map,
+         and the locals GC map.
+      </p>
+      <p>
+         Additionally, Jitrino.JET prepares and stores a specific structure,
+         the <em>method info block</em>, for each method during compilation.
+         This structure is later used to support run-time operations, such as
+         stack unwinding and mapping between bytecode and native code.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="JET_Processes" name="JET_Processes"></a>4.2 Processes
+      </h2>
+      <h3>
+         <a id="Baseline_Compilation" name="Baseline_Compilation"></a>4.2.1
+         Baseline Compilation
+      </h3>
+      <p>
+         Baseline compilation is the process of compiling code with minimal
+         optimization. The <a href="#JET">Jitrino.JET</a> subcomponent performs
+         this operation as described below.
+      </p>
+      <p>
+         Jitrino.JET performs two passes over bytecode, as shown in Figure 4.
+         The compiler establishes basic block boundaries during the first pass,
+         and generates native code during the second.
+      </p>
+      <p style="text-align:center">
+         <img src="images/bytecode_to_native.gif"
+         alt="Example of two-pass compilation process" width="379" height="181" />
+      </p>
+      <p class="special">
+         Figure 4. Baseline Compilation Path
+      </p>
+      <p>
+         Subsequent sections provide a description of these passes.
+      </p>
+      <dl>
+         <dt>
+            Pass 1
+         </dt>
+         <dd>
+            <p>
+               During the first pass over bytecode of a method, the compiler
+               finds basic block boundaries and counts references for these
+               blocks.
+            </p>
+            <p class="note">
+               Note
+            </p>
+            <p class="notetext">
+               The <em>reference count</em> is the number of ways for reaching
+               a basic block (BB).
+            </p>
+            <p>
+               To find basic blocks boundaries, Jitrino.JET does a linear scan
+               over the bytecode and analyses instructions by using the
+               following rules:
+            </p>
+            <ul>
+               <li>
+                  Instructions <code>athrow</code>, <code>return</code>,
+                  <code>goto</code>, <code>conditional branches</code>,
+                  <code>switches</code>, <code>ret</code>, and <code>jsr</code>
+                  end a basic block.
+               </li>
+               <li>
+                  <em>Basic block leader</em> instructions immediately follow
+                  the instructions ending a basic block or serve as targets for
+                  branches. Exception handler entries are also among the basic
+                  block leaders.
+               </li>
+            </ul>
+            <p>
+               During the first pass, the compiler also finds the reference
+               count for each block.
+            </p>
+            <p class="example">
+               Example
+            </p>
+            <p class="notetext">
+               Figure 4 illustrates an example with reference counts. The
+               reference count <code>ref_count</code> for the second basic
+               block (BB2) is equal to <code>1</code> because this block can
+               only be reached from the first basic block (BB1). The other
+               reference count is equal to <code>2</code>, because the third
+               basic block can be reached as a branch target from BB1 or a
+               fall-through from BB2.
+            </p>
+            <p style="text-align: center">
+               <img src="images/reference_count.gif"
+               alt="Example of reference counters reached from different basic blocks." width="210" height="171" />
+            </p>
+            <p class="special">
+               Figure 5. Reference Count for Basic Blocks
+            </p>
+            <p>
+               Jitrino.JET uses the reference count during code generation to
+               reduce the number of memory transfers.
+            </p>
+         </dd>
+         <dt>
+            Pass 2
+         </dt>
+         <dd>
+            <p>
+               During the second pass, Jitrino.JET performs the code
+               generation, as follows:
+            </p>
+            <ol>
+               <li>
+                  Walks over the basic blocks found at Pass 1 in the
+                  depth-first search order
+               </li>
+               <li>
+                  Generates code for each bytecode instruction and mimics the
+                  Java<a href="#*">*</a> operand stack
+               </li>
+               <li>
+                  Matches the native code layout and the bytecode layout
+               </li>
+               <li>
+                  Updates relative addressing instructions, such as
+                  <code>CALL</code> and <code>JMP</code> instructions.
+               </li>
+            </ol>
+         </dd>
+      </dl>
+      <p>
+         For details on the implementation of baseline compilation, generate
+         reference documentation from the source code by using Doxygen.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="JIT_utilities" name="JIT_utilities"></a>5. Utilities
+      </h1>
+      <p>
+         The JIT compiler relies on the following utilities:
+      </p>
+      <ul>
+         <li>
+            <a href="#Memory_Manager">The memory manager</a> minimizes the
+            number of calls to system heap allocations and automatically frees
+            all allocated memory in the destructor.
+         </li>
+         <li>
+            A set of Standard Template Library (STL) containers use the memory
+            manager as their allocator class.
+         </li>
+         <li>
+            <a href="#Timers">Timers</a> gather compilation and execution
+            statistics.
+         </li>
+         <li>
+            <a href="#JIT_logging">The logging system</a> support diagnostics
+            inside the compiler.
+         </li>
+         <li>
+            <a href="#CFG">The control flow graph</a> represents the flow of a
+            method and give basis for IR forms.
+         </li>
+      </ul>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         The JIT compiler utilities are similar to, but not identical with the
+         VM utilities. For example, the JIT compiler and the VM core use
+         different loggers.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Memory_Manager" name="Memory_Manager"></a>5.1 Memory Manager
+      </h2>
+      <p>
+         In the Jitrino.OPT compiler, memory allocation is done using custom
+         memory manager routines. This mechanism ensures that all memory
+         allocated during a compilation process is freed after the compilation
+         is finished. In addition, the memory manager decreases the number of
+         system calls by using the fast thread-local memory allocation
+         algorithm. Memory manager code and operators for overloaded memory
+         allocation are in <code>.h</code> and <code>.cpp</code> files in the
+         <code>jitrino/src/shared/</code> directory.
+      </p>
+      <p>
+         To start using the memory manager, a JIT compiler developer must
+         create an instance of it providing the initial heap size and the name
+         to be used for logging.
+      </p>
+      <p>
+         The memory manager allocates memory from the operating system in large
+         chunks called <i>arenas</i>. The minimal size of an arena used in
+         <code>MemoryManager</code> is 4096 bytes. When the JIT compiler
+         requests to allocate memory for an object, the memory is taken from
+         the current arena with no system calls. When the current arena does
+         not have enough free space, the memory manager allocates another
+         arena.
+      </p>
+      <p>
+         Here is a typical pattern for using the <code>MemoryManager</code>
+         class:
+      </p>
+<pre>
+void optABC() {
+    //the temporary memory manager used for optABC optimization data
+    MemoryManager tmpMM(10000, "mm::optABC");
+
+    StlVector&lt;int&gt; myData1(tmpMM, 1000);
+    int* myData2 = new (tmpMM) int[1000];
+    //JIT compiler code follows
+}
+</pre>
+      <p>
+         The memory allocated with the memory manager is de-allocated in its
+         destructor and no destructors are called for objects allocated with
+         the memory manager. This feature of the memory manager enforces the
+         following rules upon JIT compiler code:
+      </p>
+      <ol>
+         <li>
+            Never allocate <code>MemoryManager</code> using another memory
+            manager. Otherwise, the memory of <code>MemoryManager</code> is
+            never freed.
+         </li>
+         <li>
+            Mix objects allocated with different memory managers carefully.
+            Lifetime of such objects can be different.
+         </li>
+         <li>
+            Destructors of objects allocated with <code>MemoryManager</code>
+            are never called. Leave the destructors empty.
+         </li>
+         <li>
+            To avoid out-of-memory errors, remember that the memory allocated
+            with <code>MemoryManager</code> is de-allocated only when
+            <code>MemoryManager</code> is destroyed.
+         </li>
+      </ol>
+      <p>
+         Jitrino.OPT has two dedicated memory managers:
+      </p>
+      <ul>
+         <li>
+            The <i>global memory manager</i> created when Jitrino is
+            initialized. This memory manager is used with objects having the
+            same lifetime as the JIT compiler. See
+            <code>jitrino/src/main/Jitrino.cpp</code> file and
+            <code>global_mm</code> static field for details.
+         </li>
+         <li>
+            The <i>compilation time memory manager</i> created every time the
+            compilation process starts. This memory manager allocates objects
+            with the lifetime equal to compilation time, such as instructions,
+            nodes, edges and other structures related to the compilation
+            context.
+         </li>
+      </ul>
+      <p>
+         Using <code>MemoryManager</code>, you might not get system
+         notifications on memory corruption.
+      </p>
+      <p class="example">
+         Example
+      </p>
+      <p class="exampletext">
+         Memory corruption can happen when a value is stored to the array by
+         the index that is out of the array's range:
+      </p>
+<pre>
+    MemoryManager tmpMM(10000, "myMM");
+    int* myData2 = new (tmpMM) int[10];
+    myData[10] = 1;
+</pre>
+      <p class="exampletext">
+         This code is executed successfully because the default memory chunk
+         allocated by the memory manager is greater than the array size.
+      </p>
+      <p>
+         To enable the checking of memory corruption errors, define the
+         <code>JIT_MEM_CHECK</code> macro in the <code>MemoryManager.cpp</code>
+         file. After this macro is defined, the memory manager fills all the
+         arena's space with the predefined value and adds the padding space
+         between objects. Every time an object is allocated, <span
+         style="FONT-SIZE: 12pt; COLOR: black" lang="EN-US"
+         xml:lang="EN-US">the memory manager checks these predefined values in
+         the arena.</span> If a write operation has been performed in the
+         restricted area, the memory manager reports an error.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Timers" name="Timers"></a>5.2 Counters and Timers
+      </h2>
+      <p>
+         Jitrino maintains <em>counters</em> to collect statistics. A counter
+         can be used in any Jitrino action to count a particular event in all
+         pipelines and during the whole VM session. Each counter has a name to
+         distinguish it from other counters.
+      </p>
+      <p>
+         To sum up execution times of a Jitrino action, Jitrino also provides
+         <em>timers</em>, a specialized form of counters<em>.</em> To activate
+         counters and time measurement, use the following command syntax:
+      </p>
+<pre>
+-Djit.&lt;JIT&gt;.arg.time=on
+</pre>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         This option is <code>off</code> by default.
+      </p>
+      <p>
+         The execution time of all instances of each action is measured
+         independently and summed up at VM shutdown. Resulting data on action
+         execution times are printed into a table and sorted by the action
+         name.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         Currently, to print the action execution times and counter values
+         tables, you need to specify the following VM command-line option:
+      </p>
+<pre>
+&ndash;XcleanupOnExit
+</pre>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="JIT_logging" name="JIT_logging"></a>5.3 Logging System
+      </h2>
+      <p>
+         The Jitrino logging system does the following:
+      </p>
+      <ul>
+         <li>
+            Provides diagnostic output of important Jitrino internal data
+            structures
+         </li>
+         <li>
+            Supports user-defined diagnostic
+         </li>
+         <li>
+            Provides a flexible control over a diagnostic process via
+            command-line options.
+         </li>
+      </ul>
+      <p>
+         The logging system is an integral part of Jitrino PMF. Logging
+         consists of two interfaces:
+      </p>
+      <ul>
+         <li>
+            The program interface that provides stream output methods
+         </li>
+         <li>
+            The command-line interface that provides filtration of output
+            logging streams
+         </li>
+      </ul>
+      <p>
+         The logging system is based on s<em>tream</em>s. Each stream has a
+         name used to address it in a program and command-line options. Jitrino
+         provides several frequently used streams with predefined names. These
+         streams produce specific output when enabled, as follows:
+      </p>
+      <table>
+         <tr>
+            <th class="TableHeading">
+               Name
+            </th>
+            <th class="TableHeading">
+               Output
+            </th>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               <code>info</code> 
+            </td>
+            <td class="TableCell">
+               The protocol of compilation: JIT and pipeline names, the method
+               name and number, and so on
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               <code>rt</code> 
+            </td>
+            <td class="TableCell">
+               Run-time output not related to a compiled method
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               <code>ct</code> 
+            </td>
+            <td class="TableCell">
+               Compile-time diagnostic
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               <code>irdump</code> 
+            </td>
+            <td class="TableCell">
+               The dump of internal Jitrino structures for a compiled method
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               <code>dotdump</code> 
+            </td>
+            <td class="TableCell">
+               The dump of internal Jitrino structures in the .dot format
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               <code>dbg</code> 
+            </td>
+            <td class="TableCell">
+               Debug information
+            </td>
+         </tr>
+      </table>
+      <p>
+         The general syntax of the logging command follows PMF rules:
+      </p>
+<pre>
+-Djit.&lt;JIT&gt;.&lt;pipeline&gt;.arg.&lt;path&gt;.log=&lt;list of stream names&gt;
+</pre>
+      <p>
+         In this command syntax, <code>&lt;path&gt;</code> represents the set
+         of Jitrino actions, for which the stream is enabled. When no path is
+         specified, the command applies to all existing actions.
+      </p>
+      <p class="example">
+         Example
+      </p>
+      <p class="exampletext">
+         To enable compilation protocols for all pipelines of all JITs, type
+      </p>
+<pre class="exampletext">
+-Djit.arg.log=info
+</pre>
+      <p class="exampletext">
+         To dump compile-time diagnostic together with IR dumps, type
+      </p>
+<pre class="exampletext">
+-Djit.arg.log=ct,irdump
+</pre>
+      <h3>
+         5.3.1 CFG Visualization
+      </h3>
+      <p>
+         Debugging the JIT requires information on the compilation inter-stage
+         modification of the <a href="#CFG">control flow graph</a> for the
+         compiled method, including instructions and operands. For that, the
+         Jitrino compiler enables generation of <em>dot</em> files representing
+         the control flow graph at both IR levels. The text .dot files can be
+         converted into descriptive pictures, which represent the CFG
+         graphically; see <a href="#IR">section 3.1.3 Internal
+         Representations</a> for an example of graphically visualized code. A
+         variety of graph visualization tools are available for dot files
+         conversion, such as Graphviz <a href="#Graphviz_ref">[6</a>].
+      </p>
+      <p>
+         To enable dumping .dot files, use the following command:
+      </p>
+<pre>
+-Djit.arg.log=dotdump
+</pre>
+      <p>
+         For more details on the Jitrino logging system, refer to the
+         corresponding section in the <a href="PMF.html">PMF</a> description.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="CFG" name="CFG"></a>5.4 Control Flow Graph
+      </h2>
+      <p>
+         The high-level and low-level intermediate representations use a
+         unified basis structure to represent the logic structure of a compiled
+         method, the <em>control flow graph</em> (CFG). This unification
+         enables Jitrino to avoid duplication of code in its internals, reduce
+         code size and improve quality of produced code.<br />
+          The current CFG implementation is located in
+         <code>jitrino/src/shared/ControlFlowGraph</code> <code>.h</code> and
+         <code>.cpp</code> files. These files contain core structures and
+         algorithms and can be directly re-used and extended with custom
+         functionality.
+      </p>
+      <p>
+         The goal of the control flow graph implementation is to provide the
+         following:
+      </p>
+      <ul>
+         <li>
+            The base structures and routines to build control flow graph:
+            nodes, edges, and instructions
+         </li>
+         <li>
+            Implementations of various <a href="#CFGAlgorithms">algorithms</a>:
+            nodes ordering, purging unreachable or empty nodes, and so on
+         </li>
+         <li>
+            Extensibility of the structures representing the control flow
+         </li>
+      </ul>
+      <p>
+         The control flow graph supports two types of control flow:
+      </p>
+      <ul>
+         <li>
+            The <em>conventional control flow</em> represents transfer of
+            control due to jumps and conditional branches of the code being
+            compiled. The conventional control flow is modeled via the edges
+            between basic block nodes.
+         </li>
+         <li>
+            The <em>exceptional control flow</em> reflects transfer of control
+            due to thrown and caught exceptions. This job is modeled via the
+            dispatch nodes: a thrown exception is represented by an edge from a
+            basic block node to a dispatch node, and a caught exception is
+            represented by an edge from a dispatch node to a block node.
+         </li>
+      </ul>
+      <p>
+         Because IR can represent the exceptional control flow, the optimizer
+         and code generators take it into account and optimize exceptions and
+         exception handlers. Explicit modeling of the exception control flow in
+         the control flow graph enables the compiler to optimize across
+         throw-catch boundaries. For locally handled exceptions, the compiler
+         can replace expensive throw-catch combinations with cheaper direct
+         branches.
+      </p>
+      <h3>
+         <a name="CFGStructures" id="CFGStructures"></a>5.4.1 CFG structures
+      </h3>
+      <p>
+         The CFG structures are nodes, edges and instructions represented as
+         <code>Node</code>, <code>Edge</code> and <code>CFGInst</code> classes
+         respectively.
+      </p>
+      <p class="class">
+         Subclassing
+      </p>
+      <p>
+         All CFG classes can be subclassed by user code. The
+         <code>CFGInst</code> class has pure virtual functions, so it must be
+         subclassed before use. <code>Node</code> and <code>Edge</code> classes
+         can be subclassed and extended with arbitrary user data, except a
+         limited set of node and edge types that must not be extended.
+      </p>
+      <dl>
+         <dt>
+            <a id="CFGSubclassing" name="CFGSubclassing"></a> Nodes
+         </dt>
+         <dd>
+            <p>
+               CFG uses the following kinds of nodes:
+            </p>
+            <ul>
+               <li>
+                  <code>Block</code> nodes are the usual nodes with user code
+                  translated into IR.
+               </li>
+               <li>
+                  <code>Dispatch</code> nodes represent exception throwing
+                  paths.
+               </li>
+               <li>
+                  <code>Exit</code> nodes are for method exits.
+               </li>
+            </ul>
+            <p>
+               The <code>Exit</code> node is an artificial node that
+               post-dominates all exceptional and normal exits from the method.
+               A graph always has only one <code>Exit</code> node that
+               represents all exceptional and normal exits from the method.
+            </p>
+            <p>
+               In addition to that, CFG has dedicated block and dispatch nodes.
+               The <code>Entry</code> block node marks the start of a method
+               and dominates over all nodes in the graph. The optional
+               <code>Return</code> block node post-dominates all normal paths,
+               whereas the optional <code>Unwind</code> dispatch node - all
+               exceptional paths leading out of the method. The
+               <code>Return</code> and <code>Unwind</code> nodes always have
+               only one outgoing edge that always points to the
+               <code>Exit</code> node.
+            </p>
+         </dd>
+         <dt>
+            <a id="Edges" name="Edges"></a> Edges
+         </dt>
+         <dd>
+            <p>
+               An edge connects two nodes and its kind is calculated at run
+               time depending on the kinds of nodes it connects, as follows:
+            </p>
+            <ul>
+               <li>
+                  <code>Dispatch</code> edges connect a block or dispatch node
+                  with another dispatch node.<br />
+                   Only one dispatch edge per block node is allowed.
+               </li>
+               <li>
+                  <code>Unconditional</code> edges connect two block nodes and
+                  depict an unconditional transition from one block node to
+                  another, as with unconditional direct and indirect jumps,
+                  control transfer in the switch statement or fall-through
+                  transition. The edges that connect <code>Return</code> and
+                  <code>Unwind</code> nodes with the <code>Exit</code> node are
+                  also treated as unconditional.
+               </li>
+               <li>
+                  <code>True</code> and <code>False</code> edges connect two
+                  non-empty block nodes and represent the conditional flow or
+                  branches. To detect whether an edge is <code>True</code> or
+                  <code>False</code>, CFG requests the last instruction in the
+                  current block about the edge kind.
+               </li>
+               <li>
+                  <code>Catch</code> edges connect dispatch and block nodes.
+                  These edges represent paths where exceptions are caught and
+                  normal execution of user code resumes. The kind of the
+                  exception caught by this class is specific for the IR
+                  implementation.
+               </li>
+            </ul>
+         </dd>
+         <dt>
+            <a id="Instructions" name="Instructions"></a> Instructions
+         </dt>
+         <dd>
+            <p>
+               Every node keeps a linked list of instructions that provide edge
+               type information for outgoing edges of the node. The
+               instructions interface also has functions to provide information
+               about positioning an instruction in a node that can be checked
+               by CFG algorithms during runtime. Instructions are subclasses of
+               the <code>CFGInst</code> class.
+            </p>
+            <p>
+               When the edge type information is unclear in the current
+               context, CFG gets this information from the last instruction of
+               a node. For example, for branches with two or more edges
+               connecting block nodes, the edge type is always requested from
+               the last instruction in the block. When an edge is removed or
+               retargeted, the last instruction in the block is notified to
+               track the CFG changes. On the contrary, for an edge that
+               connects block and dispatch node, it is clear that the edge is
+               of the Dispatch type and no request is sent.
+            </p>
+            <p>
+               Positioning information for an instruction is used to track
+               possible errors when an ordinary instruction is prepended to a
+               node before a <code>.h</code> critical instruction. Examples of
+               <code>.h</code> critical instructions are exception catches,
+               method prologues instructions and label instructions used in HIR
+               to mark nodes.
+            </p>
+         </dd>
+      </dl>
+      <h3>
+         <a id="CFGAlgorithms" name="CFGAlgorithms"></a>5.4.2 Graph algorithms
+      </h3>
+      <p>
+         The current CFG implementation provides the following graph
+         algorithms:
+      </p>
+      <ul>
+         <li>
+            Ordering of nodes: post- and pre-order of nodes, tracking graph
+            modifications to enable caching of ordering information
+         </li>
+         <li>
+            Managing nodes: removing empty and unreachable nodes, merging
+            adjacent nodes
+         </li>
+         <li>
+            Propagating the execution count using edge probabilities
+         </li>
+         <li>
+            Sub-graph inlining
+         </li>
+         <li>
+            Accessors for nodes and edges
+         </li>
+         <li>
+            Dominator and loop information
+         </li>
+      </ul>
+      <p>
+         For details on individual algorithms, generate documentation from the
+         <code>ControlFlowGraph.h</code> file using Doxygen.
+      </p>
+      <h3>
+         <a id="DominatorTree" name="DominatorTree"></a>5.4.3 Dominator Tree
+      </h3>
+      <p>
+         A dominator tree represents (post)dominance information computed for a
+         control flow graph. The tree can be used to query or navigate
+         dominance relationships of nodes. The root of the tree is the
+         <code>DominatorNode</code> of the entry or exit node in the graph, and
+         the parent of any dominator node other than the root is the immediate
+         dominator or post-dominator.
+      </p>
+      <p>
+         Dominator tree source files are
+         <code>jitrno/src/shared/DominatorTree</code> <code>.h</code> and
+         <code>.cpp</code> files.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         A dominator tree is invalidated when the underlying CFG is modified.
+         The dominator tree can still be queried and navigated, but may no
+         longer reflect the current state of the control flow graph.
+      </p>
+      <h3>
+         <a id="LoopTree" name="LoopTree"></a> 5.4.4 Loop Tree
+      </h3>
+      <p>
+         A loop tree contains information about loops in control flow graph. It
+         can be used to query loop information for every node in a control flow
+         graph. The loop tree is represented with <code>LoopTree</code> and
+         <code>LoopNode</code> classes. Every <code>LoopNode</code> instance
+         has an associated node from the graph and represents a header of a
+         loop. All child nodes of the <code>LoopNode</code> are loop headers of
+         the nested loops. The root node of the loop tree is an artificial node
+         used to join method&rsquo;s top-level loops and its child nodes.
+      </p>
+      <p>
+         The loop tree sources are located in
+         <code>jitrino/src/shared/LoopTree</code> <code>.h</code> and
+         <code>.cpp</code> files.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         The loop tree is invalidated when the underlying CFG is modified. You
+         cannot navigate the loop tree after CFG modification.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Interfaces" name="Interfaces"></a>6. Public Interfaces
+      </h1>
+      <p>
+         This section describes the interfaces that the JIT compiler exports to
+         communicate with other components. Jitrino exposes all necessary
+         interfaces to work as a part of the run-time environment. Jitrino
+         explicitly supports precise moving garbage collectors requiring the
+         JIT to enumerate live references.
+      </p>
+      <h2>
+         <a id="JIT_VM" name="JIT_VM"></a>6.1 JIT_VM Interface
+      </h2>
+      <p>
+         This interface comprises functions that the JIT compiler exports for
+         communication with the virtual machine core component. Functions
+         inside the <code>JIT_VM</code> interface can be grouped into the
+         following categories:
+      </p>
+      <dl>
+         <dt>
+            <a id="compilation_interface"
+            name="compilation_interface"></a>Bytecode Compilation
+         </dt>
+         <dd>
+            <p>
+               Functions in this set are responsible for the primary JIT
+               compiler task of running just-in-time compilation to produce
+               native executable code from a method bytecode. A request to
+               compile a method can come from the VM core or the execution
+               manager. For details on individual functions of this interface,
+               generate documentation for the file
+               <code>vmcore/include/jit_export.h</code> using Doxygen.
+            </p>
+         </dd>
+         <dt>
+            <a id="RSE_JIT" name="RSE_JIT"></a>Root Set Enumeration
+         </dt>
+         <dd>
+            <p>
+               This set of functions supports the garbage collector by
+               enumerating and reporting live object references. The JIT
+               compiler provides these functions to report locations of object
+               references and interior pointers that are live at a given
+               location in the JIT-compiled code. The object references and
+               interior pointers constitute the root set that the GC uses to
+               traverse all live objects. The interface requires reporting
+               locations of the values rather than the values, to enable a
+               moving garbage collector to update the locations while moving
+               objects.
+            </p>
+            <p class="note">
+               Note
+            </p>
+            <p class="notetext">
+               Unlike reference pointers that always point to the
+               object&rsquo;s header, <em>interior pointers</em> actually point
+               to a field that is inside the target object. If the JIT reports
+               an Interior Pointer without the Reference Pointer, then the
+               burden is upon the GC to actually reconstruct the Reference
+               Pointer.
+            </p>
+            <p>
+               For more information on GC related activities, see sections
+               <em>Root Set Enumeration</em> and <em>Garbage Collector</em>
+               section in the <a href="developers_guide.html">Developer's
+               Guide</a> document. For details on individual functions of this
+               interface, generate documentation for the file
+               <code>vmcore/include/jit_export_rt.h</code> using Doxygen.
+            </p>
+         </dd>
+         <dt>
+            <a id="Stack_unwinding" name="Stack_unwinding"></a>Stack Unwinding
+         </dt>
+         <dd>
+            <p>
+               The virtual machine requires support from the compiler to
+               perform stack unwinding, that is, an iteration over the stack
+               from a managed frame to the frame of the caller.
+            </p>
+            <p>
+               To facilitate stack walking, the JIT stack unwinding interface
+               does the following:
+            </p>
+            <ul>
+               <li>
+                  Updates the JIT stack frame context reflecting an iteration
+                  of stack walking. Different JIT compilers can implement
+                  different physical stack frame layouts and the JIT is
+                  responsible for proper interpretation of them.
+               </li>
+               <li>
+                  Reports the current location of a given pointer to allow VM
+                  to remove monitors for synchronized non-static methods during
+                  exception handling.
+               </li>
+               <li>
+                  Updates the JIT frame context to reflect the stack state at a
+                  catch handler.
+               </li>
+            </ul>
+            <p>
+               For more information about the stack, see section <em>3.4 Stack
+               Support</em> in the <a href="developers_guide.html">Developer's
+               Guide</a>.
+            </p>
+            <p class="note">
+               Note
+            </p>
+            <p class="notetext">
+               Root set enumeration and stack unwinding are run-time routines
+               called only during execution of compiled code.
+            </p>
+         </dd>
+         <dt>
+            <a id="JIT_JVMTI" name="JIT_JVMTI"></a>JVMTI Support
+         </dt>
+         <dd>
+            <p>
+               The set of JIT functions responsible for JVMTI support is
+               exported for interaction with the VM JVMTI component. These
+               functions do the following:
+            </p>
+            <ul>
+               <li>
+                  Process requests about JIT capabilities for JVMTI
+                  support.<br />
+                   For profiling and debugging, the JVMTI support component in
+                  the VM core requires the JIT compiler to have a set of
+                  capabilities. The VM core can query the JIT about supported
+                  capabilities.
+               </li>
+               <li>
+                  Provide bytecode to native code mapping to identify native
+                  and bytecode locations for the compiled method.
+               </li>
+               <li>
+                  Access and modify local variables in compiled code.
+               </li>
+            </ul>
+            <p>
+               The VM core can request the JIT to compile a method and to
+               support generation of specific JVMTI events in compiled code. To
+               facilitate these actions, additional parameters are passed to
+               the bytecode compilation interface.
+            </p>
+         </dd>
+      </dl>
+      <p>
+         For a description of functions that the VM core exports to interact
+         with the JIT compiler, see <em>VM Core Public Interfaces</em> in the
+         <a href="developers_guide.html">Developer's Guide</a>. For details on
+         the functions making up each interface group, generate documentation
+         from the files <code>vmcore/include/jit_export_jpda.h</code> and
+         <code>vmcore/include/jit_export.h</code> using Doxygen.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h2>
+         <a name="JIT_EM" id="JIT_EM"></a>6.2 JIT_EM Interface
+      </h2>
+      <p>
+         The JIT compiler exports this interface to support the execution
+         manager. Functions of this set are responsible for the following
+         operations:
+      </p>
+      <ul>
+         <li>
+            Compilation interface enabling the EM to request compilation of a
+            method
+         </li>
+         <li>
+            Profile interface enabling the EM to request the JIT to collect or
+            to use the specified profile type
+         </li>
+      </ul>
+      <p>
+         For a description of the functions that the execution manager exports
+         to interact with the JIT compiler, see section <em>Public
+         Interfaces</em> in the <a href="EM.html">Execution Manager
+         description</a>. For details on the functions that the JIT exports for
+         EM, generate documentation from the
+         <code>include/open/ee_em_intf.h</code> file using Doxygen.
+      </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="References" name="References"></a>7. References
+      </h1>
+      <p>
+         This section lists the external references to various sources used in
+         Jitrino documentation, and to standards applied to the Jitrino
+         implementation.
+      </p>
+      <p>
+         [<a id="JVM_spec_ref" name="JVM_spec_ref">1</a>] Java<a
+         href="#*">*</a> Virtual Machine Specification, <a
+         href="http://java.sun.com/docs/books/vmspec/2nd-edition/html/VMSpecTOC.doc.html"
+          target="_blank">http://java.sun.com/docs/books/vmspec/2nd-edition/html/VMSpecTOC.doc.html</a>
+      </p>
+      <p>
+         [<a id="JIT_spec_ref" name="JIT_spec_ref" target="_blank">2</a>] JIT
+         Compiler Interface Specification, Sun Microsystems, <a
+         href="http://java.sun.com/docs/jit_interface.html"
+         target="_blank">http://java.sun.com/docs/jit_interface.html</a>
+      </p>
+      <p>
+         [<a id="Muchnik_ref" name="Muchnik_ref">3</a>] S. Muchnick,
+         <i>Advanced Compiler Design and Implementation</i>, Morgan Kaufmann,
+         San Francisco, CA, 1997.
+      </p>
+      <p>
+         [<a id="value_number_ref" name="value_number_ref">4</a>] P. Briggs,
+         K.D., Cooper and L.T. Simpson, <i>Value Numbering. Software-Practice
+         and Experience</i>, vol. 27(6), June 1997, <a
+         href="http://www.informatik.uni-trier.de/~ley/db/journals/spe/spe27.html"
+          target="_blank">http://www.informatik.uni-trier.de/~ley/db/journals/spe/spe27.html</a>
+      </p>
+      <p>
+         [<a id="arraybounds_ref" name="arraybounds_ref">5</a>] R. Bodik, R.
+         Gupta, and V. Sarkar, <i>ABCD: Eliminating Array-Bounds Checks on
+         Demand, in proceedings of the SIGPLAN &rsquo;00 Conference on Program
+         Language Design and Implementation</i>, Vancouver, Canada, June 2000,
+         <a
+         href="http://portal.acm.org/citation.cfm?id=349342&amp;dl=acm&amp;coll=&amp;CFID=15151515&amp;CFTOKEN=6184618"
+          target="_blank">http://portal.acm.org/citation.cfm?id=349342&amp;dl=acm&amp;coll=&amp;CFID=15151515&amp;CFTOKEN=6184618</a>
+      </p>
+      <p>
+         [<a name="Graphviz_ref" id="Graphviz_ref"></a>6] Graphviz, Graph
+         Visualization Software, <a href="http://www.graphviz.org/"
+         target="_blank">http://www.graphviz.org/</a>
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+           
+      <p>
+         <a id="*" name="*">*</a> Other brands and names are the property of
+         their respective owners.  
+      </p>
+   </body>
+</html>
+
+</div>
+                                        </td>
+                </tr>
+
+                <!-- FOOTER -->
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+                <tr><td colspan="2">
+                    <div class="special"><em>
+                    Copyright &#169; 2003-2006, The Apache Software Foundation
+                    </em></div>
+                </td></tr>
+            </table>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
