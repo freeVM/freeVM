@@ -54,11 +54,7 @@
     </target>
 
     <!-- Clean natives -->
-    <target name="clean-native">
-        <make dir="${hy.luni.src.main.native}/fdlibm/${hy.os}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/vmi/${hy.os}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/luni/${hy.os}" target="clean" />
-        <make dir="${hy.luni.src.main.native}/vmls/${hy.os}" target="clean" />
+    <target name="clean">
         <make dir="${hy.luni.src.main.native}/launcher/${hy.os}"
               target="clean" />
     </target>
