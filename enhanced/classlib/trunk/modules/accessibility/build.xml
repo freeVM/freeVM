@@ -16,8 +16,8 @@
     limitations under the License.
 -->
 
-<project name="SOUND Build" default="build" basedir=".">
-    <description>Build for SOUND component</description>
+<project name="ACCESSIBILITY Build" default="build" basedir=".">
+    <description>Build for ACCESSIBILITY component</description>
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
@@ -28,8 +28,8 @@
 
     <fileset id="classes" dir="${hy.build}">
         <or>
-            <present targetdir="${hy.sound.src.main.java}" />
-            <present targetdir="${hy.sound.src.main.java}">
+            <present targetdir="${hy.accessibility.src.main.java}" />
+            <present targetdir="${hy.accessibility.src.main.java}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -37,7 +37,9 @@
         </or>
     </fileset>
 
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
+    <fileset id="tests" dir="${hy.accessibility.bin.test}"/>
+
+    <property file="../../make/depends.properties" />
 
     <target name="build" depends="compile-java, copy-resources, build-jar" />
 
@@ -53,24 +55,25 @@
     </target>
 
     <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+    <target name="-test-module" depends="build, compile-tests, test-jar, run-tests" />
 
     <target name="clean">
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}.jar" />
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}-src.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}-src.jar" />
+        <delete file="${hy.jdk}/build/test/${hy.accessibility.packaging.jarname}_tests.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.sound.bin.test}" />
+            <fileset dir="${hy.accessibility.bin.test}" />
         </delete>
     </target>
 
     <target name="compile-java">
-        <echo message="Compiling SOUND classes" />
+        <echo message="Compiling ACCESSIBILITY classes" />
 
         <mkdir dir="${hy.build}" />
 
         <javac sourcepath=""
-               srcdir="${hy.sound.src.main.java}"
+               srcdir="${hy.accessibility.src.main.java}" 
                destdir="${hy.build}"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -89,42 +92,55 @@
     <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.sound.src.main.java}">
+            <fileset dir="${hy.accessibility.src.main.java}">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
     </target>
 
     <target name="build-jar" depends="svn-info">
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}.jar"
-             manifest="${hy.sound}/META-INF/MANIFEST.MF">
+        <mkdir dir="${hy.jdk}/jre/lib/boot"/>
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}.jar"
+             manifest="${hy.accessibility}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
 
+            <!-- metainf refid="${hy.required.metafiles}"/ -->
             <metainf file="${hy.hdk}/NOTICE"/>
-            <metainf file="${hy.hdk}/LICENSE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>    
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}-src.jar">
-            <fileset dir="${hy.sound.src.main.java}" />
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.accessibility.packaging.jarname}-src.jar">
+            <fileset dir="${hy.accessibility.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
 
             <metainf file="${hy.hdk}/NOTICE"/>
-            <metainf file="${hy.hdk}/LICENSE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>            
+        </jar>
+
+    </target>
+
+    <target name="test-jar" depends="svn-info">
+	<mkdir dir="${hy.jdk}/build/test"/>
+        <jar destfile="${hy.jdk}/build/test/${hy.accessibility.packaging.jarname}_tests.jar">
+            <fileset refid="tests" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
         </jar>
     </target>
 
     <target name="compile-tests">
-        <echo message="Compiling SOUND tests" />
+        <echo message="Compiling ACCESSIBILITY tests" />
 
-        <mkdir dir="${hy.sound.bin.test}" />
+        <mkdir dir="${hy.accessibility.bin.test}" />
 
-        <javac srcdir="${hy.sound.src.test.java}"
-               destdir="${hy.sound.bin.test}"
+        <javac srcdir="${hy.accessibility.src.test.api}/java/common"
+               destdir="${hy.accessibility.bin.test}"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -138,7 +154,7 @@
                 </fileset>
             </bootclasspath>
             <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
+            <classpath location="${hy.hdk}/build/test/support.jar" /> 
         </javac>
     </target>
 
@@ -159,10 +175,7 @@
                jvm="${test.jre.home}/bin/java">
             <jvmarg line="${hy.test.vmargs}" />
 
-            <classpath>
-                <pathelement path="${hy.sound.bin.test}"/>
-            </classpath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
+            <jvmarg value="-Xbootclasspath/a:${hy.jdk}/build/test/${hy.accessibility.packaging.jarname}_tests.jar${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
 
             <formatter type="xml" />
 
@@ -172,10 +185,7 @@
             <batchtest todir="${hy.tests.reports}" haltonfailure="no"
                 unless="test.case">
 
-                <fileset dir="${hy.sound.src.test.java}">
-                    <!--include name="**/*Test.java"/-->
-                    <excludesfile name="${exclude.file}" />
-                </fileset>
+                <fileset dir="${hy.accessibility.src.test.api}/java/common"/>
             </batchtest>
         </junit>
         <antcall target="touch-failures-file" />
@@ -184,12 +194,12 @@
 
     <target name="touch-failures-file" if="test.failures">
         <echo file="${hy.tests.reports}/test.failures"
-            append="true">sound${line.separator}</echo>
+            append="true">accessibility${line.separator}</echo>
     </target>
 
     <target name="touch-errors-file" if="test.errors">
         <echo file="${hy.tests.reports}/test.errors"
-            append="true">sound${line.separator}</echo>
+            append="true">accessibility${line.separator}</echo>
     </target>
 
 </project>

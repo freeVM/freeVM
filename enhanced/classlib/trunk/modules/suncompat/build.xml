@@ -16,8 +16,8 @@
     limitations under the License.
 -->
 
-<project name="SOUND Build" default="build" basedir=".">
-    <description>Build for SOUND component</description>
+<project name="Sun Compat Build" default="build" basedir=".">
+    <description>Build for Sun Compat component</description>
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
@@ -28,8 +28,8 @@
 
     <fileset id="classes" dir="${hy.build}">
         <or>
-            <present targetdir="${hy.sound.src.main.java}" />
-            <present targetdir="${hy.sound.src.main.java}">
+            <present targetdir="${hy.suncompat.src.main.java}" />
+            <present targetdir="${hy.suncompat.src.main.java}">
                 <mapper type="regexp"
                         from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
                         to="\1.java"/>
@@ -37,9 +37,7 @@
         </or>
     </fileset>
 
-    <property name="exclude.file" location="./make/exclude.${hy.platform}.${hy.test.vm.name}" />
-
-    <target name="build" depends="compile-java, copy-resources, build-jar" />
+    <target name="build" depends="compile-java, build-jar" />
 
     <target name="test" depends="-test-module">
         <fail message="Some tests failed">
@@ -56,21 +54,19 @@
     <target name="-test-module" depends="build, compile-tests, run-tests" />
 
     <target name="clean">
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}.jar" />
-        <delete file="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}-src.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/suncompat.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/suncompat-src.jar" />
         <delete failonerror="false">
             <fileset refid="classes" />
-            <fileset dir="${hy.sound.bin.test}" />
+            <fileset dir="${hy.suncompat.bin.test}" />
         </delete>
     </target>
 
-    <target name="compile-java">
-        <echo message="Compiling SOUND classes" />
-
-        <mkdir dir="${hy.build}" />
+    <target name="compile-java" depends="copy-resources">
+        <echo message="Compiling Sun Compat classes" />
 
         <javac sourcepath=""
-               srcdir="${hy.sound.src.main.java}"
+               srcdir="${hy.suncompat.src.main.java}"
                destdir="${hy.build}"
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -89,15 +85,15 @@
     <target name="copy-resources">
         <mkdir dir="${hy.build}" />
         <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.sound.src.main.java}">
+            <fileset dir="${hy.suncompat.src.main.java}">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
     </target>
 
     <target name="build-jar" depends="svn-info">
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}.jar"
-             manifest="${hy.sound}/META-INF/MANIFEST.MF">
+        <jar destfile="${hy.jdk}/jre/lib/boot/suncompat.jar"
+             manifest="${hy.suncompat}/META-INF/MANIFEST.MF">
             <fileset refid="classes" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
@@ -107,8 +103,8 @@
             <metainf file="${hy.hdk}/LICENSE"/>
         </jar>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.sound.packaging.jarname}-src.jar">
-            <fileset dir="${hy.sound.src.main.java}" />
+        <jar destfile="${hy.jdk}/jre/lib/boot/suncompat-src.jar">
+            <fileset dir="${hy.suncompat.src.main.java}" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -119,12 +115,12 @@
     </target>
 
     <target name="compile-tests">
-        <echo message="Compiling SOUND tests" />
+        <echo message="Compiling SUNCOMPAT tests" />
 
-        <mkdir dir="${hy.sound.bin.test}" />
+        <mkdir dir="${hy.suncompat.bin.test}" />
 
-        <javac srcdir="${hy.sound.src.test.java}"
-               destdir="${hy.sound.bin.test}"
+        <javac srcdir="${hy.suncompat.src.test.java}"
+               destdir="${hy.suncompat.bin.test}"
                sourcepath=""
                compiler="${hy.javac.compiler}"
                memoryMaximumSize="${hy.javac.maxmem}"
@@ -138,7 +134,6 @@
                 </fileset>
             </bootclasspath>
             <classpath location="../../build/tests" />
-            <classpath location="${hy.hdk}/build/test/support.jar" />
         </javac>
     </target>
 
@@ -160,9 +155,9 @@
             <jvmarg line="${hy.test.vmargs}" />
 
             <classpath>
-                <pathelement path="${hy.sound.bin.test}"/>
+                <pathelement path="${hy.suncompat.bin.test}"/>
             </classpath>
-            <classpath location="${hy.hdk}/build/test/support.jar" />
+            <classpath location="../../build/tests" />
 
             <formatter type="xml" />
 
@@ -172,9 +167,8 @@
             <batchtest todir="${hy.tests.reports}" haltonfailure="no"
                 unless="test.case">
 
-                <fileset dir="${hy.sound.src.test.java}">
-                    <!--include name="**/*Test.java"/-->
-                    <excludesfile name="${exclude.file}" />
+                <fileset dir="${hy.suncompat.src.test.java}">
+                    <include name="**/*Test.java"/>
                 </fileset>
             </batchtest>
         </junit>
@@ -184,12 +178,12 @@
 
     <target name="touch-failures-file" if="test.failures">
         <echo file="${hy.tests.reports}/test.failures"
-            append="true">sound${line.separator}</echo>
+            append="true">suncompat${line.separator}</echo>
     </target>
 
     <target name="touch-errors-file" if="test.errors">
         <echo file="${hy.tests.reports}/test.errors"
-            append="true">sound${line.separator}</echo>
+            append="true">suncompat${line.separator}</echo>
     </target>
 
 </project>
