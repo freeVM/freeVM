@@ -28,17 +28,8 @@
 
     <property file="../../make/depends.properties" />
 
-    <!-- Build native code -->
-    <target name="build-native"
-            depends="build-native-core, build-native-secondary" />
-
-    <!-- Build the core luni native components -->
-    <target name="build-native-core" >
-
-    </target>
-
     <!-- Build secondary native luni components -->
-    <target name="build-native-secondary" >
+    <target name="build" >
 
         <!-- Build launcher executables -->
         <make dir="${hy.luni.src.main.native}/launcher/${hy.os}" />
