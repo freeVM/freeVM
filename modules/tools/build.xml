@@ -78,10 +78,10 @@
                debug="${hy.javac.debug}">
 
             <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
+                <fileset dir="${hy.hdk}/jdk/jre/lib/boot">
                     <include name="**/*.jar" />
                 </fileset>
-                <fileset dir="${hy.jdk}/lib">
+                <fileset dir="${hy.hdk}/lib">
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
