@@ -225,6 +225,9 @@ limitations under the License.
          <a href="#Revision_History">Revision History</a>
       </p>
       <p class="TOCHeading">
+         <a href="#Disclaimer">Disclaimer</a>
+      </p>
+      <p class="TOCHeading">
          <a href="#About_this_document">1. About this Document</a>
       </p>
       <p class="TOC">
@@ -365,11 +368,31 @@ limitations under the License.
                Intel, Nadya Morozova: document created.
             </td>
             <td class="TableCell">
-               October 30, 2006
+               September 4, 2006
             </td>
          </tr>
       </table>
-    
+      <h1>
+         <a id="Disclaimer" name="Disclaimer"></a>Disclaimer and Legal
+         Information
+      </h1>
+      <p>
+         Copyright 2005-2006 The Apache Software Foundation or its licensors,
+         as applicable.
+      </p>
+      <p>
+         Licensed under the Apache License, Version 2.0 (the "License"); you
+         may not use this file except in compliance with the License. You may
+         obtain a copy of the License at <a
+         href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
+      </p>
+      <p>
+         Unless required by applicable law or agreed to in writing, software
+         distributed under the License is distributed on an "AS IS" BASIS,
+         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+         implied. See the License for the specific language governing
+         permissions and limitations under the License.
+      </p>
       <h1>
          <a id="About_this_document" name="About_this_document"></a>1. About
          this document
@@ -1104,7 +1127,7 @@ Inline(HIR_of_compiled_method) {
             callee = inline_candidates.pop()   
             callee_bytecode_size = callee.bytecode_size()
             if ((current_bytecode_size + callee_bytecode_size) &lt; SIZE_THRESHOLD) {
-                current_bytecode_size = callee_bytecode_size
+                current_bytecode_size += callee_bytecode_size
                 break;
             }
         }
@@ -1750,8 +1773,8 @@ find_inline_candidates(method_HIR) {
          and generates native code during the second.
       </p>
       <p style="text-align:center">
-         <img src="images/bytecode_to_native.gif"
-         alt="Example of two-pass compilation process" width="379" height="181" />
+		<img src="images/bytecode_to_native.gif"
+		alt="Example of two-pass compilation process" />
       </p>
       <p class="special">
          Figure 4. Baseline Compilation Path
@@ -1812,8 +1835,8 @@ find_inline_candidates(method_HIR) {
                fall-through from BB2.
             </p>
             <p style="text-align: center">
-               <img src="images/reference_count.gif"
-               alt="Example of reference counters reached from different basic blocks." width="210" height="171" />
+			<img src="images/reference_count.gif" 
+			alt="Example of reference counters reached from different basic blocks." />
             </p>
             <p class="special">
                Figure 5. Reference Count for Basic Blocks
@@ -2720,7 +2743,12 @@ void optABC() {
       <p class="backtotop">
          <a href="#Top">Back to Top</a>
       </p>
-           
+      <p class="backtotop">
+          
+      </p>
+      <p>
+         (C) Copyright 2005-2006 Intel Corporation
+      </p>
       <p>
          <a id="*" name="*">*</a> Other brands and names are the property of
          their respective owners.  
