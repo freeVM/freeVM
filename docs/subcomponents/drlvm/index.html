@@ -36,7 +36,7 @@ limitations under the License.
             
             
             
-            <title>Apache Harmony - Apache Harmony</title>
+            <title>Apache Harmony - Apache Harmony DRL Virtual Machine</title>
 
                                 <link rel="Stylesheet" type="text/css" href="site.css"/>
         </head>
@@ -239,34 +239,18 @@ limitations under the License.
               </li>
             <li>
               <a href="getting_started.html">
-                Getting Started
+                Getting Started with DRLVM
               </a>
               <br />
-              Basic usage scenarios of VM and lists standard
-              and non-standard supported options.
+              Basic usage scenarios of VM: starting an application, working in Eclipse
             </li>
             <li> <a href="debugging_VM_and_JIT.html">Debugging VM and JIT</a>
               <br />
               Guide to debugging VM and Jitrino.JET source code covering
               basic actions and some useful tips
-            </li>
-            <li> <a href="EM.html">Execution Manager Component Description</a>
+            </li> <a href="http://wiki.apache.org/harmony/FrontPage">Wiki Pages</a>
               <br />
-                Detailed description of the Execution Manager current implementation<br />
-            </li>
-            <li>
-              <a href="emguide.html">Configuring Execution Manager</a>
-              <br />
-              Guide to Execution Manager (EM) options and configuration file format.<br />
-            </li>
-            <li>
-              <a href="gc-howto.html">How to write DRL GC</a>
-              <br />
-              Instructions on creating a custom garbage collector implementation in C++
-              and configuring the DRL virtual machine to use it with a real-life example
-              of a copying GC implementation (source included)
-
-            </li>
+              See the Wiki resource for troubleshooting, building tips, DRLVM todo items, etc
         </ul>
                    
                                     
@@ -275,7 +259,6 @@ limitations under the License.
     </h2>
       
                         <ul>
-
             <li>
                 <a href="developers_guide.html">Developer's Guide</a>
                 <br />
@@ -311,7 +294,7 @@ limitations under the License.
                as well as processes running inside them.
              <br />
                Relies on the other component descriptions and the
-              <a href="Jitrino_PMF.html">Jitrino Pipeline Management Framework</a> description.
+              <a href="JIT_PMF.html">Jitrino Pipeline Management Framework</a> description.
             </li>
             <ul>
             <li>
@@ -322,12 +305,32 @@ limitations under the License.
               the Java property mechanism. The description covers the PMF application to
               the command-line interface and to the Jitrino logging system.
               <br />
-              Relies on the <a href="Jitrino.html">JIT Compiler Component Description</a>,
+              Relies on the <a href="JIT.html">JIT Compiler Component Description</a>,
               which gives a general definition of PMF.
             </li>
             </ul>
           </ul>
-
+        </ul>
+                   
+                                    
+    <h2>
+        <a name="How-tos and Guides">How-tos and Guides</a>
+    </h2>
+      
+                        <p>This section lists the various guides to specific aspects of the Virtual Machine. </p>
+                                <ul>
+            <li>
+              <a href="emguide.html">Configuring Execution Manager</a>
+              <br />
+              Guide to Execution Manager (EM) options and configuration file format.<br />
+            </li>
+            <li>
+              <a href="gc-howto.html">How to write DRL GC</a>
+              <br />
+              Instructions on creating a custom garbage collector implementation in C++
+              and configuring the DRL virtual machine to use it with a real-life example
+              of a copying GC implementation (source included)
+            </li>
         </ul>
                    
                 <p><a href="#top">Back to top</a></p>
