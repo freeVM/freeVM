@@ -53,11 +53,14 @@ Usage:
     
     <!-- set the path root for the classlib : must be relative to the build directory -->
     <property name="external.HDK.loc" value="../working_classlib/deploy" />
+    <property name="external.DRLVM.loc" value="../working_vm/build/deploy" />
     <property name="external.resources.loc" value="../common_resources" />
 
     <property name="external.resources" location="${external.resources.loc}" />
 
+    <property name="harmony.jdktools" location="${basedir}"/>
     <property name="hy.hdk" location="${external.HDK.loc}" />
+    <property name="hy.drlvm" location="${external.DRLVM.loc}" />
     <property name="hy.jdk" location="deploy/jdk" />
 
     <!-- import properties for snapshot targets -->
@@ -100,6 +103,8 @@ Building Java component archives...
         </echo>
         <ant antfile="make/build-java.xml" inheritall="false" target="build">
             <property name="hy.hdk" value="${hy.hdk}"/>
+	        <property name="hy.drlvm" value="${hy.drlvm}"/>
+		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
             <property name="external.resources" value="${external.resources}"/>
         </ant>
     </target>
@@ -111,7 +116,11 @@ Building Java component archives...
          ================================= -->
     <target name="clean-java" 
             description="Removes the compiled java code" >
-        <ant antfile="make/build-java.xml" inheritall="false" target="clean" />
+        <ant antfile="make/build-java.xml" inheritall="false" target="clean">
+	        <property name="hy.hdk" value="${hy.hdk}"/>
+	        <property name="hy.drlvm" value="${hy.drlvm}"/>
+		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
+        </ant>
     </target>
 
     <!-- ================================
@@ -136,6 +145,9 @@ Building native libs and executables...
         </echo>
         <ant antfile="make/build-native.xml" inheritall="false" target="build">
             <property name="hy.hdk" value="${hy.hdk}"/>
+            <property name="hy.drlvm" value="${hy.drlvm}"/>
+		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
+		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
         </ant>
     </target>
 
@@ -147,7 +159,11 @@ Building native libs and executables...
     <target name="clean-native"
         description="Removes the compiled native code" >
 
-        <ant antfile="make/build-native.xml" inheritall="false" target="clean" />
+        <ant antfile="make/build-native.xml" inheritall="false" target="clean">
+            <property name="hy.hdk" value="${hy.hdk}"/>
+            <property name="hy.drlvm" value="${hy.drlvm}"/>
+		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
+        </ant>
     </target>
 
     <target name="test"

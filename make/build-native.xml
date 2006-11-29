@@ -68,7 +68,15 @@
     	
     	<!-- These module targets take care of building and copying
              their shared libs -->
-    	<ant dir="modules/launcher" antfile="build.xml" target="build-native" />
+    	<ant dir="modules/launcher" antfile="build.xml" target="build-native">
+            <property name="hy.drlvm" value="${hy.drlvm}"/>
+		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
+		</ant>
+        
+    	<ant dir="modules/jpda" antfile="build.xml" target="build-native">
+            <property name="hy.drlvm" value="${hy.drlvm}"/>
+		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
+		</ant>
     </target>
 
 
@@ -79,7 +87,14 @@
         depends="-make-clean" />
 
     <target name="-make-clean">
-    	<ant dir="modules/launcher" antfile="build.xml" target="clean-native" />
+    	<ant dir="modules/launcher" antfile="build.xml" target="clean-native">
+            <property name="hy.drlvm" value="${hy.drlvm}"/>
+		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
+		</ant>
+    	<ant dir="modules/jpda" antfile="build.xml" target="clean-native">
+            <property name="hy.drlvm" value="${hy.drlvm}"/>
+		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
+		</ant>
     	<delete dir="${native.lib.target}" />
     </target>
 

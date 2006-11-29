@@ -20,7 +20,7 @@
 
 #
 
-include $(HY_HDK)/build/make/makefile.include
+include $(HY_JDKTOOLS)/make/makefile.include
 
 COMMON=../../common/
 CMNAGENT=$(COMMON)agent/
@@ -61,4 +61,4 @@ MDLLIBFILES =
 
 DLLNAME = ../libjdwp.so
 
-include $(HY_HDK)/build/make/rules.mk
+include $(HY_JDKTOOLS)/make/rules.mk

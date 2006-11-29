@@ -277,10 +277,13 @@ properties in preference to these:
         <attribute name="dir" />
         <attribute name="target" default="" />
         <sequential>
+            <echo> LOCAL MAKE DEFN L ${hy.drlvm} @{dir}</echo>
             <exec failonerror="true"
                   executable="${make.command}"
                   dir="@{dir}">
                 <env key="HY_HDK" value="${hy.hdk}" />
+                <env key="HY_DRLVM" value="${hy.drlvm}" />
+                <env key="HY_JDKTOOLS" value="${harmony.jdktools}" />
                 <env key="HY_ARCH" value="${hy.arch}" />
                 <env key="HY_OS" value="${hy.os}" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />
