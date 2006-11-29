@@ -1,0 +1,47 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+#
+# Makefile for module jdwp - transport
+#
+# export HY_HDK=/home/geir/dev/apache/harmony/enhanced/trunk/working_classlib/deploy/
+# export HY_DRLVM=/home/geir/dev/apache/harmony/enhanced/trunk/working_vm/build/deploy/
+
+#
+
+include $(HY_HDK)/build/make/makefile.include
+
+COMMON=../../common/
+CMNTRANS=$(COMMON)transport/
+
+CFLAGS = -O1 $(HY_CFLAGS) -D_DEBUG -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
+         $(VMDEBUG) -I$(HY_HDK)/include -I$(HY_DRLVM)/jre/include -I. \
+         -I$(CMNTRANS)common   -I$(CMNTRANS)dt_socket \
+         -I$(COMMON)generic -Idt_socket
+                  
+
+CFLAGS += -fPIC
+
+LDFLAGS = -lstdc++ -lgcc_s
+
+BUILDFILES = \
+    $(CMNTRANS)common/LastTransportError.o \
+    $(CMNTRANS)dt_socket/SocketTransport.o 
+
+MDLLIBFILES = 
+
+DLLNAME = ../libdt_socket.so
+
+include $(HY_HDK)/build/make/rules.mk
