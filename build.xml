@@ -25,7 +25,7 @@
 
     <target name="help">
         <echo>
-Apache Harmony Ant Build
+Apache Harmony JDK Tools Build
 
 Usage:
 
@@ -48,9 +48,16 @@ Usage:
         </echo>
     </target>
 
-    <property file="${user.home}/.harmony-classlib.properties" />
+    <property file="jdktools.properties"/>
+    <property file="${user.home}/jdktools.properties"/>
+    
+    <!-- set the path root for the classlib : must be relative to the build directory -->
+    <property name="external.HDK.loc" value="../working_classlib/deploy" />
+    <property name="external.resources.loc" value="../common_resources" />
 
-    <property name="hy.hdk" location="deploy" />
+    <property name="external.resources" location="${external.resources.loc}" />
+
+    <property name="hy.hdk" location="${external.HDK.loc}" />
     <property name="hy.jdk" location="deploy/jdk" />
 
     <!-- import properties for snapshot targets -->
@@ -93,6 +100,7 @@ Building Java component archives...
         </echo>
         <ant antfile="make/build-java.xml" inheritall="false" target="build">
             <property name="hy.hdk" value="${hy.hdk}"/>
+            <property name="external.resources" value="${external.resources}"/>
         </ant>
     </target>
 
@@ -167,7 +175,10 @@ Testing class libraries...
 
     <target name="check-depends"
             description="Report on whether the dependencies are met">
-        <ant antfile="make/depends.xml" inheritall="false" target="check" />
+        <echo>WOOGIE : ${external.resources}</echo>
+        <ant antfile="make/depends.xml" inheritall="false" target="check">
+            <property name="external.resources" value="${external.resources}"/>
+        </ant>
     </target>
 
     <target name="fetch-depends"

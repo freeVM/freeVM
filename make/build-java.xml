@@ -29,7 +29,7 @@
     <import file="${basedir}/make/properties.xml" />
 
     <property name="build.output" location="build/classes" />
-    <property name="depends.jars" location="depends/jars" />
+    <property name="depends.jars" location="${external.resources}/depends/jars" />
     <property name="depends.manifests" location="depends/manifests" />
     <property name="depends.files" location="depends/files" />
     <property name="hy.hdk" location="deploy" />
@@ -130,7 +130,7 @@ ${built.files.list}
 
         <!-- Create the structure -->
         <mkdir dir="${hy.jdk}/jre/bin" />
-
+            
         <!-- Copy across the jdk/lib dependency jars -->
         <copy todir="${hy.jdk}/lib" flatten="yes">
             <fileset file="${ecj.jar}" />
@@ -162,8 +162,9 @@ ${built.files.list}
          ================================= --> 
     <target name="-prepare-depends">
 
-        <ant antfile="make/depends.xml" inheritall="false" target="check"/>
-
+        <ant antfile="make/depends.xml" inheritall="false" target="check">
+            <property name="external.resources" value="${external.resources}"/>
+       </ant>
     </target>
 
 </project>
