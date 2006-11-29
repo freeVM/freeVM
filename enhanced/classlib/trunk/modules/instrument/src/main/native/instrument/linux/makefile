@@ -13,29 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#
+# Makefile for module 'instrument'
+#
+
 include $(HY_HDK)/build/make/defines.mk
 
-JPEG_DIR=$(HY_HDK)/../depends/libs/build/jpeg/
-
-CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(JPEG_DIR)
+CFLAGS += -fpic
 
 BUILDFILES = \
-  $(SHAREDSUB)/JpegEncoder.o \
-  libjpeg.a
+	../shared/instrument.o ../shared/inst_agt.o 
 
 MDLLIBFILES = \
-	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
+	$(LIBPATH)libhycommon.a $(LIBPATH)libhyzip.a \
+	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
+	$(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
-DLLNAME=../libjpegencoder.so
+DLLNAME = ../libhyinstrument.so
 
 include $(HY_HDK)/build/make/rules.mk
-
-$(SHAREDSUB)JpegEncoder.o: jconfig.h
-
-jconfig.h: $(JPEG_DIR)jconfig.lnx
-	cp $< $@
-
-libjpeg.a: $(JPEG_DIR)libjpeg.$(HY_PLATFORM)
-	cp $< $@
-

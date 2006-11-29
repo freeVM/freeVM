@@ -13,29 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#
+# Makefile for module 'auth'
+#
+
 include $(HY_HDK)/build/make/defines.mk
 
-JPEG_DIR=$(HY_HDK)/../depends/libs/build/jpeg/
-
-CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(JPEG_DIR)
-
-BUILDFILES = \
-  $(SHAREDSUB)/JpegEncoder.o \
-  libjpeg.a
-
+CFLAGS += -fpic 
+BUILDFILES = $(SHAREDSUB)auth_copyright.o authnix.o
 MDLLIBFILES = \
-	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
+        $(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
+        $(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
-DLLNAME=../libjpegencoder.so
+DLLNAME = ../libhyauth.so
 
 include $(HY_HDK)/build/make/rules.mk
-
-$(SHAREDSUB)JpegEncoder.o: jconfig.h
-
-jconfig.h: $(JPEG_DIR)jconfig.lnx
-	cp $< $@
-
-libjpeg.a: $(JPEG_DIR)libjpeg.$(HY_PLATFORM)
-	cp $< $@
-

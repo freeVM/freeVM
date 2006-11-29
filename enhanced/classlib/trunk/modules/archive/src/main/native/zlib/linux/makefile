@@ -13,29 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#
+# Makefile for module 'zlib'
+#
+
 include $(HY_HDK)/build/make/defines.mk
 
-JPEG_DIR=$(HY_HDK)/../depends/libs/build/jpeg/
+ZLIB_DIST=../../zlib_dist/# Path to zlib
 
-CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(JPEG_DIR)
+CFLAGS += -fpic
 
 BUILDFILES = \
-  $(SHAREDSUB)/JpegEncoder.o \
-  libjpeg.a
+	$(SHAREDSUB)zlib_copyright.o $(ZLIB_DIST)adler32.o $(ZLIB_DIST)compress.o \
+	$(ZLIB_DIST)crc32.o $(ZLIB_DIST)deflate.o $(ZLIB_DIST)infback.o $(ZLIB_DIST)inffast.o \
+	$(ZLIB_DIST)inflate.o $(ZLIB_DIST)inftrees.o $(ZLIB_DIST)trees.o $(ZLIB_DIST)uncompr.o $(ZLIB_DIST)zutil.o
 
-MDLLIBFILES = \
-	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
+DLLNAME = ../libhyzlib.so
 
-DLLNAME=../libjpegencoder.so
+LDFLAGS = -Wl,-Bsymbolic
 
 include $(HY_HDK)/build/make/rules.mk
-
-$(SHAREDSUB)JpegEncoder.o: jconfig.h
-
-jconfig.h: $(JPEG_DIR)jconfig.lnx
-	cp $< $@
-
-libjpeg.a: $(JPEG_DIR)libjpeg.$(HY_PLATFORM)
-	cp $< $@
-

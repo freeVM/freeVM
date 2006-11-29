@@ -15,27 +15,24 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-JPEG_DIR=$(HY_HDK)/../depends/libs/build/jpeg/
-
-CFLAGS += -fpic -I$(SHARED)common -I$(SHAREDSUB)/include -I$(JPEG_DIR)
+CFLAGS += -fpic -I$(SHARED)common -I/usr/X11R6/include
 
 BUILDFILES = \
-  $(SHAREDSUB)/JpegEncoder.o \
-  libjpeg.a
+  org_apache_harmony_awt_nativebridge_linux_ErrorHandler.o \
+  org_apache_harmony_awt_nativebridge_linux_GLX.o \
+  org_apache_harmony_awt_nativebridge_linux_X11.o \
+  org_apache_harmony_awt_nativebridge_linux_Xft.o
 
 MDLLIBFILES = \
 	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
 	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
 
-DLLNAME=../libjpegencoder.so
+ifeq ($(HY_ARCH),x86_64)
+ SYSLIBFILES = -lstdc++ -L/usr/X11R6/lib64 -lX11
+else
+ SYSLIBFILES = -lstdc++ -L/usr/X11R6/lib -lX11
+endif
+
+DLLNAME=../libX11Wrapper.so
 
 include $(HY_HDK)/build/make/rules.mk
-
-$(SHAREDSUB)JpegEncoder.o: jconfig.h
-
-jconfig.h: $(JPEG_DIR)jconfig.lnx
-	cp $< $@
-
-libjpeg.a: $(JPEG_DIR)libjpeg.$(HY_PLATFORM)
-	cp $< $@
-
