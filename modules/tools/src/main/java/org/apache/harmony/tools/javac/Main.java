@@ -54,7 +54,8 @@ public final class Main {
         System.arraycopy(args, 0, result, 0, args.length);
         result[args.length] = "-classpath";
         result[args.length + 1] = System.getProperty(
-                "org.apache.harmony.boot.class.path", ".");
+//                "org.apache.harmony.boot.class.path", ".");
+        "vm.boot.class.path", ".");
         return result;
     }
 }
