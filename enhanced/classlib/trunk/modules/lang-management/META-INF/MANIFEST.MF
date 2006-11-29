@@ -6,22 +6,18 @@ Implementation-Vendor: The Apache Software Foundation
 Implementation-Vendor-Id: org.apache.harmony
 Implementation-URL: http://harmony.apache.org
 Bundle-ManifestVersion: 2
-Bundle-Name: Harmony ImageIO
-Bundle-SymbolicName: org.apache.harmony.imageio
+Bundle-Name: Harmony Lang-Management
+Bundle-SymbolicName: org.apache.harmony.langmanagement
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.awt,
- java.awt.color,
- java.awt.geom,
- java.awt.image,
- java.io,
+Import-Package: java.io,
  java.lang,
  java.lang.reflect,
- java.net,
- java.nio,
  java.security,
  java.util,
- org.apache.harmony.awt.gl.image,
- org.w3c.dom
-Export-Package: javax.imageio
+ javax.management,
+ javax.management.modelmbean,
+ javax.management.openmbean
+Export-Package: java.lang.management,
+ org.apache.harmony.langmanagement.tests.java.lang.management

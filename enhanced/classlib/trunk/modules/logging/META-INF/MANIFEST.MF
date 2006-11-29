@@ -6,22 +6,23 @@ Implementation-Vendor: The Apache Software Foundation
 Implementation-Vendor-Id: org.apache.harmony
 Implementation-URL: http://harmony.apache.org
 Bundle-ManifestVersion: 2
-Bundle-Name: Harmony ImageIO
-Bundle-SymbolicName: org.apache.harmony.imageio
+Bundle-Name: Harmony Logging
+Bundle-SymbolicName: org.apache.harmony.logging
 Bundle-Version: 1.0.0
 Bundle-ClassPath: .
 Eclipse-JREBundle: true
-Import-Package: java.awt,
- java.awt.color,
- java.awt.geom,
- java.awt.image,
+Import-Package: java.beans,
  java.io,
  java.lang,
- java.lang.reflect,
  java.net,
- java.nio,
+ java.nio;resolution:=optional,
+ java.nio.channels,
+ java.nio.channels.spi,
+ java.nio.charset,
  java.security,
+ java.text,
  java.util,
- org.apache.harmony.awt.gl.image,
- org.w3c.dom
-Export-Package: javax.imageio
+ org.apache.harmony.kernel.vm,
+ org.apache.harmony.testframework.serialization;hy_usage=test;resolution:=optional,
+ tests.util;hy_usage=test;resolution:=optional
+Export-Package: java.util.logging
