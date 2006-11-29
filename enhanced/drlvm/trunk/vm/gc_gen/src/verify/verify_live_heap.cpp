@@ -18,30 +18,20 @@
  * @author Xiao-Feng Li, 2006/10/05
  */
 
-#ifndef _MUTATOR_H_
-#define _MUTATOR_H_
+#include "verify_live_heap.h"
 
-#include "../common/gc_common.h"
+Boolean GC_VERIFY = FALSE;
+Boolean verify_live_heap;
 
-/* Mutator thread local information for GC */
-typedef struct Mutator {
-  /* <-- first couple of fields are overloaded as Allocator */
-	void*	free;
-	void*	ceiling;
-  void* alloc_block;
-  Space* alloc_space;
-  GC* gc;
-  VmThreadHandle thread_handle;   /* This thread; */
-  /* END of Allocator --> */
-  
-  Vector_Block* rem_set;
-  Mutator* next;  /* The gc info area associated with the next active thread. */
-} Mutator;
+void gc_verify_heap(GC* gc, Boolean is_before_gc)
+{ return; }
 
-void mutator_initialize(GC* gc, void* tls_gc_info);
-void mutator_destruct(GC* gc, void* tls_gc_info); 
-void mutator_reset(GC *gc);
+void gc_init_heap_verification(GC* gc)
+{ return; }
 
-void gc_reset_mutator_context(GC* gc);
+void gc_terminate_heap_verification(GC* gc)
+{ return; }
 
-#endif /*ifndef _MUTATOR_H_ */
+void event_collector_move_obj(Partial_Reveal_Object *p_old, Partial_Reveal_Object *p_new, Collector* collector)
+{ return; }
+
