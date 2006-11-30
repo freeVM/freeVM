@@ -20,7 +20,7 @@
 !include <$(HY_HDK)\build\make\defines.mak>
 
 EXENAME=$(EXEPATH)samsa.exe
-BUILDFILES = ..\samsa.o
+BUILDFILES = ..\samsa.obj
 EXEFLAGS=$(guilflags) -subsystem:windows
 EXEDLLFILES=$(guilibsdll)
 
