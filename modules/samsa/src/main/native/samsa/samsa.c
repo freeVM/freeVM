@@ -70,42 +70,48 @@ int main (int argc, char **argv, char **envp)
     strcpy(fullExePath, jdkRoot);
     strcat(fullExePath, EXE_POSTFIX);
     
-    char *classpath = (char *) malloc(strlen(jdkRoot) * 2 + strlen(LIB_POSTFIX) * 2
-                    + strlen(TOOL_JAR) + strlen(ECJ_JAR) + strlen(CLASSPATH_SEP) + 1);
-         
-    strcpy(classpath, jdkRoot);
-    strcat(classpath, LIB_POSTFIX);
-    strcat(classpath, TOOL_JAR);
-    strcat(classpath, CLASSPATH_SEP);
-    strcat(classpath, jdkRoot);
-    strcat(classpath, LIB_POSTFIX);
-    strcat(classpath, ECJ_JAR);
-
     /*
      *  we're invoking java with the following 
      *    -cp toolpath  clasname .......
      */
     myArgv[newIndex++] = fullExePath;
-    myArgv[newIndex++] = "-cp";
-    myArgv[newIndex++] = classpath;
-
-    char *buffer = (char *) malloc(strlen(CLASS_PREFIX) + strlen(toolName) + strlen(CLASS_POSTFIX) + 1);
-
-    strcpy(buffer, CLASS_PREFIX);
-    strcat(buffer, toolName);
-    strcat(buffer, CLASS_POSTFIX);
     
-    myArgv[newIndex++] = buffer;
+    /*
+     *  if we're not java, put the tools on cp, figure out the tool class to invoke...
+     */
+    if (strcmp(toolName, "java")) {
+        char *classpath = (char *) malloc(strlen(jdkRoot) * 2 + strlen(LIB_POSTFIX) * 2
+                    + strlen(TOOL_JAR) + strlen(ECJ_JAR) + strlen(CLASSPATH_SEP) + 1);
+         
+        strcpy(classpath, jdkRoot);
+        strcat(classpath, LIB_POSTFIX);
+        strcat(classpath, TOOL_JAR);
+        strcat(classpath, CLASSPATH_SEP);
+        strcat(classpath, jdkRoot);
+        strcat(classpath, LIB_POSTFIX);
+        strcat(classpath, ECJ_JAR);
+                
+        myArgv[newIndex++] = "-cp";
+        myArgv[newIndex++] = classpath;
+
+        char *buffer = (char *) malloc(strlen(CLASS_PREFIX) + strlen(toolName) + strlen(CLASS_POSTFIX) + 1);
     
+        strcpy(buffer, CLASS_PREFIX);
+        strcat(buffer, toolName);
+        strcat(buffer, CLASS_POSTFIX);
+        
+        myArgv[newIndex++] = buffer;
+    }
+        
     for (i = 1; i < argc; i++) {
         myArgv[newIndex++] = argv[i];
     }
     
     myArgv[newIndex] = '\0';
 
-    for (i=0; i < myArgvCount; i++) { 
-        printf(" %d = %s\n", i, myArgv[i]);
-    }
+//    for (i=0; i < myArgvCount; i++) { 
+//        printf(" %d = %s\n", i, myArgv[i]);
+//    }
     
     /*
      * now simply execv() the java app w/ the new params
@@ -124,8 +130,11 @@ int main (int argc, char **argv, char **envp)
 char *cleanToolName(const char *name) 
 {
     int i;
-    char *toolNames[] = { "javac", "javap", "javah" };
+    char *toolNames[] = { "javac", "javap", "javah", "java" };
     
+    /* 
+     *  FIXME :  this is an awful hack, easy to fool, but for now...
+     */
     for (i=0; i < sizeof(toolNames)/sizeof(toolNames[0]); i++) { 
         if (strstr(name, toolNames[i])) {
             return toolNames[i];

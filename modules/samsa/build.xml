@@ -53,6 +53,8 @@
         <chmod file="${hy.jdk}/bin/javap${exe.suffix}" perm="ugo+x" />
         <copy file="${hy.jdk}/bin/samsa${exe.suffix}" tofile="${hy.jdk}/bin/javah${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/javah${exe.suffix}" perm="ugo+x" />
+        <copy file="${hy.jdk}/bin/samsa${exe.suffix}" tofile="${hy.jdk}/bin/java${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/java${exe.suffix}" perm="ugo+x" />
 
         <delete file="${hy.jdk}/bin/samsa${exe.suffix}"/>
 
