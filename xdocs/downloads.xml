@@ -34,14 +34,18 @@
 	<p>
 		Access to <a href="svn.html">the code repository</a> is available to all, and we have
 		<a href="documentation/documentation.html">instructions</a> for building the 
-		virtual machine code and <a href="documentation/build_classlib.html">
-		building the class library code</a>.
-	</p>
+		virtual machine code. For information on how to get configured to build and
+    work with the Apache Harmony source code, refer to
+    <a href="http://incubator.apache.org/harmony/quickhelp_contributors.html">
+      Getting Started For Contributors</a>. For instructions on how to point to local
+    versions instead of making the build download new ones from the net, refer to the
+    <a href="http://svn.apache.org/viewvc/incubator/harmony/enhanced/drlvm/trunk/README.txt?view=co">
+      README file</a>.
+  </p>
 
     <p>
-        However, if you don't want to build it, we now offer snapshots of our JRE and
-        <a href="subcomponents/classlibrary/hdk.html">HDK</a>
-        for Linux and Windows x86-based platforms.
+        However, if you don not want to build it, we now offer snapshots of our JRE and HDK
+        for the Linux and Windows platforms.
     </p>
 
     <subsection name="Snapshot Builds">

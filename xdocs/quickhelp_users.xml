@@ -48,7 +48,7 @@
     <subsection name="Download the Apache Harmony Snapshot">
 
         <p>
-            First of all, download the binary distribution appropriate to
+            First, download the binary distribution appropriate to
             your platform. We currently distribute binaries for Linux and 
             Microsoft Windows. Please follow the instructions on the 
             <a href="downloads.html">download page</a>
@@ -66,10 +66,10 @@
     <subsection name="Unpack the Binary Distribution">
 
         <p>
-            Once you have obtained the appropriate binary distribution, 
-            you need to unpack it on your machine. In all cases, the 
+            Once you have obtained the appropriate binary distribution,
+            you need to unpack it on your machine. In all cases, the
             distribution will unpack into a <code>jre</code>
-            directory. Further in the document we refer to this directory 
+            directory. Further in the document we refer to this directory
             as the <i>root directory</i> of the distribution.
         </p>
 
@@ -90,34 +90,34 @@ $ tar -tzf latest-harmony-jre-linux.tar.gz
         <strong>Windows Users</strong>
 
         <p>
-          Use one of <code>zip</code> utilities available for Windows to 
-          unpack the distribution. The three popular ones are listed 
-          below, but anything that can handle a <code>zip</code> file 
+          Use one of <code>zip</code> utilities available for Windows to
+          unpack the distribution. The three popular ones are listed
+          below, but anything that can handle a <code>zip</code> file
           will work:
         </p>
 
         <ul>
-            <li><a href="http://www.info-zip.org/">Info-ZIP</a> 
+            <li><a href="http://www.info-zip.org/">Info-ZIP</a>
                 (open source software)</li>
             <li><a href="http://www.7-zip.org/">7-Zip</a> (free software)</li>
             <li><a href="http://www.winzip.com/">Winzip</a> (commercial)</li>
         </ul>
         <p>          
-            To create the JRE directory tree, extract the 
+            To create the JRE directory tree, extract the
             distribution <code>zip</code> file using the utility.
         </p>
     </subsection>
 
     <subsection name="Configuring Your Environment">
         <p>
-            Apache Harmony requires no further environmental setup, but 
-            sometimes other programs do. Also, it is convenient to have 
+            Apache Harmony requires no further environmental setup, but
+            sometimes other programs do. Also, it is convenient to have
             the Apache Harmony executables on your path.
         </p>
 
         <p>
-          To set your <code>JAVA_HOME</code> and <code>PATH</code> 
-          environment variables, use the commands appropriate to your 
+          To set your <code>JAVA_HOME</code> and <code>PATH</code>
+          environment variables, use the commands appropriate to your
           operating system and/or shell you are using.
         </p>
 
@@ -136,11 +136,11 @@ $ export PATH=`pwd`:$PATH
         </source>
 
         <p>
-            The given command assumes your current directory is the parent 
-            directory of the Harmony JRE. 
+            The given command assumes your current directory is the parent
+            directory of the Harmony JRE.
         </p>
       <p class="note">Note</p>
-      <p class="notetext">The <code>`</code> character is a backtick character, 
+      <p class="notetext">The <code>`</code> character is a backtick character,
       not an apostrophe.</p>
       
       <strong>Windows Users</strong>
@@ -164,9 +164,9 @@ $ export PATH=`pwd`:$PATH
     <subsection name="Using Apache Harmony">
 
         <p>
-            After performing aforementioned steps, you should be ready to use 
+            After performing aforementioned steps, you should be ready to use
             Apache Harmony. Note that we have not yet included
-            <code>javac</code>, so continue to use the compiler from some 
+            <code>javac</code>, so continue to use the compiler from some
             other JRE. You should have no problems running programs.
         </p>
 
