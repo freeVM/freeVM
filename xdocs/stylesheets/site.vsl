@@ -235,7 +235,13 @@ limitations under the License.
             #foreach ( $link in $links )
             $link
             #end
-        <link rel="Stylesheet" type="text/css" href="site.css"/>
+
+        #set ($csspath = "")
+        #if (!$relativePath.equals("."))
+            #set ($csspath = "${relativePath}/")
+        #end
+
+        <link rel="stylesheet" type="text/css" href="${csspath}site.css"/>
         </head>
 
         <body>        
@@ -299,6 +305,7 @@ limitations under the License.
         </body>
     </html>
 #end
+
 
 
 
