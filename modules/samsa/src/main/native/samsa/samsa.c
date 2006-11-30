@@ -21,6 +21,10 @@
 #include <string.h>
 #include <limits.h>
 
+#if defined(WIN32)
+#include <windows.h>
+#endif
+
 #define EXE_POSTFIX   "/jre/bin/java"
 #define LIB_POSTFIX   "/lib/"
 #define TOOL_JAR      "tools.jar"
@@ -33,6 +37,13 @@ char *cleanToolName(const char *);
 char *getExeDir();
 char *getJDKRoot();
 
+#if defined(WIN32)
+int WINAPI
+WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
+   int nShowCmd)
+{
+}
+#endif
 
 int main (int argc, char **argv, char **envp)
 {
@@ -41,7 +52,9 @@ int main (int argc, char **argv, char **envp)
     char *toolName = NULL;
     int i;
     int newIndex = 0;
-
+    char *jdkRoot = NULL;
+    char *fullExePath = NULL;
+    
     /* 
      * if we can't figure out what tool we are, just bail
      */    
@@ -57,7 +70,7 @@ int main (int argc, char **argv, char **envp)
      *  and the full paths to jars.  This way, we can be called 
      *  from anywhere
      */    
-    char *jdkRoot = getJDKRoot();
+    jdkRoot = getJDKRoot();
     printf("root = %s\n", jdkRoot);
     
     if (!jdkRoot) { 
@@ -65,7 +78,7 @@ int main (int argc, char **argv, char **envp)
         return 2;
     }
        
-    char *fullExePath = (char *) malloc(strlen(jdkRoot) + strlen(EXE_POSTFIX) + 1);
+    fullExePath = (char *) malloc(strlen(jdkRoot) + strlen(EXE_POSTFIX) + 1);
     
     strcpy(fullExePath, jdkRoot);
     strcat(fullExePath, EXE_POSTFIX);
@@ -80,7 +93,10 @@ int main (int argc, char **argv, char **envp)
      *  if we're not java, put the tools on cp, figure out the tool class to invoke...
      */
     if (strcmp(toolName, "java")) {
-        char *classpath = (char *) malloc(strlen(jdkRoot) * 2 + strlen(LIB_POSTFIX) * 2
+        char *classpath;
+        char *buffer;
+        
+        classpath = (char *) malloc(strlen(jdkRoot) * 2 + strlen(LIB_POSTFIX) * 2
                     + strlen(TOOL_JAR) + strlen(ECJ_JAR) + strlen(CLASSPATH_SEP) + 1);
          
         strcpy(classpath, jdkRoot);
@@ -94,7 +110,7 @@ int main (int argc, char **argv, char **envp)
         myArgv[newIndex++] = "-cp";
         myArgv[newIndex++] = classpath;
 
-        char *buffer = (char *) malloc(strlen(CLASS_PREFIX) + strlen(toolName) + strlen(CLASS_POSTFIX) + 1);
+        buffer = (char *) malloc(strlen(CLASS_PREFIX) + strlen(toolName) + strlen(CLASS_POSTFIX) + 1);
     
         strcpy(buffer, CLASS_PREFIX);
         strcat(buffer, toolName);
@@ -115,8 +131,14 @@ int main (int argc, char **argv, char **envp)
     
     /*
      * now simply execv() the java app w/ the new params
-     */     
-    execv(fullExePath, myArgv);    
+     */ 
+     
+#if defined(WIN32)
+   // do something
+#else    
+    execv(fullExePath, myArgv);
+#endif
+
 }
 
 /**
@@ -164,7 +186,8 @@ char *getJDKRoot() {
  *  returns directory of running exe
  */
 char *getExeDir() {
-    
+
+#if defined(LINUX)    
     char buffer[PATH_MAX + 1];
     
     int size = readlink ("/proc/self/exe", buffer, sizeof(buffer)-1);
@@ -177,6 +200,8 @@ char *getExeDir() {
         *last = '\0';
         return strdup(buffer);
     }
+#else
+#endif
     
     return NULL;
 }
