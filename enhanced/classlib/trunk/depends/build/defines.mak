@@ -13,21 +13,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-#
-# Configuration Makefile
-#
+APPVER=4.0
+TARGETOS=WIN95
+_WIN32_IE=0x0500
+SEHMAP = TRUE
+!include <win32.mak>
 
-CXX = $(CC)
-CPP = $(CC) -E
-AS = as
-AR = ar
-DLL_LD = $(CC)
-CXX_DLL_LD = $(CXX)
+LIBPATH=$(HY_HDK)\lib\# comment to avoid \ being treated as continuation
+EXEPATH=..\# ditto
+DLLPATH=$(HY_HDK)\jdk\jre\bin\# ditto
+SHAREDSUB=..\shared\# ditto
 
-EXEPATH=../
-LIBPATH=$(HY_HDK)/lib/
-DLLPATH=$(HY_HDK)/jdk/jre/bin/
-SHAREDSUB=../shared/
-
-CFLAGS = -O1 $(HY_CFLAGS) -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
-         -D$(HY_ARCH_DEFINE) $(VMDEBUG) -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
+HYCFLAGS = \
+  -Ogityb1 -WX -GF -Gs -MD -Zi -Zm400 \
+  -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ -DWINVER=0x0400 \
+  $(VMDEBUG) /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I.

@@ -17,17 +17,28 @@
 # Configuration Makefile
 #
 
-CXX = $(CC)
-CPP = $(CC) -E
-AS = as
-AR = ar
-DLL_LD = $(CC)
-CXX_DLL_LD = $(CXX)
+CXXFLAGS=$(CFLAGS)
 
-EXEPATH=../
-LIBPATH=$(HY_HDK)/lib/
-DLLPATH=$(HY_HDK)/jdk/jre/bin/
-SHAREDSUB=../shared/
+all: $(DLLNAME) $(EXENAME) $(LIBNAME)
 
-CFLAGS = -O1 $(HY_CFLAGS) -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
-         -D$(HY_ARCH_DEFINE) $(VMDEBUG) -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
+$(LIBNAME): $(BUILDFILES)
+	$(AR) rcv $@ $(BUILDFILES)
+
+$(DLLNAME): $(BUILDFILES) $(MDLLIBFILES)
+	$(DLL_LD) -shared -Wl,--version-script,$(@F:.so=.exp) \
+	-Wl,-soname=$(@F) $(VMLINK) -o $@ \
+	$(BUILDFILES) $(SYSLIBFILES) \
+	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
+	-lc -lm -ldl $(LDFLAGS)
+
+$(EXENAME): $(BUILDFILES) $(MDLLIBFILES)
+	$(CC) $(VMLINK) \
+	$(BUILDFILES) \
+	-Xlinker --start-group $(MDLLIBFILES) -Xlinker --end-group \
+	-o $@ -lm -lpthread -lc -ldl \
+	-Xlinker -z -Xlinker origin \
+	-Xlinker -rpath -Xlinker \$$ORIGIN/ \
+	-Xlinker -rpath-link -Xlinker $(HY_HDK)/jdk/jre/bin
+
+clean:
+	-rm -f $(BUILDFILES) $(DLLNAME) $(EXENAME) $(LIBNAME)
