@@ -32,7 +32,7 @@
 	
 	<!-- where to fetch from -->
 	<property name="cc.location" value="http://umn.dl.sourceforge.net/sourceforge/cruisecontrol/" />
-	<property name="junitjar.location" value="http://www.ibiblio.org/maven/ant/jars/"/>
+	<property name="junitjar.location" value="http://mirrors.ibiblio.org/pub/mirrors/maven2/ant/ant-junit/1.6.5/"/>
 	
 	<!-- where to assemble all the pieces -->
 	<property name="target.dir" location="cc"/>
@@ -110,10 +110,10 @@ port.value=111
 		
 		<!-- get the version of CruiseControl unless we have the zip locally -->
 		
-		<get src="${cc.location}${cc.filename}.zip"
+		<!--get src="${cc.location}${cc.filename}.zip"
 			 dest="${cc.filename}.zip" 
 			 usetimestamp="true"
-			 verbose="true" />
+			 verbose="true" /-->
 	
 		<get src="${junitjar.location}${junitjar.filename}.jar"
 			 dest="${junitjar.filename}.jar" 
