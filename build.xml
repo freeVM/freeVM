@@ -110,10 +110,10 @@ port.value=111
 		
 		<!-- get the version of CruiseControl unless we have the zip locally -->
 		
-		<!--get src="${cc.location}${cc.filename}.zip"
+		<get src="${cc.location}${cc.filename}.zip"
 			 dest="${cc.filename}.zip" 
 			 usetimestamp="true"
-			 verbose="true" /-->
+			 verbose="true" />
 	
 		<get src="${junitjar.location}${junitjar.filename}.jar"
 			 dest="${junitjar.filename}.jar" 
