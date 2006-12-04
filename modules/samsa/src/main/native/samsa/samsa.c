@@ -25,41 +25,49 @@
 #include <windows.h>
 #endif
 
-#define EXE_POSTFIX   "/jre/bin/java"
-#define LIB_POSTFIX   "/lib/"
 #define TOOL_JAR      "tools.jar"
 #define ECJ_JAR       "ecj_3.2.jar"
-#define CLASSPATH_SEP ":"
 #define CLASS_PREFIX  "org.apache.harmony.tools."
 #define CLASS_POSTFIX ".Main"
+
+#if defined(LINUX)
+#define PATH_SEPARATOR '/'
+#define EXE_POSTFIX   "/jre/bin/java"
+#define LIB_POSTFIX   "/lib/"
+#define CLASSPATH_SEP ":"
+#endif
+
+#if defined(WIN32)
+#define PATH_SEPARATOR '\\'
+#define EXE_POSTFIX   "\\jre\\bin\\java.exe"
+#define LIB_POSTFIX   "\\lib\\"
+#define CLASSPATH_SEP ";"
+#endif
 
 char *cleanToolName(const char *);
 char *getExeDir();
 char *getJDKRoot();
 
-#if defined(WIN32)
-int WINAPI
-WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
-   int nShowCmd)
-{
-}
-#endif
 
 int main (int argc, char **argv, char **envp)
 {
+#if defined(WIN32)
+    PROCESS_INFORMATION procInfo;
+    STARTUPINFO startInfo;
+#endif
     int myArgvCount = argc + 4;
     char **myArgv = (char **) malloc(sizeof(char*) * myArgvCount);    
     char *toolName = NULL;
-    int i;
+    int i, j;
     int newIndex = 0;
     char *jdkRoot = NULL;
     char *fullExePath = NULL;
-    
+
     /* 
      * if we can't figure out what tool we are, just bail
      */    
     toolName = cleanToolName(argv[0]);
-    
+
     if (toolName == NULL) { 
         fprintf(stderr, "Uknown tool name %s\n", argv[0]);
         return 1;
@@ -125,16 +133,49 @@ int main (int argc, char **argv, char **envp)
     
     myArgv[newIndex] = '\0';
 
-//    for (i=0; i < myArgvCount; i++) { 
-//        printf(" %d = %s\n", i, myArgv[i]);
-//    }
+    for (i=0; i < myArgvCount; i++) { 
+        printf(" %d = %s\n", i, myArgv[i]);
+    }
     
     /*
      * now simply execv() the java app w/ the new params
      */ 
      
 #if defined(WIN32)
-   // do something
+
+    j = 0;
+    for (i=1; i < myArgvCount; i++) {
+        if (myArgv[i] != NULL) {
+            j += strlen(myArgv[i]);
+            j++; // for the needed spaces
+        }
+    }
+    
+    toolName = (char *) malloc(sizeof(char) * j);
+    
+    strcpy(toolName,myArgv[1]);
+    strcat(toolName, " ");
+        
+    for (i=2; i < myArgvCount; i++) {
+        if (myArgv[i] != NULL) {
+            strcat(toolName,myArgv[i]);
+            strcat(toolName, " ");
+        }
+        else {
+            break;
+        }
+    }
+   
+    printf("Calling %s\n", fullExePath);
+    printf("cmdline %s\n", toolName);
+    
+    
+    memset(&procInfo, 0, sizeof(PROCESS_INFORMATION));
+    memset(&startInfo, 0, sizeof(STARTUPINFO));
+    startInfo.cb = sizeof(STARTUPINFO);
+            
+    CreateProcess(fullExePath, toolName, NULL, NULL,
+                    FALSE, 0, NULL, NULL, &startInfo, &procInfo);    
 #else    
     execv(fullExePath, myArgv);
 #endif
@@ -171,7 +212,7 @@ char *getJDKRoot() {
     
     char *exeDir = getExeDir();
 
-    char *last = strrchr(exeDir, '/');
+    char *last = strrchr(exeDir, PATH_SEPARATOR);
     
     if (last != NULL) { 
         *last = '\0';
@@ -187,21 +228,30 @@ char *getJDKRoot() {
  */
 char *getExeDir() {
 
+    char *last = NULL;
+    
 #if defined(LINUX)    
     char buffer[PATH_MAX + 1];
     
     int size = readlink ("/proc/self/exe", buffer, sizeof(buffer)-1);
     
     buffer[size+1] = '\0';
-   
-    char *last = strrchr(buffer, '/');
-   
+#endif
+
+#if defined(WIN32)
+    char buffer[256];
+    DWORD dwRet = GetModuleFileName(NULL, buffer, 256);
+        
+    // FIXME - handle this right
+#endif
+
+    last = strrchr(buffer, PATH_SEPARATOR);
+
     if (last != NULL) { 
         *last = '\0';
         return strdup(buffer);
     }
-#else
-#endif
     
     return NULL;
 }
+
