@@ -19,9 +19,9 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME=$(EXEPATH)samsa.exe
+EXENAME = samsa.exe
 BUILDFILES = ..\samsa.obj
-EXEFLAGS=$(guilflags) -subsystem:windows
-EXEDLLFILES=$(guilibsdll)
+EXEFLAGS=$(conlflags) -subsystem:console
+EXEDLLFILES=$(conlibsdll)
 
 !include <$(HY_HDK)\build\make\rules.mak>
