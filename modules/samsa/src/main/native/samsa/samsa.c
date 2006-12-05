@@ -26,10 +26,8 @@
 #endif
 
 #define TOOL_JAR      "tools.jar"
-#define ECJ_JAR       "ecj_3.2.jar"
 #define CLASS_PREFIX  "org.apache.harmony.tools."
 #define CLASS_POSTFIX ".Main"
-#define PATH_SEP      "/"
 
 typedef struct ToolData {
     int numJars; 
@@ -37,17 +35,19 @@ typedef struct ToolData {
 } TOOLDATA;
 
 #if defined(LINUX)
-#define PATH_SEPARATOR '/'
-#define EXE_POSTFIX   "/jre/bin/java"
-#define LIB_POSTFIX   "/lib/"
-#define CLASSPATH_SEP ":"
+#define PATH_SEPARATOR_CHAR '/'
+#define PATH_SEPARATOR      "/"
+#define EXE_POSTFIX         "/jre/bin/java"
+#define LIB_POSTFIX         "/lib/"
+#define CLASSPATH_SEP       ":"
 #endif
 
 #if defined(WIN32)
-#define PATH_SEPARATOR '\\'
-#define EXE_POSTFIX   "\\jre\\bin\\java.exe"
-#define LIB_POSTFIX   "\\lib\\"
-#define CLASSPATH_SEP ";"
+#define PATH_SEPARATOR_CHAR '\\'
+#define PATH_SEPARATOR      "\\"
+#define EXE_POSTFIX         "\\jre\\bin\\java.exe"
+#define LIB_POSTFIX         "\\lib\\"
+#define CLASSPATH_SEP       ";"
 #endif
 
 char *cleanToolName(const char *);
@@ -234,7 +234,7 @@ char *getJDKRoot() {
     
     char *exeDir = getExeDir();
 
-    char *last = strrchr(exeDir, PATH_SEPARATOR);
+    char *last = strrchr(exeDir, PATH_SEPARATOR_CHAR);
     
     if (last != NULL) { 
         *last = '\0';
@@ -267,7 +267,7 @@ char *getExeDir() {
     // FIXME - handle this right
 #endif
 
-    last = strrchr(buffer, PATH_SEPARATOR);
+    last = strrchr(buffer, PATH_SEPARATOR_CHAR);
 
     if (last != NULL) { 
         *last = '\0';
@@ -305,16 +305,16 @@ TOOLDATA *getToolData(const char *toolName, const char *jdkRoot) {
    /*
     *  assumes that the data files are in jdk/bin/data with a ".dat" extension
     */ 
-    temp = (char *) malloc(strlen(jdkRoot) + strlen(PATH_SEP) + strlen("bin") 
-            + strlen(PATH_SEP) + strlen("data") + strlen(PATH_SEP) + strlen(toolName) 
+    temp = (char *) malloc(strlen(jdkRoot) + strlen(PATH_SEPARATOR) + strlen("bin") 
+            + strlen(PATH_SEPARATOR) + strlen("data") + strlen(PATH_SEPARATOR) + strlen(toolName) 
             + strlen(".dat") + 1);
                 
     strcpy(temp, jdkRoot);
-    strcat(temp, PATH_SEP);
+    strcat(temp, PATH_SEPARATOR);
     strcat(temp, "bin");
-    strcat(temp, PATH_SEP);
+    strcat(temp, PATH_SEPARATOR);
     strcat(temp, "data");
-    strcat(temp, PATH_SEP);
+    strcat(temp, PATH_SEPARATOR);
     strcat(temp, toolName);
     strcat(temp, ".dat");
     
