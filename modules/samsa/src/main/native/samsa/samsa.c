@@ -29,11 +29,6 @@
 #define CLASS_PREFIX  "org.apache.harmony.tools."
 #define CLASS_POSTFIX ".Main"
 
-typedef struct ToolData {
-    int numJars; 
-    char **jarList;
-} TOOLDATA;
-
 #if defined(LINUX)
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR      "/"
@@ -50,11 +45,32 @@ typedef struct ToolData {
 #define CLASSPATH_SEP       ";"
 #endif
 
-char *cleanToolName(const char *);
-char *getExeDir();
-char *getJDKRoot();
+typedef struct ToolData {
+    int numJars; 
+    char **jarList;
+} TOOLDATA;
+
+char     *cleanToolName(const char *);
+char     *getExeDir();
+char     *getJDKRoot();
 TOOLDATA *getToolData(const char *, const char *);
 
+/**
+ *  main
+ * 
+ *  based on invocation name (ex. 'javac') discovers jars needed
+ *  for invocation - creates classpath and classname for invoking
+ *  the JVM in jre/bin via an exec() or CreateProcess(), 
+ *  and does so with the effective command  line pattern : 
+ * 
+ *      java -cp <created class path> <created Class name> <tool args>
+ * 
+ *  where 'created Class name' follows the convention of 
+ * 
+ *      org.apache.harmony.tools.<toolname>.Main
+ * 
+ *  where <toolname> is 'javac', 'javah', 'javap'
+ */
 
 int main (int argc, char **argv, char **envp)
 {
@@ -70,16 +86,6 @@ int main (int argc, char **argv, char **envp)
     char *jdkRoot = NULL;
     char *fullExePath = NULL;
     TOOLDATA *pToolData = (TOOLDATA *) malloc(sizeof(TOOLDATA));
-        
-    /* 
-     * if we can't figure out what tool we are, just bail
-     */    
-    toolName = cleanToolName(argv[0]);
-
-    if (toolName == NULL) { 
-        fprintf(stderr, "Uknown tool name %s\n", argv[0]);
-        return 1;
-    }
 
     /*
      *  get the jdkroot and the construct invocation path for exe
@@ -87,16 +93,37 @@ int main (int argc, char **argv, char **envp)
      *  from anywhere
      */    
     jdkRoot = getJDKRoot();
-    printf("root = %s\n", jdkRoot);
+
+//    printf("root = %s\n", jdkRoot);
     
     if (!jdkRoot) { 
         fprintf(stderr, "Unable to find JDK Root");
         return 2;
     }
+        
+    /* 
+     * if we can't figure out what tool we are, just bail
+     */    
+    toolName = cleanToolName(argv[0]);
 
-    pToolData = getToolData(toolName, jdkRoot);
+//    printf("tool name = %s\n", toolName);
     
+    if (toolName == NULL) { 
+        fprintf(stderr, "Uknown tool name %s\n", argv[0]);
+        return 1;
+    }
+
+    /*
+     *  get the 'tool data' - right now, this is just the jars
+     *  specificly needed by this tool
+     */
+    pToolData = getToolData(toolName, jdkRoot);
        
+    if (pToolData == NULL) { 
+        fprintf(stderr, "error : unable to get tool data for %s");
+        return 2;
+    }
+    
     fullExePath = (char *) malloc(strlen(jdkRoot) + strlen(EXE_POSTFIX) + 1);
     
     strcpy(fullExePath, jdkRoot);
@@ -155,16 +182,23 @@ int main (int argc, char **argv, char **envp)
     
     myArgv[newIndex] = '\0';
 
-    for (i=0; i < myArgvCount; i++) { 
-        printf(" %d = %s\n", i, myArgv[i]);
-    }
-    
+//    for (i=0; i < myArgvCount; i++) { 
+//        printf(" %d = %s\n", i, myArgv[i]);
+//    }
+
+    free(toolName);
+        
     /*
      * now simply execv() the java app w/ the new params
      */ 
      
 #if defined(WIN32)
 
+    /*
+     * win32 - CreateProcess() needs a cmd line string
+     *  so simply build one
+     */
+     
     j = 0;
     for (i=1; i < myArgvCount; i++) {
         if (myArgv[i] != NULL) {
@@ -174,6 +208,10 @@ int main (int argc, char **argv, char **envp)
     }
     
     toolName = (char *) malloc(sizeof(char) * j);
+    
+    if (toolName == NULL) { 
+        return 4;
+    }
     
     strcpy(toolName,myArgv[1]);
     strcat(toolName, " ");
@@ -188,10 +226,6 @@ int main (int argc, char **argv, char **envp)
         }
     }
    
-    printf("Calling %s\n", fullExePath);
-    printf("cmdline %s\n", toolName);
-    
-    
     memset(&procInfo, 0, sizeof(PROCESS_INFORMATION));
     memset(&startInfo, 0, sizeof(STARTUPINFO));
     startInfo.cb = sizeof(STARTUPINFO);
@@ -204,32 +238,59 @@ int main (int argc, char **argv, char **envp)
 
 }
 
-/**
- * cleanToolName
+/***********************************************************************
+ * cleanToolName()
  * 
  * takes a executable name and finds the tool name
- * in it
+ * in it.
  * 
- * returns real tool name, or NULL if not found
+ * returns new string with real tool name, or NULL if not found
  */
 char *cleanToolName(const char *name) 
 {
-    int i;
-    char *toolNames[] = { "javac", "javap", "javah", "java" };
-    
-    /* 
-     *  FIXME :  this is an awful hack, easy to fool, but for now...
-     */
-    for (i=0; i < sizeof(toolNames)/sizeof(toolNames[0]); i++) { 
-        if (strstr(name, toolNames[i])) {
-            return toolNames[i];
-        }
+    char *last = strrchr(name, PATH_SEPARATOR_CHAR);
+
+ #if defined(WIN32)
+    char *temp;
+    char *exe;
+         
+    if (last && *(last + 1)) {
+        temp = strdup(last + 1);
+    }
+    else {
+        temp = strdup(name);
     }
     
-    return NULL;    
+    char *exe = strcasestr(temp, ".exe");
+         
+     if (exe) { 
+        *exe = '\0';
+     }
+         
+     return temp;     
+ #endif
+    
+ #if defined(LINUX)
+ 
+    /*
+     *  if we found a slash (and someone didn't do something 
+     *  stupid like invoke "java/"?)
+     */
+    if (last && *(last +1)) { 
+        return strdup(last +1);
+    }
+    else { 
+        return strdup(name);
+    }
+ #endif
 }
 
-
+/******************************************************************
+ *  getJDKRoot()
+ * 
+ *  returns the root of the JDK if it can figure it out
+ *  or NULL if it can't
+ */
 char *getJDKRoot() { 
     
     char *exeDir = getExeDir();
@@ -243,8 +304,9 @@ char *getJDKRoot() {
     
     return NULL;
 }
-/**
- * getExeDir
+
+/*****************************************************************
+ * getExeDir()
  * 
  *  returns directory of running exe
  */
@@ -261,10 +323,10 @@ char *getExeDir() {
 #endif
 
 #if defined(WIN32)
-    char buffer[256];
-    DWORD dwRet = GetModuleFileName(NULL, buffer, 256);
+    char buffer[512];
+    DWORD dwRet = GetModuleFileName(NULL, buffer, 512);
         
-    // FIXME - handle this right
+    // FIXME - handle this right - it could be that 512 isn't enough
 #endif
 
     last = strrchr(buffer, PATH_SEPARATOR_CHAR);
@@ -277,7 +339,9 @@ char *getExeDir() {
     return NULL;
 }
 
-/**
+/***********************************************************************
+ *  getToolData()
+ * 
  *  Read the jdk/bin/data/<toolname>.data file and 
  *  return the list of jars needed for this tool
  *  Format : 
@@ -295,13 +359,17 @@ TOOLDATA *getToolData(const char *toolName, const char *jdkRoot) {
     int count = 0;
     char *temp = NULL;
     TOOLDATA *pToolData = (TOOLDATA *) malloc(sizeof(TOOLDATA));
-    
-    memset(pToolData, 0, sizeof(TOOLDATA));    
-        
+            
     if (toolName == NULL || jdkRoot == NULL) { 
         return NULL;
     }
    
+    if (pToolData == NULL) { 
+        return NULL;
+    }
+    
+    memset(pToolData, 0, sizeof(TOOLDATA));    
+    
    /*
     *  assumes that the data files are in jdk/bin/data with a ".dat" extension
     */ 
@@ -309,6 +377,10 @@ TOOLDATA *getToolData(const char *toolName, const char *jdkRoot) {
             + strlen(PATH_SEPARATOR) + strlen("data") + strlen(PATH_SEPARATOR) + strlen(toolName) 
             + strlen(".dat") + 1);
                 
+    if (temp == NULL) { 
+        return NULL;
+    }
+    
     strcpy(temp, jdkRoot);
     strcat(temp, PATH_SEPARATOR);
     strcat(temp, "bin");
