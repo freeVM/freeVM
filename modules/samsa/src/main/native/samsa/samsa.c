@@ -29,6 +29,12 @@
 #define ECJ_JAR       "ecj_3.2.jar"
 #define CLASS_PREFIX  "org.apache.harmony.tools."
 #define CLASS_POSTFIX ".Main"
+#define PATH_SEP      "/"
+
+typedef struct ToolData {
+    int numJars; 
+    char **jarList;
+} TOOLDATA;
 
 #if defined(LINUX)
 #define PATH_SEPARATOR '/'
@@ -47,6 +53,7 @@
 char *cleanToolName(const char *);
 char *getExeDir();
 char *getJDKRoot();
+TOOLDATA *getToolData(const char *, const char *);
 
 
 int main (int argc, char **argv, char **envp)
@@ -62,7 +69,8 @@ int main (int argc, char **argv, char **envp)
     int newIndex = 0;
     char *jdkRoot = NULL;
     char *fullExePath = NULL;
-
+    TOOLDATA *pToolData = (TOOLDATA *) malloc(sizeof(TOOLDATA));
+        
     /* 
      * if we can't figure out what tool we are, just bail
      */    
@@ -85,6 +93,9 @@ int main (int argc, char **argv, char **envp)
         fprintf(stderr, "Unable to find JDK Root");
         return 2;
     }
+
+    pToolData = getToolData(toolName, jdkRoot);
+    
        
     fullExePath = (char *) malloc(strlen(jdkRoot) + strlen(EXE_POSTFIX) + 1);
     
@@ -103,18 +114,29 @@ int main (int argc, char **argv, char **envp)
     if (strcmp(toolName, "java")) {
         char *classpath;
         char *buffer;
+        int size;
+        int i;
         
-        classpath = (char *) malloc(strlen(jdkRoot) * 2 + strlen(LIB_POSTFIX) * 2
-                    + strlen(TOOL_JAR) + strlen(ECJ_JAR) + strlen(CLASSPATH_SEP) + 1);
-         
+        size = (strlen(jdkRoot) + strlen(LIB_POSTFIX)) * pToolData->numJars +
+                   strlen(CLASSPATH_SEP) * (pToolData->numJars - 1) + 1;
+
+        for (i = 0; i < pToolData->numJars; i++) { 
+            size += strlen(pToolData->jarList[i]);
+        }
+                    
+        classpath = (char *) malloc(size * sizeof(char));
+
         strcpy(classpath, jdkRoot);
         strcat(classpath, LIB_POSTFIX);
-        strcat(classpath, TOOL_JAR);
-        strcat(classpath, CLASSPATH_SEP);
-        strcat(classpath, jdkRoot);
-        strcat(classpath, LIB_POSTFIX);
-        strcat(classpath, ECJ_JAR);
-                
+        strcat(classpath, pToolData->jarList[0]);
+
+        for (i = 1; i < pToolData->numJars; i++) { 
+            strcat(classpath, CLASSPATH_SEP);
+            strcat(classpath, jdkRoot);
+            strcat(classpath, LIB_POSTFIX);
+            strcat(classpath, pToolData->jarList[i]);
+        }
+                         
         myArgv[newIndex++] = "-cp";
         myArgv[newIndex++] = classpath;
 
@@ -255,3 +277,69 @@ char *getExeDir() {
     return NULL;
 }
 
+/**
+ *  Read the jdk/bin/data/<toolname>.data file and 
+ *  return the list of jars needed for this tool
+ *  Format : 
+ *  ToolJar = <jar1name>
+ *  ToolJar = <jar2name>
+ *  ToolJar = <jar3name>
+ * 
+ *  If the data file doesn't exist, it will return tools.jar
+ */
+TOOLDATA *getToolData(const char *toolName, const char *jdkRoot) { 
+    
+    FILE *fp = NULL;
+    char key[256];
+    char value[256];
+    int count = 0;
+    char *temp = NULL;
+    TOOLDATA *pToolData = (TOOLDATA *) malloc(sizeof(TOOLDATA));
+    
+    memset(pToolData, 0, sizeof(TOOLDATA));    
+        
+    if (toolName == NULL || jdkRoot == NULL) { 
+        return NULL;
+    }
+   
+   /*
+    *  assumes that the data files are in jdk/bin/data with a ".dat" extension
+    */ 
+    temp = (char *) malloc(strlen(jdkRoot) + strlen(PATH_SEP) + strlen("bin") 
+            + strlen(PATH_SEP) + strlen("data") + strlen(PATH_SEP) + strlen(toolName) 
+            + strlen(".dat") + 1);
+                
+    strcpy(temp, jdkRoot);
+    strcat(temp, PATH_SEP);
+    strcat(temp, "bin");
+    strcat(temp, PATH_SEP);
+    strcat(temp, "data");
+    strcat(temp, PATH_SEP);
+    strcat(temp, toolName);
+    strcat(temp, ".dat");
+    
+    //printf("tool data file = %s\n", temp);
+    
+    fp = fopen(temp, "r");
+ 
+    if (fp) {
+        while (EOF != (count= fscanf(fp, "%s = %s\n", key, value))) {
+            // printf("count = %d : %s = %s\n", count, key, value);
+            
+            if (count == 2 && !strcasecmp("tooljar", key)) {
+                pToolData->jarList = (char **) realloc(pToolData->jarList, (pToolData->numJars + 1) * sizeof(char *));
+                pToolData->jarList[pToolData->numJars++] = strdup(value);
+            }
+        }
+        
+        fclose(fp);
+    }
+    else {        
+        pToolData->jarList = (char **) realloc(pToolData->jarList,  (pToolData->numJars + 1) * sizeof(char *));
+        pToolData->jarList[pToolData->numJars++] = TOOL_JAR;
+    }
+    
+    free(temp);
+    
+    return pToolData;
+}
