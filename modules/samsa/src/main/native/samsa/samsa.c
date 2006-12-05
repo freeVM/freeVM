@@ -182,9 +182,9 @@ int main (int argc, char **argv, char **envp)
     
     myArgv[newIndex] = '\0';
 
-//    for (i=0; i < myArgvCount; i++) { 
-//        printf(" %d = %s\n", i, myArgv[i]);
-//    }
+    for (i=0; i < myArgvCount; i++) { 
+        printf(" %d = %s\n", i, myArgv[i]);
+    }
 
     free(toolName);
         
@@ -261,13 +261,13 @@ char *cleanToolName(const char *name)
         temp = strdup(name);
     }
     
-    char *exe = strcasestr(temp, ".exe");
+    exe = strstr(temp, ".exe");
          
-     if (exe) { 
-        *exe = '\0';
-     }
+    if (exe) { 
+       *exe = '\0';
+    }
          
-     return temp;     
+    return temp;     
  #endif
     
  #if defined(LINUX)
@@ -397,8 +397,13 @@ TOOLDATA *getToolData(const char *toolName, const char *jdkRoot) {
     if (fp) {
         while (EOF != (count= fscanf(fp, "%s = %s\n", key, value))) {
             // printf("count = %d : %s = %s\n", count, key, value);
-            
+
+#if defined(LINUX)            
             if (count == 2 && !strcasecmp("tooljar", key)) {
+#endif
+#if defined(WIN32)
+            if (count == 2 && !strcmp("tooljar", key)) {
+#endif
                 pToolData->jarList = (char **) realloc(pToolData->jarList, (pToolData->numJars + 1) * sizeof(char *));
                 pToolData->jarList[pToolData->numJars++] = strdup(value);
             }
