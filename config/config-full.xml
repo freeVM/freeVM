@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+     
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+-->
 <cruisecontrol>
-
+        
     <!--The cc.property file contains the name and values of properties-->
     <property file="cc.properties" />
-    <property name="cl.prefix" value="[continuum] ${os} ${cc}: classlib"/>
-    <property name="vm.prefix" value="[continuum] ${os} ${cc}: drlvm"/>
+    <property name="cl.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} debug: classlib "/>
+    <property name="vm.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} debug: drlvm"/>
+    <property name="cl.prefix.ok" value="[build-test alert] BUILD FIXED ${os} ${cc} debug: classlib "/>
+    <property name="vm.prefix.ok" value="[build-test alert] BUILD FIXED ${os} ${cc} debug: drlvm"/>
 
 
     <project name="classlib">
@@ -15,49 +32,68 @@
 
         <bootstrappers>
             <svnbootstrapper localWorkingCopy="projects/classlib/trunk" />
+            <svnbootstrapper localWorkingCopy="projects/drlvm/trunk" />
         </bootstrappers>
 
         <modificationset quietperiod="60">
             <svn localWorkingCopy="projects/classlib/trunk"/>
-            <buildstatus logdir="logs/drlvm"/>
         </modificationset>
 
         <schedule interval="${timeout}">
-        	<ant target="fetch-depends rebuild test" antWorkingDir="projects/${project.name}/trunk" timeout="${ttimeout}" usedebug="false">
-        	    <property name="${proxy.host.property}" value="${proxy.value}"/>
-        	    <property name="${proxy.port.property}" value="${port.value}"/>
-        	    <jvmarg arg="-Dtest.jre.home=${wdir}/projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/deploy/jre" />
-        	    <jvmarg arg="-Dhy.test.forkmode=perTest" />
-        	    <jvmarg arg="-Xms200M" />
-        	    <jvmarg arg="-Xmx700M" />
-        	</ant>
+                <ant target="fetch-depends rebuild" antWorkingDir="projects/${project.name}/trunk" timeout="${ttimeout}" usedebug="false">
+                    <property name="${proxy.host.property}" value="${proxy.value}"/>
+                    <property name="${proxy.port.property}" value="${port.value}"/>
+                    <jvmarg arg="-Xms200M" />
+                    <jvmarg arg="-Xmx700M" />
+                </ant>
         </schedule>
 
         <log dir="logs/${project.name}">
             <merge dir="projects/${project.name}/trunk/build/test_report" pattern="TEST-*.xml" />
         </log>
 
-	<publishers>
+        <publishers>
             <antpublisher   
                  antworkingdir="."  
                  buildfile="copyres.xml"  
                  uselogger="true"  
                  usedebug="false"  
                  target="copy.res"> 
-                <property name="VM" value="drlvm"/> 
+                <property name="VM" value="ibm"/> 
             </antpublisher> 
-            <htmlemail mailhost="${server_addr}"
-                returnaddress="${report_from}"
-                subjectprefix="${cl.prefix}"
-                skipusers="true"
-                spamwhilebroken="false"
-                css="${cc_webcontent}/css/cruisecontrol.css"
-                xsldir="${cc_webcontent}/xsl"
-                logdir="logs/${project.name}">
-
-                <failure address="${report_to}" reportWhenFixed="true"/>
-            </htmlemail>
-	</publishers>
+            <onfailure>
+                <xsltlogpublisher directory="."  outfilename="classlib.txt"  xsltfile="br.xsl" />
+                <antpublisher   
+                     antworkingdir="."  
+                     buildfile="copyres.xml"  
+                     uselogger="true"  
+                     usedebug="true"  
+                     target="email.res"> 
+                     <property name="file" value="classlib.txt"/> 
+                     <property name="mailhost" value="${server_addr}"/>
+                     <property name="fromaddress" value="${report_from}"/>
+                     <property name="toaddress" value="${report_to}"/>
+                     <property name="subject" value="${cl.prefix}"/>
+                     <property name="flag" value="${project.name}"/>
+                </antpublisher> 
+            </onfailure>
+            <onsuccess>
+                <xsltlogpublisher directory="."  outfilename="classlib.txt.ok"  xsltfile="br.xsl" />
+                <antpublisher   
+                     antworkingdir="."  
+                     buildfile="copyres.xml"  
+                     uselogger="true"  
+                     usedebug="true"  
+                     target="email.res.ok"> 
+                     <property name="file" value="classlib.txt.ok"/> 
+                     <property name="mailhost" value="${server_addr}"/>
+                     <property name="fromaddress" value="${report_from}"/>
+                     <property name="toaddress" value="${report_to}"/>
+                     <property name="subject" value="${cl.prefix.ok}"/>
+                     <property name="flag" value="${project.name}"/>
+                </antpublisher> 
+            </onsuccess>
+        </publishers>
 
     </project>
 
@@ -67,32 +103,50 @@
             <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
         </listeners>
 
-        <bootstrappers>
-            <svnbootstrapper localWorkingCopy="projects/drlvm/trunk" />
-        </bootstrappers>
-
         <modificationset quietperiod="30">
             <svn localWorkingCopy="projects/drlvm/trunk"/>
+            <svn localWorkingCopy="projects/classlib/trunk"/>
             <buildstatus logdir="logs/classlib"/>
         </modificationset>
 
         <schedule interval="${timeout}">
-        	<exec command="${sh}" args="${cmd.prefix} ${cmd} -D${proxy.host.vm}=${proxy.value} -D${proxy.port.vm}=${port.value} update clean build" workingdir="projects/${project.name}/trunk/build" timeout="${ttimeout}"/>
+                <exec command="${sh}" args="${cmd.prefix} ${cmd} -D${proxy.host.vm}=${proxy.value} -D${proxy.port.vm}=${port.value} -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk update clean build" workingdir="projects/${project.name}/trunk/build" timeout="${ttimeout}"/>
         </schedule>
 
-	<publishers>
-            <htmlemail mailhost="${server_addr}"
-                returnaddress="${report_from}"
-                subjectprefix="${vm.prefix}"
-                skipusers="true"
-                spamwhilebroken="false"
-                css="${cc_webcontent}/css/cruisecontrol.css"
-                xsldir="${cc_webcontent}/xsl"
-                logdir="logs/${project.name}">
-
-                <failure address="${report_to}" reportWhenFixed="true"/>
-            </htmlemail>
-	</publishers>
+        <publishers>
+            <onfailure>
+                <xsltlogpublisher directory="." outfilename="drlvm.txt" xsltfile="br.xsl" />
+                <antpublisher   
+                    antworkingdir="."  
+                    buildfile="copyres.xml"  
+                    uselogger="true"  
+                    usedebug="false"  
+                    target="email.res"> 
+                    <property name="file" value="drlvm.txt"/> 
+                    <property name="mailhost" value="${server_addr}"/>
+                    <property name="fromaddress" value="${report_from}"/>
+                    <property name="toaddress" value="${report_to}"/>
+                    <property name="subject" value="${vm.prefix}"/>
+                    <property name="flag" value="${project.name}"/>
+                </antpublisher> 
+            </onfailure>
+            <onsuccess>
+                <xsltlogpublisher directory="." outfilename="drlvm.txt.ok" xsltfile="br.xsl" />
+                <antpublisher   
+                    antworkingdir="."  
+                    buildfile="copyres.xml"  
+                    uselogger="true"  
+                    usedebug="false"  
+                    target="email.res.ok"> 
+                    <property name="file" value="drlvm.txt.ok"/> 
+                    <property name="mailhost" value="${server_addr}"/>
+                    <property name="fromaddress" value="${report_from}"/>
+                    <property name="toaddress" value="${report_to}"/>
+                    <property name="subject" value="${vm.prefix.ok}"/>
+                    <property name="flag" value="${project.name}"/>
+                </antpublisher> 
+            </onsuccess>
+        </publishers>
 
     </project>
 
@@ -103,22 +157,21 @@
         </listeners>
 
         <modificationset>
+            <svn localWorkingCopy="projects/drlvm/trunk"/>
             <buildstatus logdir="logs/drlvm"/>
         </modificationset>
 
         <schedule interval="${timeout}">
-        	<exec command="${sh}" args="${cmd.prefix} ${cmd} -Dvm.assert_dialog=false test" workingdir="projects/drlvm/trunk/build" timeout="${ttimeout}" errorstr="FAILED" />
+                <exec command="${sh}" args="${cmd.prefix} ${cmd} -Dvm.assert_dialog=false -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk test" workingdir="projects/drlvm/trunk/build" timeout="${ttimeout}" errorstr="FAILED" />
         </schedule>
 
         <log dir="logs/${project.name}">
-            <!--merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/vm/_smoke.tests/reports" pattern="*.*"/>
-            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/vm/_cunit.tests/report" pattern="*.*"/-->
-            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/jitrino.jet" pattern="TEST-*.xml" />
-            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/jitrino.opt" pattern="TEST-*.xml" />
-            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/interpreter" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/jet.mode" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/opt.mode" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/int.mode" pattern="TEST-*.xml" />
         </log>
 
-	<publishers>
+        <publishers>
             <antpublisher   
                  antworkingdir="."  
                  buildfile="copyres.xml"  
@@ -127,19 +180,116 @@
                  target="copy.vm.res"> 
                 <property name="BUILD" value="${os}_ia32_${cc}_debug"/> 
             </antpublisher> 
-            <htmlemail mailhost="${server_addr}"
-                returnaddress="${report_from}"
-                subjectprefix="${vm.prefix}"
-                skipusers="true"
-                spamwhilebroken="false"
-                css="${cc_webcontent}/css/cruisecontrol.css"
-                xsldir="${cc_webcontent}/xsl"
-                logdir="logs/${project.name}">
 
-                <failure address="${report_to}" reportWhenFixed="true"/>
-            </htmlemail>
-	</publishers>
+            <onfailure>
+                <xsltlogpublisher directory="." outfilename="drlvmt.txt" xsltfile="br.xsl" />
+
+                <antpublisher   
+                     antworkingdir="."  
+                     buildfile="copyres.xml"  
+                     uselogger="true"  
+                     usedebug="false"  
+                     target="email.res"> 
+                     <property name="file" value="drlvmt.txt"/> 
+                     <property name="mailhost" value="${server_addr}"/>
+                     <property name="fromaddress" value="${report_from}"/>
+                     <property name="toaddress" value="${report_to}"/>
+                     <property name="subject" value="${vm.prefix}"/>
+                     <property name="flag" value="${project.name}"/>
+                </antpublisher> 
+            </onfailure>
+            <onsuccess>
+                <xsltlogpublisher directory="." outfilename="drlvmt.txt.ok" xsltfile="br.xsl" />
+
+                <antpublisher   
+                     antworkingdir="."  
+                     buildfile="copyres.xml"  
+                     uselogger="true"  
+                     usedebug="false"  
+                     target="email.res.ok"> 
+                     <property name="file" value="drlvmt.txt.ok"/> 
+                     <property name="mailhost" value="${server_addr}"/>
+                     <property name="fromaddress" value="${report_from}"/>
+                     <property name="toaddress" value="${report_to}"/>
+                     <property name="subject" value="${vm.prefix.ok}"/>
+                     <property name="flag" value="${project.name}"/>
+                </antpublisher> 
+            </onsuccess>
+        </publishers>
 
     </project>
 
+    <project name="classlib-drlvm">
+
+        <listeners>
+            <currentbuildstatuslistener file="logs/${project.name}/status.txt"/>
+        </listeners>
+
+        <modificationset quietperiod="60">
+            <svn localWorkingCopy="projects/classlib/trunk"/>
+            <svn localWorkingCopy="projects/drlvm/trunk"/>
+            <buildstatus logdir="logs/classlib"/>
+            <buildstatus logdir="logs/drlvm"/>
+        </modificationset>
+
+        <schedule interval="${timeout}">
+                <ant target="test" antWorkingDir="projects/classlib/trunk" timeout="${ttimeout}" usedebug="false">
+                    <jvmarg arg="-Dtest.jre.home=${wdir}/projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/deploy/jre" />
+                    <jvmarg arg="-Dhy.test.forkmode=perTest" />
+                    <jvmarg arg="-Dhy.test.vm.name=drl" />
+                    <jvmarg arg="-Xms200M" />
+                    <jvmarg arg="-Xmx700M" />
+                </ant>
+        </schedule>
+
+        <log dir="logs/${project.name}">
+            <merge dir="projects/${project.name}/trunk/build/test_report" pattern="TEST-*.xml" />
+        </log>
+
+        <publishers>
+            <antpublisher   
+                 antworkingdir="."  
+                 buildfile="copyres.xml"  
+                 uselogger="true"  
+                 usedebug="false"  
+                 target="copy.res"> 
+                <property name="VM" value="drlvm"/> 
+            </antpublisher> 
+            <onfailure>
+                <xsltlogpublisher directory="."  outfilename="classlibt.txt"  xsltfile="br.xsl" />
+                <antpublisher   
+                     antworkingdir="."  
+                     buildfile="copyres.xml"  
+                     uselogger="true"  
+                     usedebug="true"  
+                     target="email.res"> 
+                     <property name="file" value="classlibt.txt"/> 
+                     <property name="mailhost" value="${server_addr}"/>
+                     <property name="fromaddress" value="${report_from}"/>
+                     <property name="toaddress" value="${report_to}"/>
+                     <property name="subject" value="${cl.prefix} over drlvm"/>
+                     <property name="flag" value="${project.name}"/>
+                </antpublisher> 
+            </onfailure>
+            <onsuccess>
+                <xsltlogpublisher directory="."  outfilename="classlibt.txt.ok"  xsltfile="br.xsl" />
+                <antpublisher   
+                     antworkingdir="."  
+                     buildfile="copyres.xml"  
+                     uselogger="true"  
+                     usedebug="true"  
+                     target="email.res.ok"> 
+                     <property name="file" value="classlibt.txt.ok"/> 
+                     <property name="mailhost" value="${server_addr}"/>
+                     <property name="fromaddress" value="${report_from}"/>
+                     <property name="toaddress" value="${report_to}"/>
+                     <property name="subject" value="${cl.prefix.ok} over drlvm"/>
+                     <property name="flag" value="${project.name}"/>
+                </antpublisher> 
+            </onsuccess>
+        </publishers>
+
+    </project>
 </cruisecontrol>
+
+

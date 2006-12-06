@@ -134,9 +134,16 @@ port.value=111
                 <delete dir="${cc.filename}" includeEmptyDirs="true" verbose="false"/>
 		
 		<!-- copy the ant-junit jar to cc/lib -->
-	
 		<copy file="${junitjar.filename}.jar" todir="${target.dir}/lib"/>
-		
+
+		<copy todir="${target.dir}" flatten="yes">
+			<fileset dir="config/xsl" />
+		</copy>
+
+		<!--ovwrwrite the ant and launcher jar's in {target.dir}/lib -->
+		<copy file="${target.dir}/apache-ant-1.6.5/lib/ant.jar" todir="${target.dir}/lib" overwrite="yes" failonerror="false"/>
+		<copy file="${target.dir}/apache-ant-1.6.5/lib/ant-launcher.jar" todir="${target.dir}/lib" overwrite="yes" failonerror="false"/>
+
 		<!-- copy the config we want to use, and make target dirs for the checkouts -->
 		<copy file="config/config-full.xml" tofile="${target.dir}/config.xml" />
 		<copy file="config/copyres.xml" tofile="${target.dir}/copyres.xml" />
@@ -197,11 +204,16 @@ cmd.prefix=/c
 cmd=build.bat
 cc=msvc
 </echo>
+		<replace file="${target.dir}/cruisecontrol.bat" 
+			token="REM set CC_OPTS=-Xms128m -Xmx256m"
+			value="set CC_OPTS=-Xmx500m"/>
+		<replace file="${target.dir}/cruisecontrol.bat" token="%LIBDIR%\ant.jar">
+			<replacevalue><![CDATA[%LIBDIR%\ant.jar
+set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-apache-regexp.jar
+set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ecj_3.2.jar
+]]></replacevalue></replace>
 		<exec executable="cmd" dir="${target.dir}/projects/drlvm/trunk/build" >
-			<arg line="/c build.bat ${vm.proxy.h} ${vm.proxy.p} update" />
-		</exec>
-		<exec executable="cmd" dir="${target.dir}/projects/drlvm/trunk/build" >
-			<arg line="/c build.bat ${vm.proxy.h} ${vm.proxy.p}" />
+			<arg line="/c build.bat ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build" />
 		</exec>
 	</target>
 		
@@ -213,11 +225,14 @@ cmd.prefix=
 cmd=build.sh
 cc=gcc
 </echo>
+		<replace file="${target.dir}/cruisecontrol.sh" 
+			token='# CC_OPTS="-Xms128m -Xmx256m"'
+			value='CC_OPTS="-Xmx500m"'/>
+		<replace file="${target.dir}/cruisecontrol.sh" 
+			token="$LIBDIR/ant.jar" 
+			value="$LIBDIR/ant.jar:$ANT_HOME/lib/ant-apache-regexp.jar:$ANT_HOME/lib/ecj_3.2.jar"/>
 		<exec executable="sh" dir="${target.dir}/projects/drlvm/trunk/build">
-			<arg line="build.sh ${vm.proxy.h} ${vm.proxy.p} update"/>
-		</exec>
-		<exec executable="sh" dir="${target.dir}/projects/drlvm/trunk/build">
-			<arg line="build.sh ${vm.proxy.h} ${vm.proxy.p}"/>
+			<arg line="build.sh ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build"/>
 		</exec>
 	</target>
 	<target name="process-drlvm" depends="drlvm-win,drlvm-other">

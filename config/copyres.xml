@@ -1,3 +1,18 @@
+<!-- 
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+     
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+-->
 <project name="copy_results" default="copy.res" basedir=".">
 
     <tstamp>
@@ -6,20 +21,49 @@
 
     <target name="copy.res">
        <delete file="projects/classlib/trunk/results_${VM}_${timestamp}.zip" failonerror="false" />
-       <zip destfile="projects/classlib/trunk/results_${VM}_${timestamp}.zip">
+       <zip destfile="projects/classlib/trunk/results_${VM}_${timestamp}.zip" >
            <zipfileset dir="projects/classlib/trunk/build/test_report" includes="**/*.xml" />
         </zip>
     </target>
-
     <target name="copy.vm.res">
        <delete file="projects/drlvm/trunk/results_${timestamp}.zip" failonerror="false" />
-       <zip destfile="projects/drlvm/trunk/results_${timestamp}.zip">
+       <zip destfile="projects/drlvm/trunk/results_${timestamp}.zip" >
             <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/vm/_smoke.tests/reports" prefix="smoke/" />
             <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/vm/_cunit.tests/report" prefix="cunit/" />
-            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/jitrino.jet" prefix="jet/" includes="**/*.xml" />
-            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/jitrino.opt" prefix="opt/" includes="**/*.xml" />
-            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/interpreter" prefix="int/" includes="**/*.xml" />
+            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/jet.mode" prefix="jet/" includes="**/*.xml" />
+            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/opt.mode" prefix="opt/" includes="**/*.xml" />
+            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/int.mode" prefix="int/" includes="**/*.xml" />
         </zip>
+    </target>
+
+    <condition property="already.sent.f">
+            <available file="${flag}.fs"/>
+    </condition>
+
+    <condition property="already.sent.ok">
+            <available file="${flag}.oks"/>
+    </condition>
+
+    <target name="email.res" unless="already.sent.f" >
+        <echo file="${flag}.fs" message="f.done: ${already.sent.f} ${already.sent.ok}"/>
+        <delete file="${flag}.oks" failonerror="false"/>
+	<mail	from="${fromaddress}" 
+		tolist="${toaddress}"
+		messagefile="${file}"
+		failonerror="false"
+		mailhost="${mailhost}"
+		subject="${subject}"/>
+    </target>
+
+    <target name="email.res.ok" unless="already.sent.ok" >
+        <echo file="${flag}.oks" message="ok.done: ${already.sent.f} ${already.sent.ok}"/>
+        <delete file="${flag}.fs" failonerror="false"/>
+	<mail	from="${fromaddress}" 
+		tolist="${toaddress}"
+		messagefile="${file}"
+		failonerror="false"
+		mailhost="${mailhost}"
+		subject="${subject}"/>
     </target>
 
 </project>

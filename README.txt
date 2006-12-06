@@ -70,25 +70,7 @@ To kickoff CruiseControl, just type :
 
 FAQ
 ---
-1) Q.: The classlib project build/ test runs failed with the message like:
-"No supported regular expression matcher found". Why?
-   A.: Update cruisecontrol.bat (or cruisecontrol.sh) file to add the 
-ant-apache-regexp.jar archives from ant/lib directory to the 'CRUISE_PATH'.
-
-2) Q.: The classes can't be compiled under CC. Why?
-   A.: Usually, no compiler available in the class path. Please, add the 
-ecj_3.2.jar archive to the 'CRUISE_PATH' variable.
-
-3) Q.: The test runs OK, but no passed/ failed information available. Why?
+1) Q.: The test runs OK, but no passed/ failed information available. Why?
    A.: This script was tested and works over the sun jdk only. If you run
 it over the BEA jdk it will fail.
-
-4) Q.: The results of CC are not emailed. Why?
-   A.: uncomment the string "REM set CC_OPTS=-Xms128m -Xmx256m" and update
-it as "set CC_OPTS=-Xms128m -Xmx600m"
-
-5) Q.: The size of emailed notification is too big. How it can be reduced?
-   A.: To reduce the emailed notification size please commented out the string
-69-77 in the file <root>/cc/webapps/cruisecontrol/xsl/errors.xsl. In this case
-the email will not include warning messages (actually we have a lot of them).
 
