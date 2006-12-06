@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Apache Harmony Development Using Eclipse</title>
+  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+ </properties>
+
+<body>
+  <section name="Introduction">
+    <p>
+      The current page provides instructions on how to set up Eclipse to develop Java code
+      in Apache Harmony, with sections for both DRLVM and class library development.
+    </p>
+    <p>
+      DRLVM specific instructions are only emerging, while class library specific
+      instructions are in two sets: the <a href="#fastpath">fast path</a>
+      for people familiar with Eclipse and the source code layout in Harmony's
+      Subversion repository; and the
+      <a href="#step_guide">step-by-step guide</a>
+      for novices who want to follow the details of a setup and see a brief
+      development example.
+    </p>
+    <p>
+      All instructions assume you satisfy the same Eclipse-based
+      development prerequsities, as described in the following section.
+    </p>
+    <subsection name="Prerequisites">
+      <p>
+        To develop Apache Harmony Java code with Eclipse JDT, you need:
+      </p>
+      <ol>
+        <li>
+          Eclipse: version 3.2 or later, from
+          <a href="http://download.eclipse.org">eclipse.org</a>
+        </li>
+        <li>
+          A Subversion plug-in: Either Subclipse from <a href="http://subclipse.tigris.org/">
+            tigris.org
+          </a> or Subversive from <a href="http://www.polarion.org">
+            polarion.org
+          </a>
+        </li>
+      </ol>
+    </subsection>
+    <subsection name="Getting the Code">
+      <p>
+        You will surely need the code to work with. <i>For class library development</i>,
+        you'll need a compatible VM: obtain a VM as
+        <a href="../subcomponents/classlibrary/build_classlib.html#Obtaining_a_VM">described here</a> capable
+        of running the class libary code, and install it in the same location as
+        the snapshot. You will also need the class libraries build if you want to work
+        on a particular module.
+      </p>
+      <p>Analogously, you'll need class libraries for <i>DRLVM development</i>.
+        Follow one of these ways depending on your needs:
+      </p>
+      <ul>
+        <li>
+          <b>Get pre-built snapshot</b> from the
+          <a href="http://people.apache.org/builds/harmony/snapshots/">download page</a>.
+        </li>
+        <li>
+          <b>Download source code</b> to be built manually. For that, create an SVN repository location
+          using the URL:
+          <pre>
+///for classlibraries
+https://svn.apache.org/repos/asf/harmony/enhanced/classlib
+
+///for DRLVM
+https://svn.apache.org/repos/asf/harmony/enhanced/drlvm</pre>
+          Check out the code from SVN selecting <b>Checkout...</b> from the context menu of <code>trunk</code>.
+        </li>
+      </ul>
+    </subsection>
+  </section>
+<section name="DRLVM Development">
+<a name="drlvm"/>
+      <p>For details on how to build DRLVM and other related documentation, please see
+      the <a href="../subcomponents/drlvm/index.html">DRLVM web pages</a>.
+    </p>
+</section>
+
+<section name="Class Library Development: Fast Path - for Experienced Eclipse developers">
+<a name="fastpath"/>
+  <p>
+    If you know your way around Eclipse JDT, then following these steps will
+    have you hacking Harmony Java code in no time at all!
+  </p>
+
+<subsection name="Configuring Eclipse">
+  <p>
+    Ensure that you have <a href="#Prerequisites">the development prerequisites</a>
+    in place.  Then if you are using Linux start Eclipse as normal with the arguments 
+    <code>-vmargs -Dpde.jreProfile=none -Dpde.allowCycles=true</code> and skip to step 4. If
+    you are using Windows do the following:</p>
+    <ol>
+      <li>Copy the <code>vsvars32.bat</code> file from your Visual Studio install directory
+        to any convenient location. If you have chosen the defaults when installing, you 
+        will find the given file in the <code>
+          C:\Program Files\Microsoft Visual Studio.NET 2003\Common7\Tools</code> directory.</li> 
+         <li>Edit the <code>vsvars32.bat</code> file adding the following line right after the 
+        last line beginning with <code>@set...</code>: 
+        <pre>start C:\...\eclipse\eclipse.exe -vmargs -Xmx512M -Dpde.jreProfile=none -Dpde.allowCycles=true</pre>
+      In the line above, <code>"..."</code> is the path to your Eclipse installation directory.
+          
+        <p class="note">Note</p>
+      <p class="notetext">Using <code>-vmargs -Xmx512M</code> is optional, 
+      but helpful to stop Eclipse running out of memory.</p></li>
+         <li>To start Eclipse, double click on the <code>vsvars32.bat</code> file.
+        </li>
+
+      <li>
+        Configure the following settings in <b>Window</b> &gt; <b>Preferences</b>:
+      </li>
+        <ul>
+          <li>Change the Java compiler settings:
+            <ol>
+              <li>In the <b>Java</b> &gt; <b>Compiler</b> preferences ensure the
+                <b>Compiler compliance level</b> is set to
+                <b>1.4</b>.
+            </li>
+              <li>In the <b>Java</b> &gt; <b>Compiler</b> &gt; <b>Building</b> preferences,
+                open the <b>Build Path Problems</b> section
+                and change <b>Circular Dependencies</b> from
+                <b>Error</b> to <b>Warning</b>.
+            
+            </li>
+            </ol></li>
+          <li>Change the PDE settings:
+            <ol>
+              <li>In the <b>Plug-in Development</b> &gt; <b>Compilers</b> preferences
+              change <b>Unresolved Dependencies</b> from
+                <b>Error</b> to <b>Warning</b>.
+            </li>
+              <li>In the <b>Plug-in Development</b> &gt; <b>Target Platform</b>
+                preferences, change the <b>Location</b> box to be the
+                <code>jre/lib/boot</code> directory of the classlib snapshot.</li>
+            </ol></li>
+        </ul>
+      <li>Copy the <code>ecj_3.2.jar</code> file into the 
+      <code>...\eclipse\plugins\org.apache.ant_1.6.5\lib</code> directory.</li>
+      <li>To include the given file, configure the following Ant settings in 
+      <b>Window</b> &gt; <b>Preferences</b> &gt; <b>Ant</b> &gt; <b>Runtime</b>:
+    </li>
+      <ul>
+        <li>Select <b>Global Entries</b>
+      </li>
+        <li>Select <b>Add External Jars</b>
+    </li>
+        <li>Add the <code>ecj_3.2.jar</code> file from
+          the <code>org.apache.ant_1.6.5\lib</code> directory.
+        </li>
+        </ul>
+    </ol>
+  
+  
+</subsection>
+
+<subsection name="Developing and Testing Code">
+  <p>
+    The Apache Harmony class library is structured to allow developers to work on individual
+    <em>modules</em> in the class library without having to load and compile the entire
+    project source tree.
+  </p>
+  <p>
+    This is best illustrated by a worked example. In this example, assume you want to make
+    a change to the <code>NIO</code> module. This is how you would proceed:
+    <ol>
+      <li>Go to the SVN repository view, open the Harmony URL and browse to
+        <code>trunk &gt; modules</code>. Select
+        <code>nio</code> and from the context menu select
+        <b>Checkout...</b>, and on the checkout dialog box click <b>Finish</b>.</li>
+      <li>In the resulting project in your workspace the implementation code
+        is in the source folder <code>src/main/java</code> and the unit tests
+        are in the source folder <code>src/test/java</code>.</li>
+      <li>Hack away! Developers are encouraged to produce JUnit tests for new
+        implementation code.</li>
+      <li>To test the code you need to set-up a JUnit Run Configuration for the
+        unit test.  You can either run a single test case, or run the
+        <code>AllTests</code> suite for all tests in a package or module.
+        For example, to run the test suite
+        <code>org.apache.harmony.tests.nio.AllTests</code> set up a
+        run configuration with the following characteristics:
+        <ul>
+          <li><em>bootclasspath</em>: the folder nio/bin/main, followed by
+            the Harmony JRE library.</li>
+          <li><em>classpath</em>: the folder nio/bin/test, followed by the
+            <code>JUNIT JAR</code> file.</li>
+          <br/>
+          <img src="../images/dev_eclipse_runconf.jpg" alt="Java run configuration"/>
+          <li><em>VM</em>: the Harmony JRE as the launching VM.</li>
+        </ul>
+      </li>
+      <li>If everything looks good, go ahead and
+        <a href="../get-involved.html#create_patch">contribute a patch</a>.</li>
+    </ol>
+  </p>
+</subsection>
+</section>
+
+<section name="Class Library Development: Step-by-Step Guide">
+<a name="step_guide"/>
+  <p>
+    We have produced a brief webcast for those who want to see a step-by-step guide
+    to configuring Eclipse, and developing a patch to the classlibrary code.  The webcast
+    starts assuming you have already installed the pre-requisities for Eclipse-based
+    development, and launched Eclipse with the following commandline:
+    <pre>eclipse -vmargs -Dpde.jreProfile=none -Dpde.allowCycles=true</pre>
+    We <a href="dev_eclipse_movie.html">
+    pick up the story here...</a> (<em>Warning 8Mb flash download!</em>)
+  </p>
+</section>
+
+</body>
+</document>
