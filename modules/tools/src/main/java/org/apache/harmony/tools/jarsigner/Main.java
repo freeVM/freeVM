@@ -44,6 +44,7 @@ public class Main {
      */
     public static void run(String[] args, OutputStream out) throws Exception {
         // TODO
+
         if (out != System.out){
             UserInteractor.setOutputStream(out);
         }
@@ -58,6 +59,9 @@ public class Main {
      *            command line with options.
      */
     public static void main(String[] args) {
+        
+        System.out.println("jarsigner : not implemented yet");
+
         try {
             run(args, System.out);
         } catch (Exception e) {
