@@ -53,14 +53,14 @@
         </log>
 
         <publishers>
-            <antpublisher   
+            <!--antpublisher   
                  antworkingdir="."  
                  buildfile="copyres.xml"  
                  uselogger="true"  
                  usedebug="false"  
                  target="copy.res"> 
                 <property name="VM" value="ibm"/> 
-            </antpublisher> 
+            </antpublisher--> 
             <onfailure>
                 <xsltlogpublisher directory="."  outfilename="classlib.txt"  xsltfile="br.xsl" />
                 <antpublisher   
@@ -243,7 +243,7 @@
         </schedule>
 
         <log dir="logs/${project.name}">
-            <merge dir="projects/${project.name}/trunk/build/test_report" pattern="TEST-*.xml" />
+            <merge dir="projects/classlib/trunk/build/test_report" pattern="TEST-*.xml" />
         </log>
 
         <publishers>
