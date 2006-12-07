@@ -64,26 +64,26 @@
     </subsection>
     <subsection name="Getting the Code">
       <p>
-        You will surely need the code to work with. <i>For class library development</i>,
-        you'll need a compatible VM: obtain a VM as
-        <a href="../subcomponents/classlibrary/build_classlib.html#Obtaining_a_VM">described here</a> capable
+        Next you will need the code to work with. <i>For class library development</i>,
+        you will need a compatible VM. You will also need a class libraries build if you want to work
+        on an individual module. Obtain a VM as
+        <a href="../subcomponents/classlibrary/build_classlib.html#Obtaining_a_VM">described here</a>, that is capable
         of running the class libary code, and install it in the same location as
-        the snapshot. You will also need the class libraries build if you want to work
-        on a particular module.
+        the class libraries build (or the location you will be building to if you are building the class libararies yourself).
       </p>
-      <p>Analogously, you'll need class libraries for <i>DRLVM development</i>.
+      <p>Analogously, you will need the class libraries for <i>DRLVM development</i>.
         Follow one of these ways depending on your needs:
       </p>
       <ul>
         <li>
-          <b>Get pre-built snapshot</b> from the
+          <b>Get a pre-built snapshot</b> from the
           <a href="http://people.apache.org/builds/harmony/snapshots/">download page</a>.
         </li>
         <li>
-          <b>Download source code</b> to be built manually. For that, create an SVN repository location
+          <b>Download the source code</b> to be built manually. For that, create an SVN repository location
           using the URL:
           <pre>
-///for classlibraries
+///for the class libraries
 https://svn.apache.org/repos/asf/harmony/enhanced/classlib
 
 ///for DRLVM
