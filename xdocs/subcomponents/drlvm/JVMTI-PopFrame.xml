@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<document>
+  <properties>
+    <title>JVMTI Implementation of Pop Frame</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+
+  </properties>
+
+  <body>
+      <section name="JVMTI Pop Frame">
+         <p>
+            Here is a description of how popping a frame is currently
+            implemented in the DRLVM tool interface (JVMTI). For a
+            definition of the pop frame functionality, consult the JVMTI
+            specification [<a href="#JVMTISpec">1</a>]. For generic
+            information on JVMTI in the DRL virtual machine and for definition
+            of related terms, see the <a href="developers_guide.html" title="DRLVM Developer's Guide">developer's
+            guide</a>.
+         </p>
+
+         <subsection name="Introduction">
+         <p> Popping a stack frame becomes necessary when execution is in a native
+           function and a <a href="developers_guide.html#M2nFrame">managed-to-native
+           frame</a> (M2nFrame) is on the stack. This means that the JVMTI 
+       component pops the M2nFrame and the Java frame above it. A frame is popped
+           each time the JVMTI function <code>PopFrame()</code> is
+       called. The current pop-frame implementation is based on the exception
+       handling mechanism for transferring execution control. This way, VM pops
+       frames on the current thread only. To pop frames on other threads, VM
+       uses the M2nFrame flag system and callbacks.</p>
+          </subsection>
+         <subsection name="How to Pop a Frame">
+         <p>To pop a frame on the current thread, refer to the following core
+            functions:
+         </p>
+         <table>
+            <tr>
+               <th class="TableHeading">
+                     Function Name </th>
+               <th class="TableHeading">
+                     Role</th>
+            </tr>
+            <tr>
+                <td class="TableCell">
+                     <code>jvmti_jit_prepare_pop_frame</code>
+              </td>
+                <td class="TableCell">
+                     Finds register context for the previous frame using the
+                     <a href="developers_guide.html#Stack_Iterator">stack iterator</a>.</td>
+           </tr>
+            <tr>
+                <td class="TableCell">
+                     <code>jvmti_jit_complete_pop_frame</code>
+              </td>
+                <td class="TableCell">
+                     Transfers control to the saved register context for the
+                     popped frame.
+              </td>
+           </tr>
+            <tr>
+                <td class="TableCell">
+                     <code>jvmti_ji_do_pop_frame</code>
+              </td>
+                <td class="TableCell">
+                     Transfers control to the previous frame. This function is
+                     a simple and fast combination of sequential calls of
+                     <code>jvmti_jit_prepare_pop_frame</code> and
+                     <code>jvmti_jit_complete_pop_frame</code>.
+              </td>
+           </tr>
+   </table>
+         <p>The state of a frame with regard to popping is indicated in the
+          <code>frame_type</code>
+           field. This field can have the following values: </p>
+         <table>
+            <tr>
+                <th class="TableHeading">
+                   Flag Name
+                   </th>
+                <th class="TableHeading">
+                     Meaning</th>
+            </tr>
+            <tr>
+                <td class="TableCell">
+                     <code>FRAME_UNPOPABLE</code>
+              </td>
+                <td class="TableCell">
+                     The frame cannot be popped.
+              </td>
+            </tr>
+            <tr>
+                <td class="TableCell">
+                     <code>FRAME_POPABLE</code>
+              </td>
+                <td class="TableCell">
+                     The frame can be popped but is not.
+              </td>
+            </tr>
+            <tr>
+                <td class="TableCell">
+                     <code>FRAME_POP_NOW</code>
+              </td>
+                <td class="TableCell">
+                     The frame is popped and the state of VM can be
+                     unpredictable and unexpected. JVMTI cannot work in this
+                     state and waits until the popped frame is resumed and the
+                     frame state is changed.
+              </td>
+            </tr>
+            <tr>
+                <td class="TableCell">
+                     <code>FRAME_POP_DONE =
+                     FRAME_POPABLE |FRAME_POP_NOW</code>
+              </td>
+                <td class="TableCell">
+                     The frame is popped now but VM state is OK and JVMTI can
+                     work without thread resume.
+              </td>
+            </tr>
+         </table>
+         <p>
+            In the current implementation, popping a frame goes in the
+            following way:
+         </p>
+         <ol>
+            <li>
+               VM suspends the popped thread in one of these functions:
+               <code>thread_suspend_disable()</code> or in <code>hythread_safe_point()</code>.
+            </li>
+           <li>
+             The JVMTI Agent calls <code>PopFrame()</code> and does the following:
+             <ol>
+               <li>
+                 Checks that the flag for the topmost M2nFrame is set to <code>FRAME_POPABLE</code>,
+                 which means that the frame can be popped.
+               </li>
+               <li>
+                 Changes the flag
+                 to <code>FRAME_POP_NOW</code>.
+               </li>
+               <li>
+                 Sets the safe point for the callback function. The suspended thread
+                 executes the callback while staying in the function where the
+                 thread is suspended.
+               </li>
+             </ol>
+           </li>
+           <li>
+             The callback
+             function pops the frame in one of the following ways depending on
+             the function and on area of the stack:
+             <ol>
+               <li>
+                 For <b>hythread_safe_point():</b>
+                 <ol>
+                   <li>
+                     VM finds the register
+                     context for the previous frame and saves it in the current M2nFrame.
+                     The frame type flag changed to <code>FRAME_POP_DONE</code>.
+                   </li>
+                   <li>
+                     VM exits the safe point and checks the frame status. If
+                     the frame is popped, VM transfers control to the saved register
+                     context. Otherwise, VM exits normally.
+                   </li>
+                 </ol>
+               </li>
+               <li>
+                 For the <b>suspend_disable()</b> function in an <a href="developers_guide.html#Exception_Handling">
+                   unwindable
+                   area of the stack
+                 </a>:
+                 <ol>
+                   <li>
+                     The callback explicitly calls <code>hythread_safe_point()</code> to
+                     stop the current thread in the safe point and wait until
+                     the thread is resumed by another thread.
+                   </li>
+                   <li>
+                     When the thread is resumed, the callback pops the frame
+                     for the current thread and transfers control to the previous
+                     frame.
+                   </li>
+                 </ol>
+               </li>
+               <li>
+                 For the <strong>suspend_disable()</strong> function in a <a href="developers_guide.html#Exception_Handling">
+                   non-unwindable
+                   area of the stack
+                 </a>:
+                 <ol>
+                   <li>
+                     VM raises a special exception object and waits for the end
+                     of the area.
+                   </li>
+                   <li>
+                     After exiting the area, VM checks whether the exception
+                     is set and pops the frame for the current thread and transfers
+                     control to the previous frame.
+                   </li>
+                 </ol>
+               </li>
+              </ol>
+           </li>
+         </ol>
+         </subsection>
+         <subsection name="Implementation Specifics">
+        
+
+         <ul>
+           <li>Because the implementation re-uses the exception scheme, popping
+              a frame does not transfer control to the beginning of the bytecode
+        invoke instruction, but to the native call instruction. This is possible
+             because the JIT compiles an invoke instruction into
+              several native instructions including the call.<br />
+              A better way of handling the operation is to make VM transfer
+              control to the beginning of the invoke instruction block. </li>
+           <li> In the exception handling mechanism, control is returned to the
+               instruction pointer (IP) after the call instruction. This way, VM
+                must find the call IP of the previous instruction by using
+                information on JIT calling conventions.<br />
+It is advisory to move the corresponding functionality to JIT so that VM has no data
+on JIT calling conventions. </li>
+           <li> Object references in popped frames can become outdated during
+                garbage collection because VM components do not enumerate the stack
+                for such frames. For GC purposes, JVM TI enumerates popped frames
+                until the thread is resumed and control is transferred. </li>
+           <li> Due to specifics of the current thread manager implementation,
+                the pop frame cannot guarantee synchronization of thread-suspend
+                states across different threads. This way, if Thread A suspends
+                Thread B, the current implementation cannot guarantee that Thread
+             B is not resumed by another thread. In such a situation, operation of
+                Thread A can be unstable because it relies on Thread B being
+                suspended. </li>
+         </ul>
+ </subsection>
+         <subsection name="Related Information">
+        
+         <p>[<a name="JVMTISpec" id="JVMTISpec"></a>1] JVM
+         Tool Interface Specification, <a 
+href="http://java.sun.com/j2se/1.5.0/docs/guide/jvmti/jvmti.html" 
+target="_blank">http://java.sun.com/j2se/1.5.0/docs/guide/jvmti/jvmti.html</a> </p>
+ </subsection>       
+       </section> 
+</body>
+</document>
