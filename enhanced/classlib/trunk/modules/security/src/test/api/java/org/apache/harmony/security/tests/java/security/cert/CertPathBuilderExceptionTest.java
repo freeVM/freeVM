@@ -20,27 +20,29 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.security.tests.java.security;
-import java.security.KeyException;
+package org.apache.harmony.security.tests.java.security.cert;
+
+import java.security.cert.CertPathBuilderException;
 
 import junit.framework.TestCase;
 
 
 /**
- * Tests for <code>KeyException</code> class constructors and methods.
+ * Tests for <code>CertPathBuilderException</code> class constructors and
+ * methods.
  * 
  */
-public class KeyExceptionTest extends TestCase {
+public class CertPathBuilderExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
 
     /**
-     * Constructor for KeyExceptionTests.
+     * Constructor for CertPathBuilderExceptionTests.
      * 
      * @param arg0
      */
-    public KeyExceptionTest(String arg0) {
+    public CertPathBuilderExceptionTest(String arg0) {
         super(arg0);
     }
 
@@ -52,24 +54,24 @@ public class KeyExceptionTest extends TestCase {
     private static Throwable tCause = new Throwable("Throwable for exception");
 
     /**
-     * Test for <code>KeyException()</code> constructor Assertion: constructs
-     * KeyException with no detail message
+     * Test for <code>CertPathBuilderException()</code> constructor Assertion:
+     * constructs CertPathBuilderException with no detail message
      */
-    public void testKeyException01() {
-        KeyException tE = new KeyException();
+    public void testCertPathBuilderException01() {
+        CertPathBuilderException tE = new CertPathBuilderException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(String)</code> constructor Assertion:
-     * constructs KeyException with detail message msg. Parameter
-     * <code>msg</code> is not null.
+     * Test for <code>CertPathBuilderException(String)</code> constructor
+     * Assertion: constructs CertPathBuilderException with detail message msg.
+     * Parameter <code>msg</code> is not null.
      */
-    public void testKeyException02() {
-        KeyException tE;
+    public void testCertPathBuilderException02() {
+        CertPathBuilderException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i]);
+            tE = new CertPathBuilderException(msgs[i]);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -77,33 +79,36 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String)</code> constructor Assertion:
-     * constructs KeyException when <code>msg</code> is null
+     * Test for <code>CertPathBuilderException(String)</code> constructor
+     * Assertion: constructs CertPathBuilderException when <code>msg</code> is
+     * null
      */
-    public void testKeyException03() {
+    public void testCertPathBuilderException03() {
         String msg = null;
-        KeyException tE = new KeyException(msg);
+        CertPathBuilderException tE = new CertPathBuilderException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(Throwable)</code> constructor Assertion:
-     * constructs KeyException when <code>cause</code> is null
+     * Test for <code>CertPathBuilderException(Throwable)</code> constructor
+     * Assertion: constructs CertPathBuilderException when <code>cause</code>
+     * is null
      */
-    public void testKeyException04() {
+    public void testCertPathBuilderException04() {
         Throwable cause = null;
-        KeyException tE = new KeyException(cause);
+        CertPathBuilderException tE = new CertPathBuilderException(cause);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(Throwable)</code> constructor Assertion:
-     * constructs KeyException when <code>cause</code> is not null
+     * Test for <code>CertPathBuilderException(Throwable)</code> constructor
+     * Assertion: constructs CertPathBuilderException when <code>cause</code>
+     * is not null
      */
-    public void testKeyException05() {
-        KeyException tE = new KeyException(tCause);
+    public void testCertPathBuilderException05() {
+        CertPathBuilderException tE = new CertPathBuilderException(tCause);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -116,25 +121,25 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is null
-     * <code>msg</code> is null
+     * Test for <code>CertPathBuilderException(String, Throwable)</code>
+     * constructor Assertion: constructs CertPathBuilderException when
+     * <code>cause</code> is null <code>msg</code> is null
      */
-    public void testKeyException06() {
-        KeyException tE = new KeyException(null, null);
+    public void testCertPathBuilderException06() {
+        CertPathBuilderException tE = new CertPathBuilderException(null, null);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is null
-     * <code>msg</code> is not null
+     * Test for <code>CertPathBuilderException(String, Throwable)</code>
+     * constructor Assertion: constructs CertPathBuilderException when
+     * <code>cause</code> is null <code>msg</code> is not null
      */
-    public void testKeyException07() {
-        KeyException tE;
+    public void testCertPathBuilderException07() {
+        CertPathBuilderException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i], null);
+            tE = new CertPathBuilderException(msgs[i], null);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -142,12 +147,12 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is not null
-     * <code>msg</code> is null
+     * Test for <code>CertPathBuilderException(String, Throwable)</code>
+     * constructor Assertion: constructs CertPathBuilderException when
+     * <code>cause</code> is not null <code>msg</code> is null
      */
-    public void testKeyException08() {
-        KeyException tE = new KeyException(null, tCause);
+    public void testCertPathBuilderException08() {
+        CertPathBuilderException tE = new CertPathBuilderException(null, tCause);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -160,14 +165,14 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is not null
-     * <code>msg</code> is not null
+     * Test for <code>CertPathBuilderException(String, Throwable)</code>
+     * constructor Assertion: constructs CertPathBuilderException when
+     * <code>cause</code> is not null <code>msg</code> is not null
      */
-    public void testKeyException09() {
-        KeyException tE;
+    public void testCertPathBuilderException09() {
+        CertPathBuilderException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i], tCause);
+            tE = new CertPathBuilderException(msgs[i], tCause);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

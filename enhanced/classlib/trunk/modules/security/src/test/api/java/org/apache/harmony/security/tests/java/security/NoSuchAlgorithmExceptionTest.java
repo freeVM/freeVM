@@ -21,26 +21,27 @@
 */
 
 package org.apache.harmony.security.tests.java.security;
-import java.security.KeyException;
+import java.security.NoSuchAlgorithmException;
 
 import junit.framework.TestCase;
 
 
 /**
- * Tests for <code>KeyException</code> class constructors and methods.
+ * Tests for <code>NoSuchAlgorithmException</code> class constructors and
+ * methods.
  * 
  */
-public class KeyExceptionTest extends TestCase {
+public class NoSuchAlgorithmExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
 
     /**
-     * Constructor for KeyExceptionTests.
+     * Constructor for NoSuchAlgorithmExceptionTests.
      * 
      * @param arg0
      */
-    public KeyExceptionTest(String arg0) {
+    public NoSuchAlgorithmExceptionTest(String arg0) {
         super(arg0);
     }
 
@@ -52,24 +53,24 @@ public class KeyExceptionTest extends TestCase {
     private static Throwable tCause = new Throwable("Throwable for exception");
 
     /**
-     * Test for <code>KeyException()</code> constructor Assertion: constructs
-     * KeyException with no detail message
+     * Test for <code>NoSuchAlgorithmException()</code> constructor Assertion:
+     * constructs NoSuchAlgorithmException with no detail message
      */
-    public void testKeyException01() {
-        KeyException tE = new KeyException();
+    public void testNoSuchAlgorithmException01() {
+        NoSuchAlgorithmException tE = new NoSuchAlgorithmException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(String)</code> constructor Assertion:
-     * constructs KeyException with detail message msg. Parameter
-     * <code>msg</code> is not null.
+     * Test for <code>NoSuchAlgorithmException(String)</code> constructor
+     * Assertion: constructs NoSuchAlgorithmException with detail message msg.
+     * Parameter <code>msg</code> is not null.
      */
-    public void testKeyException02() {
-        KeyException tE;
+    public void testNoSuchAlgorithmException02() {
+        NoSuchAlgorithmException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i]);
+            tE = new NoSuchAlgorithmException(msgs[i]);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -77,33 +78,36 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String)</code> constructor Assertion:
-     * constructs KeyException when <code>msg</code> is null
+     * Test for <code>NoSuchAlgorithmException(String)</code> constructor
+     * Assertion: constructs NoSuchAlgorithmException when <code>msg</code> is
+     * null
      */
-    public void testKeyException03() {
+    public void testNoSuchAlgorithmException03() {
         String msg = null;
-        KeyException tE = new KeyException(msg);
+        NoSuchAlgorithmException tE = new NoSuchAlgorithmException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(Throwable)</code> constructor Assertion:
-     * constructs KeyException when <code>cause</code> is null
+     * Test for <code>NoSuchAlgorithmException(Throwable)</code> constructor
+     * Assertion: constructs NoSuchAlgorithmException when <code>cause</code>
+     * is null
      */
-    public void testKeyException04() {
+    public void testNoSuchAlgorithmException04() {
         Throwable cause = null;
-        KeyException tE = new KeyException(cause);
+        NoSuchAlgorithmException tE = new NoSuchAlgorithmException(cause);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(Throwable)</code> constructor Assertion:
-     * constructs KeyException when <code>cause</code> is not null
+     * Test for <code>NoSuchAlgorithmException(Throwable)</code> constructor
+     * Assertion: constructs NoSuchAlgorithmException when <code>cause</code>
+     * is not null
      */
-    public void testKeyException05() {
-        KeyException tE = new KeyException(tCause);
+    public void testNoSuchAlgorithmException05() {
+        NoSuchAlgorithmException tE = new NoSuchAlgorithmException(tCause);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -116,25 +120,25 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is null
-     * <code>msg</code> is null
+     * Test for <code>NoSuchAlgorithmException(String, Throwable)</code>
+     * constructor Assertion: constructs NoSuchAlgorithmException when
+     * <code>cause</code> is null <code>msg</code> is null
      */
-    public void testKeyException06() {
-        KeyException tE = new KeyException(null, null);
+    public void testNoSuchAlgorithmException06() {
+        NoSuchAlgorithmException tE = new NoSuchAlgorithmException(null, null);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is null
-     * <code>msg</code> is not null
+     * Test for <code>NoSuchAlgorithmException(String, Throwable)</code>
+     * constructor Assertion: constructs NoSuchAlgorithmException when
+     * <code>cause</code> is null <code>msg</code> is not null
      */
-    public void testKeyException07() {
-        KeyException tE;
+    public void testNoSuchAlgorithmException07() {
+        NoSuchAlgorithmException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i], null);
+            tE = new NoSuchAlgorithmException(msgs[i], null);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -142,12 +146,12 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is not null
-     * <code>msg</code> is null
+     * Test for <code>NoSuchAlgorithmException(String, Throwable)</code>
+     * constructor Assertion: constructs NoSuchAlgorithmException when
+     * <code>cause</code> is not null <code>msg</code> is null
      */
-    public void testKeyException08() {
-        KeyException tE = new KeyException(null, tCause);
+    public void testNoSuchAlgorithmException08() {
+        NoSuchAlgorithmException tE = new NoSuchAlgorithmException(null, tCause);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -160,14 +164,14 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is not null
-     * <code>msg</code> is not null
+     * Test for <code>NoSuchAlgorithmException(String, Throwable)</code>
+     * constructor Assertion: constructs NoSuchAlgorithmException when
+     * <code>cause</code> is not null <code>msg</code> is not null
      */
-    public void testKeyException09() {
-        KeyException tE;
+    public void testNoSuchAlgorithmException09() {
+        NoSuchAlgorithmException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i], tCause);
+            tE = new NoSuchAlgorithmException(msgs[i], tCause);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

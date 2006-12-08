@@ -21,26 +21,26 @@
 */
 
 package org.apache.harmony.security.tests.java.security;
-import java.security.KeyException;
+import java.security.InvalidKeyException;
 
 import junit.framework.TestCase;
 
 
 /**
- * Tests for <code>KeyException</code> class constructors and methods.
+ * Tests for <code>InvalidKeyException</code> class constructors and methods.
  * 
  */
-public class KeyExceptionTest extends TestCase {
+public class InvalidKeyExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
 
     /**
-     * Constructor for KeyExceptionTests.
+     * Constructor for InvalidKeyExceptionTests.
      * 
      * @param arg0
      */
-    public KeyExceptionTest(String arg0) {
+    public InvalidKeyExceptionTest(String arg0) {
         super(arg0);
     }
 
@@ -52,24 +52,24 @@ public class KeyExceptionTest extends TestCase {
     private static Throwable tCause = new Throwable("Throwable for exception");
 
     /**
-     * Test for <code>KeyException()</code> constructor Assertion: constructs
-     * KeyException with no detail message
+     * Test for <code>InvalidKeyException()</code> constructor Assertion:
+     * constructs InvalidKeyException with no detail message
      */
-    public void testKeyException01() {
-        KeyException tE = new KeyException();
+    public void testInvalidKeyException01() {
+        InvalidKeyException tE = new InvalidKeyException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(String)</code> constructor Assertion:
-     * constructs KeyException with detail message msg. Parameter
-     * <code>msg</code> is not null.
+     * Test for <code>InvalidKeyException(String)</code> constructor
+     * Assertion: constructs InvalidKeyException with detail message msg.
+     * Parameter <code>msg</code> is not null.
      */
-    public void testKeyException02() {
-        KeyException tE;
+    public void testInvalidKeyException02() {
+        InvalidKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i]);
+            tE = new InvalidKeyException(msgs[i]);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -77,33 +77,35 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String)</code> constructor Assertion:
-     * constructs KeyException when <code>msg</code> is null
+     * Test for <code>InvalidKeyException(String)</code> constructor
+     * Assertion: constructs InvalidKeyException when <code>msg</code> is null
      */
-    public void testKeyException03() {
+    public void testInvalidKeyException03() {
         String msg = null;
-        KeyException tE = new KeyException(msg);
+        InvalidKeyException tE = new InvalidKeyException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(Throwable)</code> constructor Assertion:
-     * constructs KeyException when <code>cause</code> is null
+     * Test for <code>InvalidKeyException(Throwable)</code> constructor
+     * Assertion: constructs InvalidKeyException when <code>cause</code> is
+     * null
      */
-    public void testKeyException04() {
+    public void testInvalidKeyException04() {
         Throwable cause = null;
-        KeyException tE = new KeyException(cause);
+        InvalidKeyException tE = new InvalidKeyException(cause);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(Throwable)</code> constructor Assertion:
-     * constructs KeyException when <code>cause</code> is not null
+     * Test for <code>InvalidKeyException(Throwable)</code> constructor
+     * Assertion: constructs InvalidKeyException when <code>cause</code> is
+     * not null
      */
-    public void testKeyException05() {
-        KeyException tE = new KeyException(tCause);
+    public void testInvalidKeyException05() {
+        InvalidKeyException tE = new InvalidKeyException(tCause);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -116,25 +118,25 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is null
-     * <code>msg</code> is null
+     * Test for <code>InvalidKeyException(String, Throwable)</code>
+     * constructor Assertion: constructs InvalidKeyException when
+     * <code>cause</code> is null <code>msg</code> is null
      */
-    public void testKeyException06() {
-        KeyException tE = new KeyException(null, null);
+    public void testInvalidKeyException06() {
+        InvalidKeyException tE = new InvalidKeyException(null, null);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is null
-     * <code>msg</code> is not null
+     * Test for <code>InvalidKeyException(String, Throwable)</code>
+     * constructor Assertion: constructs InvalidKeyException when
+     * <code>cause</code> is null <code>msg</code> is not null
      */
-    public void testKeyException07() {
-        KeyException tE;
+    public void testInvalidKeyException07() {
+        InvalidKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i], null);
+            tE = new InvalidKeyException(msgs[i], null);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -142,12 +144,12 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is not null
-     * <code>msg</code> is null
+     * Test for <code>InvalidKeyException(String, Throwable)</code>
+     * constructor Assertion: constructs InvalidKeyException when
+     * <code>cause</code> is not null <code>msg</code> is null
      */
-    public void testKeyException08() {
-        KeyException tE = new KeyException(null, tCause);
+    public void testInvalidKeyException08() {
+        InvalidKeyException tE = new InvalidKeyException(null, tCause);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -160,14 +162,14 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is not null
-     * <code>msg</code> is not null
+     * Test for <code>InvalidKeyException(String, Throwable)</code>
+     * constructor Assertion: constructs InvalidKeyException when
+     * <code>cause</code> is not null <code>msg</code> is not null
      */
-    public void testKeyException09() {
-        KeyException tE;
+    public void testInvalidKeyException09() {
+        InvalidKeyException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i], tCause);
+            tE = new InvalidKeyException(msgs[i], tCause);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {

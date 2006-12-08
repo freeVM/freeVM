@@ -20,27 +20,28 @@
 * @version $Revision$
 */
 
-package org.apache.harmony.security.tests.java.security;
-import java.security.KeyException;
+package org.apache.harmony.security.tests.java.security.cert;
+
+import java.security.cert.CertificateException;
 
 import junit.framework.TestCase;
 
 
 /**
- * Tests for <code>KeyException</code> class constructors and methods.
+ * Tests for <code>CertificateException</code> class constructors and methods.
  * 
  */
-public class KeyExceptionTest extends TestCase {
+public class CertificateExceptionTest extends TestCase {
 
     public static void main(String[] args) {
     }
 
     /**
-     * Constructor for KeyExceptionTests.
+     * Constructor for CertificateExceptionTests.
      * 
      * @param arg0
      */
-    public KeyExceptionTest(String arg0) {
+    public CertificateExceptionTest(String arg0) {
         super(arg0);
     }
 
@@ -52,24 +53,24 @@ public class KeyExceptionTest extends TestCase {
     private static Throwable tCause = new Throwable("Throwable for exception");
 
     /**
-     * Test for <code>KeyException()</code> constructor Assertion: constructs
-     * KeyException with no detail message
+     * Test for <code>CertificateException()</code> constructor Assertion:
+     * constructs CertificateException with no detail message
      */
-    public void testKeyException01() {
-        KeyException tE = new KeyException();
+    public void testCertificateException01() {
+        CertificateException tE = new CertificateException();
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(String)</code> constructor Assertion:
-     * constructs KeyException with detail message msg. Parameter
-     * <code>msg</code> is not null.
+     * Test for <code>CertificateException(String)</code> constructor
+     * Assertion: constructs CertificateException with detail message msg.
+     * Parameter <code>msg</code> is not null.
      */
-    public void testKeyException02() {
-        KeyException tE;
+    public void testCertificateException02() {
+        CertificateException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i]);
+            tE = new CertificateException(msgs[i]);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -77,33 +78,36 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String)</code> constructor Assertion:
-     * constructs KeyException when <code>msg</code> is null
+     * Test for <code>CertificateException(String)</code> constructor
+     * Assertion: constructs CertificateException when <code>msg</code> is
+     * null
      */
-    public void testKeyException03() {
+    public void testCertificateException03() {
         String msg = null;
-        KeyException tE = new KeyException(msg);
+        CertificateException tE = new CertificateException(msg);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(Throwable)</code> constructor Assertion:
-     * constructs KeyException when <code>cause</code> is null
+     * Test for <code>CertificateException(Throwable)</code> constructor
+     * Assertion: constructs CertificateException when <code>cause</code> is
+     * null
      */
-    public void testKeyException04() {
+    public void testCertificateException04() {
         Throwable cause = null;
-        KeyException tE = new KeyException(cause);
+        CertificateException tE = new CertificateException(cause);
         assertNull("getMessage() must return null.", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(Throwable)</code> constructor Assertion:
-     * constructs KeyException when <code>cause</code> is not null
+     * Test for <code>CertificateException(Throwable)</code> constructor
+     * Assertion: constructs CertificateException when <code>cause</code> is
+     * not null
      */
-    public void testKeyException05() {
-        KeyException tE = new KeyException(tCause);
+    public void testCertificateException05() {
+        CertificateException tE = new CertificateException(tCause);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -116,25 +120,25 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is null
-     * <code>msg</code> is null
+     * Test for <code>CertificateException(String, Throwable)</code>
+     * constructor Assertion: constructs CertificateException when
+     * <code>cause</code> is null <code>msg</code> is null
      */
-    public void testKeyException06() {
-        KeyException tE = new KeyException(null, null);
+    public void testCertificateException06() {
+        CertificateException tE = new CertificateException(null, null);
         assertNull("getMessage() must return null", tE.getMessage());
         assertNull("getCause() must return null", tE.getCause());
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is null
-     * <code>msg</code> is not null
+     * Test for <code>CertificateException(String, Throwable)</code>
+     * constructor Assertion: constructs CertificateException when
+     * <code>cause</code> is null <code>msg</code> is not null
      */
-    public void testKeyException07() {
-        KeyException tE;
+    public void testCertificateException07() {
+        CertificateException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i], null);
+            tE = new CertificateException(msgs[i], null);
             assertEquals("getMessage() must return: ".concat(msgs[i]), tE
                     .getMessage(), msgs[i]);
             assertNull("getCause() must return null", tE.getCause());
@@ -142,12 +146,12 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is not null
-     * <code>msg</code> is null
+     * Test for <code>CertificateException(String, Throwable)</code>
+     * constructor Assertion: constructs CertificateException when
+     * <code>cause</code> is not null <code>msg</code> is null
      */
-    public void testKeyException08() {
-        KeyException tE = new KeyException(null, tCause);
+    public void testCertificateException08() {
+        CertificateException tE = new CertificateException(null, tCause);
         if (tE.getMessage() != null) {
             String toS = tCause.toString();
             String getM = tE.getMessage();
@@ -160,14 +164,14 @@ public class KeyExceptionTest extends TestCase {
     }
 
     /**
-     * Test for <code>KeyException(String, Throwable)</code> constructor
-     * Assertion: constructs KeyException when <code>cause</code> is not null
-     * <code>msg</code> is not null
+     * Test for <code>CertificateException(String, Throwable)</code>
+     * constructor Assertion: constructs CertificateException when
+     * <code>cause</code> is not null <code>msg</code> is not null
      */
-    public void testKeyException09() {
-        KeyException tE;
+    public void testCertificateException09() {
+        CertificateException tE;
         for (int i = 0; i < msgs.length; i++) {
-            tE = new KeyException(msgs[i], tCause);
+            tE = new CertificateException(msgs[i], tCause);
             String getM = tE.getMessage();
             String toS = tCause.toString();
             if (msgs[i].length() > 0) {
