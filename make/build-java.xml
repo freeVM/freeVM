@@ -93,7 +93,7 @@
             <fileset refid="built.files" />
         </delete>
 
-        <fail if="built.files.exist">
+<!--        <fail if="built.files.exist">
 ...
 
 Built files still exist after module clean targets have run.  This
@@ -102,7 +102,7 @@ remaining files are:
 
 ${built.files.list}
 
-        </fail>
+        </fail> -->
     </target>
 
     <!-- =================================
