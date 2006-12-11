@@ -88,10 +88,10 @@ class Compiler {
      * Initialize our local variables. Called during type construction.
      */
     protected void initialize() {
-        if (!new File(ECJ_JAR_FILE).exists()) {
-            System.err.println("javac requires the compiler jar \""
-                    + ECJ_JAR_FILE + "\" to run");
-        }
+//        if (!new File(ECJ_JAR_FILE).exists()) {
+//            System.err.println("javac requires the compiler jar \""
+//                    + ECJ_JAR_FILE + "\" to run");
+//        }
         try {
             initializeMainClass();
             initializeInstance();
