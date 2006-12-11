@@ -46,12 +46,6 @@
             </fileset>
         </copy>
 
-        <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.hdk}/jdk/jre/bin">
-                <patternset includes="*${shlib.suffix}"/>
-            </fileset>
-        </copy>
-
         <!-- Make sure the Linux launcher has execute permission -->
         <chmod file="${hy.jdk}/jre/bin/java${exe.suffix}" perm="ugo+x" />
 
