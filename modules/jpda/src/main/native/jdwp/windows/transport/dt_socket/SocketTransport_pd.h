@@ -32,6 +32,10 @@
 #ifndef _SOCKETTRANSPORT_PD_H
 #define _SOCKETTRANSPORT_PD_H
 
+#if defined(_WINSOCKAPI_) && !defined(_WINSOCK2API_)
+#undef _WINSOCKAPI_
+#endif
+
 #include <Winsock2.h>
 #include <Ws2tcpip.h>
 
