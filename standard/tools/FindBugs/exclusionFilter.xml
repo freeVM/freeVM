@@ -31,6 +31,48 @@
        <Bug code="Dm" />
        <Reason message="Number classes should be able to call Number constructors" />
      </Match>
+     
+     <Match>
+       <Class name="java.io.ByteArrayInputStream" />
+       <Method name="ByteArrayInputStream" />
+       <Bug code="EI2" />
+       <Reason message="Javadoc specifies that ByteArrayInputStream's constructors are designed to take a mutable byte array as an argument and not copy it" />
+     </Match>
+     
+     <Match>
+       <Class name="java.io.CharArrayReader" />
+       <Method name="CharArrayReader" />
+       <Bug code="EI2" />
+       <Reason message="Javadoc specifies that CharArrayReader's constructors are designed to take a mutable char array as an argument and not copy it" />
+     </Match>   
 
+     <Match>
+       <Class name="java.io.LineNumberInputStream" />
+       <Method name="read" />
+       <Bug code="SF" />
+       <Reason message="Fallthrough in switch statement is meant to be there" />
+     </Match>
+     
+     <Match>
+       <Class name="java.io.LineNumberReader" />
+       <Method name="read" />
+       <Bug code="SF" />
+       <Reason message="Fallthrough in switch statement is meant to be there" />
+     </Match>
+     
+     <Match>
+       <Class name="java.lang.String" />
+       <Bug code="ES" />
+       <Reason message="OK to compare Strings using  using == or != in the String class itself" />
+     </Match>
+     
+     <Match>
+       <Class name="java.lang.String" />
+       <Method name="indexOf" />
+       <Bug code="UPM" />
+       <Reason message="Ignore this unused private method" />
+     </Match>
+     
 </FindBugsFilter>
+
 
