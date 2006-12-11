@@ -17,7 +17,7 @@
 # Makefile for module 'launcher.javaw'
 #
 
-!include <$(HY_HDK)\build\make\defines.mak>
+!include <$(HY_JDKTOOLS)\make\defines.mak>
 
 EXENAME=$(EXEPATH)javaw.exe
 BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)main.obj \
@@ -27,4 +27,4 @@ MDLLIBFILES =  $(LIBPATH)hycommon.lib $(LIBPATH)hyprt.lib $(LIBPATH)hythr.lib
 EXEFLAGS=$(guilflags) -subsystem:windows
 EXEDLLFILES=$(guilibsdll)
 
-!include <$(HY_HDK)\build\make\rules.mak>
+!include <$(HY_JDKTOOLS)\make\rules.mak>
