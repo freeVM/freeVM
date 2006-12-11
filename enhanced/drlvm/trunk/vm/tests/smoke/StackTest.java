@@ -14,35 +14,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Pavel Afremov
- * @version $Revision: 1.0 $
- */
-package exception;
 
-class FinalizeStackTest {
-    private static final int MAX_DEPTH = 1000000;
 
-    FinalizeStackTest(int c) {
-        if (c > 0) {
-            new FinalizeStackTest(c - 1);
-        } else {
-            System.out.println("PASS");
-        }
-    }
+public class StackTest {
 
-    protected void finalize() {
-        // empty
+    static int depth = 0;
+    static final int max_depth = 10000000;
+
+    public static void func() {
+        depth++;
+	if (depth < max_depth)
+            func();
     }
 
     public static void main(String[] args) {
         try {
-            new FinalizeStackTest(MAX_DEPTH);
-            System.out.println("FAIL");
+            func();
         } catch (StackOverflowError soe) {
-            System.out.println("PASS : " + soe);
-        } catch (Throwable th) {
-            System.out.println("FAIL");
+            System.out.println("PASS : First SOE depth = " + depth + " : " + soe);
+            return;
         }
+        System.out.println("PASS: no SOE in " + max_depth + " iterations");
     }
 }
