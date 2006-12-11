@@ -191,7 +191,6 @@ Testing class libraries...
 
     <target name="check-depends"
             description="Report on whether the dependencies are met">
-        <echo>WOOGIE : ${external.resources}</echo>
         <ant antfile="make/depends.xml" inheritall="false" target="check">
             <property name="external.resources" value="${external.resources}"/>
         </ant>
