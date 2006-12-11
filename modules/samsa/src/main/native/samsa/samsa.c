@@ -182,9 +182,9 @@ int main (int argc, char **argv, char **envp)
     
     myArgv[newIndex] = '\0';
 
-    for (i=0; i < myArgvCount; i++) { 
-        printf(" %d = %s\n", i, myArgv[i]);
-    }
+//    for (i=0; i < myArgvCount; i++) { 
+//        printf(" %d = %s\n", i, myArgv[i]);
+//    }
 
     free(toolName);
         
