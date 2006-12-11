@@ -130,7 +130,10 @@ ${built.files.list}
 
         <!-- Create the structure -->
         <mkdir dir="${hy.jdk}/jre/bin" />
-            
+
+        <!-- Create the structure -->
+        <mkdir dir="${hy.jdk}/bin" />
+
         <!-- Copy across the jdk/lib dependency jars -->
         <copy todir="${hy.jdk}/lib" flatten="yes">
             <fileset file="${ecj.jar}" />
