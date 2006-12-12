@@ -163,7 +163,7 @@ int main (int argc, char **argv, char **envp)
             strcat(classpath, LIB_POSTFIX);
             strcat(classpath, pToolData->jarList[i]);
         }
-                         
+ 
         myArgv[newIndex++] = "-cp";
         myArgv[newIndex++] = classpath;
 
@@ -207,13 +207,15 @@ int main (int argc, char **argv, char **envp)
         }
     }
     
-    toolName = (char *) malloc(sizeof(char) * j);
+    toolName = (char *) malloc(sizeof(char) * j + strlen(fullExePath) + 1 + 1);
     
     if (toolName == NULL) { 
         return 4;
     }
     
-    strcpy(toolName,myArgv[1]);
+    strcpy(toolName, fullExePath);
+    strcat(toolName, " ");
+    strcat(toolName,myArgv[1]);
     strcat(toolName, " ");
         
     for (i=2; i < myArgvCount; i++) {
@@ -225,12 +227,12 @@ int main (int argc, char **argv, char **envp)
             break;
         }
     }
-   
+    
     memset(&procInfo, 0, sizeof(PROCESS_INFORMATION));
     memset(&startInfo, 0, sizeof(STARTUPINFO));
     startInfo.cb = sizeof(STARTUPINFO);
             
-    CreateProcess(fullExePath, toolName, NULL, NULL,
+    CreateProcess(NULL, toolName, NULL, NULL,
                     FALSE, 0, NULL, NULL, &startInfo, &procInfo);    
 #else    
     execv(fullExePath, myArgv);
@@ -398,12 +400,7 @@ TOOLDATA *getToolData(const char *toolName, const char *jdkRoot) {
         while (EOF != (count= fscanf(fp, "%s = %s\n", key, value))) {
             // printf("count = %d : %s = %s\n", count, key, value);
 
-#if defined(LINUX)            
-            if (count == 2 && !strcasecmp("tooljar", key)) {
-#endif
-#if defined(WIN32)
-            if (count == 2 && !strcmp("tooljar", key)) {
-#endif
+            if (count == 2 && !strcmp("ToolJar", key)) {
                 pToolData->jarList = (char **) realloc(pToolData->jarList, (pToolData->numJars + 1) * sizeof(char *));
                 pToolData->jarList[pToolData->numJars++] = strdup(value);
             }
