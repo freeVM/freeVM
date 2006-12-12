@@ -73,6 +73,17 @@
        <Reason message="Ignore this unused private method" />
      </Match>
      
+     <Match>
+       <Class name="java.net.DatagramPacket" />
+       <Or>
+         <Method name="setData" />
+         <Method name="getData" />
+       </Or>
+       <Bug code="EI2, EI" />
+       <Reason message="OK to use mutable Objects for DatagramPacket" />
+     </Match>
+     
 </FindBugsFilter>
+
 
 
