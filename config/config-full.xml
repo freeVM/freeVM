@@ -18,10 +18,10 @@
         
     <!--The cc.property file contains the name and values of properties-->
     <property file="cc.properties" />
-    <property name="cl.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} debug: classlib "/>
-    <property name="vm.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} debug: drlvm"/>
-    <property name="cl.prefix.ok" value="[build-test alert] BUILD FIXED ${os} ${cc} debug: classlib "/>
-    <property name="vm.prefix.ok" value="[build-test alert] BUILD FIXED ${os} ${cc} debug: drlvm"/>
+    <property name="cl.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} ${build_cfg}: classlib "/>
+    <property name="vm.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} ${build_cfg}: drlvm"/>
+    <property name="cl.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os} ${cc} ${build_cfg}: classlib "/>
+    <property name="vm.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os} ${cc} ${build_cfg}: drlvm"/>
 
 
     <project name="classlib">
@@ -48,9 +48,9 @@
                 </ant>
         </schedule>
 
-        <log dir="logs/${project.name}">
+        <!--log dir="logs/${project.name}">
             <merge dir="projects/${project.name}/trunk/build/test_report" pattern="TEST-*.xml" />
-        </log>
+        </log-->
 
         <publishers>
             <!--antpublisher   
@@ -110,7 +110,7 @@
         </modificationset>
 
         <schedule interval="${timeout}">
-                <exec command="${sh}" args="${cmd.prefix} ${cmd} -D${proxy.host.vm}=${proxy.value} -D${proxy.port.vm}=${port.value} -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk update clean build" workingdir="projects/${project.name}/trunk/build" timeout="${ttimeout}"/>
+                <exec command="${sh}" args="${cmd.prefix} ${cmd} -D${proxy.host.vm}=${proxy.value} -D${proxy.port.vm}=${port.value} -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk update clean build" workingdir="projects/${project.name}/trunk/build" timeout="${ttimeout}" errorstr="FAILED"/>
         </schedule>
 
         <publishers>
@@ -166,9 +166,9 @@
         </schedule>
 
         <log dir="logs/${project.name}">
-            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/jet.mode" pattern="TEST-*.xml" />
-            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/opt.mode" pattern="TEST-*.xml" />
-            <merge dir="projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/semis/kernel.tests/reports/int.mode" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/jet.mode" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/opt.mode" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/int.mode" pattern="TEST-*.xml" />
         </log>
 
         <publishers>
@@ -178,7 +178,7 @@
                  uselogger="true"  
                  usedebug="false"  
                  target="copy.vm.res"> 
-                <property name="BUILD" value="${os}_ia32_${cc}_debug"/> 
+                <property name="BUILD" value="${os}_${build_arch}_${cc}_${build_cfg}"/> 
             </antpublisher> 
 
             <onfailure>
@@ -234,8 +234,8 @@
 
         <schedule interval="${timeout}">
                 <ant target="test" antWorkingDir="projects/classlib/trunk" timeout="${ttimeout}" usedebug="false">
-                    <jvmarg arg="-Dtest.jre.home=${wdir}/projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/deploy/jre" />
-                    <jvmarg arg="-Dhy.test.forkmode=perTest" />
+                    <jvmarg arg="-Dtest.jre.home=${wdir}/projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/deploy/jdk/jre" />
+                    <!--jvmarg arg="-Dhy.test.forkmode=perTest" /-->
                     <jvmarg arg="-Dhy.test.vm.name=drl" />
                     <jvmarg arg="-Xms200M" />
                     <jvmarg arg="-Xmx700M" />

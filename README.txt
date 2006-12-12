@@ -14,6 +14,7 @@ toolchains.  You need the following as the bare minimum to get
 CI up and working.
 
 1) Java JDK v5
+   Note, to run it over em64t platform the 64bit JDK should be installed.
 
 2) Apache Ant : http://ant.apache.org/  Please get the 
     latest release (1.6 or better) and install
@@ -73,4 +74,3 @@ FAQ
 1) Q.: The test runs OK, but no passed/ failed information available. Why?
    A.: This script was tested and works over the sun jdk only. If you run
 it over the BEA jdk it will fail.
-

@@ -43,7 +43,68 @@
 	<property name="svn.drlvm.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk"/>
 
 	<condition property="is.windows">
-        	<os family="Windows" />
+        	<os family="windows" />
+	</condition>
+
+	<condition property="is.unix">
+        	<os family="unix" />
+	</condition>
+
+        <!-- detecting current platform arch: code was copied from classlib/ properties.xml -->
+	<!-- Conditions for different architectures -->
+	<condition property="is.x86_64">
+        	<or>
+	            <equals arg1="x86_64" arg2="${os.arch}"/>
+        	    <equals arg1="amd64" arg2="${os.arch}"/>
+	        </or>
+	</condition>
+	<condition property="is.x86">
+		<and>
+		    <not>
+        	        <isset property="is.x86_64" />
+	            </not>
+        	    <or>
+                	<equals arg1="x86" arg2="${os.arch}"/>
+	                <equals arg1="i386" arg2="${os.arch}"/>
+        	    </or>
+	        </and>
+	</condition>
+	<condition property="is.ia64">
+	        <equals arg1="ia64" arg2="${os.arch}"/>
+	</condition>
+	<condition property="is.s390x">
+		<equals arg1="${os.arch}" arg2="s390x" />
+	</condition>
+	<condition property="is.s390">
+	        <equals arg1="${os.arch}" arg2="s390" />
+	</condition>
+
+	<condition property="is.64bit">
+        	<or>
+	            <isset property="is.ia64" />
+        	    <isset property="is.x86_64" />
+	            <isset property="is.s390x" />
+        	</or>
+	</condition>
+	<condition property="is.32bit">
+        	<or>
+	            <isset property="is.x86" />
+        	    <isset property="is.s390" /> <!-- 31bit of course -->
+	        </or>
+	</condition>
+	<condition property="hy.bits" value="32">
+        	<isset property="is.32bit" />
+	</condition>
+
+	<!-- Normalized architecture name -->
+	<condition property="build.arch" value="em64t">
+	        <isset property="is.x86_64" />
+	</condition>
+	<condition property="build.arch" value="ia32">
+	        <and>
+        	    <isset property="is.x86" />
+	            <isset property="is.32bit" />
+        	</and>
 	</condition>
 
 	<condition property="need.proxy.port" value="${http-proxy-port}" else="80" >
@@ -164,6 +225,8 @@ port.value=111
 wdir=${target.dir}
 timeout=${cycle_timeout}
 ttimeout=${task_timeout}
+build_cfg=${build_configuration}
+build_arch=${build.arch}
 cc_webcontent=${target.dir}/webapps/cruisecontrol
 server_addr=${mail_server}
 report_to=${report_failures_to}
@@ -204,16 +267,25 @@ cmd.prefix=/c
 cmd=build.bat
 cc=msvc
 </echo>
+
 		<replace file="${target.dir}/cruisecontrol.bat" 
-			token="REM set CC_OPTS=-Xms128m -Xmx256m"
-			value="set CC_OPTS=-Xmx500m"/>
+			token="REM set CC_OPTS=-Xms128m -Xmx256m">
+			<replacevalue><![CDATA[set CC_OPTS=-Xmx500m
+set BUILD_CFG=@@@@@
+]]></replacevalue></replace>
+
+		<replace file="${target.dir}/cruisecontrol.bat" 
+			token='@@@@@'
+			value='${build_configuration}'/>
+
 		<replace file="${target.dir}/cruisecontrol.bat" token="%LIBDIR%\ant.jar">
 			<replacevalue><![CDATA[%LIBDIR%\ant.jar
 set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-apache-regexp.jar
 set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ecj_3.2.jar
 ]]></replacevalue></replace>
 		<exec executable="cmd" dir="${target.dir}/projects/drlvm/trunk/build" >
-			<arg line="/c build.bat ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build" />
+			<env key="BUILD_CFG" value="${build_configuration}"/>
+			<arg line="/c build.bat ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build"/>
 		</exec>
 	</target>
 		
@@ -225,6 +297,17 @@ cmd.prefix=
 cmd=build.sh
 cc=gcc
 </echo>
+
+		<replace file="${target.dir}/cruisecontrol.sh" 
+			token='# CC_OPTS="-Xms128m -Xmx256m"'>
+			<replacevalue><![CDATA[CC_OPTS="-Xmx500m"
+BUILD_CFG=@@@@@
+]]></replacevalue></replace>
+
+		<replace file="${target.dir}/cruisecontrol.sh" 
+			token='@@@@@'
+			value='${build_configuration}'/>
+
 		<replace file="${target.dir}/cruisecontrol.sh" 
 			token='# CC_OPTS="-Xms128m -Xmx256m"'
 			value='CC_OPTS="-Xmx500m"'/>
