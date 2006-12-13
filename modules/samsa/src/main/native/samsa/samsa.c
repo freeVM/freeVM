@@ -78,7 +78,7 @@ int main (int argc, char **argv, char **envp)
     PROCESS_INFORMATION procInfo;
     STARTUPINFO startInfo;
 #endif
-    int myArgvCount = argc + 4;
+    int myArgvCount = argc;
     char **myArgv = (char **) malloc(sizeof(char*) * myArgvCount);    
     char *toolName = NULL;
     int i, j;
@@ -143,6 +143,8 @@ int main (int argc, char **argv, char **envp)
         char *buffer;
         int size;
         int i;
+
+        myArgvCount = argc + 4;
         
         size = (strlen(jdkRoot) + strlen(LIB_POSTFIX)) * pToolData->numJars +
                    strlen(CLASSPATH_SEP) * (pToolData->numJars - 1) + 1;
@@ -215,10 +217,8 @@ int main (int argc, char **argv, char **envp)
     
     strcpy(toolName, fullExePath);
     strcat(toolName, " ");
-    strcat(toolName,myArgv[1]);
-    strcat(toolName, " ");
         
-    for (i=2; i < myArgvCount; i++) {
+    for (i=1; i < myArgvCount; i++) {
         if (myArgv[i] != NULL) {
             strcat(toolName,myArgv[i]);
             strcat(toolName, " ");
@@ -232,8 +232,17 @@ int main (int argc, char **argv, char **envp)
     memset(&startInfo, 0, sizeof(STARTUPINFO));
     startInfo.cb = sizeof(STARTUPINFO);
             
-    CreateProcess(NULL, toolName, NULL, NULL,
-                    FALSE, 0, NULL, NULL, &startInfo, &procInfo);    
+    if (CreateProcess(NULL, toolName, NULL, NULL,
+                    FALSE, 0, NULL, NULL, &startInfo, &procInfo)) { 
+
+        WaitForSingleObject( procInfo.hProcess, INFINITE );
+        
+        CloseHandle(procInfo.hProcess);
+        CloseHandle(procInfo.hThread);
+    }
+    else {
+        fprintf(stderr, "Error creating process : %d\n", GetLastError());
+    }
 #else    
     execv(fullExePath, myArgv);
 #endif
