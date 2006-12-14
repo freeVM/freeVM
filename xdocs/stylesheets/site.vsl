@@ -82,8 +82,8 @@ limitations under the License.
 #macro ( projectanchor $name $value )
 #if ($value.startsWith("http://"))
     <a href="$value">$name</a>
-#elseif ($value.startsWith("/site"))
-    <a href="http://jakarta.apache.org$value">$name</a>
+#elseif ($value.startsWith("/site/"))
+    <a href="http://harmony.apache.org$value">$name</a>
 #else
     <a href="$relativePath$value">$name</a>
 #end
@@ -169,7 +169,6 @@ limitations under the License.
         #foreach ( $item in $menu.getChildren() )
             #set ($name = $item.getAttributeValue("name"))
             <li class="menuItem">#projectanchor($name $item.getAttributeValue("href"))</li>
-            
            
             #foreach ( $subitem in $item.getChildren() )
               #set ($name = $subitem.getAttributeValue("name"))
@@ -181,6 +180,7 @@ limitations under the License.
             #end            
             
         #end
+
         </ul>
     #end
 #end
@@ -220,7 +220,7 @@ limitations under the License.
            #set ($metas = $root.getChildren("meta"))
 
             ##    Parse meta directives such as
-            ##    <meta name="keyword" content="jakarta, java"/>
+            ##    <meta name="keyword" content="harmony, java"/>
             #foreach ($meta in $metas) #printMeta($meta) #end
 
             ##    Support for <base> tags.
