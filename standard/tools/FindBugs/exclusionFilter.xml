@@ -83,6 +83,12 @@
        <Reason message="OK to use mutable Objects for DatagramPacket" />
      </Match>
      
+     <Match>
+     	<Class name="java.util.jar.Manifest" />
+     	<Method name="clone" />
+     	<Bug pattern="CN_IDIOM_NO_SUPER_CALL" />
+     	<Reason message="Constructs a new instance instead of using super.clone()." />
+     </Match>
 </FindBugsFilter>
 
 
