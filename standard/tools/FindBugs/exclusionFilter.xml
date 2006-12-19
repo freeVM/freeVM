@@ -89,7 +89,31 @@
      	<Bug pattern="CN_IDIOM_NO_SUPER_CALL" />
      	<Reason message="Constructs a new instance instead of using super.clone()." />
      </Match>
+
+     <Match>
+       <Class name="java.util.AbstractList" />
+       <Bug code="Se" />
+       <Reason message="It does make sense for AbstractList to have a transient field because it has serializable subclasses" />
+     </Match>
+     
+     <Match>
+       <Class name="java.util.GregorianCalendar" />
+       <Method name="equals" />
+       <Bug code="NP" />
+       <Reason message="GregorianCalendar.equals does not need to check for null because it delegates to its superclass, which does" />
+     </Match>
+     
+     <Match>
+       <Class name="java.util.PropertyPermission" />
+       <Method name="equals" />
+       <Bug code="NP" />
+       <Reason message="PropertyPermission.equals does not need to check for null because it delegates to its superclass, which does" />
+     </Match>
+     
+      <Match>
+       <Class name="java.util.TreeMap" />
+       <Field name="comparator" />
+       <Bug code="Se" />
+       <Reason message="The comparator field is part of the serialized form specification for TreeMap" />
+     </Match>
 </FindBugsFilter>
-
-
-
