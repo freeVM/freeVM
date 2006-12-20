@@ -41,8 +41,8 @@
 
         <schedule interval="${timeout}">
                 <ant target="fetch-depends rebuild" antWorkingDir="projects/${project.name}/trunk" timeout="${ttimeout}" usedebug="false">
-                    <property name="${proxy.host.property}" value="${proxy.value}"/>
-                    <property name="${proxy.port.property}" value="${port.value}"/>
+                    <jvmarg arg="-D${proxy.host.property}=${proxy.value}"/>
+                    <jvmarg arg="-D${proxy.port.property}=${port.value}"/>
                     <jvmarg arg="-Xms200M" />
                     <jvmarg arg="-Xmx700M" />
                 </ant>
@@ -162,7 +162,7 @@
         </modificationset>
 
         <schedule interval="${timeout}">
-                <exec command="${sh}" args="${cmd.prefix} ${cmd} -Dvm.assert_dialog=false -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk test" workingdir="projects/drlvm/trunk/build" timeout="${ttimeout}" errorstr="FAILED" />
+                <exec command="${sh}" args="${cmd.prefix} ${cmd} -XDvm.assert_dialog=false -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk test" workingdir="projects/drlvm/trunk/build" timeout="${ttimeout}" errorstr="FAILED" />
         </schedule>
 
         <log dir="logs/${project.name}">
