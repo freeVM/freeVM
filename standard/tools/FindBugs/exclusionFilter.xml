@@ -20,7 +20,9 @@
 
 <FindBugsFilter>
 
-     <Match>
+     
+       <!-- Number classes should be able to call Number constructors -->
+       <Match>
        <Or>
          <Class name="java.lang.Byte" />
          <Class name="java.lang.Character" />
@@ -29,50 +31,62 @@
          <Class name="java.lang.Short" />
        </Or>
        <Bug code="Dm" />
-       <Reason message="Number classes should be able to call Number constructors" />
      </Match>
      
+     <!-- OK to use signed right shift instead of unsigned because numbers used are positive -->
+     <Match>
+       <Class name="java.lang.Character$UnicodeBlock" />
+       <Method name="of" />
+       <Bug code="IM" />
+     </Match>
+             
+     <!-- Javadoc specifies that ByteArrayInputStream's constructors are designed to take a mutable byte array as an argument and not copy it -->
      <Match>
        <Class name="java.io.ByteArrayInputStream" />
-       <Method name="ByteArrayInputStream" />
        <Bug code="EI2" />
-       <Reason message="Javadoc specifies that ByteArrayInputStream's constructors are designed to take a mutable byte array as an argument and not copy it" />
      </Match>
-     
+             
+     <!-- Javadoc specifies that CharArrayReader's constructors are designed to take a mutable char array as an argument and not copy it -->
      <Match>
        <Class name="java.io.CharArrayReader" />
-       <Method name="CharArrayReader" />
        <Bug code="EI2" />
-       <Reason message="Javadoc specifies that CharArrayReader's constructors are designed to take a mutable char array as an argument and not copy it" />
      </Match>   
 
+     <!-- Fallthrough in switch statement is meant to be there -->
      <Match>
        <Class name="java.io.LineNumberInputStream" />
        <Method name="read" />
        <Bug code="SF" />
-       <Reason message="Fallthrough in switch statement is meant to be there" />
      </Match>
      
+     <!-- Fallthrough in switch statement is meant to be there -->
      <Match>
        <Class name="java.io.LineNumberReader" />
        <Method name="read" />
        <Bug code="SF" />
-       <Reason message="Fallthrough in switch statement is meant to be there" />
      </Match>
      
+     <!-- OK to compare Strings using  using == or != in the String class itself -->
      <Match>
        <Class name="java.lang.String" />
        <Bug code="ES" />
-       <Reason message="OK to compare Strings using  using == or != in the String class itself" />
      </Match>
      
+     <!-- Ignore this unused private method -->
      <Match>
        <Class name="java.lang.String" />
        <Method name="indexOf" />
        <Bug code="UPM" />
-       <Reason message="Ignore this unused private method" />
      </Match>
      
+     <!-- Field h is required to be non-transient as part of the serialized form specification for Proxy -->
+     <Match>
+       <Class name="java.lang.reflect.Proxy" />
+       <Field name="h" />
+       <Bug code="Se" />
+     </Match>
+     
+     <!-- OK to use mutable Objects for DatagramPacket -->
      <Match>
        <Class name="java.net.DatagramPacket" />
        <Or>
@@ -80,40 +94,150 @@
          <Method name="getData" />
        </Or>
        <Bug code="EI2, EI" />
-       <Reason message="OK to use mutable Objects for DatagramPacket" />
      </Match>
      
+     <!-- Method is not static in the spec, so can't change it -->
+     <Match>
+       <Class name="java.net.URLConnection" />
+       <Method name="setDefaultUseCaches" />
+       <Bug code="ST" />
+     </Match>
+     
+     <!-- URLClassLoader needs to use URL.equals() method -->
+     <Match>
+       <Class name="java.net.URLClassLoader" />
+       <Bug code="Dm" />
+     </Match>
+
+     <!-- Load of known null value is intended (line 409) -->
+     <Match>
+       <Class name="java.net.URL" />
+       <Bug code="NP" />
+     </Match>
+     
+     <!-- Constructs a new instance instead of using super.clone() -->
      <Match>
      	<Class name="java.util.jar.Manifest" />
      	<Method name="clone" />
-     	<Bug pattern="CN_IDIOM_NO_SUPER_CALL" />
-     	<Reason message="Constructs a new instance instead of using super.clone()." />
-     </Match>
-
+     	<Bug pattern="CN_IDIOM_NO_SUPER_CALL" />     	
+     </Match>     
+          
+     <!-- It does make sense for AbstractList to have a transient field because it has serializable subclasses -->
      <Match>
        <Class name="java.util.AbstractList" />
        <Bug code="Se" />
-       <Reason message="It does make sense for AbstractList to have a transient field because it has serializable subclasses" />
      </Match>
      
+     <!-- False positive caused by compiler -->
+     <Match>
+       <Class name="java.util.AbstractList" />
+       <Method name="addAll" />
+       <Bug code="DLS" />
+     </Match>
+          
+     <!-- GregorianCalendar.equals does not need to check for null because it delegates to its superclass, which does -->
      <Match>
        <Class name="java.util.GregorianCalendar" />
        <Method name="equals" />
        <Bug code="NP" />
-       <Reason message="GregorianCalendar.equals does not need to check for null because it delegates to its superclass, which does" />
      </Match>
      
+     <!-- PropertyPermission.equals does not need to check for null because it delegates to its superclass, which does -->
      <Match>
        <Class name="java.util.PropertyPermission" />
        <Method name="equals" />
        <Bug code="NP" />
-       <Reason message="PropertyPermission.equals does not need to check for null because it delegates to its superclass, which does" />
      </Match>
      
-      <Match>
-       <Class name="java.util.TreeMap" />
+     <!-- The comparator field is part of the serialized form specification for both TreeMap and PriorityQueue -->
+     <Match>
+       <Or>
+         <Class name="java.util.TreeMap" />
+         <Class name="java.util.PriorityQueue" />
+       </Or>
        <Field name="comparator" />
        <Bug code="Se" />
-       <Reason message="The comparator field is part of the serialized form specification for TreeMap" />
      </Match>
+     
+     <!-- Ignore this unread field -->
+     <Match>
+       <Class name="java.util.Timer" />
+       <Field name="finalizer" />
+       <Bug code="UrF" />
+     </Match>
+     
+     <!-- Access is synchronized - looks like FindBugs got it wrong here -->
+     <Match>
+       <Class name="java.util.Timer$TimerImpl" />
+       <Field name="cancelled" />
+       <Bug code="IS" />
+     </Match>
+     
+     <!-- Initialization of Locale.availableLocales doesn't need to be synchronized as it won't matter if it is initialized twice -->
+     <Match>
+       <Class name="java.util.Locale" />
+       <Method name="getAvailableLocales" />
+       <Bug code="LI" />
+     </Match>
+     
+     <!-- OK to use signed right shift instead of unsigned because all numbers are positive -->
+     <Match>
+       <Class name="java.util.Arrays" />
+       <Bug code="IM" />
+     </Match>     
+     
+     <!-- OK to use unsynchronized access in Hashtable.HashIterator and Hashtable.HashEnumerator -->
+     <!-- NOTE - it would be good to be able to make this exclusion a bit more specific -->
+     <Match>
+       <Class name="java.util.Hashtable" />
+       <Bug code="IS" />
+     </Match>
+     
+     <!-- Comparators are generally Serializable so it's OK for this field not to be transient -->
+     <Match>
+       <Class name="java.util.Collections$ReverseComparatorWithComparator" />
+       <Bug code="Se" />
+     </Match>
+     
+     <!-- Fallthrough in switch statements are meant to be there -->
+     <Match>
+       <Class name="org.apache.harmony.luni.util.FloatingPointParser" />
+       <Or>
+       	 <Method name="parseDblName" />
+       	 <Method name="parseFltName" />
+       </Or>
+       <Bug code="SF" />
+     </Match>
+     
+     <!-- OK to throw a NullPointerException if one key is null -->
+     <Match>
+       <Class name="org.apache.harmony.luni.util.TwoKeyHashMap" />
+       <Bug code="NP" />
+     </Match>
+          
+     <!-- Unread fields are used by native code -->
+     <Match>
+     <Class name="org.apache.harmony.luni.net.GenericIPMreq" />
+       <Or>
+       	 <Field name="interfaceAddr" />
+       	 <Field name="isIPV6Address" />
+       	 <Field name="interfaceIdx" />
+       </Or>
+       <Bug code="UrF" />
+     </Match>
+
+     <!-- Ignored result is not important in this case -->
+     <Match>
+       <Class name="org.apache.harmony.luni.internal.net.www.protocol.ftp.FtpURLConnection" />
+       <Method name="getReply" />
+       <Bug code="RR" />
+     </Match>           
+     
+     <!-- Invocation of inherited method is intended -->
+     <Match>
+       <Class name="org.apache.harmony.luni.internal.net.www.protocol.https.HttpsURLConnection$HttpsEngine" />
+       <Bug code="IA" />
+     </Match>
+
 </FindBugsFilter>
+
