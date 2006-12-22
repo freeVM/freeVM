@@ -22,34 +22,38 @@
 package java.util.regex;
 
 /**
- * Possessive + quantifier node over groups.
+ * Node accepting substrings in unicode case insensitive manner.
  * 
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.7.2.2 $
  */
-class PosPlusGroupQuantifierSet extends GroupQuantifierSet {
-   
-    public PosPlusGroupQuantifierSet(AbstractSet innerSet, AbstractSet next,
-            int type) {
-        super(innerSet, next, type);
-        ((JointSet) innerSet).setNext(FSet.posFSet);
+class UCISequenceSet extends LeafSet {
+    
+    private String string = null;
 
+    UCISequenceSet(StringBuffer substring) {
+        StringBuffer res = new StringBuffer();
+        for (int i = 0; i < substring.length(); i++) {
+            res.append(Character.toLowerCase(Character.toUpperCase(substring
+                    .charAt(i))));
+        }
+        this.string = res.toString();
+        this.charCount = res.length();
     }
 
-    public int matches(int stringIndex, CharSequence testString,
-            MatchResultImpl matchResult) {
-
-        int nextIndex;
-        if ((nextIndex = innerSet.matches(stringIndex, testString, matchResult)) < 0) {
-            return -1;
-        } else if (nextIndex > stringIndex) {
-            stringIndex = nextIndex;
-            while ((nextIndex = innerSet.matches(stringIndex, testString,
-                    matchResult)) > stringIndex) {
-                stringIndex = nextIndex;
+    public int accepts(int strIndex, CharSequence testString) {
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) != Character.toLowerCase(Character
+                    .toUpperCase(testString.charAt(strIndex + i)))) {
+                return -1;
             }
         }
 
-        return next.matches(stringIndex, testString, matchResult);
+        return string.length();
+
+    }
+
+    public String getName() {
+        return "UCI sequence: " + string; //$NON-NLS-1$
     }
 }

@@ -22,34 +22,31 @@
 package java.util.regex;
 
 /**
- * Possessive + quantifier node over groups.
+ * Possessive quantifier over group, see java.util.regex.GroupQuantifierSet 
+ * for more details.
  * 
  * @author Nikolay A. Kuznetsov
  * @version $Revision: 1.7.2.2 $
  */
-class PosPlusGroupQuantifierSet extends GroupQuantifierSet {
-   
-    public PosPlusGroupQuantifierSet(AbstractSet innerSet, AbstractSet next,
+class PosAltGroupQuantifierSet extends AltGroupQuantifierSet {
+
+    public PosAltGroupQuantifierSet(AbstractSet innerSet, AbstractSet next,
             int type) {
         super(innerSet, next, type);
         ((JointSet) innerSet).setNext(FSet.posFSet);
-
     }
 
     public int matches(int stringIndex, CharSequence testString,
             MatchResultImpl matchResult) {
 
-        int nextIndex;
-        if ((nextIndex = innerSet.matches(stringIndex, testString, matchResult)) < 0) {
-            return -1;
-        } else if (nextIndex > stringIndex) {
+        int nextIndex = innerSet.matches(stringIndex, testString, matchResult);
+        if (nextIndex > 0)
             stringIndex = nextIndex;
-            while ((nextIndex = innerSet.matches(stringIndex, testString,
-                    matchResult)) > stringIndex) {
-                stringIndex = nextIndex;
-            }
-        }
 
         return next.matches(stringIndex, testString, matchResult);
+    }
+
+    public void setNext(AbstractSet next) {
+        this.next = next;
     }
 }

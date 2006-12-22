@@ -17,39 +17,41 @@
 
 /**
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.7.2.2 $
+ * @version $Revision: 1.12.2.2 $
  */
 package java.util.regex;
 
 /**
- * Possessive + quantifier node over groups.
+ * Default quantifier over groups, in fact this type of quantifier is
+ * generally used for constructions we cant identify number of characters they 
+ * consume.
  * 
  * @author Nikolay A. Kuznetsov
- * @version $Revision: 1.7.2.2 $
+ * @version $Revision: 1.12.2.2 $
  */
-class PosPlusGroupQuantifierSet extends GroupQuantifierSet {
+class GroupQuantifierSet extends QuantifierSet {
    
-    public PosPlusGroupQuantifierSet(AbstractSet innerSet, AbstractSet next,
-            int type) {
+    public GroupQuantifierSet(AbstractSet innerSet, AbstractSet next, int type) {
         super(innerSet, next, type);
-        ((JointSet) innerSet).setNext(FSet.posFSet);
-
     }
 
     public int matches(int stringIndex, CharSequence testString,
             MatchResultImpl matchResult) {
 
-        int nextIndex;
-        if ((nextIndex = innerSet.matches(stringIndex, testString, matchResult)) < 0) {
-            return -1;
-        } else if (nextIndex > stringIndex) {
-            stringIndex = nextIndex;
-            while ((nextIndex = innerSet.matches(stringIndex, testString,
-                    matchResult)) > stringIndex) {
-                stringIndex = nextIndex;
-            }
-        }
+        if (!innerSet.hasConsumed(matchResult))
+            return next.matches(stringIndex, testString, matchResult);// return
+                                                                        // -1;
 
-        return next.matches(stringIndex, testString, matchResult);
+        int nextIndex = innerSet.matches(stringIndex, testString, matchResult);
+
+        if (nextIndex < 0) {
+            return next.matches(stringIndex, testString, matchResult);
+        } else {
+            return nextIndex;
+        }
+    }
+
+    protected String getName() {
+        return "<GroupQuant>"; //$NON-NLS-1$
     }
 }
