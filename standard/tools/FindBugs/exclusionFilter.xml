@@ -117,7 +117,10 @@
      
      <!-- Constructs a new instance instead of using super.clone() -->
      <Match>
-     	<Class name="java.util.jar.Manifest" />
+     	<Or>
+     		<Class name="java.util.jar.Manifest" />
+     		<Class name="java.util.zip.ZipEntry" />
+     	</Or>
      	<Method name="clone" />
      	<Bug pattern="CN_IDIOM_NO_SUPER_CALL" />     	
      </Match>     
