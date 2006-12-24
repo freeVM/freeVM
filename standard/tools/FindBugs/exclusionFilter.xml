@@ -242,5 +242,21 @@
        <Bug code="IA" />
      </Match>
 
+	<Match>
+		<!-- These classes are not serializable. -->
+		<Or>
+			<Class name="java.util.prefs.NodeChangeEvent" />
+			<Class name="java.util.prefs.PreferenceChangeEvent" />
+		</Or>	
+		<Bug pattern="SE_BAD_FIELD" />
+	</Match>
+	
+	<Match>
+		<!-- This method is called from a loop. -->
+		<Class name="java.util.prefs.AbstractPreferences$EventDispatcher" />
+		<Method name="getEventObject" />
+		<Bug pattern="WA_NOT_IN_LOOP" />
+	</Match>
+	
 </FindBugsFilter>
 
