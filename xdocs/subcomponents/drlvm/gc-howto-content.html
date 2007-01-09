@@ -1349,7 +1349,7 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                             <code>gc_copying.dll</code>, execute
                             the following:</p>
                             <pre>
-ij -Dvm.dlls=gc_copying Hello
+java -Dvm.dlls=gc_copying.dll Hello
 </pre>
 
                             <p>The virtual machine searches for a
@@ -1357,11 +1357,11 @@ ij -Dvm.dlls=gc_copying Hello
                             <code>gc_copying.dll</code> in the
                             default locations, that is, the value
                             for the PATH variable and the location
-                            of executable <code>ij.exe</code>. The
+                            of executable <code>java.exe</code>. The
                             default garbage collector is
                             <code>gc.dll</code> located in the same
                             <code>bin/</code> directory as
-                            <code>ij.exe</code>.</p>
+                            <code>java.exe</code>.</p>
                     
                
   
