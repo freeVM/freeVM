@@ -86,6 +86,13 @@
        <Bug code="Se" />
      </Match>
      
+     <!-- Exceptions have to be ignored because method doesn't throw an Exception in the spec -->
+     <Match>
+       <Class name="java.lang.SecurityManager" />
+       <Method name="checkTopLevelWindow" />
+       <Bug code="DE" />
+     </Match>
+     
      <!-- OK to use mutable Objects for DatagramPacket -->
      <Match>
        <Class name="java.net.DatagramPacket" />
@@ -101,6 +108,20 @@
        <Class name="java.net.URLConnection" />
        <Method name="setDefaultUseCaches" />
        <Bug code="ST" />
+     </Match>
+     
+     <!-- Exceptions are supposed to be ignored -->
+     <Match>
+       <Class name="java.net.URLConnection" />
+       <Method name="getContentHandler" />
+       <Bug code="DE" />
+     </Match>
+     
+     <!-- Exceptions are supposed to be ignored -->
+     <Match>
+       <Class name="java.net.URL" />
+       <Method name="setupStreamHandler" />
+       <Bug code="DE" />
      </Match>
      
      <!-- URLClassLoader needs to use URL.equals() method -->
@@ -167,6 +188,13 @@
        <Class name="java.util.Timer" />
        <Field name="finalizer" />
        <Bug code="UrF" />
+     </Match>
+     
+     <!-- Exception is ignored on purpose -->
+     <Match>
+       <Class name="java.util.Timer$TimerImpl" />
+       <Method name="run" />
+       <Bug code="DE" />
      </Match>
      
      <!-- Access is synchronized - looks like FindBugs got it wrong here -->
@@ -294,5 +322,6 @@
      </Match>
 	
 </FindBugsFilter>
+
 
 
