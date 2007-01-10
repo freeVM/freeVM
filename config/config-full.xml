@@ -162,7 +162,7 @@
         </modificationset>
 
         <schedule interval="${timeout}">
-                <exec command="${sh}" args="${cmd.prefix} ${cmd} -XDvm.assert_dialog=false -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk test" workingdir="projects/drlvm/trunk/build" timeout="${ttimeout}" errorstr="FAILED" />
+                <exec command="${sh}" args="${cmd.prefix} ${cmd} -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk test" workingdir="projects/drlvm/trunk/build" timeout="${ttimeout}" errorstr="FAILED" />
         </schedule>
 
         <log dir="logs/${project.name}">
