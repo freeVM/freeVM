@@ -1,0 +1,28 @@
+<!--
+    Copyright 2005-2006 The Apache Software Foundation or its licensors, as applicable.
+  
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<project name="ALL TESTS">
+    <select arch="ipf">
+        <target name="test" depends="smoke.test, check-result"/>
+    </select>
+    <select arch="ia32,em64t">
+        <target name="test" depends="jvmti.test, cunit.test, smoke.test, kernel.test, check-result"/>
+    </select>
+    
+    <target name="check-result">
+        <fail if="test.failed" message="Some tests failed"/>
+    </target>
+</project>
+
