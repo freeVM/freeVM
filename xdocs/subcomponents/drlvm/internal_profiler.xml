@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Apache Harmony DRL Virtual Machine</title>
+  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+ </properties>
+
+ <body>
+
+<section name="Jitrino.OPT Internal Profiler Tool">
+<p>This document defines the internal
+profiler tool (iprof) for <a href="JIT.html">Jitrino.OPT</a>
+code generator and describes how to use it. The internal profiler can  instrument
+     code so that per-method counters of <i>executed</i> (not just compiled)
+   instructions can be dumped. Operation of iprof is configured in the <code>iprof.cfg</code>
+   file, as described in this document. For sample iprof tool output, see the<a href="#ExampleOutput">example</a>.</p>
+<p> To enable iprof, do the following:</p>
+<ol>
+  <li>Specify the following additional command-line options to DRLVM on startup: <code><br />
+    -XcleanupOnExit -XDjit.arg.codegen.iprof=on</code></li>
+  <li> Place the configuration file <code>iprof.cfg</code> in the same directory
+    where you are starting DRLVM.</li>
+</ol>
+<subsection name="Configuring the Profiler">
+<p>The configuration file <code>iprof.cfg</code> consists of a list of global parameters
+  and a list of counters, as defined in this section. For a sample iprof configuration,
+  see the <a href="#ExampleConfig">example</a>. </p>
+<h3>Available global parameters</h3>
+<pre>Config.PrintBBStats=false #(boolean)</pre>
+<p>This parameter turns on statistics dumping for all
+basic blocks of a method.</p>
+<h3>Counters</h3>
+<p>Counters collect information about executed
+  instructions defined by the filter. 
+  Counters have the following attributes:</p>
+<ul>
+  <li><em>Name</em> identifies the counter. This attribute  is defined by the first
+    line in a <code>[begin]/[end]</code> section starting with <code>Counter.</code>,
+    and all symbols after it and up to 
+     the next period <code>.</code> or an
+  equal mark <code>=</code> or <code>\n</code> constitute the name of the counter.</li>
+  <li><em>Title</em> is the for the dumped column. [optional]</li>
+  <li><em>Filter</em> lists properties of
+    the instructions to count. You can define  properties for the instruction
+    (mnemonic, the number of operands), for a specific operand (for example,
+    the area of placement) or include run-time information (for example, whether
+    the call is a helper and the helper name). See the list of filter parameters
+    below. 
+	<br />All filter parameters can be considered parts
+	of an <code>AND</code> expression. You can also use the 
+	<code>IsOr</code> filter attribute to provide an <code>OR</code> operation for all filter parameters, for example:
+	<br /><code>Counter.Name0.IsOr=true</code></li>
+</ul>
+<p class="example">Example</p>
+<pre>###########
+[begin]
+Counter.CALL.Mnemonic=CALL
+[end]
+ 
+[begin]
+Counter.AddCounter.Title=ADD_EAX_COUNTER
+Counter.AddCounter.Mnemonic=ADD
+Counter.AddCounter.Operand.0.RegName=EAX
+[end]
+###########</pre>
+<p>All properties of an instruction correspond to names of entities of the Jitrino
+IA-32 code generator, for example:</p>
+<pre>Mnemonic_CALL =&gt; CALL
+OpndKind_Mem =&gt; Mem</pre>
+<dl>
+<dt>Operand attributes</dt>
+<dd>
+<code>Operand.OpNum Operand number (can be *)<br />
+Operand.OpNum.OpndRole Operand role<br />
+Operand.OpNum.OpndKind Operand kind<br />
+Operand.OpNum.RegName Register name<br />
+Operand.OpNum.MemOpndKind Memory operand kind</code>
+</dd>
+
+<dt> Instruction attributes</dt>
+<dd>
+<code>Mnemonic  Instruction mnemonic<br />
+OperandNumber Number of operands</code>
+</dd>
+
+<dt> Run-time information attributes</dt>
+<dd>
+<code>RuntimeInfo.Kind Runtime information kind<br />
+RuntimeInfo.HelperID VM Helper identifier<br />
+RuntimeInfo.IntHelperName Internal helper name</code>
+</dd>
+
+<dt>Call instruction attributes </dt>
+<dd>
+<code>isNative<br />
+isStatic<br />
+isSynchronized<br />
+isNoInlining<br />
+isInstance<br />
+isFinal<br />
+isVirtual<br />
+isAbstract<br />
+isClassInitializer<br />
+isInstanceInitializer<br />
+isStrict<br />
+isRequireSecObject<br />
+isInitLocals<br />
+isOverridden</code>
+<p>The counter does not work for other instructions.</p>
+</dd> 
+</dl>
+<h3>Re-using Filter Parameters between Counters </h3>
+<p>Filter parameters of a counter can be re-used and
+extended by another counter, for example:</p>
+<pre>[begin]
+Counter.CALL_Inst.Mnemonic=CALL
+[end]
+[begin]
+Counter.I_HELPER_CALL=CALL_Inst
+Counter.I_HELPER_CALL.RuntimeInfo.Kind=InternalHelperAddress
+[end]</pre>
+
+<p class="note" >Warning</p>
+<p class="notetext">Space
+characters should not be used outside comments.</p>
+</subsection>
+<subsection name="Dumping of Counters">
+<p>The iprof tool
+creates the file iprof.stat on exit of
+a DRLVM session in the directory where DRLVM was started. Tabbed text format can
+  be edited by spreadsheets.</p>
+</subsection>
+ </section>
+<section name="Example of iprof Configuration File">
+<a name="ExampleConfig"></a>
+<p>This is an example of the Jitrino.OPT internal profiler configuration.</p>
+<pre>Config.PrintBBStats=true
+[begin]
+#for counting of all instructions you can specify any word as Mnemonic
+Counter.Insts.Mnemonic=Any
+[end]
+ 
+#hardcoded counters with only parameter "title"
+###############################################
+[begin]
+#Size of java bytecode of a method
+Counter.ByteCodeSize
+[end]
+#
+[begin]
+#Number of execution times of the hottest basic block of a method
+Counter.MaxBBExec
+[end]
+[begin]
+##ID nuber of the hottest basic block
+Counter.HottestBBNum
+[end]
+#
+[begin]
+##Number of exception handlers of a method
+Counter.ExcHandlersNum
+[end]
+#
+[begin]
+#Number of calls of a method
+Counter.MethodExec
+Counter.MethodExec.Title=Number of calls of a method
+[end]
+#
+[begin]
+#Basic block execution count
+Counter.BBExec
+[end]
+################################################
+[begin]
+Counter.OpNum.OpndNumber=3
+[end]
+[begin]
+#count instructions with memory access in first five operands
+Counter.MemOpnd.IsOR=true
+Counter.MemOpnd.Operand.*.OpndKind=Mem
+#Counter.MemOpnd.Operand.1.OpndKind=Mem
+[end]
+[begin]
+Counter.UseOpnd.Operand.0.OpndRole=Use
+[end]
+[begin]
+Counter.EAXOpnd.Operand.0.RegName=EAX
+[end]
+[begin]
+Counter.HeapOpnd.Operand.0.MemOpndKind=Heap
+[end]
+[begin]
+Counter.Method.isNative=true
+Counter.Method.isStatic=true
+Counter.Method.isSynchronized=true
+Counter.Method.isNoInlining=true
+Counter.Method.isInstance=true
+Counter.Method.isFinal=true
+Counter.Method.isVirtual=true
+Counter.Method.isAbstract=true
+Counter.Method.isClassInitializer=true
+Counter.Method.isInstanceInitializer=true
+Counter.Method.isStrict=true
+Counter.Method.isRequireSecObject=true
+Counter.Method.isInitLocals=true
+Counter.Method.isOverridden=true
+[end]
+ 
+[begin]
+Counter.CALL.Mnemonic=CALL
+[end]
+[begin]
+Counter.I_HELPER_CALL=CALL
+Counter.I_HELPER_CALL.RuntimeInfo.Kind=InternalHelperAddress
+[end]
+[begin]
+Counter.HELPER_CALL=CALL
+Counter.HELPER_CALL.RuntimeInfo.Kind=HelperAddress
+Counter.HELPER_CALL.RuntimeInfo.HelperID=LdString
+[end]</pre>
+</section>
+<section name="Example of Profiler Output">
+<p>This is a fragment of a sample <code>stat</code> file that iprof produces.</p>
+<a name="ExampleOutput"></a>
+<pre>Method name	Insts	ByteCodeSize	MaxBBExec	HottestBBNum	ExcHandlersNum	Number of calls of a method	BBExec	CALL	I_HELPER_CALL	HELPER_CALL	LDSTRING	NEWOBJ_USINGVTABLE	NEWVECTOR_USINGVTABLE	NEWOBJ	NEWVECTOR	NEWMULTIARRAY	OBJMONITORENTER	ObjMonitorExit	TYPEMONITORENTER	TYPEMONITOREXIT	THROW_KEEPSTACKTRACE	THROW_SETSTACKTRACE	THROW_LAZY	NULLPTREXCEPTION	ARRAYBOUNDSEXCEPTION	ELEMTYPEEXCEPTION	DIVIDEBYZEROEXCEPTION	THROW_LINKINGEXCEPTION	DIVI32	DIVU32	DIVI64	DIVU64	DIVSINGLE	DIVDOUBLE	REMI32	REMU32	REMI64	REMU64	REMSINGLE	RemDouble	MulI64	ShlI64	ShrI64	ShruI64	ConvStoI32	ConvStoI64	ConvDtoI32	ConvDtoI64	LdInterface	Cast	IsInstanceOf	InitType	IsValidElemType	CharArrayCopy	MANAGE_CALL	MemOpnd	Method	
+java/lang/Thread.&lt;clinit&gt;	7	13	1	2	0	1	1	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	4	0	
+java/lang/Object.&lt;init&gt;	6445	1	6445	2	0	6444	6445	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
+java/lang/Thread.&lt;init&gt;	2440	257	24	0	0	24	284	280	0	79	26	3	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	50	0	0	129	800	48	</pre>
+</section>
+ </body></document>
