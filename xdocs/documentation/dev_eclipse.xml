@@ -65,12 +65,14 @@
     <subsection name="Getting the Code">
       <p>
         Next you will need the code to work with. <i>For class library development</i>,
-        you will need a compatible VM. You will also need a class libraries build if you want to work
-        on an individual module. Obtain a VM as
-        <a href="../subcomponents/classlibrary/build_classlib.html#Obtaining_a_VM">described here</a>, that is capable
-        of running the class libary code, and install it in the same location as
-        the class libraries build (or the location you will be building to if you are building the class libararies yourself).
-      </p>
+        you will need a compatible VM, such as DRLVM or IBM virtual machine (the latter
+        available under a non-open source, binary evaluation license). Install the VM following the 
+        instructions that accompany that VM in the same location as the class libraries build (or the
+        location you will be building to if you are building the class libararies yourself).
+        <br />
+        You will also need a class libraries build if you want to work
+        on an individual module. 
+       </p>
       <p>Analogously, you will need the class libraries for <i>DRLVM development</i>.
         Follow one of these ways depending on your needs:
       </p>
