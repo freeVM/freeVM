@@ -226,14 +226,14 @@ limitations under the License.
       <a name="Am I Eligible?">Am I Eligible?</a>
     </h1>
                         <p>
-		You may have heard or read about Harmony's strict rules for contributor's
-		eligibility. We take this seriously because a number of parties implement
-		Java, and we respect their rights to their property. If you have detailed
-		knowledge of another implementation of Java, and they have not explicitly
-		approved your participation in Harmony, please check whether we will be able
-		to accept your contribution by reading the
-		<a href="../../contribution_policy">Apache Harmony contribution policy</a>.
-	</p>
+        You may have heard or read about Harmony's strict rules for contributor's
+        eligibility. We take this seriously because a number of parties implement
+        Java, and we respect their rights to their property. If you have detailed
+        knowledge of another implementation of Java, and they have not explicitly
+        approved your participation in Harmony, please check whether we will be able
+        to accept your contribution by reading the
+        <a href="../../contribution_policy">Apache Harmony contribution policy</a>.
+    </p>
                 <p><a href="#top">Back to top</a></p>
                                                 <h1>
       <a name="How to Create and Submit A Patch or Enhancement">How to Create and Submit A Patch or Enhancement</a>
@@ -241,62 +241,90 @@ limitations under the License.
                         <a name="create_patch" />
                                 <p>
   One of the best ways to get involved in the Harmony project is to 
-  create patches or additions and contribute them.  All contributions
-  should be made via a new entry in our project 
+  create patches or additions and contribute them. When you propose 
+  a specific change to the software for discussion or voting on the 
+  mailing list, you should present in the form of input to the patch 
+  command. 
+  All contributions should be made via a new entry in our project 
   <a href="http://issues.apache.org/jira/browse/HARMONY">JIRA</a>.
 </p>
-                                <p>
-  Here are some basic guidelines and suggestions : 
-  <ul>
-  <li>
-    Once you have completed your changes, please be sure 
-    to test your changes very well. 
-  </li>
-  <li>
-    If you are offering a code addition or change, be sure that 
-    the codebase builds cleanly and the full test suite passes 
-    before submitting.  Patches that break the 
-    build or break the code will be rejected.
-  </li>
-  <li>
-   If you are offering a change to documentation or the website, 
-   please review the generated output and be sure that it is as you expect.
-  </li>
-  <li>
-    If you are offering a fix to a bug, please provide a testcase and 
-    instructions to help us duplicate the bug, and then test that the bug
-    is fixed.  We will add the testcase to our testsuite.
-  </li>
-  <li>
-     When offering something new, please include the entire file
-     that you are contributing.
-  </li>
-  <li>
-     When you are offering a change to something that already exists
-     in the project SVN repository, please submit a patch as outlined below.
-  </li>
-  </ul>
-</p>
-                                <p>
-  Once you are sure you have tested/reviewed your changes, open a 
-  new JIRA entry.  Clearly describe the patch or enhancement, and 
-  provide details, such as how to re-create if a bug, why the 
-  change or enhancement is useful, etc.  Then, attach all materials 
-  to the JIRA entry via "Attach File".  Please be sure to select 
-  "Grant license to ASF for inclusion in ASF works...".  Any patch
-  without this grant will be rejected.
-</p>
-                                <p>
-  Please use the subversion 'diff' utility to create a patch as follows : 
-  
-  <pre>
-    svn diff file.java &gt; file.patch
-  </pre>
-  
-  where 'file' is the filename that you have changed.  This will produce a 
-  nice patch file that can be added to the JIRA, which makes it easy for
-  the project committers to review and possibly accept your patch.
-</p>
+                                    
+    <h2>
+        <a name="Change-offering Tips">Change-offering Tips</a>
+    </h2>
+      
+                        <ul>
+
+      <li>
+        Once you have completed your changes, please be sure
+        to test your changes very well. When changing the code base, 
+        be sure that it builds cleanly and the full test suite passes
+        before submitting. Patches that break the build or break the 
+        code will be rejected.
+      </li>
+      <li>If you are offering...
+        <ul>
+           <li>
+            A fix to a bug, please provide a test case and
+            instructions to help us reproduce the bug, and then test that the bug
+            is fixed. We will add the test case to our test suite.
+          </li>
+          <li>
+            A change to documentation or the website,
+            review the generated output and be sure that it is as you expect.
+          </li>
+          <li>
+            New data, include the entire file that you are contributing.
+          </li>
+        </ul>
+      </li>
+      <li>
+        When you are offering a change to something that already exists
+        in the project SVN repository, submit a patch as outlined below.
+      </li>
+    </ul>
+                   
+                                    
+    <h2>
+        <a name="Guidelines on how to Create and Submit a Patch">Guidelines on how to Create and Submit a Patch</a>
+    </h2>
+      
+                        <p>
+      Once you are sure you have tested/reviewed your changes, do the following:
+      </p>
+                                <ul>
+      <li>Open a new <a href="http://issues.apache.org/jira/browse/HARMONY">
+            JIRA entry</a>.
+      </li>
+      <li>Clearly describe the patch or enhancement, and
+            provide details, such as how to re-create if a bug, why the
+            change or enhancement is useful, etc.
+      </li>
+       <li>Use the subversion <code>diff</code> utility to create a patch as follows:
+            <pre>svn diff file.java &gt; file.patch</pre>
+            where <code>file</code> is the filename that you have changed. This will produce a
+          nice patch file that can be added to the <a href="http://issues.apache.org/jira/browse/HARMONY">
+            JIRA</a>, which makes it easy for
+            the project committers to review and possibly accept your patch.
+           <br />
+           <p class="example">Example</p>
+           <pre>diff -u http_main.c.orig http_main.c &gt;&gt; patchfile.txt</pre>
+              Note that the <code>diff</code> command only shows differences for text files, and
+              not binary files. So even if you did <code>svn add</code> on a binary file (gif, jar,
+              png etc.), it won't show up in the patch, and will fail to apply. The
+              key string to look out for in the patch is: 
+           <pre>Cannot display: file marked as a binary type. </pre> 
+              If you see that, you'll also need to attach the binary files that have changed
+              separately to the issue. To get a list of such files in <code>file.patch</code>, run:
+           <pre>grep -B 2 "Cannot display" file.patch</pre>
+        </li>
+        <li>Attach all materials to the JIRA entry via <b>Attach File</b>.
+        </li>
+        <li>Be sure to select <b>Grant license to ASF for inclusion in ASF works...</b>.
+            Any patch without this grant will be rejected.
+        </li>
+    </ul>
+                   
                 <p><a href="#top">Back to top</a></p>
                     
                                                             </td>
