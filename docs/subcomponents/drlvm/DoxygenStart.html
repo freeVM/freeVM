@@ -36,7 +36,7 @@ limitations under the License.
             
             
             
-            <title>Apache Harmony - Apache Harmony DRL Virtual Machine</title>
+            <title>Apache Harmony - Apache Harmony DRL Virtual Machine Doc Index</title>
 
                         
                         
@@ -185,152 +185,84 @@ limitations under the License.
                         </td>
                     <td width="80%" valign="top"><a name="top"></a>
                                                                     <h1>
-      <a name="DRLVM">DRLVM</a>
+      <a name="DRLVM Source Code Generated Documentation Index">DRLVM Source Code Generated Documentation Index</a>
     </h1>
-                        <p> 
-    DRLVM stands for Dynamic Runtime Layer Virtual Machine, a clean-room implementation of the J2SE 1.5.0
-        virtual machine.
-    </p>
+                        <p>This is a landing page for Doxygen source code reference generated automatically from interface headers.
+Each link should lead to a documentation bundle generated from a component-related set of header files. 
+The purpose of these documents is to provide a complete reference of available code in DRLVM interfaces. 
+Because the code base is being actively developed, not all interfaces are well-documented at this point, so that
+you can find some interfaces not documented. Everyone's welcome to contribute to this initiative.
+</p>
                                 <p>
-    Key goals of DRL include the following: 
+The documentation bundles were generated automatically and posted on the site server. You can regenerate the docs
+from your source files locally, as described in section <a href="#Regenerating the Reference">Regenerating the Reference</a>.
+</p>
+                                    
+    <h2>
+        <a name="Doxygen API Reference for DRLVM Sources">Doxygen API Reference for DRLVM Sources</a>
+    </h2>
+      
+                        <p>This is a list of links to generated  source code documentation bundles. 
     </p>
                                 <ul>
-        <li><em>Modularity:</em> Functionality is grouped into a limited number of 
-        coarse-grained modules with well defined interfaces. </li>
-        <li><em>Pluggability:</em> Module implementations can be replaced at compile time or run time. 
-        Multiple implementations of a given module are possible. </li>
-        <li><em>Consistency:</em> Interfaces are consistent across platforms. </li>
-        <li><em>Performance:</em> Interfaces fully enable implementation of modules optimized for specific target platforms.</li>
+      <li><a href="intf/html/index.html">DRLVM Interfaces</a> - the high-level interface headers</li>
+      <li><a href="em/html/index.html">Execution Manager</a></li>
+      <li>Garbage Collectors:
+      <ul>
+          <li><a href="gc_cc/html/index.html">Copying/Compacting Garbage Collector</a></li>
+          <li><a href="gc_gen/html/index.html">Generational Garbage Collector</a></li>
+          <li><a href="gcv4/html/index.html">Obsolete v.4 Garbage Collector</a></li>
+      </ul></li>
+      <li><a href="interpreter/html/index.html">Interpreter</a></li>
+      <li><a href="jitrino/html/index.html">Jitrino</a>- the just-in-time compiler </li>
+      <li><a href="port/html/index.html">Porting Layer</a> - the extensions to APR</li>
+      <li><a href="thread/html/index.html">Thread Manager</a></li>
+      <li><a href="vmcore/html/index.html">VM Infrastructure</a> - the VM core component interfaces</li>
+      <li><a href="vmi/html/index.html">Class Library Support</a> -  the VMI interface</li>
+      <li><a href="vmstart/html/index.html">Component Manager</a></li>
+      <li><a href="tests/html/index.html">DTLVM Tests</a></li>
+      <li><a href="drlvm/html/index.html">All DRLVM</a> - the big bundle with all of the above</li>
     </ul>
-                                <p>
-        The following documentation links are specific to the DRLVM virtual machine
-        effort underway at Apache Harmony.
-    </p>
-                                    
-    <h2>
-        <a name="Developing and Building the code">Developing and Building the code</a>
-    </h2>
-      
-                        <ul>
-            <li>
-                <a href="https://svn.apache.org/viewcvs.cgi/*checkout*/harmony/enhanced/drlvm/trunk/README.txt" target="_blank">README</a>
-              <br />
-              Source package and building instructions for the VM source code.
-              </li>
-            <li>
-              <a href="getting_started.html">
-                Getting Started with DRLVM
-              </a>
-              <br />
-              Basic usage scenarios of VM: starting an application, working in Eclipse
-            </li>
-            <li> <a href="debugging_VM_and_JIT.html">Debugging VM and JIT</a>
-              <br />
-              Guide to debugging VM and Jitrino.JET source code covering
-              basic actions and some useful tips
-            </li> <a href="http://wiki.apache.org/harmony/FrontPage">Wiki Pages</a>
-              <br />
-              See the Wiki resource for troubleshooting, building tips, DRLVM todo items, etc
-        </ul>
                    
                                     
     <h2>
-        <a name="Architecture and Component Documentation">Architecture and Component Documentation</a>
+        <a name="Other Useful DRLVM documents">Other Useful DRLVM documents</a>
     </h2>
       
                         <ul>
-            <li>
-                <a href="developers_guide.html">Developer's Guide</a>
-                <br />
-                In-depth description of the DRLVM internal architecture and components' interaction
-                <br />
-                Now with additions in separate documents:
-            </li>
-          <ul>
-            <li>
-              <a href="EM.html">Execution Manager Component Description</a>
-              <br />
-              Detailed description of the Execution Manager current implementation
-              <br />
-             </li>
-            <li>
-              <a href="TM.html">Thread Manager Component Description</a>
-              <br />
-              Detailed description of the Thread Manager current implementation
-              <br />
-               </li>
-            <li>
-               <a href="kernel_classes.html">Kernel Classes Component Description</a>
-               <br />
-               Detailed description of the kernel classes implementation with focus on the native part of
-               kernel classes and the internal kernel classes interface.
-               <br />
-             </li>
-               <li>
-               <a href="JIT.html">JIT Compiler Component Description</a>
-               <br />
-               Detailed description of the Jitrino just-in-time compiler implementation; gives details on
-               the internal architecture of the Jitrino.JET baseline compiler and Jitrino.OPT optimizing compiler,
-               as well as processes running inside them.
-             <br />
-               Relies on the other component descriptions and the
-              <a href="JIT_PMF.html">Jitrino Pipeline Management Framework</a> description.
-            </li>
-            <ul>
-            <li>
-               <a href="JIT_PMF.html">Jitrino Pipeline Management Framework</a>
-             <br />
-              Detailed description of the pipeline management framework
-              that provides complete control over just-in-time compilation process through
-              the Java property mechanism. The description covers the PMF application to
-              the command-line interface and to the Jitrino logging system.
-              <br />
-              Relies on the <a href="JIT.html">JIT Compiler Component Description</a>,
-              which gives a general definition of PMF.
-            </li>
-             <li>
-               <a href="internal_profiler.html">Jitrino Internal Profiler Description</a>
-             <br />
-              Description of the code generator's internal profiler tool (iprof) for Jitrino.OPT
-              just-in-time compiler, which defines the tool, illustrates its sample output and
-              configuration mechanisms
-              <br />
-              Relies on the <a href="JIT.html">JIT Compiler Component Description</a>,
-              which gives a general definition of just-in-time compilation and code generation processes.
-            </li>
-            </ul>
-            <li>
-               <a href="JVMTI-PopFrame.html">JVMTI PopFrame Implementation</a>
-             <br />
-              Details on the PopFrame implementation as currently done in DRLVM. 
-              The document indicates the functions responsible for the operation and 
-              gives info on specifics of the current implementation. 
-            </li>
-          </ul>
-        <li><a href="DoxygenStart.html">DRLVM Source Code Generated Documentation Index</a>
-        </li>
-        </ul>
+      <li><a href="index.html" target="_blank">DRLVM
+      website documentation page</a> with links to all DRLVM documents</li>
+      <li><a href="http://wiki.apache.org/harmony/DRLVM_Documentation_Quality">Status
+      metrics for Doxygen API reference</a>, Wiki page with metrics that show improvement metrics for the reference </li>
+    </ul>
                    
+                <p><a href="#top">Back to top</a></p>
+                                                <h1>
+      <a name="Regenerating the Reference">Regenerating the Reference</a>
+    </h1>
+                        <p>
+Follow these instructions to regenerate reference materials analogous to those posted on the website. You can also adjust
+the list of files to include into a specific documentation bundle and configure Doxygen to produce a different output,
+see section <a href="#Advanced Tasks">Advanced Tasks</a>
+</p>
+                                <p>TBD</p>
                                     
     <h2>
-        <a name="How-tos and Guides">How-tos and Guides</a>
+        <a name="Advanced Tasks">Advanced Tasks</a>
     </h2>
       
-                        <p>This section lists the various guides to specific aspects of the Virtual Machine. </p>
+                        <p>
+Generation of Doxygen reference is adjusted by the following files located in <code>trunk/vm/doc</code>:
+</p>
                                 <ul>
-            <li>
-              <a href="emguide.html">Configuring Execution Manager</a>
-              <br />
-              Guide to Execution Manager (EM) options and configuration file format.<br />
-            </li>
-            <li>
-              <a href="gc-howto.html">How to write DRL GC</a>
-              <br />
-              Instructions on creating a custom garbage collector implementation in C++
-              and configuring the DRL virtual machine to use it with a real-life example
-              of a copying GC implementation (source included)
-            </li>
-        </ul>
+<li><code>doc.properties</code> defines the input and output directories and the files included in each bundle
+</li>
+<li><code>build.xml</code> lists all doc build targets
+</li>
+<li><code>vm.cfg</code> is a copy of classlib configuration files and defines formatting and other output properties for Doxygen
+</li>
+
+</ul>
                    
                 <p><a href="#top">Back to top</a></p>
                     
