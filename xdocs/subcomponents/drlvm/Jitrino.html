@@ -275,7 +275,7 @@
             machine using a combination of the native stack and registers.
          </li>
          <li>
-            <a href="#Architecture">Jitrino.OPT</a> optimizing compiler can
+            <a href="#OPT_Architecture">Jitrino.OPT</a> optimizing compiler can
             performs bytecode compilation with a variety of optimizations. The
             compiler features two types of code <a href="#IR">intermediate
             representation</a> (IR): platform-independent high-level IR (HIR)
@@ -347,7 +347,7 @@
       </h2>
       <p>
          Jitrino compilers provide means to compile and optimize code
-         distributed for Java<a href="#*#*">*</a> run-time environments and to
+         distributed for Java<a href="#*">*</a> run-time environments and to
          adapt it to various hardware architectures. Figure 1 demonstrates the
          architecture of the compilers and their interaction with the <a
          href="developers_guide.html">virtual machine</a>.
@@ -389,7 +389,7 @@
             <p>
                The run-time environment bytecode is translated into the
                high-level intermediate representation (HIR) by the Java<a
-               href="#*#*">*</a> bytecode translator and then optimized by the
+               href="#*">*</a> bytecode translator and then optimized by the
                high-level optimizer. HIR and the optimizer make up the
                language- and platform-independent part of the Jitrino.OPT.
             </p>
@@ -465,7 +465,7 @@
          VM properties. Understanding pipeline configuration rules is required
          for using the Jitrino command-line interface and effectively
          exercising the Jitrino logging system. For details on PMF internals,
-         refer to the <a href="Jitrino_PMF.html">PMF Detailed Description</a>.
+         refer to the <a href="JIT_PMF.html">PMF Detailed Description</a>.
       </p>
       <p class="backtotop">
          <a href="#top">Back to Top</a>
@@ -1826,7 +1826,7 @@ void optABC() {
          counters and time measurement, use the following command syntax:
       </p>
 <pre>
--Djit.&lt;JIT&gt;.arg.time=on
+-XDjit.&lt;JIT&gt;.arg.time=on
 </pre>
       <p class="note">
          Note
@@ -1954,7 +1954,7 @@ void optABC() {
          The general syntax of the logging command follows PMF rules:
       </p>
 <pre>
--Djit.&lt;JIT&gt;.&lt;pipeline&gt;.arg.&lt;path&gt;.log=&lt;list of stream names&gt;
+-XDjit.&lt;JIT&gt;.&lt;pipeline&gt;.arg.&lt;path&gt;.log=&lt;list of stream names&gt;
 </pre>
       <p>
          In this command syntax, <code>&lt;path&gt;</code> represents the set
@@ -1968,13 +1968,13 @@ void optABC() {
          To enable compilation protocols for all pipelines of all JITs, type
       </p>
 <pre class="exampletext">
--Djit.arg.log=info
+-XDjit.arg.log=info
 </pre>
       <p class="exampletext">
          To dump compile-time diagnostic together with IR dumps, type
       </p>
 <pre class="exampletext">
--Djit.arg.log=ct,irdump
+-XDjit.arg.log=ct,irdump
 </pre>
       <h3>
          5.3.1 CFG Visualization
@@ -1995,11 +1995,11 @@ void optABC() {
          To enable dumping .dot files, use the following command:
       </p>
 <pre>
--Djit.arg.log=dotdump
+-XDjit.arg.log=dotdump
 </pre>
       <p>
          For more details on the Jitrino logging system, refer to the
-         corresponding section in the <a href="PMF.html">PMF</a> description.
+         corresponding section in the <a href="JIT_PMF.html">PMF</a> description.
       </p>
       <p class="backtotop">
          <a href="#top">Back to Top</a>
