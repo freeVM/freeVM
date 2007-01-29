@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+     
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+-->
+
+<project name="HUT-iterative" default="default" basedir=".">
+	
+    <description>
+		CI/built/test system for Apache Harmony
+		http://incubator.apache.org/harmony
+    </description>
+
+	<!--The cc.property file contains the nameand values of properties-->
+	<property file="cc.properties" />
+
+	<echo file="${target.dir}/cc.properties" append="true">
+HUT_iterative_timeout=${HUT_iterative_cycle_timeout}
+HUT_iterations=${HUT_iterative_repetitions}
+HUT_forkmode=${HUT_iterative_forkmode}
+fs=${file.separator}
+
+	</echo>
+
+	<!-- ==========================================
+	       Kick off CC
+	     ========================================== -->
+	<target name="default" description="Start classlib unit tests iterative run" >
+	</target>
+		
+	<!-- ==========================================
+	     setup - config iterative classlib tests run
+	     ========================================== -->
+	<target name="setup" description="copy config file and scripts to target dir"  depends="win,unix">
+		
+		<copy file="config/config-HUT_iterative.xml" tofile="${target.dir}/config.xml" overwrite="true" />
+		<copy file="HUT_iterative_run.bat" tofile="${target.dir}/HUT_iterative/HUT_iterative_run.bat" overwrite="true" />		
+		<copy file="HUT_iterative_run.sh" tofile="${target.dir}/HUT_iterative/HUT_iterative_run.sh" overwrite="true" />		
+		<copy file="modulesList" tofile="${target.dir}/HUT_iterative/modulesList" overwrite="true" />		
+
+	</target>
+
+	<target name="win" if="is.windows">
+		<echo file="${target.dir}/cc.properties" append="true">
+cmd_HUT_iterative=HUT_iterative_run.bat
+</echo>
+	</target>
+
+	<target name="unix" if="is.unix">
+		<echo file="${target.dir}/cc.properties" append="true">
+cmd_HUT_iterative=HUT_iterative_run.sh
+</echo>
+	</target>
+
+</project> 

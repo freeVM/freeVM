@@ -17,6 +17,7 @@
 
     <tstamp>
        <format property="timestamp" pattern="yyyyMMdd" />
+       <format property="timestampfull" pattern="yyyyMMddhhmm" />
     </tstamp>
 
     <target name="copy.res">
@@ -24,6 +25,14 @@
        <zip destfile="projects/classlib/trunk/results_${VM}_${timestamp}.zip" >
            <zipfileset dir="projects/classlib/trunk/build/test_report" includes="**/*.xml" />
         </zip>
+    </target>
+    <target name="copy.HUT-iterative.res">
+       <zip destfile="projects/classlib/trunk/results_${VM}_${timestampfull}.zip" >
+	    <zipfileset dir="projects/classlib/trunk/build" includes="test_report_*/**/*" /> 
+	    <zipfileset dir="projects/classlib/trunk/build" includes="FAILURES.txt, ERRORS.txt, ZERO_LENGTH.txt, test_report_length.txt" prefix="result" />
+	    <zipfileset dir="projects/classlib/trunk" includes="log_*.txt" prefix="logs" /> 
+        </zip>
+					   
     </target>
     <target name="copy.vm.res">
        <delete file="projects/drlvm/trunk/results_${timestamp}.zip" failonerror="false" />
@@ -64,6 +73,21 @@
 		failonerror="false"
 		mailhost="${mailhost}"
 		subject="${subject}"/>
+    </target>
+
+    <target name="email.always.res" >
+	<mail	from="${fromaddress}" 
+		tolist="${toaddress}" 
+		messagefile="${file}" 
+		failonerror="false" 
+		mailhost="${mailhost}" 
+		subject="${subject}" >
+		<fileset dir="projects/classlib/trunk/build" includes="FAILURES.txt, ERRORS.txt, ZERO_LENGTH.txt, test_report_length.txt" />
+	</mail>	
+	<delete dir="projects/classlib/trunk/build" /> 	
+	<delete> 
+	    <fileset dir="projects/classlib/trunk" includes="log_*.txt" /> 
+	</delete> 			   
     </target>
 
 </project>
