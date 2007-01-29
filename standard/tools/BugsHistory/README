@@ -1,0 +1,87 @@
+January, 2007
+====================================
+
+
+This archive contains the contribution to the Apache Harmony project.
+The contribution consists of the following components:
+
+
+  Tool for generation of unresolved Harmony bugs history reports
+
+
+1. ARCHIVE CONTENTS
+-------------------
+
+The archive contains the script files and auxiliary files required for
+reports generation.
+
+After extracting this archive, the following directories appear under
+<EXTRACT_DIR>/, where EXTRACT_DIR is the location into which the
+archive was extracted:
+
+  <EXTRACT_DIR>/
+       |
+       \---BugsHistory
+           |
+           +---lib              - directory for required Perl modules
+           +---tmp              - directory where generated files (pictures)
+           |                      are stored
+           |---HarmonyBugs.cgi  - script for generating html report
+           |---run-daily.sh     - script for collecting data for reports
+           \---url.txt          - contains list of links to JIRA from where
+                                  data for reports is taken
+
+
+2. TOOLS AND LIBRARIES REQUIRED FOR THE TOOL
+--------------------------------------------
+
+To run tool scripts, install and configure the following tools
+and support libraries:
+
++ Perl
+    - Perl binaries version 5.8 or higher
+      http://www.perl.org
+
++ Chart module for Perl
+    - Chart module for Perl by David Bonner, Peter Clark and
+      Chart-Group at BKG version 2.3 or higher
+      http://cpan.perl.org/modules/
+      Note, that Chart module requires GD module installed.
+
+
+3. HOW TO GENERATE REPORTS
+--------------------------
+
+To generate html report use HarmonyBugs.cgi Perl-based script. Run
+this script from shell prompt or set up on web server and run by
+referencing its url.
+
+The script is designed to use actual data from JIRA site by default,
+if there is no cached data (*.out files in current directory),
+otherwise the script uses data form that files. The source of the data
+may be explicitly defined by 'method' argument, which may be equal to
+'online' or 'offline'. Use script run-daily.sh for creating *.out files.
+
+It is preferably to run run-daily.sh every day automatically, this will
+allow HarmonyBugs.cgi script to run with 'offline' method by default -
+this will decrease its run time.
+
+Note, that the first run of run-daily.sh script may take about 2-3
+hours. It takes so long because at first time the script requests
+change history for each resolved issue in order to find out the date
+issue has been resolved. The next runs take about 5-10 minutes (it
+depends on your internet connection speed and amount of issues
+resolved since last run).
+
+The HarmonyBugs.cgi script automatically generates weekly reports.
+
+
+4. KNOWN ISSUES
+---------------
+
+No issues are revealed.
+
+
+5. DISCLAIMER
+--------------
+*) Other brands and names are the property of their respective owners.
