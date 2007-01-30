@@ -1,0 +1,340 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Performance</title>
+
+                        
+                
+        <link rel="stylesheet" type="text/css" href="site.css"/>
+        </head>
+
+        <body>        
+            <table  width="100%" cellspacing="0">
+                <!-- TOP IMAGE -->
+                <tr>
+                    <td align='LEFT'>
+                    <table><tr><td>
+                    <td>
+<a href="http://harmony.apache.org/"><img  src="./images/harmony-logo-new.png" alt="Apache Harmony" /></a>
+</td>
+</td>
+                    </td></tr></table>
+                    </td>
+                    <td align='RIGHT'>
+<!--                    <a href="http://harmony.apache.org/">
+                    <img src="http://harmony.apache.org/images/apache-incubator-logo.png"
+                    	alt="Apache Harmony" /></a>                    
+-->                    </td>
+                </tr>
+            </table>
+            <table width="100%" cellspacing="4">
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+
+                <tr>
+                    <!-- LEFT SIDE NAVIGATION -->
+                    <td class="menuItem" width="20%" nowrap="true">
+
+                    <!-- special ACon Logo - leave here for next time
+                    <a href="http://www.us.apachecon.com/">
+                        <img src="http://www.apache.org/ads/ApacheCon/240x120-2006-us.gif"
+                             alt="ApacheCon US 2006" />
+                    </a> -->
+
+                   <!-- regular menu -->
+
+                    
+    <!-- ============================================================ -->
+
+                <p class="menuItem"><strong>General</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="./index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./license.html">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./downloads.html">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./faq.html">FAQ</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem"><strong>Community</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="./get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem"><strong>Development</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="./svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem"><strong>Documentation</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="./sitemap.html">Sitemap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./hdk.html">HDK</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+                        </td>
+                    <td width="80%" valign="top"><a name="top"></a>
+                                                                    <h1>
+      <a name="Performance">Performance</a>
+    </h1>
+                            
+    <h2>
+        <a name="Dacapo">Dacapo</a>
+    </h2>
+      
+                        <p>
+        Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 12 Gb DDR2 / SLES 9 32-bit
+        <table border="1">
+            <tr><td nowrap="true">Date</td><td>SVN classlib rev</td><td>SVN drlvm rev</td><td>VM</td><td>workload</td><td>antlr</td><td>bloat</td><td>chart</td><td>fop</td><td>hsqldb</td><td>jython</td><td>luindex</td><td>lusearch</td><td>pmd</td><td>xalan</td><td>JVM options</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r496328</td><td>r496300</td><td>DRLVM</td><td>default</td><td>5466.727</td><td>11438.253</td><td>6986.320</td><td>6986.320</td><td>2291.016</td><td><font color="red">FAILED</font></td><td>5724.289</td><td><font color="red">FAILED</font></td><td>10660.662</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xms768m -Xmx768m -Xem:server</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>6271.769</td><td>18499.670</td><td>10956.094</td><td>2245.992</td><td>2502.029</td><td><font color="red">FAILED</font></td><td>7072.736</td><td><font color="red">FAILED</font></td><td>12668.863</td><td><font color="red">FAILED</font></td><td nowrap="true"> -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>5515.962</td><td>11195.871</td><td>7004.994</td><td><font color="red">FAILED</font></td><td>2288.920</td><td><font color="red">FAILED</font></td><td>5708.278</td><td><font color="red">FAILED</font></td><td>10575.666</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xem:server -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>5463.171</td><td>11362.927</td><td>7040.331</td><td><font color="red">FAILED</font></td><td>2319.990</td><td><font color="red">FAILED</font></td><td>5757.289</td><td><font color="red">FAILED</font></td><td>10652.999</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xem:server -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>6170.980</td><td>18479.242</td><td>10025.525</td><td>2146.964</td><td>2824.829</td><td><font color="red">FAILED</font></td><td>7185.636</td><td><font color="red">FAILED</font></td><td>12755.960</td><td><font color="red">FAILED</font></td><td nowrap="true"> -Xms768m -Xmx768m</td></tr>
+        </table>
+    </p>
+                                <p>
+        Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE SP1
+        <table border="1">
+            <tr><td nowrap="true">Date</td><td>SVN classlib rev</td><td>SVN drlvm rev</td><td>VM</td><td>workload</td><td>antlr</td><td>bloat</td><td>chart</td><td>fop</td><td>hsqldb</td><td>jython</td><td>luindex</td><td>lusearch</td><td>pmd</td><td>xalan</td><td>JVM options</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r494836</td><td>r494838</td><td>DRLVM</td><td>default</td><td>5499.234</td><td>12915.439</td><td>9171.992</td><td>1265.603</td><td>2270.031</td><td>8984.657</td><td>6726.925</td><td><font color="red">FAILED</font></td><td>8521.330</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xms768m -Xmx768m -Xem:client -XDgc.lp=true -Xverbose:gc.lp</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r494836</td><td>r494838</td><td>DRLVM</td><td>default</td><td>5041.247  </td><td>9010.465</td><td>8103.996</td><td>8103.996</td><td>2018.411</td><td>7812.667</td><td>5687.146</td><td><font color="red">FAILED</font></td><td>7338.663</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xms768m -Xmx768m -Xem:server -XDgc.lp=true -Xverbose:gc.lp</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>5483.305</td><td>13952.262</td><td>9458.596</td><td>1260.312</td><td>2171.891</td><td>9660.070</td><td>6645.011</td><td><font color="red">FAILED</font></td><td>8395.997</td><td><font color="red">FAILED</font></td><td nowrap="true"> -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>4967.762</td><td>8947.038</td><td>7625.195</td><td><font color="red">FAILED</font></td><td>2031.279</td><td>8181.177</td><td>5651.243</td><td><font color="red">FAILED</font></td><td>7302.329</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xem:server -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>5609.310</td><td>13906.969</td><td>9468.991</td><td>1260.644</td><td>2225.035</td><td>10656.659</td><td>6731.891</td><td><font color="red">FAILED</font></td><td>8411.330</td><td><font color="red">FAILED</font></td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>5151.198</td><td>8890.809</td><td>7660.905</td><td><font color="red">FAILED</font></td><td>1981.484</td><td>8411.246</td><td>5697.590</td><td><font color="red">FAILED</font></td><td>7349.319</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xem:server -XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>5138.248</td><td>8759.722</td><td>7505.220</td><td><font color="red">FAILED</font></td><td>2031.279</td><td>8098.000</td><td>5745.271</td><td><font color="red">FAILED</font></td><td>7249.988</td><td><font color="red">FAILED</font></td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xem:server -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>5570.601</td><td>13170.464</td><td>9520.988</td><td>1260.312</td><td>2155.949</td><td>9980.859</td><td>6703.109</td><td><font color="red">FAILED</font></td><td>8186.418</td><td><font color="red">FAILED</font></td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+        </table>
+    </p>
+                                <p>
+	Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / SLES 9 64-bit
+        <table border="1">
+            <tr><td nowrap="true">Date</td><td>SVN classlib rev</td><td>SVN drlvm rev</td><td>VM</td><td>workload</td><td>antlr</td><td>bloat</td><td>chart</td><td>fop</td><td>hsqldb</td><td>jython</td><td>luindex</td><td>lusearch</td><td>pmd</td><td>xalan</td><td>JVM options</td></tr>
+	    <tr><td nowrap="true">16 Jan 2007</td><td>r496328</td><td>r496300</td><td>DRLVM</td><td>default</td><td>7071.850</td><td>19015.850</td><td><font color="red">FAILED</font></td><td>2478.626</td><td>3041.570</td><td><font color="red">FAILED</font></td><td>8279.499</td><td>6398.841</td><td>15771.496</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xms768m -Xmx768m -Xem:server</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>7040.969</td><td>18775.301</td><td>11011.197</td><td>2530.634</td><td>3163.881</td><td><font color="red">FAILED</font></td><td>8407.821</td><td>6546.831</td><td>15882.201</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xem:server -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>8249.890</td><td>25517.140</td><td>12804.797</td><td>2654.301</td><td>3287.224</td><td><font color="red">FAILED</font></td><td>9233.399</td><td>6633.051</td><td>16912.439</td><td><font color="red">FAILED</font></td><td nowrap="true"> -Xms768m -Xmx768m</td></tr>
+        </table>
+    </p>
+                                <p>
+        Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE x64 SP1
+        <table border="1">
+            <tr><td nowrap="true">Date</td><td>SVN classlib rev</td><td>SVN drlvm rev</td><td>VM</td><td>workload</td><td>antlr</td><td>bloat</td><td>chart</td><td>fop</td><td>hsqldb</td><td>jython</td><td>luindex</td><td>lusearch</td><td>pmd</td><td>xalan</td><td>JVM options</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r494836</td><td>r494838</td><td>DRLVM</td><td>default</td><td>5685.523</td><td>12749.285</td><td>9291.656</td><td>1192.644</td><td>2148.361</td><td>9451.294</td><td>7012.089</td><td><font color="red">FAILED</font></td><td>8385.321</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xms768m -Xmx768m -Xem:client -XDgc.lp=true -Xverbose:gc.lp</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r494836</td><td>r494838</td><td>DRLVM</td><td>default</td><td>5187.272</td><td>8827.642</td><td>8114.581</td><td>8114.581</td><td>1960.427</td><td>7510.330</td><td>5960.034</td><td><font color="red">FAILED</font></td><td>7098.652</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xms768m -Xmx768m -Xem:server -XDgc.lp=true -Xverbose:gc.lp</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>5633.882</td><td>13676.543</td><td>9593.608</td><td>1233.880</td><td>2214.094</td><td>10282.636</td><td>7265.686</td><td><font color="red">FAILED</font></td><td>8364.644</td><td><font color="red">FAILED</font></td><td nowrap="true"> -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>5171.885</td><td>8988.156</td><td>7733.880</td><td><font color="red">FAILED</font></td><td>2051.556</td><td>8135.049</td><td>6191.403</td><td><font color="red">FAILED</font></td><td>7276.319</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xem:server -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>5710.283</td><td>13473.771</td><td>9505.256</td><td>1197.975</td><td>2171.173</td><td>9612.561</td><td>6941.153</td><td><font color="red">FAILED</font></td><td>8281.657</td><td><font color="red">FAILED</font></td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>5228.616</td><td>8863.867</td><td>7723.975</td><td><font color="red">FAILED</font></td><td>2021.342</td><td>7551.997</td><td>6004.664</td><td><font color="red">FAILED</font></td><td>7218.632</td><td><font color="red">FAILED</font></td><td nowrap="true">-Xem:server -XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>5337.098</td><td>8889.775</td><td>7676.567</td><td><font color="red">FAILED</font></td><td>2004.314</td><td>8603.529</td><td>6043.804</td><td><font color="red">FAILED</font></td><td>7015.655</td><td><font color="red">FAILED</font></td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xem:server -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>5750.117</td><td>12681.342</td><td>9292.166</td><td>1187.266</td><td>2185.050</td><td>9346.010</td><td>7038.673</td><td><font color="red">FAILED</font></td><td>8145.031</td><td><font color="red">FAILED</font></td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+        </table>
+    </p>
+                   
+                                    
+    <h2>
+        <a name="SciMark2.0">SciMark2.0</a>
+    </h2>
+      
+                        <p>
+        Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 12 Gb DDR2 / SLES 9 32-bit
+        <table border="1">
+            <tr><td nowrap="true">Date</td><td>SVN classlib rev</td><td>SVN drlvm rev</td><td>VM</td><td>workload</td><td>Composite Score</td><td>FFT</td><td>SOR</td><td>Monte Carlo</td><td>Sparse matmult</td><td>LU</td><td>JVM options</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r496328</td><td>r496300</td><td>DRLVM</td><td>default</td><td>113.135</td><td>37.747</td><td>223.544</td><td>30.242</td><td>154.711</td><td>119.430</td><td nowrap="true">-Xms768m -Xmx768m -Xem:client</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r496328</td><td>r496300</td><td>DRLVM</td><td>default</td><td>212.553</td><td>-1.470E-</td><td>680.422</td><td>52.002</td><td>330.489</td><td><font color="red">ERROR</font></td><td nowrap="true">-Xms768m -Xmx768m -Xem:server</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>207.827</td><td>324.812</td><td>391.339</td><td>35.460</td><td>149.557</td><td>137.968</td><td nowrap="true"> -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>200.844</td><td>-1.190E-</td><td>672.349</td><td>52.163</td><td>279.829</td><td><font color="red">ERROR</font></td><td nowrap="true">-Xem:server -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>166.854</td><td>-6.390E-</td><td>407.390</td><td>52.987</td><td>373.957</td><td><font color="red">ERROR</font></td><td nowrap="true">-Xem:server -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>165.232</td><td>183.836</td><td>332.119</td><td>35.432</td><td>154.711</td><td>120.060</td><td nowrap="true"> -Xms768m -Xmx768m</td></tr>
+        </table>
+    </p>
+                                <p>
+        Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE SP1
+        <table border="1">
+            <tr><td nowrap="true">Date</td><td>SVN classlib rev</td><td>SVN drlvm rev</td><td>VM</td><td>workload</td><td>Composite Score</td><td>FFT</td><td>SOR</td><td>Monte Carlo</td><td>Sparse matmult</td><td>LU</td><td>JVM options</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r494836</td><td>r494838</td><td>DRLVM</td><td>default</td><td>191.244</td><td>298.466</td><td>358.569</td><td>50.820</td><td>154.202</td><td>94.160</td><td nowrap="true">-Xms768m -Xmx768m -Xem:client</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r494836</td><td>r494838</td><td>DRLVM</td><td>default</td><td>190.503</td><td>-1.212E-1</td><td>685.261</td><td>67.633</td><td>199.743</td><td><font color="red">ERROR</font></td><td nowrap="true">-Xms768m -Xmx768m -Xem:server</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>170.931</td><td>191.170</td><td>335.122</td><td>32.048</td><td>148.742</td><td>147.571</td><td nowrap="true"> -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>209.935</td><td>-1.226E-1</td><td>685.261</td><td>56.134</td><td>308.404</td><td><font color="red">ERROR</font></td><td nowrap="true">-Xem:server -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>170.648</td><td>189.838</td><td>331.433</td><td>32.529</td><td>148.742</td><td>150.699</td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>139.968</td><td>-6.595E-2</td><td>411.039</td><td>58.431</td><td>230.436</td><td><font color="red">ERROR</font></td><td nowrap="true">-Xem:server -XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>139.650</td><td>-6.553E-2</td><td>411.039</td><td>58.052</td><td>229.227</td><td><font color="red">ERROR</font></td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xem:server -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>212.758</td><td>340.406</td><td>382.940</td><td>33.042</td><td>145.635</td><td>161.769</td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+        </table>
+    </p>
+                                <p>
+        Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / SLES 9 64-bit
+        <table border="1">
+            <tr><td nowrap="true">Date</td><td>SVN classlib rev</td><td>SVN drlvm rev</td><td>VM</td><td>workload</td><td>Composite Score</td><td>FFT</td><td>SOR</td><td>Monte Carlo</td><td>Sparse matmult</td><td>LU</td><td>JVM options</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r496328</td><td>r496300</td><td>DRLVM</td><td>default</td><td>174.065</td><td>311.249</td><td>333.267</td><td>26.694</td><td>100.607</td><td>98.508</td><td nowrap="true">-Xms768m -Xmx768m -Xem:client</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r496328</td><td>r496300</td><td>DRLVM</td><td>default</td><td>311.130</td><td>313.712</td><td>599.177</td><td>29.563</td><td>346.843</td><td>266.354</td><td nowrap="true">-Xms768m -Xmx768m -Xem:server</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>311.585</td><td>316.100</td><td>604.250</td><td>29.317</td><td>343.660</td><td>264.599</td><td nowrap="true">-Xem:server -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>172.266</td><td>308.824</td><td>329.506</td><td>26.011</td><td>98.847</td><td>98.140</td><td nowrap="true"> -Xms768m -Xmx768m</td></tr>
+        </table>
+    </p>
+                                <p>
+        Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE x64 SP1
+        <table border="1">
+            <tr><td nowrap="true">Date</td><td>SVN classlib rev</td><td>SVN drlvm rev</td><td>VM</td><td>workload</td><td>Composite Score</td><td>FFT</td><td>SOR</td><td>Monte Carlo</td><td>Sparse matmult</td><td>LU</td><td>JVM options</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r494836</td><td>r494838</td><td>DRLVM</td><td>default</td><td>192.108</td><td>301.667</td><td>358.436</td><td>50.514</td><td>155.372</td><td>94.552</td><td nowrap="true">-Xms768m -Xmx768m -Xem:client</td></tr>
+            <tr><td nowrap="true">16 Jan 2007</td><td>r494836</td><td>r494838</td><td>DRLVM</td><td>default</td><td>213.073</td><td>-1.219E-1</td><td>685.261</td><td>67.108</td><td>313.119</td><td><font color="red">ERROR</font></td><td nowrap="true">-Xms768m -Xmx768m -Xem:server</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>169.281</td><td>182.375</td><td>335.122</td><td>32.529</td><td>148.742</td><td>147.635</td><td nowrap="true"> -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>187.969</td><td>-1.219E-1</td><td>685.017</td><td>58.027</td><td>196.923</td><td><font color="red">ERROR</font></td><td nowrap="true">-Xem:server -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>169.213</td><td>183.604</td><td>331.547</td><td>32.545</td><td>147.736</td><td>150.632</td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+	    <tr><td nowrap="true">22 Jan 2007</td><td>r497565</td><td>r498001</td><td>DRLVM</td><td>default</td><td>139.330</td><td>-6.638E-2</td><td>408.253</td><td>58.027</td><td>230.435</td><td><font color="red">ERROR</font></td><td nowrap="true">-Xem:server -XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>139.335</td><td>-6.635E-2</td><td>408.253</td><td>58.052</td><td>230.435</td><td><font color="red">ERROR</font></td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xem:server -Xms768m -Xmx768m</td></tr>
+<tr><td nowrap="true">30 Jan 2007</td><td>r499330</td><td>r501045</td><td>DRLVM</td><td>default</td><td>212.195</td><td>336.336</td><td>383.092</td><td>33.026</td><td>146.678</td><td>161.846</td><td nowrap="true">-XDgc.lp=true -Xverbose:gc.lp -Xms768m -Xmx768m</td></tr>
+        </table>
+    </p>
+                   
+                <p><a href="#top">Back to top</a></p>
+                    
+                                                            </td>
+                </tr>
+
+                <!-- FOOTER -->
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+                <tr><td colspan="2">
+                    <div class="special"><em>
+                    Copyright &#169; 2003-2006, The Apache Software Foundation
+                    </em></div>
+                </td></tr>
+            </table>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
