@@ -15,43 +15,25 @@
  *  limitations under the License.
  */
 /** 
- * @author Intel, Salikh Zakirov
- * @version $Revision: 1.1.2.1.4.3 $
+ * @author Intel, Evgueni Brevnov
+ * @version $Revision: 1.1.2.1.4.4 $
  */  
 
 
+#define LOG_DOMAIN "port.old"
+#include "cxxlog.h"
 
+#include "vm_threads.h"
+#include "exceptions.h"
+#include "method_lookup.h"
+#include "open/gc.h"
 
-
-
-#ifndef _FINALIZE_H_
-#define _FINALIZE_H_
-
-#include "open/types.h"
-
-#ifdef USE_GC_STATIC
-extern int running_finalizers_deferred;
+//wgs: I wonder if we could give it a errno
+#if defined (__INTEL_COMPILER) 
+#pragma warning( push )
+#pragma warning (disable:584) // omission of exception specification is incompatible with previous function "__errno_location" (declared at line 38 of "/usr/include/bits/errno.h")
 #endif
 
-#ifndef USE_GC_STATIC
-VMEXPORT
-#endif
-void vm_run_pending_finalizers();
-int vm_do_finalization(int quantity);
-int vm_get_finalizable_objects_quantity();
-bool vm_finalization_is_enabled();
-void vm_obtain_finalizer_fields();
-
-#ifndef USE_GC_STATIC
-VMEXPORT
-#endif
-void vm_enumerate_objects_to_be_finalized();
-void vm_enumerate_references_to_enqueue();
-int vm_get_references_quantity();
-
-void vm_enqueue_references();
-void vm_ref_enqueue_func(void);   // added for NATIVE REFERENCE ENQUEUE THREAD
-
-Boolean get_native_finalizer_thread_flag(); // added for NATIVE FINALIZER THREAD
-
+#if defined (__INTEL_COMPILER)
+#pragma warning( pop )
 #endif

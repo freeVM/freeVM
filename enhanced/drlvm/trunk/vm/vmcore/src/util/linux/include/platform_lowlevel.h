@@ -15,43 +15,41 @@
  *  limitations under the License.
  */
 /** 
- * @author Intel, Salikh Zakirov
- * @version $Revision: 1.1.2.1.4.3 $
+ * @author Intel, Evgueni Brevnov
+ * @version $Revision: 1.1.2.1.4.4 $
  */  
+#ifndef _PLATFORM_LOWLEVEL_H_
+#define _PLATFORM_LOWLEVEL_H_
 
+#include "stdlib.h"
+#include <limits.h>
+//#include <ctype.h>
 
+inline void disable_assert_dialogs() {
+    /* NOP on Linux */
+}
 
-
-
-
-#ifndef _FINALIZE_H_
-#define _FINALIZE_H_
-
-#include "open/types.h"
-
-#ifdef USE_GC_STATIC
-extern int running_finalizers_deferred;
+inline void debug_break() {
+    abort();
+}
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#ifndef USE_GC_STATIC
-VMEXPORT
+#define __fastcall
+#if defined(_IPF_) || defined(_EM64T_)
+#define __stdcall
+#else
+#define __stdcall  __attribute__ ((__stdcall__))
 #endif
-void vm_run_pending_finalizers();
-int vm_do_finalization(int quantity);
-int vm_get_finalizable_objects_quantity();
-bool vm_finalization_is_enabled();
-void vm_obtain_finalizer_fields();
+#define __cdecl
 
-#ifndef USE_GC_STATIC
-VMEXPORT
+#define dllexport
+#define __declspec(junk)
+
+#define _MAX_PATH PATH_MAX
+
+#ifdef __cplusplus
+}
 #endif
-void vm_enumerate_objects_to_be_finalized();
-void vm_enumerate_references_to_enqueue();
-int vm_get_references_quantity();
-
-void vm_enqueue_references();
-void vm_ref_enqueue_func(void);   // added for NATIVE REFERENCE ENQUEUE THREAD
-
-Boolean get_native_finalizer_thread_flag(); // added for NATIVE FINALIZER THREAD
-
-#endif
+#endif // _PLATFORM_LOWLEVEL_H_

@@ -15,43 +15,31 @@
  *  limitations under the License.
  */
 /** 
- * @author Intel, Salikh Zakirov
- * @version $Revision: 1.1.2.1.4.3 $
+ * @author Andrey Chernyshev
+ * @version $Revision: 1.1.2.1.4.4 $
  */  
 
 
+#ifndef THREAD_MANAGER_HEADER
+#define THREAD_MANAGER_HEADER
+
+#include "vm_threads.h"
 
 
-
-
-#ifndef _FINALIZE_H_
-#define _FINALIZE_H_
-
-#include "open/types.h"
-
-#ifdef USE_GC_STATIC
-extern int running_finalizers_deferred;
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#ifndef USE_GC_STATIC
-VMEXPORT
+void free_this_thread_block(VM_thread *);
+VM_thread * get_a_thread_block(JavaVM_Internal * java_vm);
+
+
+extern volatile VM_thread *p_the_safepoint_control_thread;  // only set when a gc is happening
+extern volatile safepoint_state global_safepoint_status;
+
+
+#ifdef __cplusplus
+}
 #endif
-void vm_run_pending_finalizers();
-int vm_do_finalization(int quantity);
-int vm_get_finalizable_objects_quantity();
-bool vm_finalization_is_enabled();
-void vm_obtain_finalizer_fields();
 
-#ifndef USE_GC_STATIC
-VMEXPORT
-#endif
-void vm_enumerate_objects_to_be_finalized();
-void vm_enumerate_references_to_enqueue();
-int vm_get_references_quantity();
-
-void vm_enqueue_references();
-void vm_ref_enqueue_func(void);   // added for NATIVE REFERENCE ENQUEUE THREAD
-
-Boolean get_native_finalizer_thread_flag(); // added for NATIVE FINALIZER THREAD
-
-#endif
+#endif // THREAD_MANAGER_HEADER

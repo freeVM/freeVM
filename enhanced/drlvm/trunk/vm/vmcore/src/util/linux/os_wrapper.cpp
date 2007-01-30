@@ -15,43 +15,37 @@
  *  limitations under the License.
  */
 /** 
- * @author Intel, Salikh Zakirov
+ * @author Intel, Evgueni Brevnov
  * @version $Revision: 1.1.2.1.4.3 $
  */  
 
+#include <stdio.h>
+#include <signal.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <assert.h>
+#include <errno.h>
 
+#include "port_malloc.h"
 
-
-
-
-#ifndef _FINALIZE_H_
-#define _FINALIZE_H_
-
-#include "open/types.h"
-
-#ifdef USE_GC_STATIC
-extern int running_finalizers_deferred;
+#ifndef __SMP__
+#error
+-- recompile with -D__SMP__
 #endif
 
-#ifndef USE_GC_STATIC
-VMEXPORT
+#ifndef _REENTRANT
+#error
+-- recompile with -D_REENTRANT
 #endif
-void vm_run_pending_finalizers();
-int vm_do_finalization(int quantity);
-int vm_get_finalizable_objects_quantity();
-bool vm_finalization_is_enabled();
-void vm_obtain_finalizer_fields();
 
-#ifndef USE_GC_STATIC
-VMEXPORT
+#ifndef __SIGRTMIN
+#else
+#if __SIGRTMAX - __SIGRTMIN >= 3
+// good, this will work. java dbg, also vm can use SIGUSR1, SIGUSR2
+#else
+#error
+-- must be using an old version of pthreads
+-- which uses SIGUSR1, SIGUSR2 (which conflicts with the java app debugger and vm)
 #endif
-void vm_enumerate_objects_to_be_finalized();
-void vm_enumerate_references_to_enqueue();
-int vm_get_references_quantity();
-
-void vm_enqueue_references();
-void vm_ref_enqueue_func(void);   // added for NATIVE REFERENCE ENQUEUE THREAD
-
-Boolean get_native_finalizer_thread_flag(); // added for NATIVE FINALIZER THREAD
-
 #endif
