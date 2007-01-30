@@ -73,6 +73,10 @@
             <xsl:if test="count($error.messages) > 0">
                 <xsl:apply-templates select="$error.messages" mode="errors"/>
             </xsl:if>
+            <xsl:if test="count($warn.messages) > 0"> 
+                <xsl:apply-templates select="$warn.messages" mode="errors"/> 
+            </xsl:if> 
+
         </xsl:if>
 
     </xsl:template>
