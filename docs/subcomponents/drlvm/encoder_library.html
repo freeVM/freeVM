@@ -1,0 +1,719 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Encoder Library Description for IA-32/Intel64</title>
+
+                        
+                        
+        <link rel="stylesheet" type="text/css" href="../../site.css"/>
+        </head>
+
+        <body>        
+            <table  width="100%" cellspacing="0">
+                <!-- TOP IMAGE -->
+                <tr>
+                    <td align='LEFT'>
+                    <table><tr><td>
+                    <td>
+<a href="http://harmony.apache.org/"><img  src="../../images/harmony-logo-new.png" alt="Apache Harmony" /></a>
+</td>
+</td>
+                    </td></tr></table>
+                    </td>
+                    <td align='RIGHT'>
+<!--                    <a href="http://harmony.apache.org/">
+                    <img src="http://harmony.apache.org/images/apache-incubator-logo.png"
+                    	alt="Apache Harmony" /></a>                    
+-->                    </td>
+                </tr>
+            </table>
+            <table width="100%" cellspacing="4">
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+
+                <tr>
+                    <!-- LEFT SIDE NAVIGATION -->
+                    <td class="menuItem" width="20%" nowrap="true">
+
+                    <!-- special ACon Logo - leave here for next time
+                    <a href="http://www.us.apachecon.com/">
+                        <img src="http://www.apache.org/ads/ApacheCon/240x120-2006-us.gif"
+                             alt="ApacheCon US 2006" />
+                    </a> -->
+
+                   <!-- regular menu -->
+
+                    
+    <!-- ============================================================ -->
+
+                <p class="menuItem"><strong>General</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../license.html">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../downloads.html">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem"><strong>Community</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem"><strong>Development</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem"><strong>Documentation</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../../sitemap.html">Sitemap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../hdk.html">HDK</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+                        </td>
+                    <td width="80%" valign="top"><a name="top"></a>
+                                                                    <h1>
+      <a name="Encoder Library Description for IA-32/Intel64">Encoder Library Description for IA-32/Intel64</a>
+    </h1>
+                            
+    <h2>
+        <a name="Contents">Contents</a>
+    </h2>
+      
+                        <ol>
+          <li>
+            <a href="#1. Revision History">Revision Ristory</a>
+          </li>
+          <li><a href="#2. About this document">About
+    this Document</a> </li>
+
+          <li>
+            <a href="#3. Overview">Overview</a>
+          </li>
+
+          <li>
+            <a href="#4. Goals and Targets">Goals and Targets</a>
+          </li>
+
+          <li>
+            <a href="#5. Structure">Structure</a>
+          </li>
+          <li>
+            <a href="#6. How It Works">How It Works</a></li>
+          
+          <ul>
+            <li><a href="#6.1 Usage Model">6.1 Usage Model</a></li>
+          <li><a href="#6.2 Under the Hood">6.2 Under the
+    Hood</a></li>
+          <ul>
+            <li><a href="#6.2.1 Fast Opcode Lookup">6.2.1 Fast
+        Opcode Lookup</a>        
+            </li> 
+            <li><a href="#6.2.2 Fast Code Generation">6.2.2 Fast
+        Code Generation</a></li>
+          </ul>
+          </ul>
+        </ol>
+                   
+                                    
+    <h2>
+        <a name="1. Revision History">1. Revision History</a>
+    </h2>
+      
+                        <table>
+                        <tr>
+                        <th class="TableHeading" colspan="" rowspan="">
+                Version
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="">
+                Version Information
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="">
+                Date
+        </th>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                Initial version
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Alexander Astapchuk, Svetlana
+              Konovalova: document created.
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                January 30, 2007
+        </td>
+            </tr>
+            </table>
+                   
+                                    
+    <h2>
+        <a name="2. About this Document">2. About this Document</a>
+    </h2>
+      
+                        <p>
+        This document introduces the encoder library component
+        delivered as a part of the DRL (Dynamic Runtime Layer)
+        initiative. This document focuses on the specifics of the
+        current implementation showing the encoder library structure
+        and role inside the DRL virtual machine.
+      </p>
+                   
+                                    
+    <h2>
+        <a name="3. Overview">3. Overview</a>
+    </h2>
+      
+                        <p>
+        The encoder library is a DRLVM component for code
+        generation, or encoding. This library is separate, static and
+        mostly independent from other components. The following
+        components use the encoder library:
+      </p>
+                                <ul>
+        <li>
+          <a href="TM.html">Thread Manager</a>
+        </li>
+
+        <li>
+          <a href="JIT.html#OPT">Jitrino.OPT</a>
+        </li>
+
+        <li>
+          <a href="JIT.html#JET">Jitrino.JET</a>
+        </li>
+
+        <li>
+          <a href="index.html">DRLVM</a> to generate stubs using
+          direct calls to the encoder and the LIL code generator
+        </li>
+      </ul>
+                   
+                                    
+    <h2>
+        <a name="4. Goals and Targets">4. Goals and Targets</a>
+    </h2>
+      
+                        <p>The encoder library meets the following requirements:</p>
+                                <ul>
+        <li>
+          To be as fast as <code>jet</code>, which is crucial for
+          client applications startup
+        </li>
+
+        <li>
+          To maintain instructions data easily, which is crucial
+          for any application
+        </li>
+
+        <li>
+          To provide a simple and generic interface:
+          <code>::encode(mnemonic, arguments)</code>
+
+          <p class="note">Note</p>
+
+          <p class="notetext">
+            The encoder library provides a
+            simple and generic interface. Clients with special
+            needs should use <a href="#6. How It Works">adapters</a>,
+            which provide a handy and convenient interface and then
+            translate the data into the generic interface.
+          </p>
+        </li>
+      </ul>
+                   
+                                    
+    <h2>
+        <a name="5. Structure">5. Structure</a>
+    </h2>
+      
+                        <p>The encoder library includes the following modules:</p>
+                                <ul>
+        <li>
+          An <i>encoding engine</i> with the generic interface to
+          generate CPU instructions for IA-32 and Intel64
+          platforms
+        </li>
+
+        <li>
+          About 150 instructions covering the following areas:
+
+          <ul>
+            <li>arguments quantity</li>
+
+            <li>arguments legal combinations</li>
+
+            <li>
+              arguments roles, that is, whether an argument
+              changes in operation or not
+            </li>
+
+            <li>
+              encoding an operation (binary
+              representation)
+            </li>
+
+            <li>
+              additional miscellaneous information, for
+              example, whether an operation is symmetric, or uses
+              flags, etc.
+            </li>
+          </ul>These instructions are in place already -
+          <code>MOV</code>, <code>JUMP</code>, <code>CALL</code>,
+          <code>ALU</code>, <code>SSE</code>, <code>FPU</code>,
+          string, etc.
+        </li>
+
+        <li>
+          A <i>generic interface adapter</i> for convenient usage
+          in a program
+        </li>
+
+        <li>
+          A <i>decoding engine</i> to disassemble CPU
+          instructions for IA-32 and Intel64 platforms
+        </li>
+      </ul>
+                                <p>
+        The encoder library consists of the following files located
+        at <code>vm/port/src/encoder/ia32_em64t</code>:
+      </p>
+                                <table>
+                        <tr>
+                        <th class="TableHeading" colspan="" rowspan="">
+                Filename
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="">
+                Description
+        </th>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>dec_base.cpp</code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                decoding routines
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>dec_base.h</code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            decoding routines
+            declarations
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>enc_base.cpp</code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                base encoding engine
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>enc_base.h</code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            base encoding engine
+            declarations
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>enc_prvt.h</code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            internal stuff of encoding
+            engine
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>encoder.cpp</code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            handy adapter for use in
+            programs
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>encoder.h</code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                handy adapter declaration
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>encoder.inl</code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            implementation of most of
+            <code>encoder.h</code> functions that are normally
+            inline
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>enc_defs.h</code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            complete instructions list
+            including miscellaneous definitions of register names,
+            sizes, etc
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>enc_tabl.cpp</code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            comprehensive step-by-step
+            comments on how to add new instructions
+          
+        </td>
+            </tr>
+            </table>
+                   
+                                    
+    <h2>
+        <a name="6. How It Works">6. How It Works</a>
+    </h2>
+      
+                        <a name="6.1 Usage Model"><b>6.1 Usage Model</b></a>
+                                <p>
+        The base encoding interface
+        <code>EncoderBase::encode()</code> is a common generic
+        interface, which is not used in programs directly. Normally,
+        applications use an <i>adapter interface</i> to connect
+        specific client needs to the <code>EncoderBase</code> generic
+        interface. Currently, the following adapters are available:
+      </p>
+                                <ul>
+        <li>
+          <code>Jitrino.OPT</code> described in
+          <code>Jitrino/src/codegenerator/ia32/Ia32Encoder.cpp</code>
+        </li>
+
+        <li>
+          <code>Jitrino.JET</code> described in
+          <code>Ia32Encoder.h</code> and
+          <code>jitrino/src/jet/enc_ia32.cpp</code>,
+          <code>enc_ia32.h</code>
+        </li>
+
+        <li>
+          <code>encoder.h</code> described in
+          <code>port/src/encoder/encoder.h</code>
+        </li>
+      </ul>
+                                <p>
+        All the <i>adapters</i> are trivial - they fill out
+        arguments as <code>EncoderBase::Operands</code>, and then
+        invoke <code>EncoderBase::encode()</code>.
+      </p>
+                                <p class="example">Example</p>
+                                <p class="exampletext">
+        The <code>encoder.h</code> file
+        consisting of human-readable function names serves as an
+        adapter. This way, to generate a simple code sequence, use the
+        <code>encoder.h</code> interface.
+      </p>
+                                <p>
+        The same usage model applies to the decoder engine: the
+        basic generic interface is declared in
+        <code>vm/port/src/encoder/ia32_em64t/dec_base.h</code> and the
+        specific adapter for JVMTI needs is in
+        <code>vm/vmcore/src/jvmti/jvmti_dasm.cpp</code>,
+        <code>vm/vmcore/include/jvmti_dasm.h</code>.
+      </p>
+                                <a name="6.2 Under the Hood"><b>6.2 Under the Hood</b></a>
+                                <p>
+        The engine gets its input as an operation and a set of
+        operands, and performs the following operations:
+      </p>
+                                <ul>
+        <li>Finds a matching record in the table</li>
+
+        <li>Generates binary data based on the record found</li>
+      </ul>
+                                <p>
+        Both steps involve performance-intensive compare and memory
+        access operations. To reduce the workload, table maintenance is
+        simplified for users, and the application keeps the master
+        table plain and elementary. At run time, before the first
+        usage, a special version of data is pre-compiled, which
+        requires fewer manipulations. The pre-compiled version provides
+        the <a href="#6.2.1 Fast Opcode Lookup">fast opcode lookup</a> and
+        the <a href="#6.2.2 Fast Code Generation">
+          fast code generation</a>.
+      </p>
+                                <dl>
+          <dt>
+            <a name="6.2.1 Fast Opcode Lookup">6.2.1 Fast Opcode Lookup</a>
+          </dt>
+        </dl>
+                                <p>
+        Every operand gets its unique hash based on the operand size
+        and the memory, or register, or immediate location. If an
+        instruction has more than one operand, its hash undergoes the
+        OR operation, by the following formula:
+      </p>
+                                <pre>hash = opnd1.hash() | opnd2.hash()&lt;&lt;N | opnd3.hash() &lt;&lt; N*2;</pre>
+                                <p>
+        A pair of a mnemonic and its hash identifies the needed
+        record. The hash is calculated in
+        <code>EncoderBase::Operands</code> methods, outside of the hot
+        execution path.
+      </p>
+                                <dl>
+          <dt>
+            <a name="6.2.2 Fast Code Generation">6.2.2 Fast Code
+        Generation</a>
+          </dt>
+        </dl>
+                                <p>
+        For fast generation of code, the data is separated into
+        <i>static data</i>, which does not depend on operands, and
+        <i>dynamic data</i>, which depends on operands. This algorithm
+        optimizes and speeds up generation of code by removing the loop
+        from the hot execution path, as shown below:
+      </p>
+                                <pre>for (bytes-in-opcode-data) {
+// short loop, many miss-predictions, many branches inside, too slow
+if (is_constant_byte) { copy_the_byte(); }
+if (is_operand_data) { encode_operand_data(); }
+...
+}</pre>
+                                <p>
+        The static data that is a set of bytes is copied into the
+        output buffer with no analysis.<br />
+        The dynamic data requires several <code>if</code> operators in
+        the source code, but is much cheaper than the loop shown
+        above.
+      </p>
+                                <p>Encoding runs as shown in the following pseudo-code:</p>
+                                <pre>memcpy(buf, static_data);
+if (opcode_has_dyn_data_1) { gen_opcode_dyn_data(); }
+if (opcode_has_dyn_data_2) { gen_opcode_dyn_data(); }
+return;</pre>
+                                <p>
+        For more details on hash calculation and internal
+        structures, refer to <code>enc_tabl.cpp</code>.
+      </p>
+                   
+                <p><a href="#top">Back to top</a></p>
+                    
+                                                            </td>
+                </tr>
+
+                <!-- FOOTER -->
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+                <tr><td colspan="2">
+                    <div class="special"><em>
+                    Copyright &#169; 2003-2006, The Apache Software Foundation
+                    </em></div>
+                </td></tr>
+            </table>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
