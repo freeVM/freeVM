@@ -320,8 +320,26 @@
        <Method name="setInput" />
        <Bug code="EI2" />
      </Match>
-	
+       
+     <!-- Field 'element' is part of the specified serialized form -->
+     <Match>
+       <Class name="java.lang.annotation.AnnotationTypeMismatchException" />
+       <Field name="element" />
+       <Bug code="Se" />
+     </Match>     
+     
+     <!-- Exposing internal representation is required by the spec -->
+     <Match>
+       <Class name="java.lang.instrument.ClassDefinition" />
+       <Bug code="EI, EI2" />
+     </Match>   
+      
+     <!-- Access to field 'localPort' is not required to be synchronized -->
+     <Match>
+       <Class name="org.apache.harmony.nio.internal.SocketChannelImpl" />
+       <Field name="localPort" />
+       <Bug code="IS" />
+     </Match>  
+            
 </FindBugsFilter>
-
-
 
