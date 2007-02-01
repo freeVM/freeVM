@@ -401,8 +401,16 @@ $ svn co https://svn.apache.org/repos/asf/harmony/enhanced/trunk</pre>
                                 <p>
           If you type <code>ant</code> in the root directory of federated build,
           you will checkout, build, and package snapshots of the JRE and HDK.
-          However, this way is inconvenient for a developer, so please continue
+          However, as this approach builds the full JDK, it can be inconvenient 
+          for a developer focused on a specific area, so please continue
           with the next steps.
+        </p>
+                                <p class="note">Note</p>
+                                <p class="notetext">
+		If you do choose to build from the federated build root, you may need to 
+        increase the Java heap available to Ant.  We suggest setting the "ANT_OPTS" environment 
+        variable as ANT_OPTS='-Xms256m -Xmx512m' in the manner appropriate for your
+        operating system.
         </p>
                    
                                     
