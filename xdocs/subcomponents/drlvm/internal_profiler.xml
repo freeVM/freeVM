@@ -35,8 +35,8 @@ code generator and describes how to use it. The internal profiler can  instrumen
    file, as described in this document. For sample iprof tool output, see the<a href="#ExampleOutput">example</a>.</p>
 <p> To enable iprof, do the following:</p>
 <ol>
-  <li>Specify the following additional command-line options to DRLVM on startup: <code><br />
-    -XcleanupOnExit -XDjit.arg.codegen.iprof=on</code></li>
+  <li>Specify the following command-line option to DRLVM on startup: <code><br />
+    -XDjit.arg.codegen.iprof=on</code></li>
   <li> Place the configuration file <code>iprof.cfg</code> in the same directory
     where you are starting DRLVM.</li>
 </ol>
