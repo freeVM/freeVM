@@ -163,10 +163,14 @@
         </modificationset>
 
         <schedule interval="${timeout}">
-                <exec command="${sh}" args="${cmd.prefix} ${cmd} -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk test" workingdir="projects/drlvm/trunk/build" timeout="${ttimeout}" errorstr="FAILED" />
+                <exec command="${sh}" args="${cmd.prefix} ${cmd} -Drun.all.tests=true -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk test" workingdir="projects/drlvm/trunk/build" timeout="${ttimeout}" errorstr="FAILED" />
         </schedule>
 
         <log dir="logs/${project.name}">
+            <merge dir="projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/interpreter" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/jit" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/vm/_cunit.tests/report" pattern="TEST-*.xml" />
+            <merge dir="projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/vm/_smoke.tests/reports" pattern="TEST-*.xml" />
             <merge dir="projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/jet.mode" pattern="TEST-*.xml" />
             <merge dir="projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/opt.mode" pattern="TEST-*.xml" />
             <merge dir="projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/int.mode" pattern="TEST-*.xml" />
