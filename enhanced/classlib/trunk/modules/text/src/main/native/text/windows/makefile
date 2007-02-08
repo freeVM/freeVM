@@ -17,19 +17,22 @@
 # Makefile for module 'text'
 #
 
-include $(HY_HDK)/build/make/defines.mk
+!include <$(HY_HDK)\build\make\defines.mak>
 
-CFLAGS += -fpic
-INCLUDES += -I$(HY_HDK)/include/icu4c
-
-BUILDFILES = $(SHAREDSUB)text_copyright.o $(SHAREDSUB)BidiWrapper.o
+LIBBASE=hytext
+DLLNAME=..\$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(HY_HDK)\include\icu4c
+BUILDFILES = $(SHAREDSUB)text_copyright.obj $(SHAREDSUB)BidiWrapper.obj
+VIRTFILES = hytext.res
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = \
-	$(DLLPATH)libicuuc.so.34 \
-	$(DLLPATH)libhysig.so $(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so $(LIBPATH)libhycommon.a \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(DLLPATH)libhythr.so $(LIBPATH)libvmi.so
+  $(LIBPATH)hysig.lib $(LIBPATH)hycommon.lib $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
+  $(LIBPATH)hythr.lib $(LIBPATH)vmi.lib $(LIBPATH)icuuc.lib
 
-DLLNAME = ../libhytext.so
-EXPNAME = HYTEXT_0.1
+DLLBASE=0x13300000
+COMMENT=/comment:"Text component native code. (c) Copyright 1991, 2005 The Apache Software Foundation or its licensors, as applicable."
 
-include $(HY_HDK)/build/make/rules.mk
+!include <$(HY_HDK)\build\make\rules.mak>
