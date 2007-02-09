@@ -198,7 +198,32 @@ limitations under the License.
 		You can subscribe by sending an email to dev-subscribe@harmony.apache.org
 		you will receive a confirmation request that you must respond to.
 		After that, you can post to the dev list dev@harmony.apache.org. 
+		Please see our <a href="mailing.html">mailing list</a> page for 
+		more information.
 		</li>
+	</ol>
+                <p><a href="#top">Back to top</a></p>
+                                                <h1>
+      <a name="Technical">Technical</a>
+    </h1>
+                        <ol start="0">
+	<li>
+	<strong>When building the classlibrary, ant crashes with a compiler error, a
+	heap error, or a reflection error.</strong>
+	<br />
+	These problems are all symptomatic of running out of java heap for ant.  The 
+	solution is to set the ANT_OPTS environment variable to something bigger than
+	the default.  At the time of this writing, best practice is to set 
+	<blockquote>
+	set ANT_OPTS="-Xmx256M"
+	</blockquote>
+	</li>  
+	</ol>
+                <p><a href="#top">Back to top</a></p>
+                                                <h1>
+      <a name="Original FAQ Questions from Project Launch">Original FAQ Questions from Project Launch</a>
+    </h1>
+                        <ol start="0">
      <li>
 		<strong>Why are you doing this?</strong>
 		<br />
@@ -208,7 +233,9 @@ limitations under the License.
 	<li>
 		<strong>What version of Java will you be implementing?</strong>
 		<br />
-		J2SE 5 aka Java 5 aka Tiger
+		We are starting with Java SE 5, as that is the first version of Java SE for which the 
+		licensing allows an open source implementation, but we'll continue with Java SE 6 and
+		any subsequent versions that follow.
 	</li>
 	<li>
 		<strong>Why haven't you done this before?</strong>
@@ -232,6 +259,9 @@ limitations under the License.
 		<br />
 		Not really.  We would welcome Sun doing that (as well as anyone else w/ a J2SE implementation!) as it would save us a 
 		lot of time, and we wholeheartedly encourage them to do so ;)  but Sun has the right to do what it chooses with it's intellectual property.
+		Since we started the project, Sun has announced that they will be open sourcing their implementation, and they've
+		started the process.  Of course, we'll continue to develop Apache Harmony - multiple independent implelentations
+		of Java SE is good for the Java ecosystem.
 	</li>
 	<li>
 		<strong>Will your implementation be compatible with the specification?</strong>
