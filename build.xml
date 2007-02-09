@@ -283,7 +283,16 @@ set BUILD_CFG=@@@@@
 			<replacevalue><![CDATA[%LIBDIR%\ant.jar
 set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-apache-regexp.jar
 set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ecj_3.2.jar
+set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-nodeps.jar
+set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-xslp.jar
+set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-trax.jar
+set CRUISE_PATH=%CRUISE_PATH%;@vmdir@\make\tmp\ant-contrib.jar
+set CRUISE_PATH=%CRUISE_PATH%;@vmdir@\make\tmp\cpptasks\patched.classes
+set CRUISE_PATH=%CRUISE_PATH%;@vmdir@\make\tmp\cpptasks.jar
 ]]></replacevalue></replace>
+        <replace file="${target.dir}/cruisecontrol.bat" 
+            token='@vmdir@'
+            value='${target.dir}/projects/drlvm/trunk/build'/>
 		<exec executable="cmd" dir="${target.dir}/projects/drlvm/trunk/build" >
 			<env key="BUILD_CFG" value="${build_configuration}"/>
 			<arg line="/c build.bat ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build"/>
@@ -314,7 +323,10 @@ BUILD_CFG=@@@@@
 			value='CC_OPTS="-Xmx500m"'/>
 		<replace file="${target.dir}/cruisecontrol.sh" 
 			token="$LIBDIR/ant.jar" 
-			value="$LIBDIR/ant.jar:$ANT_HOME/lib/ant-apache-regexp.jar:$ANT_HOME/lib/ecj_3.2.jar"/>
+                value="$LIBDIR/ant.jar:$ANT_HOME/lib/ant-apache-regexp.jar:$ANT_HOME/lib/ecj_3.2.jar:$ANT_HOME/lib/ant-nodeps.jar:$ANT_HOME/lib/ant-xslp.jar:$ANT_HOME/lib/ant-trax.jar:@vmdir@/make/tmp/ant-contrib.jar:@vmdir@/make/tmp/cpptasks/patched.classes:@vmdir@/make/tmp/cpptasks.jar"/>
+            <replace file="${target.dir}/cruisecontrol.sh" 
+            token='@vmdir@'
+            value='${target.dir}/projects/drlvm/trunk/build'/>
 		<exec executable="sh" dir="${target.dir}/projects/drlvm/trunk/build">
 			<arg line="build.sh ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build"/>
 		</exec>

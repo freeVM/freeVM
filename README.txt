@@ -50,6 +50,9 @@ To Setup
    in your environment. Also ANT_OPTS variable should be set up to something like
    set/export ANT_OPTS=-Xmx400M to compile Harmony classes.
 
+   Note also, the MSVC environment also should be correctly set up on Windows box
+   or command should be run from MSVC command prompt.
+
    
 To kickoff CruiseControl, just type :
 

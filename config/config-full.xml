@@ -44,24 +44,11 @@
                 <ant target="fetch-depends rebuild" antWorkingDir="projects/${project.name}/trunk" timeout="${ttimeout}" usedebug="false">
                     <jvmarg arg="-D${proxy.host.property}=${proxy.value}"/>
                     <jvmarg arg="-D${proxy.port.property}=${port.value}"/>
-                    <jvmarg arg="-Xms200M" />
                     <jvmarg arg="-Xmx700M" />
                 </ant>
         </schedule>
 
-        <!--log dir="logs/${project.name}">
-            <merge dir="projects/${project.name}/trunk/build/test_report" pattern="TEST-*.xml" />
-        </log-->
-
         <publishers>
-            <!--antpublisher   
-                 antworkingdir="."  
-                 buildfile="copyres.xml"  
-                 uselogger="true"  
-                 usedebug="false"  
-                 target="copy.res"> 
-                <property name="VM" value="ibm"/> 
-            </antpublisher--> 
             <onfailure>
                 <xsltlogpublisher directory="."  outfilename="classlib.txt"  xsltfile="br.xsl" />
                 <antpublisher   
@@ -105,13 +92,18 @@
         </listeners>
 
         <modificationset quietperiod="30">
+            <buildstatus logdir="logs/classlib"/>
             <svn localWorkingCopy="projects/drlvm/trunk"/>
             <svn localWorkingCopy="projects/classlib/trunk"/>
-            <buildstatus logdir="logs/classlib"/>
         </modificationset>
 
         <schedule interval="${timeout}">
-                <exec command="${sh}" args="${cmd.prefix} ${cmd} -D${proxy.host.vm}=${proxy.value} -D${proxy.port.vm}=${port.value} -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk update clean build" workingdir="projects/${project.name}/trunk/build" timeout="${ttimeout}" errorstr="FAILED"/>
+            <ant target="update clean build" antWorkingDir="projects/${project.name}/trunk/build/make" timeout="${ttimeout}" usedebug="false">
+                <jvmarg arg="-D${proxy.host.vm}=${proxy.value}"/>
+                <jvmarg arg="-D${proxy.port.vm}=${port.value}"/>
+                <jvmarg arg="-Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk" />
+                <jvmarg arg="-Dbuild.arch=${build_arch}" />
+            </ant>
         </schedule>
 
         <publishers>
@@ -158,12 +150,18 @@
         </listeners>
 
         <modificationset>
-            <svn localWorkingCopy="projects/drlvm/trunk"/>
             <buildstatus logdir="logs/drlvm"/>
+            <svn localWorkingCopy="projects/drlvm/trunk"/>
         </modificationset>
 
         <schedule interval="${timeout}">
-                <exec command="${sh}" args="${cmd.prefix} ${cmd} -Drun.all.tests=true -Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk test" workingdir="projects/drlvm/trunk/build" timeout="${ttimeout}" errorstr="FAILED" />
+            <ant target="test" antWorkingDir="projects/drlvm/trunk/build/make" timeout="${ttimeout}" usedebug="false">
+                <jvmarg arg="-D${proxy.host.vm}=${proxy.value}"/>
+                <jvmarg arg="-D${proxy.port.vm}=${port.value}"/>
+                <jvmarg arg="-Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk" />
+                <jvmarg arg="-Dbuild.arch=${build_arch}" />
+                <jvmarg arg="-Drun.all.tests=true" />
+            </ant>
         </schedule>
 
         <log dir="logs/${project.name}">
@@ -231,10 +229,10 @@
         </listeners>
 
         <modificationset quietperiod="60">
-            <svn localWorkingCopy="projects/classlib/trunk"/>
-            <svn localWorkingCopy="projects/drlvm/trunk"/>
             <buildstatus logdir="logs/classlib"/>
             <buildstatus logdir="logs/drlvm"/>
+            <svn localWorkingCopy="projects/classlib/trunk"/>
+            <svn localWorkingCopy="projects/drlvm/trunk"/>
         </modificationset>
 
         <schedule interval="${timeout}">
@@ -242,7 +240,6 @@
                     <jvmarg arg="-Dtest.jre.home=${wdir}/projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/deploy/jdk/jre" />
                     <!--jvmarg arg="-Dhy.test.forkmode=perTest" /-->
                     <jvmarg arg="-Dhy.test.vm.name=drl" />
-                    <jvmarg arg="-Xms200M" />
                     <jvmarg arg="-Xmx700M" />
                 </ant>
         </schedule>
