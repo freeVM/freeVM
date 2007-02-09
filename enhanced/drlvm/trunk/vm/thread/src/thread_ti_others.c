@@ -15,26 +15,47 @@
  *  limitations under the License.
  */
 
-/** 
- * @file thread_helpers_ipf.c
- * Missing definition to ipf compile
+/**
+ * @file thread_ti_others.c
+ * @brief JVMTI peak related functions
  */  
 
+#include <open/jthread.h>
 #include <open/hythread_ext.h>
-#include <open/thread_helpers.h>
+#include <open/ti_thread.h>
 #include "thread_private.h"
-#include "open/thread_externals.h"
-#include "open/jthread.h"
 
-#include <assert.h>
+/*
+ *  Peak count
+ */
+ 
+/**
+ * Resets the thread peak counter.
+ */
+IDATA  jthread_reset_peak_thread_count () {
+    return TM_ERROR_NONE;
+} 
 
-void *dummy_tls_func() {
-    assert(0);
-    abort();
+/**
+ * Returns the peak thread count since the last peak reset. 
+ */
+IDATA  jthread_get_peak_thread_count (jint *threads_count_ptr) {
+    return TM_ERROR_NONE;
+} 
+
+/**
+ * Returns JVMTILocalStorage pointer.
+ *
+ * @param[in] java_thread
+ */
+JVMTILocalStorage* jthread_get_jvmti_local_storage(jthread java_thread) {
+
+    jvmti_thread_t tm_java_thread;
+    hythread_t tm_native_thread;
+
+    tm_native_thread = vm_jthread_get_tm_data(java_thread);
+    tm_java_thread = hythread_get_private_data(tm_native_thread);
+
+    return &tm_java_thread->jvmti_local_storage;
+
 }
-
-
-fast_tls_func* get_tls_helper(hythread_tls_key_t key) {
-    return dummy_tls_func;
-}
-
