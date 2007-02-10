@@ -17,106 +17,107 @@
 -->
 
 <project name="buildtestinfra" default="default" basedir=".">
-	
+
     <description>
-		CI/built/test system for Apache Harmony
-		http://incubator.apache.org/harmony
+        CI/built/test system for Apache Harmony
+        http://incubator.apache.org/harmony
     </description>
 
-	<!--The cc.property file contains the nameand values of properties-->
-	<property file="cc.properties" />
+    <!--The cc.property file contains the nameand values of properties-->
+    <property file="cc.properties" />
 
 
-	<!-- files we need -->
-	<property name="cc.filename" value="cruisecontrol-bin-2.5" />
-	<property name="junitjar.filename" value="ant-junit-1.6.5" />
-	
-	<!-- where to fetch from -->
-	<property name="cc.location" value="http://umn.dl.sourceforge.net/sourceforge/cruisecontrol/" />
-	<property name="junitjar.location" value="http://mirrors.ibiblio.org/pub/mirrors/maven2/ant/ant-junit/1.6.5/"/>
-	
-	<!-- where to assemble all the pieces -->
-	<property name="target.dir" location="cc"/>
-	<mkdir dir="${target.dir}"/>
-	
-	<!-- url of the classlib and drlvm in SVN -->
-	<property name="svn.classlib.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk"/>
-	<property name="svn.drlvm.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk"/>
+    <!-- files we need -->
+    <property name="cc.filename" value="cruisecontrol-bin-2.5" />
+    <property name="junitjar.filename" value="ant-junit-1.6.5" />
 
-	<condition property="is.windows">
-        	<os family="windows" />
-	</condition>
+    <!-- where to fetch from -->
+    <property name="cc.location" value="http://umn.dl.sourceforge.net/sourceforge/cruisecontrol/" />
+    <property name="junitjar.location" value="http://mirrors.ibiblio.org/pub/mirrors/maven2/ant/ant-junit/1.6.5/" />
 
-	<condition property="is.unix">
-        	<os family="unix" />
-	</condition>
+    <!-- where to assemble all the pieces -->
+    <property name="target.dir" location="cc" />
+    <mkdir dir="${target.dir}" />
 
-        <!-- detecting current platform arch: code was copied from classlib/ properties.xml -->
-	<!-- Conditions for different architectures -->
-	<condition property="is.x86_64">
-        	<or>
-	            <equals arg1="x86_64" arg2="${os.arch}"/>
-        	    <equals arg1="amd64" arg2="${os.arch}"/>
-	        </or>
-	</condition>
-	<condition property="is.x86">
-		<and>
-		    <not>
-        	        <isset property="is.x86_64" />
-	            </not>
-        	    <or>
-                	<equals arg1="x86" arg2="${os.arch}"/>
-	                <equals arg1="i386" arg2="${os.arch}"/>
-        	    </or>
-	        </and>
-	</condition>
-	<condition property="is.ia64">
-	        <equals arg1="ia64" arg2="${os.arch}"/>
-	</condition>
-	<condition property="is.s390x">
-		<equals arg1="${os.arch}" arg2="s390x" />
-	</condition>
-	<condition property="is.s390">
-	        <equals arg1="${os.arch}" arg2="s390" />
-	</condition>
+    <!-- url of the classlib and drlvm in SVN -->
+    <property name="svn.classlib.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk" />
+    <property name="svn.drlvm.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk" />
 
-	<condition property="is.64bit">
-        	<or>
-	            <isset property="is.ia64" />
-        	    <isset property="is.x86_64" />
-	            <isset property="is.s390x" />
-        	</or>
-	</condition>
-	<condition property="is.32bit">
-        	<or>
-	            <isset property="is.x86" />
-        	    <isset property="is.s390" /> <!-- 31bit of course -->
-	        </or>
-	</condition>
-	<condition property="hy.bits" value="32">
-        	<isset property="is.32bit" />
-	</condition>
+    <condition property="is.windows">
+        <os family="windows" />
+    </condition>
 
-	<!-- Normalized architecture name -->
-	<condition property="build.arch" value="em64t">
-	        <isset property="is.x86_64" />
-	</condition>
-	<condition property="build.arch" value="ia32">
-	        <and>
-        	    <isset property="is.x86" />
-	            <isset property="is.32bit" />
-        	</and>
-	</condition>
+    <condition property="is.unix">
+        <os family="unix" />
+    </condition>
 
-	<condition property="need.proxy.port" value="${http-proxy-port}" else="80" >
-        	<isset property="http-proxy-port" />
-	</condition>
+    <!-- detecting current platform arch: code was copied from classlib/ properties.xml -->
+    <!-- Conditions for different architectures -->
+    <condition property="is.x86_64">
+        <or>
+            <equals arg1="x86_64" arg2="${os.arch}" />
+            <equals arg1="amd64" arg2="${os.arch}" />
+        </or>
+    </condition>
+    <condition property="is.x86">
+        <and>
+            <not>
+                <isset property="is.x86_64" />
+            </not>
+            <or>
+                <equals arg1="x86" arg2="${os.arch}" />
+                <equals arg1="i386" arg2="${os.arch}" />
+            </or>
+        </and>
+    </condition>
+    <condition property="is.ia64">
+        <equals arg1="ia64" arg2="${os.arch}" />
+    </condition>
+    <condition property="is.s390x">
+        <equals arg1="${os.arch}" arg2="s390x" />
+    </condition>
+    <condition property="is.s390">
+        <equals arg1="${os.arch}" arg2="s390" />
+    </condition>
 
-	<target name="set.proxy" if="http-proxy-host">
-		<setproxy proxyhost="${http-proxy-host}" proxyport="${need.proxy.port}"/>
+    <condition property="is.64bit">
+        <or>
+            <isset property="is.ia64" />
+            <isset property="is.x86_64" />
+            <isset property="is.s390x" />
+        </or>
+    </condition>
+    <condition property="is.32bit">
+        <or>
+            <isset property="is.x86" />
+            <isset property="is.s390" />
+            <!-- 31bit of course -->
+        </or>
+    </condition>
+    <condition property="hy.bits" value="32">
+        <isset property="is.32bit" />
+    </condition>
 
- 		<!-- property file for CC -->
-		<echo file="${target.dir}/cc.properties" append="false">#it is auto-generated file
+    <!-- Normalized architecture name -->
+    <condition property="build.arch" value="em64t">
+        <isset property="is.x86_64" />
+    </condition>
+    <condition property="build.arch" value="ia32">
+        <and>
+            <isset property="is.x86" />
+            <isset property="is.32bit" />
+        </and>
+    </condition>
+
+    <condition property="need.proxy.port" value="${http-proxy-port}" else="80">
+        <isset property="http-proxy-port" />
+    </condition>
+
+    <target name="set.proxy" if="http-proxy-host">
+        <setproxy proxyhost="${http-proxy-host}" proxyport="${need.proxy.port}" />
+
+        <!-- property file for CC -->
+        <echo file="${target.dir}/cc.properties" append="false">#it is auto-generated file
 proxy.host.property=http.proxyHost
 proxy.port.property=http.proxyPort
 proxy.host.vm=env.http.proxyHost
@@ -124,12 +125,12 @@ proxy.port.vm=env.http.proxyPort
 proxy.value=${http-proxy-host}
 port.value=${need.proxy.port}
 </echo>
-		<property name="vm.proxy.h" value="-Denv.http.proxyHost=${http-proxy-host}"/>
-		<property name="vm.proxy.p" value="-Denv.http.proxyPort=${need.proxy.port}"/>
-	</target>
-	<target name="no.proxy" unless="http-proxy-host">
- 		<!-- property file for CC -->
-		<echo file="${target.dir}/cc.properties" append="false">#it is auto-generated file
+        <property name="vm.proxy.h" value="-Denv.http.proxyHost=${http-proxy-host}" />
+        <property name="vm.proxy.p" value="-Denv.http.proxyPort=${need.proxy.port}" />
+    </target>
+    <target name="no.proxy" unless="http-proxy-host">
+        <!-- property file for CC -->
+        <echo file="${target.dir}/cc.properties" append="false">#it is auto-generated file
 proxy.host.property=no.http.proxyHost
 proxy.port.property=no.http.proxyPort
 proxy.host.vm=no.env.http.proxyHost
@@ -137,92 +138,86 @@ proxy.port.vm=no.env.http.proxyPort
 proxy.value=no
 port.value=111
 </echo>
-		<property name="vm.proxy.h" value="-Dno.http.proxyHost=true"/>
-		<property name="vm.proxy.p" value="-Dno.http.proxyPort=0"/>
-	</target>
+        <property name="vm.proxy.h" value="-Dno.http.proxyHost=true" />
+        <property name="vm.proxy.p" value="-Dno.http.proxyPort=0" />
+    </target>
 
-	<!-- ==========================================
-	       Kick off CC w/ all tests
-	     ========================================== -->
-	<target name="default" description="Start CruiseControl with full test suite" depends="start-win,start-other">
-	</target>
-		
-	<target name="pre-copy">
-		<echo>Copying full test configuration for CruiseControl from /config/config-full.xml</echo>
-		<copy file="config/config-full.xml" tofile="${target.dir}/config.xml" />
-		<copy file="config/copyres.xml" tofile="${target.dir}/copyres.xml" />
-	</target>
-	
-	<target name="start-win" if="is.windows">
-		<exec executable="cmd" dir="${target.dir}" >
-			<arg line="/c cruisecontrol.bat" />
-		</exec>
-	</target>
-		
-	<target name="start-other" unless="is.windows">
-		<exec executable="sh" dir="${target.dir}">
-			<arg line="cruisecontrol.sh"/>
-		</exec>
-	</target>
-	
-	<!-- ==========================================
-	     Main setup - download, unpack, checkout
-	     ========================================== -->
-	<target name="setup" description="fetch and setup build/test/ci system" depends="set.proxy,no.proxy" >
-		
-		<!-- get the version of CruiseControl unless we have the zip locally -->
-		
-		<get src="${cc.location}${cc.filename}.zip"
-			 dest="${cc.filename}.zip" 
-			 usetimestamp="true"
-			 verbose="true" />
-	
-		<get src="${junitjar.location}${junitjar.filename}.jar"
-			 dest="${junitjar.filename}.jar" 
-			 usetimestamp="true"
-			 verbose="true" />
-		
-		<!-- unzip it, rename, add ant-junit jar and cleanout the junk -->
-		
-		<unzip src="${cc.filename}.zip" dest="." />
-		
-		<move file="${cc.filename}" tofile="${target.dir}"/>
+    <!-- ==========================================
+           Kick off CC w/ all tests
+         ========================================== -->
+    <target name="default" description="Start CruiseControl with full test suite" depends="start-win,start-other">
+    </target>
 
-		<delete dir="${target.dir}/projects/connectfour" includeEmptyDirs="true" verbose="false"/>		
-		<delete dir="${target.dir}/logs/connectfour" includeEmptyDirs="true" verbose="false"/>		
-		<delete file="${target.dir}/config.xml"/>
-		<delete file="${target.dir}/copyres.xml"/>
+    <target name="pre-copy">
+        <echo>Copying full test configuration for CruiseControl from /config/config-full.xml</echo>
+        <copy file="config/config-full.xml" tofile="${target.dir}/config.xml" />
+        <copy file="config/copyres.xml" tofile="${target.dir}/copyres.xml" />
+    </target>
 
-                <delete dir="${cc.filename}" includeEmptyDirs="true" verbose="false"/>
-		
-		<!-- copy the ant-junit jar to cc/lib -->
-		<copy file="${junitjar.filename}.jar" todir="${target.dir}/lib"/>
+    <target name="start-win" if="is.windows">
+        <exec executable="cmd" dir="${target.dir}">
+            <arg line="/c cruisecontrol.bat" />
+        </exec>
+    </target>
 
-		<copy todir="${target.dir}" flatten="yes">
-			<fileset dir="config/xsl" />
-		</copy>
+    <target name="start-other" unless="is.windows">
+        <exec executable="sh" dir="${target.dir}">
+            <arg line="cruisecontrol.sh" />
+        </exec>
+    </target>
 
-		<!--ovwrwrite the ant and launcher jar's in {target.dir}/lib -->
-		<copy file="${target.dir}/apache-ant-1.6.5/lib/ant.jar" todir="${target.dir}/lib" overwrite="yes" failonerror="false"/>
-		<copy file="${target.dir}/apache-ant-1.6.5/lib/ant-launcher.jar" todir="${target.dir}/lib" overwrite="yes" failonerror="false"/>
+    <!-- ==========================================
+         Main setup - download, unpack, checkout
+         ========================================== -->
+    <target name="setup" description="fetch and setup build/test/ci system" depends="set.proxy,no.proxy">
 
-		<!-- copy the config we want to use, and make target dirs for the checkouts -->
-		<copy file="config/config-full.xml" tofile="${target.dir}/config.xml" />
-		<copy file="config/copyres.xml" tofile="${target.dir}/copyres.xml" />
-		
-		<mkdir dir="${target.dir}/projects/classlib"/>
-		<mkdir dir="${target.dir}/projects/drlvm"/>
-				
-		<!-- now do the checkouts and load external libs -->
-	
-		<antcall target="co-classlib"/>
-		<subant target="fetch-depends" buildpath="${target.dir}/projects/classlib/trunk"/>
-		<subant target="rebuild" buildpath="${target.dir}/projects/classlib/trunk" failonerror="true"/>
+        <!-- get the version of CruiseControl unless we have the zip locally -->
 
-		<antcall target="co-drlvm"/>
-		<antcall target="process-drlvm"/>
+        <get src="${cc.location}${cc.filename}.zip" dest="${cc.filename}.zip" usetimestamp="true" verbose="true" />
 
-		<echo file="${target.dir}/cc.properties" append="true">
+        <get src="${junitjar.location}${junitjar.filename}.jar" dest="${junitjar.filename}.jar" usetimestamp="true" verbose="true" />
+
+        <!-- unzip it, rename, add ant-junit jar and cleanout the junk -->
+
+        <unzip src="${cc.filename}.zip" dest="." />
+
+        <move file="${cc.filename}" tofile="${target.dir}" />
+
+        <delete dir="${target.dir}/projects/connectfour" includeEmptyDirs="true" verbose="false" />
+        <delete dir="${target.dir}/logs/connectfour" includeEmptyDirs="true" verbose="false" />
+        <delete file="${target.dir}/config.xml" />
+        <delete file="${target.dir}/copyres.xml" />
+
+        <delete dir="${cc.filename}" includeEmptyDirs="true" verbose="false" />
+
+        <!-- copy the ant-junit jar to cc/lib -->
+        <copy file="${junitjar.filename}.jar" todir="${target.dir}/lib" />
+
+        <copy todir="${target.dir}" flatten="yes">
+            <fileset dir="config/xsl" />
+        </copy>
+
+        <!--ovwrwrite the ant and launcher jar's in {target.dir}/lib -->
+        <copy file="${target.dir}/apache-ant-1.6.5/lib/ant.jar" todir="${target.dir}/lib" overwrite="yes" failonerror="false" />
+        <copy file="${target.dir}/apache-ant-1.6.5/lib/ant-launcher.jar" todir="${target.dir}/lib" overwrite="yes" failonerror="false" />
+
+        <!-- copy the config we want to use, and make target dirs for the checkouts -->
+        <copy file="config/config-full.xml" tofile="${target.dir}/config.xml" />
+        <copy file="config/copyres.xml" tofile="${target.dir}/copyres.xml" />
+
+        <mkdir dir="${target.dir}/projects/classlib" />
+        <mkdir dir="${target.dir}/projects/drlvm" />
+
+        <!-- now do the checkouts and load external libs -->
+
+        <antcall target="co-classlib" />
+        <subant target="fetch-depends" buildpath="${target.dir}/projects/classlib/trunk" />
+        <subant target="rebuild" buildpath="${target.dir}/projects/classlib/trunk" failonerror="true" />
+
+        <antcall target="co-drlvm" />
+        <antcall target="process-drlvm" />
+
+        <echo file="${target.dir}/cc.properties" append="true">
 wdir=${target.dir}
 timeout=${cycle_timeout}
 ttimeout=${task_timeout}
@@ -234,34 +229,34 @@ report_to=${report_failures_to}
 report_from=${report_failures_from}
 </echo>
 
-	</target>
+    </target>
 
-	<!-- ================================================
-	      Checkout classlib trunk tree into place for CC
-	     ================================================ -->
-	<target name="co-classlib">
-		<echo>Checking out Harmony classlib.  This can take a while.  Please be patient...</echo>
+    <!-- ================================================
+          Checkout classlib trunk tree into place for CC
+         ================================================ -->
+    <target name="co-classlib">
+        <echo>Checking out Harmony classlib.  This can take a while.  Please be patient...</echo>
 
-		<exec executable="svn" dir="${target.dir}/projects/classlib" failonerror="true">
-			<arg line="co"/>
-			<arg line="${svn.classlib.url}"/>
-		</exec>
-	</target>
+        <exec executable="svn" dir="${target.dir}/projects/classlib" failonerror="true">
+            <arg line="co" />
+            <arg line="${svn.classlib.url}" />
+        </exec>
+    </target>
 
-	<!-- ================================================
-	      Checkout DRLVM trunk tree into place for CC
-	     ================================================ -->
-	<target name="co-drlvm">
-		<echo>Checking out Harmony DRLVM.  This can take a while.  Please be patient...</echo>
+    <!-- ================================================
+          Checkout DRLVM trunk tree into place for CC
+         ================================================ -->
+    <target name="co-drlvm">
+        <echo>Checking out Harmony DRLVM.  This can take a while.  Please be patient...</echo>
 
-		<exec executable="svn" dir="${target.dir}/projects/drlvm" failonerror="true">
-			<arg line="co"/>
-			<arg line="${svn.drlvm.url}"/>
-		</exec>
-	</target>
+        <exec executable="svn" dir="${target.dir}/projects/drlvm" failonerror="true">
+            <arg line="co" />
+            <arg line="${svn.drlvm.url}" />
+        </exec>
+    </target>
 
-	<target name="drlvm-win" if="is.windows">
-		<echo file="${target.dir}/cc.properties" append="true">
+    <target name="drlvm-win" if="is.windows">
+        <echo file="${target.dir}/cc.properties" append="true">
 os=win
 sh=cmd
 cmd.prefix=/c
@@ -269,18 +264,19 @@ cmd=build.bat
 cc=msvc
 </echo>
 
-		<replace file="${target.dir}/cruisecontrol.bat" 
-			token="REM set CC_OPTS=-Xms128m -Xmx256m">
-			<replacevalue><![CDATA[set CC_OPTS=-Xmx500m
+        <replace file="${target.dir}/cruisecontrol.bat" token="REM set CC_OPTS=-Xms128m -Xmx256m">
+            <replacevalue>
+                <![CDATA[set CC_OPTS=-Xmx500m
 set BUILD_CFG=@@@@@
-]]></replacevalue></replace>
+]]>
+            </replacevalue>
+        </replace>
 
-		<replace file="${target.dir}/cruisecontrol.bat" 
-			token='@@@@@'
-			value='${build_configuration}'/>
+        <replace file="${target.dir}/cruisecontrol.bat" token='@@@@@' value='${build_configuration}' />
 
-		<replace file="${target.dir}/cruisecontrol.bat" token="%LIBDIR%\ant.jar">
-			<replacevalue><![CDATA[%LIBDIR%\ant.jar
+        <replace file="${target.dir}/cruisecontrol.bat" token="%LIBDIR%\ant.jar">
+            <replacevalue>
+                <![CDATA[%LIBDIR%\ant.jar
 set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-apache-regexp.jar
 set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ecj_3.2.jar
 set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-nodeps.jar
@@ -289,18 +285,18 @@ set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-trax.jar
 set CRUISE_PATH=%CRUISE_PATH%;@vmdir@\make\tmp\ant-contrib.jar
 set CRUISE_PATH=%CRUISE_PATH%;@vmdir@\make\tmp\cpptasks\patched.classes
 set CRUISE_PATH=%CRUISE_PATH%;@vmdir@\make\tmp\cpptasks.jar
-]]></replacevalue></replace>
-        <replace file="${target.dir}/cruisecontrol.bat" 
-            token='@vmdir@'
-            value='${target.dir}/projects/drlvm/trunk/build'/>
-		<exec executable="cmd" dir="${target.dir}/projects/drlvm/trunk/build" >
-			<env key="BUILD_CFG" value="${build_configuration}"/>
-			<arg line="/c build.bat ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build"/>
-		</exec>
-	</target>
-		
-	<target name="drlvm-other" unless="is.windows">
-		<echo file="${target.dir}/cc.properties" append="true">
+]]>
+            </replacevalue>
+        </replace>
+        <replace file="${target.dir}/cruisecontrol.bat" token='@vmdir@' value='${target.dir}/projects/drlvm/trunk/build' />
+        <exec executable="cmd" dir="${target.dir}/projects/drlvm/trunk/build">
+            <env key="BUILD_CFG" value="${build_configuration}" />
+            <arg line="/c build.bat ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build" />
+        </exec>
+    </target>
+
+    <target name="drlvm-other" unless="is.windows">
+        <echo file="${target.dir}/cc.properties" append="true">
 os=lnx
 sh=sh
 cmd.prefix=
@@ -308,38 +304,32 @@ cmd=build.sh
 cc=gcc
 </echo>
 
-		<replace file="${target.dir}/cruisecontrol.sh" 
-			token='# CC_OPTS="-Xms128m -Xmx256m"'>
-			<replacevalue><![CDATA[CC_OPTS="-Xmx500m"
+        <replace file="${target.dir}/cruisecontrol.sh" token='# CC_OPTS="-Xms128m -Xmx256m"'>
+            <replacevalue>
+                <![CDATA[CC_OPTS="-Xmx500m"
 BUILD_CFG=@@@@@
-]]></replacevalue></replace>
+]]>
+            </replacevalue>
+        </replace>
 
-		<replace file="${target.dir}/cruisecontrol.sh" 
-			token='@@@@@'
-			value='${build_configuration}'/>
+        <replace file="${target.dir}/cruisecontrol.sh" token='@@@@@' value='${build_configuration}' />
 
-		<replace file="${target.dir}/cruisecontrol.sh" 
-			token='# CC_OPTS="-Xms128m -Xmx256m"'
-			value='CC_OPTS="-Xmx500m"'/>
-		<replace file="${target.dir}/cruisecontrol.sh" 
-			token="$LIBDIR/ant.jar" 
-                value="$LIBDIR/ant.jar:$ANT_HOME/lib/ant-apache-regexp.jar:$ANT_HOME/lib/ecj_3.2.jar:$ANT_HOME/lib/ant-nodeps.jar:$ANT_HOME/lib/ant-xslp.jar:$ANT_HOME/lib/ant-trax.jar:@vmdir@/make/tmp/ant-contrib.jar:@vmdir@/make/tmp/cpptasks/patched.classes:@vmdir@/make/tmp/cpptasks.jar"/>
-            <replace file="${target.dir}/cruisecontrol.sh" 
-            token='@vmdir@'
-            value='${target.dir}/projects/drlvm/trunk/build'/>
-		<exec executable="sh" dir="${target.dir}/projects/drlvm/trunk/build">
-			<arg line="build.sh ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build"/>
-		</exec>
-	</target>
-	<target name="process-drlvm" depends="drlvm-win,drlvm-other">
-		<echo>download external libs for Harmony DRLVM.</echo>
-	</target>
+        <replace file="${target.dir}/cruisecontrol.sh" token='# CC_OPTS="-Xms128m -Xmx256m"' value='CC_OPTS="-Xmx500m"' />
+        <replace file="${target.dir}/cruisecontrol.sh" token="$LIBDIR/ant.jar" value="$LIBDIR/ant.jar:$ANT_HOME/lib/ant-apache-regexp.jar:$ANT_HOME/lib/ecj_3.2.jar:$ANT_HOME/lib/ant-nodeps.jar:$ANT_HOME/lib/ant-xslp.jar:$ANT_HOME/lib/ant-trax.jar:@vmdir@/make/tmp/ant-contrib.jar:@vmdir@/make/tmp/cpptasks/patched.classes:@vmdir@/make/tmp/cpptasks.jar" />
+        <replace file="${target.dir}/cruisecontrol.sh" token='@vmdir@' value='${target.dir}/projects/drlvm/trunk/build' />
+        <exec executable="sh" dir="${target.dir}/projects/drlvm/trunk/build">
+            <arg line="build.sh ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build"/>
+        </exec>
+    </target>
+    <target name="process-drlvm" depends="drlvm-win,drlvm-other">
+        <echo>download external libs for Harmony DRLVM.</echo>
+    </target>
 
-	<!-- =========================================================
-	     cleanup to new state.  Leaves the .zip around to save 
-	     time on a setup
-	     ========================================================= -->
-	<target name="clean" description="reset to clean state">
-		<delete dir="${target.dir}" includeEmptyDirs="true"/>				
-	</target>
+    <!-- =========================================================
+         cleanup to new state.  Leaves the .zip around to save 
+         time on a setup
+         ========================================================= -->
+    <target name="clean" description="reset to clean state">
+        <delete dir="${target.dir}" includeEmptyDirs="true"/>
+    </target>
 </project>
