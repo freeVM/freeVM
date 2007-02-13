@@ -13,24 +13,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include $(HY_HDK)/build/make/defines.mk
+#
+# Makefile for module 'archive'
+#
 
-CFLAGS += -fpic
-INCLUDES += -I$(SHARED)common
+!include <$(HY_HDK)\build\make\defines.mak>
+
+LIBBASE=hyarchive
+DLLNAME=..\$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I..\..\zlib_dist \
+	   /I..\..\include\shared
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-  $(SHAREDSUB)org_apache_harmony_misc_accessors_ArrayAccessorImpl.o \
-  $(SHAREDSUB)org_apache_harmony_misc_accessors_Malloc.o \
-  $(SHAREDSUB)org_apache_harmony_misc_accessors_MemoryAccessorNativeImpl.o \
-  $(SHAREDSUB)org_apache_harmony_misc_accessors_ObjectAccessorImpl.o \
-  $(SHAREDSUB)org_apache_harmony_misc_accessors_StringAccessorImpl.o
+	$(SHAREDSUB)archive_copyright.obj $(SHAREDSUB)jclcrc32.obj \
+	$(SHAREDSUB)zip.obj $(SHAREDSUB)adler32.obj $(SHAREDSUB)inflater.obj \
+	$(SHAREDSUB)jarfile.obj $(SHAREDSUB)deflater.obj \
+	$(SHAREDSUB)archiveglob.obj
 
+VIRTFILES = $(LIBBASE).res
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-DLLNAME=../libaccessors.so
-EXPNAME=HYMISC_0.1
+MDLLIBFILES = $(MDLLIBFILES) \
+	$(LIBPATH)hyzip.lib \
+        $(LIBPATH)hyzlib.lib $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
+	$(LIBPATH)vmi.lib
+DLLBASE=0x13100000
 
-include $(HY_HDK)/build/make/rules.mk
+!include <$(HY_HDK)\build\make\rules.mak>

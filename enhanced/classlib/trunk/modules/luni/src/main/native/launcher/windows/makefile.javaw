@@ -14,16 +14,17 @@
 #  limitations under the License.
 
 #
-# Makefile for module 'hyfile.exe'
+# Makefile for module 'launcher.javaw'
 #
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME=../hyfile.exe
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
-
-BUILDFILES = $(SHAREDSUB)hyfile.obj
-EXEFLAGS=$(conlflags) -subsystem:console
-EXEDLLFILES=$(conlibsdll)
+EXENAME=$(EXEPATH)javaw.exe
+BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)main.obj \
+        winmain.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj
+VIRTFILES = javaw.res
+EXEFLAGS=$(guilflags) -subsystem:windows
+EXEDLLFILES=$(guilibsdll)
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt.lib
 
 !include <$(HY_HDK)\build\make\rules.mak>

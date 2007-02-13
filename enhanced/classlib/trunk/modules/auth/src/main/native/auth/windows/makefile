@@ -13,24 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include $(HY_HDK)/build/make/defines.mk
+#
+# Makefile for module 'auth'
+#
 
-CFLAGS += -fpic
-INCLUDES += -I$(SHARED)common
+!include <$(HY_HDK)\build\make\defines.mak>
 
-BUILDFILES = \
-  $(SHAREDSUB)org_apache_harmony_misc_accessors_ArrayAccessorImpl.o \
-  $(SHAREDSUB)org_apache_harmony_misc_accessors_Malloc.o \
-  $(SHAREDSUB)org_apache_harmony_misc_accessors_MemoryAccessorNativeImpl.o \
-  $(SHAREDSUB)org_apache_harmony_misc_accessors_ObjectAccessorImpl.o \
-  $(SHAREDSUB)org_apache_harmony_misc_accessors_StringAccessorImpl.o
+LIBBASE=hyauth
+DLLNAME=..\$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+BUILDFILES = $(SHAREDSUB)auth_copyright.obj authwin32.obj
+VIRTFILES = $(LIBBASE).res
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib.so \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi.so
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyzip.lib \
+	$(LIBPATH)hyzlib.lib $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib \
+	$(LIBPATH)vmi.lib
+DLLBASE=0x1300000
+COMMENT=/comment:"Auth component native code. (c) Copyright 2005, 2006 The Apache Software Foundation or its licensors, as applicable."
 
-DLLNAME=../libaccessors.so
-EXPNAME=HYMISC_0.1
-
-include $(HY_HDK)/build/make/rules.mk
+!include <$(HY_HDK)\build\make\rules.mak>
