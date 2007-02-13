@@ -265,8 +265,7 @@ cc=msvc
 </echo>
 
         <replace file="${target.dir}/cruisecontrol.bat" token="REM set CC_OPTS=-Xms128m -Xmx256m">
-            <replacevalue>
-                <![CDATA[set CC_OPTS=-Xmx500m
+            <replacevalue><![CDATA[set CC_OPTS=-Xmx500m
 set BUILD_CFG=@@@@@
 ]]>
             </replacevalue>
@@ -275,8 +274,7 @@ set BUILD_CFG=@@@@@
         <replace file="${target.dir}/cruisecontrol.bat" token='@@@@@' value='${build_configuration}' />
 
         <replace file="${target.dir}/cruisecontrol.bat" token="%LIBDIR%\ant.jar">
-            <replacevalue>
-                <![CDATA[%LIBDIR%\ant.jar
+            <replacevalue><![CDATA[%LIBDIR%\ant.jar
 set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-apache-regexp.jar
 set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ecj_3.2.jar
 set CRUISE_PATH=%CRUISE_PATH%;%ANT_HOME%\lib\ant-nodeps.jar
@@ -305,8 +303,7 @@ cc=gcc
 </echo>
 
         <replace file="${target.dir}/cruisecontrol.sh" token='# CC_OPTS="-Xms128m -Xmx256m"'>
-            <replacevalue>
-                <![CDATA[CC_OPTS="-Xmx500m"
+            <replacevalue><![CDATA[CC_OPTS="-Xmx500m"
 BUILD_CFG=@@@@@
 ]]>
             </replacevalue>
