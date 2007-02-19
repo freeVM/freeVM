@@ -17,19 +17,26 @@
 # Makefile for module 'instrument'
 #
 
-include $(HY_HDK)/build/make/defines.mk
+!include <$(HY_HDK)\build\make\defines.mak>
 
-CFLAGS += -fpic
+LIBBASE=hyinstrument
+DLLNAME=..\$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I$(SHARED)fdlibm
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-	../shared/instrument.o ../shared/inst_agt.o 
+  $(SHAREDSUB)instrument.obj $(SHAREDSUB)inst_agt.obj 
+  
+VIRTFILES = hyinstrument.res
 
-MDLLIBFILES += \
-	$(LIBPATH)libhyzip.a \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a \
-	$(LIBPATH)libvmi.so
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-DLLNAME = ../libhyinstrument.so
-EXPNAME = HYINSTRUMENT_0.1
+MDLLIBFILES = $(MDLLIBFILES) \
+  $(LIBPATH)hyzip.lib $(LIBPATH)hyzlib.lib \
+  $(LIBPATH)hypool.lib $(LIBPATH)hyfdlibm.lib $(LIBPATH)vmi.lib
+  
+DLLBASE=0x13200000
+COMMENT=/comment:"instrument component native code. (c) Copyright 2006 The Apache Software Foundation or its licensors, as applicable."
 
-include $(HY_HDK)/build/make/rules.mk
+!include <$(HY_HDK)\build\make\rules.mak>
