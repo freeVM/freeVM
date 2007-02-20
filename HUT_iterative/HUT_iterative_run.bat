@@ -24,22 +24,46 @@ for /F %%i in (modulesList) do (
  	for /L %%A in (%start%,%step%,%ITER%) do (
 
  		echo %%i
-call %ANT_COMMAND% -Dtest.jre.home=%JRE% -Dhy.test.vm.name=%VMNAME% -Dbuild.module=%%i -Dhy.test.forkmode=%FORKMODE% test 2>&1 > log_%%i_%%A.txt  
+call %ANT_COMMAND% -Dtest.jre.home=%JRE% -Dhy.test.vm.name=%VMNAME% -Dbuild.module=%%i -Dhy.test.forkmode=%FORKMODE% test > log_%%i_%%A.txt 2>&1
 
-rem		type log_%%i_%%A.txt
+		type log_%%i_%%A.txt
+		
+		findstr /c:"BUILD FAILED" log_%%i_%%A.txt > FF
 
-  		move build\test_report build\test_report_%%i_%%A
+		for /F "tokens=*" %%j in (FF) do (
+
+			echo RESULT %%j		
+			
+			if "%%j" == "BUILD FAILED" (
+			
+  				move build\test_report build\test_report_%%i_%%A
+				echo module %%i iteration %%A failed >> build/STATUS.txt
+
+			) 
+		)
+
+		findstr /c:"BUILD SUCCESSFUL" log_%%i_%%A.txt > FF
+
+		for /F "tokens=*" %%j in (FF) do (
+
+			echo RESULT %%j		
+			
+			if "%%j" == "BUILD SUCCESSFUL" (
+				echo module %%i iteration %%A passed >> build/STATUS.txt
+			) 
+		)
+							
  	)
 )
 
-for /F %%i in (modulesList) do (
- 	for /L %%A in (%start%,%step%,%ITER%) do (	
+rem for /F %%i in (modulesList) do (
+rem 	for /L %%A in (%start%,%step%,%ITER%) do (	
 
-		echo test_report_%%i_%%A >> build\test_report_length.txt
-		dir build\test_report_%%i_%%A | find /C "Test.xml" >> build\test_report_length.txt
+rem		echo test_report_%%i_%%A >> build\test_report_length.txt
+rem		dir build\test_report_%%i_%%A | find /C "Test.xml" >> build\test_report_length.txt
 
- 	)
-)
+rem 	)
+rem )
 
 cd build
 
@@ -55,3 +79,4 @@ rem find crash candidates
 
 dir /O /S | find "Test.xml" | find "     0 TEST" >> ZERO_LENGTH.txt
 
+exit 0

@@ -34,7 +34,16 @@ cat modulesList | while read moduleName; do
 		-Dbuild.module=$moduleName -Dhy.test.forkmode=${FORKMODE} \
 		test 2>&1 | tee log_${moduleName}_${A}.txt
 
-	mv build/test_report build/test_report_${moduleName}_${A}
+	R=`grep "BUILD FAILED" log_${moduleName}_${A}.txt | wc -l` 
+		        
+	if [ "$R" = 0 ]; then 
+	
+	    echo module ${moduleName} iteration ${A} passed >> build/STATUS.txt 
+	else 
+								        
+	    mv build/test_report build/test_report_${moduleName}_${A} 
+	    echo module ${moduleName} iteration ${A} failed >> build/STATUS.txt 
+	fi 													       
 
 	A=`expr $A + 1`
 
@@ -42,23 +51,23 @@ cat modulesList | while read moduleName; do
 
 done
 
-cat modulesList | while read moduleName; do
+#cat modulesList | while read moduleName; do
 
-	echo $moduleName
+#	echo $moduleName
 
-	A=0
+#	A=0
 
-	while [ "$A" -lt `expr ${ITER}` ]; do
+#	while [ "$A" -lt `expr ${ITER}` ]; do
 
-	L=`ls -1 build/test_report_${moduleName}_${A} | grep xml | wc -l`
+#	L=`ls -1 build/test_report_${moduleName}_${A} | grep xml | wc -l`
 
-	echo build/test_report_${moduleName}_${A} $L >> build/test_report_length.txt
+#	echo build/test_report_${moduleName}_${A} $L >> build/test_report_length.txt
 
-	A=`expr $A + 1`
+#	A=`expr $A + 1`
 
-	done
+#	done
 
-done
+#done
 
 cd build
 

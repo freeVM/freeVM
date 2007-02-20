@@ -28,11 +28,11 @@
         </zip>
     </target>
     <target name="copy.HUT-iterative.res">
-       <zip destfile="projects/classlib/trunk/results_${VM}_${timestampfull}.zip" >
-	    <zipfileset dir="projects/classlib/trunk/build" includes="test_report_*/**/*" /> 
-	    <zipfileset dir="projects/classlib/trunk/build" includes="FAILURES.txt, ERRORS.txt, ZERO_LENGTH.txt, test_report_length.txt" prefix="result" />
-	    <zipfileset dir="projects/classlib/trunk" includes="log_*.txt" prefix="logs" /> 
-        </zip>
+        <zip destfile="projects/classlib/trunk/results_${VM}_${timestampfull}.zip" >
+ 	    <zipfileset dir="projects/classlib/trunk/build" includes="test_report_*/**/*" /> 
+ 	    <zipfileset dir="projects/classlib/trunk/build" includes="FAILURES.txt, ERRORS.txt, ZERO_LENGTH.txt, STATUS.txt" prefix="result" />
+ 	    <zipfileset dir="projects/classlib/trunk" includes="log_*.txt" prefix="logs" /> 
+         </zip>
 					   
     </target>
     <target name="copy.vm.res">
@@ -83,7 +83,7 @@
 		failonerror="false" 
 		mailhost="${mailhost}" 
 		subject="${subject}" >
-		<fileset dir="projects/classlib/trunk/build" includes="FAILURES.txt, ERRORS.txt, ZERO_LENGTH.txt, test_report_length.txt" />
+		<fileset dir="projects/classlib/trunk/build" includes="FAILURES.txt, ERRORS.txt, ZERO_LENGTH.txt, STATUS.txt" />
 	</mail>	
 	<delete dir="projects/classlib/trunk/build" /> 	
 	<delete> 

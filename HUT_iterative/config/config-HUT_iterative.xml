@@ -24,6 +24,8 @@
     <property name="vm.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} debug: drlvm"/>
     <property name="cl.prefix.ok" value="[build-test alert] BUILD FIXED ${os} ${cc} debug: classlib "/>
     <property name="vm.prefix.ok" value="[build-test alert] BUILD FIXED ${os} ${cc} debug: drlvm"/>
+    <property name="HUT-iterative.prefix" value="[build-test alert] BUILD FAILED ${osdetailed} ${cc} debug:  classlib tests iterative"/> 
+    <property name="HUT-iterative.prefix.ok" value="[build-test alert] BUILD FIXED ${osdetailed} ${cc} debug:  classlib tests iterative"/> 
 
     <project name="classlib">
 
@@ -42,8 +44,8 @@
 
         <schedule interval="${timeout}">
         	<ant target="fetch-depends rebuild" antWorkingDir="projects/${project.name}/trunk" timeout="${ttimeout}" usedebug="false">
-        	    <property name="${proxy.host.property}" value="${proxy.value}"/>
-        	    <property name="${proxy.port.property}" value="${port.value}"/>
+		    <jvmarg arg="-D${proxy.host.property}=${proxy.value}"/>
+		    <jvmarg arg="-D${proxy.port.property}=${port.value}"/>
         	    <jvmarg arg="-Xms200M" />
         	    <jvmarg arg="-Xmx700M" />
         	</ant>
@@ -191,7 +193,7 @@
                      <property name="mailhost" value="${server_addr}"/>
                      <property name="fromaddress" value="${report_from}"/>
                      <property name="toaddress" value="${report_to}"/>
-                     <property name="subject" value="${cl.prefix} over drlvm"/>
+                     <property name="subject" value="${HUT-iterative.prefix}"/>
                      <property name="flag" value="${project.name}"/>
                 </antpublisher> 
             </onfailure>
@@ -207,7 +209,7 @@
                      <property name="mailhost" value="${server_addr}"/>
                      <property name="fromaddress" value="${report_from}"/>
                      <property name="toaddress" value="${report_to}"/>
-                     <property name="subject" value="${cl.prefix.ok} over drlvm"/>
+                     <property name="subject" value="${HUT-iterative.prefix.ok}"/>
                      <property name="flag" value="${project.name}"/>
                 </antpublisher> 
             </onsuccess>
