@@ -15,9 +15,25 @@
  *  limitations under the License.
  */
 /** 
- * @author Evgueni Brevnov
- * @version $Revision: 1.1.2.1.4.4 $
- */  
+* @author Evgueni Brevnov
+* @version $Revision: 1.1.2.1.4.3 $
+*/  
 
-/* All code from this file was inlinied in port_atomic.h */
+#ifndef _DUMP_H_
+#define _DUMP_H_
 
+#include <stddef.h>
+
+#ifndef NDEBUG
+    extern bool dump_stubs;
+
+    #define DUMP_STUB(addr, name, len) \
+    if (dump_stubs) \
+         dump(((char *)addr), (name), (len));
+#else
+    #define DUMP_STUB(addr, name, len)
+#endif
+
+int dump(const char * code, const char * name, size_t length);
+
+#endif // _DUMP_H_
