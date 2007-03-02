@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -20,15 +19,15 @@
 
 <document>
 
-	<properties>
-		<title>Apache Harmony</title>
-		<author email="dev@harmony.apache.org">Harmony Documentation Team</author>
-	</properties>
+    <properties>
+        <title>Older Harmony News</title>
+        <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    </properties>
 
 <body>
 
 <section name="Older Harmony News">
-	        <p>
+          <p>
             <strong>New JRE and HDK Snapshots Posted</strong>
             <blockquote>
                 Our <a href="downloads.html">latest snapshots</a> have
@@ -113,7 +112,7 @@
       <strong>AWT, Java2D and Swing Code Contribution</strong>
       <blockquote>
             On May 30th, 2006 the Apache Harmony project received a
-            <a href="http://issues.apache.org/jira/browse/HARMONY-528">substantial
+            <a href="https://issues.apache.org/jira/browse/HARMONY-528">substantial
             contribution</a> of class library code into the project.  The code for
             AWT, Java2D, and Swing implementation has been contributed by Alexey
             Petrenko on behalf of Intel corp.  The full announcement can be found
@@ -123,21 +122,21 @@
             (<i>2006-05-31</i>)
       </blockquote>
   </p>
-	
-	<p>
-	    <strong>New class library snapshot build available</strong>
-	    <blockquote>
-	      A new stable snapshot of the class libraries code is available
-	      for download from the
-	      <a href="downloads.html">Harmony downloads page</a>.
-	      There are source and binary downloads available for people to
-	      evaluate and experiment with the code.  As always, please report bugs
-	      (and successes!) to the
+  
+  <p>
+      <strong>New class library snapshot build available</strong>
+      <blockquote>
+        A new stable snapshot of the class libraries code is available
+        for download from the
+        <a href="downloads.html">Harmony downloads page</a>.
+        There are source and binary downloads available for people to
+        evaluate and experiment with the code.  As always, please report bugs
+        (and successes!) to the
           <a href="mailing.html">Harmony developers mailing list</a>.
-	      (<i>2006-05-12</i>)
-	    </blockquote>
-	</p>
-	
+        (<i>2006-05-12</i>)
+      </blockquote>
+  </p>
+  
     <p>
         <strong>DRL Virtual Machine Contribution</strong>
         <blockquote>
@@ -152,75 +151,75 @@
         </blockquote>
     </p>
     
-	<p>
-	    <strong>Java Security Code Contribution</strong>
-	    <blockquote>
-	      On December 30th, 2005 the Apache Harmony project accepted additional
-	      class library code into the project.  The code had been contributed by
-	      Mikhail Loenko on behalf of Intel corp.  The new class library code
-	      includes security, cryptography, javax.net and unit tests.  Thanks to
-	      Mikhail and his collegues in the Intel Managed Runtime Division!
-	      (<i>2006-01-16</i>)
-	    </blockquote>
-	</p>
-	
-	<p>
-	    <strong>VM Interface and Core Classes Contribution</strong>
-	    <blockquote>
-	      IBM has offered the Apache Harmony project a set of core 
-	      Java classes and an implementation of a VM/class library
-	      interface.  Tim Ellison wrote : 
-	      
-	      <blockquote>I'm delighted to be able to make a code contribution to the
-			Harmony project on behalf of IBM.  The code comprises a concrete implementation
-			of the interface between virtual machine and class library that we have
-			been discussing recently, together with a set of core Java classes.
-	      </blockquote>
-	      This contribution is sufficient to run Ant and the Eclipse Java 
-	      compiler, to provide a basic self-hosting environment.  IBM also
-	      made a version of their J9 VM 
-	      <a href="http://www.ibm.com/developerworks/java/jdk/harmony">
-	      available</a> for use by the project in evaluating this contribution.
-	      Thanks Tim and IBM :)
-	      (<i>2005-11-08</i>)
-	    </blockquote>
-	</p>
-	
-	<p>
-	    <strong>"Bootstrap JVM" Contributed to Apache Harmony</strong>
-	    <blockquote>
-	        Daniel Lydickto the Harmony project of a basic Java 
-	        Virtual Machine entitled the "Apache Harmony Bootstrap JVM." 
-	        Dan offered the VM with the following goals in mind :
-	        <ul>
-		        <li>Basic platform for learning about VMs</li>
-		        <li>Boostrap and runtime framework for our eventual 'production' VM</li>
-		        <li>Help spur architectural discussion about core
-		            component designs</li>
-	        </ul>
-	        Thanks Dan!    
-	        (<i>2005-09-30</i>)
-	    </blockquote>
-	</p>
-	
-	<p>
-	    <strong>Source for JCVM Contributed to Apache Harmony</strong>
-	    <blockquote>
-	        Archie Cobbs has offered for contribution to the Apache Harmony project
-	        a copy of the <a href="http://jcvm.sourceforge.net/">JCVM</a>
-	        codebase.  Come and help us build on this interesting
-	        VM.  Thanks Archie!
-	        (<i>2005-09-25</i>)
-	    </blockquote>
-	</p>
-	<p>
-	  <strong>Project accepted by Apache Incubator</strong>
-	  <blockquote>
-	      The Apache Harmony project was accepted formally accepted for
-	      inubation by the Apache Incubator PMC.
-	      (<i>2005-05-18</i>)
-	  </blockquote>
-	</p>  
+  <p>
+      <strong>Java Security Code Contribution</strong>
+      <blockquote>
+        On December 30th, 2005 the Apache Harmony project accepted additional
+        class library code into the project.  The code had been contributed by
+        Mikhail Loenko on behalf of Intel corp.  The new class library code
+        includes security, cryptography, javax.net and unit tests.  Thanks to
+        Mikhail and his collegues in the Intel Managed Runtime Division!
+        (<i>2006-01-16</i>)
+      </blockquote>
+  </p>
+  
+  <p>
+      <strong>VM Interface and Core Classes Contribution</strong>
+      <blockquote>
+        IBM has offered the Apache Harmony project a set of core 
+        Java classes and an implementation of a VM/class library
+        interface.  Tim Ellison wrote : 
+        
+        <blockquote>I'm delighted to be able to make a code contribution to the
+      Harmony project on behalf of IBM.  The code comprises a concrete implementation
+      of the interface between virtual machine and class library that we have
+      been discussing recently, together with a set of core Java classes.
+        </blockquote>
+        This contribution is sufficient to run Ant and the Eclipse Java 
+        compiler, to provide a basic self-hosting environment.  IBM also
+        made a version of their J9 VM 
+        <a href="http://www.ibm.com/developerworks/java/jdk/harmony">
+        available</a> for use by the project in evaluating this contribution.
+        Thanks Tim and IBM :)
+        (<i>2005-11-08</i>)
+      </blockquote>
+  </p>
+  
+  <p>
+      <strong>"Bootstrap JVM" Contributed to Apache Harmony</strong>
+      <blockquote>
+          Daniel Lydickto the Harmony project of a basic Java 
+          Virtual Machine entitled the "Apache Harmony Bootstrap JVM." 
+          Dan offered the VM with the following goals in mind :
+          <ul>
+            <li>Basic platform for learning about VMs</li>
+            <li>Boostrap and runtime framework for our eventual 'production' VM</li>
+            <li>Help spur architectural discussion about core
+                component designs</li>
+          </ul>
+          Thanks Dan!    
+          (<i>2005-09-30</i>)
+      </blockquote>
+  </p>
+  
+  <p>
+      <strong>Source for JCVM Contributed to Apache Harmony</strong>
+      <blockquote>
+          Archie Cobbs has offered for contribution to the Apache Harmony project
+          a copy of the <a href="http://jcvm.sourceforge.net/">JCVM</a>
+          codebase.  Come and help us build on this interesting
+          VM.  Thanks Archie!
+          (<i>2005-09-25</i>)
+      </blockquote>
+  </p>
+  <p>
+    <strong>Project accepted by Apache Incubator</strong>
+    <blockquote>
+        The Apache Harmony project was accepted formally accepted for
+        inubation by the Apache Incubator PMC.
+        (<i>2005-05-18</i>)
+    </blockquote>
+  </p>  
 
 </section>
 
