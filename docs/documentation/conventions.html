@@ -1,0 +1,398 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Conventions</title>
+
+                        
+                        
+        <link rel="stylesheet" type="text/css" href="../site.css"/>
+        </head>
+
+        <body>        
+            <table  width="100%" cellspacing="0">
+                <!-- TOP IMAGE -->
+                <tr>
+                    <td align='LEFT'>
+                    <table><tr><td>
+                    <td>
+<a href="http://harmony.apache.org/"><img  src="../images/harmony-logo-new.png" alt="Apache Harmony" /></a>
+</td>
+</td>
+                    </td></tr></table>
+                    </td>
+                    <td align='RIGHT'>
+                    <a href="http://www.apachecon.com/2007/EU/index.html">
+                    <img src="http://www.apache.org/ads/ApacheCon/2007-europe-234x60.png"
+                    	alt="ApacheCon Europe 2007" /></a>                    
+                    </td>
+                </tr>
+            </table>
+            <table width="100%" cellspacing="4">
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+
+                <tr>
+                    <!-- LEFT SIDE NAVIGATION -->
+                    <td class="menuItem" width="20%" nowrap="true">
+
+                    <!-- special ACon Logo - leave here for next time
+                    <a href="http://www.us.apachecon.com/">
+                        <img src="http://www.apache.org/ads/ApacheCon/2007-europe-125x125.png"
+                             alt="ApacheCon Europe 2007" />
+                    </a> -->
+
+                   <!-- regular menu -->
+
+                    
+    <!-- ============================================================ -->
+
+                <p class="menuItem"><strong>General</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../license.html">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../downloads.html">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../faq.html">FAQ</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem"><strong>Community</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem"><strong>Development</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem"><strong>Documentation</strong></p>
+        <ul>
+                    <li class="menuItem">    <a href="../sitemap.html">Sitemap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../hdk.html">HDK</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+                        </td>
+                    <td width="80%" valign="top"><a name="top"></a>
+                                                                    <h1>
+      <a name="Conventions">Conventions</a>
+    </h1>
+                        <p>The DRL (dynamic run-time layer) documentation set uses the following conventions.</p>
+                                <table>
+                        <tr>
+                        <th class="TableHeading" colspan="" rowspan="">
+                Convention 
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="">
+                 Explanation
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="">
+                Example
+        </th>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                 <code> monospace </code> 
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                Filenames
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                 <code> ippsapi.h </code> 
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                 <code> monospace </code> 
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                Directory names and pathnames 
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                 <code> \alt\include</code> 
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                 <code> monospace </code> 
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                 Commands and command-line options
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                 <code> ecl -O2 </code> 
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                 <code> monospace </code> 
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                Function names, methods, classes, data structures in
+            running text
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                Use the <code> okCreateObjs </code> function to ...
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                 <code> monospace </code> 
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                 Parameters or other placeholders 
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                 <code> ippiMalloc(int widthPixels, ...)<br />
+                    int* pStepBytes </code> 
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>
+              <b>monospace bold</b>
+            </code>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                User input
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code>
+              [c:] <b> dir</b>
+            </code>
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <i>italics </i>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                 Emphasis; introducing or defining terms
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            The term <i> access</i> takes as its subject ...
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                 [ ]
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                 Optional items
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code> -Fa[c]</code> Indicates these command-line
+            options: <code> -Fa</code> and <code> -Fac</code>
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                 { | }  
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            Choice of one item from a selection of two or more
+            items.
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+            <code> -aX{K | W | P}</code> Indicates these command-line
+            options:<br />
+              <code>  -aXK <br />
+                  -aXW <br /> -aXP</code>
+        </td>
+            </tr>
+            </table>
+                <p><a href="#top">Back to top</a></p>
+                    
+                                                            </td>
+                </tr>
+
+                <!-- FOOTER -->
+                <tr><td colspan="2">
+                    <hr noshade="" size="1"/>
+                </td></tr>
+                <tr><td colspan="2">
+                    <div class="special"><em>
+                    Copyright &#169; 2003-2007, The Apache Software Foundation
+                    </em></div>
+                </td></tr>
+            </table>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
