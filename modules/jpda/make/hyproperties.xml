@@ -26,7 +26,7 @@
             <native location="src/main/native" />
         	<resources location="src/main/resources" />
          </main>
-         <test location="src/test">
+         <test location="test/common/unit">
             <resources location="src/test/resources" />
          </test>
          <natives location="src/natives" />
@@ -40,6 +40,8 @@
       </packaging>
    </jpda>
 
+   <hdk location="../../deploy" />
+   <jdk location="../../deploy/jdk" />
    <build location="../../build/classes" />
 
    <tests>

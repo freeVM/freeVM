@@ -27,7 +27,7 @@ COMMON=../../common/
 CMNTRANS=$(COMMON)transport/
 
 CFLAGS = -O1 $(HY_CFLAGS) -D_DEBUG -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
-         $(VMDEBUG) -I$(HY_HDK)/include -I$(HY_DRLVM)/jdk/include -I. \
+         $(VMDEBUG) -I$(HY_HDK)/jdk/include -I. \
          -I$(CMNTRANS)common   -I$(CMNTRANS)dt_socket \
          -I$(COMMON)generic -Idt_socket
                   

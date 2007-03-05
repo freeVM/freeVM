@@ -28,12 +28,21 @@
 
     <property file="../../make/depends.properties" />
 
-    <target name="build-native" depends="build"/>
-    <target name="clean-native" depends="clean"/>
+    <target name="build" depends="build-native"/>
+    <target name="build-java"/>
 
-    <target name="build" >
+    <target name="clean" depends="clean-native"/>
+    <target name="clean-java"/>
 
-        <echo>Launcher : ${hy.drlvm}  ${harmony.jdktools} </echo>
+    <target name="test" depends="test-module" />
+    <target name="build-tests" />
+    <target name="test-module" depends="run-tests" />
+
+    <target name="build-native" >
+
+        <echo message="Compiling SAMSA natives" />
+        <echo message="hy.drlvm=${hy.drlvm}" />
+        <echo message="harmony.jdktools=${harmony.jdktools}" />
             
         <!-- Build launcher executables -->
         <make dir="${hy.samsa.src.main.native}/samsa/${hy.os}" />
@@ -70,11 +79,24 @@
 
     </target>
 
+    <target name="run-tests" >
+
+        <property name="test.jre.home" value="${hy.jdk}/jre" />
+
+        <echo message="Running SAMSA tests" />
+        <echo message="test.jre.home=${test.jre.home}" />
+
+        <echo>Run javac in ${hy.tests.reports} - EXCLUDED</echo>
+        <!--exec failonerror="true"
+		                  executable="${test.jre.home}/../bin/javac${exe.suffix}"
+		                  dir="${hy.tests.reports}">
+		                <arg line="" />
+        </exec-->
+    </target>
+
     <!-- Clean natives -->
-    <target name="clean">
-        <echo>
-Cleaning launcher natives
-        </echo>
+    <target name="clean-native">
+        <echo message="Cleaning SAMSA natives" />
         <make dir="${hy.samsa.src.main.native}/samsa/${hy.os}"
               target="clean" />
     </target>

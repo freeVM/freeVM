@@ -21,6 +21,7 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="tests.build.output" location="../../build/tests" />
     <import file="../../make/properties.xml" />
 
     <!-- set global properties for this build. -->
@@ -28,11 +29,29 @@
     
     <property file="../../make/depends.properties" />
 
-    <target name="build"/>
+    <target name="build" depends="build-java, build-native" />
+
+    <target name="clean" depends="clean-java, clean-native" />
+
+    <target name="test" depends="test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!-- Build Java code -->
+    <target name="build-java"/>
 
     <!-- Build native code -->
     <target name="build-native">
         
+        <echo message="Compiling JPDA natives" />
+
         <!-- Build agent shared lib -->
         <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os}/agent" />
         
@@ -47,143 +66,80 @@
         </copy>
     </target>
 
+    <!-- internal target for local and global test run sequence -->
+    <target name="test-module" depends="build-tests, run-tests" />
+
+    <!-- Clean Java -->
+    <target name="clean-java"/>
 
     <!-- Clean natives -->
     <target name="clean-native">
+        <echo message="Cleaning JPDA natives" />
         <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os}/agent" target="clean" />
         <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os}/transport" target="clean" />
     </target>
 
-    <target name="test" depends="-test-module">
-        <fail message="Some tests failed">
-            <condition>
-                <or>
-                    <isset property="test.failures" />
-                    <isset property="test.errors" />
-                </or>
-            </condition>
-        </fail>
-    </target>
+    <!-- Compile JDWP tests always with debug info included -->
+    <target name="build-tests" >
+        <echo message="Compiling JPDA tests" />
 
-    <!-- internal target for local and global test run sequence -->
-    <target name="-test-module" depends="build, compile-tests, run-tests" />
+        <mkdir dir="${tests.build.output}/classes" />
+        <javac
+            srcdir="${hy.jpda.src.test}"
+            destdir="${tests.build.output}/classes"
+            sourcepath=""
+            compiler="${hy.javac.compiler}"
+            memoryMaximumSize="${hy.javac.maxmem}"
+            source="${hy.javac.source}" 
+            target="${hy.javac.target}"
+            debug="on">
 
-    <target name="clean">
-        <delete file="${hy.jdk}/jre/lib/boot/luni.jar" />
-        <delete file="${hy.jdk}/jre/lib/boot/luni-src.jar" />
-        <delete failonerror="false">
-            <fileset refid="classes" />
-            <fileset dir="${hy.luni.bin.test}" />
-        </delete>
-        <antcall target="clean-native-includes" />
-    </target>
-
-    <target name="clean-native-includes">
-        <delete failonerror="false">
-            <fileset dir="${hy.hdk}/include">
-                <include name="vmi.h" />
-                <include name="hyvmls.h" />
-                <include name="jclprots.h" />
-                <include name="hysocket.h" />
-                <include name="gp.h" />
-                <include name="iohelp.h" />
-                <include name="exceptions.h" />
-                <include name="libglob.h" />
-                <include name="fdlibm.h" />
-                <include name="hymagic.h" />
-                <include name="jsig.h" />
-            </fileset>
-        </delete>
-        <delete failonerror="false">
-            <fileset dir="${hy.jdk}/include">
-                <include name="jni.h" />
-                <include name="jniport.h" />
-                <include name="jvmti.h" />
-            </fileset>
-        </delete>
-    </target>
-
-    <target name="compile-java">
-        <echo message="Compiling LUNI classes" />
-
-        <javac sourcepath=""
-               srcdir="${hy.luni.src.main.java}"
-               destdir="${hy.build}"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <compilerarg line="${build.compilerarg}" />
-
-            <bootclasspath>
-                <fileset dir="${hy.jdk}/jre/lib/boot">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
+            <classpath>
+                <pathelement path="${tests.build.output}/classes"/>
+                <pathelement path="${junit.jar}"/>
+            </classpath>
         </javac>
     </target>
 
-    <target name="build-jar" depends="svn-info">
-        <jar destfile="${hy.jdk}/jre/lib/boot/luni.jar"
-             manifest="${hy.luni}/META-INF/MANIFEST.MF">
-            <fileset refid="classes" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/>
-            </manifest>
-            
-            <metainf file="${hy.hdk}/NOTICE"/>
-            <metainf file="${hy.hdk}/LICENSE"/>            
-        </jar>
+    <target name="run-tests" depends="build-tests">
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/luni-src.jar">
-            <fileset dir="${hy.luni.src.main.java}" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/>
-            </manifest>
-            
-            <metainf file="${hy.hdk}/NOTICE"/>
-            <metainf file="${hy.hdk}/LICENSE"/>            
-        </jar>
-    </target>
+        <property name="test.jre.home" value="${hy.jdk}/jre" />
+        <property name="test.jre.jvm" value="${test.jre.home}/bin/java" />
+        <property name="test.debugger.jvm" value="${test.jre.jvm}" />
+        <property name="test.debuggee.jvm" value="${test.jre.jvm}" />
 
-    <target name="compile-tests" depends="copy-test-resources">
-        <compile-tests description="JUnit Tests" destdir="${hy.luni.bin.test}">
-            <javac-elements>
-                <src>
-                    <pathelement location="${hy.luni.src.test}/java"/>
-                </src>
-                <include name="**/*.java" />
-            </javac-elements>
-        </compile-tests>
-    </target>
+        <echo message="Running JPDA tests" />
+        <echo message="  Debugger JVM=${test.debugger.jvm}" />
+        <echo message="  Debuggee JVM=${test.debuggee.jvm}" />
 
-    <target name="run-tests">
-        <run-tests description="JUnit Tests">
-            <junit-elements>
-                <classpath>
-                    <pathelement path="${hy.luni.bin.test}"/>
-                    <pathelement path="${hy.luni.src.test.resources}"/>
-                    <pathelement path="../../build/tests"/>
-                    <pathelement path="${hy.hdk}/build/test/support.jar" />
-                </classpath>
-                <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=../../support/src/test/resources/config/testing.policy" />
+        <mkdir dir="${hy.tests.reports}" />
 
-                <!-- Required for running the java.net unit tests -->
-                <jvmarg value="-Dtest.ini.file=../../support/src/test/resources/config/localhosttest.ini" />
+        <junit fork="yes"
+                       forkmode="${hy.test.forkmode}"
+                       timeout="${hy.test.timeout}"
+                       printsummary="withOutAndErr"
+                       errorproperty="test.errors"
+                       failureproperty="test.failures"
+                       showoutput="off"
+                       dir="${hy.tests.reports}"
+                       jvm="${test.debugger.jvm}">
 
+            <classpath>
+                <pathelement path="${tests.build.output}/classes"/>
+            </classpath>
 
-                <batchtest todir="${hy.tests.reports}" haltonfailure="no" unless="test.case">
-                    <fileset dir="${hy.luni.src.test}/java">
-                        <include name="**/*Test.java"/>
-                        <excludesfile name="${exclude.file}" />
-                    </fileset>
-                </batchtest>
+            <jvmarg value="-Djpda.settings.debuggeeJavaPath=${test.debuggee.jvm}" />
 
-            </junit-elements>
-        </run-tests>
+            <formatter type="xml" />
+
+            <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="off" unless="test.case">
+                <fileset dir="${hy.jpda.src.test}">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
 
         <antcall target="touch-failures-file" />
         <antcall target="touch-errors-file" />
@@ -191,89 +147,12 @@
 
     <target name="touch-failures-file" if="test.failures">
         <echo file="${hy.tests.reports}/test.failures"
-            append="true">luni${line.separator}</echo>
+            append="true">jpda${line.separator}</echo>
     </target>
 
     <target name="touch-errors-file" if="test.errors">
         <echo file="${hy.tests.reports}/test.errors"
-            append="true">luni${line.separator}</echo>
+            append="true">jpda${line.separator}</echo>
     </target>
 
-    <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.luni.src.main.java}">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="copy-test-resources">
-        <mkdir dir="${hy.luni.bin.test}" />
-        <copy todir="${hy.luni.bin.test}" includeemptydirs="false">
-            <fileset dir="${hy.luni.src.test.resources}">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
-    </target>
-
-    <macrodef name="compile-tests">
-        <attribute name="description" default="" />
-        <attribute name="destdir"  />
-        <element name="javac-elements" />
-        <sequential>
-            <echo message="Compiling LUNI @{description}" />
-
-            <mkdir dir="@{destdir}" />
-
-            <javac destdir="@{destdir}"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-                <compilerarg line="${build.compilerarg}" />
-
-                <javac-elements />
-
-                <bootclasspath>
-                    <fileset dir="${hy.jdk}/jre/lib/boot">
-                        <include name="**/*.jar" />
-                    </fileset>
-                </bootclasspath>
-                <classpath location="../../build/tests" />
-                <classpath location="${hy.hdk}/build/test/support.jar" />
-            </javac>
-        </sequential>
-    </macrodef>
-
-    <macrodef name="run-tests">
-        <attribute name="description" default="" />
-        <element name="junit-elements" />
-        <sequential>
-            <echo message="Running LUNI @{description}" />
-
-            <mkdir dir="${hy.tests.reports}" />
-
-            <property name="test.jre.home" value="${hy.jdk}/jre" />
-
-            <junit fork="yes"
-                   forkmode="${hy.test.forkmode}"
-                   timeout="${hy.test.timeout}"
-                   printsummary="withOutAndErr"
-                   errorproperty="test.errors"
-                   failureproperty="test.failures"
-                   showoutput="on"
-                   dir="${basedir}"
-                   jvm="${test.jre.home}/bin/java">
-
-                <junit-elements />
-
-                <formatter type="xml" />
-
-                <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
-            </junit>
-        </sequential>
-    </macrodef>
 </project>

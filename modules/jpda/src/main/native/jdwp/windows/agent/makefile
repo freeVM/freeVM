@@ -31,7 +31,7 @@ LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 HYCFLAGS = \
          -GX -wd4290 \
-         -I$(HY_DRLVM)\jdk\include -I. \
+         -I$(HY_HDK)\jdk\include -I. \
          -I$(CMNAGENT)commands   -I$(CMNAGENT)core \
          -I$(COMMON)generic -Icore $(HYCFLAGS)
 

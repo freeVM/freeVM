@@ -33,6 +33,7 @@
 
     <target name="-check">
         <check-one-file src="${ecj.url}" dest="${ecj.jar}" />
+        <check-one-file src="${junit.url}" dest="${junit.jar}" />
     </target>
 
     <target name="download" description="Download required jars"
@@ -44,6 +45,10 @@
     <download-one-file src="${ecj.url}" dest="${ecj.jar}"
                            md5="${ecj.md5}" />
         
+    <mkdir dir="${junit.dir}" />
+    <download-one-file src="${junit.url}" dest="${junit.jar}"
+                           md5="${junit.md5}" />
+
     </target>
 
 

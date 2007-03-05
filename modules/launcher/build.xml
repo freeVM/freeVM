@@ -28,12 +28,21 @@
 
     <property file="../../make/depends.properties" />
 
-    <target name="build-native" depends="build"/>
-    <target name="clean-native" depends="clean"/>
+    <target name="build" depends="build-native"/>
+    <target name="build-java"/>
 
-    <target name="build" >
+    <target name="clean" depends="clean-native"/>
+    <target name="clean-java"/>
 
-        <echo>Launcher : ${hy.drlvm}  ${harmony.jdktools} </echo>
+    <target name="test" depends="test-module" />
+    <target name="build-tests" />
+    <target name="test-module" depends="run-tests" />
+
+    <target name="build-native" >
+
+        <echo message="Compiling LAUNCHER natives" />
+        <echo message="hy.drlvm=${hy.drlvm}" />
+        <echo message="harmony.jdktools=${harmony.jdktools}" />
             
         <!-- Build launcher executables -->
         <make dir="${hy.luni.src.main.native}/launcher/${hy.os}" />
@@ -49,15 +58,35 @@
         <!-- Make sure the Linux launcher has execute permission -->
         <chmod file="${hy.jdk}/jre/bin/java${exe.suffix}" perm="ugo+x" />
 
-    </target>
+      </target>
+
+      <target name="run-tests" >
+
+          <property name="test.jre.home" value="${hy.jdk}/jre" />
+
+          <echo message="Running LAUNCHER tests" />
+          <echo message="test.jre.home=${test.jre.home}" />
+
+          <echo message="Run 'java -version' in ${hy.tests.reports}" />
+          <exec failonerror="true"
+                 executable="${test.jre.home}/bin/java${exe.suffix}"
+                        dir="${hy.tests.reports}">
+              <arg line="-version" />
+          </exec>
+      </target>
 
     <!-- Clean natives -->
-    <target name="clean">
-        <echo>
-Cleaning launcher natives
-        </echo>
+    <target name="clean-native" depends="clean-jre">
+        <echo message="Cleaning LAUNCHER natives" />
         <make dir="${hy.luni.src.main.native}/launcher/${hy.os}"
               target="clean" />
+    </target>
+
+    <target name="clean-jre" unless="is.hdk-build">
+        <delete includeEmptyDirs="true" failonerror="false">
+            <fileset dir="${hy.jdk}/jre/bin" includes="**/*" />
+            <fileset dir="${hy.jdk}/jre/lib" />
+        </delete>
     </target>
 
 </project>

@@ -17,7 +17,7 @@
      limitations under the License.
 -->
 
-<project name="classlib-test" default="test-all" basedir="..">
+<project name="jdktools-test" default="test-all" basedir="..">
 
     <description> Tests for classlib package</description>
 
@@ -30,10 +30,13 @@
     <property name="hy.hdk" location="deploy" />
     <property name="hy.jdk" location="${hy.hdk}/jdk" />
 
+    <condition property="not.copy.jdk">
+        <isset property="test.jre.home"/>
+    </condition>
+    <property name="test.jre.home" location="${hy.jdk}" />
+
     <property name="tests.build.output" location="build/tests" />
-    <property name="tests.support.output" location="build/test_support" />
-    <property name="support.dir" location="support"/>
-    <property name="tests.depends.jars" location="deploy/jdk/jre/lib/boot" />
+    <property name="tests.depends.jars" location="${hy.hdk}/jdk/jre/lib/boot" />
     <property file="make/depends.properties" />
 
     <!-- this list of components to test will grow to eventually be all modules -->
@@ -44,12 +47,12 @@
     <target name="clean">
         <delete dir="${tests.output}" />
         <delete dir="${tests.build.output}" />
-        <delete dir="${tests.support.output}" />
-        <delete file="${hy.hdk}/build/test/support.jar" />
     </target>
 
-    <target name="test-modules" depends="support-jar">
-        <call-modules target="-test-module" />
+    <target name="test-modules" depends="copy-jre" >
+        <mkdir dir="${tests.output}" />
+        <mkdir dir="${tests.build.output}" />
+        <call-modules target="test-module" />
     </target>
 
     <target name="gen-report" depends="full-report,short-report" />
@@ -81,49 +84,6 @@
         <echo message="The short test report is in ${display-location}"/>
     </target>
 
-    <target name="support-jar" depends="compile-support">
-        <mkdir dir="${hy.hdk}/build/test" />
-        <jar destfile="${hy.hdk}/build/test/support.jar"
-             manifest="support/META-INF/MANIFEST.MF">
-            <fileset dir="${tests.support.output}" />
-        </jar>
-    </target>
-
-    <target name="compile-support" depends="copy-test-resources, check-support-jars"
-            description="Compile the unit test source">
-        <fail message="The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib. The JAR can copied from CLASSLIB_TRUNK/depends/jars/ecj_3.2 folder after the fetch-depends target has been run.">
-            <condition>
-                <not>
-                    <available classname="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-                </not>
-            </condition>
-        </fail>
-        <mkdir dir="${tests.support.output}" />
-        <javac 
-               destdir="${tests.support.output}"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
-
-            <src path="${support.dir}/src/test/java" />
-            <classpath location="${junit.jar}" />
-            <classpath location="${tests.support.output}" />
-            <classpath>
-                <fileset dir="${jetty.dir}">
-                    <include name="*.jar" />
-                </fileset>
-            </classpath>
-            <bootclasspath>
-                <fileset dir="${tests.depends.jars}">
-                    <include name="**/*.jar" />
-                </fileset>
-            </bootclasspath>
-        </javac>
-        
-    </target>
-    
     <target name="check-test-result">
         <available property="test.errors"
                    file="${tests.output}/test.errors" />
@@ -133,119 +93,10 @@
         <fail if="test.failures" message="There were test failures." />
     </target>
 
-    <!-- ================================= 
-          target: copy-test-resources              
-         ================================= -->
-    <target name="copy-test-resources"
-            description="Copy non-Java files from test support tree to the support output tree">
-
-        <mkdir dir="${tests.support.output}" />
-        <copy todir="${tests.support.output}" includeemptydirs="false">
-            <fileset dir="${support.dir}/src/test/java">
-                <exclude name="**/*.java" />
-            </fileset>
-            <fileset file="${support.dir}/src/test/resources/hyts_Foo.c"/>
+    <target name="copy-jre" unless="not.copy.jre">
+        <copy todir="${hy.jdk}/jre" overwrite="no">
+              <fileset dir="${hy.deploy}/jdk/jre" />
         </copy>
-    </target>
-
-    <target name="check-support-jars"
-            description="Check for jars required to compile and run unit tests">
-
-      <ant antfile="make/depends.xml" inheritall="false" target="check"/>
-
-    </target>
-
-    <target name="run-tests" description="Run JUnit tests">
-        <!-- The location of the Harmony launcher can be overridden by 
-             the "harmony.vm.exe" property. Default value of property
-             is set assuming it is under the deploy tree -->
-        <property name="harmony.vm.exe" location="${hy.jdk}/jre/bin/java"/>
-        
-        <!-- Delete "junitCompleted" - an empty file that can be used to
-             check that the junit test VM does not exit prematurely -->
-        <delete file="${user.home}/junitCompleted" failonerror="false" />
-
-        <path id="classpath.id" location="${tests.build.output}" />
-        
-        <java classname="tests.main.AllTests"
-              fork="true"
-              jvm="${harmony.vm.exe}">
-            
-
-            <!-- Required by various tests that set security manager etc -->
-            <jvmarg value="-Djava.security.policy=${support.dir}/src/test/resources/config/testing.policy" />
-
-            <!-- Required for running the java.net unit tests -->
-            <jvmarg value="-Dtest.ini.file=${support.dir}/src/test/resources/config/localhosttest.ini" />
-
-            <!-- Required if using the test excluder decorator -->
-            <jvmarg value="-Dexcludes.file.uri=file:///${support.dir}/src/test/resources/config/jcltest-excludes.xml" />
-            
-            <classpath>
-                <path refid="classpath.id" />
-                <pathelement location="${junit.jar}" />
-            </classpath>
-        </java>
-    </target>
-
-    
-    <!-- ================================= 
-          target: run-tests-with-junit-task
-         ================================= -->
-    <target name="run-tests-with-junit-task" description="Run JUnit tests">
-        <!-- The location of the Harmony launcher can be overridden by 
-             the "harmony.vm.exe" property. Default value of property
-             is set assuming it is under the deploy tree -->
-        <property name="harmony.vm.exe" location="${hy.jdk}/jre/bin/java"/>
-
-        <!-- Delete "junitCompleted" - an empty file that can be used to
-             check that the junit test VM does not exit prematurely -->
-        <delete file="${user.home}/junitCompleted" failonerror="false" />
-
-        <path id="classpath.id" location="${tests.build.output}" />
-        
-        <junit fork="true"
-               forkmode="once"
-               jvm="${harmony.vm.exe}"
-               errorproperty="tests.failed"
-               failureproperty="tests.failed">
-
-            <env key="LD_LIBRARY_PATH" value="" />
-            <!-- required to be unset on Linux -->
-
-            <!-- Required by various tests that set security manager etc -->
-            <jvmarg value="-Djava.security.policy=${support.dir}/src/test/resources/config/testing.policy" />
-
-            <!-- Required for running the java.net unit tests -->
-            <jvmarg value="-Dtest.ini.file=${support.dir}/src/test/resources/config/localhosttest.ini" />
-
-            <!-- Required if using the test excluder decorator -->
-            <jvmarg value="-Dexcludes.file.uri=file:///${support.dir}/src/test/resources/config/jcltest-excludes.xml" />
-            
-            <classpath>
-                <path refid="classpath.id" />
-                <pathelement location="${junit.jar}" />
-            </classpath>
-            
-            <formatter type="plain" usefile="false" />
-            <formatter type="xml" />
-            
-            <test todir="${tests.results.dir}" name="tests.main.AllTests" />
-        </junit>
-
-        <fail if="tests.failed" message="Some Tests Failed !" />
-
-        <!-- if the junit test process completed as expected, this file
-             should now exist -->
-        <fail message="JUnit task ended prematurely - Hint: This may have been caused by the test VM terminating unexpectedly during the test run">
-            <condition>
-                <not>
-                    <available file="${user.home}/junitCompleted" />
-                </not>
-            </condition>
-        </fail>
-        <!-- Clean up after ourselves -->
-        <delete file="${user.home}/junitCompleted" />
     </target>
 
 </project>

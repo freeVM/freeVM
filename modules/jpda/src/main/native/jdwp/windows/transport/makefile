@@ -32,7 +32,7 @@ LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 HYCFLAGS = $(HYCFLAGS) \
          -GX -wd4290 \
-         -I$(HY_HDK)\include -I$(HY_DRLVM)\jdk\jre\include -I. \
+         -I$(HY_HDK)\jdk\include -I. \
          -I$(CMNTRANS)common   -I$(CMNTRANS)dt_socket \
          -I$(COMMON)generic -Idt_socket
 

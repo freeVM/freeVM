@@ -20,7 +20,7 @@
      build-native-source    
      Compile the native source into component shared libs.
      ====================================================================== -->
-<project name="build-native-source" default="default" basedir="..">
+<project name="build-native-source" default="build" basedir="..">
     <description>
 		Compile the native source into component shared libs.
     </description>
@@ -38,87 +38,55 @@
     <property name="native.lib.target" location="${hy.jdk}/lib" />
 
     <!-- ================================= 
-          target: default              
-         ================================= -->
-    <target name="default" 
-        description="Compile the native source into component shared libs." 
-        depends="clean, build" />
-
-
-    <!-- ================================= 
           target: build
          ================================= -->
     <target name="build"
-        depends=" make-all, layout" />
+        depends="-layout, build-modules" />
 
 
     <!-- ================================= 
           target: clean              
          ================================= -->
     <target name="clean"
-        depends="make-clean, clean-layout" />
+        depends="clean-modules, -clean-layout" />
 
 
-    <!-- This target invokes make on the all target to compile all natives -->
-    <target name="make-all" >
-    	<!-- Create the target directory structure -->
-        <mkdir dir="${hy.jdk}/jre/bin" />
-        <mkdir dir="${hy.jdk}/include" />
-    	<mkdir dir="${native.lib.target}"/>
-    	
-    	<!-- These module targets take care of building and copying
-             their shared libs -->
-    	<ant dir="modules/launcher" antfile="build.xml" target="build-native">
-            <property name="hy.drlvm" value="${hy.drlvm}"/>
-		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
-		</ant>
-        
-    	<ant dir="modules/jpda" antfile="build.xml" target="build-native">
-            <property name="hy.drlvm" value="${hy.drlvm}"/>
-		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
-		</ant>
-
-        <ant dir="modules/samsa" antfile="build.xml" target="build-native">
-            <property name="hy.drlvm" value="${hy.drlvm}"/>
-		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
-		</ant>
+    <!-- ================================= 
+          target: build-modules
+          invokes target build-native for all modules              
+         ================================= -->
+    <target name="build-modules" >
+    	<mkdir dir="${native.lib.target}" />
+        <call-modules target="build-native" />
     </target>
 
 
     <!-- ================================= 
-          target: make-clean              
+          target: clean-modules              
+          invokes target calean-native for all modules              
          ================================= -->
-    <target name="make-clean"
-        depends="-make-clean" />
-
-    <target name="-make-clean">
-    	<ant dir="modules/launcher" antfile="build.xml" target="clean-native">
-            <property name="hy.drlvm" value="${hy.drlvm}"/>
-		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
-		</ant>
-    	<ant dir="modules/jpda" antfile="build.xml" target="clean-native">
-            <property name="hy.drlvm" value="${hy.drlvm}"/>
-		    <property name="harmony.jdktools" value="${harmony.jdktools}"/>
-		</ant>
+    <target name="clean-modules" >
+        <call-modules target="clean-native" />
     	<delete dir="${native.lib.target}" />
     </target>
 
 
     <!-- ================================= 
-          target: layout              
+          target: -layout              
          ================================= -->
-    <target name="layout" depends="layout.windows"
+    <target name="-layout"
         description="Construct the correct directory structure for native binaries">
-    </target>
 
-    <target name="layout.windows" if="is.windows">
-        <!-- workaround for msdll is removed. -->
+    	<!-- Create the target directory structure -->
+        <mkdir dir="${hy.jdk}/jre/bin" />
+        <mkdir dir="${hy.jdk}/include" />
+    	<mkdir dir="${native.lib.target}"/>
     </target>
 
     <!-- ================================= 
-          target: clean-layout              
+          target: -clean-layout              
          ================================= -->
-    <target name="clean-layout">
+    <target name="-clean-layout">
         <delete includeemptydirs="true" failonerror="false">
             <fileset dir="${hy.jdk}">
                 <include name="**/bin/java${exe.suffix}" />
@@ -128,6 +96,5 @@
             </fileset>
         </delete>
     </target>
-
 
 </project>

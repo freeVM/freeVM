@@ -26,7 +26,7 @@ COMMON=../../common/
 CMNAGENT=$(COMMON)agent/
 
 CFLAGS = -O1 $(HY_CFLAGS) -D_DEBUG -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
-         $(VMDEBUG) -I$(HY_HDK)/include -I$(HY_DRLVM)/jdk/include -I. \
+         $(VMDEBUG) -I$(HY_HDK)/jdk/include -I. \
          -I$(CMNAGENT)commands   -I$(CMNAGENT)core \
          -I$(COMMON)generic -Icore
 
