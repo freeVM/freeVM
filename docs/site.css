@@ -19,8 +19,14 @@ body {
     background-color: white;
     color: black;
     text-align: left;
-    text-align: left;
-    font: "Times New Roman", serif;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: small;
+}
+
+@media print {
+    body {
+        font-family: serif;
+    }
 }
 
 .menuItem {
@@ -32,23 +38,25 @@ body {
     margin-left: 0pt;
 }
 
+.menuItem ul {
+    margin-top: 0pt;
+}
+
 h1 {
-    font-family: Arial, helvetica, sans-serif;
     font-weight: bold;
-    font-size: 12pt;
+    font-size: 115%;
     background-color: #525D76;
     color: white;
-    text-indent: 2pt;
+    padding: 2pt;
     margin-left: 0pt;
 }
 
 h2 {
-    font-family: Arial, helvetica, sans-serif;
     font-weight: bold;
-    font-size: 12pt;
+    font-size: 110%;
     background-color: #828DA6;
     color: white;
-    text-indent: 2pt;
+    padding: 2pt;
     margin-left: 10pt;
 }
 
@@ -59,7 +67,7 @@ h3 {
     margin-right: 0pt;
     margin-bottom: 5pt;
     text-transform: uppercase;
-    font-size: 11pt;
+    font-size: 105%;
 }
 
 a:link {
@@ -81,12 +89,11 @@ th.TableHeading {
     background-color: #039acc;
     text-align: center;
     color: black;
-    font-family: Arial, Helvetica, sans-serif;
     padding: 2pt;
 }
 
 table {
-    margin-left: 0pt;
+    margin-left: 10pt;
     margin-right: 0pt;
 }
 
@@ -99,16 +106,12 @@ pre {
     border: thin solid;
     border-color: #828DA6;
     padding: 12pt;
-    font-size: 11.0pt;
-    font-family: Courier;
     margin-right: 10pt;
     margin-left: 25pt;
 }
 
 .class {
     font-weight: bold;
-    font-size: 10pt;
-    font-family: Arial;
     border-top: none;
     border-right: none;
     border-left: none;
@@ -121,8 +124,6 @@ pre {
     color: #525D76;
     margin-top: 3pt;
     margin-bottom: 3pt;
-    font-family: Arial, helvetica, sans-serif;
-    font-size: 10pt;
 }
 
 .backtotop {
@@ -133,22 +134,31 @@ pre {
 .note {
     color: red;
     font-weight: bolder;
-    font-family: Arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-size: small;
+    margin-top: 5pt;
+    margin-bottom: 0pt;
 }
 
 .notetext {
     padding-left: 20pt;
     margin-top: 0pt;
-    margin-bottom: 0pt;
-    font-family: Arial, helvetica, sans-serif;
-    font-size: 10pt;
+    font-style: italic;
+    font-size: small;
+    color: black;
+    margin-bottom: 5pt;
+}
+
+li .note {
+    margin-left: 0pt;
+    padding-left: 0pt;
+}
+
+li .notetext {
+    padding-left: 0pt;
 }
 
 .example {
     font-weight: bolder;
-    font-family: Arial, helvetica, sans-serif;
-    font-size: 10pt;
 }
 
 .exampletext {
@@ -157,10 +167,9 @@ pre {
 
 .TOCHeading {
     font-weight: bold;
-    font-size: 12pt;
+    font-size: 105%;
     text-align: left;
     color: #000000;
-    font-family: Arial, helvetica, sans-serif;
     padding-left: 15px;
     margin-bottom: 5pt;
     margin-top: 5pt;
@@ -169,7 +178,6 @@ pre {
 }
 
 .TOC {
-    font-size: 11pt;
     text-indent: 15pt;
     color: white;
     padding-left: 15px;
@@ -177,7 +185,6 @@ pre {
     margin-right: 0.00px;
     margin-top: 0px;
     margin-bottom: 0px;
-    font-family: Arial, helvetica, sans-serif;
 }
 
 .update {
@@ -194,15 +201,15 @@ li {
     padding-right: 0pt;
 }
 
-ol li {
+ol {
     list-style-type: decimal;
 }
 
-ul li {
+ul {
     list-style-type: square;
 }
 
-li ul li {
+ul ul {
     list-style-type: disc;
 }
 
@@ -227,8 +234,6 @@ dd p {
 }
 
 dt {
-    font-size: 10pt;
-    font-family: Arial, helvetica, sans-serif;
     font-weight: bolder;
     margin-left: 20pt;
     margin-top: 5pt;
@@ -239,4 +244,8 @@ dt {
     border-bottom: solid #828DA6 1px;
     border-left: none;
     padding-bottom: 3px;
+}
+
+code, pre {
+    font-size: 100%;
 }
