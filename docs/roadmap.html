@@ -211,57 +211,57 @@ limitations under the License.
          </p>
                                 <ul>
              <li>
-                 <font color="green"><b>DONE</b></font>  <strike>Aug 2006 : 85% of Java SE 5 class library coverage </strike>
+                 <font color="green"><b>DONE</b></font>  <strike>Aug 2006: 85% of Java SE 5 class library coverage </strike>
              </li>
              <li> <font color="green"><b>DONE</b></font><strike>
-                 Aug 2006 : regular distributions of pre-completion Harmony JDK
+                 Aug 2006: regular distributions of pre-completion Harmony JDK
                  and <a href="subcomponents/classlibrary/hdk.html">HDK</a>
                  suitable for development and testing </strike>
              </li>
              <li>
-                 <font color="green"><b>DONE</b></font>  <strike>Sept 2006 : 90% of 
+                 <font color="green"><b>DONE</b></font>  <strike>Sept 2006: 90% of 
                  \Java SE 5 class library coverage</strike>
              </li>
              <li>
-                 Q4 2006 : ASF completes process of securing Java SE TCK license
+                 Q4 2006: ASF completes process of securing Java SE TCK license
              </li>
              <li>
-                 <font color="green"><b>DONE</b></font>  <strike>Oct 2006 : 92% of 
+                 <font color="green"><b>DONE</b></font>  <strike>Oct 2006: 92% of 
                  Java SE 5 class library coverage</strike>
              </li>
              <li>
-                 <font color="green"><b>DONE</b></font>  <strike>Nov 2006 : 95% of 
+                 <font color="green"><b>DONE</b></font>  <strike>Nov 2006: 95% of 
                  Java SE 5 class library coverage</strike>
              </li>
              <li>
-                 Dec 2006 : 97% of Java SE 5 class library coverage
+                 Dec 2006: 97% of Java SE 5 class library coverage
              </li>
              <li>
-                 Q1 2007 : 100% Java SE 5 class library coverage
+                 Q1 2007: 100% Java SE 5 class library coverage
              </li>
              <li>
-                 Q1 2007 : DRLVM is stable with reasonable performance
+                 Q1 2007: DRLVM is stable with reasonable performance
              </li>
              <li>
-                 Q1 2007 : begin testing with TCK
+                 Q1 2007: begin testing with TCK
              </li>
              <li>
-                 Q1 2007 : work begins on Java SE 6 features
+                 Q1 2007: work begins on Java SE 6 features
              </li>
              <li>
-                 Feb 2007 : Jave SE 5 JDK toolset complete
+                 Feb 2007: Jave SE 5 JDK toolset complete
              </li>
              <li>
-                 Q2 2007 : TCK certification of Harmony completed
+                 Q2 2007: TCK certification of Harmony completed
              </li>
              <li>
-                 Q2 2007 : Apache Harmony SE 5 JDK and JRE released
+                 Q2 2007: Apache Harmony SE 5 JDK and JRE released
              </li>
              <li>
-                 Q4 2007 : Apache Harmony SE 6 JDK and JRE released
+                 Q4 2007: Apache Harmony SE 6 JDK and JRE released
              </li>
              <li>
-                 Q? 2008 : Apache Harmony SE 7 JDK and JRE released.  Note : The Java SE 7
+                 Q? 2008: Apache Harmony SE 7 JDK and JRE released.  Note: The Java SE 7
                          JSR has not yet been proposed by Sun.  We assume 18 
                          months from start of JSR to completion.  We hope to 
                          deliver Harmony's implementation of Java SE 7 at the 
@@ -299,32 +299,14 @@ limitations under the License.
         <a name="General">General</a>
     </h2>
       
-                        <strong>1. Switch To Java 5</strong>
-                                <p>
-              We neeed to complete our transition to Java 5, in both the class library
-              as well as the projects virtual machines.  Currently, the DRLVM virtual
-              machine can accept Java 5 class file format, although it doesn't yet
-              have full support of Java 5.  So to finish, we need :
-          </p>
-                                <ul>
-              <li>
-                  Full support for Java 5 in DRLVM
-              </li>
-              <li>
-                  Request a new version of J9 from IBM to assist in development/debugging.
-              </li>
-              <li>
-                  Continue to complete the new Java 5 additions to the classlibrary.
-              </li>
-          </ul>
-                                <strong>2. JDK tools</strong>
+                        <strong>1. JDK tools</strong>
                                 <p>
               As part of the JDK that Harmony will distribute, we'll include
               the full set of tools that Java programmers expect to find in
               any JDK.  For maximum portablility, we plan to write all of the
               tools in Java, using the Harmony launcher as the portable native
               code that starts the VM and invokes the tool.  Currently, we have
-              javac completed via the Eclipse compiler, but we need the following :
+              javac completed via the Eclipse compiler, but we need the following:
           </p>
                                 <ul>
               <li>
@@ -349,7 +331,7 @@ limitations under the License.
                                 <p>
               Again, we have the portable launcher framework - we just need volunteers.
           </p>
-                                <strong>3. Modularity</strong>
+                                <strong>2. Modularity</strong>
                                 <p>
             From the beginning of our project, we've had a strong interest and focus
             on modularity  This dedication has paid off in our class library development,
@@ -430,7 +412,7 @@ limitations under the License.
         There is an
         <a href="http://svn.apache.org/viewvc/harmony/enhanced/buildtest/">
         initial implementation</a> in place in SVN, but much more work is needed.
-        Ideas include :
+        Ideas include:
     </p>
                                 <ul>
       <li>
@@ -497,26 +479,23 @@ limitations under the License.
               <a href="subcomponents/classlibrary/status.html">General package completion</a>
           </li>
           <li>
-              java.util.concurrency : integration of Doug Lea's RI package.  Goal is to
+              java.util.concurrency: integration of Doug Lea's RI package.  Goal is to
               use unmodified code from the 166 expert group and implent whatever
               support is needed by the VM and rest of class library. (in progress)
           </li>
           <li>
-              CORBA : re-use the Apache Yoko project (currently in incubator)
+              CORBA: re-use the Apache Yoko project (currently in incubator)
               as the required implementation of CORBA nad related support
               classes (in progress)
           </li>
           <li>
-              JMX : currently we have the standard MX4J jars integrated, but
+              JMX: currently we have the standard MX4J jars integrated, but
               looking to see what kind of collaboration or unification we can
               achieve with the MX4J project. (in progress)
           </li>
           <li>
               Test coverage - we need to greatly increase our unit tests (functionaly,
               spec, implementation)
-          </li>
-          <li>
-              Make final decision on RMI, Math, and crypto implementations.
           </li>
       </ul>
                    
@@ -561,183 +540,217 @@ limitations under the License.
     Another motivation of the Harmony project is to provide a
       portable implementation that is available on many
       platforms and operating systems.  Currently, our interests
-      are :
+      are:
    </p>
                                 <table>
                         <tr>
-                        <th class="TableHeading" colspan="" rowspan="">
-                Chipset
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                &nbsp;
+        </td>
+                                <th class="TableHeading" colspan="" rowspan="">
+                Windows 2000
         </th>
                                 <th class="TableHeading" colspan="" rowspan="">
-                WinXP
+                Windows <br>XP, 2003, Vista</br>
         </th>
                                 <th class="TableHeading" colspan="" rowspan="">
-                RHEL
+                Linux <br>RHEL, SLES, Debian, Gentoo, Ubuntu, Fedora</br>
         </th>
                                 <th class="TableHeading" colspan="" rowspan="">
-                Debian
+                FreeBSD
         </th>
                                 <th class="TableHeading" colspan="" rowspan="">
-                Ubuntu
-        </th>
-                                <th class="TableHeading" colspan="" rowspan="">
-                Fedora
+                AIX
         </th>
                                 <th class="TableHeading" colspan="" rowspan="">
                 OS X
         </th>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <th class="TableHeading" colspan="" rowspan="">
+                IA32 <br>(SSE/SSE2 only)</br>
+        </th>
+                                <td class="TableCell" colspan="" rowspan="" >
     
-                IA32
+                ?
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                Y
+                +
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                Y
+                +
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                Y
+                ?
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                Y
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                Y
-        </td>
-                                <td class="TableCell" colspan="" rowspan="" >
-    
-                N
+                &nbsp;
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <th class="TableHeading" colspan="" rowspan="">
+                x86_64 <br>(EM64T, AMD64)</br>
+        </th>
+                                <td class="TableCell" colspan="" rowspan="" >
     
-                EM64T
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                ?
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                +
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
-        </td>
-                                <td class="TableCell" colspan="" rowspan="" >
-    
-                n/a
+                &nbsp;
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <th class="TableHeading" colspan="" rowspan="">
+                Itanium <br>(IA64, IPF)</br>
+        </th>
+                                <td class="TableCell" colspan="" rowspan="" >
     
-                Itanium
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                ?
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                +
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
-        </td>
-                                <td class="TableCell" colspan="" rowspan="" >
-    
-                n/a
+                &nbsp;
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <th class="TableHeading" colspan="" rowspan="">
+                PPC32
+        </th>
+                                <td class="TableCell" colspan="" rowspan="" >
     
-                AMD64
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                ?
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
-        </td>
-                                <td class="TableCell" colspan="" rowspan="" >
-    
-                n/a
+                &nbsp;
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <th class="TableHeading" colspan="" rowspan="">
+                PPC64
+        </th>
+                                <td class="TableCell" colspan="" rowspan="" >
     
-                PPC
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                ?
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                ?
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
+        </td>
+            </tr>
+                                <tr>
+                        <th class="TableHeading" colspan="" rowspan="">
+                zSeries (31 bit)
+        </th>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                &nbsp;
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                N
+                &nbsp;
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                ?
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                &nbsp;
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                &nbsp;
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                &nbsp;
         </td>
             </tr>
             </table>
+                                <p>
+    <b>Legend</b>
+    <dl>
+    <dt>"+"</dt> <dd>Supported (sure-to-work)</dd> 
+    <dt>"?"</dt> <dd>In progress</dd> 
+    <dt>"-"</dt> <dd>Will Not Support</dd>
+    <dt>" " (empty)</dt> <dd>N/A or Maybe</dd>
+    </dl>
+   </p>
                    
                                     
     <h2>
@@ -756,11 +769,13 @@ limitations under the License.
       </p>
                                 <ul>
           <li>
-              Harmony-165 - tool to compare an applications required classes
-              with what is available in Harmony
+              <a href="https://issues.apache.org/jira/browse/HARMONY-165">Harmony-165</a>
+              - tool to compare an applications required classes
+                with what is available in Harmony
           </li>
           <li>
-              Harmony-565 - another tool for reporting class coverage for apps
+              <a href="https://issues.apache.org/jira/browse/HARMONY-565">
+              Harmony-565</a> - another tool for reporting class coverage for applications
           </li>
       </ul>
                    
