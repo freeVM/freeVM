@@ -107,6 +107,11 @@
         <property name="test.jre.jvm" value="${test.jre.home}/bin/java" />
         <property name="test.debugger.jvm" value="${test.jre.jvm}" />
         <property name="test.debuggee.jvm" value="${test.jre.jvm}" />
+	
+        <!-- run JPDA tests with forkmode=perBatch if common forkmode=once -->
+        <condition property="hy.jpda.test.forkmode" value="perBatch" else="perTest">
+            <equals arg1="${hy.test.forkmode}" arg2="once" />
+        </condition>
 
         <echo message="Running JPDA tests" />
         <echo message="  Debugger JVM=${test.debugger.jvm}" />
@@ -115,7 +120,7 @@
         <mkdir dir="${hy.tests.reports}" />
 
         <junit fork="yes"
-                       forkmode="${hy.test.forkmode}"
+                       forkmode="${hy.jpda.test.forkmode}"
                        timeout="${hy.test.timeout}"
                        printsummary="withOutAndErr"
                        errorproperty="test.errors"
@@ -134,9 +139,22 @@
 
             <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
 
+            <!-- short running tests-->
             <batchtest todir="${hy.tests.reports}" haltonfailure="off" unless="test.case">
                 <fileset dir="${hy.jpda.src.test}">
                     <include name="**/*Test.java"/>
+                    <exclude name="**/org/apache/harmony/jpda/tests/jdwp/MultiSession/*Test.java" />
+                    <exclude name="**/org/apache/harmony/jpda/tests/jdwp/ThreadReference/StopTest.java" />
+                    <exclude name="**/org/apache/harmony/jpda/tests/jdwp/VirtualMachine/HoldEventsTest.java" />
+                </fileset>
+            </batchtest>
+
+            <!-- long running tests-->
+            <batchtest todir="${hy.tests.reports}" haltonfailure="off" unless="test.case">
+                <fileset dir="${hy.jpda.src.test}">
+                    <include name="**/org/apache/harmony/jpda/tests/jdwp/MultiSession/*Test.java" />
+                    <include name="**/org/apache/harmony/jpda/tests/jdwp/ThreadReference/StopTest.java" />
+                    <include name="**/org/apache/harmony/jpda/tests/jdwp/VirtualMachine/HoldEventsTest.java" />
                 </fileset>
             </batchtest>
         </junit>
