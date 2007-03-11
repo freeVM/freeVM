@@ -41,28 +41,28 @@
         </modificationset>
 
         <schedule interval="${timeout}">
-                <ant target="fetch-depends rebuild" antWorkingDir="projects/${project.name}/trunk" timeout="${ttimeout}" usedebug="false">
-                    <jvmarg arg="-D${proxy.host.property}=${proxy.value}"/>
-                    <jvmarg arg="-D${proxy.port.property}=${port.value}"/>
-                    <jvmarg arg="-Xmx700M" />
-                </ant>
+            <ant target="fetch-depends rebuild" antWorkingDir="projects/${project.name}/trunk" timeout="${ttimeout}" usedebug="false">
+                <jvmarg arg="-D${proxy.host.property}=${proxy.value}"/>
+                <jvmarg arg="-D${proxy.port.property}=${port.value}"/>
+                <jvmarg arg="-Xmx700M" />
+            </ant>
         </schedule>
 
         <publishers>
             <onfailure>
                 <xsltlogpublisher directory="."  outfilename="classlib.txt"  xsltfile="br.xsl" />
-                <antpublisher   
+                <antpublisher 
                      antworkingdir="."  
                      buildfile="copyres.xml"  
                      uselogger="true"  
                      usedebug="true"  
                      target="email.res"> 
-                     <property name="file" value="classlib.txt"/> 
-                     <property name="mailhost" value="${server_addr}"/>
-                     <property name="fromaddress" value="${report_from}"/>
-                     <property name="toaddress" value="${report_to}"/>
-                     <property name="subject" value="${cl.prefix}"/>
-                     <property name="flag" value="${project.name}"/>
+                    <property name="file" value="classlib.txt"/> 
+                    <property name="mailhost" value="${server_addr}"/>
+                    <property name="fromaddress" value="${report_from}"/>
+                    <property name="toaddress" value="${report_to}"/>
+                    <property name="subject" value="${cl.prefix}"/>
+                    <property name="flag" value="${project.name}"/>
                 </antpublisher> 
             </onfailure>
             <onsuccess>
@@ -73,12 +73,12 @@
                      uselogger="true"  
                      usedebug="true"  
                      target="email.res.ok"> 
-                     <property name="file" value="classlib.txt.ok"/> 
-                     <property name="mailhost" value="${server_addr}"/>
-                     <property name="fromaddress" value="${report_from}"/>
-                     <property name="toaddress" value="${report_to}"/>
-                     <property name="subject" value="${cl.prefix.ok}"/>
-                     <property name="flag" value="${project.name}"/>
+                    <property name="file" value="classlib.txt.ok"/> 
+                    <property name="mailhost" value="${server_addr}"/>
+                    <property name="fromaddress" value="${report_from}"/>
+                    <property name="toaddress" value="${report_to}"/>
+                    <property name="subject" value="${cl.prefix.ok}"/>
+                    <property name="flag" value="${project.name}"/>
                 </antpublisher> 
             </onsuccess>
         </publishers>
@@ -115,12 +115,12 @@
                     uselogger="true"  
                     usedebug="false"  
                     target="email.res"> 
-                    <property name="file" value="drlvm.txt"/> 
-                    <property name="mailhost" value="${server_addr}"/>
-                    <property name="fromaddress" value="${report_from}"/>
-                    <property name="toaddress" value="${report_to}"/>
-                    <property name="subject" value="${vm.prefix}"/>
-                    <property name="flag" value="${project.name}"/>
+                   <property name="file" value="drlvm.txt"/> 
+                   <property name="mailhost" value="${server_addr}"/>
+                   <property name="fromaddress" value="${report_from}"/>
+                   <property name="toaddress" value="${report_to}"/>
+                   <property name="subject" value="${vm.prefix}"/>
+                   <property name="flag" value="${project.name}"/>
                 </antpublisher> 
             </onfailure>
             <onsuccess>
@@ -131,12 +131,12 @@
                     uselogger="true"  
                     usedebug="false"  
                     target="email.res.ok"> 
-                    <property name="file" value="drlvm.txt.ok"/> 
-                    <property name="mailhost" value="${server_addr}"/>
-                    <property name="fromaddress" value="${report_from}"/>
-                    <property name="toaddress" value="${report_to}"/>
-                    <property name="subject" value="${vm.prefix.ok}"/>
-                    <property name="flag" value="${project.name}"/>
+                   <property name="file" value="drlvm.txt.ok"/> 
+                   <property name="mailhost" value="${server_addr}"/>
+                   <property name="fromaddress" value="${report_from}"/>
+                   <property name="toaddress" value="${report_to}"/>
+                   <property name="subject" value="${vm.prefix.ok}"/>
+                   <property name="flag" value="${project.name}"/>
                 </antpublisher> 
             </onsuccess>
         </publishers>
@@ -193,12 +193,12 @@
                      uselogger="true"  
                      usedebug="false"  
                      target="email.res"> 
-                     <property name="file" value="drlvmt.txt"/> 
-                     <property name="mailhost" value="${server_addr}"/>
-                     <property name="fromaddress" value="${report_from}"/>
-                     <property name="toaddress" value="${report_to}"/>
-                     <property name="subject" value="${vm.prefix}"/>
-                     <property name="flag" value="${project.name}"/>
+                    <property name="file" value="drlvmt.txt"/> 
+                    <property name="mailhost" value="${server_addr}"/>
+                    <property name="fromaddress" value="${report_from}"/>
+                    <property name="toaddress" value="${report_to}"/>
+                    <property name="subject" value="${vm.prefix}"/>
+                    <property name="flag" value="${project.name}"/>
                 </antpublisher> 
             </onfailure>
             <onsuccess>
@@ -210,12 +210,12 @@
                      uselogger="true"  
                      usedebug="false"  
                      target="email.res.ok"> 
-                     <property name="file" value="drlvmt.txt.ok"/> 
-                     <property name="mailhost" value="${server_addr}"/>
-                     <property name="fromaddress" value="${report_from}"/>
-                     <property name="toaddress" value="${report_to}"/>
-                     <property name="subject" value="${vm.prefix.ok}"/>
-                     <property name="flag" value="${project.name}"/>
+                    <property name="file" value="drlvmt.txt.ok"/> 
+                    <property name="mailhost" value="${server_addr}"/>
+                    <property name="fromaddress" value="${report_from}"/>
+                    <property name="toaddress" value="${report_to}"/>
+                    <property name="subject" value="${vm.prefix.ok}"/>
+                    <property name="flag" value="${project.name}"/>
                 </antpublisher> 
             </onsuccess>
         </publishers>
@@ -236,12 +236,12 @@
         </modificationset>
 
         <schedule interval="${timeout}">
-                <ant target="test" antWorkingDir="projects/classlib/trunk" timeout="${ttimeout}" usedebug="false">
-                    <jvmarg arg="-Dtest.jre.home=${wdir}/projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/deploy/jdk/jre" />
-                    <!--jvmarg arg="-Dhy.test.forkmode=perTest" /-->
-                    <jvmarg arg="-Dhy.test.vm.name=drl" />
-                    <jvmarg arg="-Xmx700M" />
-                </ant>
+            <ant target="test" antWorkingDir="projects/classlib/trunk" timeout="${ttimeout}" usedebug="false">
+                <jvmarg arg="-Dtest.jre.home=${wdir}/projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/deploy/jdk/jre" />
+                <!--jvmarg arg="-Dhy.test.forkmode=perTest" /-->
+                <jvmarg arg="-Dhy.test.vm.name=drl" />
+                <jvmarg arg="-Xmx700M" />
+            </ant>
         </schedule>
 
         <log dir="logs/${project.name}">
@@ -265,12 +265,12 @@
                      uselogger="true"  
                      usedebug="true"  
                      target="email.res"> 
-                     <property name="file" value="classlibt.txt"/> 
-                     <property name="mailhost" value="${server_addr}"/>
-                     <property name="fromaddress" value="${report_from}"/>
-                     <property name="toaddress" value="${report_to}"/>
-                     <property name="subject" value="${cl.prefix} over drlvm"/>
-                     <property name="flag" value="${project.name}"/>
+                    <property name="file" value="classlibt.txt"/> 
+                    <property name="mailhost" value="${server_addr}"/>
+                    <property name="fromaddress" value="${report_from}"/>
+                    <property name="toaddress" value="${report_to}"/>
+                    <property name="subject" value="${cl.prefix} over drlvm"/>
+                    <property name="flag" value="${project.name}"/>
                 </antpublisher> 
             </onfailure>
             <onsuccess>
@@ -281,17 +281,15 @@
                      uselogger="true"  
                      usedebug="true"  
                      target="email.res.ok"> 
-                     <property name="file" value="classlibt.txt.ok"/> 
-                     <property name="mailhost" value="${server_addr}"/>
-                     <property name="fromaddress" value="${report_from}"/>
-                     <property name="toaddress" value="${report_to}"/>
-                     <property name="subject" value="${cl.prefix.ok} over drlvm"/>
-                     <property name="flag" value="${project.name}"/>
+                    <property name="file" value="classlibt.txt.ok"/> 
+                    <property name="mailhost" value="${server_addr}"/>
+                    <property name="fromaddress" value="${report_from}"/>
+                    <property name="toaddress" value="${report_to}"/>
+                    <property name="subject" value="${cl.prefix.ok} over drlvm"/>
+                    <property name="flag" value="${project.name}"/>
                 </antpublisher> 
             </onsuccess>
         </publishers>
 
     </project>
 </cruisecontrol>
-
-

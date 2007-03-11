@@ -18,10 +18,10 @@ CI up and working.
 
 2) Apache Ant : http://ant.apache.org/  Please get the 
     latest release (1.6 or better) and install
-	as per project intstructions.
+    as per project intstructions.
 
 3) Subversion client : http://subversion.tigris.org
-	
+    
 To Setup
 --------
 

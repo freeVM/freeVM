@@ -17,32 +17,54 @@
 <project name="copy_results" default="copy.res" basedir=".">
 
     <tstamp>
-       <format property="timestamp" pattern="yyyyMMdd" />
-       <format property="timestampfull" pattern="yyyyMMddhhmm" />
+        <format property="timestamp" pattern="yyyyMMdd" />
+        <format property="timestampfull" pattern="yyyyMMddhhmm" />
     </tstamp>
 
     <target name="copy.res">
-       <delete file="projects/classlib/trunk/results_${VM}_${timestamp}.zip" failonerror="false" />
-       <zip destfile="projects/classlib/trunk/results_${VM}_${timestamp}.zip" >
-           <zipfileset dir="projects/classlib/trunk/build/test_report" includes="**/*.xml" />
+        <delete file="projects/classlib/trunk/results_${VM}_${timestamp}.zip" failonerror="false" />
+        <zip destfile="projects/classlib/trunk/results_${VM}_${timestamp}.zip" >
+            <zipfileset dir="projects/classlib/trunk/build/test_report" includes="**/*.xml" />
         </zip>
     </target>
+
     <target name="copy.HUT-iterative.res">
         <zip destfile="projects/classlib/trunk/results_${VM}_${timestampfull}.zip" >
- 	    <zipfileset dir="projects/classlib/trunk/build" includes="test_report_*/**/*" /> 
- 	    <zipfileset dir="projects/classlib/trunk/build" includes="FAILURES.txt, ERRORS.txt, ZERO_LENGTH.txt, STATUS.txt" prefix="result" />
- 	    <zipfileset dir="projects/classlib/trunk" includes="log_*.txt" prefix="logs" /> 
-         </zip>
-					   
+            <zipfileset 
+                dir="projects/classlib/trunk/build" 
+                includes="test_report_*/**/*" /> 
+            <zipfileset 
+                dir="projects/classlib/trunk/build" 
+                includes="FAILURES.txt, ERRORS.txt, ZERO_LENGTH.txt, STATUS.txt" 
+                prefix="result" />
+            <zipfileset 
+                dir="projects/classlib/trunk" 
+                includes="log_*.txt" 
+                prefix="logs" /> 
+        </zip>
     </target>
+
     <target name="copy.vm.res">
-       <delete file="projects/drlvm/trunk/results_${timestamp}.zip" failonerror="false" />
-       <zip destfile="projects/drlvm/trunk/results_${timestamp}.zip" >
-            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/vm/_smoke.tests/reports" prefix="smoke/" />
-            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/vm/_cunit.tests/report" prefix="cunit/" />
-            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/jet.mode" prefix="jet/" includes="**/*.xml" />
-            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/opt.mode" prefix="opt/" includes="**/*.xml" />
-            <zipfileset dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/int.mode" prefix="int/" includes="**/*.xml" />
+        <delete file="projects/drlvm/trunk/results_${timestamp}.zip" failonerror="false" />
+        <zip destfile="projects/drlvm/trunk/results_${timestamp}.zip" >
+            <zipfileset 
+                dir="projects/drlvm/trunk/build/${BUILD}/semis/vm/_smoke.tests/reports" 
+                prefix="smoke/" />
+            <zipfileset 
+                dir="projects/drlvm/trunk/build/${BUILD}/semis/vm/_cunit.tests/report" 
+                prefix="cunit/" />
+            <zipfileset 
+                dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/jet.mode" 
+                prefix="jet/" 
+                includes="**/*.xml" />
+            <zipfileset 
+                dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/opt.mode" 
+                prefix="opt/" 
+                includes="**/*.xml" />
+            <zipfileset 
+                dir="projects/drlvm/trunk/build/${BUILD}/semis/kernel.tests/reports/int.mode" 
+                prefix="int/" 
+                includes="**/*.xml" />
         </zip>
     </target>
 
@@ -57,38 +79,42 @@
     <target name="email.res" unless="already.sent.f" >
         <echo file="${flag}.fs" message="f.done: ${already.sent.f} ${already.sent.ok}"/>
         <delete file="${flag}.oks" failonerror="false"/>
-	<mail	from="${fromaddress}" 
-		tolist="${toaddress}"
-		messagefile="${file}"
-		failonerror="false"
-		mailhost="${mailhost}"
-		subject="${subject}"/>
+        <mail from="${fromaddress}" 
+            tolist="${toaddress}"
+            messagefile="${file}"
+            failonerror="false"
+            mailhost="${mailhost}"
+            subject="${subject}"/>
     </target>
 
     <target name="email.res.ok" unless="already.sent.ok" >
         <echo file="${flag}.oks" message="ok.done: ${already.sent.f} ${already.sent.ok}"/>
         <delete file="${flag}.fs" failonerror="false"/>
-	<mail	from="${fromaddress}" 
-		tolist="${toaddress}"
-		messagefile="${file}"
-		failonerror="false"
-		mailhost="${mailhost}"
-		subject="${subject}"/>
+        <mail from="${fromaddress}" 
+            tolist="${toaddress}"
+            messagefile="${file}"
+            failonerror="false"
+            mailhost="${mailhost}"
+            subject="${subject}"/>
     </target>
 
     <target name="email.always.res" >
-	<mail	from="${fromaddress}" 
-		tolist="${toaddress}" 
-		messagefile="${file}" 
-		failonerror="false" 
-		mailhost="${mailhost}" 
-		subject="${subject}" >
-		<fileset dir="projects/classlib/trunk/build" includes="FAILURES.txt, ERRORS.txt, ZERO_LENGTH.txt, STATUS.txt" />
-	</mail>	
-	<delete dir="projects/classlib/trunk/build" /> 	
-	<delete> 
-	    <fileset dir="projects/classlib/trunk" includes="log_*.txt" /> 
-	</delete> 			   
+        <mail from="${fromaddress}" 
+            tolist="${toaddress}" 
+            messagefile="${file}" 
+            failonerror="false" 
+            mailhost="${mailhost}" 
+            subject="${subject}" >
+            <fileset 
+                dir="projects/classlib/trunk/build" 
+                includes="FAILURES.txt, ERRORS.txt, ZERO_LENGTH.txt, STATUS.txt" />
+        </mail> 
+        <delete dir="projects/classlib/trunk/build" />  
+        <delete> 
+            <fileset 
+                dir="projects/classlib/trunk" 
+                includes="log_*.txt" /> 
+        </delete>
     </target>
 
 </project>
