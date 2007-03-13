@@ -3,11 +3,11 @@
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -20,92 +20,121 @@
 
 <document>
 
- <properties>
-  <title>Package Naming Conventions in the Apache Harmony Classlib</title>
-  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
- </properties>
+    <properties>
+        <title>Package Naming Conventions in the Apache Harmony Classlib</title>
+        <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    </properties>
 
-<body>
+    <body>
 
-<section name="Package Naming Conventions Used in the Apache Harmony Class Library">
-	<p>
-		<small><em>This section is inspired by, and derived from,
-		<a href="http://wiki.eclipse.org/index.php/Naming_Conventions">the Eclipse package naming convention</a>
-		documentation.</em></small>
-	</p>
-	<p>
-		The Harmony class library code is organized into Java packages comprising the
-		public API (packages such as <code>java.lang</code>, <code>org.omg.CORBA</code>
-		and so on) and internal implementation packages that all begin
-		<code>org.apache.harmony</code>.
-	</p>
-	<p>
-		The public APIs are defined by the JSE specification, and as such as managed beyond
-		the direct control of the Apache Harmony project. The other packages are managed
-		by the project development team, and as such the project attributes the following
-		meaning to package names.
-	</p>
+        <section name="Package Naming Conventions Used in the Apache Harmony Class Library">
+            <p>
+                <small>
+                    <em>
+                        This section is inspired by, and derived from,
+                        <a href="http://wiki.eclipse.org/index.php/Naming_Conventions">the Eclipse package naming convention</a>
+                        documentation.
+                    </em>
+                </small>
+            </p>
+            <p>
+                The Harmony class library code is organized into Java packages comprising the
+                public API (packages such as <code>java.lang</code>, <code>org.omg.CORBA</code>
+                and so on) and internal implementation packages that all begin
+                <code>org.apache.harmony</code>.
+            </p>
+            <p>
+                The public APIs are defined by the JSE specification, and as such as managed beyond
+                the direct control of the Apache Harmony project. The other packages are managed
+                by the project development team, and as such the project attributes the following
+                meaning to package names.
+            </p>
 
-<subsection name="All Packages Belong to a Specific Module">
-	<p>
-		Each Java package is owned by a specific module of the Harmony class library.
-		The module name immediately follows the <code>org.apache.harmony</code> prefix.</p>
-			<pre>org.apache.harmony.<b>&lt;module&gt;</b></pre>
-			
-    <p class="example">
-      Example
-    </p>
-    <p class="exampletext">
-			<pre>org.apache.harmony.luni
-org.apache.harmony.security</pre>
-			
-	</p>
-</subsection>
+            <subsection name="All Packages Belong to a Specific Module">
+                <p>
+                    Each Java package is owned by a specific module of the Harmony class library.
+                    The module name immediately follows the <code>org.apache.harmony</code> prefix.
+                </p>
+                <pre>
+                    org.apache.harmony.<b>&lt;module&gt;</b>
+                </pre>
 
-<subsection name="Package Names within a Module">
-	<p>
-		Modules are free to use whatever package names they choose with the
-		prefix <code>org.apache.harmony.<b>&lt;modulename&gt;</b></code>.
-	</p>
-	<p>
-		The following package name segements are <b>reserved</b> to indicate the meanings
-		defined below:</p>
-		<ul>
-			<li><code>org.apache.harmony.&lt;modulename&gt;.<b>internal</b></code>
-        <p>
-				Packages with this prefix are implementation packages for use within
-				the given module. Types and fields that are visible within these
-				packages <em>MUST NOT</em> be used outside the module itself.
-				Some runtime environments may enforce this reduced visibility scope.
-			</p></li>
-			<li><code>org.apache.harmony.&lt;modulename&gt;.<b>tests</b></code>
-			<p>
-				Packages with this prefix contain test code that is not part of the
-				module API or implementation.  Some builds may not include these
-				packages. See <a href="testing.html">Testing conventions in the Apache Harmony Classlib</a>
-                                for details.
-			</p></li>
-			<li><code>org.apache.harmony.&lt;modulename&gt;.<b>examples</b></code>
-			<p>
-				Packages with this prefix contain example code that is not part of the
-				module API or implementation. Some builds may not include these
-				packages.
-			</p></li>
-			<li><code>org.apache.harmony.&lt;modulename&gt;.<b>&lt;anything_else&gt;</b></code>
-			<p>
-				All other packages within a module contain internal APIs that may
-				be referenced from any module.
-			</p></li>
-		</ul>
-		<p>
-		In practice, this means that module developers are free to change the code within an
-		<code>internal</code> package without expecting any consequences beyond the module
-		itself. However, module developers who modify code that is not in an
-		<code>internal</code> package must do so in a manner that ensures
-		<a href="http://java.sun.com/docs/books/jls/second_edition/html/binaryComp.doc.html">
-		Java binary compatibility</a>.
-	</p>
-</subsection>
-</section>
-</body>
+                <p class="example">
+                    Example
+                </p>
+                <p class="exampletext">
+                    <pre>
+                        org.apache.harmony.luni
+                        org.apache.harmony.security
+                    </pre>
+
+                </p>
+            </subsection>
+
+            <subsection name="Package Names within a Module">
+                <p>
+                    Modules are free to use whatever package names they choose with the
+                    prefix <code>
+                        org.apache.harmony.<b>&lt;modulename&gt;</b>
+                    </code>.
+                </p>
+                <p>
+                    The following package name segements are <b>reserved</b> to indicate the meanings
+                    defined below:
+                </p>
+                <ul>
+                    <li>
+                        <code>
+                            org.apache.harmony.&lt;modulename&gt;.<b>internal</b>
+                        </code>
+                        <p>
+                            Packages with this prefix are implementation packages for use within
+                            the given module. Types and fields that are visible within these
+                            packages <em>MUST NOT</em> be used outside the module itself.
+                            Some runtime environments may enforce this reduced visibility scope.
+                        </p>
+                    </li>
+                    <li>
+                        <code>
+                            org.apache.harmony.&lt;modulename&gt;.<b>tests</b>
+                        </code>
+                        <p>
+                            Packages with this prefix contain test code that is not part of the
+                            module API or implementation.  Some builds may not include these
+                            packages. See <a href="testing.html">Testing conventions in the Apache Harmony Classlib</a>
+                            for details.
+                        </p>
+                    </li>
+                    <li>
+                        <code>
+                            org.apache.harmony.&lt;modulename&gt;.<b>examples</b>
+                        </code>
+                        <p>
+                            Packages with this prefix contain example code that is not part of the
+                            module API or implementation. Some builds may not include these
+                            packages.
+                        </p>
+                    </li>
+                    <li>
+                        <code>
+                            org.apache.harmony.&lt;modulename&gt;.<b>&lt;anything_else&gt;</b>
+                        </code>
+                        <p>
+                            All other packages within a module contain internal APIs that may
+                            be referenced from any module.
+                        </p>
+                    </li>
+                </ul>
+                <p>
+                    In practice, this means that module developers are free to change the code within an
+                    <code>internal</code> package without expecting any consequences beyond the module
+                    itself. However, module developers who modify code that is not in an
+                    <code>internal</code> package must do so in a manner that ensures
+                    <a href="http://java.sun.com/docs/books/jls/second_edition/html/binaryComp.doc.html">
+                        Java binary compatibility
+                    </a>.
+                </p>
+            </subsection>
+        </section>
+    </body>
 </document>

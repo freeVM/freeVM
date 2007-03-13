@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -19,175 +18,200 @@
 
 <document>
 
- <properties>
-  <title>Apache Harmony Mailing Lists</title>
-  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
- </properties>
+    <properties>
+        <title>Apache Harmony Mailing Lists</title>
+        <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    </properties>
 
-<body>
-<section name="Apache Harmony Mailing Lists">
+    <body>
+        <section name="Apache Harmony Mailing Lists">
 
-<p>
-Apache Harmony mailing lists operate under the following terms :
-</p>
+            <p>
+                Apache Harmony mailing lists operate under the following terms :
+            </p>
+            <ul>
+                <li>
+                    This forum has been created for public communication about projects
+                    of The Apache Software Foundation (the "Foundation"), a Delaware
+                    nonprofit corporation classified as a public charity under 501(c)(3).
+                </li>
+                <li>
+                    All communication intentionally submitted to the Foundation on this
+                    forum is considered a Contribution to the Foundation unless otherwise
+                    noted in the communication.
+                </li>
+                <li>
+                    The terms and conditions that apply to your Contributions are defined
+                    by either a contributor license agreement (CLA) signed by you and/or your
+                    employer or, if no such CLA is on file at the Foundation, by the terms and
+                    conditions of Contributions as defined by the Apache License, Version 2.0.
+                </li>
+                <li>
+                    If you do not wish your post to be a Contribution, we would prefer that
+                    you do not post it. However, in the event that you do, please mark as
+                    "NOT A CONTRIBUTION" at the top of the posting.
+                </li>
+                <li>
+                    Do not post any code that is not your original work, or code that you do not have
+                    clear authorization to contribute.
+                </li>
+                <li>
+                    Do not engage in detailed discussion of any implementation that you have been exposed
+                    to unless such implementation is available to everyone under an open source license or is
+                    your own implementation.
+                </li>
+                <li>
+                    Under no circumstances will any committer accept code for inclusion in our SVN
+                    repository contributed on the mailing list unless it is from an
+                    <a href="contribution_policy.html">Authorized Contributor</a>.
+                </li>
+            </ul>
+            <p>
+                There are currently three publicly available mailing lists for Harmony :
+            </p>
 
-<blockquote>
-This forum has been created for public communication about projects
-of The Apache Software Foundation (the "Foundation"), a Delaware
-nonprofit corporation classified as a public charity under 501(c)(3).
-All communication intentionally submitted to the Foundation on this
-forum is considered a Contribution to the Foundation unless otherwise
-noted in the communication. The terms and conditions that apply to
-your Contributions are defined by either a contributor license
-agreement (CLA) signed by you and/or your employer or, if no such CLA
-is on file at the Foundation, by the terms and conditions of
-Contributions as defined by the Apache License, Version 2.0.
-</blockquote>
->
- 
-<p>
-Further :
-</p>
+            <subsection name="Developer Mailing List">
 
-<blockquote>
-<ul>
-<li>
-If you do not wish your post to be a Contribution, we would prefer that you do not post it.  However, in the
-event that you do, please mark as "NOT A CONTRIBUTION" at the top of the posting.
-</li>
-<li>
-Do not post any code that is not your original work, or code that you do not have 
-clear authorization to contribute.
-</li>
-<li>
-Do not engage in detailed discussion of any implementation that you have been exposed 
-to unless such implementation is available to everyone under an open source license or is
-your own implementation.
-</li>
-<li>
-Under no circumstances will any committer accept code for inclusion in our SVN 
-repository contributed on the mailing list unless
-it is from an
-<a href="contribution_policy.html">Authorized Contributor</a>.
-</li>
-</ul>
-</blockquote>
-<p>
-There are currently three publicly available mailing lists for Harmony :
-</p>
+                <p>
+                    The developer mailing list is used by the developers to discuss
+                    plans, make decisions, vote on technical issues, etc.  This
+                    list has a higher volume, though some conversations take place on
+                    <a href="get-involved.html#irc-channel">IRC</a> as
+                    well.
+                </p>
+                <ul>
+                    <li>
+                        <a href="mailto:dev-subscribe@harmony.apache.org">Subscribe</a> to dev@harmony.apache.org
+                    </li>
+                    <li>
+                        <a href="mailto:dev-unsubscribe@harmony.apache.org">Unsubscribe</a> from dev@harmony.apache.org
+                    </li>
+                    <li>
+                        View the <a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/">harmony-dev@incubator.apache.org archives (May 2005 - Oct 2006)</a>
+                    </li>
+                    <li>
+                        View the <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/">dev@harmony.apache.org archives (Nov 2006 onwards)</a>
+                    </li>
+                </ul>
 
-<subsection name="Developer Mailing List">
+                <p>
+                    Please note that at this time, we are keeping all developer traffic on one list,
+                    for classlibrary, virtual machine, doc, site and tool development, in order to
+                    help build one homogeneous community. It is expected that at some point in the
+                    near future, we'll be splitting off into technical domains.
+                </p>
+                <p>
+                    In order to help people sort and make sense of the traffic, please prefix your
+                    subject line with an appropriate token:
+                </p>
+                <ul>
+                    <li>
+                        [general] - for things of general interest
+                    </li>
+                    <li>
+                        [announce] - announcements
+                    </li>
+                    <li>
+                        [legal] - discussion about legal issues
+                    </li>
+                    <li>
+                        [classlib]<i>[module]</i> - for classlibrary-related
+                        issues (and you can optionally specify the specific module)
+                    </li>
+                    <li>
+                        [drlvm]<i>[module]</i> - for DRLVM-related
+                        issues (and you can optionally specify the specific module)
+                    </li>
+                    <li>
+                        [jchevm]<i>[module]</i> - for jchevm-related
+                        issues (and you can optionally specify the specific module)
+                    </li>
+                    <li>
+                        [bootvm]<i>[module]</i> - for bootvm-related
+                        issues (and you can optionally specify the specific module)
+                    </li>
+                    <li>
+                        [doc] - for documentation-related issues
+                    </li>
+                    <li>
+                        [tools] - for tools-related issues
+                    </li>
+                    <li>
+                        [testing] or [qa] - for tools-related issues
+                    </li>
+                </ul>
 
-<p>The developer mailing list is used by the developers to discuss
-plans, make decisions, vote on technical issues, etc.  This
-list has a higher volume, though some conversations take place on
-    <a href="get-involved.html#irc-channel">IRC</a> as
-well.</p>
-<ul>
-  <li><a href="mailto:dev-subscribe@harmony.apache.org">Subscribe</a> to dev@harmony.apache.org</li>
-  <li><a href="mailto:dev-unsubscribe@harmony.apache.org">Unsubscribe</a> from dev@harmony.apache.org</li>
-  <li>View the <a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/">harmony-dev@incubator.apache.org archives (May 2005 - Oct 2006)</a></li>
-  <li>View the <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/">dev@harmony.apache.org archives (Nov 2006 onwards)</a></li>
-</ul>
+                <p>
+                    Simply add the token to the start of your subject line. For example :
+                </p>
 
-<p>
-    Please note that at this time, we are keeping all developer traffic on one list,
-    for classlibrary, virtual machine, doc, site and tool development, in order to
-    help build one homogeneous community.  It is expected that at some point in the
-    near future, we'll be splitting off into technical domains.
-</p>
-<p>
-    In order to help people sort and make sense of the traffic, please prefix your
-    subject line with an appropriate token :
-</p>
-    <ul>
-        <li>
-            [general] - for things of general interest
-        </li>
-        <li>
-            [announce] - announcements
-        </li>
-        <li>
-            [legal] - discussion about legal issues
-        </li>
-        <li>
-            [classlib]<i>[module]</i> - for classlibrary-related
-             issues (and you can optionally specify the specific module)
-        </li>
-        <li>
-            [drlvm]<i>[module]</i> - for DRLVM-related
-             issues (and you can optionally specify the specific module)
-        </li>
-        <li>
-            [jchevm]<i>[module]</i> - for jchevm-related
-             issues (and you can optionally specify the specific module)
-        </li>
-        <li>
-            [bootvm]<i>[module]</i> - for bootvm-related
-             issues (and you can optionally specify the specific module)
-        </li>
-        <li>
-            [doc] - for documentation-related issues
-        </li>
-        <li>
-            [tools] - for tools-related issues
-        </li>
-        <li>
-            [testing] or [qa] - for tools-related issues
-        </li>
-    </ul>
+                <source>
+                    To : dev@harmony.apache.org
+                    From : harmony_user@openjava.org
+                    Subject : [classlib][io] Problem with java.io.OutputSocket
 
-    <p>
-        Simply add the token to the start of your subject line.  For example :
-   </p>
+                    ....
+                </source>
+            </subsection>
 
-    <source>
-        To : dev@harmony.apache.org
-        From : harmony_user@openjava.org
-        Subject : [classlib][io] Problem with java.io.OutputSocket
+            <subsection name="Source Control Mailing List">
 
-        ....
-    </source>
-</subsection>
+                <p>
+                    This list receives notifications (with diffs) every time a change is
+                    committed to the Harmony source tree. It also receives change notices
+                    for changes to the Harmony Wiki and whenever issues are added to or
+                    updated in our
+                    <a href="http://issues.apache.org/jira/browse/HARMONY">JIRA issue tracking system</a>.
+                </p>
+                <ul>
+                    <li>
+                        <a href="mailto:commits-subscribe@harmony.apache.org">Subscribe</a> to commits@harmony.apache.org
+                    </li>
+                    <li>
+                        <a href="mailto:commits-unsubscribe@harmony.apache.org">Unsubscribe</a> from commits@harmony.apache.org
+                    </li>
+                    <li>
+                        View the <a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-commits/">harmony-commits@incubator.apache.org archives (May 2005 -Oct 2006)</a>
+                    </li>
+                    <li>
+                        View the <a href="http://mail-archives.apache.org/mod_mbox/harmony-commits/">commits@harmony.apache.org archives (Nov 2006 onwards)</a>
+                    </li>
+                </ul>
 
-<subsection name="Source Control Mailing List">
+            </subsection>
 
-<p>This list receives notifications (with diffs) every time a change is
-committed to the Harmony source tree.  It also receives change notices
-for changes to the Harmony Wiki and whenever issues are added to or
-updated in our
-<a href="http://issues.apache.org/jira/browse/HARMONY">JIRA issue tracking system</a>.</p>
-<ul>
-  <li><a href="mailto:commits-subscribe@harmony.apache.org">Subscribe</a> to commits@harmony.apache.org</li>
-  <li><a href="mailto:commits-unsubscribe@harmony.apache.org">Unsubscribe</a> from commits@harmony.apache.org</li>
-  <li>View the <a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-commits/">harmony-commits@incubator.apache.org archives (May 2005 -Oct 2006)</a></li>
-  <li>View the <a href="http://mail-archives.apache.org/mod_mbox/harmony-commits/">commits@harmony.apache.org archives (Nov 2006 onwards)</a></li>
-</ul>
+            <subsection name="Alerts Mailing List">
 
-</subsection>
+                <p>
+                    This list receives alerts from the various community-run build systems. These alerts contain
+                    information on failed builds and test runs.
+                </p>
+                <ul>
+                    <li>
+                        <a href="mailto:alerts-subscribe@harmony.apache.org">Subscribe</a> to alerts@harmony.apache.org
+                    </li>
+                    <li>
+                        <a href="mailto:alerts-unsubscribe@harmony.apache.org">Unsubscribe</a> from alerts@harmony.apache.org
+                    </li>
+                    <li>
+                        View the <a href="http://mail-archives.apache.org/mod_mbox/harmony-alerts/">alerts@harmony.apache.org archives</a>
+                    </li>
+                </ul>
 
-<subsection name="Alerts Mailing List">
+            </subsection>
 
-<p>
-This list receives alerts from the various community-run build systems.  These alerts contain
-information on failed builds and test runs.
-</p>
-<ul>
-  <li><a href="mailto:alerts-subscribe@harmony.apache.org">Subscribe</a> to alerts@harmony.apache.org</li>
-  <li><a href="mailto:alerts-unsubscribe@harmony.apache.org">Unsubscribe</a> from alerts@harmony.apache.org</li>
-  <li>View the <a href="http://mail-archives.apache.org/mod_mbox/harmony-alerts/">alerts@harmony.apache.org archives</a></li>
-</ul>
+            <subsection name="Other Mailing Lists">
 
-</subsection>
+                <p>
+                    The Harmony PMC has a mailing list to resolve any administrative issues,
+                    This list is limited to PMC members (most committers on the project).
+                </p>
 
-<subsection name="Other Mailing Lists">
-
-<p>The Harmony PMC has a mailing list to resolve any administrative issues,
-This list is limited to PMC members (most committers on the project).</p>
-
-</subsection>
-</section>
-</body>
+            </subsection>
+        </section>
+    </body>
 </document>
+
+
 
 

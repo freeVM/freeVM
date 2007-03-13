@@ -2,11 +2,11 @@
 
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -19,133 +19,132 @@
 
 <document>
 
-<properties>
-  <title>Open Source Java SE</title>
-  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
-</properties>
+    <properties>
+        <title>Open Source Java SE</title>
+        <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    </properties>
 
-<body>
+    <body>
 
-  <section name="Welcome to Apache Harmony - Open Source Java SE">
+        <section name="Welcome to Apache Harmony - Open Source Java SE">
 
-    <p>
-      <big>Welcome to Apache Harmony - Open Source Java SE.</big>
-    </p>
-    
-    <p>
-        Apache Harmony is
-        the Java SE project of the
-      <a href="http://www.apache.org/">Apache Software Foundation</a>.
-      Please help us make this a world class, certified implementation of the
-      Java Platform Standard Edition!
-    </p>
+            <p>
+                <big>Welcome to Apache Harmony - Open Source Java SE.</big>
+            </p>
 
-   <p>
-      The aim of the project is to produce a large and healthy community
-      of those interested in runtime platforms tasked with creation of :
-   </p>
-   <ul>
-      <li>
-          A compatible, independent implementation of the Java SE 5
-          JDK under the Apache License v2
-      </li>
-      <li>
-          A community-developed modular runtime (VM and class library)
-          architecture.
-      </li>
-   </ul>
+            <p>
+                Apache Harmony is
+                the Java SE project of the
+                <a href="http://www.apache.org/">Apache Software Foundation</a>.
+                Please help us make this a world class, certified implementation of the
+                Java Platform Standard Edition!
+            </p>
 
-   <p>
-       We aim to support wide range of different platforms.  The main criteria
-       for whether a particular platform is supported or not is the involvement
-       of people in running tests on regular base, reporting build status, finding
-       and fixing bugs for that platform, and so on.  We have
-       <a href="http://wiki.apache.org/harmony/Platforms_to_Run_Harmony_Development_Kit_on">a
-       list of platforms</a> we are actively maintaining at the moment.
-   </p>
+            <p>
+                The aim of the project is to produce a large and healthy community
+                of those interested in runtime platforms tasked with creation of:
+            </p>
+            <ul>
+                <li>
+                    A compatible, independent implementation of the Java SE 5
+                    JDK under the Apache License v2
+                </li>
+                <li>
+                    A community-developed modular runtime (VM and class library)
+                    architecture.
+                </li>
+            </ul>
 
-   <p>
-       Please see the following "Getting Started" guides :
-   </p>
+            <p>
+                We aim to support wide range of different platforms. The main criteria
+                for whether a particular platform is supported or not is the involvement
+                of people in running tests on regular base, reporting build status, finding
+                and fixing bugs for that platform, and so on. We have
+                <a href="http://wiki.apache.org/harmony/Platforms_to_Run_Harmony_Development_Kit_on">
+                    a
+                    list of platforms
+                </a> we are actively maintaining at the moment.
+            </p>
 
-   <ul>
-       <li>
-           <a href="quickhelp_users.html">Getting Started for Harmony Users</a> : for those
-           that wish to use <a href="downloads.html">pre-built snapshots</a> of Apache Harmony
-       </li>
-       <li>
-           <a href="quickhelp_contributors.html">Getting Started for Harmony Contributors</a> : for those
-           that wish to checkout and build the source of Apache Harmony.
-       </li>
-   </ul>
-</section>
+            <p>
+                Please see the following "Getting Started" guides:
+            </p>
 
-    <section name="Harmony News">
-        <p>
-            <strong>Harmony Classlib Enabled Version of JRockit VM Available for Project Use</strong>
-            <blockquote>
-                BEA announced the <a href="http://dev2dev.bea.com/jrockit/jrockitVM">availability</a> of
-                an evaluation version of JRockit, their world-class JVM,  that works
-                with the Apache Harmony class library.  Distibuted by BEA under a binary, evaluation-only
-                license, this not only demonstrates the portablity of the 
-                <a href="subcomponents/classlibrary/index.html">Apache Harmony class library</a>, 
-                it also adds a valuable tool to help us as we continue building our independent implementation
-                of Java SE. 
-                (<i>2007-01-30</i>)
-            </blockquote>
-        </p>
-        <p>
-            <strong>JDK Snapshot Available</strong>
-            <blockquote>
+            <ul>
+                <li>
+                    <a href="quickhelp_users.html">Getting Started for Harmony Users</a>: for those
+                    that wish to use <a href="downloads.html">pre-built snapshots</a> of Apache Harmony
+                </li>
+                <li>
+                    <a href="quickhelp_contributors.html">Getting Started for Harmony Contributors</a>: for those
+                    that wish to checkout and build the source of Apache Harmony.
+                </li>
+            </ul>
+        </section>
+
+        <section name="Harmony News">
+            <h3>Harmony Classlib Enabled Version of JRockit VM Available for Project Use</h3>
+                <p>
+                    BEA announced the <a href="http://dev2dev.bea.com/jrockit/jrockitVM">availability</a> of
+                    an evaluation version of JRockit, their world-class JVM, that works
+                    with the Apache Harmony class library. Distibuted by BEA under a binary, evaluation-only
+                    license, this not only demonstrates the portablity of the
+                    <a href="subcomponents/classlibrary/index.html">Apache Harmony class library</a>,
+                    it also adds a valuable tool to help us as we continue building our independent implementation
+                    of Java SE.
+                    (<i>2007-01-30</i>)
+                </p>
+            <h3>JDK Snapshot Available</h3>
+            <p>
                 Apache Harmony now has a JDK snapshot available, that includes javac, keytool,
-                and others.  While not complete, it's our first step towards the standard
-                JDK distribution format expected by developers.  For more information, please
+                and others. While not complete, it's our first step towards the standard
+                JDK distribution format expected by developers. For more information, please
                 see our <a href="downloads.html">downloads</a> page.
                 (<i>2006-12-27</i>)
-            </blockquote>
-        </p>
-        <p>
-            <strong>Linux x86-64 (64-bit) Snapshots Available</strong>
-            <blockquote>
-                We now are including support for the x86-64 architecture under Linux. 
+            </p>
+            <h3>Linux x86-64 (64-bit) Snapshots Available</h3>
+            <p>
+                We now are including support for the x86-64 architecture under Linux.
                 For more information, please
                 see our <a href="downloads.html">downloads</a> page.
                 (<i>2006-12-14</i>)
-            </blockquote>
-        </p>
-        <p>
-            <strong>Apache Harmony: Top-Level Project of the Apache Software Foundation</strong>
-            <blockquote>
-                Apache Harmony is now a top-level project of the Apache Software Foundation. 
-                On October 25th, the Board of Directors voted to make Apache Harmony a
-                top-level project, and on October 29th the Apache Incubator PMC voted to
-                graduate Harmony from the Apache Incubator, having satisfied the Incubator's
-                requirements for community governance and IP oversight.  We're in the process
-                of transitioning our resources and infrastructure over, so please be patient
-                while we do our move.
-                (<i>2006-10-29</i>)
-            </blockquote>
-        </p>
-  <p>
-  <i>Archived articles are <a href="newshistory.html">here</a></i>.
-  </p>
-</section>
+            </p>
+            <h3>Apache Harmony: Top-Level Project of the Apache Software Foundation</h3>
+                <p>
+                    Apache Harmony is now a top-level project of the Apache Software Foundation.
+                    On October 25th, the Board of Directors voted to make Apache Harmony a
+                    top-level project, and on October 29th the Apache Incubator PMC voted to
+                    graduate Harmony from the Apache Incubator, having satisfied the Incubator's
+                    requirements for community governance and IP oversight. We're in the process
+                    of transitioning our resources and infrastructure over, so please be patient
+                    while we do our move.
+                    (<i>2006-10-29</i>)
+                </p>
+                        <p>
+                <i>
+                    Archived articles are <a href="newshistory.html">here</a></i>.
+            </p>
+        
+        
+        </section>
 
-<section name="Project Status">
+        <section name="Project Status">
 
-    <p>
-        How are we doing?  We're making steady progress : 
-    </p>
+            <p>
+                How are we doing?  We're making steady progress :
+            </p>
 
-    <ol>
-        <li>JRE and HDK snapshots <a href="http://people.apache.org/builds/harmony/snapshots/">available</a> </li>
-        <li>
-            JRE can run popular programs like Apache Tomcat, Eclipse, Maven, Derby, Ant
-        </li>
-        <li>More than 95% of Java 5 API complete. (not compatible, just completed)</li>
-        <li>More than 1.25 Million Lines of Code</li>
-    </ol>
-</section>
+            <ol>
+                <li>
+                    JRE and HDK snapshots <a href="http://people.apache.org/builds/harmony/snapshots/">available</a>
+                </li>
+                <li>
+                    JRE can run popular programs like Apache Tomcat, Eclipse, Maven, Derby, Ant
+                </li>
+                <li>More than 95% of Java 5 API complete. (not compatible, just completed)</li>
+                <li>More than 1.25 Million Lines of Code</li>
+            </ol>
+        </section>
 
-</body>
+    </body>
 </document>

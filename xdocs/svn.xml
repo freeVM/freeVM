@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
@@ -17,73 +15,67 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-
 <document>
 
- <properties>
-  <title>Apache Harmony Source Code</title>
-  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
- </properties>
+    <properties>
+        <title>Apache Harmony Source Code</title>
+        <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    </properties>
+    <body>
 
- <body>
+        <section name="Apache Harmony Source Code">
+            <p>
+                The Harmony project uses the
+                <a href="http://subversion.tigris.org/">Subversion</a> version control
+                system.  If you're new to Subversion, you can check out the
+                <a href="http://svnbook.red-bean.com/">online book</a> about Subversion.
+                Note that we are currently using Subversion 1.1.x (there are separate
+                versions of the book covering 1.0 and 1.1).
+            </p>
 
-<section name="Apache Harmony Source Code">
+            <subsection name="Web Access to Subversion">
+                <p>
+                    If you just want to browse the source code, you can use the
+                    <a href="http://svn.apache.org/viewcvs.cgi/harmony/?root=Apache-SVN">
+                        ViewCVS
+                        web interface
+                    </a> to Subversion. This is current at all times.
+                </p>
+            </subsection>
 
-<p>
-The Harmony project uses the
-<a href="http://subversion.tigris.org/">Subversion</a> version control
-system.  If you're new to Subversion, you can check out the
-<a href="http://svnbook.red-bean.com/">online book</a> about Subversion.
-Note that we are currently using Subversion 1.1.x (there are separate
-versions of the book covering 1.0 and 1.1).
-</p>
+            <subsection name="Normal Subversion Access">
+                <p>
+                    Anyone can check code out of Subversion. You only need to specify a
+                    username and password in order to update the Subversion repository, and only
+                    Harmony committers have the permissions to do that. We run Subversion
+                    over standard HTTPS, so hopefully you won't have problems with intervening
+                    firewalls.
+                </p>
 
-<subsection name="Web Access to Subversion">
+                <h3>Check out from Subversion</h3>
+                <p>Again, anyone can do this. Use a command like:</p>
+                <pre>svn checkout https://svn.apache.org/repos/asf/harmony</pre>
 
-<p>
-If you just want to browse the source code, you can use the
-<a
-href="http://svn.apache.org/viewcvs.cgi/harmony/?root=Apache-SVN">ViewCVS
-web interface</a> to Subversion.  This is current at all times.
-</p>
-
-</subsection>
-
-<subsection name="Normal Subversion Access">
-
-<p>Anyone can check code out of Subversion.  You only need to specify a
-username and password in order to update the Subversion repository, and only
-Harmony committers have the permissions to do that.  We run Subversion
-over standard HTTPS, so hopefully you won't have problems with intervening
-firewalls.</p>
-
-<strong>Check out from Subversion</strong>
-<p>Again, anyone can do this.  Use a command like:</p>
-<pre>svn checkout https://svn.apache.org/repos/asf/harmony</pre>
-
-<strong>Commit Changes to Subversion</strong>
-
-<p>
-Any Harmony committer should have a shell account on
-<tt>svn.apache.org</tt>.  Before you can commit, you'll need to set a
-Subversion password for yourself.  To do that, log in to
-<tt>svn.apache.org</tt> and run the command <i>svnpasswd</i>.
-</p>
-
-<p>
-Once your password is set, you can use a command like this to commit:
-</p>
-
-<pre>svn commit</pre>
-
-<p>If Subversion can't figure out your username, you can tell it
-explicitly:</p>
-<pre>svn --username you commit</pre>
-<p>Subversion will prompt you for a password, and once you enter it once, it
-will remember it for you.  Note this is the password you configured with
-<tt>svnpasswd</tt>, not your shell or other password.</p>
-
-</subsection>
-</section>
-</body>
+                <h3>Commit Changes to Subversion</h3>
+                <p>
+                    Any Harmony committer should have a shell account on
+                    <code>svn.apache.org</code>. Before you can commit, you'll need to set a
+                    Subversion password for yourself. To do that, log in to
+                    <code>svn.apache.org</code> and run the command <code>svnpasswd</code>.
+                </p>
+                <p>Once your password is set, you can use a command like this to commit:</p>
+                <pre>svn commit</pre>
+                <p>
+                    If Subversion can't figure out your username, you can tell it
+                    explicitly:
+                </p>
+                <pre>svn --username you commit</pre>
+                <p>
+                    Subversion will prompt you for a password, and once you enter it once, it
+                    will remember it for you. Note this is the password you configured with
+                    <code>svnpasswd</code>, not your shell or other password.
+                </p>
+            </subsection>
+        </section>
+    </body>
 </document>

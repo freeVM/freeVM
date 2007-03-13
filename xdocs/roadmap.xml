@@ -19,406 +19,497 @@
 
 <document>
 
- <properties>
-  <title>Project Roadmap</title>
-  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
- </properties>
+  <properties>
+    <title>Project Roadmap</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
 
   <body>
     <section name="Roadmap and TODO">
 
-    <p>
-      Are roadmap and goals are always subject to discussion on the
-      <a href="mailing.html">developer's list.</a>  As new people join with new focus and
-      interests, the things we do as a project adapt.
-    </p>
-
-     <p>
-         If you have an idea, come join the community and talk about it.  Note that you will
-         need to subscribe to the <a href="mailing.html">mail list</a>
-     </p>
-
-     </section>
-
-     <section name="High-Level Roadmap">
-
-         <p>
-         Our project goal is an open source, compatible implementation of Java SE 5.
-         It's a major task being done by a community of volunteers.  Thus, the following
-         is an approximate roadmap for what the project hopes to achieve in the next year.
-         </p>
-
-         <ul>
-             <li>
-                 <font color="green"><b>DONE</b></font>  <strike>Aug 2006: 85% of Java SE 5 class library coverage </strike>
-             </li>
-             <li> <font color="green"><b>DONE</b></font><strike>
-                 Aug 2006: regular distributions of pre-completion Harmony JDK
-                 and <a href="subcomponents/classlibrary/hdk.html">HDK</a>
-                 suitable for development and testing </strike>
-             </li>
-             <li>
-                 <font color="green"><b>DONE</b></font>  <strike>Sept 2006: 90% of 
-                 \Java SE 5 class library coverage</strike>
-             </li>
-             <li>
-                 Q4 2006: ASF completes process of securing Java SE TCK license
-             </li>
-             <li>
-                 <font color="green"><b>DONE</b></font>  <strike>Oct 2006: 92% of 
-                 Java SE 5 class library coverage</strike>
-             </li>
-             <li>
-                 <font color="green"><b>DONE</b></font>  <strike>Nov 2006: 95% of 
-                 Java SE 5 class library coverage</strike>
-             </li>
-             <li>
-                 Dec 2006: 97% of Java SE 5 class library coverage
-             </li>
-             <li>
-                 Q1 2007: 100% Java SE 5 class library coverage
-             </li>
-             <li>
-                 Q1 2007: DRLVM is stable with reasonable performance
-             </li>
-             <li>
-                 Q1 2007: begin testing with TCK
-             </li>
-             <li>
-                 Q1 2007: work begins on Java SE 6 features
-             </li>
-             <li>
-                 Feb 2007: Jave SE 5 JDK toolset complete
-             </li>
-             <li>
-                 Q2 2007: TCK certification of Harmony completed
-             </li>
-             <li>
-                 Q2 2007: Apache Harmony SE 5 JDK and JRE released
-             </li>
-             <li>
-                 Q4 2007: Apache Harmony SE 6 JDK and JRE released
-             </li>
-             <li>
-                 Q? 2008: Apache Harmony SE 7 JDK and JRE released.  Note: The Java SE 7
-                         JSR has not yet been proposed by Sun.  We assume 18 
-                         months from start of JSR to completion.  We hope to 
-                         deliver Harmony's implementation of Java SE 7 at the 
-                         same time Sun does.
-             </li>
-         </ul>
-     </section>
-
-     <section name="TODO List">
-
-         <p>
-             The following is a collection of things that the project community
-             has listed as needing to be done.  This list is not exhaustive.  If
-             you wish to add an item to this list, or discuss or even volunteer
-             to work on an item, please join us on the <a href="mailing.html">Harmony
-             mail list.</a>
-         </p>
-
-         <p>
-             The following sections describe the high-level areas of effort, and
-             tasks that have been identified for those areas.
-         </p>
-
-         <ol>
-             <li><a href="#General">General</a></li>
-             <li><a href="#Build Engineering">Build Engineering</a></li>
-             <li><a href="#Build-Test Framework">Build-Test Framework</a></li>
-             <li><a href="#Performance, Stability and Reliability">Performance, Stability and Reliability</a></li>
-             <li><a href="#Class Library">Class Library</a></li>
-             <li><a href="#DRLVM">DRLVM</a></li>
-             <li><a href="#Porting Matrix">Porting Matrix</a></li>
-             <li><a href="#Application-Driven Project Advancement">Application-Driven Project Advancement</a></li>
-
-             </ol>
-      <subsection name="General">
-
-          <strong>1. JDK tools</strong>
-
-          <p>
-              As part of the JDK that Harmony will distribute, we'll include
-              the full set of tools that Java programmers expect to find in
-              any JDK.  For maximum portablility, we plan to write all of the
-              tools in Java, using the Harmony launcher as the portable native
-              code that starts the VM and invokes the tool.  Currently, we have
-              javac completed via the Eclipse compiler, but we need the following:
-          </p>
-
-          <ul>
-              <li>
-                  javac (Done), javadoc, apt, appletviewer, jar, jdb, javah, javap, extcheck
-              </li>
-              <li>
-                  keytool, jarsigner, policytool, kinit, klist, ktab
-              </li>
-              <li>
-                  native2ascii,rmic, rmiregistry, rmid, serialver
-              </li>
-              <li>
-                  tnameserv, idlj, orbd, servertool
-              </li>
-              <li>
-                  pack200, unpack200
-              </li>
-              <li>
-                  htmlconverter, javaws
-              </li>
-          </ul>
-
-          <p>
-              Again, we have the portable launcher framework - we just need volunteers.
-          </p>
-
-
-        <strong>2. Modularity</strong>
-        <p>
-            From the beginning of our project, we've had a strong interest and focus
-            on modularity  This dedication has paid off in our class library development,
-            as we've been able to evaluate competing implementations of RMI and math, as
-            well as allow developers to isolate development on one module.
-        </p>
-
-         <p>
-             The modularity story for the class library is reasonable complete at this
-             point, as we have completed the modularization of the native code as well.
-             However, there is plenty of work to be done with our virtual machines - the
-             goal being able to define a set of standard interfaces to which modular
-             VM components can be written.
-         </p>
-
-  </subsection>
-
-  <subsection name="Build Engineering">
+      <p>
+        Are roadmap and goals are always subject to discussion on the
+        <a href="mailing.html">developer's list.</a>  As new people join with new focus and
+        interests, the things we do as a project adapt.
+      </p>
 
       <p>
+        If you have an idea, come join the community and talk about it.  Note that you will
+        need to subscribe to the <a href="mailing.html">mail list</a>
+      </p>
+
+    </section>
+
+    <section name="High-Level Roadmap">
+
+      <p>
+        Our project goal is an open source, compatible implementation of Java SE 5.
+        It's a major task being done by a community of volunteers.  Thus, the following
+        is an approximate roadmap for what the project hopes to achieve in the next year.
+      </p>
+      <ul>
+        <li>
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>Aug 2006: 85% of Java SE 5 class library coverage </strike>
+        </li>
+        <li>
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
+            Aug 2006: regular distributions of pre-completion Harmony JDK
+            and <a href="subcomponents/classlibrary/hdk.html">HDK</a>
+            suitable for development and testing
+          </strike>
+        </li>
+        <li>
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
+            Sept 2006: 90% of
+            \Java SE 5 class library coverage
+          </strike>
+        </li>
+        <li>
+          Q4 2006: ASF completes process of securing Java SE TCK license
+        </li>
+        <li>
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
+            Oct 2006: 92% of Java SE 5 class library coverage
+          </strike>
+        </li>
+        <li>
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
+            Nov 2006: 95% of Java SE 5 class library coverage
+          </strike>
+        </li>
+        <li>
+          Dec 2006: 97% of Java SE 5 class library coverage
+        </li>
+        <li>
+          Q1 2007: 100% Java SE 5 class library coverage
+        </li>
+        <li>
+          Q1 2007: DRLVM is stable with reasonable performance
+        </li>
+        <li>
+          Q1 2007: begin testing with TCK
+        </li>
+        <li>
+          Q1 2007: work begins on Java SE 6 features
+        </li>
+        <li>
+          Feb 2007: Jave SE 5 JDK toolset complete
+        </li>
+        <li>
+          Q2 2007: TCK certification of Harmony completed
+        </li>
+        <li>
+          Q2 2007: Apache Harmony SE 5 JDK and JRE released
+        </li>
+        <li>
+          Q4 2007: Apache Harmony SE 6 JDK and JRE released
+        </li>
+        <li>
+          Q? 2008: Apache Harmony SE 7 JDK and JRE released.  Note: The Java SE 7
+          JSR has not yet been proposed by Sun.  We assume 18
+          months from start of JSR to completion.  We hope to
+          deliver Harmony's implementation of Java SE 7 at the
+          same time Sun does.
+        </li>
+      </ul>
+    </section>
+
+    <section name="TODO List">
+
+      <p>
+        The following is a collection of things that the project community
+        has listed as needing to be done.  This list is not exhaustive.  If
+        you wish to add an item to this list, or discuss or even volunteer
+        to work on an item, please join us on the <a href="mailing.html">
+          Harmony
+          mail list.
+        </a>
+      </p>
+
+      <p>
+        The following sections describe the high-level areas of effort, and
+        tasks that have been identified for those areas.
+      </p>
+
+      <ol>
+        <li>
+          <a href="#General">General</a>
+        </li>
+        <li>
+          <a href="#Build Engineering">Build Engineering</a>
+        </li>
+        <li>
+          <a href="#Build-Test Framework">Build-Test Framework</a>
+        </li>
+        <li>
+          <a href="#Performance, Stability and Reliability">Performance, Stability and Reliability</a>
+        </li>
+        <li>
+          <a href="#Class Library">Class Library</a>
+        </li>
+        <li>
+          <a href="#DRLVM">DRLVM</a>
+        </li>
+        <li>
+          <a href="#Porting Matrix">Porting Matrix</a>
+        </li>
+        <li>
+          <a href="#Application-Driven Project Advancement">Application-Driven Project Advancement</a>
+        </li>
+
+      </ol>
+      <subsection name="General">
+
+        <h3>1. JDK tools</h3>
+
+        <p>
+          As part of the JDK that Harmony will distribute, we'll include
+          the full set of tools that Java programmers expect to find in
+          any JDK.  For maximum portablility, we plan to write all of the
+          tools in Java, using the Harmony launcher as the portable native
+          code that starts the VM and invokes the tool.  Currently, we have
+          javac completed via the Eclipse compiler, but we need the following:
+        </p>
+
+        <ul>
+          <li>
+            javac (Done), javadoc, apt, appletviewer, jar, jdb, javah, javap, extcheck
+          </li>
+          <li>
+            keytool, jarsigner, policytool, kinit, klist, ktab
+          </li>
+          <li>
+            native2ascii,rmic, rmiregistry, rmid, serialver
+          </li>
+          <li>
+            tnameserv, idlj, orbd, servertool
+          </li>
+          <li>
+            pack200, unpack200
+          </li>
+          <li>
+            htmlconverter, javaws
+          </li>
+        </ul>
+
+        <p>
+          Again, we have the portable launcher framework - we just need volunteers.
+        </p>
+
+
+        <h3>2. Modularity</h3>
+        <p>
+          From the beginning of our project, we've had a strong interest and focus
+          on modularity  This dedication has paid off in our class library development,
+          as we've been able to evaluate competing implementations of RMI and math, as
+          well as allow developers to isolate development on one module.
+        </p>
+
+        <p>
+          The modularity story for the class library is reasonable complete at this
+          point, as we have completed the modularization of the native code as well.
+          However, there is plenty of work to be done with our virtual machines - the
+          goal being able to define a set of standard interfaces to which modular
+          VM components can be written.
+        </p>
+
+      </subsection>
+
+      <subsection name="Build Engineering">
+
+        <p>
           Build engineering in Harmony is a complicated subject, as we are building
           on multiple platforms in multiple languages.  So far, we have support for
           our Windows and Linux ports, but our porting plans indiciate that we'll need
           to revisit given the differnet toolchains.  There are many things to do
           in this area, many not listed.
-       </p>
+        </p>
 
-      <p>
+        <p>
           Currently, the project has been releasing snapshots of our class library,
           but now that we have the DRLVM virtual machine, we can start doing complete
           snapshot builds of a JRE, as well as the HDK
-      </p>
+        </p>
 
-      <ul>
-        <li>
+        <ul>
+          <li>
             Switch to use system libraries, dynamically where appropriate
             - libz, libpng, libjpeg, liblcms, libicu*, etc.
-        </li>
-        <li>
+          </li>
+          <li>
             Create regular schedule for snapshots and automate.
             Maybe every two weeks for now?
             <ol>
-                <li>HDK - libraries, jars, headers</li>
-                <li>JDK - tools + JRE</li>
-                <li>JRE = classlib + DRLVM</li>
+              <li>HDK - libraries, jars, headers</li>
+              <li>JDK - tools + JRE</li>
+              <li>JRE = classlib + DRLVM</li>
             </ol>
           </li>
           <li>
             Federated build - abliity to builds a complete JDK from top level
-              using choice of project VM
+            using choice of project VM
           </li>
           <li>
-             Agreement between project parts (DRLVM, classlib) on things like
-              debug/release flag, structure of artifacts (model after classlib for now)
-           </li>
-           <li>
-               Common dependency pool for all projet parts to share
-           </li>
-          <li>
-              Switch DRLVM build to a class library-like ant + make configuration
+            Agreement between project parts (DRLVM, classlib) on things like
+            debug/release flag, structure of artifacts (model after classlib for now)
           </li>
           <li>
-              Remove assumption in class library build system that all that uses make is
-              linux.
+            Common dependency pool for all projet parts to share
           </li>
-      </ul>
-  </subsection>
+          <li>
+            Switch DRLVM build to a class library-like ant + make configuration
+          </li>
+          <li>
+            Remove assumption in class library build system that all that uses make is
+            linux.
+          </li>
+        </ul>
+      </subsection>
 
-  <subsection name="Build-Test Framework">
-    <p>
-      The goal of this part of the Harmony project, the build-test framework,
-      is make it easy for anyone to setup the CI infrastructure for the
-      project and submit automated reports on building and testing of the
-      project codebase on that platform.
-    </p>
+      <subsection name="Build-Test Framework">
+        <p>
+          The goal of this part of the Harmony project, the build-test framework,
+          is make it easy for anyone to setup the CI infrastructure for the
+          project and submit automated reports on building and testing of the
+          project codebase on that platform.
+        </p>
 
-    <p>
-        There is an
-        <a href="http://svn.apache.org/viewvc/harmony/enhanced/buildtest/">
-        initial implementation</a> in place in SVN, but much more work is needed.
-        Ideas include:
-    </p>
+        <p>
+          There is an
+          <a href="http://svn.apache.org/viewvc/harmony/enhanced/buildtest/">
+            initial implementation
+          </a> in place in SVN, but much more work is needed.
+          Ideas include:
+        </p>
 
-      <ul>
-      <li>
-          Send mail to project on success/fail transition
-      </li>
-      <li>
-          Create live "status dashboard" with a summary of results from all tested platforms,
-          as wella s history for each tested platform.
-      </li>
-      <li>
-          Integrate with <a href="http://www.kaffe.org/~stuart/japi/">JAPI</a>
-      </li>
-      <li>
-          Integrate with <a href="http://sources.redhat.com/mauve/">Mauve</a> for further
-          class library testing
-      </li>
-       <li>
-           Integrate with test-coverage tool (ex <a href="http://emma.sourceforge.net/">emma</a>
-           for auto-generated reports.
-       </li>
-       <li>
-           Externalize local properties into a 'test.properties' file for easy of localization.
-       </li>
-      </ul>
+        <ul>
+          <li>
+            Send mail to project on success/fail transition
+          </li>
+          <li>
+            Create live "status dashboard" with a summary of results from all tested platforms,
+            as wella s history for each tested platform.
+          </li>
+          <li>
+            Integrate with <a href="http://www.kaffe.org/~stuart/japi/">JAPI</a>
+          </li>
+          <li>
+            Integrate with <a href="http://sources.redhat.com/mauve/">Mauve</a> for further
+            class library testing
+          </li>
+          <li>
+            Integrate with test-coverage tool (ex <a href="http://emma.sourceforge.net/">emma</a>
+            for auto-generated reports.
+          </li>
+          <li>
+            Externalize local properties into a 'test.properties' file for easy of localization.
+          </li>
+        </ul>
 
-  </subsection>
+      </subsection>
 
-  <subsection name="Performance, Stability and Reliability">
+      <subsection name="Performance, Stability and Reliability">
 
-      <p>
+        <p>
           Our goal is a high-performance, stable and compatible implementation of Java SE 5.
           While passing the TCK is a measure of compatibility with the standard,
           performance and stability is something that must be achieved independently.
           We are looking to:
-       </p>
+        </p>
 
-      <ol>
+        <ol>
           <li>
-              Define a set of stress, stability and performance tests that are
-              freely available and easy to automate in our
-              <a href="#Build-Test Framework">build-test framework.</a>
+            Define a set of stress, stability and performance tests that are
+            freely available and easy to automate in our
+            <a href="#Build-Test Framework">build-test framework.</a>
           </li>
           <li>
-              Measure and monitor baseline peformance using these tests
-              with our standard builds across our supported platform matrix.
+            Measure and monitor baseline peformance using these tests
+            with our standard builds across our supported platform matrix.
           </li>
           <li>
-             Identify and fix stability and performance problems.
+            Identify and fix stability and performance problems.
           </li>
-      </ol>
-  </subsection>
+        </ol>
+      </subsection>
 
-  <subsection name="Class Library">
+      <subsection name="Class Library">
 
-      <p>
+        <p>
           The  class library is an important (and large!) part of the Java SE
           platform.  While we have made significant progress so far (~80% at last
           check), there are many, many interesting things remaining to be done
-      </p>
+        </p>
 
-      <ul>
+        <ul>
           <li>
-              <a href="subcomponents/classlibrary/status.html">General package completion</a>
+            <a href="subcomponents/classlibrary/status.html">General package completion</a>
           </li>
           <li>
-              java.util.concurrency: integration of Doug Lea's RI package.  Goal is to
-              use unmodified code from the 166 expert group and implent whatever
-              support is needed by the VM and rest of class library. (in progress)
+            java.util.concurrency: integration of Doug Lea's RI package.  Goal is to
+            use unmodified code from the 166 expert group and implent whatever
+            support is needed by the VM and rest of class library. (in progress)
           </li>
           <li>
-              CORBA: re-use the Apache Yoko project (currently in incubator)
-              as the required implementation of CORBA nad related support
-              classes (in progress)
+            CORBA: re-use the Apache Yoko project (currently in incubator)
+            as the required implementation of CORBA nad related support
+            classes (in progress)
           </li>
           <li>
-              JMX: currently we have the standard MX4J jars integrated, but
-              looking to see what kind of collaboration or unification we can
-              achieve with the MX4J project. (in progress)
+            JMX: currently we have the standard MX4J jars integrated, but
+            looking to see what kind of collaboration or unification we can
+            achieve with the MX4J project. (in progress)
           </li>
           <li>
-              Test coverage - we need to greatly increase our unit tests (functionaly,
-              spec, implementation)
+            Test coverage - we need to greatly increase our unit tests (functionaly,
+            spec, implementation)
           </li>
-      </ul>
-  </subsection>
+        </ul>
+      </subsection>
 
-  <subsection name="DRLVM">
-      <p>
+      <subsection name="DRLVM">
+        <p>
           VM is a critical part of the Java SE platform.  As usual, there are many, many interesting things remaining to be done
-      </p>
+        </p>
 
-      <ul>
+        <ul>
           <li>
-              <a href="http://wiki.apache.org/harmony/CoreVmDevelopmentItems">Core VM Development Items</a>
+            <a href="http://wiki.apache.org/harmony/CoreVmDevelopmentItems">Core VM Development Items</a>
           </li>
           <li>
-              <a href="http://wiki.apache.org/harmony/JIT_Development_Tasks">JIT Development Tasks</a>
+            <a href="http://wiki.apache.org/harmony/JIT_Development_Tasks">JIT Development Tasks</a>
           </li>
           <li>
-              <a href="http://wiki.apache.org/harmony/KnownNonBugIssuesAndLimitations">Known non bug issues and limitations</a>
-              This is a list of problems known to exist in drlvm which may or may not manifest themself in tests.
+            <a href="http://wiki.apache.org/harmony/KnownNonBugIssuesAndLimitations">Known non bug issues and limitations</a>
+            This is a list of problems known to exist in drlvm which may or may not manifest themself in tests.
           </li>
           <li>
-              <a href="http://wiki.apache.org/harmony/DRLVM newbie tasks">Improve kernel classes/natives code sharing</a>
-              This is a list of isolated development tasks which do not require advanced knowledge of VM and 
-              could be a nice start for newbies to get acquainted with the code.
+            <a href="http://wiki.apache.org/harmony/DRLVM newbie tasks">Improve kernel classes/natives code sharing</a>
+            This is a list of isolated development tasks which do not require advanced knowledge of VM and
+            could be a nice start for newbies to get acquainted with the code.
           </li>
           <li>
-              <a href="http://wiki.apache.org/harmony/TODO_Items">TODO Items</a>
+            <a href="http://wiki.apache.org/harmony/TODO_Items">TODO Items</a>
           </li>
           <li>
-              <a href="http://wiki.apache.org/harmony/Documentation_TODO">Documentation TODO</a>
+            <a href="http://wiki.apache.org/harmony/Documentation_TODO">Documentation TODO</a>
           </li>
-      </ul>
+        </ul>
+      </subsection>
+      <subsection name="Porting Matrix">
+        <p>
+          Another motivation of the Harmony project is to provide a
+          portable implementation that is available on many
+          platforms and operating systems.  Currently, our interests
+          are:
+        </p>
+        <table>
+          <tr>
+            <td></td>
+            <th>Windows 2000</th>
+            <th>
+              Windows <br>XP, 2003, Vista</br>
+            </th>
+            <th>
+              Linux <br>RHEL, SLES, Debian, Gentoo, Ubuntu, Fedora</br>
+            </th>
+            <th>FreeBSD</th>
+            <th>AIX</th>
+            <th>OS X</th>
+          </tr>
+          <tr>
+            <th>
+              IA32 <br>(SSE/SSE2&#xA0;only)</br>
+            </th>
+            <td>?</td>
+            <td>+</td>
+            <td>+</td>
+            <td>?</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>
+              x86_64 <br>(EM64T, AMD64)</br>
+            </th>
+            <td></td>
+            <td>?</td>
+            <td>+</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>
+              Itanium <br>(IA64, IPF)</br>
+            </th>
+            <td></td>
+            <td>?</td>
+            <td>+</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>PPC32</th>
+            <td></td>
+            <td></td>
+            <td>?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>PPC64</th>
+            <td></td>
+            <td></td>
+            <td>?</td>
+            <td></td>
+            <td>?</td>
+            <td></td>
+          </tr>
+          <tr>
+            <th>zSeries (31 bit)</th>
+            <td></td>
+            <td></td>
+            <td>?</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
+        <p>
+          <b>Legend</b>
+          <dl>
+            <dt>&quot;+&quot;</dt>
+            <dd>Supported (sure-to-work)</dd>
+            <dt>&quot;?&quot;</dt>
+            <dd>In progress</dd>
+            <dt>&quot;-&quot;</dt>
+            <dd>Will Not Support</dd>
+            <dt>&quot; &quot; (empty)</dt>
+            <dd>N/A or Maybe</dd>
+          </dl>
+        </p>
 
-  </subsection>
-
-  <subsection name="Porting Matrix">
-  <p>
-    Another motivation of the Harmony project is to provide a
-      portable implementation that is available on many
-      platforms and operating systems.  Currently, our interests
-      are:
-   </p>
-    <table>
-        <tr>
-          <td></td><th>Windows 2000</th><th>Windows <br>XP, 2003, Vista</br></th><th>Linux <br>RHEL, SLES, Debian, Gentoo, Ubuntu, Fedora</br></th><th>FreeBSD</th><th>AIX</th><th>OS X</th>
-        </tr>      
-        <tr>
-            <th>IA32 <br>(SSE/SSE2&#xA0;only)</br></th><td>?</td><td>+</td><td>+</td><td>?</td><td></td><td></td>
-        </tr>
-        <tr>
-            <th>x86_64 <br>(EM64T, AMD64)</br></th><td></td><td>?</td><td>+</td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-            <th>Itanium <br>(IA64, IPF)</br></th><td></td><td>?</td><td>+</td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-            <th>PPC32</th><td></td><td></td><td>?</td><td></td><td></td><td></td>
-        </tr>
-        <tr>
-            <th>PPC64</th><td></td><td></td><td>?</td><td></td><td>?</td><td></td>
-        </tr>
-        <tr>
-            <th>zSeries (31 bit)</th><td></td><td></td><td>?</td><td></td><td></td><td></td>
-        </tr>
-    </table>
-   <p>
-    <b>Legend</b>
-    <dl>
-    <dt>&quot;+&quot;</dt> <dd>Supported (sure-to-work)</dd> 
-    <dt>&quot;?&quot;</dt> <dd>In progress</dd> 
-    <dt>&quot;-&quot;</dt> <dd>Will Not Support</dd>
-    <dt>&quot; &quot; (empty)</dt> <dd>N/A or Maybe</dd>
-    </dl>
-   </p>
-
-  </subsection>
-
-  <subsection name="Application-Driven Project Advancement">
-
-      <p>
+      </subsection>
+      <subsection name="Application-Driven Project Advancement">
+        <p>
           As we now have a fairly usable class library and virtual machine, we wish to
           make it easy for the broad Java user community to help us ensure that
           the Harmony class library supports the classes necessary for the most popular
@@ -427,24 +518,27 @@
           first, enabling even more users to test our software and participate in
           the project.  So far, there have been a few tools donated, but no concerted
           effort to package for ease of use.
-      </p>
+        </p>
 
-      <ul>
+        <ul>
           <li>
-              <a href="https://issues.apache.org/jira/browse/HARMONY-165">Harmony-165</a>
-              - tool to compare an applications required classes
-                with what is available in Harmony
+            <a href="https://issues.apache.org/jira/browse/HARMONY-165">Harmony-165</a>
+            - tool to compare an applications required classes
+            with what is available in Harmony
           </li>
           <li>
-              <a href="https://issues.apache.org/jira/browse/HARMONY-565">
-              Harmony-565</a> - another tool for reporting class coverage for applications
+            <a href="https://issues.apache.org/jira/browse/HARMONY-565">
+              Harmony-565
+            </a> - another tool for reporting class coverage for applications
           </li>
-      </ul>
-    </subsection>
+        </ul>
+      </subsection>
 
-</section>
+    </section>
 
-</body>
+  </body>
 </document>
+
+
 
 

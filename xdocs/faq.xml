@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
   
        http://www.apache.org/licenses/LICENSE-2.0
   
@@ -16,191 +15,202 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-  
+
 <document>
 
- <properties>
-  <title>Frequently Asked Questions</title>
-  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
- </properties>
+    <properties>
+        <title>Frequently Asked Questions</title>
+        <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    </properties>
 
- <body>	
-  <section name="General">
+    <body>
+        <section name="General">
+           <dl><dt>How do I subscribe to the mail list?</dt>
+                    <dd>
+                        You can subscribe by sending an email to
+                        <a href="mailto:dev-subscribe@harmony.apache.org">dev-subscribe@harmony.apache.org</a>.
+                        You will receive a confirmation request that you must respond to.
+                        After that, you can post to the dev list
+                        <a href="mailto:dev@harmony.apache.org">dev@harmony.apache.org</a>.
+                        Please see our <a href="mailing.html">mailing list</a> page for
+                        more information.
+         </dd>
+               </dl>
+        </section>
+        <section name="Technical">
+            <dl>
+                <dt>When building the classlibrary, ant crashes with a compiler error, a
+                            heap error, or a reflection error.</dt>
+                    <dd>
+                        These problems are all symptomatic of running out of java heap for ant. The
+                        solution is to set the <code>ANT_OPTS</code> environment variable to something bigger than
+                        the default. At the time of this writing, best practice is to set:
+                     <pre>set ANT_OPTS="-Xmx256M"</pre>
+                </dd>
+            </dl>
+        </section>
+        <section name="Original FAQ Questions from Project Launch">
+            <dl>
+                <dt>Why are you doing this?</dt>
+                    <dd>
+                        We believe that there is broad community interest in coming together to create
+                        and use an open source, compatible implementation of J2SE 5, the latest version
+                        of the Java 2 Standard Edition specification.
+                    </dd>
+                               <dt>What version of Java will you be implementing?</dt>
+                   <dd>
+                        We are starting with Java SE 5, as that is the first version of Java SE for which the
+                        licensing allows an open source implementation, but we'll continue with Java SE 6 and
+                        any subsequent versions that follow.
+                    </dd>
+                <dt>Why haven't you done this before?</dt>
+                   <dd>
+                        While the Java Community Process has allowed open source implementations of JSRs
+                        for a few years now, Java 5 is the first of the J2SE specs that we are able to do
+                        due to licensing reasons.
+                    </dd>
+                <dt>Are you doing this to attack Sun?</dt>
+                   <dd>
+                        No, of course we aren't. Apache doesn't support projects that attack any entity,
+                        corporate or otherwise. Sun has been a long-time supporter of Apache and Apache projects,
+                        and Apache has a wide variety of projects that are implementations of Java specifications,
+                        such as Apache Geronimo, Apache Tomcat, Pluto, taglibs, etc.<br />
+                        This project is open to every interested member of the Java community, and every
+                        interested member is welcome to participate in whatever manner they choose.
+                    </dd>
+                <dt>Are you doing this because Sun refuses to release their source for J2SE
+                            under an open source license?
+                    </dt>
+                    <dd>
+                        Not really. We would welcome Sun doing that (as well as anyone else w/ a J2SE implementation!)
+                        as it would save us a lot of time, and we wholeheartedly encourage them to do so ;) but Sun
+                        has the right to do what it chooses with it's intellectual property.
+                        Since we started the project, Sun has announced that they will be open sourcing their implementation, and they've
+                        started the process. Of course, we'll continue to develop Apache Harmony - multiple independent implelentations
+                        of Java SE is good for the Java ecosystem.
+                    </dd>
+               
+                   <dt>
+                        Will your implementation be compatible with the specification?
+                    </dt>
+                    <dd>
+                        Yes
+                    </dd>
+                                    <dt>How will you know?
+                    </dt>
+                    <dd>
+                        We are going to test it with the TCK from Sun.
+                </dd>
+                    <dt>How will you license the TCK from Sun.  Isn't it expensive?</dt>
+                    <dd>
+                        Sun offers scholarships to qualified non-profits, academics and individuals.
+                        Apache is a qualified non-profit, and has benefitted from this scholarship before,
+                        with the J2EE 1.4 TCK license and support for the Apache Geronimo project, among others.
+                   <br />
+                    We will apply for the scholarship, and hope that Sun will grant us the license
+                    and support needed for us to do a good job.
+                </dd>
+                    <dt>
+                        How long will it take?
+                    </dt>
+                    <dd>
+                        It will be done when it's done :) This will take a long time, but we hope that
+                        contributions from around the community will help us along the way.
+                    </dd>
+                    <dt>Do you have any code to start?
+                    </dt>
+                    <dd>
+                        No, we don't. We didn't want to "bless" any given implementation that might be donated
+                        (if such a thing could happen) but would rather let the community decide how it will
+                        create and develop the platform.
+                    </dd>
+                    <dt>Will you accept SWT if IBM offers it?</dt>
+                    <dd>
+                        Apache is always grateful for contributions from wherever they come, and IBM has a record
+                        of contributions to open source, but it would up to the project community to
+                        decide whether any particular contribution was used in the project.
+                    </dd>
+                
+                                  <dt>Why are you going to have an architecture thread?</dt>
+                    <dd>
+                        We wanted a way that we could bring together people from all over the Java community,
+                        even other open-source projects that are related. We welcome everyone to the discussion,
+                        no matter what license they choose to implement under, be it a free software license,
+                        an open source license or a proprietary license. We are here to open discussion and learning,
+                        and to design a great architecture for J2SE platforms.
+                    <br />
+                    At Apache, we think that a strong, diverse, meritocratic community is what makes a good
+                    open source project, and we want to be sure that everyone can participate in some way.
+                </dd>
+                <dt>Does this compete with Kaffe and Classpath?</dt>
+                    <dd>
+                        People from Kaffe and Classpath are helping start this project!
+                        Their experience in the open source VM and class library is invaluable,
+                        and they bring problems that the larger architecture community discussion can help solve.
+                    <br />
+                    We will have an implementation under the Apache License, but we think of this as
+                    complementary rather than competitive. And when we solve a few small license
+                    interoperability issues, we expect we'll be able to complement each other even more.
+                </dd>
+                <dt>How will you ensure that the intellectual property of Sun and others is respected?</dt>
+                                        <dd>
+                        Good question - this is a very important issue for us. There are several ways, but this
+                        will be a topic for the community to work on at the beginning. So far we've thought of:
+                                        <ul>
+                        <li>
+                            We shall ask any person that would be a committer to declare what kind of
+                            non-open-source class library or VM source code they have been exposed to,
+                            and allow us to keep them from participating in the related parts
+                            of the codebase where they may inadvertently violate the IP rights of someone else.
+                        </li>
+                        <li>
+                            We shall require that any code contribution that isn't a new, original work of
+                            authorship created expressly for the Apache Harmony project be subject to the
+                            standard Apache process for provenance and licensing to ensure that we have
+                            an accurate record of every contribution that wasn't created expressly inside
+                            the Apache Harmony project.
+                        </li>
+                        <li>
+                            We would like to perform continuous "surveillance" on the codebase we are building,
+                            and compare to class library and VMs from elsewhere, like Sun, IBM, BEA, Kaffe,
+                            etc to ensure that no code from those efforts become part of Apache Harmony
+                            without our knowledge. We do this to protect ourselves, our users, and of course
+                            those other efforts. We don't know yet how to do this, but are exploring ideas
+                            such as having a third party such as Black Duck or an existing licensee (or Sun!)
+                            do this for us. This, like all the topics herein, are open for discussion an change
+                            by the community.
+                        </li>
+                        <li>
+                            Anything anyone can think of!
+                        </li>
+                    </ul>
+                </dd>
+                    <dt>Won't this lead to fragmentation in the Java community?
+                    </dt>
+                    <dd>
+                        We don't think so. Our intent is to bring people together, let us share what we know,
+                        solve common problems, and collaborate on things where we can. A diverse Java community
+                        is a healthy Java community. Multiple implementations of the Java specifications show
+                        the value of Java - that we do have a specification, that anyone is free to make
+                        a compatible implementation, and that users of Java have the opportunity to run their Java
+                        code in more places, on more platforms. This is the central promise of Java, and we
+                        think that our efforts support this.
+                    </dd>
+                        <dt>
+                            How can I get involved and help influence and shape this proposal?
+                            Or is it too late?
+                        </dt>
+                    <dd>
+                        Join the community and participate! It's never too late! We're just getting started,
+                        and everything is open to discussion - the community will change what the
+                        community wants to change. What we do in this project is decided by those participating
+                        in the project. This is the Apache Software Foundation - collaborative, meritocratic,
+                        and community-based.
+                    </dd>
+              </dl>
 
-     <ol start="0">
-	<li>
-		<strong>How do I subscribe to the mail list?</strong>
-		<br />
-		You can subscribe by sending an email to dev-subscribe@harmony.apache.org
-		you will receive a confirmation request that you must respond to.
-		After that, you can post to the dev list dev@harmony.apache.org. 
-		Please see our <a href="mailing.html">mailing list</a> page for 
-		more information.
-		</li>
-	</ol>	
-  </section>
-  
-  <section name="Technical">
-  
-     <ol start="0">
-	<li>
-	<strong>When building the classlibrary, ant crashes with a compiler error, a
-	heap error, or a reflection error.</strong>
-	<br/>
-	These problems are all symptomatic of running out of java heap for ant.  The 
-	solution is to set the ANT_OPTS environment variable to something bigger than
-	the default.  At the time of this writing, best practice is to set 
-	<blockquote>
-	set ANT_OPTS="-Xmx256M"
-	</blockquote>
-	</li>  
-	</ol>  
-  </section>
-  
-  
-  <section name="Original FAQ Questions from Project Launch">
-     <ol start="0">
-     <li>
-		<strong>Why are you doing this?</strong>
-		<br />
-		We believe that there is broad community interest in coming together to create and use an open source,
-		compatible implementation of J2SE 5, the latest version of the Java 2 Standard Edition specification.
-		</li>
-	<li>
-		<strong>What version of Java will you be implementing?</strong>
-		<br />
-		We are starting with Java SE 5, as that is the first version of Java SE for which the 
-		licensing allows an open source implementation, but we'll continue with Java SE 6 and
-		any subsequent versions that follow.
-	</li>
-	<li>
-		<strong>Why haven't you done this before?</strong>
-		<br />
-		While the Java Community Process has allowed open source implementations of JSRs for a few years now, 
-		Java 5 is the first of the J2SE specs that we are able to do due to licensing reasons.
-	</li>
-	<li>
-		<strong>Are you doing this to attack Sun?</strong>
-		<br />
-		No, of course we aren't. Apache doesn't support projects that attack any entity, corporate or otherwise.
-		<br />
-		Sun has been a long-time supporter of Apache and Apache projects, and Apache has a wide variety of projects 
-		that are implementations of Java specifications, such as Apache Geronimo, Apache Tomcat, Pluto, taglibs, etc.
-		<br />
-		This project is open to every interested member of the Java community, and every interested member is welcome
-		to participate in whatever manner they choose.
-	</li>
-	<li>
-		<strong>Are you doing this because Sun refuses to release their source for J2SE under an open source license?</strong>
-		<br />
-		Not really.  We would welcome Sun doing that (as well as anyone else w/ a J2SE implementation!) as it would save us a 
-		lot of time, and we wholeheartedly encourage them to do so ;)  but Sun has the right to do what it chooses with it's intellectual property.
-		Since we started the project, Sun has announced that they will be open sourcing their implementation, and they've
-		started the process.  Of course, we'll continue to develop Apache Harmony - multiple independent implelentations
-		of Java SE is good for the Java ecosystem.
-	</li>
-	<li>
-		<strong>Will your implementation be compatible with the specification?</strong>
-		<br />
-		Yes
-	</li>
-	<li>
-		<strong>How will you know?</strong>
-		<br />
-		We are going to test it with the TCK from Sun.
-	</li>
-	<li>
-		<strong>How will you license the TCK from Sun.  Isn't it expensive?</strong>
-		<br />
-		Sun offers scholarships to qualified non-profits, academics and individuals. 
-		Apache is a qualified non-profit, and has benefitted from this scholarship before, 
-		with the J2EE 1.4 TCK license and support for the Apache Geronimo project, among others.
-		<br />
-		We will apply for the scholarship, and hope that Sun will grant us the license and support needed for us to do a good job.
-	</li>
-	<li>
-		<strong>How long will it take?</strong>
-		<br />
-		It will be done when it's done :)  This will take a long time, but we hope that contributions from around the community will help us along the way.
-	</li>
-	<li>
-		<strong>Do you have any code to start?</strong>
-		<br />
-		No, we don't.  We didn't want to "bless" any given implementation that might be donated 
-		(if such a thing could happen) but would rather let the community decide how it will create and develop the platform.
-	</li>
-	<li>
-		<strong>Will you accept SWT if IBM offers it?</strong>
-		<br />
-		Apache is always grateful for contributions from wherever they come, and IBM has a record of contributions 
-		to open source,  but it would up to the project community to decide whether any particular contribution was used in the project.
-	</li>
-	<li>
-		<strong>Why are you going to have an architecture thread?</strong>
-		<br />
-		We wanted a way that we could bring together people from all over the Java community, 
-		even other open-source projects that are related.  We welcome everyone to the discussion,
-		no matter what license they choose to implement under, be it a free software license, 
-		an open source license or a proprietary license.  We are here to open discussion and learning, 
-		and to design a great architecture for J2SE platforms.
-		<br />
-		At Apache, we think that a strong, diverse, meritocratic community is what makes a good open source project, 
-		and we want to be sure that everyone can participate in some way.
-	</li>
-	<li>
-		<strong>Does this compete with Kaffe and Classpath?</strong>
-		<br />
-		People from Kaffe and Classpath are helping start this project! 
-		Their experience in the open source VM and class library is invaluable, 
-		and they bring problems that the larger architecture community discussion can help solve.
-		<br />
-		We will have an implementation under the Apache License, but we think of this as complementary rather than competitive. 
-		And when we solve a few small license interoperability issues, we expect we'll be able to complement each other even more.
-	</li>
-	<li>
-		<strong>How will you ensure that the intellectual property of Sun and others is respected?</strong>
-		<br />
-		Good question - this is a very important issue for us.  There are several ways, but this will be a topic
-		 for the community to work on at the beginning.  So far we've thought of :
-		<ol>
-			<li>We shall ask any person that would be a committer to declare what kind of non-open-source class library 
-			or VM source code they have been exposed to, and allow us to keep them from participating in the related parts 
-			of the codebase where they may inadvertently violate the IP rights of someone else.
-			</li> 
-			<li> We shall require that any code contribution that isn't a new, original work of authorship created expressly 
-			for the Apache Harmony project be subject to the standard Apache process for provenance and licensing to ensure 
-			that we have an accurate record of every contribution that wasn't created expressly inside the Apache Harmony project.
-			</li>
-			<li>We would like to perform continuous "surveillance" on the codebase we are building, and compare to class library
-			 and VMs from elsewhere, like Sun, IBM, BEA, Kaffe, etc to ensure that no code from those efforts become part of Apache Harmony
-			 without our knowledge.  We do this to protect ourselves, our users, and of course those other efforts.  
-			 We don't know yet how to do this, but are exploring ideas such as having a third party such as Black Duck or 
-			 an existing licensee (or Sun!) do this for us.  This, like all the topics herein, are open for discussion an change by the community.
-			</li> 
-			<li>Anything anyone can think of!
-			</li>
-		</ol>
-	</li>
-	<li>
-		<strong>Won't this lead to fragmentation in the Java community?</strong>
-		<br />
-		We don't think so.  Our intent is to bring people together, let us share what we know, 
-		solve common problems, and collaborate on things where we can.  A diverse Java community is a healthy Java community.  
-		Multiple implementations of the Java specifications show the value of Java - that we do have a specification, 
-		that anyone is free to make a compatible implementation, and that users of Java have the opportunity to run 
-		their Java code in more places, on more platforms.  This is the central promise of Java, and we think that our efforts support this.
-	</li> 
-	<li>
-		<strong>How can I get involved and help influence and shape this proposal? Or is it too late?</strong>
-		<br />
-		Join the community and participate!  It's never too late!   We're just getting started, and everything is open
-		to discussion - the community will change what the community wants to change.   What we do in this project is decided
-		by those participating in the project.  This is the Apache Software Foundation - collaborative, meritocratic, and community-based.
-	</li>
-</ol>
+        </section>
 
-</section>
-
-</body>
+    </body>
 </document>
-   
+

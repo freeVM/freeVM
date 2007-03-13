@@ -1,10 +1,10 @@
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -17,913 +17,711 @@
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-   <head>
-      <meta http-equiv="Content-Type" content=
+<head>
+    <meta http-equiv="Content-Type" content="
       "text/html; charset=ISO-8859-1">
-      <title>
-         Debugging DRL Virtual Machine and JIT Compiler
-      </title>
-   </head>
-   <body>
-      <h1>
-         <a name="top"></a>Debugging the DRL Virtual Machine and the
-         JIT Compiler
-      </h1>
-      <p>
-         This document gives practical instructions on how to debug
-         the DRL virtual machine and its baseline just-in-time
-         compiler Jitrino.JET. For a definition of components and
-         details on their internal structure, consult the <i>DRL
-         Virtual Machine Developer&rsquo;s Guide</i> supplied with
-         the DRLVM image.
-      </p>
-      <p>
-         The document includes two groups of debugging tips, one for
-         VM tips, and the other for JIT compiler tips, as shown
-         below.
-      </p>
-      
-      <p>
-         <a href="#Debugging_VM">Debugging the Virtual Machine</a>
-      </p>
-      <blockquote>
-         <p>
+    <title>Debugging DRL Virtual Machine and JIT Compiler </title>
+</head>
+<body>
+    <h1>
+        <a name="top"></a>Debugging the DRL Virtual Machine and the JIT Compiler
+    </h1>
+    <p>
+        This document gives practical instructions on how to debug the DRL virtual machine
+        and its baseline just-in-time compiler Jitrino.JET. For a definition of components
+        and details on their internal structure, consult the <a href="../../subcomponents/drlvm/developers_guide.html">
+            DRL Virtual Machine Developer&rsquo;s Guide</a> supplied with the DRLVM image.
+    </p>
+    <p>
+        The document includes two groups of debugging tips, one for VM tips, and the other
+        for JIT compiler tips, as shown below.
+    </p>
+    <p>
+        <a href="#Debugging_VM">Debugging the Virtual Machine</a>
+    </p>
+    <blockquote>
+        <p>
             <a href="#How_to_debug_VM">How to debug the VM?</a>
-         </p>
-         <p>
-            <a href="#Extended_Debug_VM">How to get more of your
-            debugging?</a>
-         </p>
-      </blockquote>
-      <p>
-         <a href="#Debugging_JIT">Debugging the Jitrino.JET Baseline
-         Compiler</a>
-      </p>
-      <blockquote>
-         <p>
-            <a href="#Enable_Tracing">How to enable tracing in
-            Jitrino.JET?</a>
-         </p>
-         <p>
-            <a href="#Config_Trace_Logging">How to configure trace
-            logging?</a>
-         </p>
-         <p>
-            <a href="#Extend_Trace_JIT">How to get more of your
-            tracing?</a>
-         </p>
-      </blockquote>
-    
-       <p>
-         <a href="#top">Back to top</a>
-      </p>
-      <h1>
-         <a name="Debugging_VM">Debugging the Virtual Machine</a>
-      </h1>
-      <p>
-         This section gives an insight into debugging the DRL virtual
-         machine version 1.0 and provides tips on resolving
-         non-standard debugging issues.
-      </p>
-      <h2>
-         <a name="How_to_debug_VM">How to debug the VM?</a>
-      </h2>
-      <p>
-         This section gives instructions on different scenarios of
-         debugging the VM source code.
-      </p>
-      <h3>
-         Basic Debugging Steps
-      </h3>
-      <p>
-         For ordinary tests, start the ij executable with the
-         debugger enabled, as follows:
-      </p>
-      <p>
-         <strong>On Windows<a href="#*">*</a></strong>
-      </p>
-      <ol>
-         <li>
-            Start Microsoft Visual Studio<a href="#*">*</a> and open
-            the solution file <code>vm\build\vm.sln</code>.
-         </li>
-         <li>
-            Open the source code that you need to debug, set
-            breakpoints and perform all other preliminary steps.
-         </li>
-         <li>
-            Select the vmcore project and open its properties to
-            specify the location of the <code>ij</code> executable.
-            Select the <strong>Debugging</strong> tab and specify the
-            command and command arguments.
-         </li>
-         <li>
-            Copy the ZLib tool library <code>zlib1.dll</code> to the
-            location of the VM executable.
-         </li>
-         <li>
-            Start debugging via the menu <strong>Debug</strong> &gt;
-            <strong>Start</strong>, click <strong>NO</strong> in the
-            popup dialog offering to build the project.
-         </li>
-      </ol>
-      <p>
-         <strong>On Linux<a href="#*">*</a></strong>
-      </p>
-      <ol>
-         <li>
-            Set up the <code>LD_LIBRARY_PATH</code> to point to the
-            <code>deploy/jre/bin</code> directory. Change the working
-            directory to the location of the VM executable and run: 
-<pre>
+        </p>
+        <p>
+            <a href="#Extended_Debug_VM">How to get more of your debugging?</a>
+        </p>
+    </blockquote>
+    <p>
+        <a href="#Debugging_JIT">Debugging the Jitrino.JET Baseline Compiler</a>
+    </p>
+    <blockquote>
+        <p>
+            <a href="#Enable_Tracing">How to enable tracing in Jitrino.JET?</a>
+        </p>
+        <p>
+            <a href="#Config_Trace_Logging">How to configure trace logging?</a>
+        </p>
+        <p>
+            <a href="#Extend_Trace_JIT">How to get more of your tracing?</a>
+        </p>
+    </blockquote>
+    <p>
+        <a href="#top">Back to top</a>
+    </p>
+    <h1>
+        <a name="Debugging_VM">Debugging the Virtual Machine</a>
+    </h1>
+    <p>
+        This section gives an insight into debugging the DRL virtual machine version 1.0
+        and provides tips on resolving non-standard debugging issues.
+    </p>
+    <h2>
+        <a name="How_to_debug_VM">How to debug the VM?</a>
+    </h2>
+    <p>
+        This section gives instructions on different scenarios of debugging the VM source
+        code.
+    </p>
+    <h3>
+        Basic Debugging Steps
+    </h3>
+    <p>
+        For ordinary tests, start the ij executable with the debugger enabled, as follows:
+    </p>
+    <p class="class">
+        On Windows<a href="#*">*</a></p>
+    <ol>
+        <li>Start Microsoft Visual Studio<a href="#*">*</a> and open the solution file <code>
+            vm\build\vm.sln</code>. </li>
+        <li>Open the source code that you need to debug, set breakpoints and perform all other
+            preliminary steps. </li>
+        <li>Select the vmcore project and open its properties to specify the location of the
+            <code>ij</code> executable. Select the <strong>Debugging</strong> tab and specify
+            the command and command arguments. </li>
+        <li>Copy the ZLib tool library <code>zlib1.dll</code> to the location of the VM executable.
+        </li>
+        <li>Start debugging via the menu <strong>Debug</strong> &gt; <strong>Start</strong>,
+            click <strong>NO</strong> in the popup dialog offering to build the project. </li>
+    </ol>
+    <p class="class">
+        On Linux<a href="#*">*</a></p>
+    <ol>
+        <li>Set up the <code>LD_LIBRARY_PATH</code> to point to the <code>deploy/jre/bin</code>
+            directory. Change the working directory to the location of the VM executable and
+            run:
+            <pre>
 gdb ij
 </pre>
-         </li>
-         <li>
-            Set breakpoints and perform all other preliminary steps.
-         </li>
-         <li>
-            On the command line, specify debugging parameters by
-            typing: 
-<pre>
+        </li>
+        <li>Set breakpoints and perform all other preliminary steps. </li>
+        <li>On the command line, specify debugging parameters by typing:
+            <pre>
 run &lt;your_params&gt;
 </pre>
-         </li>
-      </ol>
-      <p>
-         <a href="#top">Back to top</a>
-      </p>
-      <h3>
-         Attaching the Debugger to the Live Process
-      </h3>
-      <p>
-         To attach to the running VM process, do the following:
-      </p>
-      <p>
-         <strong>On Windows<a href="#*">*</a></strong>
-      </p>
-      <ol>
-         <li>
-            Start Visual Studio<a href="#*">*</a> .
-         </li>
-         <li>
-            Go <strong>Debug</strong> &gt;
-            <strong>Processes</strong>.
-         </li>
-         <li>
-            Select the VM process and click
-            <strong>Attach</strong>.<br>
-             If you built the VM in the debug mode, the
-            <strong>Microsoft Debug Runtime</strong> window appears.
-            Click the <strong>Debug</strong> button to go to the
-            crash point.
-         </li>
-      </ol>
-      <p>
-         <strong>On Linux<a href="#*">*</a></strong>
-      </p>
-      <p>
-         Run:
-      </p>
-<pre>
+        </li>
+    </ol>
+    <p>
+        <a href="#top">Back to top</a>
+    </p>
+    <h3>
+        Attaching the Debugger to the Live Process
+    </h3>
+    <p>
+        To attach to the running VM process, do the following:
+    </p>
+    <p class="class">
+        On Windows<a href="#*">*</a></p>
+    <ol>
+        <li>Start Visual Studio<a href="#*">*</a> . </li>
+        <li>Go <strong>Debug</strong> &gt; <strong>Processes</strong>. </li>
+        <li>Select the VM process and click <strong>Attach</strong>.<br>
+            If you built the VM in the debug mode, the <strong>Microsoft Debug Runtime</strong>
+            window appears. Click the <strong>Debug</strong> button to go to the crash point.
+        </li>
+    </ol>
+    <p class="class">
+        On Linux<a href="#*">*</a></p>
+    <p>
+        Run:
+    </p>
+    <pre>
 gdb &ndash;p &lt;PID of ij&gt;
 </pre>
-      <p>
-         If the VM crashed during execution, use the core dump to
-         analyze the crash:
-      </p>
-<pre>
+    <p>
+        If the VM crashed during execution, use the core dump to analyze the crash:
+    </p>
+    <pre>
 gdb ij core
 </pre>
-      <p>
-         <a href="#top">Back to top</a>
-      </p>
-      <h2>
-         <a name="Extended_Debug_VM">How to get more from your
-         debugging?</a>
-      </h2>
-      <p>
-         This section includes some tips on optimizing the debug
-         process and getting more debug information.
-      </p>
-      <h3>
-         Configuration of tracing
-      </h3>
-      <p>
-         Consult the <i>Getting Started</i> guide delivered with
-         DRLVM bundle for information on VM standard and non-standard
-         configuration options. Tracing-related options might be
-         useful for debugging purposes.
-      </p>
-      <h3>
-         Native stack examination
-      </h3>
-      <p>
-         The debugger might draw the stack incorrectly when the JIT
-         or native stubs are involved. To avoid this, set esp as the
-         memory location and 4-byte integer values as the output
-         format. As a result, you can examine the stack word by word
-         and look into the code for each number 0x00&hellip; by using
-         the Disassembly window.
-      </p>
-      <blockquote>
-         <p style="font-weight: bold">
-            When the VM has crashed
-         </p>
-         <p>
-            A very specific case on Windows<a href="#*">*</a>: the VM
-            has crashed and you only see the stack frame in the call
-            stack <code>0x00000000</code>. This means that the
-            program has jumped or called to a null pointer.
-         </p>
-         <p>
-            You might still get the stack trace. For that, do the
-            following:
-         </p>
-         <ol>
-            <li>
-               Open the <strong>Disassembly</strong> window.
-            </li>
-            <li>
-               Find any ret instruction with no parameters in the
-               memory space.<br>
-                Open any source file, open the context menu, and
-               select <strong>Go</strong> to
-               <strong>Disassembly</strong> to find any
-               <code>ret</code> instruction.
-            </li>
-            <li>
-               When found, select the ret instruction and click
-               <strong>Set Next Statement</strong> in the context
-               menu.
-            </li>
-            <li>
-               Type <code>F11</code> to go a single instruction.<br>
-                You may see several instructions near the current
-               point of execution. If you see a call instruction, you
-               have found an appropriate call site and you can see
-               the call stack in the <strong>Call Stack</strong>
-               window. If you have found a wrong call site, repeat
-               the instruction from step 2.
-            </li>
-         </ol>
-      </blockquote>
-      <p>
-         <a href="#top">Back to top</a>
-      </p>
-      <h3>
-         Java<a href="#*">*</a> stack examination
-      </h3>
-      <p>
-         <strong>On Windows<a href="#*">*</a></strong>
-      </p>
-      <p>
-         Running the VM in the interpreter mode, you can get Java<a
-         href="#*">*</a> methods stack trace almost at any point of
-         execution. For that, break the execution of the VM and
-         select the <strong>Interpreter</strong> frame in the Visual
-         Studio<a href="#*">*</a> <strong>Call Stack</strong> window.
-         Then, in the watch window, add the watch
-         <code>stack_dump()</code>. The stack dump appears in VM
-         output window. Running the VM in the JIT mode, use the
-         <code>st_print()</code> function for the same purpose.
-      </p>
-      <p>
-         <strong>On Linux<a href="#*">*</a></strong>
-      </p>
-      <p>
-         Use the <code>gdb</code> command print and specify the
-         <code>stack_dump</code> or <code>st_print</code> in the
-         interpreter or the JIT compiler mode respectively.
-      </p>
-      <h3>
-         Setting smart breakpoints
-      </h3>
-      <p>
-         <strong>On Windows<a href="#*">*</a> / IA-32</strong>
-      </p>
-      <p>
-         Place breakpoints in source code by inserting calls to the
-         _CrtDbgBreak() function. Placing the call inside a condition
-         calls the function only for the specified case you need to
-         debug. Analogously, you can use the Windows<a href=
-         "#*">*</a> API function DebugBreak() or print INT 3.
-      </p>
-      <p>
-             <strong>Note</strong><br>
-              This requires recompiling the VM.
-      </p>
-      <p>
-         <strong>On Linux<a href="#*">*</a></strong>
-      </p>
-      <p>
-         Run the following:
-      </p>
-<pre>
+    <p>
+        <a href="#top">Back to top</a>
+    </p>
+    <h2>
+        <a name="Extended_Debug_VM">How to get more from your debugging?</a>
+    </h2>
+    <p>
+        This section includes some tips on optimizing the debug process and getting more
+        debug information.
+    </p>
+    <h3>
+        Configuration of tracing
+    </h3>
+    <p>
+        Consult the <a href="../../subcomponents/drlvm/getting_started.html">Getting Started
+            guide</a> delivered with DRLVM bundle for information on VM standard and non-standard
+        configuration options. Tracing-related options might be useful for debugging purposes.
+    </p>
+    <h3>
+        Native stack examination
+    </h3>
+    <p>
+        The debugger might draw the stack incorrectly when the JIT or native stubs are involved.
+        To avoid this, set esp as the memory location and 4-byte integer values as the output
+        format. As a result, you can examine the stack word by word and look into the code
+        for each number 0x00&hellip; by using the Disassembly window.
+    </p>
+    <p class="class">
+        When the VM has crashed
+    </p>
+    <p>
+        A very specific case on Windows<a href="#*">*</a>: the VM has crashed and you only
+        see the stack frame in the call stack <code>0x00000000</code>. This means that the
+        program has jumped or called to a null pointer.
+    </p>
+    <p>
+        You might still get the stack trace. For that, do the following:
+    </p>
+    <ol>
+        <li>Open the <strong>Disassembly</strong> window. </li>
+        <li>Find any ret instruction with no parameters in the memory space.<br>
+            Open any source file, open the context menu, and select <strong>Go</strong> to <strong>
+                Disassembly</strong> to find any <code>ret</code> instruction. </li>
+        <li>When found, select the ret instruction and click <strong>Set Next Statement</strong>
+            in the context menu. </li>
+        <li>Type <code>F11</code> to go a single instruction.<br>
+            You may see several instructions near the current point of execution. If you see
+            a call instruction, you have found an appropriate call site and you can see the
+            call stack in the <strong>Call Stack</strong> window. If you have found a wrong
+            call site, repeat the instruction from step 2. </li>
+    </ol>
+    <p>
+        <a href="#top">Back to top</a>
+    </p>
+    <h3>
+        Java<a href="#*">*</a> stack examination
+    </h3>
+    <p class="class">
+        On Windows<a href="#*">*</a></p>
+    <p>
+        Running the VM in the interpreter mode, you can get Java<a href="#*">*</a> methods
+        stack trace almost at any point of execution. For that, break the execution of the
+        VM and select the <strong>Interpreter</strong> frame in the Visual Studio<a href="#*">*</a>
+        <strong>Call Stack</strong> window. Then, in the watch window, add the watch <code>stack_dump()</code>.
+        The stack dump appears in VM output window. Running the VM in the JIT mode, use
+        the <code>st_print()</code> function for the same purpose.
+    </p>
+    <p class="class">
+        On Linux<a href="#*">*</a></p>
+    <p>
+        Use the <code>gdb</code> command print and specify the <code>stack_dump</code> or
+        <code>st_print</code> in the interpreter or the JIT compiler mode respectively.
+    </p>
+    <h3>
+        Setting smart breakpoints
+    </h3>
+    <p class="class">
+        On Windows<a href="#*">*</a> / IA-32</p>
+    <p>
+        Place breakpoints in source code by inserting calls to the <code>_CrtDbgBreak()</code>
+        function. Placing the call inside a condition calls the function only for the specified
+        case you need to debug. Analogously, you can use the Windows<a href="#*">*</a> API
+        function <code>DebugBreak()</code> or print <code>INT 3</code>.
+    </p>
+    <p class="note">
+        Note</p>
+    <p class="notetext">
+        This requires recompiling the VM.</p>
+    <p class="class">
+        On Linux<a href="#*">*</a></p>
+    <p>
+        Run the following:
+    </p>
+    <pre>
 __asm {int 3}
 </pre>
-      <p>
-         <a href="#top">Back to top</a>
-      </p>
-      <h3>
-         Handling Java<a href="#*">*</a> threads as native threads
-      </h3>
-      <p>
-         DRL VM has 1:1 mapping between native threads visible in the
-         debugger and Java<a href="#*">*</a> threads.<br>
-          To work with Java<a href="#*">*</a> threads individually,
-         freeze the threads you do not need with the help of the
-         debugger, and continue execution of other threads.
-      </p>
-      <h3>
-         Debugging deadlocks with the CriticalSection synchronization
-         primitive
-      </h3>
-      <p>
-         The <code>CriticalSection</code> primitive is a common cause
-         of deadlocks. If the code has stopped at a critical section,
-         you can try to find the thread that owns this primitive.
-      </p>
-      <p>
-         <strong>On Windows<a href="#*">*</a></strong>
-      </p>
-      <p>
-         The file WinNT.H located in &lt;PlatformSDK&gt;\Include
-         contains the definition for the structure
-         _RTL_CRITICAL_SECTION, which contains the description of the
-         CriticalSection primitive. You can get the owning thread for
-         the CriticalSection primitive in a number of ways, as
-         indicated below.
-      </p>
-      <blockquote>
-         <p>
-            <strong>Lookup in Memory</strong>
-         </p>
-         <p>
-            On Windows<a href="#*">*</a>
-         </p>
-         <p>
-            While debugging the code in Visual Studio, do the
-            following:
-         </p>
-         <ol>
-            <li>
-               Go <strong>Debug</strong> &gt;
-               <strong>Windows</strong> &gt; <strong>Memory
-               1</strong>.
-            </li>
-            <li>
-               In the address line, enter the address of the critical
-               section.
-            </li>
-            <li>
-               Open the context menu and select 4-byte Integers. This
-               sets the fourth DWORD from the beginning of the
-               critical section as the owning thread ID in
-               hexadecimal representation.
-            </li>
-         </ol>
-         <p>
-                <strong>Note</strong><br>
-                 Visual Studio<a href="#*">*</a> displays thread IDs
-            in decimal representation.
-         </p>
-      </blockquote>
-      <blockquote>
-         <strong>In the watch window</strong> 
-         <p>
-            In the watch window of Visual Studio<a href="#*">*</a>,
-            insert the following:
-         </p>
-<pre>
+    <p>
+        <a href="#top">Back to top</a>
+    </p>
+    <h3>
+        Handling Java<a href="#*">*</a> threads as native threads
+    </h3>
+    <p>
+        DRL VM has 1:1 mapping between native threads visible in the debugger and Java<a
+            href="#*">*</a> threads.<br>
+        To work with Java<a href="#*">*</a> threads individually, freeze the threads you
+        do not need with the help of the debugger, and continue execution of other threads.
+    </p>
+    <h3>
+        Debugging deadlocks with the CriticalSection synchronization primitive
+    </h3>
+    <p>
+        The <code>CriticalSection</code> primitive is a common cause of deadlocks. If the
+        code has stopped at a critical section, you can try to find the thread that owns
+        this primitive.
+    </p>
+    <p class="class">
+        On Windows<a href="#*">*</a></p>
+    <p>
+        The file <code>WinNT.H</code> located in <code>&lt;PlatformSDK&gt;\Include</code>
+        contains the definition for the structure <code>_RTL_CRITICAL_SECTION</code>, which
+        contains the description of the CriticalSection primitive. You can get the owning
+        thread for the CriticalSection primitive in a number of ways, as indicated below.
+    </p>
+    <p>
+        <strong>Lookup in Memory</strong></p>
+    <p>
+        While debugging the code in Visual Studio, do the following:
+    </p>
+    <ol>
+        <li>Go <strong>Debug</strong> &gt; <strong>Windows</strong> &gt; <strong>Memory 1</strong>.
+        </li>
+        <li>In the address line, enter the address of the critical section. </li>
+        <li>Open the context menu and select 4-byte Integers. This sets the fourth DWORD from
+            the beginning of the critical section as the owning thread ID in hexadecimal representation.
+        </li>
+    </ol>
+    <p class="note">
+        Note</p>
+    <p class="notetext">
+        Visual Studio<a href="#*">*</a> displays thread IDs in decimal representation.</p>
+    <p>
+        <strong>In the watch window</strong></p>
+    <p>
+        In the watch window of Visual Studio<a href="#*">*</a>, insert the following:
+    </p>
+    <pre>
 * ((int* )&lt;cs-ptr&gt;+3)
 </pre>
-         <p>
-            Where <code>&lt;cs-ptr&gt;</code> is the address of your
-            critical section
-         </p>
-      </blockquote>
-      <p>
-         <strong>On Linux<a href="#*">*</a></strong>
-      </p>
-      <p>
-         The file <code>/usr/include/bits/pthreadtypes.h</code>
-         contains the description of the <code>pthread_mutex_t</code>
-         type. To get the ID of the thread owning the
-         <code>CriticalSection</code> primitive, in gdb execute:
-      </p>
-<pre>
+    <p>
+        Where <code>&lt;cs-ptr&gt;</code> is the address of your critical section
+    </p>
+    <p class="class">
+        On Linux<a href="#*">*</a></p>
+    <p>
+        The file <code>/usr/include/bits/pthreadtypes.h</code> contains the description
+        of the <code>pthread_mutex_t</code> type. To get the ID of the thread owning the
+        <code>CriticalSection</code> primitive, in <code>gdb</code> execute:
+    </p>
+    <pre>
 x/4w &lt;address of your mutex primitive&gt;
 </pre>
-      <p>
-         The third word in the output contains the owning thread
-         descriptor you are looking for.
-      </p>
-      <h3>
-         Getting a class name for an object
-      </h3>
-      <p>
-         You can often need to find out the class name for a Java<a
-         href="#*">*</a> object used in VM code. For example, you may
-         need to get the class name for an object of the type
-         <code>ManagedObject *</code> (which is a direct pointer to
-         the heap). For that, insert the following expression into
-         the watch window in Visual Studio on Windows<a href=
-         "#*">*</a> or print the command of <code>gdb</code> on
-         Linux<a href="#*">*</a> :
-      </p>
-      <code>((VTable*)(*((int
-      *)obj)))-&gt;clss-&gt;name-&gt;bytes</code> 
-      <p>
-         Variables of the types jobject and
-         <code>Object_Handle</code> are references to
-         <code>ManagedObject *</code> types. These structures contain
-         a single element, a pointer to <code>ManagedObject *</code>
-         type object. To use the expression above, de-reference the
-         variable, for example, substituting <code>obj</code> in the
-         expression above with a cast to <code>(ManagedObject
-         *)(*(int *)obj)</code>.
-      </p>
-      <p>
-         <a href="#top">Back to top</a>
-      </p>
-      <h1>
-         <a name="Debugging_JIT"></a>Debugging the Jitrino.JET
-         Baseline Compiler
-      </h1>
-      <p>
-         To use debugging and tracing in Jitrino.JET, use the debug
-         build or the release build with the <code>JET_PROTO</code>
-         macro defined. See the file <code>jdefs.h</code> for a
-         definition of the available flags.
-      </p>
-      <h2>
-         <a name="Enable_Tracing"></a>How to enable tracing in
-         Jitrino.JET?
-      </h2>
-      <p>
-         Currently, Jitrino.JET provides no interface or command line
-         to control tracing options. To enable tracing, set the
-         <code>compile_flags</code> variable at the entry point to
-         the method <code>Compiler::compile()</code>. At that point,
-         the global variable <code>Compiler::g_methodsSeen</code>
-         contains the ID of the method being compiled, and the
-         instance variable <code>m_fname</code> contains its fully
-         qualified name with no signature. Obtain these options
-         through a call to
-         <code>Compiler::m_infoBlock.get_flags()</code>.
-      </p>
-      <h2>
-         <a name="Config_Trace_Logging"></a>How to configure trace
-         logging?
-      </h2>
-      <p>
-         Tracing flags control compilation results output and trace
-         run-time execution, as described below. Tracing results are
-         created in each run in the directory where the
-         <code>ij</code> executable starts: compilation results are
-         in <code>jet.log</code>, and run-time output is in
-         <code>jet.rt.log</code>.
-      </p>
-      <h3>
-         Group 1: Compilation Results Tracing
-      </h3>
-      <p>
-         The following flags control tracing compilation of a method:
-      </p>
-      <ul>
-         <li>
-            <strong><code>DBG_TRACE_SUMM</code></strong> prints a
-            short summary about the compiled method: the compilation
-            status (success or failure), the name, signature,
-            bytecode size, the start and end addresses of the
-            generated code, and the compilation ID (the sequential
-            number of the method compiled by Jitrino.JET).
-         </li>
-         <li>
-            <code><strong>DBG_DUMP_BBS</strong></code> dumps the
-            bytecode and marks up basic blocks boundaries.
-         </li>
-         <li>
-            <code><strong>DBG_TRACE_CG</strong></code> prints
-            information about each compiled bytecode instruction: the
-            state of the Java<a href="#*">*</a> operand stack before
-            the instruction, the known state of local variables at
-            the given point, and the native code generated for the
-            instruction. The order instructions appear in the log
-            file is the depth-first order, the same as when
-            processing instructions during compilation. See the file
-            trace.cpp, function <code>toStr2()</code> for the legend
-            of the operand stack items print-out.
-         </li>
-         <li>
-            <strong><code>DBG_TRACE_LAYOUT</code></strong> prints the
-            results of the code layout, mostly, the address ranges
-            for the basic blocks.
-         </li>
-         <li>
-            <strong><code>DBG_DUMP_CODE</code></strong> dumps
-            generated code for the given method, the method&rsquo;s
-            actual addresses, intermixed with appropriate bytecode
-            instructions. 
-            <p>
-                   <strong>Note</strong><br>
-                    For <code>DBG_DUMP_CODE</code> and
-               <code>DBG_TRACE_CG</code>, Jitrino.JET can print
-               disassembled code in addition to raw hexadecimal
-               dumps. For that, the compiler requires an external
-               disassembler. Currently, Jitrino.JET is configured to
-               use the external library
-               <code>lwdis.dll/liblwdis.so</code> that must be
-               located in the same directory as
-               <code>jitrino.dll/libjitrino.so</code>. The name lwdis
-               stands for light weight disassembler. The library must
-               export the function <code>disasm()</code>. Refer to
-               the file trace.cpp, the <code>DISFUNC</code>
-               definition for details on calling convention and
-               signature.
+    <p>
+        The third word in the output contains the owning thread descriptor you are looking
+        for.
+    </p>
+    <h3>
+        Getting a class name for an object
+    </h3>
+    <p>
+        You can often need to find out the class name for a Java<a href="#*">*</a> object
+        used in VM code. For example, you may need to get the class name for an object of
+        the type <code>ManagedObject *</code> (which is a direct pointer to the heap). For
+        that, insert the following expression into the watch window in Visual Studio on
+        Windows<a href="#*">*</a> or print the command of <code>gdb</code> on Linux<a href="#*">*</a>
+        :
+    </p>
+    <pre>((VTable*)(*((int*)obj)))-&gt;clss-&gt;name-&gt;bytes</pre>
+    <p>
+        Variables of the types jobject and <code>Object_Handle</code> are references to
+        <code>ManagedObject *</code> types. These structures contain a single element, a
+        pointer to <code>ManagedObject *</code> type object. To use the expression above,
+        de-reference the variable, for example, substituting <code>obj</code> in the expression
+        above with a cast to <code>(ManagedObject *)(*(int *)obj)</code>.
+    </p>
+    <p>
+        <a href="#top">Back to top</a>
+    </p>
+    <h1>
+        <a name="Debugging_JIT"></a>Debugging the Jitrino.JET Baseline Compiler
+    </h1>
+    <p>
+        To use debugging and tracing in Jitrino.JET, use the debug build or the release
+        build with the <code>JET_PROTO</code> macro defined. See the file <code>jdefs.h</code>
+        for a definition of the available flags.
+    </p>
+    <h2>
+        <a name="Enable_Tracing"></a>How to enable tracing in Jitrino.JET?
+    </h2>
+    <p>
+        Currently, Jitrino.JET provides no interface or command line to control tracing
+        options. To enable tracing, set the <code>compile_flags</code> variable at the entry
+        point to the method <code>Compiler::compile()</code>. At that point, the global
+        variable <code>Compiler::g_methodsSeen</code> contains the ID of the method being
+        compiled, and the instance variable <code>m_fname</code> contains its fully qualified
+        name with no signature. Obtain these options through a call to <code>Compiler::m_infoBlock.get_flags()</code>.
+    </p>
+    <h2>
+        <a name="Config_Trace_Logging"></a>How to configure trace logging?
+    </h2>
+    <p>
+        Tracing flags control compilation results output and trace run-time execution, as
+        described below. Tracing results are created in each run in the directory where
+        the <code>ij</code> executable starts: compilation results are in <code>jet.log</code>,
+        and run-time output is in <code>jet.rt.log</code>.
+    </p>
+    <h3>
+        Group 1: Compilation Results Tracing
+    </h3>
+    <p>
+        The following flags control tracing compilation of a method:
+    </p>
+    <ul>
+        <li><strong><code>DBG_TRACE_SUMM</code></strong> prints a short summary about the compiled
+            method: the compilation status (success or failure), the name, signature, bytecode
+            size, the start and end addresses of the generated code, and the compilation ID
+            (the sequential number of the method compiled by Jitrino.JET). </li>
+        <li><code><strong>DBG_DUMP_BBS</strong></code> dumps the bytecode and marks up basic
+            blocks boundaries. </li>
+        <li><code><strong>DBG_TRACE_CG</strong></code> prints information about each compiled
+            bytecode instruction: the state of the Java<a href="#*">*</a> operand stack before
+            the instruction, the known state of local variables at the given point, and the
+            native code generated for the instruction. The order instructions appear in the
+            log file is the depth-first order, the same as when processing instructions during
+            compilation. See the file trace.cpp, function <code>toStr2()</code> for the legend
+            of the operand stack items print-out. </li>
+        <li><strong><code>DBG_TRACE_LAYOUT</code></strong> prints the results of the code layout,
+            mostly, the address ranges for the basic blocks. </li>
+        <li><strong><code>DBG_DUMP_CODE</code></strong> dumps generated code for the given method,
+            the method&rsquo;s actual addresses, intermixed with appropriate bytecode instructions.
+            <p class="note">
+                Note</p>
+            <p class="notetext">
+                For <code>DBG_DUMP_CODE</code> and <code>DBG_TRACE_CG</code>, Jitrino.JET can print
+                disassembled code in addition to raw hexadecimal dumps. For that, the compiler requires
+                an external disassembler. Currently, Jitrino.JET is configured to use the external
+                library <code>lwdis.dll/liblwdis.so</code> that must be located in the same directory
+                as <code>jitrino.dll/libjitrino.so</code>. The name lwdis stands for light weight
+                disassembler. The library must export the function <code>disasm()</code>. Refer
+                to the file trace.cpp, the <code>DISFUNC</code> definition for details on calling
+                convention and signature.
             </p>
-         </li>
-         <li>
-            <strong><code>DBG_CHECK_STACK</code></strong> prints
-            nothing but instruments code to check stack integrity.
-            The methods compiled by Jitrino.JET use EBP-based frames.
-            These frames can mask errors, for example, wrong
-            convention usage with a VM helper call. Using this option
-            performs run-time checks and INT3 raised in case the
-            stack integrity broken.
-         </li>
-         <li>
-            <strong><code>DBG_BRK</code></strong> inserts INT3 at the
-            method entry point, so it can be stopped in the debugger.
-            
-            <p>
-                  <strong> Note</strong><br>
-                    An instance variable of class
-               <code>Compiler</code>, <code>dbg_break_pc</code> can
-               be used to insert <code>INT3</code> at the specified
-               program counter of a method.
+        </li>
+        <li><strong><code>DBG_CHECK_STACK</code></strong> prints nothing but instruments code
+            to check stack integrity. The methods compiled by Jitrino.JET use EBP-based frames.
+            These frames can mask errors, for example, wrong convention usage with a VM helper
+            call. Using this option performs run-time checks and INT3 raised in case the stack
+            integrity broken. </li>
+        <li><strong><code>DBG_BRK</code></strong> inserts INT3 at the method entry point, so
+            it can be stopped in the debugger.
+            <p class="note">
+                Note</p>
+            <p class="notetext">
+                An instance variable of class <code>Compiler</code>, <code>dbg_break_pc</code> can
+                be used to insert <code>INT3</code> at the specified program counter of a method.
             </p>
-         </li>
-      </ul>
-      <p>
-         <a href="#top">Back to top</a>
-      </p>
-      <h3>
-         Group 2: Run-time Execution tracing
-      </h3>
-      <p>
-         The following flags trace run-time life of the method:
-      </p>
-      <ul class="noindent">
-         <li>
-            <strong><code>DBG_TRACE_EE</code></strong> prints
-            entering: <code>&lt;method-name&gt;</code> and exiting:
-            <code>&lt;method-name&gt;</code> at the method entrance
-            and exit points.<br>
+        </li>
+    </ul>
+    <p>
+        <a href="#top">Back to top</a>
+    </p>
+    <h3>
+        Group 2: Run-time Execution tracing
+    </h3>
+    <p>
+        The following flags trace run-time life of the method:
+    </p>
+    <ul class="noindent">
+        <li><strong><code>DBG_TRACE_EE</code></strong> prints entering: <code>&lt;method-name&gt;</code>
+            and exiting: <code>&lt;method-name&gt;</code> at the method entrance and exit points.<br>
             <br>
-         </li>
-         <li>
-            <strong><code>DBG_TRACE_BC</code></strong> traces
-            execution of every bytecode instruction by printing a
-            string of the following format before executing the
-            instruction: <code>&lt;method-name&gt; @
-            PC=&lt;pc&gt;</code><br>
+        </li>
+        <li><strong><code>DBG_TRACE_BC</code></strong> traces execution of every bytecode instruction
+            by printing a string of the following format before executing the instruction: <code>
+                &lt;method-name&gt; @ PC=&lt;pc&gt;</code><br>
             <br>
-         </li>
-      </ul>
-      <p>
-         <strong>    Notes</strong>
-      </p>
-      <p>
-             The output string for <code>DBG_TRACE_EE</code> and
-         <code>DBG_TRACE_BC</code> uses a specific format: before the
-         string, an estimated call depth is printed and the string
-         gets indentation based on the call depth. After the string,
-         the string ID is printed. The estimated call depth may help
-         to identify where a method was called from. The string ID
-         can be helpful for setting a conditional breakpoint in the
-         debugger for a complex scenario. For that, set a condition
-         for the static variable cnt in the function
-         <code>rt_dbg</code>, file <code>trace.cpp</code>.
-      </p>
-      <p class="Notetext">
-             Turning on the option <code>DBG_TRACE_BC</code> may slow
-         down execution extremely and may result to a gigantic file
-         <code>jet.rt.log</code>.
-      </p>
-      <ul class="noindent">
-         <li>
-            <strong><code>DBG_TRACE_RT</code></strong> traces
-            run-time support calls, for example, getting address of
-            &lsquo;this&rsquo;, support for root set enumeration and
-            stack unwinding.<br>
+        </li>
+    </ul>
+    <p class="note">
+        Notes</p>
+    <p class="notetext">
+        The output string for <code>DBG_TRACE_EE</code> and <code>DBG_TRACE_BC</code> uses
+        a specific format: before the string, an estimated call depth is printed and the
+        string gets indentation based on the call depth. After the string, the string ID
+        is printed. The estimated call depth may help to identify where a method was called
+        from. The string ID can be helpful for setting a conditional breakpoint in the debugger
+        for a complex scenario. For that, set a condition for the static variable cnt in
+        the function <code>rt_dbg</code>, file <code>trace.cpp</code>.<br>
+        Turning on the option <code>DBG_TRACE_BC</code> may slow down execution extremely
+        and may result to a gigantic file <code>jet.rt.log</code>.
+    </p>
+    <ul class="noindent">
+        <li><strong><code>DBG_TRACE_RT</code></strong> traces run-time support calls, for example,
+            getting address of &lsquo;this&rsquo;, support for root set enumeration and stack
+            unwinding.<br>
             <br>
-         </li>
-      </ul>
-      <p>
-         <strong>    Note</strong><br>
-              The output goes to jet.log, with the address (both
-         native and PC) where the event happens, and some other info.
-      </p>
-      <p>
-         <a href="#top">Back to top</a>
-      </p>
-      <h2>
-         <a name="Extend_Trace_JIT">How to get more from your
-         tracing?</a>
-      </h2>
-      <p>
-         To identify one or more problematic methods with another
-         stable JIT compiler, use the execution manager. With this
-         technique, some methods are compiled by the stable JIT, and
-         the rest goes to the JIT being debugged. With a simple
-         binary search, you can find the problematic method rather
-         quickly.
-      </p>
-      <p>
-         <strong>    Note</strong><br>
-              Try turning off parallel compilation when using this
-         technique (refer to VM&rsquo;s
-         <code>-Xno_parallel_jit</code> option).
-      </p>
-      <p>
-         <b>To get details in case of a crash</b> with no adequate
-         stack trace or IP location available, turn on the option
-         DBG_TRACE_EE to see, in which method the crash happens. As
-         the second step, turn on DBG_TRACE_BC for this particular
-         method to find the exact bytecode instruction. Often, this
-         cuts the code to analyze down to 5-10 native instructions.
-      </p>
-      <p>
-         <b>To set a breakpoint and stop execution at a specific
-         point</b>, use trace.cpp:rt_dbg to break execution at the
-         specified bytecode instruction or at the entry point of the
-         specified method.
-      </p>
-      <p>
-         <a href="#top">Back to top</a>
-      </p>
-      <h3>
-         Tracing Example
-      </h3>
-      <p>
-         This is an example of code that turns on various tracing
-         scenarios. The code must be placed in the method
-         <code>Compiler::compile(</code>).
-      </p>
-      <p>
-         <span style="font-family:Courier 
-         New;font-size:10.0pt;color:blue;">#if</span> <span style= 
-         "font-family:Courier New;font-size:10.0pt;"><span style= 
-         "color:blue;">defined</span>(<span style=
-         "color:black;">_DEBUG</span>) || <span style=
-         "color:blue;">defined</span>(<span style=
-         "color:black;">JET_PROTO</span>)</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    //
-         Turns on a short summary of all methods</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">    compile_flags</span> |= <span style= 
-         "color:black;">DBG_TRACE_SUMM</span>;</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    // A
-         handy constant</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:blue;">    static</span> <span style=
-         "color:blue;">const</span> <span style=
-         "color:blue;">unsigned</span> <span style=
-         "color:black;">TRACE_CG</span> = <span style=
-         "color:black;">DBG_DUMP_BBS</span> | <span style= 
-         "color:black;">DBG_TRACE_CG</span> |</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">                                     DBG_TRACE_LAYOUT</span>
-         | <span style="color:black;">DBG_TRACE_SUMM</span> |</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">                                     DBG_DUMP_CODE</span>;</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    // For
-         methods in the range (1000;15000), print out the complete
-         code generator dumps</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:blue;">    if</span> (<span style=
-         "color:black;">g_methodsSeen</span>&gt;1000 &amp;&amp; <span
-         style="color:black;">g_methodsSeen</span>&lt;15000) {</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">    compile_flags</span> |= <span style= 
-         "color:black;">TRACE_CG</span>;</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;">    }</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    // For
-         methods getSomeValue() and for all methods in class
-         MyClass,</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    //
-         trace enter and exit</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:blue;">    if</span> (<span style=
-         "color:black;">NULL</span> != <span style=
-         "color:black;">strstr</span>(<span style=
-         "color:black;">m_fname</span>, "::getSomeValue") ||</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">        NULL</span> != <span style= 
-         "color:black;">strstr</span>(<span style=
-         "color:black;">m_fname</span>, "MyClass::") ) {</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">        compile_flags</span> |= <span style= 
-         "color:black;">    DBG_TRACE_EE</span>;</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;">    }</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    // For
-         the method crashes_some_times() in class MyClass trace
-         every</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    //
-         bytecode execution: the last bytecode in the log is the most
-         probable</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    //
-         cause of the failure</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:blue;">    if</span> (!<span style=
-         "color:black;">strcmp</span>(<span style=
-         "color:black;">m_fname</span>,
-         "MyClass::crashes_some_times")) {</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">        compile_flags</span> |= <span style= 
-         "color:black;">DBG_TRACE_EE</span>|<span style=
-         "color:black;">DBG_TRACE_BC</span>;</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;">    }</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    //
-         Break into debugger (INT3) at the entry of the
-         stop_at_entry() method</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:blue;">    if</span> (!<span style=
-         "color:black;">strcmp</span>(<span style=
-         "color:black;">m_fname</span>, "MyClass::stop_at_entry"))
-         {</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">        compile_flags</span> |= <span style= 
-         "color:black;">DBG_BRK</span>;</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;">    }</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    //
-         Break into debugger (INT3) inside the method</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:blue;">    if</span> (!<span style=
-         "color:black;">strcmp</span>(<span style=
-         "color:black;">m_fname</span>,
-         "MyClass::stop_somewhere_in_the_middle")) {</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">        dbg_break_pc</span> = 50;</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;">    }</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    //
-         Trace run-time support calls: unwind, getting the address of
-         'this', root</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    // set
-         enumeration</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:blue;">    if</span> (!<span style=
-         "color:black;">strcmp</span>(<span style=
-         "color:black;">m_fname</span>,
-         "MyClass::something_wrong_with_unwind_here")) {</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">        compile_flags</span> |= <span style= 
-         "color:black;">DBG_TRACE_RT</span>;</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;">    }</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style="color:green;">    //
-         By-pass run-time tracing for java/* classes</span></span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:blue;">    if</span> (<span style=
-         "color:black;">m_fname</span> == <span style=
-         "color:black;">strstr</span>(<span style=
-         "color:black;">m_fname</span>, "java/")) {</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;"><span style=
-         "color:black;">        compile_flags</span> &amp;= ~(<span
-         style="color:black;">DBG_TRACE_EE</span>|<span style= 
-         "color:black;">DBG_TRACE_BC</span>);</span>
-      </p>
-      <p>
-         <span style="font-family:Courier
-         New;font-size:10.0pt;">    }</span>
-      </p>
-      <p>
-         <span style="font-family:Courier 
-         New;font-size:10.0pt;color:blue;">#endif</span>
-      </p>
-      
-      <p>
-         <a href="#top">Back to top</a>
-      </p>
-      <p>
-         <a name="*"></a>* Other brands and names are the property of
-         their respective owners.
-      </p>
-   </body>
+        </li>
+    </ul>
+    <p class="note">
+        Note</p>
+    <p class="notetext">
+        The output goes to jet.log, with the address (both native and PC) where the event
+        happens, and some other info.
+    </p>
+    <p>
+        <a href="#top">Back to top</a>
+    </p>
+    <h2>
+        <a name="Extend_Trace_JIT">How to get more from your tracing?</a>
+    </h2>
+    <p>
+        To identify one or more problematic methods with another stable JIT compiler, use
+        the execution manager. With this technique, some methods are compiled by the stable
+        JIT, and the rest goes to the JIT being debugged. With a simple binary search, you
+        can find the problematic method rather quickly.
+    </p>
+    <p class="note">
+        Note</p>
+    <p class="notetext">
+        Try turning off parallel compilation when using this technique (refer to VM&rsquo;s
+        <code>-Xno_parallel_jit</code> option).
+    </p>
+    <p>
+        <b>To get details in case of a crash</b> with no adequate stack trace or IP location
+        available, turn on the option <code>DBG_TRACE_EE</code> to see, in which method
+        the crash happens. As the second step, turn on <code>DBG_TRACE_BC</code> for this
+        particular method to find the exact bytecode instruction. Often, this cuts the code
+        to analyze down to 5-10 native instructions.
+    </p>
+    <p>
+        <b>To set a breakpoint and stop execution at a specific point</b>, use <code>trace.cpp:rt_dbg</code>
+        to break execution at the specified bytecode instruction or at the entry point of
+        the specified method.
+    </p>
+    <p>
+        <a href="#top">Back to top</a>
+    </p>
+    <h3>
+        Tracing Example
+    </h3>
+    <p>
+        This is an example of code that turns on various tracing scenarios. The code must
+        be placed in the method <code>Compiler::compile(</code>).
+    </p>
+    <p>
+        <span style="font-family: Courier 
+         New; font-size: 10.0pt; color: blue;">#if</span>
+        <span style="font-family: Courier New; font-size: 10.0pt;"><span style="color: blue;">
+            defined</span>(<span style=""color: black;">_DEBUG</span>) || <span style=""color: blue;">
+                defined</span>(<span style=""color: black;">JET_PROTO</span>)</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // Turns on a short summary of all methods</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            compile_flags</span> |= <span style="color: black;">DBG_TRACE_SUMM</span>;</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // A handy constant</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: blue;">
+            static</span> <span style=""color: blue;">const</span> <span style=""color: blue;">unsigned</span>
+            <span style=""color: black;">TRACE_CG</span> = <span style=""color: black;">DBG_DUMP_BBS</span>
+            | <span style="color: black;">DBG_TRACE_CG</span> |</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            DBG_TRACE_LAYOUT</span> | <span style="color: black;">DBG_TRACE_SUMM</span> |</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            DBG_DUMP_CODE</span>;</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // For methods in the range (1000;15000), print out the complete code generator
+            dumps</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: blue;">
+            if</span> (<span style=""color: black;">g_methodsSeen</span>&gt;1000 &amp;&amp;
+            <span style="color: black;">g_methodsSeen</span>&lt;15000) {</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            compile_flags</span> |= <span style="color: black;">TRACE_CG</span>;</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;">}</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // For methods getSomeValue() and for all methods in class MyClass,</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // trace enter and exit</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: blue;">
+            if</span> (<span style=""color: black;">NULL</span> != <span style=""color: black;">
+                strstr</span>(<span style=""color: black;">m_fname</span>, "::getSomeValue")
+            ||</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            NULL</span> != <span style="color: black;">strstr</span>(<span style=""color: black;">m_fname</span>,
+            "MyClass::") ) {</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            compile_flags</span> |= <span style="color: black;">DBG_TRACE_EE</span>;</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;">}</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // For the method crashes_some_times() in class MyClass trace every</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // bytecode execution: the last bytecode in the log is the most probable</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // cause of the failure</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: blue;">
+            if</span> (!<span style=""color: black;">strcmp</span>(<span style=""color: black;">m_fname</span>,
+            "MyClass::crashes_some_times")) {</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            compile_flags</span> |= <span style="color: black;">DBG_TRACE_EE</span>|<span style=""color: black;">DBG_TRACE_BC</span>;</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;">}</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // Break into debugger (INT3) at the entry of the stop_at_entry() method</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: blue;">
+            if</span> (!<span style=""color: black;">strcmp</span>(<span style=""color: black;">m_fname</span>,
+            "MyClass::stop_at_entry")) {</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            compile_flags</span> |= <span style="color: black;">DBG_BRK</span>;</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;">}</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // Break into debugger (INT3) inside the method</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: blue;">
+            if</span> (!<span style=""color: black;">strcmp</span>(<span style=""color: black;">m_fname</span>,
+            "MyClass::stop_somewhere_in_the_middle")) {</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            dbg_break_pc</span> = 50;</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;">}</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // Trace run-time support calls: unwind, getting the address of 'this', root</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // set enumeration</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: blue;">
+            if</span> (!<span style=""color: black;">strcmp</span>(<span style=""color: black;">m_fname</span>,
+            "MyClass::something_wrong_with_unwind_here")) {</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            compile_flags</span> |= <span style="color: black;">DBG_TRACE_RT</span>;</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;">}</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style="color: green;">
+            // By-pass run-time tracing for java/* classes</span></span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: blue;">
+            if</span> (<span style=""color: black;">m_fname</span> == <span style=""color: black;">
+                strstr</span>(<span style=""color: black;">m_fname</span>, "java/")) {</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;"><span style=""color: black;">
+            compile_flags</span> &amp;= ~(<span style="color: black;">DBG_TRACE_EE</span>|<span
+                style="color: black;">DBG_TRACE_BC</span>);</span>
+    </p>
+    <p>
+        <span style="font-family: Courier
+         New; font-size: 10.0pt;">}</span>
+    </p>
+    <p>
+        <span style="font-family: Courier 
+         New; font-size: 10.0pt; color: blue;">#endif</span>
+    </p>
+    <p>
+        <a href="#top">Back to top</a>
+    </p>
+    <p>
+        <a name="*"></a>* Other brands and names are the property of their respective owners.
+    </p>
+</body>
 </html>
+
 
