@@ -108,11 +108,6 @@
         <property name="test.debugger.jvm" value="${test.jre.jvm}" />
         <property name="test.debuggee.jvm" value="${test.jre.jvm}" />
 	
-        <!-- run JPDA tests with forkmode=perBatch if common forkmode=once -->
-        <condition property="hy.jpda.test.forkmode" value="perBatch" else="perTest">
-            <equals arg1="${hy.test.forkmode}" arg2="once" />
-        </condition>
-
         <echo message="Running JPDA tests" />
         <echo message="  Debugger JVM=${test.debugger.jvm}" />
         <echo message="  Debuggee JVM=${test.debuggee.jvm}" />
@@ -120,7 +115,7 @@
         <mkdir dir="${hy.tests.reports}" />
 
         <junit fork="yes"
-                       forkmode="${hy.jpda.test.forkmode}"
+                       forkmode="${hy.test.forkmode}"
                        timeout="${hy.test.timeout}"
                        printsummary="withOutAndErr"
                        errorproperty="test.errors"

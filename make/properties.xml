@@ -33,7 +33,7 @@
     <property name="hy.javac.maxmem" value="384M" />
 
     <!-- Test run property -->
-    <property name="hy.test.forkmode" value="once" />
+    <property name="hy.test.forkmode" value="perBatch" />
     <property name="hy.test.timeout" value="900000" />
     <property name="hy.test.vm.name" value="ibm" />
     <property name="hy.test.vmargs" value="" />
