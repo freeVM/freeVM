@@ -129,11 +129,16 @@
                        dir="${hy.tests.reports}"
                        jvm="${test.debugger.jvm}">
 
+            <!-- JVM arguments for debugger process -->
+            <jvmarg line="${hy.test.vmargs}" />
+            
+            <!-- JVM path and arguments for debuggee process -->
+            <jvmarg value="-Djpda.settings.debuggeeJavaPath=${test.debuggee.jvm}" />
+            <jvmarg value="-Djpda.settings.debuggeeVMExtraOptions=${hy.test.vmargs}" />
+
             <classpath>
                 <pathelement path="${tests.build.output}/classes"/>
             </classpath>
-
-            <jvmarg value="-Djpda.settings.debuggeeJavaPath=${test.debuggee.jvm}" />
 
             <formatter type="xml" />
 

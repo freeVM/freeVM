@@ -71,7 +71,7 @@
           <exec failonerror="true"
                  executable="${test.jre.home}/bin/java${exe.suffix}"
                         dir="${hy.tests.reports}">
-              <arg line="-version" />
+              <arg line="-version ${hy.test.vmargs}" />
           </exec>
       </target>
 

@@ -181,6 +181,8 @@
                        dir="${hy.tests.reports}"
                        jvm="${test.jre.home}/bin/java">
 
+            <jvmarg line="${hy.test.vmargs}" />
+
             <classpath>
                 <pathelement path="${tests.build.output}/classes"/>
                 <pathelement path="${hy.jdk}/lib/tools.jar"/>
