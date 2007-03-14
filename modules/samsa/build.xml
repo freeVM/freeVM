@@ -28,6 +28,9 @@
 
     <property file="../../make/depends.properties" />
 
+    <!-- filename for tests exclude list -->
+    <property name="samsa.exclude.file" location="${hy.hdk}/build/jdktools.samsa.exclude" />
+
     <target name="build" depends="build-native"/>
     <target name="build-java"/>
 
@@ -36,7 +39,7 @@
 
     <target name="test" depends="test-module" />
     <target name="build-tests" />
-    <target name="test-module" depends="run-tests" />
+    <target name="test-module" depends="prepare-exclude, run-tests" />
 
     <target name="build-native" >
 
@@ -79,7 +82,13 @@
 
     </target>
 
-    <target name="run-tests" >
+    <target name="prepare-exclude">
+        <echo message="SAMSA exclude list: ${samsa.exclude.file}" />
+        <prepare-exclude-list moduleName="samsa" dir="./make"
+                             result="${samsa.exclude.file}" />
+    </target>
+
+    <target name="run-tests" depends="prepare-exclude" >
 
         <property name="test.jre.home" value="${hy.jdk}/jre" />
 
