@@ -192,11 +192,11 @@ limitations under the License.
                                                                 <div>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -210,192 +210,150 @@ limitations under the License.
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-   <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
-      <title>
-         Getting Started with DRLVM
-      </title>
-      <link rel="Stylesheet" type="text/css" media="all" href="site.css" />
-   </head>
-   <body>
-      <h1>
-         <a id="TOP" name="TOP"></a>Getting Started with DRLVM
-      </h1>
-      <p>
-         The Dynamic Runtime Layer virtual machine (DRLVM) is a clean-room implementation of the
-         Java<a href="#*">*</a> virtual machine for Java 2 Platform, Standard Edition (J2SE<a
-         href="#*">*</a>) 1.5.0. This document gives tips on how to start using
-         the DRL virtual machine (VM). Use this page to learn where to get the
-         code and how to use it. For documentation on the Harmony Java<a
-         href="#*">*</a> class libraries, see the <a href="../classlibrary/index.html">classlib page</a>.
-      </p>
-      <p>
-         To quickly start with DRL, read this page and follow the instructions.
-         It is recommended that you strictly follow the instructions of this
-         guide to ensure system stability and anticipated results. After
-         completing this guide, you will be able to run and debug your own
-         applications with DRLVM.
-      </p>
-      <h2>
-         <a id="Overview" name="Overview"></a>Overview
-      </h2>
-      <p>
-         For a definition of the DRL virtual machine and links to all docs
-         describing it, see the DRLVM <a href="index.html">component page</a>.
-         For instructions on how to get and build the code, and configure your
-         environment, please visit the <a
-         href="../../quickhelp_users.html">Getting Started for Users</a> page.
-         If you fail to build the source code or come across other problems, go
-         to our project <a href="http://wiki.apache.org/harmony/"
-         target="_blank">Wiki resource</a> and search for your issue on the <a
-         href="http://wiki.apache.org/harmony/DrlvmBuildTroubleshooting"
-         target="_blank">DrlvmBuildTroubleshooting</a> page. If no known issue
-         matches your problem, please write to the mailing list or add your
-         issue to the wiki page.
-      </p>
-      <p>
-         The README file supplied with the source code and the Quick Help
-         instructions enable you to build the VM source code in the default
-         configuration. To modify the code behavior, use the available
-         command-line options, as indicated in the <a
-         href="http://wiki.apache.org/harmony/DrlvmCommandLineOptions"
-         target="_blank">Wiki command-line options page</a>. Read further
-         for illustrations of command-line options usage.
-      </p>
-      <h1>
-         <a id="Running_Hello" name="Running_Hello"></a>Running an Application
-      </h1>
-      <p>
-         This scenario provides step-by-step instructions on running a
-         <code>Hello</code> application in the Windows<a href="#*">*</a> or the
-         Linux<a href="#*">*</a> console. The scenario uses a sample
-         <code>Hello.class</code> Java<a href="#*">*</a> class for illustration.
-		 Please use your own application instead.
-      </p>
-      <ol>
-         <li>
-            To start DRL, change your current directory to the
-            <code>&lt;<b>installation folder</b>&gt;\bin</code> directory.
-         </li>
-         <li>
-            Check that you have files <code>java.exe</code> on Windows<a
-            href="#*">*</a> or <code>java</code> on Linux<a href="#*">*</a> and
-            <code>Hello.class</code> in the <code>\bin</code> directory.<br />
-             On Linux<a href="#*">*</a>, make sure that you can run
-            applications and load dynamic libraries from the current directory.
-           If you are using the Intel(R) C++ compiler, make sure the
-            <code>LD_LIBRARY_PATH</code> variable contains location of the ICC
-            libraries.
-         </li>
-         <li>
-            Run the <code>Hello</code> application by entering: 
-<pre>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <title>Getting Started with DRLVM </title>
+    <link rel="Stylesheet" type="text/css" media="all" href="site.css" />
+</head>
+<body>
+    <h1>
+        <a id="TOP" name="TOP"></a>Getting Started with DRLVM
+    </h1>
+    <p>
+        The Dynamic Runtime Layer virtual machine (DRLVM) is a clean-room implementation
+        of the Java<a href="#*">*</a> virtual machine for Java 2 Platform, Standard Edition
+        (J2SE<a href="#*">*</a>) 1.5.0. This document gives tips on how to start using the
+        DRL virtual machine (VM). Use this page to learn where to get the code and how to
+        use it. For documentation on the Harmony Java<a href="#*">*</a> class libraries,
+        see the <a href="../classlibrary/index.html">classlib page</a>.
+    </p>
+    <p>
+        To quickly start with DRL, read this page and follow the instructions. It is recommended
+        that you strictly follow the instructions of this guide to ensure system stability
+        and anticipated results. After completing this guide, you will be able to run and
+        debug your own applications with DRLVM.
+    </p>
+    <h2>
+        <a id="Overview" name="Overview"></a>Overview
+    </h2>
+    <p>
+        For a definition of the DRL virtual machine and links to all docs describing it,
+        see the DRLVM <a href="index.html">component page</a>. For instructions on how to
+        get and build the code, and configure your environment, please visit the <a href="../../quickhelp_users.html">
+            Getting Started for Users</a> page. If you fail to build the source code or
+        come across other problems, go to our project <a href="http://wiki.apache.org/harmony/"
+            target="_blank">Wiki resource</a> and search for your issue on the <a href="http://wiki.apache.org/harmony/DrlvmBuildTroubleshooting"
+                target="_blank">DrlvmBuildTroubleshooting</a> page. If no known issue matches
+        your problem, please write to the mailing list or add your issue to the wiki page.
+    </p>
+    <p>
+        The README file supplied with the source code and the Quick Help instructions enable
+        you to build the VM source code in the default configuration. To modify the code
+        behavior, use the available command-line options, as indicated in the <a href="http://wiki.apache.org/harmony/DrlvmCommandLineOptions"
+            target="_blank">Wiki command-line options page</a>. Read further for illustrations
+        of command-line options usage.
+    </p>
+    <h1>
+        <a id="Running_Hello" name="Running_Hello"></a>Running an Application
+    </h1>
+    <p>
+        This scenario provides step-by-step instructions on running a <code>Hello</code>
+        application in the Windows<a href="#*">*</a> or the Linux<a href="#*">*</a> console.
+        The scenario uses a sample <code>Hello.class</code> Java<a href="#*">*</a> class
+        for illustration. Please use your own application instead.
+    </p>
+    <ol>
+        <li>To start DRL, change your current directory to the <code>&lt;<b>installation folder</b>&gt;\bin</code>
+            directory. </li>
+        <li>Check that you have files <code>java.exe</code> on Windows<a href="#*">*</a> or
+            <code>java</code> on Linux<a href="#*">*</a> and <code>Hello.class</code> in the
+            <code>\bin</code> directory.<br />
+            On Linux<a href="#*">*</a>, make sure that you can run applications and load dynamic
+            libraries from the current directory. If you are using the Intel(R) C++ compiler,
+            make sure the <code>LD_LIBRARY_PATH</code> variable contains location of the ICC
+            libraries. </li>
+        <li>Run the <code>Hello</code> application by entering:
+            <pre>
 java Hello
 </pre>
             <p>
-               You will see &ldquo;<i>Hello World!</i>" printed on the screen.
-               This means that you have successfully launched the virtual
-               machine, and that it has processed the <code>Hello.class</code>
-               Java<a href="#*">*</a> class to execute the <code>Hello</code>
-               application.
+                You will see &ldquo;<i>Hello World!</i>" printed on the screen. This means that
+                you have successfully launched the virtual machine, and that it has processed the
+                <code>Hello.class</code> Java<a href="#*">*</a> class to execute the <code>Hello</code>
+                application.
             </p>
-         </li>
-      </ol>
-      <h1>
-         Developing Code in Eclipse
-      </h1>
-      <h2>
-         <a id="Eclipse_Hello_world" name="Eclipse_Hello_world"></a> Running an
-         Application in Eclipse
-      </h2>
-      <p>
-         In this section, a simple scenario shows how to create an application
-         and run it in Eclipse<a href="#*">*</a> with our virtual machine.
-      </p>
-      <p class="note">
-         Note
-      </p>
-      <p class="notetext">
-         If you are using Eclipse, see the page <a href="../../documentation/dev_eclipse.html">
-		Working with Harmony Code  in
-         Eclipse </a> for specific setup instructions.
-      </p>
-      <p>
-         This scenario provides step-by-step instructions on running a Java
-         application in the Eclipse environment. In the scenario, you will
-         launch Eclipse, create a new project and a new Java class within this
-         project, and finally you will run the new application.
-      </p>
-      <ol start="0">
-         <li>
-            If you have no Eclipse, download the package at <a
-            href="http://download.eclipse.org/eclipse/downloads/"
-            target="_blank">http://download.eclipse.org/eclipse/downloads/</a>,
-            and unpack this distribution.<br />
-             Set up Eclipse as described in <a href="../../documentation/dev_eclipse.html">
-			 Working with Harmony Code in Eclipse</a>.
-         </li>
-         <li>
-            Start Eclipse and create a new Java project.
-         </li>
-         <li>
-            In the project workspace, create a <code>HelloWorld</code> class with the 
-			<code>public static void main(String[] args)</code> method containing the following code: 
-			<pre>
+        </li>
+    </ol>
+    <h1>
+        Developing Code in Eclipse
+    </h1>
+    <h2>
+        <a id="Eclipse_Hello_world" name="Eclipse_Hello_world"></a>Running an Application
+        in Eclipse
+    </h2>
+    <p>
+        In this section, a simple scenario shows how to create an application and run it
+        in Eclipse<a href="#*">*</a> with our virtual machine.
+    </p>
+    <p class="note">
+        Note
+    </p>
+    <p class="notetext">
+        If you are using Eclipse, see the page <a href="../../documentation/dev_eclipse.html">
+            Working with Harmony Code in Eclipse </a>for specific setup instructions.
+    </p>
+    <p>
+        This scenario provides step-by-step instructions on running a Java application in
+        the Eclipse environment. In the scenario, you will launch Eclipse, create a new
+        project and a new Java class within this project, and finally you will run the new
+        application.
+    </p>
+    <ol start="0">
+        <li>If you have no Eclipse, download the package at <a href="http://download.eclipse.org/eclipse/downloads/"
+            target="_blank">http://download.eclipse.org/eclipse/downloads/</a>, and unpack this
+            distribution.<br />
+            Set up Eclipse as described in <a href="../../documentation/dev_eclipse.html">Working
+                with Harmony Code in Eclipse</a>. </li>
+        <li>Start Eclipse and create a new Java project. </li>
+        <li>In the project workspace, create a <code>HelloWorld</code> class with the <code>
+            public static void main(String[] args)</code> method containing the following code:
+            <pre>
 int i=18; 
 System.out.println("Hello, World!");</pre>
-         </li>
-
-         <li>
-            Save the file.
-         </li>
-         <li>
-            Run the <code>HelloWorld</code> class. The result of the execution
-            is printed in the <b>Console</b> tab of your workspace: <i>"Hello,
-            World!"</i> appears.
-         </li>
-      </ol>
-      <h2>
-         <a id="Eclipse_debug_scenario" name="Eclipse_debug_scenario"></a>
-         Debugging an Application in Eclipse
-      </h2>
-      <p>
-         This scenario provides instructions on how to debug a simple
-         application in Eclipse<a href="#*">*</a>.
-      </p>
-      <ol start="0">
-         <li>
-            Repeat steps 0 to 4 of the previous scenario to set up the
-            workspace and create a new class in the new project.
-         </li>
-         <li>
-            Set up breakpoints for debugging purposes, as needed. In the example with the
-            <code>HelloWorld</code> class, set the breakpoint on the following
-            line: 
-<pre>
+        </li>
+        <li>Save the file. </li>
+        <li>Run the <code>HelloWorld</code> class. The result of the execution is printed in
+            the <b>Console</b> tab of your workspace: <i>"Hello, World!"</i> appears. </li>
+    </ol>
+    <h2>
+        <a id="Eclipse_debug_scenario" name="Eclipse_debug_scenario"></a>Debugging an Application
+        in Eclipse
+    </h2>
+    <p>
+        This scenario provides instructions on how to debug a simple application in Eclipse<a
+            href="#*">*</a>.
+    </p>
+    <ol start="0">
+        <li>Repeat steps 0 to 4 of the previous scenario to set up the workspace and create
+            a new class in the new project. </li>
+        <li>Set up breakpoints for debugging purposes, as needed. In the example with the <code>
+            HelloWorld</code> class, set the breakpoint on the following line:
+            <pre>
 System.out.println ("Hello, World!");
 </pre>
-         </li>
-         <li>
-            Start the debug operation on your class -
-            <code>HelloWorld.java</code> in the example.<br />
-           <br />
-            After the debug run completes, the workspace gets updated with new
-            results.
-         </li>
-         <li>
-            After you are done, resume the application. When the run has
-            completed, the <b>Console</b> tab at the bottom displays the result
-            of execution. In our example, <em>H</em><i>ello World!</i> is
-            printed.
-         </li>
-      </ol>
-  
-      <p>
-         <a id="*" name="*">*</a> Other brands and names are the property of
-         their respective owners.
-      </p>
-   </body>
+        </li>
+        <li>Start the debug operation on your class - <code>HelloWorld.java</code> in the example.<br />
+            <br />
+            After the debug run completes, the workspace gets updated with new results. </li>
+        <li>After you are done, resume the application. When the run has completed, the <b>Console</b>
+            tab at the bottom displays the result of execution. In our example, <em>H</em><i>ello
+                World!</i> is printed. </li>
+    </ol>
+    <p>
+        <a id="*" name="*">*</a> Other brands and names are the property of their respective
+        owners.
+    </p>
+</body>
 </html>
 
 

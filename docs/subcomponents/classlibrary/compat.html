@@ -192,16 +192,20 @@ limitations under the License.
       <a name="Compatibility goals in the Apache Harmony Class Library">Compatibility goals in the Apache Harmony Class Library</a>
     </h1>
                         <p>
-		<big><em>The following guidelines are currently PROPOSED and being discussed on the
-		development mailing list <code>dev@harmony.apache.org</code>.  Please
-		direct comments and questions there.</em></big>
-	</p>
+                <big>
+                    <em>
+                        The following guidelines are currently PROPOSED and being discussed on the
+                        development mailing list <code>dev@harmony.apache.org</code>.  Please
+                        direct comments and questions there.
+                    </em>
+                </big>
+            </p>
                                 <p>
-		The Harmony project class library ("<b>classlib</b>") effort is committed
-		to producing a set of class library code that not only Java compliant but is also
-		compatible with existing Java implementations.
-		This page describes the class library code guidelines for ensuring that compatibility.
-	</p>
+                The Harmony project class library ("<b>classlib</b>") effort is committed
+                to producing a set of class library code that not only Java compliant but is also
+                compatible with existing Java implementations.
+                This page describes the class library code guidelines for ensuring that compatibility.
+            </p>
                                     
     <h2>
         <a name="The "Reference Implementation"">The "Reference Implementation"</a>
@@ -209,22 +213,26 @@ limitations under the License.
       
                         <a name="referenceImpl" />
                                 <p>
-		The Harmony project
-		'<a href="http://harmony.apache.org/subcomponents/classlibrary">classlib</a>'
-		effort is producing a set of class library code that is compatible with
-		<a href="http://java.sun.com/j2se/1.5.0/docs/api/index.html">the Java SE 5.0 API
-		specification</a>.
-	</p>
+                    The Harmony project
+                    '<a href="http://harmony.apache.org/subcomponents/classlibrary">classlib</a>'
+                    effort is producing a set of class library code that is compatible with
+                    <a href="http://java.sun.com/j2se/1.5.0/docs/api/index.html">
+                        the Java SE 5.0 API
+                        specification
+                    </a>.
+                </p>
                                 <p>
-		At times (discussed below) it is necessary to augment the specification based on the
-		behavior of the reference implementation (RI) of the Java SE 5.0 specification.  In
-		such cases we use <a href="http://java.sun.com/j2se/1.5.0/download.jsp">the latest
-		official release of the Java SE 5.0 RI</a>.
-	</p>
+                    At times (discussed below) it is necessary to augment the specification based on the
+                    behavior of the reference implementation (RI) of the Java SE 5.0 specification.  In
+                    such cases we use <a href="http://java.sun.com/j2se/1.5.0/download.jsp">
+                        the latest
+                        official release of the Java SE 5.0 RI
+                    </a>.
+                </p>
                                 <p>
-		We are aware that there are other compliant implementations of Java 5.0 available
-		but there is only one reference implementation of the Java specification.
-	</p>
+                    We are aware that there are other compliant implementations of Java 5.0 available
+                    but there is only one reference implementation of the Java specification.
+                </p>
                    
                                     
     <h2>
@@ -232,52 +240,62 @@ limitations under the License.
     </h2>
       
                         <p>
-		The following general guidelines apply when developing class library code for Apache
-		Harmony:
-		<ul>
-			<li><b>Comply with the Java Specification</b>
-			<p>
-				In the first instance we follow the description of each part of the class
-				library given in the <a href="#referenceImpl">Java specification</a>.  To
-				the large part, this adequately describes the behavior of the class library
-				implementation including methods, exceptions, and serialization.  However,
-				where the specification is silent on a particular issue facing the implementor,
-				or the described behavior is clearly illogical, then we follow the behavior
-				of the reference implementation.
-			</p></li>
-			<li><b>Follow the Reference Implementation</b>
-			<p>
-				The Reference Implementation (RI) is used to resolve issues that are not
-				adequately addressed in the specification.  In such cases we use the RI as a
-				guide to the compliant and expected behavior; however, developers <em>must</em>
-				ensure that the behaviour of the RI is determined soley through exercising the
-				public Java APIs -- specifically we avoid any notion of reverse engineering or
-				exposition of the RI's implementation by exercising non-API types and methods.
-				</p>
-				<p>
-				There are a few occasions where both the specification is quiet on a given
-				issue, and the RI exhibits behaviour that we would consider illogical.  In such
-				cases we discuss the issue on
-				<a href="../../mailing.html">the Harmony developers'
-				mailing list</a>, and code the class libraries to do what the development community
-				conclude is "the logical thing".
-			</p></li>
-			<li><b>Do "the Logical Thing"</b>
-			<p>
-				The final decision about how a piece of code should behave, on those rare occasions
-				where the specification and RI do not provide a satisfactory answer, is reached
-				by concensus on the Harmony developers' mailing list.  Each issue is debated based
-				on it's individual circumstances, but the developers are aware that breaking popular
-				applications is invariably not "the logical thing" to do.
-				<p>
-				</p>
-				Once a decision has been made it is documented in the code comments and an issue
-				raised in <a href="http://issues.apache.org/jira/browse/HARMONY">the Harmony JIRA issue
-				tracking system</a> to record the conclusion.  It should be noted that very few issues
-				need to be resolved this way.
-			</p></li>
-		</ul>
-	</p>
+                    The following general guidelines apply when developing class library code for Apache
+                    Harmony:
+                    <ul>
+                        <li>
+                            <b>Comply with the Java Specification</b>
+                            <p>
+                                In the first instance we follow the description of each part of the class
+                                library given in the <a href="#referenceImpl">Java specification</a>.  To
+                                the large part, this adequately describes the behavior of the class library
+                                implementation including methods, exceptions, and serialization.  However,
+                                where the specification is silent on a particular issue facing the implementor,
+                                or the described behavior is clearly illogical, then we follow the behavior
+                                of the reference implementation.
+                            </p>
+                        </li>
+                        <li>
+                            <b>Follow the Reference Implementation</b>
+                            <p>
+                                The Reference Implementation (RI) is used to resolve issues that are not
+                                adequately addressed in the specification.  In such cases we use the RI as a
+                                guide to the compliant and expected behavior; however, developers <em>must</em>
+                                ensure that the behaviour of the RI is determined soley through exercising the
+                                public Java APIs -- specifically we avoid any notion of reverse engineering or
+                                exposition of the RI's implementation by exercising non-API types and methods.
+                            </p>
+                            <p>
+                                There are a few occasions where both the specification is quiet on a given
+                                issue, and the RI exhibits behaviour that we would consider illogical.  In such
+                                cases we discuss the issue on
+                                <a href="../../mailing.html">
+                                    the Harmony developers'
+                                    mailing list
+                                </a>, and code the class libraries to do what the development community
+                                conclude is "the logical thing".
+                            </p>
+                        </li>
+                        <li>
+                            <b>Do "the Logical Thing"</b>
+                            <p>
+                                The final decision about how a piece of code should behave, on those rare occasions
+                                where the specification and RI do not provide a satisfactory answer, is reached
+                                by concensus on the Harmony developers' mailing list.  Each issue is debated based
+                                on it's individual circumstances, but the developers are aware that breaking popular
+                                applications is invariably not "the logical thing" to do.
+                                <p>
+                                </p>
+                                Once a decision has been made it is documented in the code comments and an issue
+                                raised in <a href="http://issues.apache.org/jira/browse/HARMONY">
+                                    the Harmony JIRA issue
+                                    tracking system
+                                </a> to record the conclusion.  It should be noted that very few issues
+                                need to be resolved this way.
+                            </p>
+                        </li>
+                    </ul>
+                </p>
                    
                                     
     <h2>
@@ -285,65 +303,72 @@ limitations under the License.
     </h2>
       
                         <p>
-		There are a number of methods in the Java specification that describe the conditions under
-		which exceptions are thrown.  However, in most cases the specification does not describe all possible
-		exceptions that may be thrown, the order of exception throwing (i.e. where there are multiple
-		conditions that would result in an exception), and so on.
-	</p>
+                    There are a number of methods in the Java specification that describe the conditions under
+                    which exceptions are thrown.  However, in most cases the specification does not describe all possible
+                    exceptions that may be thrown, the order of exception throwing (i.e. where there are multiple
+                    conditions that would result in an exception), and so on.
+                </p>
                                 <p>
-		The Harmony class libary code aims to be fully compatible with the Reference Implementation (RI)
-		of the Java Specification by matching the exception characteristics of each method.
-	</p>
+                    The Harmony class libary code aims to be fully compatible with the Reference Implementation (RI)
+                    of the Java Specification by matching the exception characteristics of each method.
+                </p>
                                 <p>
-		Harmony
-		<b>classlib</b> developers write test cases that deliberately cause exceptions to be thrown
-		so that we can match exception behaviour like-for-like.  Harmony class library code throws exceptions 
-		of the same runtime class (or a subtype of that runtime class) as the RI, other than
-        in cases where the RI throws non-public types whereupon Harmony will throw an exception with the same public supertype.
-	</p>
+                    Harmony
+                    <b>classlib</b> developers write test cases that deliberately cause exceptions to be thrown
+                    so that we can match exception behaviour like-for-like.  Harmony class library code throws exceptions
+                    of the same runtime class (or a subtype of that runtime class) as the RI, other than
+                    in cases where the RI throws non-public types whereupon Harmony will throw an exception with the same public supertype.
+                </p>
                                 <p>
-		Generally, we could refer to the following steps.
-	<ul>
-		<li><b>If RI is compliant with the Java Specification</b>
-		<p>
-		We shall follow RI's behavior, that is, throws exactly the same exception or a subclass of the exception.
-		<ul>
-			<li>But there are some cases that RI throws an implementation specific exception, 
-			which is not in the Java Specification, we shall throw an equivalent Harmony specific exception, 
-			or its superclass in the Java Specification.
-			<p><i>
-			e.g., If RI throws sun.io.MalformedInputException, 
-			we could throw org.apache.harmony.io.MalformedInputException or java.io.CharConversionException.
-			</i></p>
-			</li>
-		</ul>
-		</p>
-		</li>
-		<li><b>If RI is not compliant with the Java Specification</b>
-		<p>
-		<ul>
-		<li>If the Java Specification describes the exceptional situation explicitly, 
-		and RI throws different kind of exception or even does not throw any exception, 
-		we shall discuss them case by case in harmony-dev mailing list.
-			<ul>
-				<li>If we decide to follow RI, we will raise an "Non-bug differences from Spec" JIRA.</li>
-				<li>If we decide to follow the Java Specification, we will raise an "Non-bug differences from RI" JIRA.</li>
-			</ul>
-		</li>
-		<li>If the Java Specification does NOT describe the exceptional situation explicitly, 
-		and RI's behavior is either hard to reproduce or illogical, we shall discuss them case by case.
-		And we may decide to:
-			<ul>
-				<li>Follow RI</li>
-				<li>Follow the Java Specification</li>
-				<li>Implement the functions in our own way</li>
-			</ul>
-		</li>
-		</ul>
-		</p>
-		</li>
-	</ul>
-	</p>
+                    Generally, we could refer to the following steps.
+                    <ul>
+                        <li>
+                            <b>If RI is compliant with the Java Specification</b>
+                            <p>
+                                We shall follow RI's behavior, that is, throws exactly the same exception or a subclass of the exception.
+                                <ul>
+                                    <li>
+                                        But there are some cases that RI throws an implementation specific exception,
+                                        which is not in the Java Specification, we shall throw an equivalent Harmony specific exception,
+                                        or its superclass in the Java Specification.
+                                        <p>
+                                            <i>
+                                                e.g., If RI throws sun.io.MalformedInputException,
+                                                we could throw org.apache.harmony.io.MalformedInputException or java.io.CharConversionException.
+                                            </i>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </p>
+                        </li>
+                        <li>
+                            <b>If RI is not compliant with the Java Specification</b>
+                            <p>
+                                <ul>
+                                    <li>
+                                        If the Java Specification describes the exceptional situation explicitly,
+                                        and RI throws different kind of exception or even does not throw any exception,
+                                        we shall discuss them case by case in harmony-dev mailing list.
+                                        <ul>
+                                            <li>If we decide to follow RI, we will raise an "Non-bug differences from Spec" JIRA.</li>
+                                            <li>If we decide to follow the Java Specification, we will raise an "Non-bug differences from RI" JIRA.</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        If the Java Specification does NOT describe the exceptional situation explicitly,
+                                        and RI's behavior is either hard to reproduce or illogical, we shall discuss them case by case.
+                                        And we may decide to:
+                                        <ul>
+                                            <li>Follow RI</li>
+                                            <li>Follow the Java Specification</li>
+                                            <li>Implement the functions in our own way</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </p>
+                        </li>
+                    </ul>
+                </p>
                    
                                     
     <h2>
@@ -351,31 +376,31 @@ limitations under the License.
     </h2>
       
                         <p>
-		The Harmony class library code aims to be serialization compatible with the reference
-		implementation (RI).
-	</p>
+                    The Harmony class library code aims to be serialization compatible with the reference
+                    implementation (RI).
+                </p>
                                 <p>
-		The Java Specification describes the serialized form of many Java types.  Where given, <b>classlib</b> will follow
-		the specified serialized form.  When the serialized form is <u>not</u> given we will ensure that the
-		serialization data is compatible with the RI by ensuring that objects serialized from the RI
-		can be read by Harmony's <b>classlib</b> code, and vice versa.
-	</p>
+                    The Java Specification describes the serialized form of many Java types.  Where given, <b>classlib</b> will follow
+                    the specified serialized form.  When the serialized form is <u>not</u> given we will ensure that the
+                    serialization data is compatible with the RI by ensuring that objects serialized from the RI
+                    can be read by Harmony's <b>classlib</b> code, and vice versa.
+                </p>
                                 <p>
-		Serialization tests are part
-		of our regular test suite and typically rely on having the persistent form of serialized objects
-		written from the RI stored alongside our test suite code.
-	</p>
+                    Serialization tests are part
+                    of our regular test suite and typically rely on having the persistent form of serialized objects
+                    written from the RI stored alongside our test suite code.
+                </p>
                                 <p>
-		To indicate that we are serialization-compatible we define an explicit Stream Unique Identifier
-		(SUID) in each of the Harmony <b>classlib</b> serializable types that is equal to the SUID of
-		the corresponding type in the RI.
-	</p>
+                    To indicate that we are serialization-compatible we define an explicit Stream Unique Identifier
+                    (SUID) in each of the Harmony <b>classlib</b> serializable types that is equal to the SUID of
+                    the corresponding type in the RI.
+                </p>
                                 <p>
-		Where the RI produces a serialized form that cannot be replicated by Harmony (e.g. the RI serialized
-		form includes types that are not part of the Java specification) then Harmony cannot be
-		serialization compatible with the RI, and will both make a prominent note of such in the relevant
-		type's JavaDoc comment, and raise a JIRA issue that describes the incompatibility.
-	</p>
+                    Where the RI produces a serialized form that cannot be replicated by Harmony (e.g. the RI serialized
+                    form includes types that are not part of the Java specification) then Harmony cannot be
+                    serialization compatible with the RI, and will both make a prominent note of such in the relevant
+                    type's JavaDoc comment, and raise a JIRA issue that describes the incompatibility.
+                </p>
                    
                 <p><a href="#top">Back to top</a></p>
                     
