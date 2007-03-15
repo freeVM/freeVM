@@ -245,11 +245,19 @@ from your source files locally, as described in section <a href="#Regenerating t
       <a name="Regenerating the Reference">Regenerating the Reference</a>
     </h1>
                         <p>
-Follow these instructions to regenerate reference materials analogous to those posted on the website. You can also adjust
-the list of files to include into a specific documentation bundle and configure Doxygen to produce a different output,
-see section <a href="#Advanced Tasks">Advanced Tasks</a>
+You can locally regenerate reference materials analogous to those posted on the website. This can be especially useful when writing comments to your code: parsing the newly added comments with Doxygen is an ideal test. To avoid parsing the whole source tree, you can adjust the list of files to include into a specific documentation bundle or configure Doxygen to produce a different output, see section <a href="#Advanced Tasks">Advanced Tasks</a>.
 </p>
-                                <p>TBD</p>
+                                <p>Follow these instructions to regenerate the Doxygen reference documentation locally:</p>
+                                <ol>
+<li>Check out the source code tree. Run <code>svn update</code> to make sure you have the latest version of doc-generation support files.
+</li>
+<li>Go to the directory <code>trunk/working_vm/vm/doc</code> and run:
+<pre>$ ant</pre>
+</li>
+</ol>
+                                <p>
+That's it! You should get the Doxygen docs in a set of subdirectories in <code>doc</code>. 
+<br />Use the <code>DoxygenStart.html</code> file as your starting point. </p>
                                     
     <h2>
         <a name="Advanced Tasks">Advanced Tasks</a>
@@ -258,15 +266,19 @@ see section <a href="#Advanced Tasks">Advanced Tasks</a>
                         <p>
 Generation of Doxygen reference is adjusted by the following files located in <code>trunk/vm/doc</code>:
 </p>
-                                <ul>
-<li><code>doc.properties</code> defines the input and output directories and the files included in each bundle
-</li>
-<li><code>build.xml</code> lists all doc build targets
-</li>
-<li><code>vm.cfg</code> is a copy of classlib configuration files and defines formatting and other output properties for Doxygen
-</li>
-
-</ul>
+                                <dl>
+<dt>doc.properties</dt>
+<dd>Defines the input files included in each bundle. Edit the file per source tree changes. You can also create a new target in this file to include your customized set of files. In this case, remember to add corresponding <code>clean</code> and <code>create</code> targets into <code>build.xml</code>. 
+</dd>
+<dt>build.xml</dt>
+<dd>Lists all doc build targets. When called, <code>ant</code> deletes all previously generated content (if any) and creates new directories for each bundle and places documentation there in the <code>html</code> subfolder. That location also contains the <code>log.txt</code> file with the list of errors and warnings produced by Doxygen. Use the log to track progress with commenting.
+</dd>
+<dt>vm.cfg</dt> 
+<dd>Is a copy of classlib configuration files and defines formatting and other output properties for Doxygen. Modify this file to get a different output format, adjust the header and footer in resulting docs, edit the parsing conditions, etc.
+</dd>
+</dl>
+                                <p class="note">Note</p>
+                                <p class="notetext">The file <code>vm.cfg</code> now depends on the <code>css</code> and other support files located in the classlib trunk. To parse DRLVM sources with Doxygen, you also need to have class library sources checked out. </p>
                    
                 <p><a href="#top">Back to top</a></p>
                     
