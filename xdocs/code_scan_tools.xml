@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!--
-
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -19,56 +18,51 @@
 -->
 
 <document>
+    <properties>
+        <title>Apache Harmony Code Scanning Tools</title>
+        <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    </properties>
 
- <properties>
-  <title>Apache Harmony Code Scanning Tools</title>
-  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
- </properties>
+    <body>
+        <section name="Apache Harmony Code Scanning Tools">
 
-<body>
-<section name="Apache Harmony Code Scanning Tools">
-
-<p>
-The Apache Harmony project is dedicated to producing a codebase that 
-has clear IP pedigree and protects the IP rights of others.  As part 
-of this effort, we are developing and using tools that help us examine
-code in a more effient way.  Below are some tools that we either have
-created, or are listing to provide awareness.  The Apache Harmony project
-or the ASF does not endorse or promote any of these tools, projects
-or commercial organizations, and does not make any claims as to  
-suitability, accuracy or dependability.
-</p>
-
-<subsection name="Apache Harmony Keyword Scanner">
-
-<p>
-Keyword scanning is a simple technique to find "the code you never 
-knew you had."   By searching for a set of well chosen keywords (like 
-"copyright", "license" etc), you can discover code that may not 
-be redistributable (you have the license to use by not re-distribute 
-or re-license), or that you didn't want to contribute.
-</p>
-
-<p>
-The Apache Harmony Keyword Scanner is a new contribution that can be found
-here :
-</p>
-
-<p>
-<a href="http://svn.apache.org/viewcvs.cgi/harmony/standard/tools/keywordscan/">
-http://svn.apache.org/viewcvs.cgi/harmony/standard/tools/keywordscan/
-</a>
-</p>
-
-<p>
-We welcome any feedback and further contributions to this or other code-provenance
-utilities and tools.
-</p>
+            <p>
+                The Apache Harmony project is dedicated to producing a codebase that
+                has clear IP pedigree and protects the IP rights of others. As part
+                of this effort, we are developing and using tools that help us examine
+                code in a more effient way. Below are some tools that we either have
+                created, or are listing to provide awareness. The Apache Harmony project
+                or the ASF does not endorse or promote any of these tools, projects
+                or commercial organizations, and does not make any claims as to
+                suitability, accuracy or dependability.
+            </p>
+              <subsection name="Apache Harmony Keyword Scanner">
+                <p>
+                    Keyword scanning is a simple technique to find "the code you never
+                    knew you had." By searching for a set of well chosen keywords (like
+                    "copyright", "license" etc), you can discover code that may not
+                    be redistributable (you have the license to use by not re-distribute
+                    or re-license), or that you didn't want to contribute.
+                </p>
+                <p>
+                    The Apache Harmony Keyword Scanner is a new contribution that can be found
+                    here:
+                </p>
+                <p>
+                    <a href="http://svn.apache.org/viewcvs.cgi/harmony/standard/tools/keywordscan/">
+                        http://svn.apache.org/viewcvs.cgi/harmony/standard/tools/keywordscan/
+                    </a>
+                </p>
+                <p>
+                    We welcome any feedback and further contributions to this or other code-provenance
+                    utilities and tools.
+                </p>
 
 
-</subsection>
+            </subsection>
 
-</section>
-</body>
+        </section>
+    </body>
 </document>
+
 

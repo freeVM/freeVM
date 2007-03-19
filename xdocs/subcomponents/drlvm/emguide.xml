@@ -38,33 +38,27 @@
 Execution Manager (EM) is a component in DRLVM that controls 
 profile collection and recompilation processes.
 <br/>
-For detailed information on EM, see the 
- <a href="EM.html">
-   Execution Manager Component Description
-   </a>.
+For detailed information on EM, see the <a href="EM.html">Execution Manager Component Description</a>.
 </p>
 </subsection>
 <subsection name="2. EM Configuration File">
 <p>
 The set of JIT compilers and profile collectors used at run time and their
- relations is stored in the <i>EM configuration file</i>.
+relations is stored in the <i>EM configuration file</i>.
 During the VM initialization phase, EM uses hard-coded configuration or reads 
-it from the config file, if specified. 
-<br/>
-You can use the following command-line option to make EM read its 
-configuration from the file:<br/>
-<code>-Xem:&lt;path to configuration file&gt;</code>
-<br/>
-or   <br/>
-<code>-Dem.properties=&lt;configuration.file.path&gt;</code>
-</p>
+it from the config file, if specified.</p>
+<p>You can use the following command-line option to make EM read its configuration from the file:</p>
+<pre>-Xem:&lt;path to configuration file&gt;</pre>
+or
+<pre>-Dem.properties=&lt;configuration.file.path&gt;</pre>
+
 <p>
-The following is a line-by-line description of the default EM configuration. 
-These configuration settings can be used as a prototype to create 
+The following is a line-by-line description of the default EM configuration.
+These configuration settings can be used as a prototype to create
 new custom EM configuration files.
 The default configuration is:
 </p>
-<p><pre>
+<pre>
 chains=chain1,chain2
 
 chain1.jits=JET_CLINIT
@@ -84,78 +78,67 @@ OPT.useProfile=JET_DPGO_PROFILE
 JET_DPGO_PROFILE. mode=SYNC
 JET_DPGO_PROFILE.entryThreshold=10000
 JET_DPGO_PROFILE.backedgeThreshold=100000
-</pre></p>
-<p>A line-by-line description of the settings follows. </p>
+</pre>
+<p>A line-by-line description of the settings follows.</p>
 <pre>
 chains=chain1,chain2
 </pre>
 <p>
-Every EM configuration file must define the <code>chains</code> property 
+Every EM configuration file must define the <code>chains</code> property
 to indicate sequences of JIT compilers to be used to compile and/or recompile
- a method. In this example, two recompilation chains are set for the system: 
-<code>chain1</code> and <code>chain2</code>. EM analyzes chains until it has 
-chosen the chain for the method. 
+ a method. In this example, two recompilation chains are set for the system:
+<code>chain1</code> and <code>chain2</code>. EM analyzes chains until it has
+chosen the chain for the method.
 </p>
 <pre>
 chain1.jits=JET_CLINIT
 chain2.jits=JET_DPGO,OPT
 </pre>
 <p>
-In this case, <code>chain1</code> has one JIT compiler 
+In this case, <code>chain1</code> has one JIT compiler
 <code>JET_CLINIT</code>, and <code>chain2</code> has
  two compilers: <code>JET_DPGO</code> and <code>OPT</code>.
-Using these JIT names, EM reads JIT-specific configuration 
-and passes the names to JIT instances during initialization. 
-A compiler instance can use its name to distinguish between 
-its own properties and those of other JITs.  <br/>
-</p>
-<p>
-<b>Note:</b> Jitrino, the current default DRLVM JIT compiler, 
-selects Jitrino.JET (fast, non-optimizing compiler) if the name 
-starts with the <code>JET</code> prefix. Otherwise, the JIT 
-instance is treated as Jitrino.OPT.
-</p>
+Using these JIT names, EM reads JIT-specific configuration
+and passes the names to JIT instances during initialization.
+A compiler instance can use its name to distinguish between
+its own properties and those of other JITs.</p>
+<p class="note">Note</p>
+    <p class="notetext">Jitrino, the current default DRLVM JIT compiler,
+        selects Jitrino.JET (fast, non-optimizing compiler) if the name
+        starts with the <code>JET</code> prefix. Otherwise, the JIT
+        instance is treated as Jitrino.OPT.</p>
 <pre>
 chain1.filter=+::&lt;clinit&gt; 
 chain1.filter=-
 </pre>
 <p>
 Method filters are used to select methods that will be compiled
- by the first JIT in a chain. 
+by the first JIT in a chain.
 In this example, the first line configures <code>chain1</code> 
-to accept all <code>&lt;clinits&gt;</code> methods 
-and the second line - to refuse to compile all other methods. <br />
-The order of filters for every chain is significant. Chain
- filters can be considered as if-else clauses: <br/>
+to accept all <code>&lt;clinits&gt;</code> methods
+and the second line - to refuse to compile all other methods </p>
+<p>The order of filters for every chain is significant. Chain
+filters can be considered as if-else clauses:<br/>
 If a filter matches a method, EM stops examining other filters
- and analyzes the first sign in the filter: <br/>
+and analyzes the first sign in the filter:</p>
 <ul>
-<li>For a <code>+</code>, EM requests the first JIT in the 
-chain to compile the method. </li>
-<li>For a <code>-</code>, EM tries the next chain in the list. </li>
+<li>For a <code>+</code>, EM requests the first JIT in the
+chain to compile the method.</li>
+<li>For a <code>-</code>, EM tries the next chain in the list.</li>
 </ul>
-If no filter has matched the compilation request, EM considers 
-that the method is accepted to be compiled by the chain. 
-<br/>
-Here is a format of all currently supported method filters. 
-</p><br/>
+    <p>
+If no filter has matched the compilation request, EM considers
+that the method is accepted to be compiled by the chain.
+Here is a format of all currently supported method filters.
+</p>
 <table>
 <tr>
-<td>
-<b>Filter Type</b>
-</td>
-<td>
-<b>Filter Format   </b>
-</td>
-<td>
-<b>Filter Examples </b>
-</td>
+<th class="TableHeading">Filter Type</th>
+<th class="TableHeading">Filter Format</th>
+<th class="TableHeading">Filter Examples</th>
 </tr>
-
 <tr>
-<td>
-Name filter
-</td>
+<td>Name filter</td>
 <td>
 &lt;class-name&gt;::&lt;method_name&gt;&lt;signature&gt;
 </td>
@@ -175,9 +158,9 @@ Size filter
 NUMB or NUM1B..NUM2B
 </td>
 <td>
-'<i>+10B..100B</i>' accepts all methods of bytecode size in range of 
+'<i>+10B..100B</i>' accepts all methods of bytecode size in range of
 [10..100].<br/>
-'<i>-20B</i>' rejects all methods of bytecode size equal to 20. 
+'<i>-20B</i>' rejects all methods of bytecode size equal to 20.
 </td>
 </tr>
 
@@ -195,116 +178,104 @@ NUM or NUM..NUM
 </tr>
 
 </table>
-<br/>
-<p>
-<b>Note:</b> The sequential method number could be changed from run 
-to run in multithreaded environments. 
-</p>
-<p><pre>
+
+<p class="note">Note</p>
+    <p class="notetext">The sequential method number could be changed from run
+to run in multithreaded environments.</p>
+<pre>
 JET_CLINIT.file=&lt;path to dll&gt;
 JET_DPGO.file=&lt;path to dll&gt;
 OPT.file=&lt;path to dll&gt;
-</pre></p>
+</pre>
 <p>
 For every JIT, the configuration file must define the location of the library
- file location.
-Multiple JIT compilers can be associated with the same library. 
-For example, all paths can point to the same jit.dll file. 
-</p>
-<p><pre>
+file location. Multiple JIT compilers can be associated with the same library.
+For example, all paths can point to the same jit.dll file.</p>
+<pre>
 JET_DPGO.genProfile=JET_DPGO_PROFILE
 JET_DPGO_PROFILE.profilerType=ENTRY_BACKEDGE_PROFILER
 OPT.useProfile=JET_DPGO_PROFILE
-</pre></p>
+</pre>
 <p>
-These settings define profile collection and recompilation event 
-configuration for two JIT compilers: <code>JET_DPGO</code> 
+These settings define profile collection and recompilation event
+configuration for two JIT compilers: <code>JET_DPGO</code>
 and <code>OPT</code>.
-The first line configures <code>JET_DPGO</code> to generate a 
-profile <code>JET_DPGO_PROFILE</code>, 
-with the type of associated profile collector specified in the 
-second line. <code>ENTRY_BACKEDGE_PROFILER</code> 
-is the built-in DRL EM profile collector type. 
-In the third line, the <code>OPT</code> compiler is configured 
+The first line configures <code>JET_DPGO</code> to generate a
+profile <code>JET_DPGO_PROFILE</code>,
+with the type of associated profile collector specified in the
+second line. <code>ENTRY_BACKEDGE_PROFILER</code>
+is the built-in DRL EM profile collector type.
+In the third line, the <code>OPT</code> compiler is configured
 to use the new profile.
-After reading these configuration settings, the execution 
-manager does the following: <br/>
+After reading these configuration settings, the execution
+manager does the following:</p>
 <ol>
-<li>Instantiates the profile collector of the type 
-<code>ENTRY_BACKEDGE_PROFILER</code>. </li>
-<li>Checks whether the <code>JET_DPGO</code> JIT can generate 
+<li>Instantiates the profile collector of the type
+<code>ENTRY_BACKEDGE_PROFILER</code>.</li>
+<li>Checks whether the <code>JET_DPGO</code> JIT can generate
 method profiles of this type; if so, requests the JIT to enable
- profile generation. </li>
-<li>Checks whether the <code>OPT JIT</code> can use method 
-profiles of this type. </li>
-<li>Registers the profile collector as active. </li>
+ profile generation.</li>
+<li>Checks whether the <code>OPT JIT</code> can use method
+profiles of this type.</li>
+<li>Registers the profile collector as active.</li>
 </ol>
-</p>
-<p><pre>
+<pre>
 JET_DPGO_PROFILE. mode=SYNC
 JET_DPGO_PROFILE.entryThreshold=10000
-JET_DPGO_PROFILE.backedgeThreshold=100000 
-</pre></p>
+JET_DPGO_PROFILE.backedgeThreshold=100000
+</pre>
 <p>
-The last 4 lines contain the configuration of the <code>JET_DPGO_PROFILE</code>
- profiler. These properties are specific for every profile collector type. 
-The first option runs entry-backedge profile mode in the SYNC mode: counters 
-check is done during the code execution. Use  ASYNC to run counters 
-checking in a separate thread. The last 2 options set the profile readiness 
-threshold. Once the profile is ready, EM dispatches the method for 
+The last four lines contain the configuration of the <code>JET_DPGO_PROFILE</code>
+profiler. These properties are specific for every profile collector type.
+The first option runs entry-backedge profile mode in the SYNC mode: counters
+check is done during the code execution. Use  ASYNC to run counters
+checking in a separate thread. The last 2 options set the profile readiness
+threshold. Once the profile is ready, EM dispatches the method for
 recompilation with the next JIT in the current chain.
 </p>
 </subsection>
 <subsection name="3. EM Tracing Options">
 <p>
-Use the following command-line options to trace EM events:
-<br/>
-<code>-verbose:em</code> dumps all EM events.<br/>
-<code>-verbose:em.JIT_NAME</code> dumps only JIT named 
-"<code>JIT_NAME</code>" related events. <br/>
-<code>-verbose:em.profiler.PROFILER_NAME</code> dumps only profiler
- "<code>PROFILER_NAME</code>" related events.<br/>
+Use the following command-line options to trace EM events:</p>
+<ul>
+<li><code>-verbose:em</code> dumps all EM events.</li>
+<li><code>-verbose:em.JIT_NAME</code> dumps only JIT named "<code>JIT_NAME</code>" related events.</li>
+<li><code>-verbose:em.profiler.PROFILER_NAME</code> dumps only profiler "<code>PROFILER_NAME</code>"
+related events.</li>
+</ul>
+<p class="example">
+Example
 </p>
-  <p class="example">
-    Example
-  </p>
-  <p class="exampletext">
+<p class="exampletext">
 For the default EM configuration file, 
-<br/><code>
--verbose:em.OPT 
-</code><br/> dumps all methods names that are compiled with 
-Jitrino.OPT. According to the configuration details, these methods 
-are hot methods.
-</p>
-  <p class="exampletext">Alternatively, you can get almost the same information by using 
-the following: 
-<br/><code>
--verbose:em.profiler.JET_DPGO_PROFILE 
-</code><br/> additionally dumps information about hot method profiles.
-</p>
+<code>-verbose:em.OPT</code>dumps all methods names that are compiled with
+Jitrino.OPT. According to the configuration details, these methods
+are hot methods.<br />
+Alternatively, you can get almost the same information by using
+the following:
+<code>-verbose:em.profiler.JET_DPGO_PROFILE</code> additionally dumps
+information about hot method profiles.</p>
 
-  <p class="example">Examples of output:</p>
-<br/>
-<code>
-C:\tools\decapo&gt;c:\tools\harmony0706\bin\java.exe  -verbose:em.OPT -jar dacapo-beta051009.jar xalan<br/>
-EM: recompile start:[OPT n=1] java/io/ByteArrayOutputStream::write(I)V<br/>
-EM: recompile done:[OPT n=1] java/io/ByteArrayOutputStream::write(I)V<br/>
-EM: recompile start:[OPT n=2] java/lang/String::hashCode()I<br/>
-EM: recompile done:[OPT n=2] java/lang/String::hashCode()I<br/>
-...<br/>
-C:\tools\decapo&gt;c:\tools\harmony0706\bin\java.exe  -verbose:em.profiler.JET_DPGO_PROFILE -jar dacapo-beta051009.jar xalan<br/>
-EM: entry-backedge profiler intialized: JET_DPGO_PROFILE entry threshold:10000 backedge threshold:100000 mode:SYNC<br/>
-EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/io/ByteArrayOutputStream::write(I)V<br/>
-EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:59575] java/lang/String::hashCode()I<br/>
-EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/lang/String::length()I<br/>
-EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/lang/String::charAt(I)C<br/>
-EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/nio/charset/Charset::isLetter(C)Z<br/>
-EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/nio/charset/Charset::isDigit(C)Z<br/>
-EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/nio/Buffer::remaining()I<br/>
-EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/util/HashMap::getModuloHash(Ljava/lang/Object;)I<br/>
-...  <br/>
-</code>
-<br/>
+<p class="example">Examples of output:</p>
+<pre>
+C:\tools\decapo&gt;c:\tools\harmony0706\bin\java.exe  -verbose:em.OPT -jar dacapo-beta051009.jar xalan
+EM: recompile start:[OPT n=1] java/io/ByteArrayOutputStream::write(I)V
+EM: recompile done:[OPT n=1] java/io/ByteArrayOutputStream::write(I)V
+EM: recompile start:[OPT n=2] java/lang/String::hashCode()I
+EM: recompile done:[OPT n=2] java/lang/String::hashCode()I
+...
+C:\tools\decapo&gt;c:\tools\harmony0706\bin\java.exe  -verbose:em.profiler.JET_DPGO_PROFILE -jar dacapo-beta051009.jar xalan
+EM: entry-backedge profiler intialized: JET_DPGO_PROFILE entry threshold:10000 backedge threshold:100000 mode:SYNC
+EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/io/ByteArrayOutputStream::write(I)V
+EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:59575] java/lang/String::hashCode()I
+EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/lang/String::length()I
+EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/lang/String::charAt(I)C
+EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/nio/charset/Charset::isLetter(C)Z
+EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/nio/charset/Charset::isDigit(C)Z
+EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/nio/Buffer::remaining()I
+EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/util/HashMap::getModuloHash(Ljava/lang/Object;)I
+...  
+</pre>
 </subsection>
 <subsection name="4. More EM Configuration Samples">
   <p>
@@ -317,34 +288,34 @@ EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/util/HashMap:
     prefix in the name is a Jitrino.JET instance. <br/>
     Another difference in these configurations are options passed to the JIT compiler.
   </p>
-<p><i>These configurations have only one JIT and no profile collection or recompilation.</i></p>
+<p class="class">These configurations have only one JIT and no profile collection or recompilation.</p>
 <p><b>
   <code>-Xem:jet</code> - the baseline compiler mode configuration</b></p>
-<p><pre>
+<pre>
 chains=chain1
 chain1.jits=JET
 JET.file=&lt;path to dll&gt;
-</pre></p>
+</pre>
 <p><b>
   <code>-Xem:opt</code> - the client-static mode configuration</b></p>
-<p><pre>
+<pre>
 chains=chain1
 chain1.jits=CS_OPT
 OPT.file=&lt;path to dll&gt;
-</pre></p>
+</pre>
 <p><b>
   <code>-Xem:server_static</code> - the server-static mode configuration</b></p>
-<p><pre>
+<pre>
 chains=chain1
 chain1.jits=SS_OPT
 OPT.file=&lt;path to dll&gt;
-</pre></p>
-<br/>
-<p><i>These configurations use recompilation and collect profiles.</i></p>
+</pre>
+
+<p class="class">These configurations use recompilation and collect profiles.</p>
 
 <p><b>
   <code>-Xem:client</code> - the default configuration, or client dynamic</b></p>
-<p><pre>
+<pre>
 chains=chain1,chain2
 chain1.jits=JET_CLINIT
 chain2.jits=JET_DPGO,CD_OPT
@@ -369,11 +340,11 @@ CD_OPT.useProfile=EB_PROF
 EB_PROF.mode=SYNC
 EB_PROF.entryThreshold=10000
 EB_PROF.backedgeThreshold=100000
-</pre></p>
+</pre>
 
 <p><b>
   <code>-Xem:server</code> - the server mode configuration, or server dynamic</b></p>
-<p><pre>
+<pre>
 chains=chain1,chain2
 chain1.jits=JET_CLINIT
 chain2.jits=SD1_OPT,SD2_OPT
@@ -394,7 +365,7 @@ EDGE_PROF.tbsInitialTimeout=0
 
 SD1_OPT.genProfile=EDGE_PROF
 SD2_OPT.useProfile=EDGE_PROF
-</pre></p>
+</pre>
 
 <p class="note">Note</p>
   <p class="notetext">To run VM in the intereter mode, use the <code>-Xint</code> 

@@ -221,19 +221,12 @@ limitations under the License.
                     Each Java package is owned by a specific module of the Harmony class library.
                     The module name immediately follows the <code>org.apache.harmony</code> prefix.
                 </p>
-                                <pre>
-                    org.apache.harmony.<b>&lt;module&gt;</b>
-                </pre>
+                                <pre>org.apache.harmony.<b>&lt;module&gt;</b></pre>
                                 <p class="example">
                     Example
                 </p>
-                                <p class="exampletext">
-                    <pre>
-                        org.apache.harmony.luni
-                        org.apache.harmony.security
-                    </pre>
-
-                </p>
+                                <pre>org.apache.harmony.luni
+org.apache.harmony.security</pre>
                    
                                     
     <h2>
@@ -250,49 +243,49 @@ limitations under the License.
                     The following package name segements are <b>reserved</b> to indicate the meanings
                     defined below:
                 </p>
-                                <ul>
-                    <li>
+                                <dl>
+                    <dt>
                         <code>
                             org.apache.harmony.&lt;modulename&gt;.<b>internal</b>
                         </code>
-                        <p>
-                            Packages with this prefix are implementation packages for use within
-                            the given module. Types and fields that are visible within these
-                            packages <em>MUST NOT</em> be used outside the module itself.
-                            Some runtime environments may enforce this reduced visibility scope.
-                        </p>
-                    </li>
-                    <li>
+                    </dt>
+                    <dd>
+                        Packages with this prefix are implementation packages for use within
+                        the given module. Types and fields that are visible within these
+                        packages <em>MUST NOT</em> be used outside the module itself.
+                        Some runtime environments may enforce this reduced visibility scope.
+                    </dd>
+                    <dt>
                         <code>
                             org.apache.harmony.&lt;modulename&gt;.<b>tests</b>
                         </code>
-                        <p>
-                            Packages with this prefix contain test code that is not part of the
-                            module API or implementation.  Some builds may not include these
-                            packages. See <a href="testing.html">Testing conventions in the Apache Harmony Classlib</a>
-                            for details.
-                        </p>
-                    </li>
-                    <li>
+                    </dt>
+                    <dd>
+                        Packages with this prefix contain test code that is not part of the
+                        module API or implementation. Some builds may not include these
+                        packages. See <a href="testing.html">Testing conventions in the Apache Harmony Classlib</a>
+                        for details.
+                    </dd>
+                    <dt>
                         <code>
                             org.apache.harmony.&lt;modulename&gt;.<b>examples</b>
                         </code>
-                        <p>
-                            Packages with this prefix contain example code that is not part of the
-                            module API or implementation. Some builds may not include these
-                            packages.
-                        </p>
-                    </li>
-                    <li>
+                    </dt>
+                    <dd>
+                        Packages with this prefix contain example code that is not part of the
+                        module API or implementation. Some builds may not include these
+                        packages.
+                    </dd>
+                    <dt>
                         <code>
                             org.apache.harmony.&lt;modulename&gt;.<b>&lt;anything_else&gt;</b>
                         </code>
-                        <p>
-                            All other packages within a module contain internal APIs that may
-                            be referenced from any module.
-                        </p>
-                    </li>
-                </ul>
+                    </dt>
+                    <dd>
+                        All other packages within a module contain internal APIs that may
+                        be referenced from any module.
+                    </dd>
+                </dl>
                                 <p>
                     In practice, this means that module developers are free to change the code within an
                     <code>internal</code> package without expecting any consequences beyond the module

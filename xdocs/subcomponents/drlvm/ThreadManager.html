@@ -30,108 +30,53 @@
       <h1>
          <a id="top" name="top"></a>Thread Manager
       </h1>
-   
-      <p class="TOCHeading">
-         <a href="#RevisionHistory">1. Revision History</a>
-      </p>
-      
-      <p class="TOCHeading">
-         <a href="#About_This_Document">2. About this Document</a>
-      </p>
-      <p class="TOC">
-         <a href="#Purpose">2.1 Purpose</a>
-      </p>
-      <p class="TOC">
-         <a href="#Intended_Audience">2.2 Intended Audience</a>
-      </p>
-      <p class="TOC">
-         <a href="#Documentation_Conventions">2.3 Documentation Conventions</a>
-      </p>
-      <p class="TOC">
-         <a href="#Using_this_document">2.4 Using this Document</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#Overview">2. Overview</a>
-      </p>
-      <p class="TOC">
-         <a href="#Key_Feature">2.1 Key Features</a>
-      </p>
-      <p class="TOC">
-         <a href="#TM_in_VM">2.2 Thread Manager in VM</a>
-      </p>
-      <p class="TOC">
-         <a href="#Portability">2.3 Portability</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#Achitecture">4. Architecture</a>
-      </p>
-      <p class="TOC">
-         <a href="#Exported_Interfaces">4.1 Exported interfaces</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Native_Layer">4.1.1 Native Interface</a>
-         </p>
-         <p class="TOC">
-            <a href="#Java_interface">4.1.2 Java* Interface</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Data_Structures">4.2 Data structures</a>
-      </p>
-      <p class="TOC">
-         <a href="#Thread_Control_Structure">4.3 Thread control structures</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Native_Structure">4.3.1 Native Thread Structure</a>
-         </p>
-         <p class="TOC">
-            <a href="#Java_Structure">4.3.2 Java* Thread Structure</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Thread_Group">4.4 Thread Groups</a>
-      </p>
-      <p class="TOC">
-         <a href="#Synchronizer">4.5 Synchronizers</a>
-      </p>
-      <p class="TOC">
-         <a href="#Monitors">4.6 Monitors</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#MonitorInflation">4.6.1 Inflation Technique</a>
-         </p>
-         <p class="TOC">
-            <a href="#Thin_monitors">4.6.2 Monitor Structure</a>
-         </p>
-         <p class="TOC">
-            <a href="#AcquireMonitor">4.6.3 Acquiring a Monitor</a>
-         </p>
-      </blockquote>
-      <p class="TOCHeading">
-         <a href="#Usage_Scenarios">5. Usage scenarios</a>
-      </p>
-      <p class="TOC">
-         <a href="#Thread_lifecycle">5.1 Java* Thread Life Cycle</a>
-      </p>
-      <p class="TOC">
-         <a href="#Thread_suspension">5.2 Thread Suspension</a>
-      </p>
-      <p class="TOC">
-         <a href="#Stop-the-world_Suspension">5.3 Stop-the-world Thread
-         Suspension</a>
-      </p>
-      <p class="TOC">
-         <a href="#Thread_locking">5.4 Thread Locking</a>
-      </p>
-      <p class="TOC">
-         <a href="#Monitor_scenarios">5.5 Monitor Enter and Exit</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#References">6. References</a>
-      </p>
+   <ol class="TOC">
+      <li><a href="#RevisionHistory">1. Revision History</a></li>
+      <li><a href="#About_This_Document">2. About this Document</a>
+         <ol>
+            <li><a href="#Purpose">2.1 Purpose</a></li>
+            <li><a href="#Intended_Audience">2.2 Intended Audience</a></li>
+            <li><a href="#Documentation_Conventions">2.3 Documentation Conventions</a></li>
+            <li><a href="#Using_this_document">2.4 Using this Document</a></li>
+         </ol></li>
+      <li><a href="#Overview">3. Overview</a>
+         <ol>
+            <li><a href="#Key_Feature">3.1 Key Features</a></li>
+            <li><a href="#TM_in_VM">3.2 Thread Manager in VM</a></li>
+            <li><a href="#Portability">3.3 Portability</a></li>
+         </ol></li>
+      <li><a href="#Achitecture">4. Architecture</a>
+         <ol>
+            <li><a href="#Exported_Interfaces">4.1 Exported interfaces</a>
+               <ul>
+                  <li><a href="#Native_Layer">4.1.1 Native Interface</a></li>
+                  <li><a href="#Java_interface">4.1.2 Java* Interface</a></li>
+               </ul></li>
+            <li><a href="#Data_Structures">4.2 Data structures</a></li>
+            <li><a href="#Thread_Control_Structure">4.3 Thread control structures</a>
+               <ul>
+                  <li><a href="#Native_Structure">4.3.1 Native Thread Structure</a></li>
+                  <li><a href="#Java_Structure">4.3.2 Java* Thread Structure</a></li>
+               </ul></li>
+            <li><a href="#Thread_Group">4.4 Thread Groups</a></li>
+            <li><a href="#Synchronizer">4.5 Synchronizers</a></li>
+            <li><a href="#Monitors">4.6 Monitors</a>
+               <ul>
+                  <li><a href="#MonitorInflation">4.6.1 Inflation Technique</a></li>
+                  <li><a href="#Thin_monitors">4.6.2 Monitor Structure</a></li>
+                  <li><a href="#AcquireMonitor">4.6.3 Acquiring a Monitor</a></li>
+               </ul></li>
+         </ol></li>
+      <li><a href="#Usage_Scenarios">5. Usage scenarios</a>
+         <ol>
+            <li><a href="#Thread_lifecycle">5.1 Java* Thread Life Cycle</a></li>
+            <li><a href="#Thread_suspension">5.2 Thread Suspension</a></li>
+            <li><a href="#Stop-the-world_Suspension">5.3 Stop-the-world Thread Suspension</a></li>
+            <li><a href="#Thread_locking">5.4 Thread Locking</a></li> 
+            <li><a href="#Monitor_scenarios">5.5 Monitor Enter and Exit</a></li>
+         </ol></li>
+      <li><a href="#References">6. References</a></li>
+   </ol>
       <h1>
          <a id="RevisionHistory" name="RevisionHistory"></a>1. Revision History
       </h1>
@@ -1910,6 +1855,7 @@
       </p>
    </body>
 </html>
+
 
 
 

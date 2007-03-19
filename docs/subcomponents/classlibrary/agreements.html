@@ -193,7 +193,7 @@ limitations under the License.
     </h1>
                         <p>
     <big><em>The summary of agreements and recommendations that were  
-    discussed on the development mailing list <code>dev@harmony.apache.org</code>.  
+    discussed on the development mailing list <code>dev@harmony.apache.org</code>.
     Please feel free to send your comments and questions there.</em></big>
 </p>
                                     
@@ -202,90 +202,94 @@ limitations under the License.
     </h2>
       
                         <ul>
-    <li>serialVersionUID MUST be explicitly specified for each Serializable class to provide compatibility
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c906dd82e0601190059x3162c6c6u533928579c226572@mail.gmail.com%3e">
-    [classlib] serialVersionUIDs for Serializable classes</a>)
+    <li><code>serialVersionUID</code> MUST be explicitly specified for each Serializable class to
+    provide compatibility.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c906dd82e0601190059x3162c6c6u533928579c226572@mail.gmail.com%3e">
+    [classlib] serialVersionUIDs for Serializable classes</a>
     </li>
 
-    <li>Exception messages MUST be internationalized
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200604.mbox/%3c44478DC3.4070206@gmail.com%3e">
-    Internationalized messages</a>)
+    <li>Exception messages MUST be internationalized.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200604.mbox/%3c44478DC3.4070206@gmail.com%3e">
+    Internationalized messages</a>
     </li>
 
-    <li>A golden ticket MUST be acquired to update java.lang.String class
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200604.mbox/%3c444788A0.6000102@gmail.com%3e">
-    [classlib] String is special</a>)
+    <li>A golden ticket MUST be acquired to update the <code>java.lang.String</code> class.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200604.mbox/%3c444788A0.6000102@gmail.com%3e">
+        [classlib] String is special
+    </a>
     </li>
 
-    <li>Mark deprecated stuff with @deprecated keyword
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c4405BE70.1020307@gmail.com%3e">
-    deprecated methods , javadocs</a>)
-    </li>
+    <li>Mark deprecated stuff with <code>@deprecated</code> keyword.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c4405BE70.1020307@gmail.com%3e">
+        deprecated methods, javadocs</a>
+</li>
 
-    <li>Error messages should contain helpfull information
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3cfcb9f9160603240835i792de7dobabfc43a44e7c752@mail.gmail.com%3e">
-    More helpful error messages</a>)
+<li>
+    Error messages should contain helpfull information.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3cfcb9f9160603240835i792de7dobabfc43a44e7c752@mail.gmail.com%3e">
+    More helpful error messages</a>
     </li>
 
     <li>We clarify/add Harmony classlib specific to javadoc, provide examples.
-    Also javadoc should contain a reference to Sun's javadoc
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c43C38BCC.6070308@gmail.com%3e">
-    Writing JavaDoc</a>)
+    Also javadoc should contain a reference to Sun's javadoc.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c43C38BCC.6070308@gmail.com%3e">
+    Writing JavaDoc</a>
     </li>
 
-    <li>Implementation code should not contain logging.
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200605.mbox/%3c447C3186.4000208@gmail.com%3e">
-    [classlib] JNDI provider's dependency on logging</a>) and
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200605.mbox/%3c447C6E8B.8020202@pobox.com%3e">
-    [classlib] logging from within our implementation</a>)
+    <li>Implementation code should not contain logging.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200605.mbox/%3c447C3186.4000208@gmail.com%3e">
+    [classlib] JNDI provider's dependency on logging</a> and
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200605.mbox/%3c447C6E8B.8020202@pobox.com%3e">
+    [classlib] logging from within our implementation</a>
     </li>
 
-    <li>java.util.concurrent issue was resolved by taking code from
-    independent source(Doug Lea). And we'll offer fixes made in Harmony back to
-    original repository.
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200606.mbox/%3c4486FEAE.5000607@pobox.com%3e">
-    [classlib] proposal - resolution to java.util.concurrent issue</a>),
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3c005401c6a56e$79234ce0$0c01a8c0@LITTLEGUY%3e">
-    [classlib][concurrent] java.util.concurrent module proposal</a>) and
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3c44B60C4E.80003@gmail.com%3e">
-    [legal] taking concurrency utils code into the project</a>)
-    </li>
+    <li>The <code>java.util.concurrent</code> issue was resolved by taking code from
+    independent source (Doug Lea). And we'll offer fixes made in Harmony back to
+    original repository.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200606.mbox/%3c4486FEAE.5000607@pobox.com%3e">
+    [classlib] proposal - resolution to java.util.concurrent issue</a>,
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3c005401c6a56e$79234ce0$0c01a8c0@LITTLEGUY%3e">
+    [classlib][concurrent] java.util.concurrent module proposal</a> and
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3c44B60C4E.80003@gmail.com%3e">
+    [legal] taking concurrency utils code into the project</a></li>
 
     <li>Ant build files should use 1.6 style (using macros and avoiding
-    antcall invocations).
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200606.mbox/%3c20060629155612.72153.qmail@web55112.mail.re4.yahoo.com%3e">
-    [classlib] build file stuff</a>)
+    antcall invocations).<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200606.mbox/%3c20060629155612.72153.qmail@web55112.mail.re4.yahoo.com%3e">
+    [classlib] build file stuff</a>
     </li>
 
-    <li>It is OK to use Sun's messages for expections and toString() methods
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3c44BAE039.3060903@pobox.com%3e">
-    [general] Sun's permission to use exception messages and toString() formats</a>)
+    <li>It is OK to use Sun's messages for expections and <code>toString()</code> methods.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3c44BAE039.3060903@pobox.com%3e">
+    [general] Sun's permission to use exception messages and toString() formats</a>
     </li>
 
-    <li>We use Apache Yoko as CORBA for Harmony
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3cc3755b3a0607180804r2ac264aei8adb967e6e64ae35@mail.gmail.com%3e">
-    [classlib] Using Yoko as CORBA for Harmony</a>).
-    And CORBA v.2.4 is acceptable (1.5 spec requires CORBA v.2.3.1).
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3cc3755b3a0607260005j6c51c983k511828945dbf4412@mail.gmail.com%3e">
-    Yoko is CORBA 2.4. Is this acceptable for Harmony?</a>).
+    <li>We use Apache Yoko as CORBA for Harmony.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3cc3755b3a0607180804r2ac264aei8adb967e6e64ae35@mail.gmail.com%3e">
+        [classlib] Using Yoko as CORBA for Harmony</a><br />
+        And CORBA v.2.4 is acceptable (1.5 spec requires CORBA v.2.3.1).<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3cc3755b3a0607260005j6c51c983k511828945dbf4412@mail.gmail.com%3e">
+        Yoko is CORBA 2.4. Is this acceptable for Harmony?</a>
+</li>
+
+<li>
+    We will support 3.2 and 4.01 versions of HTML (RI is based on 3.2).<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3c9b6bea40607211316t36e7c665g7452feea3f99b8ce@mail.gmail.com%3e">
+    [classlib][html] HTML 3.2 or 4.01</a>
     </li>
 
-    <li>We will support 3.2 and 4.01 versions of HTML (RI is based on 3.2)
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200607.mbox/%3c9b6bea40607211316t36e7c665g7452feea3f99b8ce@mail.gmail.com%3e">
-    [classlib][html] HTML 3.2 or 4.01</a>)
-    </li>
+    <li><code>sun.*</code> classes issue was resolved by creating <code>suncompat.jar</code>.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200608.mbox/%3c44DB0537.6090408@gmail.com%3e">
+        [classlib][suncompat] created</a>
+</li>
 
-    <li>sun.* classes issue was resolved by creating suncompat.jar
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200608.mbox/%3c44DB0537.6090408@gmail.com%3e">
-    [classlib][suncompat] created</a>)
-    </li>
-
-    <li>Throws clause of stub method should include
+<li>
+    Throws clause of stub method should include
     <a href="http://svn.apache.org/viewvc/incubator/harmony/enhanced/classlib/trunk/modules/luni/src/main/java/org/apache/harmony/luni/util/NotImplementedException.java?view=markup">
-    NotImplementedException</a> to be recognized by Japi tool.
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200611.mbox/%3cba76afd90611071842w264a2519q1f5a123154759ad6@mail.gmail.com%3e">
-    Japi diffs for harmony</a>)
-    </li>
+        NotImplementedException</a> to be recognized by Japi tool.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200611.mbox/%3cba76afd90611071842w264a2519q1f5a123154759ad6@mail.gmail.com%3e">
+    Japi diffs for harmony</a>
+</li>
 
 </ul>
                    
@@ -295,37 +299,40 @@ limitations under the License.
     </h2>
       
                         <ul>
-    <li>Follow <a href="http://www.javaworld.com/javaworld/jw-12-2000/jw-1221-junit_p.html">guidelines</a> for unit tests
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c442B7857.7040002@gmail.com%3e">
-    [Testing Convention] Keep tests small and fast</a>)
+<li>
+    Follow <a href="http://www.javaworld.com/javaworld/jw-12-2000/jw-1221-junit_p.html">guidelines</a> for unit tests.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c442B7857.7040002@gmail.com%3e">
+    [Testing Convention] Keep tests small and fast</a>
+</li>
+
+<li>
+    There is no separate regression testsuite. Regression tests are
+    added to unit tests with comments pointing out to JIRA bug.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200512.mbox/%3ce3b630230512300651t574d876ex5de59ad667697acb@mail.gmail.com%3e">
+    regression test suite</a> and
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c6e47b64f0603280346u3dc491edp8f06bacdbd04c626@mail.gmail.com%3e">
+    Regression tests</a>
     </li>
 
-    <li>There is no separate regression testsuite. Regression tests are
-    added to unit tests with comments pointing out to JIRA bug.
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200512.mbox/%3ce3b630230512300651t574d876ex5de59ad667697acb@mail.gmail.com%3e">
-    regression test suite</a>)
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c6e47b64f0603280346u3dc491edp8f06bacdbd04c626@mail.gmail.com%3e">
-    Regression tests</a>)
+    <li>Create separate test suites for exotic configurations.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c906dd82e0601260338i61bc439fr708c664181dc8f20@mail.gmail.com%3e">
+    [testing] code for exotic configurations</a>
     </li>
 
-    <li>Create separate test suites for exotic configurations
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c906dd82e0601260338i61bc439fr708c664181dc8f20@mail.gmail.com%3e">
-    [testing] code for exotic configurations</a>)
-    </li>
-
-    <li>No logging for unit tests
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c906dd82e0601232340n5de6f561v8bb6db7ac4756f1c@mail.gmail.com%3e">
-    [classlib] Unit and performance testing</a>)
+    <li>No logging for unit tests.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c906dd82e0601232340n5de6f561v8bb6db7ac4756f1c@mail.gmail.com%3e">
+        [classlib] Unit and performance testing</a>
     </li>
     
-    <li>All resource files are located in &lt;module root&gt;/src/test/resources folder and added to classpath
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c44126B5C.1020104@gmail.com%3e">
-    Location of test data files</a>)
-    </li>
-    
-    <li>Network tests should use embedded jetty server
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200605.mbox/%3c446DF7A9.6040702@gmail.com%3e">
-    [classlib] jetty based tests</a>)
+    <li>All resource files are located in &lt;module root&gt;/src/test/resources folder and added to classpath.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c44126B5C.1020104@gmail.com%3e">
+        Location of test data files</a>
+</li>
+
+<li>
+    Network tests should use embedded jetty server.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200605.mbox/%3c446DF7A9.6040702@gmail.com%3e">
+    [classlib] jetty based tests</a>
     </li>
     
 </ul>
@@ -336,29 +343,31 @@ limitations under the License.
     </h2>
       
                         <ul>
-    <li>Separate module for providers should be created 
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c6e47b64f0601170332k3d418fabwd25a264c5e0f1532@mail.gmail.com%3e">
-    componentization: more modules might be necessary</a>)
+    <li>Separate module for providers should be created.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c6e47b64f0601170332k3d418fabwd25a264c5e0f1532@mail.gmail.com%3e">
+    componentization: more modules might be necessary</a>
     </li>
 
-    <li>JIRA issue can be reassigned if it is not marked as 'In Progress'
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c43D76E6A.90509@gmail.com%3e">
-    Stealing JIRA issues</a>)
+    <li>
+        JIRA issue can be reassigned if it is not marked as 'In Progress'.<br />
+        <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200601.mbox/%3c43D76E6A.90509@gmail.com%3e">
+            Stealing JIRA issues</a>
     </li>
 
-    <li>New files should be created with svn property eol-style=native 
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c442AF8CD.6040004@gmail.com%3e">
-    EOL differences in svn diffs</a>)
+    <li>New files should be created with svn property <code>eol-style=native</code>.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c442AF8CD.6040004@gmail.com%3e">
+    EOL differences in svn diffs</a>
     </li>
 
-    <li>Mail threads should have subject with prefix 
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200604.mbox/%3c443133C5.3010602@pobox.com%3e">
-    [admin] prefixes?</a>)
+    <li>Mail threads should have subject with prefix.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200604.mbox/%3c443133C5.3010602@pobox.com%3e">
+    [admin] prefixes?</a>
     </li>
 
-    <li>Create component status pages and keep them up to date  
-    (<a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c440D8F7B.3080902@googlemail.com%3e">
-    Component status pages</a>)
+    <li>
+        Create component status pages and keep them up to date.<br />
+    <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/200603.mbox/%3c440D8F7B.3080902@googlemail.com%3e">
+    Component status pages</a>
     </li>
 </ul>
                    

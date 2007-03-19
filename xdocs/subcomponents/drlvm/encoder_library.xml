@@ -30,7 +30,7 @@
       <subsection name="Contents">
         <ol>
           <li>
-            <a href="#1. Revision History">Revision Ristory</a>
+            <a href="#1. Revision History">Revision History</a>
           </li>
           <li><a href="#2. About this document">About
     this Document</a> </li>
@@ -66,26 +66,26 @@
       
       <subsection name="1. Revision History">
 
-        <table>
-          <tr>
-            <th class="TableHeading">Version</th>
+          <table>
+              <tr>
+                  <th class="TableHeading">Version</th>
 
-            <th class="TableHeading">Version Information</th>
+                  <th class="TableHeading">Version Information</th>
 
-            <th class="TableHeading">Date</th>
-          </tr>
+                  <th class="TableHeading">Date</th>
+              </tr>
 
-          <tr>
-            <td class="TableCell">Initial version</td>
+              <tr>
+                  <td class="TableCell">Initial version</td>
 
-            <td class="TableCell">
-              Alexander Astapchuk, Svetlana
-              Konovalova: document created.
-            </td>
+                  <td class="TableCell">
+                      Alexander Astapchuk, Svetlana
+                      Konovalova: document created.
+                  </td>
 
-            <td class="TableCell">January 30, 2007</td>
-          </tr>
-        </table>
+                  <td class="TableCell">January 30, 2007</td>
+              </tr>
+          </table>
         
       </subsection>
       <subsection name="2. About this Document">
@@ -331,8 +331,7 @@
 
 
 
-        <a name="6.1 Usage Model"><b>6.1 Usage Model</b></a>
-
+       <h3><a name="6.1 Usage Model"><b>6.1 Usage Model</b></a></h3>
       <p>
         The base encoding interface
         <code>EncoderBase::encode()</code> is a common generic
@@ -385,7 +384,7 @@
         <code>vm/vmcore/include/jvmti_dasm.h</code>.
       </p>
 
-        <a name="6.2 Under the Hood"><b>6.2 Under the Hood</b></a>
+        <h3><a name="6.2 Under the Hood"><b>6.2 Under the Hood</b></a></h3>
 
       <p>
         The engine gets its input as an operation and a set of
@@ -453,7 +452,6 @@ if (is_operand_data) { encode_operand_data(); }
 ...
 }</pre>
       
-
       <p>
         The static data that is a set of bytes is copied into the
         output buffer with no analysis.<br />

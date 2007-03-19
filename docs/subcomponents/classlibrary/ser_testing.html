@@ -251,23 +251,18 @@ limitations under the License.
                             conventions
                         </a>
                     </li>
-
                     <li>
                         Add the <code>testSerializationCompatibility</code> method to a unit test
                     </li>
-
                     <li>
                         Invoke one of the methods, mentioned above, with corresponding arguments
                     </li>
                 </ul>
                                 <p class="example">Example</p>
-                                <pre>
-                    public void testSerializationCompatibility()
-                    throws Exception {
-
-                    SerializationTest.verifyGolden(this, new SomeSerializableClass());
-                    }
-                </pre>
+                                <pre>public void testSerializationCompatibility()
+throws Exception {
+SerializationTest.verifyGolden(this, new SomeSerializableClass());
+}</pre>
                                 <h3>Self-Testing</h3>
                                 <p>
                     Verifies that an object can be smoothly serialized and deserialized on
@@ -303,13 +298,10 @@ limitations under the License.
                     </li>
                 </ul>
                                 <p class="example">Example</p>
-                                <pre>
-                    public void testSerializationSelf() throws Exception {
-
-                    SerializationTest.verifySelf(new SomeSerializableClass(),
-                    new MyComparator());
-                    }
-                </pre>
+                                <pre>public void testSerializationSelf() throws Exception {
+SerializationTest.verifySelf(new SomeSerializableClass(),
+new MyComparator());
+}</pre>
                                 <h3>Negative Testing</h3>
                                 <big>
                     <em>TBD</em>
@@ -339,65 +331,51 @@ limitations under the License.
                     <li>
                         Root folder for resource files is <code>&lt;module root&gt;/src/test/resources/serialization</code>
                     </li>
-
                     <li>
                         Relative path to a resource file <em>MUST</em> match a test's package name
                     </li>
-
                     <li>
                         A resource file <em>MUST</em> start with a test's name
                     </li>
-
                     <li>
                         A resource file <em>MUST</em> contain keywords pointing out to testing scenario
                         <ol>
-
                             <li>
                                 <code>&lt;golden&gt;</code> keyword is used for files generated on RI
                             </li>
-
                             <li>
                                 <code>&lt;harmony&gt;</code> keyword is used for files generated on
                                 Harmony	implementation
                             </li>
-
                             <li>
                                 <code>&lt;negative&gt;</code> keyword is used for files that contain
                                 broken serial form
                             </li>
-
                         </ol>
                     </li>
-
                     <li>
                         A resource file name <em>MUST</em> contain some index
                         <p class="note">Note</p>
                         <p class="notetext">If only one file exists, the index is not required.</p>
-
                     </li>
-
                     <li>
                         Extension for resource files is <code>ser</code>
-
                         <p class="example">Example</p>
                         <p class="exampletext">
                             For the test <code>org.apache.harmony.tests.java.lang.SomeClassTest</code>,
                             we have the following resource files:
                         </p>
-                        <pre>
-                            modules/luni/src/test/resources/serialization
-                            |
-                            \---org/apache/harmony/tests/java/lang
-                            |
-                            \---SomeClassTest.golden.0.ser
-                            SomeClassTest.golden.1.ser
-                            SomeClassTest.golden.2.ser
-                            SomeClassTest.harmony.0.ser
-                            SomeClassTest.harmony.1.ser
-                            SomeClassTest.negative.ser
-                        </pre>
+<pre>modules/luni/src/test/resources/serialization
+|
+\---org/apache/harmony/tests/java/lang
+|
+\---SomeClassTest.golden.0.ser
+    SomeClassTest.golden.1.ser
+    SomeClassTest.golden.2.ser
+    SomeClassTest.harmony.0.ser
+    SomeClassTest.harmony.1.ser
+    SomeClassTest.negative.ser</pre>
                     </li>
-
                 </ul>
                    
                 <p><a href="#top">Back to top</a></p>

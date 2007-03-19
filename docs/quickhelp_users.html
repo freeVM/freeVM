@@ -201,8 +201,7 @@ limitations under the License.
       For more information on how to get you machine configured to build and
       work with the Apache Harmony source code, refer to 
       <a href="quickhelp_contributors.html">
-        Getting Started For Contributors
-      </a>.
+        Getting Started For Contributors</a>.
     </p>
                                 <p>
             The required dependencies are listed below per platform.
@@ -238,33 +237,32 @@ limitations under the License.
             directory. Further in the document we refer to this directory
             as the <i>root directory</i> of the distribution.
         </p>
-                                <strong>Linux Users</strong>
-                                <p>
+                                <dl>
+        <dt>Linux Users</dt>
+
+        <dd>
            Use the <code>tar</code> program as follows:
-        </p>
-                                <pre>
-$ tar -tzf latest-harmony-jre-linux.tar.gz
-        </pre>
-                                <p>
+<pre>$ tar -tzf latest-harmony-jre-linux.tar.gz</pre>
+</dd>
+        <dd>
             This will unpack the JRE directory tree into the current directory.
-        </p>
-                                <strong>Windows Users</strong>
-                                <p>
+        </dd>
+        <dt>Windows Users</dt>
+        <dd>
           Use one of <code>zip</code> utilities available for Windows to
           unpack the distribution. The three popular ones are listed
           below, but anything that can handle a <code>zip</code> file
           will work:
-        </p>
-                                <ul>
+        <ul>
             <li><a href="http://www.info-zip.org/">Info-ZIP</a>
                 (open source software)</li>
             <li><a href="http://www.7-zip.org/">7-Zip</a> (free software)</li>
             <li><a href="http://www.winzip.com/">Winzip</a> (commercial)</li>
-        </ul>
-                                <p>          
+        </ul></dd>
+        <dd>
             To create the JRE directory tree, extract the
             distribution <code>zip</code> file using the utility.
-        </p>
+        </dd></dl>
                    
                                     
     <h2>
@@ -281,36 +279,34 @@ $ tar -tzf latest-harmony-jre-linux.tar.gz
           environment variables, use the commands appropriate to your
           operating system and/or shell you are using.
         </p>
-                                <strong>
-          Linux Users</strong>
-                                <p>
+                                <dl>
+        <dt>
+          Linux Users</dt>
+        <dd>
             The following command works for the Bash shell:
-        </p>
-                                <pre>
-$ cd jre
+<pre>$ cd jre
 $ export JAVA_HOME=`pwd`
 $ cd bin
-$ export PATH=`pwd`:$PATH
-        </pre>
-                                <p>
+$ export PATH=`pwd`:$PATH</pre>
+</dd>
+        <dd>
             The given command assumes your current directory is the parent
             directory of the Harmony JRE.
-        </p>
-                                <p class="note">Note</p>
-                                <p class="notetext">The <code>`</code> character is a backtick character,
+        </dd>
+      <p class="note">Note</p>
+      <p class="notetext">The <code>`</code> character is a backtick character,
       not an apostrophe.</p>
-                                <strong>Windows Users</strong>
-                                <p>
+       <dt>Windows Users</dt>
+        <dd>
             The following example assumes you unpacked the <code>zip</code> 
             file into the root directory <code>C:\</code>.
             Please adjust as necessary.
-        </p>
-                                <pre>
-        C:&gt; cd jre
-        C:\jre&gt;set JAVA_HOME=C:\jre
-        C:\jre&gt; cd bin
-        C:\jre\bin&gt; set PATH=C:\jre\bin;%PATH%
-      </pre>
+<pre>C:&gt; cd jre
+C:\jre&gt;set JAVA_HOME=C:\jre
+C:\jre&gt; cd bin
+C:\jre\bin&gt; set PATH=C:\jre\bin;%PATH%</pre>
+</dd>
+      </dl>
                    
                                     
     <h2>
@@ -323,10 +319,8 @@ $ export PATH=`pwd`:$PATH
             <code>javac</code>, so continue to use the compiler from some
             other JRE. You should have no problems running programs.
         </p>
-                                <pre>
-$ java Foo
-$ java -jar myjar.jar
-        </pre>
+                                <pre>$ java Foo
+$ java -jar myjar.jar</pre>
                    
                 <p><a href="#top">Back to top</a></p>
                     

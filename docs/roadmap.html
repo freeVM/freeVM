@@ -193,11 +193,11 @@ limitations under the License.
     </h1>
                         <p>
         Are roadmap and goals are always subject to discussion on the
-        <a href="mailing.html">developer's list.</a>  As new people join with new focus and
+        <a href="mailing.html">developer's list.</a> As new people join with new focus and
         interests, the things we do as a project adapt.
       </p>
                                 <p>
-        If you have an idea, come join the community and talk about it.  Note that you will
+        If you have an idea, come join the community and talk about it. Note that you will
         need to subscribe to the <a href="mailing.html">mail list</a>
       </p>
                 <p><a href="#top">Back to top</a></p>
@@ -206,7 +206,7 @@ limitations under the License.
     </h1>
                         <p>
         Our project goal is an open source, compatible implementation of Java SE 5.
-        It's a major task being done by a community of volunteers.  Thus, the following
+        It's a major task being done by a community of volunteers. Thus, the following
         is an approximate roadmap for what the project hopes to achieve in the next year.
       </p>
                                 <ul>
@@ -282,9 +282,9 @@ limitations under the License.
           Q4 2007: Apache Harmony SE 6 JDK and JRE released
         </li>
         <li>
-          Q? 2008: Apache Harmony SE 7 JDK and JRE released.  Note: The Java SE 7
-          JSR has not yet been proposed by Sun.  We assume 18
-          months from start of JSR to completion.  We hope to
+          Q? 2008: Apache Harmony SE 7 JDK and JRE released. Note: The Java SE 7
+          JSR has not yet been proposed by Sun. We assume 18
+          months from start of JSR to completion. We hope to
           deliver Harmony's implementation of Java SE 7 at the
           same time Sun does.
         </li>
@@ -295,7 +295,7 @@ limitations under the License.
     </h1>
                         <p>
         The following is a collection of things that the project community
-        has listed as needing to be done.  This list is not exhaustive.  If
+        has listed as needing to be done. This list is not exhaustive. If
         you wish to add an item to this list, or discuss or even volunteer
         to work on an item, please join us on the <a href="mailing.html">
           Harmony
@@ -342,29 +342,29 @@ limitations under the License.
                                 <p>
           As part of the JDK that Harmony will distribute, we'll include
           the full set of tools that Java programmers expect to find in
-          any JDK.  For maximum portablility, we plan to write all of the
+          any JDK. For maximum portablility, we plan to write all of the
           tools in Java, using the Harmony launcher as the portable native
-          code that starts the VM and invokes the tool.  Currently, we have
+          code that starts the VM and invokes the tool. Currently, we have
           javac completed via the Eclipse compiler, but we need the following:
         </p>
                                 <ul>
           <li>
-            javac (Done), javadoc, apt, appletviewer, jar, jdb, javah, javap, extcheck
-          </li>
-          <li>
-            keytool, jarsigner, policytool, kinit, klist, ktab
-          </li>
-          <li>
-            native2ascii,rmic, rmiregistry, rmid, serialver
-          </li>
-          <li>
-            tnameserv, idlj, orbd, servertool
-          </li>
-          <li>
-            pack200, unpack200
-          </li>
-          <li>
-            htmlconverter, javaws
+            <code>javac (Done), javadoc, apt, appletviewer, jar, jdb, javah, javap, extcheck</code>
+        </li>
+        <li>
+            <code>keytool, jarsigner, policytool, kinit, klist, ktab</code>
+        </li>
+        <li>
+            <code>native2ascii,rmic, rmiregistry, rmid, serialver</code>
+        </li>
+        <li>
+            <code>tnameserv, idlj, orbd, servertool</code>
+        </li>
+        <li>
+            <code>pack200, unpack200</code>
+        </li>
+        <li>
+            <code>htmlconverter, javaws</code>
           </li>
         </ul>
                                 <p>
@@ -373,7 +373,7 @@ limitations under the License.
                                 <h3>2. Modularity</h3>
                                 <p>
           From the beginning of our project, we've had a strong interest and focus
-          on modularity  This dedication has paid off in our class library development,
+          on modularity. This dedication has paid off in our class library development,
           as we've been able to evaluate competing implementations of RMI and math, as
           well as allow developers to isolate development on one module.
         </p>
@@ -392,20 +392,20 @@ limitations under the License.
       
                         <p>
           Build engineering in Harmony is a complicated subject, as we are building
-          on multiple platforms in multiple languages.  So far, we have support for
+          on multiple platforms in multiple languages. So far, we have support for
           our Windows and Linux ports, but our porting plans indiciate that we'll need
-          to revisit given the differnet toolchains.  There are many things to do
+          to revisit given the differnet toolchains. There are many things to do
           in this area, many not listed.
         </p>
                                 <p>
           Currently, the project has been releasing snapshots of our class library,
           but now that we have the DRLVM virtual machine, we can start doing complete
-          snapshot builds of a JRE, as well as the HDK
+          snapshot builds of a JRE, as well as the HDK.
         </p>
                                 <ul>
           <li>
             Switch to use system libraries, dynamically where appropriate
-            - libz, libpng, libjpeg, liblcms, libicu*, etc.
+            - <code>libz, libpng, libjpeg, liblcms, libicu*,</code> etc.
           </li>
           <li>
             Create regular schedule for snapshots and automate.
@@ -432,7 +432,7 @@ limitations under the License.
           </li>
           <li>
             Remove assumption in class library build system that all that uses make is
-            linux.
+            Linux.
           </li>
         </ul>
                    
@@ -448,10 +448,8 @@ limitations under the License.
           project codebase on that platform.
         </p>
                                 <p>
-          There is an
-          <a href="http://svn.apache.org/viewvc/harmony/enhanced/buildtest/">
-            initial implementation
-          </a> in place in SVN, but much more work is needed.
+          There is an <a href="http://svn.apache.org/viewvc/harmony/enhanced/buildtest/">
+            initial implementation</a> in place in SVN, but much more work is needed.
           Ideas include:
         </p>
                                 <ul>
@@ -460,7 +458,7 @@ limitations under the License.
           </li>
           <li>
             Create live "status dashboard" with a summary of results from all tested platforms,
-            as wella s history for each tested platform.
+            as well as history for each tested platform.
           </li>
           <li>
             Integrate with <a href="http://www.kaffe.org/~stuart/japi/">JAPI</a>
@@ -470,8 +468,8 @@ limitations under the License.
             class library testing
           </li>
           <li>
-            Integrate with test-coverage tool (ex <a href="http://emma.sourceforge.net/">emma</a>
-            for auto-generated reports.
+            Integrate with test-coverage tool (for example, <a href="http://emma.sourceforge.net/">emma</a>
+            for auto-generated reports).
           </li>
           <li>
             Externalize local properties into a 'test.properties' file for easy of localization.
@@ -511,27 +509,27 @@ limitations under the License.
       
                         <p>
           The  class library is an important (and large!) part of the Java SE
-          platform.  While we have made significant progress so far (~80% at last
-          check), there are many, many interesting things remaining to be done
+          platform. While we have made significant progress so far (~80% at last
+          check), there are many, many interesting things remaining to be done.
         </p>
                                 <ul>
           <li>
             <a href="subcomponents/classlibrary/status.html">General package completion</a>
           </li>
           <li>
-            java.util.concurrency: integration of Doug Lea's RI package.  Goal is to
+            <code>java.util.concurrency</code>: integration of Doug Lea's RI package. Goal is to
             use unmodified code from the 166 expert group and implent whatever
-            support is needed by the VM and rest of class library. (in progress)
+            support is needed by the VM and rest of class library. (<i>in progress</i>)
           </li>
           <li>
             CORBA: re-use the Apache Yoko project (currently in incubator)
             as the required implementation of CORBA nad related support
-            classes (in progress)
+            classes (<i>in progress</i>)
           </li>
           <li>
             JMX: currently we have the standard MX4J jars integrated, but
             looking to see what kind of collaboration or unification we can
-            achieve with the MX4J project. (in progress)
+            achieve with the MX4J project. (<i>in progress</i>)
           </li>
           <li>
             Test coverage - we need to greatly increase our unit tests (functionaly,
@@ -545,8 +543,8 @@ limitations under the License.
     </h2>
       
                         <p>
-          VM is a critical part of the Java SE platform.  As usual, there are many, many interesting things remaining to be done
-        </p>
+          VM is a critical part of the Java SE platform. As usual, there are many, many interesting
+          things remaining to be done.</p>
                                 <ul>
           <li>
             <a href="http://wiki.apache.org/harmony/CoreVmDevelopmentItems">Core VM Development Items</a>
@@ -579,7 +577,7 @@ limitations under the License.
                         <p>
           Another motivation of the Harmony project is to provide a
           portable implementation that is available on many
-          platforms and operating systems.  Currently, our interests
+          platforms and operating systems. Currently, our interests
           are:
         </p>
                                 <table>
@@ -794,16 +792,12 @@ limitations under the License.
             </table>
                                 <p>
           <b>Legend</b>
-          <dl>
-            <dt>"+"</dt>
-            <dd>Supported (sure-to-work)</dd>
-            <dt>"?"</dt>
-            <dd>In progress</dd>
-            <dt>"-"</dt>
-            <dd>Will Not Support</dd>
-            <dt>" " (empty)</dt>
-            <dd>N/A or Maybe</dd>
-          </dl>
+          <ul>
+            <li>"+" - Supported (sure-to-work)</li>
+            <li>"?" - In progress</li>
+            <li>"-" - Will Not Support</li>
+            <li>" " (empty) - N/A or Maybe</li>
+           </ul>
         </p>
                    
                                     
@@ -815,10 +809,10 @@ limitations under the License.
           As we now have a fairly usable class library and virtual machine, we wish to
           make it easy for the broad Java user community to help us ensure that
           the Harmony class library supports the classes necessary for the most popular
-          and used applications out there.  While we will complete the class library,
+          and used applications out there. While we will complete the class library,
           tools like this will help us do it in a way that prioritizes the most useful
           first, enabling even more users to test our software and participate in
-          the project.  So far, there have been a few tools donated, but no concerted
+          the project. So far, there have been a few tools donated, but no concerted
           effort to package for ease of use.
         </p>
                                 <ul>
@@ -829,8 +823,7 @@ limitations under the License.
           </li>
           <li>
             <a href="https://issues.apache.org/jira/browse/HARMONY-565">
-              Harmony-565
-            </a> - another tool for reporting class coverage for applications
+              Harmony-565</a> - another tool for reporting class coverage for applications
           </li>
         </ul>
                    

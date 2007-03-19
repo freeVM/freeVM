@@ -20,13 +20,13 @@
 <document>
 
 <properties>
-	<title>Getting Started For Users</title>
-	<author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    <title>Getting Started For Users</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
 </properties>
 
 <body>
 
-	<section name="Getting Started For Users">
+    <section name="Getting Started For Users">
 
         <p>
           The current document provides basic instructions for people that
@@ -38,8 +38,7 @@
       For more information on how to get you machine configured to build and
       work with the Apache Harmony source code, refer to 
       <a href="quickhelp_contributors.html">
-        Getting Started For Contributors
-      </a>.
+        Getting Started For Contributors</a>.
     </p>
         <p>
             The required dependencies are listed below per platform.
@@ -72,40 +71,32 @@
             directory. Further in the document we refer to this directory
             as the <i>root directory</i> of the distribution.
         </p>
+<dl>
+        <dt>Linux Users</dt>
 
-        <strong>Linux Users</strong>
-
-        <p>
+        <dd>
            Use the <code>tar</code> program as follows:
-        </p>
-
-        <source>
-$ tar -tzf latest-harmony-jre-linux.tar.gz
-        </source>
-
-        <p>
+<pre>$ tar -tzf latest-harmony-jre-linux.tar.gz</pre>
+</dd>
+        <dd>
             This will unpack the JRE directory tree into the current directory.
-        </p>
-
-        <strong>Windows Users</strong>
-
-        <p>
+        </dd>
+        <dt>Windows Users</dt>
+        <dd>
           Use one of <code>zip</code> utilities available for Windows to
           unpack the distribution. The three popular ones are listed
           below, but anything that can handle a <code>zip</code> file
           will work:
-        </p>
-
         <ul>
             <li><a href="http://www.info-zip.org/">Info-ZIP</a>
                 (open source software)</li>
             <li><a href="http://www.7-zip.org/">7-Zip</a> (free software)</li>
             <li><a href="http://www.winzip.com/">Winzip</a> (commercial)</li>
-        </ul>
-        <p>          
+        </ul></dd>
+        <dd>
             To create the JRE directory tree, extract the
             distribution <code>zip</code> file using the utility.
-        </p>
+        </dd></dl>
     </subsection>
 
     <subsection name="Configuring Your Environment">
@@ -114,68 +105,49 @@ $ tar -tzf latest-harmony-jre-linux.tar.gz
             sometimes other programs do. Also, it is convenient to have
             the Apache Harmony executables on your path.
         </p>
-
         <p>
           To set your <code>JAVA_HOME</code> and <code>PATH</code>
           environment variables, use the commands appropriate to your
           operating system and/or shell you are using.
         </p>
-
-        <strong>
-          Linux Users</strong>
-
-        <p>
+<dl>
+        <dt>
+          Linux Users</dt>
+        <dd>
             The following command works for the Bash shell:
-        </p>
-
-        <source>
-$ cd jre
+<pre>$ cd jre
 $ export JAVA_HOME=`pwd`
 $ cd bin
-$ export PATH=`pwd`:$PATH
-        </source>
-
-        <p>
+$ export PATH=`pwd`:$PATH</pre>
+</dd>
+        <dd>
             The given command assumes your current directory is the parent
             directory of the Harmony JRE.
-        </p>
+        </dd>
       <p class="note">Note</p>
       <p class="notetext">The <code>`</code> character is a backtick character,
       not an apostrophe.</p>
-      
-      <strong>Windows Users</strong>
-
-        <p>
+       <dt>Windows Users</dt>
+        <dd>
             The following example assumes you unpacked the <code>zip</code> 
             file into the root directory <code>C:\</code>.
             Please adjust as necessary.
-        </p>
-
-      <source>
-        C:> cd jre
-        C:\jre>set JAVA_HOME=C:\jre
-        C:\jre> cd bin
-        C:\jre\bin> set PATH=C:\jre\bin;%PATH%
-      </source>
-        
-
+<pre>C:> cd jre
+C:\jre>set JAVA_HOME=C:\jre
+C:\jre> cd bin
+C:\jre\bin> set PATH=C:\jre\bin;%PATH%</pre>
+</dd>
+      </dl>
     </subsection>
-
     <subsection name="Using Apache Harmony">
-
         <p>
             After performing aforementioned steps, you should be ready to use
             Apache Harmony. Note that we have not yet included
             <code>javac</code>, so continue to use the compiler from some
             other JRE. You should have no problems running programs.
         </p>
-
-        <source>
-$ java Foo
-$ java -jar myjar.jar
-        </source>
-
-
+<pre>$ java Foo
+$ java -jar myjar.jar</pre>
     </subsection>
     </section>
 </body>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -51,17 +51,18 @@
 
     <subsection name="Resolving Issues">
       <p>To resolve an issue, define its type first.</p>
-    <p>   
-            If <i>the issue is a non-bug difference, not a bug or invalid</i>,
-            you should do the following:</p>
-            <ol>
+    <dl>
+        <dt>If the issue is a non-bug difference, not a bug or invalid,
+            you should do the following:</dt>
+            <dd><ol>
                 <li>Discuss the issue on the 
                 <a href="mailing.html">developer mailing list</a>.</li>
                 <li>Add a link to the discussion thread as a comment to the issue.</li>
             </ol>
+        </dd>
         
-       <p>If <i>the issue is a bug</i>, you should do the following:</p>:
-            <ol>
+       <dt>If the issue is a bug, you should do the following:</dt>
+            <dd><ol>
                 <li>
                   Notify the community that you started investigation by adding
                   a comment to the issue and send a message to the 
@@ -89,15 +90,16 @@
                 <li>If the issue is application-oriented, check the application.</li>
                 <li>Use issue links if applicable.</li>
             </ol>
-      
+      </dd></dl>
     </subsection>
 
     <subsection name="Closing Issues">
       <p>To close an issue, define its type first.</p>
-    <p>
-       If <i>the issue is a non-bug difference, not a bug or invalid</i>, you should close the issue.</p>
-            <p>If <i>the issue is a bug</i>, you should do the following: </p>
-                <ol>
+    <dl>
+        <dt>If the issue is a non-bug difference, not a bug or invalid, you should do the following:</dt>
+        <dd> Close the issue.</dd>
+            <dt>If the issue is a bug, you should do the following: </dt>
+              <dd>  <ol>
                     <li>If a patch to test is available, apply it.</li>
                     <li>Check that the test fails.</li>
                     <li>Apply the fix for the issue.</li>
@@ -109,7 +111,7 @@
                     <li>Make sure that the issue reporter is happy with the resolution.</li>
                     <li>Add revision info into the JIRA issue.</li>
                 </ol>
-         
+         </dd></dl>
     </subsection>
   </section>
 </body>

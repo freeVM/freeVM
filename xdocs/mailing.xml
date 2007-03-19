@@ -22,12 +22,10 @@
         <title>Apache Harmony Mailing Lists</title>
         <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
     </properties>
-
     <body>
         <section name="Apache Harmony Mailing Lists">
-
             <p>
-                Apache Harmony mailing lists operate under the following terms :
+                Apache Harmony mailing lists operate under the following terms:
             </p>
             <ul>
                 <li>
@@ -67,14 +65,14 @@
                 </li>
             </ul>
             <p>
-                There are currently three publicly available mailing lists for Harmony :
+                There are currently three publicly available mailing lists for Harmony:
             </p>
 
             <subsection name="Developer Mailing List">
 
                 <p>
                     The developer mailing list is used by the developers to discuss
-                    plans, make decisions, vote on technical issues, etc.  This
+                    plans, make decisions, vote on technical issues, etc. This
                     list has a higher volume, though some conversations take place on
                     <a href="get-involved.html#irc-channel">IRC</a> as
                     well.
@@ -140,22 +138,16 @@
                         [testing] or [qa] - for tools-related issues
                     </li>
                 </ul>
-
                 <p>
-                    Simply add the token to the start of your subject line. For example :
-                </p>
-
-                <source>
-                    To : dev@harmony.apache.org
-                    From : harmony_user@openjava.org
-                    Subject : [classlib][io] Problem with java.io.OutputSocket
-
-                    ....
-                </source>
+                    Simply add the token to the start of your subject line.</p>
+                <p class="example">Example</p>
+<source>
+To: dev@harmony.apache.org
+From: harmony_user@openjava.org
+Subject: [classlib][io] Problem with java.io.OutputSocket
+....</source>
             </subsection>
-
             <subsection name="Source Control Mailing List">
-
                 <p>
                     This list receives notifications (with diffs) every time a change is
                     committed to the Harmony source tree. It also receives change notices
@@ -177,11 +169,8 @@
                         View the <a href="http://mail-archives.apache.org/mod_mbox/harmony-commits/">commits@harmony.apache.org archives (Nov 2006 onwards)</a>
                     </li>
                 </ul>
-
             </subsection>
-
             <subsection name="Alerts Mailing List">
-
                 <p>
                     This list receives alerts from the various community-run build systems. These alerts contain
                     information on failed builds and test runs.
@@ -197,20 +186,17 @@
                         View the <a href="http://mail-archives.apache.org/mod_mbox/harmony-alerts/">alerts@harmony.apache.org archives</a>
                     </li>
                 </ul>
-
             </subsection>
-
             <subsection name="Other Mailing Lists">
-
                 <p>
                     The Harmony PMC has a mailing list to resolve any administrative issues,
                     This list is limited to PMC members (most committers on the project).
                 </p>
-
             </subsection>
         </section>
     </body>
 </document>
+
 
 
 
