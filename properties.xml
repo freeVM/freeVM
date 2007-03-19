@@ -17,23 +17,22 @@
 -->
 <project>
 
+    <available property="setup.done" file="setup.done" />
+
     <macrodef name="process-project-template">
         <attribute name="project" />
         <sequential>
-            <available property="@{project}.genconfig.done" file="@{project}.genconfig.done" />
-
             <concat destfile="${configfile}" append="true">
                 <fileset dir=".">
-                    <include name="project.template" unless="@{project}.genconfig.done" />
+                    <include name="project.template" />
                 </fileset>
                 <filterchain>
                     <striplinecomments>
                         <comment value="#" />
                     </striplinecomments>
-                    <prefixlines prefix="    "/>
+                    <prefixlines prefix="    " />
                 </filterchain>
             </concat>
-            <touch file="@{project}.genconfig.done" />
         </sequential>
     </macrodef>
 

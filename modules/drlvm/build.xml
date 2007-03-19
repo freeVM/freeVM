@@ -19,8 +19,34 @@
 
     <import file="../../properties.xml" />
 
-    <target name="-gen-config">
-        <subant target="-gen-config" buildpath="../classlib"/>
+    <target name="-gen-config" unless="setup.done">
+        <subant target="-gen-config" buildpath="../classlib" />
         <process-project-template project="drlvm" />
+
+        <subant target="-gen-config-win" buildpath="." />
+        <subant target="-gen-config-other" buildpath="." />
+
+        <touch file="setup.done" />
     </target>
+
+    <target name="-gen-config-win" if="is.windows">
+        <echo file="${propertyfile}" append="true">
+os=win
+sh=cmd
+cmd.prefix=/c
+cmd=build.bat
+cc=msvc
+</echo>
+    </target>
+
+    <target name="-gen-config-other" unless="is.windows">
+        <echo file="${propertyfile}" append="true">
+os=lnx
+sh=sh
+cmd.prefix=
+cmd=build.sh
+cc=gcc
+</echo>
+    </target>
+
 </project>

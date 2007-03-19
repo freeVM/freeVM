@@ -19,7 +19,8 @@
 
     <import file="../../properties.xml" />
 
-    <target name="-gen-config">
+    <target name="-gen-config" unless="setup.done">
         <process-project-template project="classlib" />
+        <touch file="setup.done" />
     </target>
 </project>

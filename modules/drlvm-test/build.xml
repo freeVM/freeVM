@@ -19,8 +19,9 @@
 
     <import file="../../properties.xml" />
 
-    <target name="-gen-config">
+    <target name="-gen-config" unless="setup.done">
         <subant target="-gen-config" buildpath="../drlvm" />
         <process-project-template project="drlvm-test" />
+        <touch file="setup.done" />
     </target>
 </project>
