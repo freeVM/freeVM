@@ -1,0 +1,78 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+
+<property name="cl.test.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} ${build_cfg}: classlib tests"/>
+<property name="cl.test.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os} ${cc} ${build_cfg}: classlib tests"/>
+
+<project name="classlib-drlvm">
+
+    <listeners>
+        <currentbuildstatuslistener file="logs/${project.name}/status.txt" />
+    </listeners>
+
+    <modificationset quietperiod="60">
+        <buildstatus logdir="logs/classlib"/>
+        <svn localWorkingCopy="${classlib}"/>
+        <svn localWorkingCopy="${drlvm}"/>
+    </modificationset>
+
+    <schedule interval="${timeout}">
+        <ant target="test" antWorkingDir="${classlib}" timeout="${ttimeout}" usedebug="false">
+            <jvmarg arg="-Dtest.jre.home=${wdir}/projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/deploy/jdk/jre" />
+            <jvmarg arg="-Dhy.test.vm.name=${tested.vm.name}" />
+            <jvmarg arg="-Xmx700M" />
+        </ant>
+    </schedule>
+
+    <log dir="logs/${project.name}">
+        <merge dir="${classlib}/build/test_report" pattern="TEST-*.xml" />
+    </log>
+
+    <publishers>
+        <onfailure>
+            <xsltlogpublisher directory="."  outfilename="classlibt.txt"  xsltfile="br.xsl" />
+            <antpublisher   
+                     antworkingdir="."  
+                     buildfile="copyres.xml"  
+                     uselogger="true"  
+                     usedebug="true"  
+                     target="email.res"> 
+                <property name="file" value="classlibt.txt"/> 
+                <property name="mailhost" value="${server_addr}"/>
+                <property name="fromaddress" value="${report_from}"/>
+                <property name="toaddress" value="${report_to}"/>
+                <property name="subject" value="${cl.test.prefix}"/>
+                <property name="flag" value="${project.name}"/>
+            </antpublisher>
+        </onfailure>
+        <onsuccess>
+            <xsltlogpublisher directory="."  outfilename="classlibt.txt.ok"  xsltfile="br.xsl" />
+            <antpublisher   
+                     antworkingdir="."  
+                     buildfile="copyres.xml"  
+                     uselogger="true"  
+                     usedebug="true"  
+                     target="email.res.ok"> 
+                <property name="file" value="classlibt.txt.ok"/> 
+                <property name="mailhost" value="${server_addr}"/>
+                <property name="fromaddress" value="${report_from}"/>
+                <property name="toaddress" value="${report_to}"/>
+                <property name="subject" value="${cl.test.prefix.ok}"/>
+                <property name="flag" value="${project.name}"/>
+            </antpublisher>
+        </onsuccess>
+    </publishers>
+
+</project>

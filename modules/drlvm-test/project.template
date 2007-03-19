@@ -1,0 +1,90 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License. 
+
+<property name="vm.test.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} ${build_cfg}: drlvm tests"/>
+<property name="vm.test.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os} ${cc} ${build_cfg}: drlvm tests"/>
+
+<project name="drlvm-test">
+
+    <listeners>
+        <currentbuildstatuslistener file="logs/${project.name}/status.txt" />
+    </listeners>
+
+    <modificationset quietperiod="60">
+        <buildstatus logdir="logs/drlvm"/>
+        <svn localWorkingCopy="${drlvm}"/>
+    </modificationset>
+
+    <schedule interval="${timeout}">
+        <ant target="test" antWorkingDir="${drlvm}/build/make" timeout="${ttimeout}" usedebug="false">
+            <jvmarg arg="-D${proxy.host.vm}=${proxy.value}"/>
+            <jvmarg arg="-D${proxy.port.vm}=${port.value}"/>
+            <jvmarg arg="-Dexternal.dep.CLASSLIB.loc=${wdir}/${classlib}" />
+            <jvmarg arg="-Dbuild.arch=${build_arch}" />
+            <jvmarg arg="-DBUILD_CFG=${build_cfg}" />
+            <jvmarg arg="-DCXX=${cc}" />
+            <jvmarg arg="-Drun.all.tests=true" />
+        </ant>
+    </schedule>
+
+    <log dir="logs/${project.name}">
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/int" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/jet" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/opt" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/vm/_cunit.tests/report" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/vm/_smoke.tests/reports" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/jet.mode" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/opt.mode" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/int.mode" pattern="TEST-*.xml" />
+    </log>
+
+    <publishers>
+        <onfailure>
+            <xsltlogpublisher directory="." outfilename="drlvmt.txt" xsltfile="br.xsl" />
+
+            <antpublisher   
+                     antworkingdir="."  
+                     buildfile="copyres.xml"  
+                     uselogger="true"  
+                     usedebug="false"  
+                     target="email.res"> 
+                <property name="file" value="drlvmt.txt"/> 
+                <property name="mailhost" value="${server_addr}"/>
+                <property name="fromaddress" value="${report_from}"/>
+                <property name="toaddress" value="${report_to}"/>
+                <property name="subject" value="${vm.prefix}"/>
+                <property name="flag" value="${project.name}"/>
+            </antpublisher> 
+        </onfailure>
+        <onsuccess>
+            <xsltlogpublisher directory="." outfilename="drlvmt.txt.ok" xsltfile="br.xsl" />
+
+            <antpublisher   
+                     antworkingdir="."  
+                     buildfile="copyres.xml"  
+                     uselogger="true"  
+                     usedebug="false"  
+                     target="email.res.ok"> 
+                <property name="file" value="drlvmt.txt.ok"/> 
+                <property name="mailhost" value="${server_addr}"/>
+                <property name="fromaddress" value="${report_from}"/>
+                <property name="toaddress" value="${report_to}"/>
+                <property name="subject" value="${vm.prefix.ok}"/>
+                <property name="flag" value="${project.name}"/>
+            </antpublisher> 
+        </onsuccess>
+    </publishers>
+
+</project>

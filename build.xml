@@ -39,6 +39,9 @@
     <property name="target.dir" location="cc" />
     <mkdir dir="${target.dir}" />
 
+    <!-- generated configuration file -->
+    <property name="configfile" location="${target.dir}/config.xml" />
+
     <!-- url of the classlib and drlvm in SVN -->
     <property name="svn.classlib.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk" />
     <property name="svn.drlvm.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk" />
@@ -148,9 +151,7 @@ port.value=111
     <target name="default" description="Start CruiseControl with full test suite" depends="start-win,start-other">
     </target>
 
-    <target name="pre-copy">
-        <echo>Copying full test configuration for CruiseControl from /config/config-full.xml</echo>
-        <copy file="config/config-full.xml" tofile="${target.dir}/config.xml" />
+    <target name="pre-copy" depends="gen-config">
         <copy file="config/copyres.xml" tofile="${target.dir}/copyres.xml" />
     </target>
 
@@ -202,7 +203,7 @@ port.value=111
         <copy file="${target.dir}/apache-ant-1.6.5/lib/ant-launcher.jar" todir="${target.dir}/lib" overwrite="yes" failonerror="false" />
 
         <!-- copy the config we want to use, and make target dirs for the checkouts -->
-        <copy file="config/config-full.xml" tofile="${target.dir}/config.xml" />
+        <subant target="gen-config" buildpath="." />
         <copy file="config/copyres.xml" tofile="${target.dir}/copyres.xml" />
 
         <mkdir dir="${target.dir}/projects/classlib" />
@@ -329,4 +330,29 @@ BUILD_CFG=@@@@@
     <target name="clean" description="reset to clean state">
         <delete dir="${target.dir}" includeEmptyDirs="true"/>
     </target>
+
+    <property name="modules" value="drlvm-test,classlib-drlvm" />
+
+    <target name="gen-config">
+        
+        <!-- gen cruisecontrol config file -->
+        <echo file="${configfile}">
+&lt;cruisecontrol&gt;
+
+    &lt;property file="cc.properties" /&gt;
+        </echo>
+        <subant target="-gen-config">
+            <dirset dir="modules" includes="${modules}" />
+            <property name="configfile" value="${configfile}" />
+        </subant>
+        <echo file="${configfile}" message="&lt;/cruisecontrol&gt;" append="true" />
+
+        <!-- clean up -->
+        <delete>
+            <fileset dir="modules">
+                <include name="**/*.done" />
+            </fileset>
+        </delete>
+    </target>
+
 </project>
