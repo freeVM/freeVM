@@ -15,13 +15,13 @@
      See the License for the specific language governing permissions and
      limitations under the License. 
 -->
-<project name="classlib-test" default="-gen-config" basedir=".">
+<project name="classlib-drlvm" default="-gen-config" basedir=".">
 
     <import file="../../properties.xml" />
 
     <target name="-gen-config">
         <subant target="-gen-config" buildpath="../drlvm" />
-        <process-project-template project="classlib-test" />
+        <process-project-template project="classlib-drlvm" />
     </target>
 
 </project>
