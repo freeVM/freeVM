@@ -14,48 +14,65 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+/**
+ * @author Rustem V. Rafikov
+ * @version $Revision: 1.4 $
+ */
+package org.apache.harmony.x.imageio.plugins.jpeg;
 
 
-package org.apache.harmony.x.imageio.plugins.png;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.plugins.jpeg.JPEGImageReadParam;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.spi.ImageReaderSpi;
 
 import org.apache.harmony.awt.gl.image.DecodingImageSource;
 import org.apache.harmony.awt.gl.image.OffscreenImage;
-import org.apache.harmony.x.imageio.plugins.jpeg.IISDecodingImageSource;
 
-import javax.imageio.ImageReader;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.ImageReadParam;
-import javax.imageio.plugins.jpeg.JPEGImageReadParam;
-import javax.imageio.spi.ImageReaderSpi;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.metadata.IIOMetadata;
 import java.io.IOException;
 import java.util.Iterator;
 import java.awt.image.BufferedImage;
 
-public class PNGImageReader  extends ImageReader {
+/**
+ * This implementation uses org.apache.harmony.awt.gl.image.JpegDecoder to read
+ * an image. The only implemented method is read(..);
+ *
+ * TODO: Implements generic decoder to be used by javad2 and imageio
+ *
+ * @see org.apache.harmony.awt.gl.image.JpegDecoder
+ * @see org.apache.harmony.x.imageio.plugins.jpeg.IISDecodingImageSource
+ */
+public class JPEGImageReader extends ImageReader {
+
     ImageInputStream iis;
 
-    public PNGImageReader(ImageReaderSpi imageReaderSpi) {
+    public JPEGImageReader(ImageReaderSpi imageReaderSpi) {
         super(imageReaderSpi);
     }
 
-    public int getNumImages(boolean allowSearch) throws IOException {
+    @Override
+    public int getHeight(int i) throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public int getWidth(int imageIndex) throws IOException {
+    @Override
+    public int getWidth(int i) throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public int getHeight(int imageIndex) throws IOException {
+    @Override
+    public int getNumImages(boolean b) throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public Iterator<ImageTypeSpecifier> getImageTypes(int imageIndex) throws IOException {
+    @Override
+    public Iterator<ImageTypeSpecifier> getImageTypes(int i) throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -67,7 +84,7 @@ public class PNGImageReader  extends ImageReader {
     }
 
     @Override
-    public IIOMetadata getImageMetadata(int imageIndex) throws IOException {
+    public IIOMetadata getImageMetadata(int i) throws IOException {
         //-- TODO imlement
         throw new UnsupportedOperationException("not implemented yet");
     }
@@ -83,7 +100,10 @@ public class PNGImageReader  extends ImageReader {
         source.addConsumer(image);
         source.load();
         // The interrupted flag should be cleared because ImageDecoder interrupts
-        // current thread while decoding (due its architecture).
+        // current thread while decoding. The same technique is used in
+        // ImageLoader#run(). Another solution can be to create
+        // a separate decoding thread. However, decoder keeps its own pool
+        // of threads so creating a new thread will be just a waste of resources.
         Thread.interrupted();
         return image.getBufferedImage();
     }
@@ -101,6 +121,6 @@ public class PNGImageReader  extends ImageReader {
 
     @Override
     public ImageReadParam getDefaultReadParam() {
-        return new ImageReadParam();
+        return new JPEGImageReadParam();
     }
 }
