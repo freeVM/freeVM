@@ -171,7 +171,8 @@ port.value=111
     <!-- ==========================================
          Main setup - download, unpack, checkout
          ========================================== -->
-    <target name="setup" description="fetch and setup build/test/ci system">
+    <target name="setup" description="fetch and setup build/test/ci system"
+        depends="set.proxy,no.proxy">
 
         <!-- get the version of CruiseControl unless we have the zip locally -->
 
