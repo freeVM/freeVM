@@ -20,21 +20,31 @@
 
 <project name="drlvm">
 
+    <bootstrappers>
+        <svnbootstrapper localWorkingCopy="${drlvm}" />
+    </bootstrappers>
+
     <listeners>
         <currentbuildstatuslistener file="logs/${project.name}/status.txt" />
     </listeners>
 
     <modificationset quietperiod="60">
-        <buildstatus logdir="logs/classlib"/>
-        <svn localWorkingCopy="projects/drlvm/trunk"/>
-        <svn localWorkingCopy="projects/classlib/trunk"/>
+        <compound includeTriggerChanges="false">
+            <triggers>
+                <buildstatus logdir="logs/classlib"/>
+            </triggers>
+            <targets>
+                <svn localWorkingCopy="${drlvm}"/>
+                <svn localWorkingCopy="${classlib}"/>
+            </targets>
+        </compound>
     </modificationset>
 
     <schedule interval="${timeout}">
-        <ant target="update clean build" antWorkingDir="projects/${project.name}/trunk/build/make" timeout="${ttimeout}" usedebug="false">
+        <ant target="update clean build" antWorkingDir="${drlvm}/build/make" timeout="${ttimeout}" usedebug="false">
             <jvmarg arg="-D${proxy.host.vm}=${proxy.value}"/>
             <jvmarg arg="-D${proxy.port.vm}=${port.value}"/>
-            <jvmarg arg="-Dexternal.dep.CLASSLIB.loc=${wdir}/projects/classlib/trunk" />
+            <jvmarg arg="-Dexternal.dep.CLASSLIB.loc=${wdir}/${classlib}" />
             <jvmarg arg="-Dbuild.arch=${build_arch}" />
         </ant>
     </schedule>

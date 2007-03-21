@@ -23,14 +23,20 @@
     </listeners>
 
     <modificationset quietperiod="60">
-        <buildstatus logdir="logs/classlib"/>
-        <svn localWorkingCopy="${classlib}"/>
-        <svn localWorkingCopy="${drlvm}"/>
+        <compound includeTriggerChanges="false">
+            <triggers>
+                <buildstatus logdir="logs/drlvm"/>
+            </triggers>
+            <targets>
+                <svn localWorkingCopy="${drlvm}"/>
+                <svn localWorkingCopy="${classlib}"/>
+            </targets>
+        </compound>
     </modificationset>
 
     <schedule interval="${timeout}">
         <ant target="test" antWorkingDir="${classlib}" timeout="${ttimeout}" usedebug="false">
-            <jvmarg arg="-Dtest.jre.home=${wdir}/projects/drlvm/trunk/build/${os}_${build_arch}_${cc}_${build_cfg}/deploy/jdk/jre" />
+            <jvmarg arg="-Dtest.jre.home=${wdir}/${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/deploy/jdk/jre" />
             <jvmarg arg="-Dhy.test.vm.name=${tested.vm.name}" />
             <jvmarg arg="-Xmx700M" />
         </ant>

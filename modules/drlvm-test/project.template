@@ -23,8 +23,14 @@
     </listeners>
 
     <modificationset quietperiod="60">
-        <buildstatus logdir="logs/drlvm"/>
-        <svn localWorkingCopy="${drlvm}"/>
+        <compound includeTriggerChanges="false">
+            <triggers>
+                <buildstatus logdir="logs/drlvm"/>
+            </triggers>
+            <targets>
+                <svn localWorkingCopy="${drlvm}"/>
+            </targets>
+        </compound>
     </modificationset>
 
     <schedule interval="${timeout}">
@@ -36,16 +42,19 @@
             <jvmarg arg="-DBUILD_CFG=${build_cfg}" />
             <jvmarg arg="-DCXX=${cc}" />
             <jvmarg arg="-Drun.all.tests=true" />
+            <jvmarg arg="-Dtest.mode=jit,jet,opt,int" />
         </ant>
     </schedule>
 
     <log dir="logs/${project.name}">
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/int" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/jet" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/jit" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/opt" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/vm/_cunit.tests/report" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/vm/_smoke.tests/reports" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/jet.mode" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/jit.mode" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/opt.mode" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/int.mode" pattern="TEST-*.xml" />
     </log>
