@@ -31,9 +31,15 @@
     <target name="-setup" description="copy config file and scripts to target dir">
         <subant target="setup" buildpath="../drlvm" />
 
-        <copy file="HUT_iterative_run.bat" tofile="${target.dir}/HUT_iterative/HUT_iterative_run.bat" overwrite="true" />
-        <copy file="HUT_iterative_run.sh" tofile="${target.dir}/HUT_iterative/HUT_iterative_run.sh" overwrite="true" />
-        <copy file="modulesList" tofile="${target.dir}/HUT_iterative/modulesList" overwrite="true" />
+        <mkdir dir="${target.dir}/classlib-drlvm-iterative" />
+
+        <copy todir="${target.dir}/classlib-drlvm-iterative" overwrite="true">
+            <fileset dir=".">
+                <include name="run.bat" />
+                <include name="run.sh" />
+                <include name="modulesList" />
+            </fileset>
+        </copy >
     </target>
 
     <target name="-gen-config" depends="-gen-config-win,-gen-config-other">
@@ -53,13 +59,13 @@ fs=${file.separator}
 
     <target name="-gen-config-win" if="is.windows">
         <echo file="${propertyfile}" append="true">
-cmd_HUT_iterative=HUT_iterative_run.bat
+cmd_HUT_iterative=run.bat
 </echo>
     </target>
 
     <target name="-gen-config-other" unless="is.windows">
         <echo file="${propertyfile}" append="true">
-cmd_HUT_iterative=HUT_iterative_run.sh
+cmd_HUT_iterative=run.sh
 </echo>
     </target>
 

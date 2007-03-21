@@ -31,7 +31,11 @@
 
     <schedule interval="${timeout}">
         <!--exec command="${sh}" args="${cmd.prefix} ${cmd_HUT_iterative} ${wdir}/projects/drlvm/trunk/build/${os}_ia32_${cc}_debug/deploy/jdk/jre drl ${HUT_forkmode} ${wdir}/projects/classlib/trunk ${HUT_iterations}" workingdir="HUT_iterative" timeout="${HUT_iterative_timeout}" errorstr="FAILED" /-->
-        <exec command="${sh}" args="${cmd.prefix} ${cmd_HUT_iterative} ${wdir}${fs}projects${fs}drlvm${fs}trunk${fs}build${fs}${os}_ia32_${cc}_debug${fs}deploy${fs}jdk${fs}jre drl ${HUT_forkmode} ${wdir}${fs}projects${fs}classlib${fs}trunk ${HUT_iterations}" workingdir="HUT_iterative" timeout="${HUT_iterative_timeout}" errorstr="FAILED" />
+        <exec command="${sh}"
+              args="${cmd.prefix} ${cmd_HUT_iterative} ${wdir}${fs}projects${fs}drlvm${fs}trunk${fs}build${fs}${os}_ia32_${cc}_debug${fs}deploy${fs}jdk${fs}jre drl ${HUT_forkmode} ${wdir}${fs}projects${fs}classlib${fs}trunk ${HUT_iterations}"
+              workingdir="classlib-drlvm-iterative"
+              timeout="${HUT_iterative_timeout}"
+              errorstr="FAILED" />
     </schedule>
 
     <log dir="logs/${project.name}">
