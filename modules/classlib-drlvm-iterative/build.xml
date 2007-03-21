@@ -16,53 +16,51 @@
      limitations under the License. 
 -->
 
-<project name="HUT-iterative" default="default" basedir=".">
-	
+<project name="classlib-drlvm-iterative" default="gen-config" basedir=".">
+
     <description>
 		CI/built/test system for Apache Harmony
 		http://incubator.apache.org/harmony
     </description>
 
-	<!--The cc.property file contains the nameand values of properties-->
-	<property file="cc.properties" />
+    <!--The cc.property file contains the name and values of properties-->
+    <property file="cc.properties" />
 
-	<echo file="${target.dir}/cc.properties" append="true">
+    <import file="../../properties.xml" />
+
+    <target name="-setup" description="copy config file and scripts to target dir">
+        <subant target="setup" buildpath="../drlvm" />
+
+        <copy file="HUT_iterative_run.bat" tofile="${target.dir}/HUT_iterative/HUT_iterative_run.bat" overwrite="true" />
+        <copy file="HUT_iterative_run.sh" tofile="${target.dir}/HUT_iterative/HUT_iterative_run.sh" overwrite="true" />
+        <copy file="modulesList" tofile="${target.dir}/HUT_iterative/modulesList" overwrite="true" />
+    </target>
+
+    <target name="-gen-config" depends="-gen-config-win,-gen-config-other">
+        <subant target="gen-config" buildpath="../drlvm" />
+
+        <process-project-template />
+
+        <echo file="${propertyfile}" append="true">
 HUT_iterative_timeout=${HUT_iterative_cycle_timeout}
 HUT_iterations=${HUT_iterative_repetitions}
 HUT_forkmode=${HUT_iterative_forkmode}
 osdetailed=${os_detailed}
 fs=${file.separator}
 
-	</echo>
+    	</echo>
+    </target>
 
-	<!-- ==========================================
-	       Kick off CC
-	     ========================================== -->
-	<target name="default" description="Start classlib unit tests iterative run" >
-	</target>
-		
-	<!-- ==========================================
-	     setup - config iterative classlib tests run
-	     ========================================== -->
-	<target name="setup" description="copy config file and scripts to target dir"  depends="win,unix">
-		
-		<copy file="config/config-HUT_iterative.xml" tofile="${target.dir}/config.xml" overwrite="true" />
-		<copy file="HUT_iterative_run.bat" tofile="${target.dir}/HUT_iterative/HUT_iterative_run.bat" overwrite="true" />		
-		<copy file="HUT_iterative_run.sh" tofile="${target.dir}/HUT_iterative/HUT_iterative_run.sh" overwrite="true" />		
-		<copy file="modulesList" tofile="${target.dir}/HUT_iterative/modulesList" overwrite="true" />		
-
-	</target>
-
-	<target name="win" if="is.windows">
-		<echo file="${target.dir}/cc.properties" append="true">
+    <target name="-gen-config-win" if="is.windows">
+        <echo file="${propertyfile}" append="true">
 cmd_HUT_iterative=HUT_iterative_run.bat
 </echo>
-	</target>
+    </target>
 
-	<target name="unix" if="is.unix">
-		<echo file="${target.dir}/cc.properties" append="true">
+    <target name="-gen-config-other" unless="is.windows">
+        <echo file="${propertyfile}" append="true">
 cmd_HUT_iterative=HUT_iterative_run.sh
 </echo>
-	</target>
+    </target>
 
-</project> 
+</project>
