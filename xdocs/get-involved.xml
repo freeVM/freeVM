@@ -134,22 +134,23 @@
             change or enhancement is useful, etc.
       </li>
        <li>Use the subversion <code>diff</code> utility to create a patch as follows:
-            <pre>svn diff file.java > file.patch</pre>
+<pre>svn diff file.java > file.patch</pre>
             where <code>file</code> is the filename that you have changed. This will produce a
           nice patch file that can be added to the <a href="http://issues.apache.org/jira/browse/HARMONY">
             JIRA</a>, which makes it easy for
             the project committers to review and possibly accept your patch.
            <br />
            <p class="example">Example</p>
-           <pre>diff -u http_main.c.orig http_main.c &gt;&gt; patchfile.txt</pre>
-              Note that the <code>diff</code> command only shows differences for text files, and
-              not binary files. So even if you did <code>svn add</code> on a binary file (gif, jar,
-              png etc.), it won't show up in the patch, and will fail to apply. The
-              key string to look out for in the patch is: 
-           <pre>Cannot display: file marked as a binary type. </pre> 
+<pre>diff -u http_main.c.orig http_main.c &gt;&gt; patchfile.txt</pre>
+           <p class="note">Note</p>
+           <p class="notetext">The <code>diff</code> command only shows differences for
+           text files, and not binary files. So even if you did <code>svn add</code> on
+           a binary file (gif, jar, png etc.), it won't show up in the patch, and will fail
+           to apply. The key string to look out for in the patch is:
+<pre>Cannot display: file marked as a binary type. </pre></p>
               If you see that, you'll also need to attach the binary files that have changed
               separately to the issue. To get a list of such files in <code>file.patch</code>, run:
-           <pre>grep -B 2 "Cannot display" file.patch</pre>
+<pre>grep -B 2 "Cannot display" file.patch</pre>
         </li>
         <li>Attach all materials to the JIRA entry via <b>Attach File</b>.
         </li>

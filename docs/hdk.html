@@ -206,22 +206,20 @@ limitations under the License.
                     An HDK contains all the header files and binaries, both native and Java, required
                     for a Harmony classlib developer to build against. The directory structure for an
                     HDK is as follows:
-                    <pre>
-                    &lt;hdkbase&gt;
-                        |
-                        |---build
-                        |     |---make
-                        |     |---patternsets
-                        |     \---test
-                        |
-                        |---jdk
-                        |    |---jre
-                        |    \---include
-                        |
-                        |---include
-                        |
-                        \---lib
-                    </pre>
+<pre>&lt;hdkbase&gt;
+    |
+    |---build
+    |     |---make
+    |     |---patternsets
+    |     \---test
+    |
+    |---jdk
+    |    |---jre
+    |    \---include
+    |
+    |---include
+    |
+    \---lib</pre>
 
                     The directories laid out above are used in the following manner:
 
@@ -269,17 +267,15 @@ limitations under the License.
         <a name="Building Classlib Against an HDK">Building Classlib Against an HDK</a>
     </h2>
       
-                        <p>
-                    <i>
-                        Note: The HDK and relevant build system changes are work in progress.
+                        <p class="note">Note</p>
+                                <p class="notetext">The HDK and relevant build system changes are work in progress.
                         Not all of the Ant targets/properties described exist yet, and thus not
                         all of what is described below currently works. This disclaimer will be
-                        removed once work on the HDK is completed.
-                    </i><br />
-                    <br />
+                        removed once work on the HDK is completed.</p>
+                                <p>
                     The Harmony Class Library can be built at the global or modular level.
-                    At the modular level, there are three ways to build:
-                    <ul>
+                    At the modular level, there are three ways to build:</p>
+                                <ul>
                         <li>
                             <b>Building the default target</b> - An HDK is not required here, and the class
                             library is built against and into the default (deploy) directory. This is the
@@ -301,8 +297,8 @@ limitations under the License.
                             </code>.
                         </li>
                     </ul>
-                    <p class="example">Example</p>
-                    <p class="exampletext">
+                                <p class="example">Example</p>
+                                <p class="exampletext">
                    If you wanted to build only the luni module against
                     an HDK, and put the resulting artifacts into a separate target directory,
                     do the following:
@@ -312,11 +308,11 @@ limitations under the License.
                         <li>Execute <code>
                             <nobr>ant -DHY.HDK=path/to/hdk -DHY.TARGET=path/to/target</nobr>
                         </code></li>
-                    </ol>
-                    The luni Java and native code will be built against the HDK location
+                    </ol></p>
+                                <p>The luni Java and native code will be built against the HDK location
                     specified, and all produced binaries placed under the target directory, laid
                     out in the HDK structure described at the top of this page.
-                </p></p>
+                </p>
                    
                 <p><a href="#top">Back to top</a></p>
                     
