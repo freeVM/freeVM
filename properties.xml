@@ -17,10 +17,28 @@
 -->
 <project>
 
+    <condition property="is.windows">
+        <os family="windows" />
+    </condition>
+
+    <condition property="is.unix">
+        <os family="unix" />
+    </condition>
+
     <available property="setup.done" file="setup.done" />
+    <available property="config.done" file="config.done" />
+
+    <target name="setup" unless="setup.done">
+        <subant target="-setup" buildpath="." />
+        <touch file="setup.done" />
+    </target>
+
+    <target name="gen-config" unless="config.done">
+        <subant target="-gen-config" buildpath="." />
+        <touch file="config.done" />
+    </target>
 
     <macrodef name="process-project-template">
-        <attribute name="project" />
         <sequential>
             <concat destfile="${configfile}" append="true">
                 <fileset dir=".">
@@ -36,4 +54,14 @@
         </sequential>
     </macrodef>
 
+    <macrodef name="co-project">
+        <attribute name="dir" />
+        <attribute name="url" />
+        <sequential>
+            <exec executable="svn" dir="@{dir}" failonerror="true">
+                <arg line="co" />
+                <arg line="@{url}" />
+            </exec>
+        </sequential>
+    </macrodef>
 </project>

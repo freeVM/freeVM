@@ -19,34 +19,52 @@
 
     <import file="../../properties.xml" />
 
-    <target name="-gen-config" unless="setup.done">
-        <subant target="-gen-config" buildpath="../classlib" />
-        <process-project-template project="drlvm" />
+    <property name="svn.drlvm.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk" />
 
-        <subant target="-gen-config-win" buildpath="." />
-        <subant target="-gen-config-other" buildpath="." />
+    <target name="-setup" depends="-set-properties">
+        <subant target="setup" buildpath="../classlib" />
 
-        <touch file="setup.done" />
+        <mkdir dir="${target.dir}/projects/drlvm" />
+        <echo>Checking out Harmony DRLVM.  This can take a while.  Please be patient...</echo>
+        <co-project dir="${target.dir}/projects/drlvm" url="${svn.drlvm.url}" />
+
+        <echo>download external libs for Harmony DRLVM.</echo>
+        <exec executable="${sh}" dir="${target.dir}/projects/drlvm/trunk/build" failonerror="true">
+            <env key="BUILD_CFG" value="${build_configuration}" />
+            <arg line="${cmd.prefix} ${cmd} ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build" />
+        </exec>
     </target>
 
-    <target name="-gen-config-win" if="is.windows">
+    <target name="-gen-config" depends="-set-properties">
+        <subant target="gen-config" buildpath="../classlib" />
+
+        <process-project-template />
+
         <echo file="${propertyfile}" append="true">
-os=win
-sh=cmd
-cmd.prefix=/c
-cmd=build.bat
-cc=msvc
+os=${os}
+sh=${sh}
+cmd.prefix=${cmd.prefix}
+cmd=${cmd}
+cc=${cc}
 </echo>
     </target>
 
-    <target name="-gen-config-other" unless="is.windows">
-        <echo file="${propertyfile}" append="true">
-os=lnx
-sh=sh
-cmd.prefix=
-cmd=build.sh
-cc=gcc
-</echo>
+    <target name="-set-properties" depends="-set-properties-win,-set-properties-other" />
+
+    <target name="-set-properties-win" if="is.windows">
+        <property name="os" value="win" />
+        <property name="sh" value="cmd" />
+        <property name="cmd.prefix" value="/c" />
+        <property name="cmd" value="build.bat" />
+        <property name="cc" value="msvc" />
+    </target>
+
+    <target name="-set-properties-other" unless="is.windows">
+        <property name="os" value="lnx" />
+        <property name="sh" value="sh" />
+        <property name="cmd.prefix" value="" />
+        <property name="cmd" value="build.sh" />
+        <property name="cc" value="gcc" />
     </target>
 
 </project>

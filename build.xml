@@ -43,10 +43,6 @@
     <property name="configfile" location="${target.dir}/config.xml" />
     <property name="propertyfile" location="${target.dir}/cc.properties" />
 
-    <!-- url of the classlib and drlvm in SVN -->
-    <property name="svn.classlib.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk" />
-    <property name="svn.drlvm.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk" />
-
     <condition property="is.windows">
         <os family="windows" />
     </condition>
@@ -208,42 +204,18 @@ port.value=111
         <subant target="gen-config" buildpath="." />
         <copy file="config/copyres.xml" tofile="${target.dir}/copyres.xml" />
 
-        <mkdir dir="${target.dir}/projects/classlib" />
-        <mkdir dir="${target.dir}/projects/drlvm" />
-
-        <!-- now do the checkouts and load external libs -->
-
-        <antcall target="co-classlib" />
-        <subant target="fetch-depends" buildpath="${target.dir}/projects/classlib/trunk" />
-        <subant target="rebuild" buildpath="${target.dir}/projects/classlib/trunk" failonerror="true" />
-
-        <antcall target="co-drlvm" />
         <antcall target="process-drlvm" />
 
-    </target>
+        <subant target="setup" >
+            <dirset dir="modules" includes="${modules}" />
+            <property name="configfile" value="${configfile}" />
+            <property name="propertyfile" value="${propertyfile}" />
+            <property name="target.dir" value="${target.dir}" />
+            <property name="vm.proxy.h" value="${vm.proxy.h}" />
+            <property name="vm.proxy.p" value="${vm.proxy.p}" />
+            <property name="build_configuration" value="${build_configuration}" />
+        </subant>
 
-    <!-- ================================================
-          Checkout classlib trunk tree into place for CC
-         ================================================ -->
-    <target name="co-classlib">
-        <echo>Checking out Harmony classlib.  This can take a while.  Please be patient...</echo>
-
-        <exec executable="svn" dir="${target.dir}/projects/classlib" failonerror="true">
-            <arg line="co" />
-            <arg line="${svn.classlib.url}" />
-        </exec>
-    </target>
-
-    <!-- ================================================
-          Checkout DRLVM trunk tree into place for CC
-         ================================================ -->
-    <target name="co-drlvm">
-        <echo>Checking out Harmony DRLVM.  This can take a while.  Please be patient...</echo>
-
-        <exec executable="svn" dir="${target.dir}/projects/drlvm" failonerror="true">
-            <arg line="co" />
-            <arg line="${svn.drlvm.url}" />
-        </exec>
     </target>
 
     <target name="drlvm-win" if="is.windows">
@@ -270,10 +242,6 @@ set CRUISE_PATH=%CRUISE_PATH%;@vmdir@\make\tmp\cpptasks.jar
             </replacevalue>
         </replace>
         <replace file="${target.dir}/cruisecontrol.bat" token='@vmdir@' value='${target.dir}/projects/drlvm/trunk/build' />
-        <exec executable="cmd" dir="${target.dir}/projects/drlvm/trunk/build">
-            <env key="BUILD_CFG" value="${build_configuration}" />
-            <arg line="/c build.bat ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build" />
-        </exec>
     </target>
 
     <target name="drlvm-other" unless="is.windows">
@@ -289,13 +257,9 @@ BUILD_CFG=@@@@@
         <replace file="${target.dir}/cruisecontrol.sh" token='# CC_OPTS="-Xms128m -Xmx256m"' value='CC_OPTS="-Xmx500m"' />
         <replace file="${target.dir}/cruisecontrol.sh" token="$LIBDIR/ant.jar" value="$LIBDIR/ant.jar:$ANT_HOME/lib/ant-apache-regexp.jar:$ANT_HOME/lib/ecj_3.2.jar:$ANT_HOME/lib/ant-nodeps.jar:$ANT_HOME/lib/ant-xslp.jar:$ANT_HOME/lib/ant-trax.jar:@vmdir@/make/tmp/ant-contrib.jar:@vmdir@/make/tmp/cpptasks/patched.classes:@vmdir@/make/tmp/cpptasks.jar" />
         <replace file="${target.dir}/cruisecontrol.sh" token='@vmdir@' value='${target.dir}/projects/drlvm/trunk/build' />
-        <exec executable="sh" dir="${target.dir}/projects/drlvm/trunk/build">
-            <arg line="build.sh ${vm.proxy.h} ${vm.proxy.p} -Dexternal.dep.CLASSLIB.loc=${target.dir}/projects/classlib/trunk update clean build"/>
-        </exec>
     </target>
-    <target name="process-drlvm" depends="drlvm-win,drlvm-other">
-        <echo>download external libs for Harmony DRLVM.</echo>
-    </target>
+
+    <target name="process-drlvm" depends="drlvm-win,drlvm-other"/>
 
     <!-- =========================================================
          cleanup to new state.  Leaves the .zip around to save 
@@ -310,14 +274,13 @@ BUILD_CFG=@@@@@
          ========================================================= -->
     <property name="modules" value="drlvm-test,classlib-drlvm" />
 
-    <target name="gen-config" depends="set.proxy,no.proxy">
+    <delete>
+        <fileset dir="modules">
+            <include name="**/*.done" />
+        </fileset>
+    </delete>
 
-        <!-- clean up before generation -->
-        <delete>
-            <fileset dir="modules">
-                <include name="**/*.done" />
-            </fileset>
-        </delete>
+    <target name="gen-config" depends="set.proxy,no.proxy">
 
         <!-- generate cruisecontrol property file -->
         <echo file="${propertyfile}" append="true">
@@ -338,20 +301,13 @@ report_from=${report_failures_from}
 
     &lt;property file="cc.properties" /&gt;
         </echo>
-        <subant target="-gen-config">
+        <subant target="gen-config" >
             <dirset dir="modules" includes="${modules}" />
             <property name="configfile" value="${configfile}" />
             <property name="propertyfile" value="${propertyfile}" />
-            <property name="is.windows" value="${is.windows}" />
         </subant>
         <echo file="${configfile}" message="&lt;/cruisecontrol&gt;" append="true" />
 
-        <!-- clean up after generation -->
-        <delete>
-            <fileset dir="modules">
-                <include name="**/*.done" />
-            </fileset>
-        </delete>
     </target>
 
 </project>

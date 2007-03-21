@@ -19,8 +19,20 @@
 
     <import file="../../properties.xml" />
 
-    <target name="-gen-config" unless="setup.done">
-        <process-project-template project="classlib" />
-        <touch file="setup.done" />
+    <property name="svn.classlib.url" value="https://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk" />
+
+    <target name="-setup">
+
+        <mkdir dir="${target.dir}/projects/classlib" />
+
+        <echo>Checking out Harmony classlib.  This can take a while.  Please be patient...</echo>
+        <co-project dir="${target.dir}/projects/classlib" url="${svn.classlib.url}" />
+
+        <subant target="fetch-depends" buildpath="${target.dir}/projects/classlib/trunk" />
+        <subant target="rebuild" buildpath="${target.dir}/projects/classlib/trunk" failonerror="true" />
+    </target>
+
+    <target name="-gen-config">
+        <process-project-template />
     </target>
 </project>
