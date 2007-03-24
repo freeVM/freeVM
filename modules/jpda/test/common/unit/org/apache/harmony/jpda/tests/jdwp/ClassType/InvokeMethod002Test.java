@@ -186,8 +186,8 @@ public class InvokeMethod002Test extends JDWPSyncTestCase {
         checkReplyPacket(reply, "ReferenceType::Fields command");
         
         int fieldsCount = reply.getNextValueAsInt();
-        assertTrue("Invalid fieldsCount=" + fieldsCount + ", must be > " + fieldValues.length
-                , fieldsCount > fieldValues.length);
+        assertTrue("Invalid fieldsCount=" + fieldsCount + ", must be >= " + fieldValues.length
+                , fieldsCount >= fieldValues.length);
 
         for (int i = 0; i < fieldsCount; i++) {
             long id = reply.getNextValueAsFieldID();
