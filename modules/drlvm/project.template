@@ -46,6 +46,7 @@
             <jvmarg arg="-D${proxy.port.vm}=${port.value}"/>
             <jvmarg arg="-Dexternal.dep.CLASSLIB.loc=${wdir}/${classlib}" />
             <jvmarg arg="-Dbuild.arch=${build_arch}" />
+            <jvmarg arg="-Ddeploy.canonical.flag=true" />
         </ant>
     </schedule>
 
