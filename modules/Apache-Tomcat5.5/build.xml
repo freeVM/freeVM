@@ -21,6 +21,8 @@
 
     <property name="tomcat.cc" location="${target.dir}/projects/Apache-Tomcat5.5" />
 
+    <property name="test.port" value="8081" />
+
     <pathconvert property="base.path" dirsep="/">
         <path path="${target.dir}/projects/Apache-Tomcat5.5" />
     </pathconvert>
@@ -49,7 +51,8 @@ tester.delay=50
         <ant dir="${tomcat.cc}" />
 
         <!-- Change Tomcat port to avoid conflict with CC -->
-        <replace file="${tomcat.cc}/build/build/conf/server.xml" token='Connector port="8080"' value='Connector port="8081"' />
+        <replace file="${tomcat.cc}/build/build/conf/server.xml" token='Connector port="8080"' value='Connector port="${test.port}"' />
+        <replace file="${tomcat.cc}/container/tester/src/bin/tester.xml" token='value="8080"' value='value="${test.port}"' />
     </target>
 
     <target name="-gen-config">
