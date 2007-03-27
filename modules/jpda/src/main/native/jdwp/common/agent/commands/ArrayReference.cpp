@@ -483,4 +483,15 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
             JDWP_TRACE_DATA("SetValues: bad type signature: " << JDWP_CHECK_NULL(signature));
             throw AgentException(JDWP_ERROR_INVALID_ARRAY);
     }           
+
+    // check if exception occured
+    {
+        jthrowable ex = jni->ExceptionOccurred();
+        
+        // indicate error if any exception occured
+        if (ex != 0) {
+            jni->ExceptionClear();
+            throw AgentException(JDWP_ERROR_INVALID_ARRAY);
+        }
+    }
 }

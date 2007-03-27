@@ -411,13 +411,13 @@ ClassType::InvokeMethodHandler::ExecuteDeferredFunc(JNIEnv *jni)
     }
     m_returnException = jni->ExceptionOccurred();
     if (m_returnException != 0) {
+        jni->ExceptionClear();
         m_returnException =
             static_cast<jthrowable>(jni->NewGlobalRef(m_returnException));
         if (m_returnException == 0) {
             m_returnError = JDWP_ERROR_OUT_OF_MEMORY;
         }
     }
-    jni->ExceptionClear();
 }
 
 //-----------------------------------------------------------------------------
@@ -551,11 +551,11 @@ ClassType::NewInstanceHandler::ExecuteDeferredFunc(JNIEnv *jni)
     }
     m_returnException = jni->ExceptionOccurred();
     if (m_returnException != 0) {
+        jni->ExceptionClear();
         m_returnException =
             static_cast<jthrowable>(jni->NewGlobalRef(m_returnException));
         if (m_returnException == 0) {
             m_returnError = JDWP_ERROR_OUT_OF_MEMORY;
         }
     }
-    jni->ExceptionClear();
 }
