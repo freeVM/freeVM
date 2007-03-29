@@ -13,8 +13,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-APPVER=4.0
-TARGETOS=WIN95
+!ifndef APPVER
+APPVER=4.0 #Default Windows version
+!endif
+
+!ifndef TARGETOS
+TARGETOS=WIN95 #Compile for Win95 by default
+!endif
+
 _WIN32_IE=0x0500
 SEHMAP = TRUE
 !include <win32.mak>
@@ -24,7 +30,30 @@ EXEPATH=..\# ditto
 DLLPATH=$(HY_HDK)\jdk\jre\bin\# ditto
 SHAREDSUB=..\shared\# ditto
 
-HYCFLAGS = \
-  -Ogityb1 -WX -GF -Gs -MD -Zi -Zm400 \
-  -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0400 -D_WINSOCKAPI_ -DWINVER=0x0400 \
-  $(VMDEBUG) /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I.
+!IF "$(HY_OS)-$(HY_ARCH)" == "windows-x86_64" 
+WARNING_LEVEL=-W0
+PLATFORM_64=-DHYX86_64
+!ELSE
+WARNING_LEVEL=
+!ENDIF
+
+HYCOMMONCFLAGS = \
+  -GF -Gs -MD -Zm400 \
+  -D_DLL -D_MT -D_WINSOCKAPI_ $(PLATFORM_64) \
+  -I$(HY_HDK)\include -I$(HY_HDK)\jdk\include -I.
+
+!ifndef HYDEBUGCFLAGS
+HYDEBUGCFLAGS = \
+  -Zi -Od -D_DEBUG
+!endif
+
+!ifndef HYRELEASECFLAGS  
+HYRELEASECFLAGS = \
+  -Ogityb1 -DNDEBUG
+!endif
+
+!IF "$(HY_CFG)" == "debug"
+HY_CFLAGS = $(HY_CFLAGS) $(HYCOMMONCFLAGS) $(HYDEBUGCFLAGS)
+!ELSE  
+HY_CFLAGS = $(HY_CFLAGS) $(HYCOMMONCFLAGS) $(HYRELEASECFLAGS)
+!ENDIF

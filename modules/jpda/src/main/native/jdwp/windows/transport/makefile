@@ -30,13 +30,13 @@ LIBBASE=dt_socket
 DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
-HYCFLAGS = $(HYCFLAGS) \
-         -GX -wd4290 \
-         -I$(HY_HDK)\jdk\include -I. \
-         -I$(CMNTRANS)common   -I$(CMNTRANS)dt_socket \
+INCLUDES = $(INCLUDES) \
+         -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
          -I$(COMMON)generic -Idt_socket
 
-HYLDFLAGS = $(HYLDFLAGS) -def:dt_socket\$(LIBBASE).def
+HY_CFLAGS = $(HY_CFLAGS) $(INCLUDES) -GX -wd4290
+
+HY_LDFLAGS = $(HY_LDFLAGS) -def:dt_socket\$(LIBBASE).def
 
 BUILDFILES = \
     $(CMNTRANS)common\LastTransportError.obj \

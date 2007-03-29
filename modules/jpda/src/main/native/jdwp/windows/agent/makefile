@@ -29,13 +29,13 @@ LIBBASE=jdwp
 DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
-HYCFLAGS = \
-         -GX -wd4290 \
-         -I$(HY_HDK)\jdk\include -I. \
-         -I$(CMNAGENT)commands   -I$(CMNAGENT)core \
-         -I$(COMMON)generic -Icore $(HYCFLAGS)
+INCLUDES = $(INCLUDES) \
+         -I$(CMNAGENT)commands -I$(CMNAGENT)core \
+         -I$(COMMON)generic -Icore
 
-HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
+HY_CFLAGS = $(HY_CFLAGS) $(INCLUDES) -GX -wd4290
+
+HY_LDFLAGS = $(HY_LDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
     $(CMNAGENT)commands\ArrayReference.obj \

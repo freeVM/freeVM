@@ -17,7 +17,9 @@
 # Configuration Makefile
 #
 
-CXXFLAGS=$(CFLAGS)
+CFLAGS   += $(HY_CFLAGS)
+CXXFLAGS += $(HY_CFLAGS)
+LDFLAGS  += $(HY_LDFLAGS)
 
 all: $(DLLNAME) $(EXENAME) $(LIBNAME)
 

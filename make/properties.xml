@@ -24,13 +24,19 @@
         Ant file of common properties to be imported by other ant files
     </description>
 
+    <!-- Debug or release version -->
+    <property name="hy.cfg" value="debug" />
+
     <!-- Javac properties -->
     <!-- Explicitly set to ECJ as the default compiler. -->
     <property name="hy.javac.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
     <property name="hy.javac.source" value="1.5" />
     <property name="hy.javac.target" value="1.5" />
-    <property name="hy.javac.debug" value="on" />
     <property name="hy.javac.maxmem" value="384M" />
+
+    <condition property="hy.javac.debug" value="on" else="off">
+        <equals arg1="${hy.cfg}" arg2="debug" />
+    </condition>
 
     <!-- Test run property -->
     <property name="hy.test.forkmode" value="perBatch" />
@@ -120,13 +126,23 @@
         <equals arg1="${hy.arch}" arg2="ia64"/>
     </condition>
 
+    <!-- use native compiler option "-fpic" on 64-bit linux/unix platforms -->
     <condition property="hy.cflags" value="-fpic">
-        <equals arg1="${hy.arch}" arg2="x86_64"/>
+        <and>
+            <isset property="is.64bit"/>
+            <not>
+                <isset property="is.windows"/>
+            </not>
+        </and>
     </condition>
+    <!-- use native compiler option "-march=pentium3" on 32-bit linux/unix platform -->
     <condition property="hy.cflags" value="-march=pentium3">
-        <not>
-            <equals arg1="${hy.arch}" arg2="ia64"/>
-        </not>
+        <and>
+            <isset property="is.32bit"/>
+            <not>
+                <isset property="is.windows"/>
+            </not>
+        </and>
     </condition>
     
     <!-- Normalized platform name -->
@@ -172,6 +188,10 @@
     <target name="echo" depends="svn-prop, svn-info"
             description="Display the properties defined by this ant file" >
         <echo>
+Harmony release configuration property:
+
+  hy.cfg = ${hy.cfg}
+
 Harmony javac properties:
 
   hy.javac.compiler = ${hy.javac.compiler}
@@ -293,6 +313,7 @@ properties in preference to these:
                 <env key="HY_HDK" value="${hy.hdk}" />
                 <env key="HY_DRLVM" value="${hy.drlvm}" />
                 <env key="HY_JDKTOOLS" value="${harmony.jdktools}" />
+                <env key="HY_CFG" value="${hy.cfg}" />
                 <env key="HY_ARCH" value="${hy.arch}" />
                 <env key="HY_OS" value="${hy.os}" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />

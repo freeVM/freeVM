@@ -259,7 +259,7 @@ DecodeAddress(jdwpTransportEnv* env, const char *address, struct sockaddr_in *sa
         return JDWPTRANSPORT_ERROR_NONE;
     }
 
-    char* colon = strchr(address, ':');
+    const char* colon = strchr(address, ':');
     if (colon == 0) {  //address is like "port"
         sa->sin_port = htons((u_short)atoi(address));
         sa->sin_addr.s_addr = isServer ? htonl(INADDR_ANY) : inet_addr("127.0.0.1");

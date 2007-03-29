@@ -21,20 +21,15 @@
 
 #
 
-include $(HY_JDKTOOLS)/make/makefile.include
+include $(HY_JDKTOOLS)/make/defines.mk
 
 COMMON=../../common/
 CMNTRANS=$(COMMON)transport/
 
-CFLAGS = -O1 $(HY_CFLAGS) -D_DEBUG -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
-         $(VMDEBUG) -I$(HY_HDK)/jdk/include -I. \
-         -I$(CMNTRANS)common   -I$(CMNTRANS)dt_socket \
-         -I$(COMMON)generic -Idt_socket
-                  
+HY_CFLAGS += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
+             -I$(COMMON)generic -Idt_socket
 
-CFLAGS += -fPIC
-
-LDFLAGS = -lstdc++ -lgcc_s
+HY_LDFLAGS += -lstdc++ -lgcc_s
 
 BUILDFILES = \
     $(CMNTRANS)common/LastTransportError.o \

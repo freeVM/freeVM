@@ -20,19 +20,15 @@
 
 #
 
-include $(HY_JDKTOOLS)/make/makefile.include
+include $(HY_JDKTOOLS)/make/defines.mk
 
 COMMON=../../common/
 CMNAGENT=$(COMMON)agent/
 
-CFLAGS = -O1 $(HY_CFLAGS) -D_DEBUG -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT \
-         $(VMDEBUG) -I$(HY_HDK)/jdk/include -I. \
-         -I$(CMNAGENT)commands   -I$(CMNAGENT)core \
-         -I$(COMMON)generic -Icore
+HY_CFLAGS += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
+             -I$(COMMON)generic -Icore
 
-CFLAGS += -fPIC
-
-LDFLAGS = -lstdc++ -lgcc_s
+HY_LDFLAGS += -lstdc++ -lgcc_s
 
 BUILDFILES = \
     $(CMNAGENT)commands/ArrayReference.o \

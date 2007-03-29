@@ -30,7 +30,7 @@
     <property name="hy.hdk" location="deploy" />
     <property name="hy.jdk" location="${hy.hdk}/jdk" />
 
-    <condition property="not.copy.jdk">
+    <condition property="not.copy.jre">
         <isset property="test.jre.home"/>
     </condition>
     <property name="test.jre.home" location="${hy.jdk}" />

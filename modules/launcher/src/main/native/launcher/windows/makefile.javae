@@ -20,7 +20,6 @@
 !include <$(HY_JDKTOOLS)\make\defines.mak>
 
 EXENAME=$(EXEPATH)java.exe
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 
 BUILDFILES = $(SHAREDSUB)launcher_copyright.obj $(SHAREDSUB)cmain.obj \
         $(SHAREDSUB)main.obj $(SHAREDSUB)strbuf.obj $(SHAREDSUB)libhlp.obj

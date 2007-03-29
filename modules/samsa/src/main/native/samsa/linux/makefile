@@ -17,7 +17,7 @@
 # Makefile for 'samsa'
 #
 
-include $(HY_JDKTOOLS)/make/makefile.include
+include $(HY_JDKTOOLS)/make/defines.mk
 
 BUILDFILES = ../samsa.o
 

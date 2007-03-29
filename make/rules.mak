@@ -13,14 +13,22 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+!IF "$(HY_OS)-$(HY_ARCH)" == "windows-x86_64" 
+ml=ml64
+DLLENTRY=
+!ELSE
+ml=ml
+DLLENTRY=@12
+!ENDIF
+
 .c.obj:
-	$(cc) $(cflags) $(HYCFLAGS) -Fo$*.obj $*.c
+	$(cc) $(cflags) $(HY_CFLAGS) -Fo$*.obj $*.c
 
 .cpp.obj:
-	$(cc) $(cflags) $(HYCFLAGS) -Fo$*.obj $*.cpp
+	$(cc) $(cflags) $(HY_CFLAGS) -Fo$*.obj $*.cpp
 
 .asm.obj:
-	ml /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd $(VMASMDEBUG) -DWIN32 $<
+	$(ml) /Fo$*.obj /c /Cp /W3 /nologo /coff /Zm /Zd /Zi /Gd $(VMASMDEBUG) -DWIN32 $<
 
 .rc.res:
 	rc -I..\include $<
@@ -30,19 +38,21 @@ all: $(DLLNAME) $(EXENAME) $(LIBNAME)
 !ifdef LIBNAME
 $(LIBNAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 	$(implib) /NOLOGO -subsystem:windows -out:$(LIBNAME) \
-	$(HYLDFLAGS) -machine:$(CPU) \
+	$(HY_LDFLAGS) -machine:$(CPU) \
 	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 !endif
 
 !ifdef DLLNAME
 $(DLLNAME): $(LIBNAME)
 	link $(VMLINK) /debug /opt:icf /opt:ref /INCREMENTAL:NO /NOLOGO \
-	-entry:_DllMainCRTStartup@12 -dll /BASE:$(DLLBASE) -machine:$(CPU) \
+	-entry:_DllMainCRTStartup$(DLLENTRY) -dll /BASE:$(DLLBASE) -machine:$(CPU) \
         $(COMMENT) \
 	-subsystem:windows -out:$@ -map:$*.map \
 	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(SYSLIBFILES) \
 	kernel32.lib  ws2_32.lib advapi32.lib user32.lib gdi32.lib \
         comdlg32.lib winspool.lib  $(LIBPATH)$(*F).exp
+	if exist $(DLLNAME).manifest \
+		mt -manifest $(DLLNAME).manifest -outputresource:$(DLLNAME);#2
 !endif
 
 !ifdef EXENAME
@@ -50,10 +60,14 @@ $(EXENAME): $(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES)
 	link /NOLOGO $(EXEFLAGS) /debug /opt:icf /opt:ref $(VMLINK) \
 	-out:$(EXENAME) -machine:$(CPU) setargv.obj  \
 	$(BUILDFILES) $(VIRTFILES) $(MDLLIBFILES) $(EXEDLLFILES) 
+	if exist $(EXENAME).manifest \
+		mt -manifest $(EXENAME).manifest -outputresource:$(EXENAME);#1
 !endif
 
 clean:
     -del $(BUILDFILES) *.res *.pdb \
              $(LIBNAME) $(LIBNAME:.lib=.exp) \
              $(DLLNAME) $(DLLNAME:.dll=.pdb) $(DLLNAME:.dll=.map) \
-             $(EXENAME) $(EXENAME:.exe=.pdb) >nul 2>&1
+			 $(DLLNAME).manifest \
+             $(EXENAME) $(EXENAME:.exe=.pdb) $(EXENAME).manifest \
+             $(CLEANFILES) >nul 2>&1
