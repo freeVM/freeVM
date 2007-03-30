@@ -126,15 +126,6 @@
         <equals arg1="${hy.arch}" arg2="ia64"/>
     </condition>
 
-    <!-- use native compiler option "-fpic" on 64-bit linux/unix platforms -->
-    <condition property="hy.cflags" value="-fpic">
-        <and>
-            <isset property="is.64bit"/>
-            <not>
-                <isset property="is.windows"/>
-            </not>
-        </and>
-    </condition>
     <!-- use native compiler option "-march=pentium3" on 32-bit linux/unix platform -->
     <condition property="hy.cflags" value="-march=pentium3">
         <and>

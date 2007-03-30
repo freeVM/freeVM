@@ -29,7 +29,8 @@ LIBPATH=$(HY_HDK)/lib/
 DLLPATH=$(HY_HDK)/jdk/jre/bin/
 SHAREDSUB=../shared/
 
-HYCOMMONFLAGS = -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -D$(HY_ARCH_DEFINE) \
+HYCOMMONFLAGS = -fpic \
+                -DLINUX -D_REENTRANT -DIPv6_FUNCTION_SUPPORT -D$(HY_ARCH_DEFINE) \
                 -I$(HY_HDK)/include -I$(HY_HDK)/jdk/include -I. -I$(SHAREDSUB)
 
 ifndef HYDEBUGCFLAGS
