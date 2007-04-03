@@ -22,66 +22,77 @@
       "text/html; charset=ISO-8859-1">
     <title>Debugging DRL Virtual Machine and JIT Compiler </title>
 </head>
-<body>
-    <h1>
-        <a name="top"></a>Debugging the DRL Virtual Machine and the JIT Compiler
-    </h1>
+  <body>
+      <h1><a id="top" name="top"></a>Debugging the DRL Virtual Machine and the JIT Compiler</h1>
+<ol id="TOC">
+<li><a href="#About_This_Document">About This Document</a></li>
+<li><a href="#Debugging_VM">Debugging the Virtual Machine</a>
+    <ol>
+    <li><a href="#How_to_debug_VM">How to Debug the VM</a>
+        <ol>
+        <li><a href="#Basic_Debugging_Steps">Basic Debugging Steps</a></li>
+        <li><a href="#Attaching_the_Debugger">Attaching the Debugger to the Live Process</a></li>
+        </ol>
+    </li>
+    <li><a href="#Extended_Debug_VM">How to Get More of Your Debugging</a>
+        <ol>
+        <li><a href="#Configuration_of_Tracing">Configuration of Tracing</a></li>
+        <li><a href="#Native_Stack_Examination">Native Stack Examination</a></li>
+        <li><a href="#Stack_Examination">Java* Stack Examination</a></li>
+        <li><a href="#Setting_Breakpoints">Setting Smart Breakpoints</a></li>
+        <li><a href="#Handling_Threads">Handling Java* Threads as Native Threads</a></li>
+        <li><a href="#Debugging_Deadlocks">Debugging Deadlocks with the
+            <code>CriticalSection</code> Synchronization Primitive</a></li>
+        <li><a href="#Getting_a_Class_Name">Getting a Class Name for an Object</a></li>
+        </ol>
+    </li>
+    </ol>
+</li>
+<li><a href="#Debugging_JIT">Debugging the Jitrino.JET Baseline Compiler</a>
+    <ol>
+    <li><a href="#Enable_Tracing">How to Enable Tracing in Jitrino.JET</a></li>
+    <li><a href="#Config_Trace_Logging">How to Configure Trace Logging</a>
+        <ol>
+        <li><a href="#Compilation_Results_Tracing">Group 1: Compilation Results Tracing</a></li>
+        <li><a href="#Run-time_Execution_Tracing">Group 2: Run-time Execution Tracing</a></li>
+        </ol>
+    </li>
+    <li><a href="#Extend_Trace_JIT">How to Get More of Your Tracing</a>
+        <ol>
+        <li><a href="#Tracing_Example">Tracing Example</a></li>
+        </ol>
+    </li>
+    </ol>
+</li>
+</ol>
+ <h1><a id="About_This_Document" name="About_This_Document"></a>About This Document</h1>
     <p>
         This document gives practical instructions on how to debug the DRL virtual machine
         and its baseline just-in-time compiler Jitrino.JET. For a definition of components
         and details on their internal structure, consult the <a href="../../subcomponents/drlvm/developers_guide.html">
-            DRL Virtual Machine Developer&rsquo;s Guide</a> supplied with the DRLVM image.
+        DRL Virtual Machine Developer&rsquo;s Guide</a> supplied with the DRLVM image.
     </p>
     <p>
         The document includes two groups of debugging tips, one for VM tips, and the other
         for JIT compiler tips, as shown below.
     </p>
-    <p class="TOCHeading">
-     <a href="#Debugging_VM">Debugging the Virtual Machine</a>
-    </p>
-<p class="TOC">
-        <a href="#How_to_debug_VM">How to debug the VM?</a>
-        </p>
-<p class="TOC">
-            <a href="#Extended_Debug_VM">How to get more of your debugging?</a>
-        </p>
-<p class="TOCHeading">
-        <a href="#Debugging_JIT">Debugging the Jitrino.JET Baseline Compiler</a>
-    </p>
-<p class="TOC">
-        <a href="#Enable_Tracing">How to enable tracing in Jitrino.JET?</a>
-        </p>
-<p class="TOC">
-            <a href="#Config_Trace_Logging">How to configure trace logging?</a>
-        </p>
-<p class="TOC">
-            <a href="#Extend_Trace_JIT">How to get more of your tracing?</a>
-        </p>
-        <p><a href="#top">Back to top</a>
-    </p>
-    <h1>
-        <a name="Debugging_VM">Debugging the Virtual Machine</a>
-    </h1>
-    <p>
+    <p><a href="#top">Back to top</a></p>
+ <h1><a id="Debugging_VM" name="Debugging_VM"></a>Debugging the Virtual Machine</h1>
+     <p>
         This section gives an insight into debugging the DRL virtual machine version 1.0
         and provides tips on resolving non-standard debugging issues.
     </p>
-    <h2>
-        <a name="How_to_debug_VM">How to debug the VM?</a>
-    </h2>
+    <p><a href="#top">Back to top</a></p>
+    <h2><a id="How_to_debug_VM" name="How_to_debug_VM"></a>How to Debug the VM</h2>
     <p>
         This section gives instructions on different scenarios of debugging the VM source
         code.
     </p>
-    <h3>
-        Basic Debugging Steps
-    </h3>
-    <p>
-        For ordinary tests, start the ij executable with the debugger enabled, as follows:
-    </p>
-    <p class="class">
-        On Windows<a href="#*">*</a></p>
-    <ol>
+    <h3><a id="Basic_Debugging_Steps" name="Basic_Debugging_Steps"></a>Basic Debugging Steps</h3>
+    <p>For ordinary tests, start the ij executable with the debugger enabled, as follows:</p>
+    <dl>
+        <dt>On Windows<a href="#*">*</a></dt>
+    <dd><ol>
         <li>Start Microsoft Visual Studio<a href="#*">*</a> and open the solution file <code>
             vm\build\vm.sln</code>. </li>
         <li>Open the source code that you need to debug, set breakpoints and perform all other
@@ -93,10 +104,9 @@
         </li>
         <li>Start debugging via the menu <strong>Debug</strong> &gt; <strong>Start</strong>,
             click <strong>NO</strong> in the popup dialog offering to build the project. </li>
-    </ol>
-    <p class="class">
-        On Linux<a href="#*">*</a></p>
-    <ol>
+    </ol></dd>
+    <dt>On Linux<a href="#*">*</a></dt>
+    <dd><ol>
         <li>Set up the <code>LD_LIBRARY_PATH</code> to point to the <code>deploy/jre/bin</code>
             directory. Change the working directory to the location of the VM executable and
             run:
@@ -110,61 +120,41 @@ gdb ij
 run &lt;your_params&gt;
 </pre>
         </li>
-    </ol>
+    </ol></dd></dl>
+    
+    <h3><a id="Attaching_the_Debugger" name="Attaching_the_Debugger"></a>Attaching the Debugger to the Live Process</h3>
     <p>
-        <a href="#top">Back to top</a>
-    </p>
-    <h3>
-        Attaching the Debugger to the Live Process
-    </h3>
-    <p>
-        To attach to the running VM process, do the following:
-    </p>
-    <p class="class">
-        On Windows<a href="#*">*</a></p>
-    <ol>
+        To attach to the running VM process, do the following:</p>
+   <dl><dt>On Windows<a href="#*">*</a></dt>
+    <dd><ol>
         <li>Start Visual Studio<a href="#*">*</a> . </li>
         <li>Go <strong>Debug</strong> &gt; <strong>Processes</strong>. </li>
         <li>Select the VM process and click <strong>Attach</strong>.<br>
             If you built the VM in the debug mode, the <strong>Microsoft Debug Runtime</strong>
             window appears. Click the <strong>Debug</strong> button to go to the crash point.
         </li>
-    </ol>
-    <p class="class">
-        On Linux<a href="#*">*</a></p>
-    <p>
+    </ol></dd>
+    <dt>On Linux<a href="#*">*</a></dt>
+    <dd>
         Run:
-    </p>
-    <pre>
-gdb &ndash;p &lt;PID of ij&gt;
-</pre>
-    <p>
+<pre>gdb &ndash;p &lt;PID of ij&gt;</pre>
+
         If the VM crashed during execution, use the core dump to analyze the crash:
-    </p>
-    <pre>
-gdb ij core
-</pre>
-    <p>
-        <a href="#top">Back to top</a>
-    </p>
-    <h2>
-        <a name="Extended_Debug_VM">How to get more from your debugging?</a>
-    </h2>
+<pre>gdb ij core</pre>
+</dd></dl>
+    <p><a href="#top">Back to top</a></p>
+    <h2><a id="Extended_Debug_VM" name="Extended_Debug_VM"></a>How to Get More from Your Debugging</h2>
     <p>
         This section includes some tips on optimizing the debug process and getting more
         debug information.
     </p>
-    <h3>
-        Configuration of tracing
-    </h3>
+    <h3><a id="Configuration_of_Tracing" name="Configuration_of_Tracing"></a>Configuration of Tracing</h3>
     <p>
         Consult the <a href="../../subcomponents/drlvm/getting_started.html">Getting Started
-            guide</a> delivered with DRLVM bundle for information on VM standard and non-standard
+        guide</a> delivered with DRLVM bundle for information on VM standard and non-standard
         configuration options. Tracing-related options might be useful for debugging purposes.
     </p>
-    <h3>
-        Native stack examination
-    </h3>
+    <h3><a id="Native_Stack_Examination" name="Native_Stack_Examination"></a>Native Stack Examination</h3>
     <p>
         The debugger might draw the stack incorrectly when the JIT or native stubs are involved.
         To avoid this, set esp as the memory location and 4-byte integer values as the output
@@ -195,79 +185,66 @@ gdb ij core
             call stack in the <strong>Call Stack</strong> window. If you have found a wrong
             call site, repeat the instruction from step 2. </li>
     </ol>
-    <p>
-        <a href="#top">Back to top</a>
-    </p>
-    <h3>
-        Java<a href="#*">*</a> stack examination
-    </h3>
-    <p class="class">
-        On Windows<a href="#*">*</a></p>
-    <p>
+  
+    <h3><a id="Stack_Examination" name="Stack_Examination"></a>Java<a href="#*">*</a> Stack Examination</h3>
+    <dl><dt>On Windows<a href="#*">*</a></dt>
+    <dd>
         Running the VM in the interpreter mode, you can get Java<a href="#*">*</a> methods
         stack trace almost at any point of execution. For that, break the execution of the
         VM and select the <strong>Interpreter</strong> frame in the Visual Studio<a href="#*">*</a>
         <strong>Call Stack</strong> window. Then, in the watch window, add the watch <code>stack_dump()</code>.
         The stack dump appears in VM output window. Running the VM in the JIT mode, use
         the <code>st_print()</code> function for the same purpose.
-    </p>
-    <p class="class">
-        On Linux<a href="#*">*</a></p>
-    <p>
+    </dd>
+       <dt>On Linux<a href="#*">*</a></dt>
+     <dd>
         Use the <code>gdb</code> command print and specify the <code>stack_dump</code> or
         <code>st_print</code> in the interpreter or the JIT compiler mode respectively.
-    </p>
-    <h3>
-        Setting smart breakpoints
-    </h3>
-    <p class="class">
-        On Windows<a href="#*">*</a> / IA-32</p>
-    <p>
+    </dd></dl>
+    
+    <h3><a id="Setting_Breakpoints" name="Setting_Breakpoints"></a>Setting Smart Breakpoints</h3>
+      <dl><dt>On Windows<a href="#*">*</a> / IA-32</dt>
+    <dd>
         Place breakpoints in source code by inserting calls to the <code>_CrtDbgBreak()</code>
         function. Placing the call inside a condition calls the function only for the specified
         case you need to debug. Analogously, you can use the Windows<a href="#*">*</a> API
         function <code>DebugBreak()</code> or print <code>INT 3</code>.
-    </p>
+    
     <p class="note">
         Note</p>
     <p class="notetext">
-        This requires recompiling the VM.</p>
-    <p class="class">
-        On Linux<a href="#*">*</a></p>
-    <p>
+        This requires recompiling the VM.</p></dd>
+    <dt>
+        On Linux<a href="#*">*</a></dt>
+    <dd>
         Run the following:
-    </p>
-    <pre>
-__asm {int 3}
-</pre>
-    <p>
-        <a href="#top">Back to top</a>
-    </p>
-    <h3>
-        Handling Java<a href="#*">*</a> threads as native threads
-    </h3>
+<pre>__asm {int 3}</pre>
+</dd></dl>
+    
+    <h3><a id="Handling_Threads" name="Handling_Threads"></a>
+        Handling Java<a href="#*">*</a> Threads as Native Threads</h3>
     <p>
         DRL VM has 1:1 mapping between native threads visible in the debugger and Java<a
-            href="#*">*</a> threads.<br>
+            href="#*">*</a> threads.<br \>
         To work with Java<a href="#*">*</a> threads individually, freeze the threads you
         do not need with the help of the debugger, and continue execution of other threads.
     </p>
-    <h3>
-        Debugging deadlocks with the CriticalSection synchronization primitive
+    <h3><a id="Debugging_Deadlocks" name="Debugging_Deadlocks"></a>
+        Debugging Deadlocks with the <code>CriticalSection</code> Synchronization Primitive
     </h3>
     <p>
         The <code>CriticalSection</code> primitive is a common cause of deadlocks. If the
         code has stopped at a critical section, you can try to find the thread that owns
         this primitive.
     </p>
-    <p class="class">
-        On Windows<a href="#*">*</a></p>
-    <p>
+    <dl>
+    <dt>On Windows<a href="#*">*</a></dt>
+    <dd>
         The file <code>WinNT.H</code> located in <code>&lt;PlatformSDK&gt;\Include</code>
         contains the definition for the structure <code>_RTL_CRITICAL_SECTION</code>, which
         contains the description of the CriticalSection primitive. You can get the owning
         thread for the CriticalSection primitive in a number of ways, as indicated below.
-    </p>
+   
     <p>
         <strong>Lookup in Memory</strong></p>
     <p>
@@ -286,7 +263,7 @@ __asm {int 3}
     <p class="notetext">
         Visual Studio<a href="#*">*</a> displays thread IDs in decimal representation.</p>
     <p>
-        <strong>In the watch window</strong></p>
+        <strong>In the Watch Window</strong></p>
     <p>
         In the watch window of Visual Studio<a href="#*">*</a>, insert the following:
     </p>
@@ -295,24 +272,19 @@ __asm {int 3}
 </pre>
     <p>
         Where <code>&lt;cs-ptr&gt;</code> is the address of your critical section
-    </p>
-    <p class="class">
-        On Linux<a href="#*">*</a></p>
-    <p>
+    </p> </dd>
+    <dt>On Linux<a href="#*">*</a></dt>
+    <dd>
         The file <code>/usr/include/bits/pthreadtypes.h</code> contains the description
         of the <code>pthread_mutex_t</code> type. To get the ID of the thread owning the
         <code>CriticalSection</code> primitive, in <code>gdb</code> execute:
-    </p>
-    <pre>
-x/4w &lt;address of your mutex primitive&gt;
-</pre>
+<pre>x/4w &lt;address of your mutex primitive&gt;</pre>
     <p>
         The third word in the output contains the owning thread descriptor you are looking
         for.
-    </p>
-    <h3>
-        Getting a class name for an object
-    </h3>
+    </p></dd></dl>
+    <h3><a id="Getting_a_Class_Name" name="Getting_a_Class_Name"></a>
+        Getting a Class Name for an Object</h3>
     <p>
         You can often need to find out the class name for a Java<a href="#*">*</a> object
         used in VM code. For example, you may need to get the class name for an object of
@@ -333,15 +305,16 @@ x/4w &lt;address of your mutex primitive&gt;
         <a href="#top">Back to top</a>
     </p>
     <h1>
-        <a name="Debugging_JIT"></a>Debugging the Jitrino.JET Baseline Compiler
+        <a id="Debugging_JIT" name="Debugging_JIT"></a>Debugging the Jitrino.JET Baseline Compiler
     </h1>
     <p>
         To use debugging and tracing in Jitrino.JET, use the debug build or the release
         build with the <code>JET_PROTO</code> macro defined. See the file <code>jdefs.h</code>
         for a definition of the available flags.
     </p>
+    <p><a href="#top">Back to top</a></p>
     <h2>
-        <a name="Enable_Tracing"></a>How to enable tracing in Jitrino.JET?
+        <a id="Enable_Tracing" name="Enable_Tracing"></a>How to Enable Tracing in Jitrino.JET
     </h2>
     <p>
         Currently, Jitrino.JET provides no interface or command line to control tracing
@@ -351,8 +324,9 @@ x/4w &lt;address of your mutex primitive&gt;
         compiled, and the instance variable <code>m_fname</code> contains its fully qualified
         name with no signature. Obtain these options through a call to <code>Compiler::m_infoBlock.get_flags()</code>.
     </p>
+    <p><a href="#top">Back to top</a></p>
     <h2>
-        <a name="Config_Trace_Logging"></a>How to configure trace logging?
+        <a id="Config_Trace_Logging" name="Config_Trace_Logging"></a>How to Configure Trace Logging
     </h2>
     <p>
         Tracing flags control compilation results output and trace run-time execution, as
@@ -360,9 +334,8 @@ x/4w &lt;address of your mutex primitive&gt;
         the <code>ij</code> executable starts: compilation results are in <code>jet.log</code>,
         and run-time output is in <code>jet.rt.log</code>.
     </p>
-    <h3>
-        Group 1: Compilation Results Tracing
-    </h3>
+    <h3><a id="Compilation_Results_Tracing" name="Compilation_Results_Tracing"></a>
+        Group 1: Compilation Results Tracing</h3>
     <p>
         The following flags control tracing compilation of a method:
     </p>
@@ -412,12 +385,9 @@ x/4w &lt;address of your mutex primitive&gt;
             </p>
         </li>
     </ul>
-    <p>
-        <a href="#top">Back to top</a>
-    </p>
-    <h3>
-        Group 2: Run-time Execution tracing
-    </h3>
+    
+    <h3><a id="Run-time_Execution_Tracing" name="Run-time_Execution_Tracing"></a>
+        Group 2: Run-time Execution Tracing</h3>
     <p>
         The following flags trace run-time life of the method:
     </p>
@@ -458,11 +428,8 @@ x/4w &lt;address of your mutex primitive&gt;
         The output goes to jet.log, with the address (both native and PC) where the event
         happens, and some other info.
     </p>
-    <p>
-        <a href="#top">Back to top</a>
-    </p>
-    <h2>
-        <a name="Extend_Trace_JIT">How to get more from your tracing?</a>
+    <p><a href="#top">Back to top</a></p>
+    <h2><a id="Extend_Trace_JIT" name="Extend_Trace_JIT">How to Get More from Your Tracing</a>
     </h2>
     <p>
         To identify one or more problematic methods with another stable JIT compiler, use
@@ -488,10 +455,7 @@ x/4w &lt;address of your mutex primitive&gt;
         to break execution at the specified bytecode instruction or at the entry point of
         the specified method.
     </p>
-    <p>
-        <a href="#top">Back to top</a>
-    </p>
-    <h3>
+       <h3><a id="Tracing_Example" name="Tracing_Example"></a>
         Tracing Example
     </h3>
     <p>
@@ -716,8 +680,9 @@ x/4w &lt;address of your mutex primitive&gt;
     <p>
         <a name="*"></a>* Other brands and names are the property of their respective owners.
     </p>
-</body>
+ </body>
 </html>
+
 
 
 

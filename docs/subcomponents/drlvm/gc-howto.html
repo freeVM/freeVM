@@ -219,48 +219,43 @@ limitations under the License.
       </title>
    </head>
 <body>
-  
-                
 
  <h1>
          <a id="How_to_Write_DRL_GC" name="How_to_Write_DRL_GC"></a>How to
                                Write DRL GC
       </h1>
-                  
-                            <h2><a id="Contents" name="Contents"></a>Contents</a></h2>
-                        
-
-                    
-                            <ol>
-                                <li>
-                         
-                                <a href="#1. About This Document">
-                                About This Document</a></li>
-
-                                <li>
-                                <a href="#2. Establishing the Build Infrastructure">
-                                Establishing the Build
-                                Infrastructure</a></li>
-
-                                <li>
-                                <a href="#3. Implementing Collector that Uses the GC Interface">
-                                Implementing Collector that Uses the GC Interface</a></li>
-
-                                <li>
-                                <a href="#4. Implementing the GC Algorithm">
-                                Implementing the GC
-                                Algorithm</a></li>
-
-                                <li>
-                                <a href="#5. Running the VM with the Custom GC">
-                                Running the VM with the Custom
-                                GC</a></li>
-                            </ol>
-                    
-
-                   
-                            <h2><a name="1. About This Document"
-                               id="1. About This Document">1. About
+  <ol id=TOC>
+  <li><a href="#About This Document">About This Document</a></li>
+  <li><a href="#Establishing the Build Infrastructure">Establishing the Build Infrastructure</a>
+       <ol>
+           <li><a href="#Creating a Directory for a New GC Module">Creating a Directory for a New GC
+           Module</a></li>
+           <li><a href="#Creating a Build Descriptor File">Creating a Build Descriptor File</a></li>
+           <li><a href="#Creating a C++ file with essential include files">Creating a C++ file with
+            Essential Include Files</a></li>
+           <li><a href="#Testing the Configuration">Testing the Configuration</a></li>
+       </ol>
+  </li>
+  <li><a href="#Implementing Collector that Uses the GC Interface">Implementing Collector that
+       Uses the GC Interface</a>
+       <ol>
+           <li><a href="#GC Lifecycle">GC Lifecycle</a></li>
+           <li><a href="#Object allocation">Object Allocation</a></li>
+           <li><a href="#Miscellaneous">Miscellaneous</a></li>
+           <li><a href="#Optional">Optional</a></li>
+           <li><a href="#The VM_GC Interface">The <code>VM_GC</code> Interface</a></li>
+       </ol>
+  </li>
+  <li><a href="#Implementing the GC Algorithm">Implementing the GC Algorithm</a>
+       <ol>
+           <li><a href="#Algorithm Overview">Algorithm Overview</a></li>
+           <li><a href="#Source Code Explained">Source Code Explained</a></li>
+       </ol>
+  </li>
+  <li><a href="#Running the VM with the Custom GC">Running the VM with the Custom GC</a></li>
+  </ol>
+                              <h2><a name="About This Document"
+                               id="About This Document">About
                                This Document</a></h2>
 
                             <p>This document provides instructions
@@ -288,9 +283,9 @@ limitations under the License.
 
                     
                             <h2>
-                            <a name="2. Establishing the Build Infrastructure"
-                               id="2. Establishing the Build Infrastructure">
-                            2. Establishing the Build
+                            <a name="Establishing the Build Infrastructure"
+                               id="Establishing the Build Infrastructure">
+                            Establishing the Build
                             Infrastructure</a></h2>
 
                             <p>At this stage, you create the
@@ -310,9 +305,9 @@ limitations under the License.
                             Windows/IA-32 architecture.</p>
                       
                             <h3>
-                            <a name="2.1 Creating a Directory for a New GC Module"
-                               id="2.1 Creating a Directory for a New GC Module">
-                            2.1 Creating a Directory for a New GC
+                            <a name="Creating a Directory for a New GC Module"
+                               id="Creating a Directory for a New GC Module">
+                            Creating a Directory for a New GC
                             Module</a></h3>
 
                             <p>The example below shows how to
@@ -327,14 +322,14 @@ vm$ cd gc_copying/src
                             <p>In the newly created directory you
                             will store the source code. For more
                             information, refer to the
-                            <a href="#4. Implementing the GC Algorithm">
+                            <a href="#Implementing the GC Algorithm">
                             Implementing the GC Algorithm
                             section.</a></p>
                        
                             <h3>
-                            <a name="2.2 Creating a Build Descriptor File"
-                               id="2.2 Creating a Build Descriptor File">
-                            2.2 Creating a Build Descriptor
+                            <a name="Creating a Build Descriptor File"
+                               id="Creating a Build Descriptor File">
+                            Creating a Build Descriptor
                             File</a></h3>
 
                             <p>Create the build descriptor file
@@ -386,10 +381,10 @@ vm$ cd gc_copying/src
                             to match your needs.</p>
                      
                             <h3>
-                            <a name="2.3 Creating a C++ file with essential include files"
-                               id="2.3 Creating a C++ file with essential include files">
-                            2.3 Creating a C++ file with essential
-                            include files</a></h3>
+                            <a name="Creating a C++ file with essential include files"
+                               id="Creating a C++ file with essential include files">
+                            Creating a C++ file with Essential
+                            Include Files</a></h3>
 
                             <p>Create a C++ file with essential
                             include files, namely:</p>
@@ -410,8 +405,7 @@ vm$ cd gc_copying/src
                             details of the interface.</p>
                        
                             <h3>
-                            <a name="2.4 Testing the Configuration"
-                               id="2.4 Testing the Configuration">2.4
+                            <a name="Testing the Configuration" id="Testing the Configuration">
                                Testing the Configuration</a></h3>
 
                             <p>Run the build system to test whether
@@ -437,9 +431,9 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                      
                        
                             <h2>
-                            <a name="3. Implementing Collector that Uses the GC Interface"
-                               id="3. Implementing Collector that Uses the GC Interface">
-                               3. Implementing a Collector that Uses the GC Interface</a></h2>
+                            <a name="Implementing Collector that Uses the GC Interface"
+                               id="Implementing Collector that Uses the GC Interface">
+                               Implementing a Collector that Uses the GC Interface</a></h2>
 
                             <p>This section lists the functions
                             that a garbage collector interface must
@@ -451,8 +445,8 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                             <code>gc.h</code> and
                             <code>vm_gc.h</code>.</p>
                     
-                            <h3><a name="3.1 GC Lifecycle"
-                               id="3.1 GC Lifecycle">3.1 GC
+                            <h3><a name="GC Lifecycle"
+                               id="GC Lifecycle">GC
                                Lifecycle</a></h3>
 
                             <ul>
@@ -483,9 +477,9 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                                 prepared classes</li>
                             </ul>
                       
-                            <h3><a name="3.2. Object allocation"
-                               id="3.2. Object allocation">3.2.
-                               Object allocation</a></h3>
+                            <h3><a name="Object allocation"
+                               id="Object allocation">
+                               Object Allocation</a></h3>
 
                             <ul>
                                 <li><code>gc_alloc()</code>
@@ -511,9 +505,8 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                             <a href="developers_guide.html">Developer's
                             Guide</a> for details.</p>
                        
-                            <h3><a name="3.3. Miscellaneous"
-                               id="3.3. Miscellaneous">3.3.
-                               Miscellaneous</a></h3>
+                            <h3><a name="Miscellaneous"
+                               id="Miscellaneous">Miscellaneous</a></h3>
 
                             <ul>
                                 <li>
@@ -530,9 +523,8 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                                 forces a garbage collection</li>
                             </ul>
                       
-                            <h3><a name="3.4. Optional"
-                               id="3.4. Optional">3.4.
-                               Optional</a></h3>
+                            <h3><a name="Optional"
+                               id="Optional">Optional</a></h3>
 
                             <p>The virtual machine can operate
                             without the functions listed below, but
@@ -582,9 +574,9 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                             </ul>
                         
                             <h3>
-                            <a name="3.5. The &lt;code&gt;VM_GC&lt;/code&gt; Interface"
-                               id="3.5. The lt;codegt;VM_GClt;/codegt; Interface">
-                            3.5. The <code>VM_GC</code>
+                            <a name="The VM_GC Interface"
+                               id="The VM_GC Interface">
+                            The <code>VM_GC</code>
                             Interface</a></h3>
 
                             <p>The garbage collector requires VM
@@ -649,10 +641,9 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                             algorithms only.</p>
                         
                             <h2>
-                            <a name="4. Implementing the GC Algorithm"
-                               id="4. Implementing the GC Algorithm">4.
-                               Implementing the GC
-                               Algorithm</a></h2>
+                            <a name="Implementing the GC Algorithm"
+                               id="Implementing the GC Algorithm">Implementing
+                                the GC Algorithm</a></h2>
 
                             <p>This section gives step-by-step
                             instructions on how to implement the
@@ -666,9 +657,8 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                             not implement object finalization and
                             weak references.</p>
                         
-                            <h3><a name="4.1. Algorithm Overview"
-                               id="4.1. Algorithm Overview">4.1.
-                               Algorithm Overview</a></h3>
+                            <h3><a name="Algorithm Overview"
+                               id="Algorithm Overview">Algorithm Overview</a></h3>
 
                             <p>The heap is divided into two equally
                             sized contiguous semispaces. During
@@ -755,7 +745,9 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                             Garbage Collection Techniques", Paul R.
                             Wilson.</p>
 
-                            <h3>3.2. Source code explained</h3>
+                            <h3><a name="Source Code Explained"
+                               id="Source Code Explained">Source Code Explained</a>
+                               </h3>
 
                             <p>The full source code of the
                             collector is available in
@@ -1542,9 +1534,9 @@ build$ build.bat -DCOMPONENTS=vm.gc_copying
                             </div>
                         
                             <h2>
-                            <a name="5. Running the VM with the Custom GC"
-                               id="5. Running the VM with the Custom GC">
-                            5. Running the VM with the Custom
+                            <a name="Running the VM with the Custom GC"
+                               id="Running the VM with the Custom GC">
+                            Running the VM with the Custom
                             GC</a></h2>
 
                             <p>This section describes how to run

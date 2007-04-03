@@ -224,82 +224,55 @@ limitations under the License.
     <h1><a id="top"
        name="top"></a>Jitrino Pipeline Management Framework</h1>
 
-    <p class="TOCHeading"><a href="#Revision_History">Revision
-    History</a></p>
-
-    <p class="TOCHeading"><a href="#About_This_Document">1. About
-    This Document</a></p>
-
-    <p class="TOC"><a href="#Purpose">1.1 Purpose</a></p>
-
-    <p class="TOC"><a href="#Intended_Audience">1.2 Intended
-    Audience</a></p>
-
-    <p class="TOC"><a href="#Documentation_Conventions">1.3
-    Documentation Conventions</a></p>
-
-    <p class="TOCHeading"><a href="#Overview">2. Overview</a></p>
-
-    <p class="TOC"><a href="#Key_Elements">2.1 Key Elements</a></p>
-
-    <p class="TOC"><a href="#Implementation_Notes">2.2
-    Implementation Notes</a></p>
-
-    <p class="TOC"><a href="#Pipeline_Life-cycle">2.3 Pipeline
-    Life-cycle</a></p>
-
-    <blockquote>
-        <p class="TOC"><a href="#Initialization">2.3.1
-        Initialization</a></p>
-
-        <p class="TOC"><a href="#Method_Compilation">2.3.2 Method
-        Compilation</a></p>
-
-        <p class="TOC"><a href="#De-initialization">2.3.3
-        De-initialization</a></p>
-    </blockquote>
-
-    <p class="TOCHeading"><a href="#Command-line_Interface">3.
-    Command-line Interface</a></p>
-
-    <p class="TOCHeading"><a href="#PMF_Commands">4. PMF
-    Commands</a></p>
-
-    <p class="TOC"><a href="#Path_Definition">4.1 Path
-    Definition</a></p>
-
-    <p class="TOC"><a href="#Filter_Definition">4.2 Filter
-    Definition</a></p>
-
-    <p class="TOC"><a href="#Argument_Definition">4.3 Argument
-    Definition</a></p>
-
-    <p class="TOCHeading"><a href="#Logging_System">5. Logging
-    System</a></p>
-
-    <p class="TOC"><a href="#Defining_Streams">5.1 Defining
-    Streams</a></p>
-
-    <p class="TOC"><a href="#Assigning_a_Stream_to_a_File">5.2
-    Assigning a Stream to a File</a></p>
-
-    <blockquote>
-        <p class="TOC"><a href="#Using_Filename_Masks">5.2.1 Using
-        Filename Masks</a></p>
-
-        <p class="TOC"><a href="#Filename_Review">5.2.2 Filename
-        Review</a></p>
-    </blockquote>
-
-    <p class="TOC"><a href="#Using_Streams">5.3 Using
-    Streams</a></p>
-
-    <p class="TOCHeading"><a href="#Appendix">6. Appendix</a></p>
-
-    <p class="TOC">
-    <a href="#General_Command-line_Syntax_Specification">6.1
-    General Command-line Syntax Specification</a></p>
-
+    <ol id="TOC">
+    <li><a href="#Revision_History">Revision History</a></li>
+    <li><a href="#About_This_Document">About This Document</a>
+        <ol>
+        <li><a href="#Purpose">Purpose</a></li>
+        <li><a href="#Intended_Audience">Intended Audience</a></li>
+        <li><a href="#Documentation_Conventions">Documentation Conventions</a></li>
+        </ol>
+    </li>
+    <li><a href="#Overview">Overview</a>
+        <ol>
+        <li><a href="#Key_Elements">Key Elements</a></li>
+        <li><a href="#Implementation_Notes">Implementation Notes</a></li>
+        <li><a href="#Pipeline_Life-cycle">Pipeline Life-cycle</a>
+            <ol>
+            <li><a href="#Initialization">Initialization</a></li>
+            <li><a href="#Method_Compilation">Method Compilation</a></li>
+            <li><a href="#De-initialization">De-initialization</a></li>
+            </ol>
+        </li>
+        </ol>
+    </li>
+    <li><a href="#Command-line_Interface">Command-line Interface</a></li>
+    <li><a href="#PMF_Commands">PMF Commands</a>
+        <ol>
+        <li><a href="#Path_Definition">Path Definition</a></li>
+        <li><a href="#Filter_Definition">Filter Definition</a></li>
+        <li><a href="#Argument_Definition">Argument Definition</a></li>
+        </ol>
+    </li>
+    <li><a href="#Logging_System">Logging System</a>
+        <ol>
+        <li><a href="#Defining_Streams">Defining Streams</a></li>
+        <li><a href="#Assigning_a_Stream_to_a_File">Assigning a Stream to a File</a>
+            <ol>
+            <li><a href="#Using_Filename_Masks">Using Filename Masks</a></li>
+            <li><a href="#Filename_Review">Filename Review</a></li>
+            </ol>
+        </li>
+        <li><a href="#Using_Streams">Using Streams</a></li>
+        </ol>
+    </li>
+    <li><a href="#Appendix">Appendix</a>
+        <ol>
+        <li><a href="#General_Command-line_Syntax_Specification">
+    General Command-line Syntax Specification</a></li>
+        </ol>
+    </li>
+  </ol>
     <h1><a name="Revision_History"
        id="Revision_History"></a>Revision History</h1>
 
@@ -325,10 +298,10 @@ limitations under the License.
     </table>
 
     <h1><a name="About_This_Document"
-       id="About_This_Document"></a>1. About This Document</h1>
+       id="About_This_Document"></a>About This Document</h1>
 
     <h2><a name="Purpose"
-       id="Purpose"></a>1.1 Purpose</h2>
+       id="Purpose"></a>Purpose</h2>
 
     <p>The document is a comprehensive description of the
     <i>pipeline management framework</i> that provides complete
@@ -344,7 +317,7 @@ limitations under the License.
     the component description.</p>
 
     <h2><a id="Intended_Audience"
-       name="Intended_Audience"></a>1.2 Intended Audience</h2>
+       name="Intended_Audience"></a>Intended Audience</h2>
 
     <p>The target audience for the document includes a wide
     community of DRLVM developers interested in understanding
@@ -354,7 +327,7 @@ limitations under the License.
     compilation.</p>
 
     <h2><a id="Documentation_Conventions"
-       name="Documentation_Conventions"></a>1.3 Documentation
+       name="Documentation_Conventions"></a>Documentation
        Conventions</h2>
 
     <p>This document uses the <a href="../../documentation/conventions.html">unified
@@ -363,7 +336,7 @@ limitations under the License.
     <p class="backtotop"><a href="#top">Back to Top</a></p>
 
     <h1><a id="Overview"
-       name="Overview"></a>2. Overview</h1>
+       name="Overview"></a>Overview</h1>
 
     <p>The document contains the detailed description of the
     Jitrino pipeline management framework (PMF). For a high-level
@@ -371,7 +344,7 @@ limitations under the License.
     document</a>.</p>
 
     <h2><a id="Key_Elements"
-       name="Key_Elements"></a>2.1 Key Elements</h2>
+       name="Key_Elements"></a>Key Elements</h2>
 
     <p>This section contains a detailed description of the PMF key
     elements.</p>
@@ -510,7 +483,7 @@ limitations under the License.
 	  <p class="backtotop"><a href="#top">Back to Top</a></p>
 
     <h2><a id="Implementation_Notes"
-       name="Implementation_Notes"></a>2.2 Implementation
+       name="Implementation_Notes"></a>Implementation
        Notes</h2>
 
     <p>When using the PMF implementation, please note the
@@ -536,10 +509,10 @@ limitations under the License.
     <p class="backtotop"><a href="#top">Back to Top</a></p>
 
     <h2><a id="Pipeline_Life-Cycle"
-       name="Pipeline_Life-cycle"></a>2.3 Pipeline Life-cycle</h2>
+       name="Pipeline_Life-cycle"></a>Pipeline Life-cycle</h2>
 
     <h3><a id="Initialization"
-       name="Initialization"></a>2.3.1 Initialization</h3>
+       name="Initialization"></a>Initialization</h3>
 
     <p>The common pipeline is created at the JIT initialization.
     All other pipelines are created just before their first use.
@@ -567,7 +540,7 @@ limitations under the License.
     prepared during the initialization phase.</p>
 
     <h3><a id="Method_Compilation"
-       name="Method_Compilation"></a>2.3.2 Method Compilation</h3>
+       name="Method_Compilation"></a>Method Compilation</h3>
 
     <p>At this stage, the compiler selects the pipeline for the
     given method using the filter expression in the method filter
@@ -583,7 +556,7 @@ limitations under the License.
     <code>run()</code> method in each object, and destroys it.</p>
 
     <h3><a id="De-initialization"
-       name="De-initialization"></a>2.3.3 De-initialization</h3>
+       name="De-initialization"></a>De-initialization</h3>
 
     <p>At the JIT de-initialization phase all created pipelines are
     destroyed. The <code>Action::deinit()</code> method is called
@@ -592,7 +565,7 @@ limitations under the License.
     <p class="backtotop"><a href="#top">Back to Top</a></p>
 
     <h1><a id="Command-line_Interface"
-       name="Command-line_Interface"></a>3. Command-line
+       name="Command-line_Interface"></a>Command-line
        Interface</h1>
 
     <p>The <i>command-line interface</i> is based on system
@@ -699,7 +672,7 @@ limitations under the License.
     <p class="backtotop"><a href="#top">Back to Top</a></p>
 
     <h1><a id="PMF_Commands"
-       name="PMF_Commands"></a>4. PMF Commands</h1>
+       name="PMF_Commands"></a>PMF Commands</h1>
 
     <p>To control the JIT compilation process, PMF uses
     <a href="#Path_Definition">path definition</a>,
@@ -708,7 +681,7 @@ limitations under the License.
     commands.</p>
 
     <h2><a id="Path_Definition"
-       name="Path_Definition"></a>4.1 Path Definition</h2>
+       name="Path_Definition"></a>Path Definition</h2>
 
     <p>A pipeline can be described as an ordered set of terminal
     leafs of a path tree. The tree is a purely abstract concept
@@ -796,7 +769,7 @@ limitations under the License.
     <p class="backtotop"><a href="#top">Back to Top</a></p>
 
     <h2><a id="Filter_Definition"
-       name="Filter_Definition"></a>4.2 Filter Definition</h2>
+       name="Filter_Definition"></a>Filter Definition</h2>
 
     <p>To define a filter, use the following command format:</p>
     <pre>
@@ -890,7 +863,7 @@ limitations under the License.
     <p class="backtotop"><a href="#top">Back to Top</a></p>
 
     <h2><a id="Argument_Definition"
-       name="Argument_Definition"></a>4.3 Argument Definition</h2>
+       name="Argument_Definition"></a>Argument Definition</h2>
 
     <p>To control the actions behavior, PMF supports an action
     parameters passing convention. The parameter definition command
@@ -1096,14 +1069,14 @@ limitations under the License.
     <p class="backtotop"><a href="#top">Back to Top</a></p>
 
     <h1><a id="Logging_System"
-       name="Logging_System"></a>5. Logging System</h1>
+       name="Logging_System"></a>Logging System</h1>
 
     <p>The <i>logging system</i> supports diagnostic messages from
     pipeline actions. The VM property mechanism fully controls the
     system.</p>
 
     <h2><a 
-       name="Defining_Streams"></a>5.1 Defining Streams</h2>
+       name="Defining_Streams"></a>Defining Streams</h2>
 
     <p>A set of <i>log streams</i> is used for logging in Jitrino.
     Each log stream has a name. The name of the log stream is not
@@ -1227,7 +1200,7 @@ limitations under the License.
     <p class="backtotop"><a href="#top">Back to Top</a></p>
 
     <h2><a id="Assigning_a_Stream_to_a_File"
-       name="Assigning_a_Stream_to_a _File"></a>5.2 Assigning a
+       name="Assigning_a_Stream_to_a _File"></a>Assigning a
        Stream to a File</h2>
 
     <p>To assign a stream to a file, use the following command
@@ -1305,7 +1278,7 @@ limitations under the License.
     contains the <code>%thread%</code> macro, this file is
     thread-specific and access to it is not synchronized.</p>
 
-    <h3><a name="Using_Filename_Masks"></a>5.2.1 Using Filename
+    <h3><a name="Using_Filename_Masks"></a>Using Filename
        Masks</h3>
 
     <p>For all streams, the following default filename mask is
@@ -1387,7 +1360,7 @@ log/%jit%/%class%/%method%/%log%.log
     is the name of the action and &lt;<b>action_nb</b>&gt; is the
     sequential number of the action in the current pipeline.</p>
 
-    <h3><a name="Filename_Review"></a>5.2.2 Filename Review</h3>
+    <h3><a name="Filename_Review"></a>Filename Review</h3>
 
     <p>Names of all open stream files are reviewed at the beginning
     of method compilation, because the stream file name can depend
@@ -1415,7 +1388,7 @@ log/%jit%/%class%/%method%/%log%.log
 
     <p class="backtotop"><a href="#top">Back to Top</a></p>
 
-    <h2><a name="Using_Streams"></a>5.3 Using Streams</h2>
+    <h2><a name="Using_Streams"></a>Using Streams</h2>
 
     <p>A typical usage pattern for Jitrino action is the
     following:</p>
@@ -1441,10 +1414,10 @@ log/%jit%/%class%/%method%/%log%.log
     <p class="backtotop"><a href="#top">Back to Top</a></p>
 
     <h1><a id="Appendix"
-       name="Appendix"></a>6. Appendix</h1>
+       name="Appendix"></a>Appendix</h1>
 
     <h2><a id="General_Command-line_Syntax_Specification"
-       name="General_Command-line_Syntax_Specification"></a>6.1
+       name="General_Command-line_Syntax_Specification"></a>
        General Command-line Syntax Specification</h2>
     <pre>
 &lt;cmd&gt;                     :     &lt;prefix&gt; &lt;filter def&gt;

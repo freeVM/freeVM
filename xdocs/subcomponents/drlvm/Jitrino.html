@@ -29,126 +29,84 @@
       <h1>
          <a id="top" name="top"></a>DRLVM Jitrino Just-in-time Compiler
       </h1>
-      <p class="TOCHeading">
-         <a href="#Revision_History">Revision History</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#About_this_document">1. About this Document</a>
-      </p>
-      <p class="TOC">
-         <a href="#Purpose">1.1 Purpose</a>
-      </p>
-      <p class="TOC">
-         <a href="#Intended_Audience">1.2 Intended Audience</a>
-      </p>
-      <p class="TOC">
-         <a href="#Using_this_document">1.3 Using This Document</a>
-      </p>
-      <p class="TOC">
-         <a href="#Conventions_and_Symbols">1.4 Conventions and Symbols</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#Overview">2. Overview</a>
-      </p>
-      <p class="TOC">
-         <a href="#Key_features">2.1 Key Features</a>
-      </p>
-      <p class="TOC">
-         <a href="#Compilation_Overview">2.2 About Compilation</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#OPT">3. Jitrino.OPT</a>
-      </p>
-      <p class="TOC">
-         <a href="#OPT_Architecture">3.1 Architecture</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#PMF">3.1.1 Pipeline Management Framework</a>
-         </p>
-         <p class="TOC">
-            <a href="#OPT_Components">3.1.2 Logical Components</a>
-         </p>
-         <p class="TOC">
-            <a href="#IR">3.1.3 Intermediate Representations</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#OPT_Processes">3.2 Processes</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Bytecode_Translation">3.2.1 Bytecode Translation</a>
-         </p>
-         <p class="TOC">
-            <a href="#HIR_Optimizations">3.2.2 High-level Optimizations</a>
-         </p>
-         <p class="TOC">
-            <a href="#CodeSelection">3.2.3 Code Selection</a>
-         </p>
-         <p class="TOC">
-            <a href="#Code_Generation">3.2.4 Code generation</a>
-         </p>
-      </blockquote>
-      <p class="TOCHeading">
-         <a href="#JET">4. Jitrino.JET</a>
-      </p>
-      <p class="TOC">
-         <a href="#JET_Architecture">4.1 Architecture</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#JET_Runtime">4.1.1 Run-time Support</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#JET_Processes">4.2 Processes</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Baseline_Compilation">4.2.1 Baseline Compilation</a>
-         </p>
-      </blockquote>
-      <p class="TOCHeading">
-         <a href="#JIT_utilities">5. Utilities</a>
-      </p>
-      <p class="TOC">
-         <a href="#Memory_Manager">5.1 Memory Manager</a>
-      </p>
-      <p class="TOC">
-         <a href="#Timers">5.2 Counters and Timers</a>
-      </p>
-      <p class="TOC">
-         <a href="#JIT_logging">5.3 Logging</a>
-      </p>
-      <p class="TOC">
-         <a href="#CFG">5.4 Control Flow Graph</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#CFGStructures">5.4.1 CFG structures</a>
-         </p>
-         <p class="TOC">
-            <a href="#CFGAlgorithms">5.4.2 Graph algorithms</a>
-         </p>
-         <p class="TOC">
-            <a href="#DominatorTree">5.4.3 Dominator Tree</a>
-         </p>
-         <p class="TOC">
-            <a href="#LoopTree">5.4.4 Loop Tree</a>
-         </p>
-      </blockquote>
-      <p class="TOCHeading">
-         <a href="#Interfaces">6. Public Interfaces</a>
-      </p>
-      <p class="TOC">
-         <a href="#JIT_VM">5.1 JIT_VM Interface</a>
-      </p>
-      <p class="TOC">
-         <a href="#JIT_EM">5.2 JIT_EM Interface</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#References">6. References</a>
+      <ol id="TOC">
+         <li><a href="#Revision_History">Revision History</a></li>
+         <li><a href="#About_this_document">About This Document</a>
+             <ol>
+             <li><a href="#Purpose">Purpose</a</li>
+             <li><a href="#Intended_Audience">Intended Audience</a></li>
+             <li><a href="#Using_this_document">Using This Document</a></li>
+             <li><a href="#Conventions_and_Symbols">Conventions and Symbols</a></li>
+             </ol>
+         </li>
+         <li><a href="#Overview">Overview</a>
+             <ol>
+             <li><a href="#Key_features">Key Features</a></li>
+             <li><a href="#Compilation_Overview">About Compilation</a></li>
+             </ol>
+         </li>
+         <li><a href="#OPT">Jitrino.OPT</a>
+             <ol>
+             <li><a href="#OPT_Architecture">Architecture</a>
+                 <ol>
+                 <li><a href="#PMF">Pipeline Management Framework</a></li>
+                 <li><a href="#OPT_Components">Logical Components</a></li>
+                 <li><a href="#IR">Intermediate Representations</a></li>
+                 </ol>
+             </li>
+             <li><a href="#OPT_Processes">Processes</a>
+                 <ol>
+                 <li><a href="#Bytecode_Translation">Bytecode Translation</a></li>
+                 <li><a href="#HIR_Optimizations">High-level Optimizations</a></li>
+                 <li><a href="#CodeSelection">Code Selection</a></li>
+                 <li><a href="#Code_Generation">Code generation</a></li>
+                 </ol>
+             </li>
+             </ol>
+        </li>
+        <li><a href="#JET">Jitrino.JET</a>
+            <ol>
+            <li><a href="#JET_Architecture">Architecture</a>
+                <ol>
+                <li><a href="#JET_Runtime">Run-time Support</a></li>
+                </ol>
+            </li>
+            <li><a href="#JET_Processes">Processes</a>
+                <ol>
+                <li><a href="#Baseline_Compilation">Baseline Compilation</a></li>
+                </ol>
+            </li>
+            </ol>
+       </li>
+       <li><a href="#JIT_utilities">Utilities</a>
+           <ol>
+           <li><a href="#Memory_Manager">Memory Manager</a></li>
+           <li><a href="#Timers">Counters and Timers</a></li>
+           <li><a href="#JIT_logging">Logging</a>
+               <ol>
+               <li><a href="#CFG Visualization">CFG Visualization</a></li>
+               </ol>
+           </li>
+           <li><a href="#CFG">Control Flow Graph</a>
+               <ol>
+               <li><a href="#CFGStructures">CFG structures</a></li>
+               <li><a href="#CFGAlgorithms">Graph algorithms</a></li>
+               <li><a href="#DominatorTree">Dominator Tree</a></li>
+               <li><a href="#LoopTree">Loop Tree</a></li>
+               </ol>
+          </li>
+          </ol>
+     </li>
+     <li><a href="#Interfaces">Public Interfaces</a>
+          <ol>
+          <li><a href="#JIT_VM">JIT_VM Interface</a></li>
+          <li><a href="#JIT_EM">JIT_EM Interface</a></li>
+          </ol>
+     </li>
+     <li><a href="#References">References</a></li>
+     </ol>
+
+         
       </p>
       <h1>
          <a id="Revision_History" name="Revision_History"></a>Revision History
@@ -178,11 +136,11 @@
          </tr>
       </table>
       <h1>
-         <a id="About_this_document" name="About_this_document"></a>1. About
-         this document
+         <a id="About_this_document" name="About_this_document"></a>About
+         This document
       </h1>
       <h2>
-         <a id="Purpose" name="Purpose"></a>1.1 Purpose
+         <a id="Purpose" name="Purpose"></a>Purpose
       </h2>
       <p>
          This document describes the internal structure of the Jitrino
@@ -197,7 +155,7 @@
          Guide</a> supplied with the VM source code package.
       </p>
       <h2>
-         <a id="Intended_Audience" name="Intended_Audience"></a>1.2 Intended
+         <a id="Intended_Audience" name="Intended_Audience"></a>Intended
          Audience
       </h2>
       <p>
@@ -209,7 +167,7 @@
          compilation and optimization algorithms.
       </p>
       <h2>
-         <a id="Using_this_document" name="Using_this_document"></a>1.3 Using
+         <a id="Using_this_document" name="Using_this_document"></a>Using
          This Document
       </h2>
       <p>
@@ -264,7 +222,7 @@
          </li>
       </ul>
       <h2>
-         <a id="Conventions_and_Symbols" name="Conventions_and_Symbols"></a>1.4
+         <a id="Conventions_and_Symbols" name="Conventions_and_Symbols"></a>
          Conventions and Symbols
       </h2>
       <p>
@@ -275,7 +233,7 @@
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="Overview" name="Overview"></a>2. Overview
+         <a id="Overview" name="Overview"></a>Overview
       </h1>
       <p>
          Jitrino is the code name for the just-in-time (JIT) compiler [<a
@@ -313,7 +271,7 @@
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="Key_features" name="Key_features"></a>2.1 Key features
+         <a id="Key_features" name="Key_features"></a>Key Features
       </h2>
       <p>
          Key features of the JIT compiler include:
@@ -358,7 +316,7 @@
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="Compilation_Overview" name="Compilation_Overview"></a>2.2 About
+         <a id="Compilation_Overview" name="Compilation_Overview"></a>About
          the Compilation Process
       </h2>
       <p>
@@ -401,14 +359,11 @@
          focus on the following:
       </p>
       <ol>
-         <li>
-            <p>
-               The run-time environment bytecode is translated into the
+         <li>The run-time environment bytecode is translated into the
                high-level intermediate representation (HIR) by the Java<a
                href="#*">*</a> bytecode translator and then optimized by the
                high-level optimizer. HIR and the optimizer make up the
                language- and platform-independent part of the Jitrino.OPT.
-            </p>
             <p class="note">
                Note
             </p>
@@ -440,17 +395,17 @@
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="OPT" name="OPT"></a>3. Jitrino.OPT
+         <a id="OPT" name="OPT"></a>Jitrino.OPT
       </h1>
       <h2>
-         <a id="OPT_Architecture" name="OPT_Architecture"></a>3.1 Architecture
+         <a id="OPT_Architecture" name="OPT_Architecture"></a>Architecture
       </h2>
       <p>
          This part of the document describes the internals of the optimizing
          compiler Jitrino.OPT.
       </p>
       <h3>
-         <a id="PMF" name="PMF"></a>3.1.1 Pipeline Management Framework
+         <a id="PMF" name="PMF"></a>Pipeline Management Framework
       </h3>
       <p>
          The pipeline management framework (PMF) defines how the compilation
@@ -487,7 +442,7 @@
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a id="OPT_Components" name="OPT_Components"></a>3.1.2 Logical
+         <a id="OPT_Components" name="OPT_Components"></a>Logical
          Components
       </h3>
       <p>
@@ -514,7 +469,7 @@
                address.
             </p>
             <p>
-               For details on the conversion process, see section 3.2.1 <a
+               For details on the conversion process, see section <a
                href="#Bytecode_Translation">Bytecode Translation</a>.
             </p>
          </dd>
@@ -529,7 +484,7 @@
                href="#*">*</a> and CLI programs is used. The optimizer performs
                a series of transformation passes to optimize the incoming
                high-level intermediate representation. For a description of
-               applied transformations, see section 3.2.2 <a
+               applied transformations, see section <a
                href="#HIR_Optimizations">High-level Optimizations</a>.
             </p>
             <p>
@@ -544,7 +499,7 @@
                whole method, basic blocks, and instructions. During code
                selection, the selector uses the callback interfaces to
                translate these entities from HIR to LIR. See section <a
-               href="#CodeSelection">3.2.3 Code Selection</a> for details on
+               href="#CodeSelection">Code Selection</a> for details on
                the process.
             </p>
          </dd>
@@ -558,7 +513,7 @@
                accepts the HIR information via the <a href="#CodeSelector">code
                selector</a> callback interfaces. For details on how the
                resulting code is produced, see section <a
-               href="#Code_Generation">3.2.4 Code Generation</a>.
+               href="#Code_Generation">Code Generation</a>.
             </p>
             <p>
                The code generator also performs several auxiliary operations,
@@ -586,7 +541,7 @@
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a id="IR" name="IR"></a>3.1.3 Internal Representations
+         <a id="IR" name="IR"></a>Internal Representations
       </h3>
       <p>
          An intermediate representation (IR) is an internal compiler
@@ -650,7 +605,7 @@ public static int max(int, int);
       </p>
       <p>
          Both HIR and LIR use a common Control Flow Graph structures and its
-         algorithms; see section 5.4 <a href="#CFG">Control Flow Graph</a> for
+         algorithms; see section <a href="#CFG">Control Flow Graph</a> for
          the details. This section describes the two intermediate
          representations currently used in Jitrino in greater detail.
       </p>
@@ -701,14 +656,14 @@ public static int max(int, int);
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="OPT_Processes" name="OPT_Processes"></a>3.2 Processes
+         <a id="OPT_Processes" name="OPT_Processes"></a>Processes
       </h2>
       <p>
          This part of the document describes the key processes that go inside
          the Jitrino optimizing compiler.
       </p>
       <h3>
-         <a id="Bytecode_Translation" name="Bytecode_Translation"></a>3.2.1
+         <a id="Bytecode_Translation" name="Bytecode_Translation"></a>
          Bytecode Translation
       </h3>
       <p>
@@ -733,7 +688,7 @@ public static int max(int, int);
          </li>
       </ol>
       <h3>
-         <a id="HIR_Optimizations" name="HIR_Optimizations"></a>3.2.2
+         <a id="HIR_Optimizations" name="HIR_Optimizations"></a>
          High-level Optimizations
       </h3>
       <p>
@@ -1125,7 +1080,7 @@ find_inline_candidates(method_HIR) {
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a name="CodeSelection" id="CodeSelection"></a>3.2.3 Code Selection
+         <a name="CodeSelection" id="CodeSelection"></a>Code Selection
       </h3>
       <p>
          After the optimization passes, HIR is translated to LIR. This code
@@ -1229,8 +1184,8 @@ find_inline_candidates(method_HIR) {
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a id="Code_Generation" name="Code_Generation"></a>3.2.4 Code
-         generation
+         <a id="Code_Generation" name="Code_Generation"></a>Code
+         Generation
       </h3>
       <p>
          The code generation process is specific to the pluggable code
@@ -1486,10 +1441,10 @@ find_inline_candidates(method_HIR) {
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="JET" name="JET"></a>4. JITRINO.JET
+         <a id="JET" name="JET"></a>JITRINO.JET
       </h1>
       <h2>
-         <a id="JET_Architecture" name="JET_Architecture"></a>4.1 Architecture
+         <a id="JET_Architecture" name="JET_Architecture"></a>Architecture
       </h2>
       <p>
          The Jitrino.JET baseline compiler is the Jitrino subcomponent used for
@@ -1499,7 +1454,7 @@ find_inline_candidates(method_HIR) {
          registers.
       </p>
       <h3>
-         <a id="JET_Runtime" name="JET_Runtime"></a>4.1.1 Run-time Support
+         <a id="JET_Runtime" name="JET_Runtime"></a>Run-time Support
       </h3>
       <p>
          During the code generation phase, the state of the method's operand
@@ -1540,10 +1495,10 @@ find_inline_candidates(method_HIR) {
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="JET_Processes" name="JET_Processes"></a>4.2 Processes
+         <a id="JET_Processes" name="JET_Processes"></a>Processes
       </h2>
       <h3>
-         <a id="Baseline_Compilation" name="Baseline_Compilation"></a>4.2.1
+         <a id="Baseline_Compilation" name="Baseline_Compilation"></a>
          Baseline Compilation
       </h3>
       <p>
@@ -1557,8 +1512,8 @@ find_inline_candidates(method_HIR) {
          and generates native code during the second.
       </p>
       <p style="text-align:center">
-		<img src="images/bytecode_to_native.gif"
-		alt="Example of two-pass compilation process" />
+        <img src="images/bytecode_to_native.gif"
+        alt="Example of two-pass compilation process" />
       </p>
       <p class="special">
          Figure 4. Baseline Compilation Path
@@ -1619,8 +1574,8 @@ find_inline_candidates(method_HIR) {
                fall-through from BB2.
             </p>
             <p style="text-align: center">
-			<img src="images/reference_count.gif" 
-			alt="Example of reference counters reached from different basic blocks." />
+            <img src="images/reference_count.gif" 
+            alt="Example of reference counters reached from different basic blocks." />
             </p>
             <p class="special">
                Figure 5. Reference Count for Basic Blocks
@@ -1665,7 +1620,7 @@ find_inline_candidates(method_HIR) {
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="JIT_utilities" name="JIT_utilities"></a>5. Utilities
+         <a id="JIT_utilities" name="JIT_utilities"></a>Utilities
       </h1>
       <p>
          The JIT compiler relies on the following utilities:
@@ -1708,7 +1663,7 @@ find_inline_candidates(method_HIR) {
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="Memory_Manager" name="Memory_Manager"></a>5.1 Memory Manager
+         <a id="Memory_Manager" name="Memory_Manager"></a>Memory Manager
       </h2>
       <p>
          In the Jitrino.OPT compiler, memory allocation is done using custom
@@ -1828,7 +1783,7 @@ void optABC() {
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="Timers" name="Timers"></a>5.2 Counters and Timers
+         <a id="Timers" name="Timers"></a>Counters and Timers
       </h2>
       <p>
          Jitrino maintains <em>counters</em> to collect statistics. A counter
@@ -1870,7 +1825,7 @@ void optABC() {
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="JIT_logging" name="JIT_logging"></a>5.3 Logging System
+         <a id="JIT_logging" name="JIT_logging"></a>Logging System
       </h2>
       <p>
          The Jitrino logging system does the following:
@@ -1992,8 +1947,7 @@ void optABC() {
 <pre class="exampletext">
 -XDjit.arg.log=ct,irdump
 </pre>
-      <h3>
-         5.3.1 CFG Visualization
+      <h3><a name="CFG Visualization" id="CFG Visualization" ></a>CFG Visualization
       </h3>
       <p>
          Debugging the JIT requires information on the compilation inter-stage
@@ -2002,7 +1956,7 @@ void optABC() {
          Jitrino compiler enables generation of <em>dot</em> files representing
          the control flow graph at both IR levels. The text .dot files can be
          converted into descriptive pictures, which represent the CFG
-         graphically; see <a href="#IR">section 3.1.3 Internal
+         graphically; see <a href="#IR">section Internal
          Representations</a> for an example of graphically visualized code. A
          variety of graph visualization tools are available for dot files
          conversion, such as Graphviz <a href="#Graphviz_ref">[6</a>].
@@ -2021,7 +1975,7 @@ void optABC() {
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="CFG" name="CFG"></a>5.4 Control Flow Graph
+         <a id="CFG" name="CFG"></a>Control Flow Graph
       </h2>
       <p>
          The high-level and low-level intermediate representations use a
@@ -2080,7 +2034,7 @@ void optABC() {
          branches.
       </p>
       <h3>
-         <a name="CFGStructures" id="CFGStructures"></a>5.4.1 CFG structures
+         <a name="CFGStructures" id="CFGStructures"></a>CFG Structures
       </h3>
       <p>
          The CFG structures are nodes, edges and instructions represented as
@@ -2209,7 +2163,7 @@ void optABC() {
          </dd>
       </dl>
       <h3>
-         <a id="CFGAlgorithms" name="CFGAlgorithms"></a>5.4.2 Graph algorithms
+         <a id="CFGAlgorithms" name="CFGAlgorithms"></a>Graph Algorithms
       </h3>
       <p>
          The current CFG implementation provides the following graph
@@ -2242,7 +2196,7 @@ void optABC() {
          <code>ControlFlowGraph.h</code> file using Doxygen.
       </p>
       <h3>
-         <a id="DominatorTree" name="DominatorTree"></a>5.4.3 Dominator Tree
+         <a id="DominatorTree" name="DominatorTree"></a>Dominator Tree
       </h3>
       <p>
          A dominator tree represents (post)dominance information computed for a
@@ -2266,7 +2220,7 @@ void optABC() {
          longer reflect the current state of the control flow graph.
       </p>
       <h3>
-         <a id="LoopTree" name="LoopTree"></a> 5.4.4 Loop Tree
+         <a id="LoopTree" name="LoopTree"></a>Loop Tree
       </h3>
       <p>
          A loop tree contains information about loops in control flow graph. It
@@ -2294,7 +2248,7 @@ void optABC() {
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="Interfaces" name="Interfaces"></a>6. Public Interfaces
+         <a id="Interfaces" name="Interfaces"></a>Public Interfaces
       </h1>
       <p>
          This section describes the interfaces that the JIT compiler exports to
@@ -2304,7 +2258,7 @@ void optABC() {
          JIT to enumerate live references.
       </p>
       <h2>
-         <a id="JIT_VM" name="JIT_VM"></a>6.1 JIT_VM Interface
+         <a id="JIT_VM" name="JIT_VM"></a>JIT_VM Interface
       </h2>
       <p>
          This interface comprises functions that the JIT compiler exports for
@@ -2395,7 +2349,7 @@ void optABC() {
                </li>
             </ul>
             <p>
-               For more information about the stack, see section <em>3.4 Stack
+               For more information about the stack, see section <em>Stack
                Support</em> in the <a href="developers_guide.html">Developer's
                Guide</a>.
             </p>
@@ -2453,7 +2407,7 @@ void optABC() {
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a name="JIT_EM" id="JIT_EM"></a>6.2 JIT_EM Interface
+         <a name="JIT_EM" id="JIT_EM"></a>JIT_EM Interface
       </h2>
       <p>
          The JIT compiler exports this interface to support the execution
@@ -2482,7 +2436,7 @@ void optABC() {
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="References" name="References"></a>7. References
+         <a id="References" name="References"></a>References
       </h1>
       <p>
          This section lists the external references to various sources used in
@@ -2530,11 +2484,7 @@ void optABC() {
       <p class="backtotop">
          <a href="#Top">Back to Top</a>
       </p>
-      <p class="backtotop">
-          
-      </p>
-      <p>
-         (C) Copyright 2005-2006 Intel Corporation
+      <p>(C) Copyright 2005-2006 Intel Corporation
       </p>
       <p>
          <a id="*" name="*">*</a> Other brands and names are the property of
@@ -2542,5 +2492,6 @@ void optABC() {
       </p>
    </body>
 </html>
+
 
 

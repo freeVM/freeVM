@@ -192,11 +192,11 @@ limitations under the License.
                                                                 <div>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -223,225 +223,117 @@ limitations under the License.
          <a id="Top" name="Top"></a>Dynamic Runtime Layer Virtual Machine
          Developer's Guide
       </h1>
-      <p class="TOCHeading">
-         <a href="#Revision_History">Revision History</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#About_this_document">1. About this Document</a>
-      </p>
-      <p class="TOC">
-         <a href="#Purpose">1.1 Purpose</a>
-      </p>
-      <p class="TOC">
-         <a href="#Intended_Audience">1.2 Intended Audience</a>
-      </p>
-      <p class="TOC">
-         <a href="#Using_this_document">1.3 Using This Document</a>
-      </p>
-      <p class="TOC">
-         <a href="#Conventions_and_Symbols">1.4 Conventions and Symbols</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#VM_Architecture">2. VM Architecture</a>
-      </p>
-      <p class="TOC">
-         <a href="#Overview">2.1 Overview</a>
-      </p>
-      <p class="TOC">
-         <a href="#About_Components">2.2 About Components</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#CompInterfInst">2.2.1 Components, Interfaces, and
-            Instances</a>
-         </p>
-         <p class="TOC">
-            <a href="#Linking_Models">2.2.2 Linking Models</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Component_Manager">2.3 Component Manager</a>
-      </p>
-      <p class="TOC">
-         <a href="#Package_Layout">2.4 Package Layout</a>
-      </p>
-      <p class="TOC">
-         <a href="#Data_Structures">2.5 Data Structures</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Object_Layout">2.5.1 Object Layout</a>
-         </p>
-         <p class="TOC">
-            <a href="#Compressed_References">2.5.2 Compressed References</a>
-         </p>
-      </blockquote>
-      <p class="TOCHeading">
-         <a href="#Components">3. Components</a>
-      </p>
-      <p class="TOC">
-         <a href="#Major_Components">3.1 Component Structure</a>
-      </p>
-      <p class="TOC">
-         <a href="#VM_Core">3.2 VM Core</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Kernel_Classes">3.2.1 Kernel Classes</a>
-         </p>
-         <p class="TOC">
-            <a href="#Native_Code_Support">3.2.2 Native Code Support</a>
-         </p>
-         <p class="TOC">
-            <a href="#JVMTI_Support">3.2.3 JVMTI Support</a>
-         </p>
-         <p class="TOC">
-            <a href="#Class_Support">3.2.4 Class Support</a>
-         </p>
-         <p class="TOC">
-            <a href="#VM_Services">3.2.5 Services</a>
-         </p>
-         <p class="TOC">
-            <a href="#Utilities">3.2.6 Utilities</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#EE">3.3 Execution Engine</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#JIT_Compiler">3.3.1 JIT Compiler</a>
-         </p>
-         <p class="TOC">
-            <a href="#Interpreter">3.3.2 Interpreter</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#EM">3.4 Execution Manager</a>
-      </p>
-      <p class="TOC">
-         <a href="#Thread_Manager">3.5 Thread Manager</a>
-      </p>
-      <p class="TOC">
-         <a href="#GC">3.6 Garbage Collector</a>
-      </p>
-      <p class="TOC">
-         <a href="#Porting_Layer">3.7 Porting Layer</a>
-      </p>
-      <p class="TOC">
-         <a href="#Class_Libraries">3.8 Class Libraries</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#Processes">4. Processes</a>
-      </p>
-      <p class="TOC">
-         <a href="#Initialization">4.1 Initialization</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#1stpass">4.1.1 Parsing Arguments</a>
-         </p>
-         <p class="TOC">
-            <a href="#Creating_VM">4.1.2 Creating the VM</a>
-         </p>
-         <p class="TOC">
-            <a href="#VMStarter">4.1.3 VMStarter Class</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Verification">4.2 Verification</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Optimized_Verification">4.2.1 Optimized Verification
-            Procedure</a>
-         </p>
-         <p class="TOC">
-            <a href="#Verifications_Classification">4.2.2 Verifications
-            Classification</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Stack_Walking">4.3 Stack Walking</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#About_the_Stack">4.3.1 About the Stack</a>
-         </p>
-         <p class="TOC">
-            <a href="#Stack">4.3.2 Stack Walking</a>
-         </p>
-         <p class="TOC">
-            <a href="#Stack_Iterator">4.3.3 Stack Iterator</a>
-         </p>
-         <p class="TOC">
-            <a href="#Stack_Trace">4.3.4 Stack Trace</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Root_Set_Enumeration">4.4 Root Set Enumeration</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Roots">4.4.1 About Roots</a>
-         </p>
-         <p class="TOC">
-            <a href="#Method">4.4.2 Black-box Metho</a>
-         </p>
-         <p class="TOC">
-            <a href="#Enumeration">4.4.3 Enumeration Procedure</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Exception_Handling">4.5 Exception Handling</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Throwing">4.5.1 Throwing Exceptions</a>
-         </p>
-         <p class="TOC">
-            <a href="#Raising_Exceptions">4.5.2 Raising Exception</a>
-         </p>
-         <p class="TOC">
-            <a href="#Choosing">4.5.3 Choosing the Exception Handling Mode</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Finalization">4.6 Finalization</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#FP">4.6.1 Finalization Procedure</a>
-         </p>
-         <p class="TOC">
-            <a href="#Work_Balance">4.6.2 Work Balancing Subsystem</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Inter_Component_Optimizations">4.7 Inter-component
-         Optimizations</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Fast_Subtype_Checking">4.7.1 Fast Subtype Checking</a>
-         </p>
-         <p class="TOC">
-            <a href="#Direct_Call_Conversion">4.7.2 Direct-call Conversion</a>
-         </p>
-         <p class="TOC">
-            <a href="#Fast_Constant_String">4.7.3 Fast Constant-string
-            Instantiation</a>
-         </p>
-         <p class="TOC">
-            <a href="#Lazy_Exceptions">4.7.4 Lazy Exceptions</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Destroying_VM">4.8 Destroying the VM</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#References">5. References</a>
-      </p>
+      <ol id="TOC">
+         <li><a href="#Revision_History">Revision History</a></li>
+         <li><a href="#About_this_document">1. About This Document</a>
+            <ol>
+            <li><a href="#Purpose">1.1 Purpose</a></li>
+            <li><a href="#Intended_Audience">1.2 Intended Audience</a></li>
+            <li><a href="#Using_this_document">1.3 Using This Document</a></li>
+            <li><a href="#Conventions_and_Symbols">1.4 Conventions and Symbols</a></li>
+            </ol>
+        </li>
+        <li><a href="#VM_Architecture">2. VM Architecture</a>
+            <ol>
+            <li><a href="#Overview">2.1 Overview</a></li>
+            <li><a href="#About_Components">2.2 About Components</a>
+                <ol>
+                 <li><a href="#CompInterfInst">2.2.1 Components, Interfaces, and Instances</a></li>
+                 <li><a href="#Linking_Models">2.2.2 Linking Models</a></li>
+                </ol>
+            </li>
+            <li><a href="#Component_Manager">2.3 Component Manager</a></li>
+            <li><a href="#Package_Layout">2.4 Package Layout</a></li>
+            <li><a href="#Data_Structures">2.5 Data Structures</a>
+                <ol>
+                <li><a href="#Object_Layout">2.5.1 Object Layout</a></li>
+                <li><a href="#Compressed_References">2.5.2 Compressed References</a></li>
+                </ol>
+            </li>
+            </ol>
+       </li>
+       <li><a href="#Components">3. Components</a>
+           <ol>
+           <li><a href="#Major_Components">3.1 Component Structure</a></li>
+           <li><a href="#VM_Core">3.2 VM Core</a>
+               <ol>
+               <li><a href="#Kernel_Classes">3.2.1 Kernel Classes</a></li>
+               <li><a href="#Native_Code_Support">3.2.2 Native Code Support</a></li>
+               <li><a href="#JVMTI_Support">3.2.3 JVMTI Support</a></li>
+               <li><a href="#Class_Support">3.2.4 Class Support</a></li>
+               <li><a href="#VM_Services">3.2.5 Services</a></li>
+               <li><a href="#Utilities">3.2.6 Utilities</a></li>
+              </ol>
+          </li>
+          <li><a href="#EE">3.3 Execution Engine</a>
+              <ol>
+              <li><a href="#JIT_Compiler">3.3.1 JIT Compiler</a></li>
+              <li><a href="#Interpreter">3.3.2 Interpreter</a></li>
+              </ol>
+          </li>
+          <li><a href="#EM">3.4 Execution Manager</a></li>
+          <li><a href="#Thread_Manager">3.5 Thread Manager</a></li>
+          <li><a href="#GC">3.6 Garbage Collector</a></li>
+          <li><a href="#Porting_Layer">3.7 Porting Layer</a></li>
+          <li><a href="#Class_Libraries">3.8 Class Libraries</a></li>
+       </ol>
+    </li>
+    <li><a href="#Processes">4. Processes</a>
+        <ol>
+        <li><a href="#Initialization">4.1 Initialization</a>
+            <ol>
+            <li><a href="#1stpass">4.1.1 Parsing Arguments</a></li>
+            <li><a href="#Creating_VM">4.1.2 Creating the VM</a></li>
+            <li><a href="#VMStarter">4.1.3 VMStarter Class</a></li>
+            </ol>
+        </li>
+        <li><a href="#Verification">4.2 Verification</a>
+            <ol>
+            <li><a href="#Optimized_Verification">4.2.1 Optimized Verification Procedure</a></li>
+            <li><a href="#Verifications_Classification">4.2.2 Verifications Classification</a></li>
+            </ol>
+        </li>
+        <li><a href="#Stack_Walking">4.3 Stack Walking</a>
+            <ol>
+            <li><a href="#About_the_Stack">4.3.1 About the Stack</a></li>
+            <li><a href="#Stack">4.3.2 Stack Walking</a></li>
+            <li><a href="#Stack_Iterator">4.3.3 Stack Iterator</a></li>
+            <li><a href="#Stack_Trace">4.3.4 Stack Trace</a></li>
+            </ol>
+        </li>
+        <li><a href="#Root_Set_Enumeration">4.4 Root Set Enumeration</a>
+            <ol>
+            <li><a href="#Roots">4.4.1 About Roots</a></li>
+            <li><a href="#Method">4.4.2 Black-box Metho</a></li>
+            <li><a href="#Enumeration">4.4.3 Enumeration Procedure</a></li>
+            </ol>
+        </li>
+        <li><a href="#Exception_Handling">4.5 Exception Handling</a>
+            <ol>
+            <li><a href="#Throwing">4.5.1 Throwing Exceptions</a></li>
+            <li><a href="#Raising_Exceptions">4.5.2 Raising Exception</a></li>
+            <li><a href="#Choosing">4.5.3 Choosing the Exception Handling Mode</a></li>
+            </ol>
+        </li>
+        <li><a href="#Finalization">4.6 Finalization</a></li>
+            <ol>
+            <li><a href="#FP">4.6.1 Finalization Procedure</a></li>
+            <li><a href="#Work_Balance">4.6.2 Work Balancing Subsystem</a></li>
+            </ol>
+        </li>
+        <li><a href="#Inter_Component_Optimizations">4.7 Inter-component Optimizations</a>
+            <ol>
+            <li><a href="#Fast_Subtype_Checking">4.7.1 Fast Subtype Checking</a></li>
+            <li><a href="#Direct_Call_Conversion">4.7.2 Direct-call Conversion</a></li>
+            <li><a href="#Fast_Constant_String">4.7.3 Fast Constant-string Instantiation</a></li>
+            <li><a href="#Lazy_Exceptions">4.7.4 Lazy Exceptions</a></li>
+            </ol>
+        </li>
+        <li><a href="#Destroying_VM">4.8 Destroying the VM</a></li>
+      </ol>
+      </li>
+   <li><a href="#References">5. References</a></li>
+ </ol>
       <h1>
          <a id="Revision_History" name="Revision_History"></a>Revision History
       </h1>
@@ -1323,7 +1215,7 @@ jboolean JNICALL GetBooleanField(JNIEnv *env,
          <a href="#Top">Back to Top</a>
       </p>
       <h3>
-         <a id="Kernel_Classes" name="Kernel_Classes"></a>3.2.1 Kernel classes
+         <a id="Kernel_Classes" name="Kernel_Classes"></a>3.2.1 Kernel Classes
       </h3>
       <p>
          The VM kernel classes link the virtual machine with the Java<a
@@ -2473,7 +2365,7 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
          </li>
       </ol>
       <h3>
-         <a id="VMStarter" name="VMStarter"></a> 4.1.3 VMStarter class
+         <a id="VMStarter" name="VMStarter"></a> 4.1.3 VMStarter Class
       </h3>
       <p>
          This Java<a href="#*">*</a> class supports specific VM core tasks by
@@ -3485,7 +3377,7 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
       </p>
       <h3>
          <a id="Fast_Constant_String" name="Fast_Constant_String"></a>4.7.3
-         Fast constant-string instantiation
+         Fast Constant-string Instantiation
       </h3>
       <p>
          Constant-string instantiation is common in Java<a href="#*">*</a>
@@ -3710,6 +3602,7 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
       </p>
    </body>
 </html>
+
 
 
 

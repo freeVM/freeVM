@@ -24,16 +24,22 @@
 
 <body>
 <section name="Guide to Execution Manager Configuration">
-<subsection name="Contents">
-<ol>
-<li><a href="#1. What is EM?">What is EM?</a></li>
-<li><a href="#2. EM Configuration File">EM Configuration File</a></li>
-<li><a href="#3. EM Tracing Options">EM tracing options</a></li>
-<li><a href="#4. More EM Configuration Samples">More EM Configuration Samples</a></li>
-</ol>
-</subsection>
+    <ol id="TOC">
+        <li>
+            <a href="#What is EM?">What is EM?</a>
+        </li>
+        <li>
+            <a href="#EM Configuration File">EM Configuration File</a>
+        </li>
+        <li>
+            <a href="#EM Tracing Options">EM Tracing Options</a>
+        </li>
+        <li>
+            <a href="#More EM Configuration Samples">More EM Configuration Samples</a>
+        </li>
+    </ol>
 
-<subsection name="1. What is EM?">
+<subsection name="What is EM?">
 <p>
 Execution Manager (EM) is a component in DRLVM that controls 
 profile collection and recompilation processes.
@@ -41,7 +47,7 @@ profile collection and recompilation processes.
 For detailed information on EM, see the <a href="EM.html">Execution Manager Component Description</a>.
 </p>
 </subsection>
-<subsection name="2. EM Configuration File">
+<subsection name="EM Configuration File">
 <p>
 The set of JIT compilers and profile collectors used at run time and their
 relations is stored in the <i>EM configuration file</i>.
@@ -234,7 +240,7 @@ threshold. Once the profile is ready, EM dispatches the method for
 recompilation with the next JIT in the current chain.
 </p>
 </subsection>
-<subsection name="3. EM Tracing Options">
+<subsection name="EM Tracing Options">
 <p>
 Use the following command-line options to trace EM events:</p>
 <ul>
@@ -277,7 +283,7 @@ EM: profiler[JET_DPGO_PROFILE] profile is ready [e:10000 b:0] java/util/HashMap:
 ...  
 </pre>
 </subsection>
-<subsection name="4. More EM Configuration Samples">
+<subsection name="More EM Configuration Samples">
   <p>
     DRLVM has several EM configurations supplied in the following files:
     <code>client.emconf</code> (the default), <code>opt.emconf</code>, <code>jet.emconf</code>,

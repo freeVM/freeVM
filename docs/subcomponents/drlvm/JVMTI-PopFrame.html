@@ -191,6 +191,18 @@ limitations under the License.
                                                                     <h1>
       <a name="JVMTI Pop Frame">JVMTI Pop Frame</a>
     </h1>
+                        <ol id="TOC">
+              <li><a href="#About This Document">About This Document</a></li>
+              <li><a href="#Introduction">Introduction</a></li>
+              <li><a href="#How to Pop a Frame">How to Pop a Frame</a></li>
+              <li><a href="#Implementation Specifics">Implementation Specifics</a></li>
+              <li><a href="#Related Information">Related Information</a></li>
+          </ol>
+                                    
+    <h2>
+        <a name="About This Document">About This Document</a>
+    </h2>
+      
                         <p>
             Here is a description of how popping a frame is currently
             implemented in the DRLVM tool interface (JVMTI). For a
@@ -200,6 +212,7 @@ limitations under the License.
             of related terms, see the <a href="developers_guide.html" title="DRLVM Developer's Guide">developer's
             guide</a>.
          </p>
+                   
                                     
     <h2>
         <a name="Introduction">Introduction</a>
@@ -369,7 +382,7 @@ limitations under the License.
             </li>
            <li>
              The JVMTI Agent calls <code>PopFrame()</code> and does the following:
-             <ol>
+             <ul>
                <li>
                  Checks that the flag for the topmost M2nFrame is set to <code>FRAME_POPABLE</code>,
                  which means that the frame can be popped.
@@ -383,16 +396,16 @@ limitations under the License.
                  executes the callback while staying in the function where the
                  thread is suspended.
                </li>
-             </ol>
+             </ul>
            </li>
            <li>
              The callback
              function pops the frame in one of the following ways depending on
              the function and on area of the stack:
-             <ol>
+             <ul>
                <li>
                  For <b>hythread_safe_point():</b>
-                 <ol>
+                 <ul>
                    <li>
                      VM finds the register
                      context for the previous frame and saves it in the current M2nFrame.
@@ -403,14 +416,13 @@ limitations under the License.
                      the frame is popped, VM transfers control to the saved register
                      context. Otherwise, VM exits normally.
                    </li>
-                 </ol>
+                 </ul>
                </li>
                <li>
-                 For the <b>suspend_disable()</b> function in an <a href="developers_guide.html#Exception_Handling">
-                   unwindable
-                   area of the stack
-                 </a>:
-                 <ol>
+                 For the <b>suspend_disable()</b> function in an
+                 <a href="developers_guide.html#Exception_Handling">
+                   unwindable area of the stack</a>:
+                 <ul>
                    <li>
                      The callback explicitly calls <code>hythread_safe_point()</code> to
                      stop the current thread in the safe point and wait until
@@ -421,14 +433,13 @@ limitations under the License.
                      for the current thread and transfers control to the previous
                      frame.
                    </li>
-                 </ol>
+                 </ul>
                </li>
                <li>
-                 For the <strong>suspend_disable()</strong> function in a <a href="developers_guide.html#Exception_Handling">
-                   non-unwindable
-                   area of the stack
-                 </a>:
-                 <ol>
+                 For the <strong>suspend_disable()</strong> function in a
+                 <a href="developers_guide.html#Exception_Handling">
+                   non-unwindable area of the stack</a>:
+                 <ul>
                    <li>
                      VM raises a special exception object and waits for the end
                      of the area.
@@ -438,9 +449,9 @@ limitations under the License.
                      is set and pops the frame for the current thread and transfers
                      control to the previous frame.
                    </li>
-                 </ol>
+                 </ul>
                </li>
-              </ol>
+              </ul>
            </li>
          </ol>
                    

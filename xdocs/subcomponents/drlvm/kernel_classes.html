@@ -29,59 +29,37 @@
       <h1>
          <a id="top" name="top"></a>Kernel Classes
       </h1>
-      <p class="TOCHeading">
-         <a href="#About_This_Document">1. About this document</a>
-      </p>
-      <p class="TOC">
-         <a href="#Purpose">1.1 Purpose</a>
-      </p>
-      <p class="TOC">
-         <a href="#Intended_Audience">1.2 Intended Audience</a>
-      </p>
-      <p class="TOC">
-         <a href="#Documentation_Conventions">1.3 Conventions</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#Overview">2. Overview</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#Architecture">3. Architecture</a>
-      </p>
-      <p class="TOC">
-         <a href="#Exported_Interfaces">3.1 Exported Interface</a>
-      </p>
-      <p class="TOC">
-         <a href="#Internal_Structure">3.2 Internal Structure</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Kernel_Classes_Java">3.2.1 Kernel Java* Classes</a>
-         </p>
-         <p class="TOC">
-            <a href="#Kernel_Class_Natives">3.2.2 Kernel Class Natives</a>
-         </p>
-         <p class="TOC">
-            <a href="#API2VM">3.2.3 API2VM Internal Interface</a>
-         </p>
-      </blockquote>
-      <p class="TOCHeading">
-         <a href="#Processes">4. Processes</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#Kernel_Specifics">5. DRL Kernel Specifics</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#References">6. References</a>
-      </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
+  <ol id="TOC">
+  <li><a href="#About_This_Document">About This Document</a>
+      <ol>
+      <li><a href="#Purpose">Purpose</a></li>
+      <li><a href="#Intended_Audience">Intended Audience</a></li>
+      <li><a href="#Documentation_Conventions">Conventions</a></li>
+      </ol>
+  </li>
+  <li><a href="#Overview">Overview</a></li>
+  <li><a href="#Architecture">Architecture</a>
+      <ol>
+      <li><a href="#Exported_Interfaces">Exported Interface</a></li>
+      <li><a href="#Internal_Structure">Internal Structure</a>
+          <ol>
+          <li><a href="#Kernel_Classes_Java">Kernel Java* Classes</a></li>
+          <li><a href="#Kernel_Class_Natives">Kernel Class Natives</a></li>
+          <li><a href="#API2VM">API2VM Internal Interface</a></li>
+          </ol>
+      </li>
+      </ol>
+  </li>
+  <li><a href="#Processes">Processes</a></li>
+  <li><a href="#Kernel_Specifics">DRL Kernel Specifics</a></li>
+  <li><a href="#References">References</a></li>
+  </ol>
       <h1>
-         <a id="About_This_Document" name="About_This_Document"></a>1. About
-         this document
+         <a id="About_This_Document" name="About_This_Document"></a>About
+         This Document
       </h1>
       <h2>
-         <a id="Purpose" name="Purpose"></a>1.1 Purpose
+         <a id="Purpose" name="Purpose"></a>Purpose
       </h2>
       <p>
          This document is targeted at developers of the DRL kernel classes. The
@@ -92,7 +70,7 @@
          from scratch.
       </p>
       <h2>
-         <a id="Intended_Audience" name="Intended_Audience"></a>1.2 Intended
+         <a id="Intended_Audience" name="Intended_Audience"></a>Intended
          Audience
       </h2>
       <p>
@@ -104,14 +82,14 @@
       </p>
       <h2>
          <a id="Documentation_Conventions"
-         name="Documentation_Conventions"></a>1.3 Conventions
+         name="Documentation_Conventions"></a>Conventions
       </h2>
       <p>
          This document uses the <a href="../../documentation/conventions.html">unified
          conventions</a> for the DRL documentation kit.
       </p>
       <h1>
-         <a id="Overview" name="Overview"></a>2. Overview
+         <a id="Overview" name="Overview"></a>Overview
       </h1>
       <p>
          Kernel classes serve as glue between Java class
@@ -125,14 +103,14 @@
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="Architecture" name="Architecture"></a>3. Architecture
+         <a id="Architecture" name="Architecture"></a>Architecture
       </h1>
       <p>
          This part of the document describes the internal structure of the
          DRLVM Kernel Classes component.
       </p>
       <h2>
-         <a id="Exported_Interfaces" name="Exported_Interfaces"></a>3.1
+         <a id="Exported_Interfaces" name="Exported_Interfaces"></a>
          Exported Interface
       </h2>
       <p>
@@ -143,7 +121,7 @@
          support, exception handling, and object layout support.
       </p>
       <h2>
-         <a id="Internal_Structure" name="Internal_Structure"></a>3.2 Internal
+         <a id="Internal_Structure" name="Internal_Structure"></a>Internal
          Structure
       </h2>
       <p>
@@ -155,7 +133,7 @@
           classes is
          based on the Harmony Class Library Porting Documentation [<a
          href="#HarmonyClasslib_ref">1</a>] with the amendments described in
-         section <a href="#Kernel_Specifics">7. DRL Kernel Specifics</a>. This
+         section <a href="#Kernel_Specifics">DRL Kernel Specifics</a>. This
          implementation is aimed at reducing porting effort of Java
          APIs to different virtual machines. The kernel class
          natives also use the thread management functionality. The interaction
@@ -185,20 +163,20 @@
          Figure 1: Kernel classes in DRL Architecture
       </p>
       <h3>
-         <a id="Kernel_Classes_Java" name="Kernel_Classes_Java"></a>3.2.1
+         <a id="Kernel_Classes_Java" name="Kernel_Classes_Java"></a>
          Kernel Java Classes
       </h3>
       <p>
          DRL kernel classes fully comply with the Harmony Kernel classes
          documentation [<a href="#HarmonyClasslib_ref">1</a>] with the
-         exceptions listed in section <a href="#Kernel_Specifics">7. DRL Kernel
+         exceptions listed in section <a href="#Kernel_Specifics">DRL Kernel
          Specifics</a>.
       </p>
       <p class="backtotop">
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a id="Kernel_Class_Natives" name="Kernel_Class_Natives"></a>3.2.2
+         <a id="Kernel_Class_Natives" name="Kernel_Class_Natives"></a>
          Kernel Class Natives
       </h3>
       <p>
@@ -309,7 +287,7 @@ Java_java_lang_VMThreadManager_currentThread(JNIEnv *jenv, jclass)
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a id="API2VM" name="API2VM"></a>3.2.3 API2VM Internal Interface
+         <a id="API2VM" name="API2VM"></a>API2VM Internal Interface
       </h3>
       <p>
          The API2VM internal interface is used to access VM-specific
@@ -389,7 +367,7 @@ Java_java_lang_VMThreadManager_currentThread(JNIEnv *jenv, jclass)
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="Processes" name="Processes"></a>4. Processes
+         <a id="Processes" name="Processes"></a>Processes
       </h1>
       <p>
          This section illustrates the role of kernel classes in the interaction
@@ -462,7 +440,7 @@ Java_java_lang_VMThreadManager_currentThread(JNIEnv *jenv, jclass)
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="Kernel_Specifics" name="Kernel_Specifics"></a>5. DRL Kernel
+         <a id="Kernel_Specifics" name="Kernel_Specifics"></a>DRL Kernel
          Specifics
       </h1>
       <p>
@@ -519,7 +497,7 @@ Java_java_lang_VMThreadManager_currentThread(JNIEnv *jenv, jclass)
          </li>
       </ol>
       <h1>
-         <a id="References" name="References"></a>6. References
+         <a id="References" name="References"></a>References
       </h1>
       <p>
          [<a id="HarmonyClasslib_ref" name="HarmonyClasslib_ref"></a>1] Harmony
@@ -547,6 +525,7 @@ Java_java_lang_VMThreadManager_currentThread(JNIEnv *jenv, jclass)
       </p>
    </body>
 </html>
+
 
 
 

@@ -27,44 +27,26 @@
 
   <body>
     <section name="Encoder Library Description for IA-32/Intel64">
-      <subsection name="Contents">
-        <ol>
-          <li>
-            <a href="#1. Revision History">Revision History</a>
-          </li>
-          <li><a href="#2. About this document">About
-    this Document</a> </li>
-
-          <li>
-            <a href="#3. Overview">Overview</a>
-          </li>
-
-          <li>
-            <a href="#4. Goals and Targets">Goals and Targets</a>
-          </li>
-
-          <li>
-            <a href="#5. Structure">Structure</a>
-          </li>
-          <li>
-            <a href="#6. How It Works">How It Works</a></li>
-          
-          <ul>
-            <li><a href="#6.1 Usage Model">6.1 Usage Model</a></li>
-          <li><a href="#6.2 Under the Hood">6.2 Under the
-    Hood</a></li>
-          <ul>
-            <li><a href="#6.2.1 Fast Opcode Lookup">6.2.1 Fast
-        Opcode Lookup</a>        
-            </li> 
-            <li><a href="#6.2.2 Fast Code Generation">6.2.2 Fast
-        Code Generation</a></li>
-          </ul>
-          </ul>
-        </ol>
-      </subsection>
+        <ol id="TOC">
+        <li><a href="#Revision History">Revision History</a></li>
+        <li><a href="#About this document">About This Document</a></li>
+        <li><a href="#Overview">Overview</a></li>
+        <li><a href="#Goals and Targets">Goals and Targets</a></li>
+        <li><a href="#Structure">Structure</a></li>
+        <li><a href="#How It Works">How It Works</a>
+            <ol>
+            <li><a href="#Usage Model">Usage Model</a></li>
+            <li><a href="#Under the Hood">Under the Hood</a>
+                <ol>
+                <li><a href="#Fast Opcode Lookup">Fast Opcode Lookup</a></li>
+                <li><a href="#Fast Code Generation">Fast Code Generation</a></li>
+                </ol>
+            </li>
+            </ol>
+       </li>
+      </ol>
       
-      <subsection name="1. Revision History">
+      <subsection name="Revision History">
 
           <table>
               <tr>
@@ -88,7 +70,7 @@
           </table>
         
       </subsection>
-      <subsection name="2. About this Document">
+      <subsection name="About This Document">
             <p>
         This document introduces the encoder library component
         delivered as a part of the DRL (Dynamic Runtime Layer)
@@ -98,7 +80,7 @@
       </p>
 
      </subsection>
-      <subsection name="3. Overview">
+      <subsection name="Overview">
       <p>
         The encoder library is a DRLVM component for code
         generation, or encoding. This library is separate, static and
@@ -126,7 +108,7 @@
       </ul>
 
       </subsection>
-      <subsection name="4. Goals and Targets">
+      <subsection name="Goals and Targets">
           
 
       <p>The encoder library meets the following requirements:</p>
@@ -151,7 +133,7 @@
           <p class="notetext">
             The encoder library provides a
             simple and generic interface. Clients with special
-            needs should use <a href="#6. How It Works">adapters</a>,
+            needs should use <a href="#How It Works">adapters</a>,
             which provide a handy and convenient interface and then
             translate the data into the generic interface.
           </p>
@@ -160,7 +142,7 @@
 
       </subsection>
 
-      <subsection name="5. Structure">
+      <subsection name="Structure">
         
       <p>The encoder library includes the following modules:</p>
 
@@ -327,11 +309,11 @@
         </tr>
       </table>
 </subsection>
-      <subsection name="6. How It Works">
+      <subsection name="How It Works">
 
 
 
-       <h3><a name="6.1 Usage Model"><b>6.1 Usage Model</b></a></h3>
+       <h3><a name="Usage Model"><b>Usage Model</b></a></h3>
       <p>
         The base encoding interface
         <code>EncoderBase::encode()</code> is a common generic
@@ -384,7 +366,7 @@
         <code>vm/vmcore/include/jvmti_dasm.h</code>.
       </p>
 
-        <h3><a name="6.2 Under the Hood"><b>6.2 Under the Hood</b></a></h3>
+        <h3><a name="Under the Hood"><b>Under the Hood</b></a></h3>
 
       <p>
         The engine gets its input as an operation and a set of
@@ -404,14 +386,14 @@
         table plain and elementary. At run time, before the first
         usage, a special version of data is pre-compiled, which
         requires fewer manipulations. The pre-compiled version provides
-        the <a href="#6.2.1 Fast Opcode Lookup">fast opcode lookup</a> and
-        the <a href="#6.2.2 Fast Code Generation">
+        the <a href="#Fast Opcode Lookup">fast opcode lookup</a> and
+        the <a href="#Fast Code Generation">
           fast code generation</a>.
       </p>
 
         <dl>
           <dt>
-            <a name="6.2.1 Fast Opcode Lookup">6.2.1 Fast Opcode Lookup</a>
+            <a name="Fast Opcode Lookup">Fast Opcode Lookup</a>
           </dt>
         </dl>
       
@@ -433,7 +415,7 @@
 
         <dl>
           <dt>
-            <a name="6.2.2 Fast Code Generation">6.2.2 Fast Code
+            <a name="Fast Code Generation">Fast Code
         Generation</a>
           </dt>
         </dl>

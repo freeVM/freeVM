@@ -192,11 +192,11 @@ limitations under the License.
                                                                 <div>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
+    contributor license agreements. See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
+    the License. You may obtain a copy of the License at
 
        http://www.apache.org/licenses/LICENSE-2.0
 
@@ -222,55 +222,55 @@ limitations under the License.
       <h1>
          <a id="top" name="top"></a>Thread Manager
       </h1>
-   <ol class="TOC">
-      <li><a href="#RevisionHistory">1. Revision History</a></li>
-      <li><a href="#About_This_Document">2. About this Document</a>
+      <ol id="TOC">
+      <li><a href="#RevisionHistory">Revision History</a></li>
+      <li><a href="#About_This_Document">About This Document</a>
          <ol>
-            <li><a href="#Purpose">2.1 Purpose</a></li>
-            <li><a href="#Intended_Audience">2.2 Intended Audience</a></li>
-            <li><a href="#Documentation_Conventions">2.3 Documentation Conventions</a></li>
-            <li><a href="#Using_this_document">2.4 Using this Document</a></li>
+            <li><a href="#Purpose">Purpose</a></li>
+            <li><a href="#Intended_Audience">Intended Audience</a></li>
+            <li><a href="#Documentation_Conventions">Documentation Conventions</a></li>
+            <li><a href="#Using_this_document">Using This Document</a></li>
          </ol></li>
-      <li><a href="#Overview">3. Overview</a>
+      <li><a href="#Overview">Overview</a>
          <ol>
-            <li><a href="#Key_Feature">3.1 Key Features</a></li>
-            <li><a href="#TM_in_VM">3.2 Thread Manager in VM</a></li>
-            <li><a href="#Portability">3.3 Portability</a></li>
+            <li><a href="#Key_Feature">Key Features</a></li>
+            <li><a href="#TM_in_VM">Thread Manager in VM</a></li>
+            <li><a href="#Portability">Portability</a></li>
          </ol></li>
-      <li><a href="#Achitecture">4. Architecture</a>
+      <li><a href="#Achitecture">Architecture</a>
          <ol>
-            <li><a href="#Exported_Interfaces">4.1 Exported interfaces</a>
-               <ul>
-                  <li><a href="#Native_Layer">4.1.1 Native Interface</a></li>
-                  <li><a href="#Java_interface">4.1.2 Java* Interface</a></li>
-               </ul></li>
-            <li><a href="#Data_Structures">4.2 Data structures</a></li>
-            <li><a href="#Thread_Control_Structure">4.3 Thread control structures</a>
-               <ul>
-                  <li><a href="#Native_Structure">4.3.1 Native Thread Structure</a></li>
-                  <li><a href="#Java_Structure">4.3.2 Java* Thread Structure</a></li>
-               </ul></li>
-            <li><a href="#Thread_Group">4.4 Thread Groups</a></li>
-            <li><a href="#Synchronizer">4.5 Synchronizers</a></li>
-            <li><a href="#Monitors">4.6 Monitors</a>
-               <ul>
-                  <li><a href="#MonitorInflation">4.6.1 Inflation Technique</a></li>
-                  <li><a href="#Thin_monitors">4.6.2 Monitor Structure</a></li>
-                  <li><a href="#AcquireMonitor">4.6.3 Acquiring a Monitor</a></li>
-               </ul></li>
+            <li><a href="#Exported_Interfaces">Exported interfaces</a>
+               <ol>
+                  <li><a href="#Native_Layer">Native Interface</a></li>
+                  <li><a href="#Java_interface">Java* Interface</a></li>
+               </ol></li>
+            <li><a href="#Data_Structures">Data Structures</a></li>
+            <li><a href="#Thread_Control_Structure">Thread Control Structures</a>
+               <ol>
+                  <li><a href="#Native_Structure">Native Thread Structure</a></li>
+                  <li><a href="#Java_Structure">Java* Thread Structure</a></li>
+               </ol></li>
+            <li><a href="#Thread_Group">Thread Groups</a></li>
+            <li><a href="#Synchronizer">Synchronizers</a></li>
+            <li><a href="#Monitors">Monitors</a>
+               <ol>
+                  <li><a href="#MonitorInflation">Inflation Technique</a></li>
+                  <li><a href="#Thin_monitors">Monitor Structure</a></li>
+                  <li><a href="#AcquireMonitor">Acquiring a Monitor</a></li>
+               </ol></li>
          </ol></li>
-      <li><a href="#Usage_Scenarios">5. Usage scenarios</a>
+      <li><a href="#Usage_Scenarios">Usage Scenarios</a>
          <ol>
-            <li><a href="#Thread_lifecycle">5.1 Java* Thread Life Cycle</a></li>
-            <li><a href="#Thread_suspension">5.2 Thread Suspension</a></li>
-            <li><a href="#Stop-the-world_Suspension">5.3 Stop-the-world Thread Suspension</a></li>
-            <li><a href="#Thread_locking">5.4 Thread Locking</a></li> 
-            <li><a href="#Monitor_scenarios">5.5 Monitor Enter and Exit</a></li>
+            <li><a href="#Thread_lifecycle">Java* Thread Life Cycle</a></li>
+            <li><a href="#Thread_suspension">Thread Suspension</a></li>
+            <li><a href="#Stop-the-world_Suspension">Stop-the-world Thread Suspension</a></li>
+            <li><a href="#Thread_locking">Thread Locking</a></li> 
+            <li><a href="#Monitor_scenarios">Monitor Enter and Exit</a></li>
          </ol></li>
-      <li><a href="#References">6. References</a></li>
+      <li><a href="#References">References</a></li>
    </ol>
       <h1>
-         <a id="RevisionHistory" name="RevisionHistory"></a>1. Revision History
+         <a id="RevisionHistory" name="RevisionHistory"></a>Revision History
       </h1>
       <table border="0" cellpadding="0" width="100%">
          <tr>
@@ -298,11 +298,11 @@ limitations under the License.
       </table>
     
       <h1>
-         <a id="About_This_Document" name="About_This_Document"></a>2. About
+         <a id="About_This_Document" name="About_This_Document"></a>About
          This Document
       </h1>
       <h2>
-         <a id="Purpose" name="Purpose"></a>2.1 Purpose
+         <a id="Purpose" name="Purpose"></a>Purpose
       </h2>
       <p>
          This document introduces the thread manager component delivered as
@@ -312,7 +312,7 @@ limitations under the License.
          organization of the thread management subsystem.
       </p>
       <h2>
-         <a id="Intended_Audience" name="Intended_Audience"></a>2.2 Intended
+         <a id="Intended_Audience" name="Intended_Audience"></a>Intended
          Audience
       </h2>
       <p>
@@ -324,15 +324,15 @@ limitations under the License.
       </p>
       <h2>
          <a id="Documentation_Conventions"
-         name="Documentation_Conventions"></a>2.3 Documentation Conventions
+         name="Documentation_Conventions"></a>Documentation Conventions
       </h2>
       <p>
          This document uses the <a href="../../documentation/conventions.html">
         unified conventions</a> for the DRL documentation kit.
       </p>
       <h2>
-         <a id="Using_this_document" name="Using_this_document"></a>2.4 Using
-         this Document
+         <a id="Using_this_document" name="Using_this_document"></a>Using
+         This Document
       </h2>
       <p>
          Use this document to learn all about implementation specifics of the
@@ -365,7 +365,7 @@ limitations under the License.
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="Overview" name="Overview"></a>3. Overview
+         <a id="Overview" name="Overview"></a>Overview
       </h1>
       <p>
          The thread manager (TM) is a library aimed to provide threading
@@ -420,7 +420,7 @@ limitations under the License.
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="Key_Feature" name="Key_Feature"></a>3.1 Key features
+         <a id="Key_Feature" name="Key_Feature"></a>Key Features
       </h2>
       <p>
          The supplied thread manager has the following characteristics:
@@ -448,7 +448,7 @@ limitations under the License.
          </li>
       </ul>
       <h2>
-         <a id="TM_in_VM" name="TM_in_VM"></a>3.2 Thread Manager in VM
+         <a id="TM_in_VM" name="TM_in_VM"></a>Thread Manager in VM
       </h2>
       <p>
          Figure 2 below demonstrates the interaction of the thread manager with
@@ -488,7 +488,7 @@ limitations under the License.
          Figure 2: Thread Manager in VM Architecture
       </p>
       <h2>
-         <a id="Portability" name="Portability"></a>3.3 Portability
+         <a id="Portability" name="Portability"></a>Portability
       </h2>
       <p>
          The thread manager code is mostly platform-independent and relies on
@@ -509,7 +509,7 @@ limitations under the License.
          <a href="#top">Back to Top</a>
       </p>
       <h1>
-         <a id="Achitecture" name="Achitecture"></a>4. Architecture
+         <a id="Achitecture" name="Achitecture"></a>Architecture
       </h1>
       <p>
          Subsequent sections describe the functional interfaces that the thread
@@ -517,8 +517,8 @@ limitations under the License.
          data structures.
       </p>
       <h2>
-         <a id="Exported_Interfaces" name="Exported_Interfaces"></a>4.1
-         Exported interfaces
+         <a id="Exported_Interfaces" name="Exported_Interfaces"></a>
+         Exported Interfaces
       </h2>
       <p>
          As indicated in the overview, the thread manager exports the native
@@ -527,7 +527,7 @@ limitations under the License.
          upon external requests, as described in the subsequent sections.
       </p>
       <h3>
-         <a id="Native_Layer" name="Native_Layer"></a>4.1.1 Native Interface
+         <a id="Native_Layer" name="Native_Layer"></a>Native Interface
       </h3>
       <p>
          The native interface is inspired by the Harmony <code>hythread</code>
@@ -623,7 +623,7 @@ limitations under the License.
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a id="Java_interface" name="Java_interface"></a>4.1.2 Java<a
+         <a id="Java_interface" name="Java_interface"></a>Java<a
          href="#*">*</a> Interface
       </h3>
       <p>
@@ -711,7 +711,7 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h2>
-         <a id="Data_Structures" name="Data_Structures"></a>4.2 Data structures
+         <a id="Data_Structures" name="Data_Structures"></a>Data Structures
       </h2>
       <p>
          The thread manager data structures are typically not exposed: external
@@ -723,7 +723,7 @@ limitations under the License.
       </p>
       <h2>
          <a id="Thread_Control_Structure"
-         name="Thread_Control_Structure"></a>4.3 Thread control structures
+         name="Thread_Control_Structure"></a>Thread Control Structures
       </h2>
       <p>
          The thread manager requires each thread to be <em>registered</em>
@@ -772,7 +772,7 @@ limitations under the License.
          handle.
       </p>
       <h3>
-         <a id="Native_Structure" name="Native_Structure"></a>4.3.1 Native
+         <a id="Native_Structure" name="Native_Structure"></a>Native
          Thread Structure
       </h3>
       <p>
@@ -788,7 +788,7 @@ limitations under the License.
       </p>
       <p class="notetext">
          The actual content of a thread control structure is
-         implementation-specific and is not exposed to other components.  
+         implementation-specific and is not exposed to other components.
       </p>
       <p>
          The following figure shows the thread control structure of a native
@@ -799,7 +799,7 @@ limitations under the License.
          alt="Structure of a native thread not registered in TM" />
       </p>
       <p class="special">
-         Figure 3:  Native Thread
+         Figure 3: Native Thread
       </p>
       <p>
          The following table lists the data fields making up the thread control
@@ -1164,7 +1164,7 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h3>
-         <a id="Java_Structure" name="Java_Structure"></a>4.3.2 Java<a
+         <a id="Java_Structure" name="Java_Structure"></a>Java<a
          href="#*">*</a> Thread Structure
       </h3>
       <p>
@@ -1356,7 +1356,7 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h2>
-         <a id="Thread_Group" name="Thread_Group"></a>4.4 Thread Groups
+         <a id="Thread_Group" name="Thread_Group"></a>Thread Groups
       </h2>
       <p>
          The thread manager enables co-existence of multiple groups of threads,
@@ -1384,7 +1384,7 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h2>
-         <a id="Synchronizer" name="Synchronizer"></a>4.5 Synchronizers
+         <a id="Synchronizer" name="Synchronizer"></a>Synchronizers
       </h2>
       <p>
          The thread manager synchronizers are functional modules used for
@@ -1459,7 +1459,7 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h2>
-         <a id="Monitors" name="Monitors"></a>4.6 Monitors
+         <a id="Monitors" name="Monitors"></a>Monitors
       </h2>
       <p>
          The current version of the thread manager implements Java<a
@@ -1469,8 +1469,8 @@ limitations under the License.
          optimized for space consumption and single-threaded usage.
       </p>
       <h3>
-         <a id="MonitorInflation" name="MonitorInflation"></a>4.6.1 Inflation
-         technique
+         <a id="MonitorInflation" name="MonitorInflation"></a>Inflation
+         Technique
       </h3>
       <p>
          Monitor inflation is implemented using a thin-fat lock technique [<a
@@ -1501,7 +1501,7 @@ limitations under the License.
          href="#*">*</a> monitors space usage more efficient.
       </p>
       <h3>
-         <a id="Thin_monitors" name="Thin_monitors"></a>4.6.2 Monitor Structure
+         <a id="Thin_monitors" name="Thin_monitors"></a>Monitor Structure
       </h3>
       <p>
          The thin monitor is a synchronizer primitive that implements the lock
@@ -1593,7 +1593,7 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h3>
-         <a id="AcquireMonitor" name="AcquireMonitor"></a>4.6.3 Acquiring a
+         <a id="AcquireMonitor" name="AcquireMonitor"></a>Acquiring a
          Monitor
       </h3>
       <p>
@@ -1633,14 +1633,14 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h1>
-         <a id="Usage_Scenarios" name="Usage_Scenarios"></a>5. Usage scenarios
+         <a id="Usage_Scenarios" name="Usage_Scenarios"></a>Usage Scenarios
       </h1>
       <p>
          This section contains various scenarios of thread manipulation.
       </p>
       <h2>
-         <a id="Thread_lifecycle" name="Thread_lifecycle"></a>5.1 Java<a
-         href="#*">*</a> thread life cycle
+         <a id="Thread_lifecycle" name="Thread_lifecycle"></a>Java<a
+         href="#*">*</a> Thread Life Cycle
       </h2>
       <p>
          The Java<a href="#*">*</a> thread creation procedure consists of the
@@ -1736,7 +1736,7 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h2>
-         <a id="Thread_suspension" name="Thread_suspension"></a>5.2 Thread
+         <a id="Thread_suspension" name="Thread_suspension"></a>Thread
          Suspension
       </h2>
       <p>
@@ -1764,7 +1764,7 @@ limitations under the License.
             the current state of thread T2, the
             <code>hythread_suspend(T2)</code> function activates one of the
             following mechanisms: 
-            <ol>
+            <ul>
                <li>
                   If thread T2 is currently running in a safe code region, the
                   <code>hythread_suspend(T2)</code> call immediately returns,
@@ -1776,7 +1776,7 @@ limitations under the License.
                   thread T2 reaches the beginning of a safe region or a safe
                   point.
                </li>
-            </ol>
+            </ul>
          </li>
          <li>
             Thread T2 runs to the end of the safe region and gets blocked until
@@ -1855,7 +1855,7 @@ limitations under the License.
       </p>
       <h2>
          <a id="Stop-the-world_Suspension"
-         name="Stop-the-world_Suspension"></a>5.3 Stop-the-world Thread
+         name="Stop-the-world_Suspension"></a>Stop-the-world Thread
          Suspension
       </h2>
       <p>
@@ -1887,7 +1887,7 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h2>
-         <a id="Thread_locking" name="Thread_locking"></a>5.4 Thread Locking
+         <a id="Thread_locking" name="Thread_locking"></a>Thread Locking
       </h2>
       <p>
          Locking with the thread manager can be done by means of a mutex or a
@@ -1922,8 +1922,8 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h2>
-         <a id="Monitor_scenarios" name="Monitor_scenarios"></a>5.5 Monitor
-         enter and exit
+         <a id="Monitor_scenarios" name="Monitor_scenarios"></a>Monitor
+         Enter and Exit
       </h2>
       <p>
          Locking Java<a href="#*">*</a> monitors implies interaction between
@@ -1982,7 +1982,7 @@ limitations under the License.
          <a href="#Top">Back to Top</a>
       </p>
       <h1>
-         <a id="References" name="References"></a>6. References
+         <a id="References" name="References"></a>References
       </h1>
       <p>
          This section lists the resources used in this document and other

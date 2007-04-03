@@ -31,106 +31,56 @@
       <h1>
          <a id="A1" name="top"></a>Abstract Window Toolkit Framework
       </h1>
-   
-      <p class="TOCHeading">
-         <a href="#Revision_History">Revision History</a>
-      </p>
-     
-      <p class="TOCHeading">
-         <a href="#About_This_Document">About this Document</a>
-      </p>
-      <p class="TOC">
-         <a href="#Purpose">Purpose</a>
-      </p>
-      <p class="TOC">
-         <a href="#Intended_Audience">Intended Audience</a>
-      </p>
-      <p class="TOC">
-         <a href="#Documentation_Conventions">Documentation Conventions</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#Introduction to AWT">Introduction to AWT</a>
-      </p>
-      <p class="TOCHeading">
-         <a href="#AWTDRL">AWT in DRL</a>
-      </p>
-      <p class="TOC">
-         <a href="#Event_Handling">Event Handling</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#EventTypeDefinition">Native and AWT Events</a>
-         </p>
-         <p class="TOC">
-            <a href="#EDT">Event Dispatch Thread</a>
-         </p>
-         <p class="TOC">
-            <a href="#EventPriority">Native and AWT Events Priority</a>
-         </p>
-         <p class="TOC">
-            <a href="#NativeEvents">Native Events Handling</a>
-         </p>
-         <p class="TOC">
-            <a href="#Native_and_AWT_Event_Handlers_Cooperation">Native and AWT
-            Event Handlers Cooperation</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Focus_Subsystem">Focus Subsystem</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Focus_Dispatcher">Focus Dispatcher</a>
-         </p>
-         <p class="TOC">
-            <a href="#AWT_higher_level">AWT Level</a>
-         </p>
-         <p class="TOC">
-            <a href="#DRL_Focus_Implementation_Specifics">DRL Focus
-            Implementation Specifics</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Visual_Themes_in_AWT">Visual Themes in AWT</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#Default_theme">Default Theme</a>
-         </p>
-         <p class="TOC">
-            <a href="#Delivered_themes">Derived Themes</a>
-         </p>
-         <p class="TOC">
-            <a href="#Implementation_details">Implementation Specifics</a>
-         </p>
-         <p class="TOC">
-            <a href="#Using_State_Interfaces_in_a_Standard_Component">Using
-            State Interfaces in a Standard Component</a>
-         </p>
-         <p class="TOC">
-            <a href="#Windows theme">Windows* Theme</a>
-         </p>
-      </blockquote>
-      <p class="TOC">
-         <a href="#Multi-Threading_support">Multi-threading Support</a>
-      </p>
-      <blockquote>
-         <p class="TOC">
-            <a href="#WhySynchronize">Why Synchronize</a>
-         </p>
-         <p class="TOC">
-            <a href="#HowtoSync">How to Synchronize</a>
-         </p>
-         <p class="TOC">
-            <a href="#WhentoSync">When to Synchronize</a>
-         </p>
-         <p class="TOC">
-            <a href="#Synchronizer">Synchronizer</a>
-         </p>
-      </blockquote>
-      <p class="TOCHeading">
-         <a href="#References">References</a>
-      </p>
+  <ol id="TOC">
+      <li><a href="#Revision_History">Revision History</a></li>
+        <li><a href="#About_This_document">About This Document</a>
+          <ol>
+          <li><a href="#Purpose">Purpose</a></li>
+          <li><a href="#Intended_Audience">Intended Audience</a></li>
+          <li><a href="#Documentation_Conventions">Documentation Conventions</a></li>
+          </ol>
+        </li>
+        <li><a href="#Introduction to AWT">Introduction to AWT</a></li>
+        <li><a href="#AWTDRL">AWT in DRL</a>
+          <ol>
+          <li><a href="#Event_Handling">Event Handling</a>
+              <ol>
+                 <li><a href="#EventTypeDefinition">Native and AWT Events</a></li>
+                 <li><a href="#EDT">Event Dispatch Thread</a></li>
+                 <li><a href="#EventPriority">Native and AWT Events Priority</a></li>
+                 <li><a href="#NativeEvents">Native Events Handling</a></li>
+                 <li><a href="#Native_and_AWT_Event_Handlers_Cooperation">Native and AWT
+            Event Handlers Cooperation</a></li>
+             </ol>
+         </li>
+         <li><a href="#Focus_Subsystem">Focus Subsystem</a>
+              <ol>
+                 <li><a href="#Focus_Dispatcher">Focus Dispatcher</a></li>
+                 <li><a href="#AWT_higher_level">AWT Level</a></li>
+                 <li><a href="#DRL_Focus_Implementation_Specifics">DRL Focus
+            Implementation Specifics</a></li>
+             </ol>
+         </li>
+      <li><a href="#Visual_Themes_in_AWT">Visual Themes in AWT</a>
+             <ol>
+                <li><a href="#Default_theme">Default Theme</a></li>
+                <li><a href="#Delivered_themes">Derived Themes</a></li>
+                <li><a href="#Implementation_details">Implementation Specifics</a></li>
+                <li><a href="#Using_State_Interfaces_in_a_Standard_Component">Using
+            State Interfaces in a Standard Component</a></li>
+               <li><a href="#Windows theme">Windows* Theme</a></li>
+            </ol>
+      </li>
+      <li><a href="#Multi-threading_Support">Multi-threading Support</a>
+            <ol>
+              <li><a href="#WhySynchronize">Why Synchronize</a></li>
+              <li><a href="#HowtoSync">How to Synchronize</a></li>
+              <li><a href="#WhentoSync">When to Synchronize</a></li>
+              <li><a href="#Synchronizer">Synchronizer</a></li>
+         </ol>
+      </li></ol></li>
+      <li><a href="#References">References</a></li>
+ </ol>
       <h1>
          <a id="Revision_History" name="Revision_History"></a>Revision History
       </h1>
@@ -245,7 +195,7 @@
             href="#Visual_Themes_in_AWT">visual themes</a>
          </li>
          <li>
-            Support for <a href="#Multi-Threading_support">multi-threading</a>
+            Support for <a href="#Multi-threading_Support">multi-threading</a>
          </li>
       </ul>
       <p class="backtotop">
@@ -437,7 +387,7 @@
          the <code>NativeEventListener</code> interface of the Java<a
          href="#*">*</a> EDT thread handles native events. In the DRL AWT
          implementation, native and AWT events are handled by the single EDT
-         thread. See the <a href="#Multi-Threading_support">Multi-threading
+         thread. See the <a href="#Multi-threading_Support">Multi-threading
          Support</a> section for more information.
       </p>
       <p class="backtotop">
@@ -870,7 +820,7 @@
          platform-specific native API or using both approaches.
       </p>
       <h3>
-         <a id="Default_theme" name="Default_theme"></a>Default theme
+         <a id="Default_theme" name="Default_theme"></a>Default Theme
       </h3>
       <p>
          You can paint standard components in many ways, including drawing the
@@ -910,7 +860,7 @@
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a id="Delivered_themes" name="Delivered_themes"></a> Derived themes
+         <a id="Delivered_themes" name="Delivered_themes"></a> Derived Themes
       </h3>
       <p>
          You can create a custom theme that inherits from the default theme and
@@ -960,7 +910,7 @@
       </p>
       <h3>
          <a id="Implementation_details"
-         name="Implementation_details"></a>Implementation details
+         name="Implementation_details"></a>Implementation Details
       </h3>
       <p>
          Painting standard components requires access to their internal state,
@@ -1066,7 +1016,7 @@ void prepaint(Graphics g) {
       </p>
       <h3>
          <a id="Windows theme" name="Windows theme"></a>Windows<a
-         href="#*">*</a> theme
+         href="#*">*</a> Theme
       </h3>
       <p>
          In DRL, the Windows<a href="#*">*</a> theme is implemented by the
@@ -1121,8 +1071,8 @@ void prepaint(Graphics g) {
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="Multi-Threading_support"
-         name="Multi-Threading_support"></a>Multi-Threading support
+         <a id="Multi-threading_Support"
+         name="Multi-threading_Support"></a>Multi-threading Support
       </h2>
       <p>
          Complying to the specification [<a href="#AWTSpec">1</a>], DRL AWT can
@@ -1131,7 +1081,7 @@ void prepaint(Graphics g) {
          For that, AWT synchronizes its key classes.
       </p>
       <h3>
-         <a id="WhySynchronize" name="WhySynchronize"></a>Why synchronize
+         <a id="WhySynchronize" name="WhySynchronize"></a>Why Synchronize
       </h3>
       <p>
          The main purpose of synchronization is keeping the component hierarchy
@@ -1157,7 +1107,7 @@ void prepaint(Graphics g) {
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a id="HowtoSync" name="HowtoSync"></a>How to synchronize
+         <a id="HowtoSync" name="HowtoSync"></a>How to Synchronize
       </h3>
       <p>
          When a method or a block of code deals with the data that must not be
@@ -1205,7 +1155,7 @@ public Color getBackground() {
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a id="WhentoSync" name="WhentoSync"></a>When to synchronize
+         <a id="WhentoSync" name="WhentoSync"></a>When to Synchronize
       </h3>
       <p>
          AWT synchronization covers the following classes:
@@ -1493,6 +1443,7 @@ public Color getBackground() {
       </p>
    </body>
 </html>
+
 
 
 
