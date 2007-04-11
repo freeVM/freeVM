@@ -14,40 +14,51 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
+                                                                                                            
 /**
  * @author Intel, Konstantin M. Anisimov, Igor V. Chebykin
  *
  */
 
-#ifndef IPFCODEGENERATOR_H_
-#define IPFCODEGENERATOR_H_
+#ifndef IPFREGISTERALLOCATOR_H_
+#define IPFREGISTERALLOCATOR_H_
 
-#include "MemoryManager.h"
 #include "IpfCfg.h"
-#include "PMFAction.h"
+#include "IpfLiveManager.h"
 
 namespace Jitrino {
 namespace IPF {
 
 //========================================================================================//
-// CodeGenerator
+// RegisterAllocator
 //========================================================================================//
 
-class CodeGenerator : public SessionAction {
+class RegisterAllocator {
 public:
-                         CodeGenerator();
-    void                 run();
-    virtual              ~CodeGenerator() {}
+                       RegisterAllocator(Cfg&);
+    void               allocate();
 
 protected:
-    CompilationInterface *compilationInterface;
-    MethodDesc           *methodDesc;
+    void               buildInterferenceMatrix();
+    void               removeSelfDep();
+    void               assignLocations();
+    
+    void               assignLocation(RegOpnd*);
+    void               updateAllocSet(Opnd*, uint32, QpMask);
+    void               checkCallSite(Inst*, QpMask);
+    
+    void               checkCoalescing(uint32, Inst*);
+    void               removeSameRegMoves();
 
-    Cfg                  *cfg;
-}; 
+    MemoryManager      &mm;
+    Cfg                &cfg;
+    OpndManager        *opndManager;
+    LiveManager        liveManager;
+    RegOpndSet         allocSet;       // set of all opnds that need allocation
+    RegOpndSet         &liveSet;       // set of opnds alive in current node
+};
 
 } // IPF
 } // Jitrino
 
-#endif /*IPFCODEGENERATOR_H_*/
+#endif /*IPFREGISTERALLOCATOR_H_*/

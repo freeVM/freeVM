@@ -14,40 +14,48 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
+                                                                                                            
 /**
  * @author Intel, Konstantin M. Anisimov, Igor V. Chebykin
  *
  */
 
-#ifndef IPFCODEGENERATOR_H_
-#define IPFCODEGENERATOR_H_
+#ifndef IPFLIVEANALYZER_H_
+#define IPFLIVEANALYZER_H_
 
-#include "MemoryManager.h"
 #include "IpfCfg.h"
-#include "PMFAction.h"
+#include "IpfLiveManager.h"
+
+using namespace std;
 
 namespace Jitrino {
 namespace IPF {
 
 //========================================================================================//
-// CodeGenerator
+// LiveAnalyzer
 //========================================================================================//
 
-class CodeGenerator : public SessionAction {
+class LiveAnalyzer {
 public:
-                         CodeGenerator();
-    void                 run();
-    virtual              ~CodeGenerator() {}
+                  LiveAnalyzer(Cfg&);
+    void          analyze();
+    void          dce();
+    void          verify();
 
 protected:
-    CompilationInterface *compilationInterface;
-    MethodDesc           *methodDesc;
+    bool          analyzeNode(Node*);
+    void          pushPreds(Node*);
+    bool          isInstDead(Inst*);
 
-    Cfg                  *cfg;
-}; 
+    Cfg           &cfg;
+    MemoryManager &mm;
+    NodeVector    workSet;      // nodes to be iterated during liveSets calculation or dce
+    LiveManager   liveManager;  // Live Manager evaluates current live set from inst to inst
+    RegOpndSet    &liveSet;     // reference on current live set in liveManager
+    bool          dceFlag;      // make dce if flag is on
+};
 
 } // IPF
 } // Jitrino
 
-#endif /*IPFCODEGENERATOR_H_*/
+#endif /*IPFLIVEANALYZER_H_*/

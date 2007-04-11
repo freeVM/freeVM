@@ -17,64 +17,42 @@
                                                                                                             
 /**
  * @author Intel, Konstantin M. Anisimov, Igor V. Chebykin
+ * @version $Revision: 1.1 $
  *
  */
 
-#ifndef IRPRINTER_H_
-#define IRPRINTER_H_
+#ifndef IPFINSTRUMENTATOR_H_
+#define IPFINSTRUMENTATOR_H_
 
-#include <string>
-#include <iostream>
-#include <fstream>
 #include "IpfCfg.h"
-#include "IpfLiveManager.h"
+#include "IpfOpndManager.h"
+#include "DrlVMInterface.h"
 
 namespace Jitrino {
 namespace IPF {
 
 //=======================================================================================//
-// IrPrinter
+// Instrumentator
 //========================================================================================//
 
-class IrPrinter {
+class Instrumentator {
 public:
-                   IrPrinter(Cfg&);
-    void           printCfgDot(char*);
-    void           printLayoutDot(char*);
-    void           printAsm(ostream&);
+                   Instrumentator(Cfg&);
+    void           instrument();
+    static void    methodStart(Method_Handle);
+    static void    methodEnd(Method_Handle);
 
-    static string  toString(MethodDesc*);
-    static string  toString(Inst*);
-    static string  toString(Opnd*);
-    static string  toString(QpNode*);
-    static string  toString(OpndSet&);
-    static string  toString(RegOpndSet&);
-    static string  toString(OpndVector&);
-    static string  toString(InstVector&);
-    static string  toString(InstList&);
-    static string  toString(Chain&);
-    static string  toString(NodeKind);
-    static string  toString(EdgeKind);
-    static string  toString(OpndKind);
-    static string  toString(DataKind);
-    static string  boolString(uint64, uint16=16);
-    
 protected:
-    void           printEdgeDot(Edge*);
-    void           printNodeDot(Node*);
-    void           printNodeAsm(BbNode*);
+    void           instrumentStart();
+    void           instrumentEnd();
+    void           genNativeCall(uint64, InstVector&);
 
-    void           printHead();
-    void           printTail();
-    
     MemoryManager  &mm;
+    OpndManager    *opndManager;
     Cfg            &cfg;
-    ostream        *os;           // output stream
-    ofstream       *ofs;          // file output stream
-    char           logDir[500];
 };
 
 } // IPF
 } // Jitrino
 
-#endif /*IRPRINTER_H_*/
+#endif /*IPFINSTRUMENTATOR_H_*/
