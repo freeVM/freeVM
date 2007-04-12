@@ -33,8 +33,16 @@
 
 using namespace jdwp;
 
-const char* TransportManager::onLoadDecFuncName = "_jdwpTransport_OnLoad@16";
-const char* TransportManager::unLoadDecFuncName = "_jdwpTransport_UnLoad@4";
+#ifdef _WIN64
+    // for 64-bit Windows platform
+    const char* TransportManager::onLoadDecFuncName = "jdwpTransport_OnLoad";
+    const char* TransportManager::unLoadDecFuncName = "jdwpTransport_UnLoad";
+#else
+    // for 32-bit Windows platform
+    const char* TransportManager::onLoadDecFuncName = "_jdwpTransport_OnLoad@16";
+    const char* TransportManager::unLoadDecFuncName = "_jdwpTransport_UnLoad@4";
+#endif // _WIN64
+
 const char TransportManager::pathSeparator = ';';
 
 void TransportManager::StartDebugger(const char* command) throw(AgentException)
