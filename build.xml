@@ -23,17 +23,10 @@
         http://incubator.apache.org/harmony
     </description>
 
+    <import file="download.xml"/>
+
     <!--The cc.property file contains the nameand values of properties-->
     <property file="cc.properties" />
-
-
-    <!-- files we need -->
-    <property name="cc.filename" value="cruisecontrol-bin-2.5" />
-    <property name="junitjar.filename" value="ant-junit-1.6.5" />
-
-    <!-- where to fetch from -->
-    <property name="cc.location" value="http://umn.dl.sourceforge.net/sourceforge/cruisecontrol/" />
-    <property name="junitjar.location" value="http://mirrors.ibiblio.org/pub/mirrors/maven2/ant/ant-junit/1.6.5/" />
 
     <!-- where to assemble all the pieces -->
     <property name="target.dir" location="cc" />
@@ -168,29 +161,26 @@ port.value=111
          Main setup - download, unpack, checkout
          ========================================== -->
     <target name="setup" description="fetch and setup build/test/ci system"
-        depends="set.proxy,no.proxy">
+        depends="set.proxy,no.proxy,download">
 
-        <!-- get the version of CruiseControl unless we have the zip locally -->
-
-        <get src="${cc.location}${cc.filename}.zip" dest="${cc.filename}.zip" usetimestamp="true" verbose="true" />
-
-        <get src="${junitjar.location}${junitjar.filename}.jar" dest="${junitjar.filename}.jar" usetimestamp="true" verbose="true" />
+        <property name="cc.filename" location="${depends}/cruisecontrol_2.6.1/cruisecontrol.zip" />
+        <property name="junitjar.filename" value="${depends}/ant-junit-1.6.5/ant-junit-1.6.5.jar" />
 
         <!-- unzip it, rename, add ant-junit jar and cleanout the junk -->
 
-        <unzip src="${cc.filename}.zip" dest="." />
+        <unzip src="${cc.filename}" dest="." />
 
-        <move file="${cc.filename}" tofile="${target.dir}" />
+        <move file="cruisecontrol-bin-2.5" tofile="${target.dir}" />
 
         <delete dir="${target.dir}/projects/connectfour" includeEmptyDirs="true" verbose="false" />
         <delete dir="${target.dir}/logs/connectfour" includeEmptyDirs="true" verbose="false" />
         <delete file="${target.dir}/config.xml" />
         <delete file="${target.dir}/copyres.xml" />
 
-        <delete dir="${cc.filename}" includeEmptyDirs="true" verbose="false" />
+        <delete dir="cruisecontrol-bin-2.5" includeEmptyDirs="true" verbose="false" />
 
         <!-- copy the ant-junit jar to cc/lib -->
-        <copy file="${junitjar.filename}.jar" todir="${target.dir}/lib" />
+        <copy file="${junitjar.filename}" todir="${target.dir}/lib" />
 
         <copy todir="${target.dir}" flatten="yes">
             <fileset dir="config/xsl" />
