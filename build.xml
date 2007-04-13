@@ -163,7 +163,7 @@ port.value=111
     <target name="setup" description="fetch and setup build/test/ci system"
         depends="set.proxy,no.proxy,download">
 
-        <property name="cc.filename" location="${depends}/cruisecontrol_2.6.1/cruisecontrol.zip" />
+        <property name="cc.filename" location="${depends}/cruisecontrol_2.5/cruisecontrol.zip" />
         <property name="junitjar.filename" value="${depends}/ant-junit-1.6.5/ant-junit-1.6.5.jar" />
 
         <!-- unzip it, rename, add ant-junit jar and cleanout the junk -->
