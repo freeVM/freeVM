@@ -252,13 +252,13 @@ public class FramesTest extends JDWPSyncTestCase {
                     + "(" + JDWPConstants.Error.getName(err) + ")");
         }
         String methodName, classSignature;
-        int frameNumber = 0;
+        int frameNumber = -1;
         int i = 0;
         for (Enumeration e = allFrames.elements(); e.hasMoreElements(); i++) {
             FrameStruct frame = (FrameStruct )e.nextElement();
             methodName = getMethodName(frame.loc.classID, frame.loc.methodID);
             classSignature = getClassSignature(frame.loc.classID);
-            if (frameNumber == 0 && FramesDebuggee.METHOD_NAME.equals(methodName)) {
+            if (frameNumber < 0 && FramesDebuggee.METHOD_NAME.equals(methodName)) {
                 frameNumber = i;
             }
                logWriter.println("\t" + i + ". frameID=" + frame.frameID
@@ -267,7 +267,7 @@ public class FramesTest extends JDWPSyncTestCase {
                     + "(" + frame.loc.index + ")");
         }
 
-        if (frameNumber <= 0) {
+        if (frameNumber < 0) {
             printErrorAndFail("frameNumber is unexpectedly equal to " + frameNumber);
         }
         
@@ -347,13 +347,13 @@ public class FramesTest extends JDWPSyncTestCase {
                     + "(" + JDWPConstants.Error.getName(err) + ")");
         }
         String methodName, classSignature;
-        int frameNumber = 0;
+        int frameNumber = -1;
         int i = 0;
         for (Enumeration e = allFrames.elements(); e.hasMoreElements(); i++) {
             FrameStruct frame = (FrameStruct )e.nextElement();
             methodName = getMethodName(frame.loc.classID, frame.loc.methodID);
             classSignature = getClassSignature(frame.loc.classID);
-            if (frameNumber == 0 && FramesDebuggee.METHOD_NAME.equals(methodName)) {
+            if (frameNumber < 0 && FramesDebuggee.METHOD_NAME.equals(methodName)) {
                 frameNumber = i;
             }
             logWriter.println("\t" + i + ". frameID=" + frame.frameID
@@ -362,7 +362,7 @@ public class FramesTest extends JDWPSyncTestCase {
                     + "(" + frame.loc.index + ")");
         }
 
-        if (frameNumber <= 0) {
+        if (frameNumber < 0) {
             logWriter.printError("frameNumber is unexpectedly equal to " + frameNumber);
             assertTrue("Invalid frameNumber", frameNumber > 0);
         }
