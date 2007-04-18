@@ -41,42 +41,60 @@
     <target name="build-tests" />
     <target name="test-module" depends="prepare-exclude, run-tests" />
 
-    <target name="build-native" >
+    <target name="build-native" depends="-compile-native, -copy-native-exe, -copy-native-progdb, -copy-native-data" />
+
+    <!-- compile universal samsa binary -->
+    <target name="-compile-native" >
 
         <echo message="Compiling SAMSA natives" />
         <echo message="hy.drlvm=${hy.drlvm}" />
         <echo message="harmony.jdktools=${harmony.jdktools}" />
             
-        <!-- Build launcher executables -->
         <make dir="${hy.samsa.src.main.native}/samsa/${hy.os}" />
 
-        <!-- Copy across the built executables -->
-        <copy todir="${hy.jdk}/bin" overwrite="yes">
-            <fileset dir="${hy.samsa.src.main.native}/samsa/${hy.os}">
-                <patternset includes="samsa${exe.suffix}" />
-            </fileset>
-        </copy>
+    </target>
 
-        <!-- now make copies for the tools -->
-            
-        <copy file="${hy.jdk}/bin/samsa${exe.suffix}" tofile="${hy.jdk}/bin/javac${exe.suffix}" />
+    <!-- copy samsa executable for different tools -->
+    <target name="-copy-native-exe" >
+
+        <property name="hy.samsa.exe" location="${hy.samsa.src.main.native}/samsa/${hy.os}/samsa${exe.suffix}" />
+
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/javac${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/javac${exe.suffix}" perm="ugo+x" />
-        <copy file="${hy.jdk}/bin/samsa${exe.suffix}" tofile="${hy.jdk}/bin/javah${exe.suffix}" />
-        <chmod file="${hy.jdk}/bin/javah${exe.suffix}" perm="ugo+x" />
-        <copy file="${hy.jdk}/bin/samsa${exe.suffix}" tofile="${hy.jdk}/bin/java${exe.suffix}" />
-        <chmod file="${hy.jdk}/bin/java${exe.suffix}" perm="ugo+x" />
-        <copy file="${hy.jdk}/bin/samsa${exe.suffix}" tofile="${hy.jdk}/bin/keytool${exe.suffix}" />
-        <chmod file="${hy.jdk}/bin/keytool${exe.suffix}" perm="ugo+x" />
-        <copy file="${hy.jdk}/bin/samsa${exe.suffix}" tofile="${hy.jdk}/bin/jarsigner${exe.suffix}" />
-        <chmod file="${hy.jdk}/bin/jarsigner${exe.suffix}" perm="ugo+x" />
 
-        <delete file="${hy.jdk}/bin/samsa${exe.suffix}"/>
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/javah${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/javah${exe.suffix}" perm="ugo+x" />
+
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/java${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/java${exe.suffix}" perm="ugo+x" />
+
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/keytool${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/keytool${exe.suffix}" perm="ugo+x" />
+
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/jarsigner${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/jarsigner${exe.suffix}" perm="ugo+x" />
         
-        <!-- copy the tool data -->
+    </target>
+
+    <!-- copy samsa symbol info for different tools -->
+    <target name="-copy-native-progdb" if="is.windows" >
+
+        <property name="hy.samsa.progdb" location="${hy.samsa.src.main.native}/samsa/${hy.os}/samsa${progdb.suffix}" />
+
+        <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/javac${progdb.suffix}" />
+        <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/javah${progdb.suffix}" />
+        <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/java${progdb.suffix}" />
+        <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/keytool${progdb.suffix}" />
+        <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/jarsigner${progdb.suffix}" />
+
+    </target>
+
+    <!-- copy samsa configuration data for different tools -->
+    <target name="-copy-native-data" >
 
         <copy todir="${hy.jdk}/bin/data" overwrite="yes">
             <fileset dir="${hy.samsa.src.main.resources}/data/">
-                <patternset includes="*.dat" />
+                <include name="*.dat" />
             </fileset>
         </copy>
 

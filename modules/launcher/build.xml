@@ -53,15 +53,17 @@
         <!-- Copy across the built executables -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.luni.src.main.native}/launcher">
-                <patternset includes="java${exe.suffix}" />
-                <patternset includes="javaw${exe.suffix}" />
+                <include name="java${exe.suffix}" />
+                <include name="javaw${exe.suffix}" if="is.windows" />
+                <include name="java${progdb.suffix}" if="is.windows" />
+                <include name="javaw${progdb.suffix}" if="is.windows" />
             </fileset>
         </copy>
 
         <!-- Make sure the Linux launcher has execute permission -->
         <chmod file="${hy.jdk}/jre/bin/java${exe.suffix}" perm="ugo+x" />
 
-      </target>
+    </target>
 
     <target name="prepare-exclude">
         <echo message="LAUNCER exclude list: ${launcher.exclude.file}" />
@@ -85,17 +87,10 @@
       </target>
 
     <!-- Clean natives -->
-    <target name="clean-native" depends="clean-jre">
+    <target name="clean-native">
         <echo message="Cleaning LAUNCHER natives" />
         <make dir="${hy.luni.src.main.native}/launcher/${hy.os}"
               target="clean" />
-    </target>
-
-    <target name="clean-jre" unless="is.hdk-build">
-        <delete includeEmptyDirs="true" failonerror="false">
-            <fileset dir="${hy.jdk}/jre/bin" includes="**/*" />
-            <fileset dir="${hy.jdk}/jre/lib" />
-        </delete>
     </target>
 
 </project>

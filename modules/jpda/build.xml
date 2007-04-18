@@ -64,7 +64,8 @@
         <!-- copy to our local jdk skeleton -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
             <fileset dir="${hy.jpda.src.main.native}/jdwp/${hy.os}">
-                <patternset includes="*${shlib.suffix}*" />
+                <include name="*${shlib.suffix}"/>
+                <include name="*${progdb.suffix}" if="is.windows" />
             </fileset>
         </copy>
     </target>

@@ -38,18 +38,18 @@ WARNING_LEVEL=
 !ENDIF
 
 HYCOMMONCFLAGS = \
-  -GF -Gs -MD -Zm400 \
+  $(WARNING_LEVEL) -GF -Gs -Zm400 \
   -D_DLL -D_MT -D_WINSOCKAPI_ $(PLATFORM_64) \
   -I$(HY_HDK)\include -I$(HY_HDK)\jdk\include -I.
 
 !ifndef HYDEBUGCFLAGS
 HYDEBUGCFLAGS = \
-  -Zi -Od -D_DEBUG
+  -Zi -Od -MDd -D_DEBUG
 !endif
 
 !ifndef HYRELEASECFLAGS  
 HYRELEASECFLAGS = \
-  -Ogityb1 -DNDEBUG
+  -Ogityb1 -MD -DNDEBUG
 !endif
 
 !IF "$(HY_CFG)" == "debug"
