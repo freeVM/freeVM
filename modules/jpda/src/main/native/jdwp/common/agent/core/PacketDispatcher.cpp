@@ -82,132 +82,140 @@ PacketDispatcher::Run(JNIEnv *jni)
 {
     JDWP_TRACE_ENTRY("Run(" << jni << ")");
 
-    m_isRunning = true;
-
-    MonitorAutoLock lock(m_completionMonitor JDWP_FILE_LINE);
-    TransportManager &transport = GetTransportManager();
-    
-    try
-    {
-        // run multiplle sessions in a loop
-        for (; ;)
+    try {
+        m_isRunning = true;
+        
+        MonitorAutoLock lock(m_completionMonitor JDWP_FILE_LINE);
+        TransportManager &transport = GetTransportManager();
+        
+        try
         {
-            // connect for new session
-            JDWP_TRACE_PROG("Run: start new session");
-            try
+            // run multiplle sessions in a loop
+            for (; ;)
             {
-                transport.Connect();
-            }
-            catch (const TransportException& e)
-            {
-                JDWP_TRACE_PROG("Run: Exception in connection: "
+                // connect for new session
+                JDWP_TRACE_PROG("Run: start new session");
+                try
+                {
+                    transport.Connect();
+                }
+                catch (const TransportException& e)
+                {
+                    JDWP_TRACE_PROG("Run: Exception in connection: "
+                                    << e.what() << " [" << e.ErrCode() 
+                                    << "/" << e.TransportErrorCode() << "]");
+                    if (!IsDead()) {
+                        JDWP_DIE(e.what() << " [" << e.ErrCode() << "/"
+                                    << e.TransportErrorCode() << "]: " 
+                                    << GetTransportManager().GetLastTransportError());
+                    }
+                    break;
+                }
+        
+                // start session and execute commands
+                try
+                {
+                    // add internal request for automatic VMDeath event with no modifiers
+                    GetRequestManager().AddInternalRequest(jni,
+                        new AgentEventRequest(JDWP_EVENT_VM_DEATH, JDWP_SUSPEND_NONE));
+        
+                    // release events
+                    GetEventDispatcher().ReleaseEvents();
+        
+                    // read and execute commands
+                    m_isProcessed = true;
+                    while (m_isProcessed)
+                    {
+                        // read command
+                        try {
+                            JDWP_TRACE_PROG("Run: handle next command");
+                            m_cmdParser.ReadCommand();
+                            if (m_cmdParser.command.GetLength() == 0)
+                            break;
+                        }
+                        catch (const TransportException& e)
+                        {
+                            JDWP_TRACE_PROG("Run: Exception in reading command: " 
                                 << e.what() << " [" << e.ErrCode() 
                                 << "/" << e.TransportErrorCode() << "]");
-                if (!IsDead()) {
-                    JDWP_DIE(e.what() << " [" << e.ErrCode() << "/"
-                                << e.TransportErrorCode() << "]: " 
-                                << GetTransportManager().GetLastTransportError());
-                }
-                break;
-            }
-
-            // start session and execute commands
-            try
-            {
-                // add internal request for automatic VMDeath event with no modifiers
-                GetRequestManager().AddInternalRequest(jni,
-                    new AgentEventRequest(JDWP_EVENT_VM_DEATH, JDWP_SUSPEND_NONE));
-
-                // release events
-                GetEventDispatcher().ReleaseEvents();
-
-                // read and execute commands
-                m_isProcessed = true;
-                while (m_isProcessed)
-                {
-                    // read command
-                    try {
-                        JDWP_TRACE_PROG("Run: handle next command");
-                        m_cmdParser.ReadCommand();
-                        if (m_cmdParser.command.GetLength() == 0)
-                        break;
-                    }
-                    catch (const TransportException& e)
-                    {
-                        JDWP_TRACE_PROG("Run: Exception in reading command: " 
-                            << e.what() << " [" << e.ErrCode() 
-                            << "/" << e.TransportErrorCode() << "]");
-                        if (m_isProcessed && !IsDead())
-                        {
-                            char* msg = GetTransportManager().GetLastTransportError();
-                            AgentAutoFree af(msg JDWP_FILE_LINE);
-
-                            if (e.TransportErrorCode() == JDWPTRANSPORT_ERROR_OUT_OF_MEMORY) {
-                                JDWP_DIE(e.what() << " [" << e.ErrCode() << "/"
-                                            << e.TransportErrorCode() << "]: " << msg);
-                            } else {
-                                JDWP_ERROR(e.what() << " [" << e.ErrCode() << "/"
-                                            << e.TransportErrorCode() << "]: " << msg);
+                            if (m_isProcessed && !IsDead())
+                            {
+                                char* msg = GetTransportManager().GetLastTransportError();
+                                AgentAutoFree af(msg JDWP_FILE_LINE);
+        
+                                if (e.TransportErrorCode() == JDWPTRANSPORT_ERROR_OUT_OF_MEMORY) {
+                                    JDWP_DIE(e.what() << " [" << e.ErrCode() << "/"
+                                                << e.TransportErrorCode() << "]: " << msg);
+                                } else {
+                                    JDWP_ERROR(e.what() << " [" << e.ErrCode() << "/"
+                                                << e.TransportErrorCode() << "]: " << msg);
+                                }
                             }
+                            break;
                         }
-                        break;
-                    }
-
-                    // execute command and prevent from reset while execution
-                    {
-                        MonitorAutoLock lock(m_executionMonitor JDWP_FILE_LINE);
-                        m_cmdDispatcher.ExecCommand(jni, &m_cmdParser);
+        
+                        // execute command and prevent from reset while execution
+                        {
+                            MonitorAutoLock lock(m_executionMonitor JDWP_FILE_LINE);
+                            m_cmdDispatcher.ExecCommand(jni, &m_cmdParser);
+                        }
                     }
                 }
-            }
-            catch (const AgentException& e)
-            {
-                JDWP_TRACE_PROG("Run: Exception in executing command: "
-                                << e.what() << " [" << e.ErrCode() << "]");
-                if (!IsDead()) {
-                    JDWP_ERROR(e.what() << " [" << e.ErrCode() << "]");
+                catch (const AgentException& e)
+                {
+                    JDWP_TRACE_PROG("Run: Exception in executing command: "
+                                    << e.what() << " [" << e.ErrCode() << "]");
+                    if (!IsDead()) {
+                        JDWP_ERROR(e.what() << " [" << e.ErrCode() << "]");
+                    }
                 }
-            }
-
-            // reset all modules after session finished
-            JDWP_TRACE_PROG("Run: reset session");
-            ResetAll(jni);
-
-            // no more sessions if VMDeath event occured
-            if (IsDead()) {
-                JDWP_TRACE_PROG("Run: VM is dead -> shutdown");
-                break;
-            }
-
-            // no more sessions in attach mode
-            if (!GetOptionParser().GetServer()) {
-                JDWP_TRACE_PROG("Run: attach mode -> shutdown");
-                break;
+        
+                // reset all modules after session finished
+                JDWP_TRACE_PROG("Run: reset session");
+                ResetAll(jni);
+        
+                // no more sessions if VMDeath event occured
+                if (IsDead()) {
+                    JDWP_TRACE_PROG("Run: VM is dead -> shutdown");
+                    break;
+                }
+        
+                // no more sessions in attach mode
+                if (!GetOptionParser().GetServer()) {
+                    JDWP_TRACE_PROG("Run: attach mode -> shutdown");
+                    break;
+                }
             }
         }
+        catch (const AgentException& e)
+        {
+            JDWP_TRACE_PROG("Run: Exception in PacketDispatcher: "
+                            << e.what() << " [" << e.ErrCode() << "]");
+            if (!IsDead()) {
+                JDWP_DIE(e.what() << " [" << e.ErrCode() << "]"); 
+            }
+        }
+        
+        // stop also EventDispatcher thread
+        try 
+        {
+            JDWP_TRACE_PROG("Run: stop EventDispatcher");
+            GetEventDispatcher().Stop(jni);
+        }
+        catch (const AgentException& e)
+        {
+            JDWP_TRACE_PROG("Run: Exception in stopping EventDispatcher: "
+                            << e.what() << " [" << e.ErrCode() << "]");
+        }
+
+        m_isRunning = false;
     }
     catch (const AgentException& e)
     {
-        JDWP_TRACE_PROG("Run: Exception in PacketDispatcher: "
-                        << e.what() << " [" << e.ErrCode() << "]");
-        if (!IsDead()) {
-            JDWP_DIE(e.what() << " [" << e.ErrCode() << "]"); 
-        }
-    }
-
-    // stop also EventDispatcher thread
-    try 
-    {
-        JDWP_TRACE_PROG("Run: stop EventDispatcher");
-        GetEventDispatcher().Stop(jni);
-    }
-    catch (const AgentException& e)
-    {
-        JDWP_TRACE_PROG("Run: Exception in stopping EventDispatcher: "
+        // just report an error, cannot do anything else
+        JDWP_ERROR("Exception in PacketDispatcher synchronization: "
                         << e.what() << " [" << e.ErrCode() << "]");
     }
-
-    m_isRunning = false;
 }
 
 //-----------------------------------------------------------------------------

@@ -24,6 +24,7 @@
 #include "EventDispatcher.h"
 #include "ThreadManager.h"
 #include "OptionParser.h"
+#include "PacketDispatcher.h"
 #include "Log.h"
 
 using namespace jdwp;
@@ -44,27 +45,46 @@ EventDispatcher::EventDispatcher(size_t limit) throw() {
 void EventDispatcher::Run(JNIEnv* jni) {
     JDWP_TRACE_ENTRY("Run(" << jni << ')');
 
-    MonitorAutoLock malCM(m_completeMonitor JDWP_FILE_LINE);
-
-    while (!m_stopFlag) {
-        EventComposer *ec;
-
-        // get next event from queue
-        {
-            MonitorAutoLock lock(m_queueMonitor JDWP_FILE_LINE);
-            while (m_holdFlag || m_eventQueue.empty()) {
-                m_queueMonitor->Wait();
-                if (m_stopFlag) {
-                    return;
+    try {
+        MonitorAutoLock malCM(m_completeMonitor JDWP_FILE_LINE);
+        
+        try {
+            while (!m_stopFlag) {
+                EventComposer *ec;
+            
+                // get next event from queue
+                {
+                    MonitorAutoLock lock(m_queueMonitor JDWP_FILE_LINE);
+                    while (m_holdFlag || m_eventQueue.empty()) {
+                        m_queueMonitor->Wait();
+                        if (m_stopFlag) {
+                            return;
+                        }
+                    }
+                    ec = m_eventQueue.front();
+                    m_eventQueue.pop();
+                    m_queueMonitor->NotifyAll();
                 }
+            
+                // send event and suspend thread according to suspend policy
+                SuspendOnEvent(jni, ec);
             }
-            ec = m_eventQueue.front();
-            m_eventQueue.pop();
-            m_queueMonitor->NotifyAll();
         }
-
-        // send event and suspend thread according to suspend policy
-        SuspendOnEvent(jni, ec);
+        catch (const AgentException& e)
+        {
+            JDWP_ERROR("Exception in EventDispatcher thread: "
+                            << e.what() << " [" << e.ErrCode() << "]");
+        
+            // reset current session
+            JDWP_TRACE_PROG("Run: reset session after exception");
+            GetPacketDispatcher().ResetAll(jni);
+        }
+    }
+    catch (const AgentException& e)
+    {
+        // just report an error, cannot do anything else
+        JDWP_ERROR("Exception in EventDispatcher synchronization: "
+                        << e.what() << " [" << e.ErrCode() << "]");
     }
 }
 
