@@ -1,0 +1,26 @@
+<parameters>
+
+    <required>
+        <jdk.to.test.home description="Home of the Java runtime to run Dacapo on" 
+            value="${drlvm.parameters.shared.jre.dir}"/>
+    </required>    
+
+    <optional>
+        <always.mail description="Always send mail notification or only to identify status change" 
+            value="true"/>
+        <benchmarks description="Set of benchmarks to run"
+            value="antlr bloat chart eclipse fop hsqldb lusearch luindex pmd xalan jython"/>
+        <size description="Specifies the workload size, can be 'small', 'default' or 'large'"
+            value="small"/>
+        <download.address description="URL where to get Dacapo jar from"
+            value="http://switch.dl.sourceforge.net/sourceforge/dacapobench"/>
+        <jar.name description="Exact name of the Dacapo jar file itself"
+            value="dacapo-2006-10-MR2.jar"/>
+    </optional>
+
+    <cc>
+        <publisher value="${adaptors.dir}/${suite.name}/publisher.xml"/>
+    </cc>
+
+</parameters>
+

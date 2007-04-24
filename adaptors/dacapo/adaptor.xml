@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<project name="dacapo" default="run" basedir=".">
+
+    <property name="work.dir" location="${results.dir}/${suite.name}"/>
+    <property name="output.log" value="${work.dir}/${suite.name}_output.txt"/>
+    
+    <target name="setup">
+        <description>${suite.name} setup</description>
+        <mkdir dir="${work.dir}"/>
+        <mkdir dir="${checkouts.dir}/${suite.name}"/>
+
+        <!-- download dacapo if needed-->
+        <available property="doesnt.need.download" file="${checkouts.dir}/${suite.name}/${dacapo.parameters.optional.jar.name}"/>
+        <antcall target="-dacapo.download"/>
+    </target>
+
+    <target name="-dacapo.download" unless="doesnt.need.download">
+        <get src="${dacapo.parameters.optional.download.address}/${dacapo.parameters.optional.jar.name}"
+            dest="${checkouts.dir}/${suite.name}" usetimestamp="false" verbose="true"/>
+    </target>
+    
+    <target name="run">
+        <description>${suite.name} run</description>
+        
+        <echo file="${output.log}" message="Running of ${dacapo.parameters.optional.jar.name} on ${dacapo.jdk.to.test.home} runtime...${line.separator}"/>
+        <echo file="${output.log}" message="Set of tests: ${dacapo.parameters.optional.benchmarks}${line.separator}" append="true"/>
+        
+        <exec executable="${dacapo.jdk.to.test.home}/bin/java" dir="${results.dir}/${suite.name}" append="true" failonerror="false">
+            <arg line="-jar ${checkouts.dir}/${suite.name}/${dacapo.parameters.optional.jar.name}"/>
+            <arg line="-s ${dacapo.parameters.optional.size}"/>
+            <arg line="${dacapo.parameters.optional.benchmarks}"/>
+            <redirector alwaysLog="true" output="${output.log}"/>
+        </exec>
+
+        <!-- count "number" of requested workloads -->
+        <echo file="${work.dir}/dacapo_tests.tmp">${dacapo.parameters.optional.benchmarks}</echo>
+        <loadfile srcFile="${work.dir}/dacapo_tests.tmp" property="number.of.tests" failonerror="false">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\s*\w+\s*" replace="." flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </loadfile>
+
+        <!-- count "number" of executed workloads -->        
+        <copy file="${output.log}" tofile="${work.dir}/dacapo_runned_tests.tmp" overwrite="true" failonerror="false">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="^===== DaCapo \w+ PASSED in \d+ msec =====.*"/>
+                </linecontainsregexp>
+                <tokenfilter>
+                    <replaceregex pattern="^.*$" replace="." flags="mg"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+        <replaceregexp file="${work.dir}/dacapo_runned_tests.tmp" match="\r|\n" replace="" flags="sg"/>
+        <loadfile srcFile="${work.dir}/dacapo_runned_tests.tmp" property="number.of.runned.tests" failonerror="false"/>
+
+        <echo>Number of tests: (${number.of.tests})</echo>
+        <echo>N of runned tests(${number.of.runned.tests})</echo>
+        
+        <fail message="Not all workloads completed successfully">
+            <condition>
+                <not>
+                    <equals arg1="${number.of.tests}" arg2="${number.of.runned.tests}"/>
+                </not>
+            </condition>
+        </fail>
+        
+    </target>
+
+    <target name="clean">
+        <description>${suite.name} clean</description>
+        <echo>${suite.name} clean does nothing.</echo>
+    </target>
+
+</project>
+
