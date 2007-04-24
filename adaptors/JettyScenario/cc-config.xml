@@ -1,0 +1,86 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<cruisecontrol>
+
+    <!-- Keep this tag if you want to see any parameter value accessible 
+         from adaptor.xml here -->
+    <!-- @BT.PARAMETERS.INCLUDE@ -->
+    
+    <!-- Tag resolved to the name of 
+         the test suite this config is related to. -->
+    <project name="@BT.PROJECT@">
+
+        <listeners>
+            <!-- Resolved to <currentbuildstatuslistener file="${logs.dir}/...">
+                 Should be here if there are any suites depending
+                 on run status of this suite -->
+            <!-- @BT.LISTENER@ -->
+        </listeners>
+
+        <bootstrappers>
+            <!-- Resolved to 
+                    <svnbootstrapper> 
+                 if we use SVN for sources, i.e. 
+                    ${suite.name}.parameters.cc.usesvn="${sources.location}"
+                 is set -->
+            <!-- @BT.BOOTSTRAPPER@ -->
+        </bootstrappers>
+
+        <modificationset quietperiod="60">
+            <!-- Tag Resolution Rules: 
+                - in case of defined SVN (@{suite.name}.parameters.cc.usesvn),
+                  resolved to
+                    <svn LocalWorkingCopy="${path.to.local.svn.repository}"/>
+                - in case of defined trigger (@{suite.name}.parameters.cc.trigger),
+                  resolved to
+                    <filesystem folder="${path.to.trigger.file}"
+                - for any dependency it is resolved to
+                    <buildstatus logdir='${path.to.log.for.some.suite}'/>
+                - in any case it is additionally resolved to
+                    <forceonly/>
+            -->
+            <!-- @BT.MODIFICATIONSET@ -->
+        </modificationset>
+
+        <schedule interval="180">
+            <!-- This tag MUST be present!
+                 It makes correct call to adaptor's run target -->
+            <!-- @BT.ADAPTORCALL@ -->
+        </schedule>
+
+        <publishers>
+            <antpublisher antworkingdir="${adaptors.dir}/@BT.PROJECT@"
+                          buildfile="adaptor.xml"
+                          target="publish"
+                          anthome="${@BT.PROJECT@.parameters.optional.ant.home.dir}">
+                <property name="sendmail"    value="${@BT.PROJECT@.parameters.required.use.mail.notifications}"/>
+                <property name="mailhost"    value="${@BT.PROJECT@.parameters.required.mail.notification.mailhost}"/>
+                <property name="mailport"    value="${@BT.PROJECT@.parameters.optional.mail.notification.mailhost.port}"/>
+                <property name="username"    value="${@BT.PROJECT@.parameters.optional.mail.notification.mailhost.username}"/>
+                <property name="password"    value="${@BT.PROJECT@.parameters.optional.mail.notification.mailhost.password}"/>
+                <property name="fromaddress" value="${@BT.PROJECT@.parameters.required.mail.notification.from}"/>
+                <property name="toaddress"   value="${@BT.PROJECT@.parameters.required.mail.notification.to}"/>
+                <property name="file"        value="TEST-JettyScenario.txt"/>
+                <property name="resultfile"  value="${checkouts.dir}/@BT.PROJECT@/results/result.property"/>
+                <property name="resultdir"   value="${checkouts.dir}/@BT.PROJECT@/results"/>
+                <property name="serverjre"   value="${@BT.PROJECT@.parameters.required.jetty.server.jre}"/>
+                <property name="fwjre"       value="${@BT.PROJECT@.parameters.required.scenario.framework.jre}"/>
+            </antpublisher>
+        </publishers>
+
+    </project>
+</cruisecontrol>

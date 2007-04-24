@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                            BT Adaptor for Jetty scenario
+     ====================================================================== -->
+<project name="JettyScenario" default="run" basedir=".">
+
+    <condition property="ps" value="\" else="/">
+            <os family="Windows"/>
+    </condition>
+    <property name="scenario.dir" location="${checkouts.dir}${ps}${suite.name}"/>
+    <property name="scenario.bin.dir" location="${scenario.dir}${ps}classes"/>
+    <property name="scenario.results.dir" location="${scenario.dir}${ps}results"/>
+
+    <target name="setup">
+        <condition property="ps" value="\" else="/">
+            <os family="Windows"/>
+        </condition>
+        <log message="============= Adaptor for ${suite.name}: Set Up .."/>
+        <log message=""/>
+        <log message="=== External dependencies ========================"/>
+        <log message="Jetty exists:      ${JettyScenario.parameters.external.jetty-6.1.2rc1.exists}"/>
+        <log message="Jetty basename:    ${JettyScenario.parameters.external.jetty-6.1.2rc1.basename}"/>
+        <log message="Jetty location:    ${ext.jetty-6.1.2rc1.location}"/>
+        <log message="=================================================="/>
+        <log message="HtmlUnit exists:   ${JettyScenario.parameters.external.htmlunit-1.11.exists}"/>
+        <log message="HtmlUnit basename: ${JettyScenario.parameters.external.htmlunit-1.11.basename}"/>
+        <log message="HtmlUnit location: ${ext.htmlunit-1.11.location}"/>
+        <log message="=================================================="/>
+        <log message="JUnit exists:      ${JettyScenario.parameters.external.junit-3.8.2.exists}"/>
+        <log message="JUnit basename:    ${JettyScenario.parameters.external.junit-3.8.2.basename}"/>
+        <log message="JUnit location:    ${ext.junit-3.8.2.location}"/>
+        <log message="=================================================="/>
+        <log message=""/>
+        <log message="=== Required parameters =========================="/>
+        <log message="Jetty JRE:    ${JettyScenario.parameters.required.jetty.server.jre}"/>
+        <log message="Scenario JRE: ${JettyScenario.parameters.required.scenario.framework.jre}"/>
+        <log message="=================================================="/>
+
+        <!--
+            Performing scenario setup in the following order:
+
+            1. Create working directory
+            2. Checkout scenario sources and resources from svn
+            3. Compile scenario sources
+        -->
+
+        <mkdir dir="${scenario.bin.dir}"/>
+
+        <exec executable="svn" dir="${trunk.dir}" failonerror="true">
+            <arg line="co ${svn.url}"/>
+            <arg line="${trunk.dir}"/>
+        </exec>
+
+        <javac srcdir="${scenario.dir}${ps}src" destdir="${scenario.bin.dir}">
+            <classpath>
+                <pathelement location="${scenario.bin.dir}"/>
+                <pathelement location="${ext.junit-3.8.2.location}"/>
+                <fileset dir="${ext.htmlunit-1.11.location}">
+                    <include name="lib${ps}*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="update">
+        <log message="============= Adaptor for ${suite.name}: Update .."/>
+        <exec executable="svn" dir="${trunk.dir}" failonerror="true">
+            <arg line="update"/>
+        </exec>
+    </target>
+
+    <target name="run">
+        <log message="============= Adaptor for ${suite.name}: Run .."/>
+        <condition property="exe.ext" value=".exe" else="">
+            <os family="Windows"/>
+        </condition>
+        <condition property="ps" value="\" else="/">
+            <os family="Windows"/>
+        </condition>
+
+        <!--
+            Performing scenario run in the following order:
+
+            1. Create directory for scenario results
+            2. Start Jetty server
+            3. Run the scenario by 'junit' task
+            4. Stop Jetty server
+            5. Collect logs and results in results directory
+        -->
+
+        <mkdir dir="${scenario.results.dir}"/>
+
+        <parallel>
+            <sequential>
+                <log message="Starting Jetty server"/>
+                <java jvm="${JettyScenario.parameters.required.jetty.server.jre}${ps}bin${ps}java${exe.ext}"
+                      dir="${ext.jetty-6.1.2rc1.location}"
+                      classname="start.jar"
+                      fork="true"
+                      spawn="false"
+                      output="${scenario.results.dir}${ps}jetty.log">
+                    <jvmarg value="-Djetty.port=7070"/>
+                    <jvmarg value="-DSTOP.PORT=4444"/>
+                    <jvmarg value="-DSTOP.KEY=kill"/>
+                    <jvmarg value="-jar"/>
+                </java>
+            </sequential>
+
+            <sequential>
+                <sleep milliseconds="${JettyScenario.parameters.optional.jetty.server.timeout}"/>
+
+                <junit jvm="${JettyScenario.parameters.required.scenario.framework.jre}${ps}bin${ps}java${exe.ext}"
+                       dir="${scenario.dir}"
+                       fork="true"
+                       forkmode="once"
+                       haltonerror="false"
+                       haltonfailure="false"
+                       printsummary="on"
+                       failureproperty="scenario.failed">
+                    <jvmarg value="-Djetty.scenario.resources.path=${scenario.dir}${ps}resources"/>
+                    <jvmarg value="-Djetty.scenario.results.path=${scenario.results.dir}"/>
+                    <jvmarg value="-Djetty.scenario.savepages=${JettyScenario.parameters.optional.do.save.pages}"/>
+                    <jvmarg value="-Djetty.server.startup.timeout=${JettyScenario.parameters.optional.jetty.server.timeout}"/>
+                    <jvmarg value="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog"/>
+                    <jvmarg value="-Dorg.apache.commons.logging.simplelog.defaultlog=error"/>
+                    <classpath >
+                        <pathelement location="${scenario.bin.dir}"/>
+                        <pathelement location="${ext.junit-3.8.2.location}"/>
+                        <fileset dir="${ext.htmlunit-1.11.location}">
+                            <include name="lib${ps}*.jar"/>
+                        </fileset>
+                    </classpath>
+                    <formatter type="plain" />
+                    <test name="JettyScenario" todir="${scenario.results.dir}"/>
+                </junit>
+
+                <echo file="${scenario.results.dir}${ps}result.property">JettyScenario.failed=${scenario.failed}</echo>
+
+                <log message="Stopping Jetty server"/>
+                <java jvm="${JettyScenario.parameters.required.jetty.server.jre}${ps}bin${ps}java${exe.ext}"
+                      dir="${ext.jetty-6.1.2rc1.location}"
+                      classname="start.jar"
+                      fork="true"
+                      spawn="false"
+                      failonerror="false">
+                    <jvmarg value="-Djetty.port=7070"/>
+                    <jvmarg value="-DSTOP.PORT=4444"/>
+                    <jvmarg value="-DSTOP.KEY=kill"/>
+                    <jvmarg value="-jar"/>
+                    <arg value="--stop"/>
+                </java>
+                <fail message="Jetty scenario failed" if="scenario.failed"/>
+            </sequential>
+        </parallel>
+
+    </target>
+
+    <target name="publish">
+        <condition property="exe.ext" value=".exe" else="">
+            <os family="Windows"/>
+        </condition>
+        <condition property="ps" value="\" else="/">
+            <os family="Windows"/>
+        </condition>
+        <condition property="use.mail.publisher">
+            <equals arg1="${sendmail}" arg2="yes" casesensitive="false" trim="true"/>
+        </condition>
+        <property file="${resultfile}"/>
+        <condition property="build.failed">
+            <equals arg1="${JettyScenario.failed}" arg2="true" casesensitive="false"/>
+        </condition>
+        <property name="buildname" value="${os.name} ${os.version} ${os.arch}"/>
+        <antcall target="-build-failed-subject"/>
+        <antcall target="-build-passed-subject"/>
+    </target>
+
+    <target name="-mail-publish" if="use.mail.publisher">
+        <echo file="${resultdir}${ps}notification.txt">Jetty server JRE:${line.separator}${line.separator}</echo>
+        <exec executable="${serverjre}${ps}bin${ps}java${exe.ext}"
+              spawn="false"
+              failonerror="false"
+              output="${resultdir}${ps}notification.txt"
+              append="true">
+            <arg value="-version"/>
+        </exec>
+        <echo file="${resultdir}${ps}notification.txt" append="true">Scenario framework JRE:${line.separator}${line.separator}</echo>
+        <exec executable="${fwjre}${ps}bin${ps}java${exe.ext}"
+              spawn="false"
+              failonerror="false"
+              output="${resultdir}${ps}notification.txt"
+              append="true">
+            <arg value="-version"/>
+        </exec>
+        <echo file="${resultdir}${ps}notification.txt" append="true">${line.separator}================================================================================</echo>
+        <echo file="${resultdir}${ps}notification.txt" append="true">${line.separator}Scenario results:${line.separator}${line.separator}</echo>
+        <concat destfile="${resultdir}${ps}notification.txt" append="true">
+            <filelist dir="${resultdir}" files="${file}"/>
+        </concat>
+        <echo file="${resultdir}${ps}notification.txt" append="true">${line.separator}================================================================================</echo>
+        <echo file="${resultdir}${ps}notification.txt" append="true">${line.separator}Jetty server output:${line.separator}${line.separator}</echo>
+        <concat destfile="${resultdir}${ps}notification.txt" append="true">
+            <filelist dir="${resultdir}" files="jetty.log"/>
+        </concat>
+
+        <mail mailhost="${mailhost}"
+              mailport="${mailport}"
+              user="${username}"
+              password="${password}"
+              from="${fromaddress}"
+              tolist="${toaddress}"
+              subject="${subject}"
+              messagefile="${resultdir}${ps}notification.txt"
+              messagemimetype="text/plain"
+              failonerror="false"/>
+    </target>
+
+    <target name="-build-failed-subject" if="build.failed">
+        <property name="subject" value="[build-test alert] BUILD FAILED ${buildname}: Jetty scenario on drlvm"/>
+        <antcall target="-mail-publish"/>
+    </target>
+
+    <target name="-build-passed-subject" unless="build.failed">
+        <property name="subject" value="[build-test alert] BUILD SUCCEEDED ${buildname}: Jetty scenario on drlvm"/>
+        <antcall target="-mail-publish"/>
+    </target>
+
+    <target name="clean">
+        <log message="============= Adaptor for ${suite.name}: Clean .."/>
+        <log message="Removing all from working directory"/>
+        <delete dir="${scenario.dir}"/>
+    </target>
+
+</project>

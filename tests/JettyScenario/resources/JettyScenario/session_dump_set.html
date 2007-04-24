@@ -1,0 +1,18 @@
+<h1>Session Dump Servlet:</h1>
+$$$<form action="/test/session/;jsessionid=.*" method="post">
+$$$<b>ID:</b> .*<br/>
+$$$<b>New:</b> .*<br/>
+$$$<b>Created:</b> .*<br/>
+$$$<b>Last:</b> .*<br/>
+$$$<b>Max Inactive:</b> .*<br/>
+$$$<b>Context:</b> ServletContext@.*<br/>
+<b>somename:</b> somevalue<br/>
+<b>test:</b> value<br/>
+<b>Name:</b><input type="text" name="Name" /><br/>
+<b>Value:</b><input type="text" name="Value" /><br/>
+<input type="submit" name="Action" value="Set"/>
+<input type="submit" name="Action" value="Remove"/>
+<input type="submit" name="Action" value="Invalidate"/><br/>
+</form><br/>
+<P>Turn off cookies in your browser to try url encoding<BR>
+$$$<a href="/test/session/;jsessionid=.*">Encoded Link</a><BR>
