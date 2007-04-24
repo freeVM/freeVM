@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                    BT Adaptor for Harmony Classlib Project
+     ====================================================================== -->
+<project name="iterative_classlib" default="run" basedir=".">
+
+    <!-- do setup of the classlib workspace -->
+    <target name="setup">
+        <!--description>
+            setup:     already done in classlib project (suite)
+                Do checkout of the classlib's trunk to the place pointed
+                    by 'checkouts.dir' property.
+                Do setup of the suite (tune parameters)
+        </description-->
+
+        <!-- Note: Properties 
+                ${trunk.dir} pointing to the classlib workspace
+             and
+                ${svn.url}" pointing to the svn url
+             are defined as 'shared' in parameters.xml 
+        -->
+
+        <!-- mkdir for sources should be made by adaptor -->
+        <!--mkdir dir="${trunk.dir}"/-->
+
+        <!-- do checkout of the workspace -->
+        <!--exec executable="svn" dir="${trunk.dir}" failonerror="true">
+            <arg line="co ${svn.url}"/>
+            <arg line="${trunk.dir}"/>
+        </exec-->
+    </target>
+    
+    <condition property="cmd" value="cmd" else="sh">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="prefix" value="/c" else="">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="suffix" value=".bat" else=".sh">
+        <os family="windows"/>
+    </condition>
+	
+    <condition property="fs" value="\\" else="/">
+        <os family="windows"/>
+    </condition>
+
+    <target name="run">
+
+<!--echo message="Running HUT iteratively"/>
+
+<echo message="cmd is ${cmd}"/>
+<echo message="prefix is ${prefix}"/>
+<echo message="suffix is ${suffix}"/>
+<echo message="path.jre is ${path.jre}"/>
+<echo message="vmname is ${vmname}"/>
+<echo message="forkmode is ${forkmode}"/>
+<echo message="classlib.trunk is ${classlib.trunk}"/>
+<echo message="repetitions.number is ${repetitions.number}"/>
+<echo message="==== line is ===== ${prefix} ${root.dir}${fs}adaptors${fs}${suite.name}${fs}${suite.name}${fs}HUT_iterative_run${suffix} ${path.jre} ${vmname} ${forkmode} ${classlib.trunk} ${repetions.number}"/--> 
+
+
+	<copy file="${suite.name}${fs}modulesList" todir="${classlib.trunk}" overwrite="true"/>
+
+	<exec executable="${cmd}" dir="${classlib.trunk}" failonerror="false" timeout="${HUT_iterative.parameters.optional.timeout}">
+		<arg line="${prefix} ${root.dir}${fs}adaptors${fs}${suite.name}${fs}${suite.name}${fs}HUT_iterative_run${suffix} ${path.jre} ${vmname} ${forkmode} ${classlib.trunk} ${repetitions.number}"/>
+        </exec>		
+    </target>
+
+    <target name="clean">
+        <description>
+            to do clean - remove zip archives of previous iterative runs
+        </description>
+		<delete>
+    			<fileset dir="${classlib.trunk}" includes="results_*.zip"/>
+		</delete>
+
+    </target>
+
+</project>
+

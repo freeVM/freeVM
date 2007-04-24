@@ -1,0 +1,91 @@
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+
+Expected properties:
+    CC specific properties: 
+        XmlLogger.file=log.xml
+        logfile=log20070329201714.xml
+        thisbuildsuccessful=false
+        lastbuild=20070329000000
+        label=build.1
+        logdir=C:\ws\BUILDTEST.new\.07\build\cc\logs\vtsvm
+        lastbuildsuccessful=false
+        builddate=03/29/2007 20:17:14"
+        interval=1
+        lastsuccessfulbuild=20070329000000
+        projectname=vtsvm
+        cctimestamp=20070329201714 
+
+    Framework's properties 
+        publisher.dir
+        + global frameworks properties
+          (described at scripts/framework.properties and at the head of build.xml file)
+        + parameters (for these test suite + for other selected suites)
+-->
+
+<project name="HUT_iterative-publisher" default="publish" basedir=".">
+
+    <target name="publish" >
+
+        <xslt basedir="${publisher.dir}/xsl"
+	    destdir="${publisher.dir}"
+	    in="${logdir}/${logfile}" out="notification.txt"
+	    style="${publisher.dir}/xsl/br.xsl"
+	    classpath="${ext.cc.location}/lib/serializer-2.7.0.jar;${ext.xalan.location}"/>	    
+        <if> 
+	    <and>
+		<isset property="framework.parameters.usemail"/>
+	<!--should send notifications only if the status of the run changed-->
+		<not>
+		    <equals arg1="${thisbuildsuccessful}" arg2="${lastbuildsuccessful}"/>
+		</not>
+	    </and>
+	<then>
+	    <echo message="Will send mail to: ${framework.parameters.usemail}"/>
+
+    	    <condition property="HUT_iterative.status" value="SUCCESSFULLY run" else="FAILED">
+		<istrue value="${thisbuildsuccessful}"/>
+	    </condition>
+	    <property name="build" value="${os.name} ${os.version} ${os.arch}"/>
+
+	    <echo message="DETAILES are ${build}"/>
+    
+    	    <mail 
+		mailhost="${framework.parameters.usemail}"
+		tolist="${framework.parameters.usemail.to}"
+		from="${framework.parameters.usemail.from}"
+		subject="HUT iterative ${repetitions.number} runs ${HUT_iterative.status} on ${classlib.trunk} over ${drlvm.parameters.shared.jvm.location}, ${build}"
+        	messagefile="notification.txt">
+		<fileset dir="${classlib.trunk}/build" includes="FAILURES.txt, ERRORS.txt, CRASHES.txt, STATUS.txt" />
+
+	    </mail>
+    	    </then> 
+        </if> 
+
+	<tstamp>
+		<format property="timestamp" pattern="yyyyMMddhhmm" />
+	</tstamp>
+
+	<zip destfile="${classlib.trunk}/results_${HUT_iterative.parameters.required.vmname}_${timestamp}.zip" >
+	    <zipfileset dir="${classlib.trunk}/build" includes="test_report_*/**/*" /> 
+	    <zipfileset dir="${classlib.trunk}/build" includes="FAILURES.txt, ERRORS.txt, CRASHES.txt, STATUS.txt" prefix="result" />
+	    <zipfileset dir="${classlib.trunk}" includes="log_*.txt" prefix="logs" /> 
+        </zip>
+
+    </target> 
+													       
+</project>
+

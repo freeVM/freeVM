@@ -1,0 +1,69 @@
+<cruisecontrol>
+
+    <!-- Keep this tag if you want to see any parameter value accessible 
+         from adaptor.xml here -->
+    <!-- @BT.PARAMETERS.INCLUDE@ -->
+    
+    <!-- Tag resolved to the name of 
+         the test suite this config is related to. -->
+    <project name="@BT.PROJECT@">
+
+        <listeners>
+            <!-- Resolved to <currentbuildstatuslistener file="${logs.dir}/...">
+                 Should be here if there are any suites depending
+                 on run status of this suite -->
+            <!-- @BT.LISTENER@ -->
+	    <currentbuildstatuslistener file="logs/${project.name}/status.txt"/> 
+        </listeners>
+
+        <bootstrappers>
+            <!-- Resolved to 
+                    <svnbootstrapper> 
+                 if we use SVN for sources, i.e. 
+                    ${project.name}.parameters.cc.usesvn="${sources.location}"
+                 is set -->
+            <!-- @BT.BOOTSTRAPPER@ -->
+        </bootstrappers>
+
+        <modificationset quietperiod="${HUT_iterative.parameters.optional.quiteperiod}">
+            <!-- Tag Resolution Rules: 
+                - in case of defined SVN (@{suite.name}.parameters.cc.usesvn),
+                  resolved to
+                    <svn LocalWorkingCopy="${path.to.local.svn.repository}"/>
+                - in case of defined trigger (@{suite.name}.parameters.cc.trigger),
+                  resolved to
+                    <filesystem folder="${path.to.trigger.file}"
+                - for any dependency it is resolved to
+                    <buildstatus logdir='${path.to.log.for.some.suite}'/>
+                  if the dependency uses svn, it is aslo resolved to
+                    <svn localWorkingCopy=../>
+                - in any case it is additionally resolved to
+                    <forceonly/>
+            -->
+            <!-- @BT.MODIFICATIONSET@ -->
+	    <!--svn localWorkingCopy="${classlib.parameters.shared.trunk.dir}"/>
+	    <svn localWorkingCopy="${drlvm.parameters.shared.trunk.dir}"/-->
+	    <!--buildstatus logdir="logs/classlib"/> 
+	    <buildstatus logdir="logs/drlvm"/--> 
+							   
+        </modificationset>
+
+        <schedule interval="${HUT_iterative.parameters.optional.interval}">
+            <!-- This tag MUST be present!
+                 It makes correct call to adaptor's run target -->
+            <!-- @BT.ADAPTORCALL@ -->
+        </schedule>
+	
+	<log dir="logs/${project.name}"> 
+            <merge dir="${classlib.trunk}/build" pattern="TEST-*.xml" />
+	</log> 
+
+	<publishers>
+	    <!-- Keep it if you want to use custom ant publishers
+		specified for test suite by cc.publisher parameter -->
+	    <!-- @BT.PUBLISHER@ -->
+
+	</publishers> 
+																																										   																																																																							   
+    </project>
+</cruisecontrol>
