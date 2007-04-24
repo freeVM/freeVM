@@ -32,7 +32,7 @@
 
     <target name="-dacapo.download" unless="doesnt.need.download">
         <get src="${dacapo.parameters.optional.download.address}/${dacapo.parameters.optional.jar.name}"
-            dest="${checkouts.dir}/${suite.name}" usetimestamp="false" verbose="true"/>
+            dest="${checkouts.dir}/${suite.name}/${dacapo.parameters.optional.jar.name}" usetimestamp="false" verbose="true"/>
     </target>
     
     <target name="run">
