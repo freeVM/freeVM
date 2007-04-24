@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!DOCTYPE buildtest SYSTEM "../buildtest.dtd">
+
+<!-- ====================================================================== 
+                   External Libraries Fetching Implementation
+     ====================================================================== -->
+<project name="external-libraries-fetching" default="fetch-depends" basedir=".">
+
+    <target name="-init" depends="-make-dep-dirs, load-framework-parameters, -setup-proxy"/>
+
+    <target name="fetch-ant-contrib" depends="-init">
+        <fetch libname="ant-contrib" subcomponent="framework"/>
+    </target>
+
+    <target name="fetch-depends"
+            depends="define-tasks, load-framework-parameters, load-suites-parameters, -make-dep-dirs, -setup-proxy">
+        <description>
+            Fetches all external dependencies needed by framework itself.
+            Network connection is required.
+            (You can set up proxy settings in local configuration file).
+        </description>
+
+        <propertyset id="external.propertyset.id">
+            <propertyref regex="[^\.]*\.parameters\.external\."/>
+        </propertyset>
+        
+        <!--  XXX debug print -->
+        <echoproperties>
+            <propertyset refid="external.propertyset.id"/>
+        </echoproperties>
+
+        <for list="framework,${test.suites.names.list}" param="subcomponent">
+            <sequential>
+            <!-- declare property containing the list of externals 
+                 to download -->
+            <property name="@{subcomponent}.external.names.list" value=""/>
+            <propertyselector 
+                    property="@{subcomponent}.external.names.list"
+                    delimiter=","
+                    match="^@{subcomponent}\.parameters\.external\.(.*)\.url"
+                    select="\1"
+                    distinct="true"
+                    override="true"/>
+            <for list="${@{subcomponent}.external.names.list}" param="dependency">
+            <sequential>
+                <fetch libname="@{dependency}" subcomponent="@{subcomponent}"/>
+            </sequential>
+            </for>
+            </sequential>
+        </for>
+        <echoproperties>
+            <propertyset>
+                <propertyref prefix="ext."/>
+            </propertyset>
+        </echoproperties>
+    </target>
+
+    <!-- expected parameters: 
+         ext.names.list - the list of externals
+         parameters.external.* - parameters for externals to fetch -->
+
+    <!-- Fetches the external resource described by 
+                parameters.external.@{libname}.*
+         properties. 
+         Now supported fetching of:
+            - jar files described by 'url' and 'md5' attributes, 
+            - zip files described by 'url, 'md5', 'jar' attributes 
+         Fetched library can be referenced by 
+            ext.@{libname}.location 
+         property. -->
+    <macrodef name="fetch">
+        <attribute name="libname"/>
+        <attribute name="subcomponent"/>
+        <sequential>
+            <echo message="Fetching '@{libname}' external dependency for '@{subcomponent}' subcomponent."/>
+
+            <!-- Determine the basename of the URL pointing to library file
+                 (further procedure of the library fetching depends on its 
+                 type)                                                      -->
+            <basename file="${@{subcomponent}.parameters.external.@{libname}.url}"
+                      property="@{subcomponent}.parameters.external.@{libname}.url.basename"/>
+
+            <!-- Determine the [base]name of the library file:              -->
+            <!-- firstly: check if it was expicitly specified 
+                          by 'jar' attribute: -->
+            <condition property="@{subcomponent}.parameters.external.@{libname}.basename"
+                       value="${@{subcomponent}.parameters.external.@{libname}.jar}">
+                <isset property="@{subcomponent}.parameters.external.@{libname}.jar"/>
+            </condition>
+            <!-- secondly: check if it was expicitly specified 
+                          by 'dir' attribute: -->
+            <condition property="@{subcomponent}.parameters.external.@{libname}.basename"
+                       value="${@{subcomponent}.parameters.external.@{libname}.dir}">
+                <isset property="@{subcomponent}.parameters.external.@{libname}.dir"/>
+            </condition>
+            <!-- at last: if the name was not explicitly specified,
+                 use URL's basename. -->
+            <property name="@{subcomponent}.parameters.external.@{libname}.basename"
+                      value="${@{subcomponent}.parameters.external.@{libname}.url.basename}"/>
+            
+            <!-- Set up the library accessing property: -->
+            <property 
+                name="ext.@{libname}.location" 
+                location="${external.libs.dir}/${@{subcomponent}.parameters.external.@{libname}.basename}"/>
+            
+            <!-- Check for lib file presence -->
+            <condition property="@{subcomponent}.parameters.external.@{libname}.exists">
+                <available file="${ext.@{libname}.location}"/>
+            </condition>
+
+            <echo message="===> Library Info: @{libname}"/>
+            <echo message="         Basename: ${@{subcomponent}.parameters.external.@{libname}.basename}"/>
+            <echo message="         Location: ${ext.@{libname}.location}"/>
+            <echo message="         Presence: ${@{subcomponent}.parameters.external.@{libname}.exists}"/>
+
+            <!-- Proceed fetching if the target file does not exist -->
+            <antcall target="-fetch-unless-exists">
+                <param name="lib.name" value="@{libname}"/>
+                <param name="url.file"
+                       value="${@{subcomponent}.parameters.external.@{libname}.url.basename}"/>
+                <param name="lib.file"
+                       value="${@{subcomponent}.parameters.external.@{libname}.basename}"/>
+                <propertyset>
+                    <propertyref regex="^@{subcomponent}.parameters\.external\..*"/>
+                    <!-- remove @{subcomponent} prefix -->
+                    <mapper type="regexp" from="^@{subcomponent}\.(.*)" to="\1"/>
+                </propertyset>
+            </antcall>
+        </sequential>
+    </macrodef>
+
+    <!-- Determines the type of the resource to be downloaded and sets up
+         corresponding properties. The further control flow depends on 
+         this target. -->
+    <target name="-fetch-unless-exists"
+            unless="parameters.external.${lib.name}.exists">
+        <determine-resource-type libname="${lib.name}"/>
+        <antcall target="-fetch"/>
+    </target>
+
+    <!-- Does determination of resource type -->
+    <macrodef name="determine-resource-type">
+        <attribute name="libname"/>
+        <sequential>
+            <!-- determine if it is an archive -->
+            <condition property="parameters.external.@{libname}.is.zip">
+                <contains string="${parameters.external.@{libname}.url.basename}?" 
+                          substring=".zip?"/>
+            </condition>
+            <!-- check availability of the archive -->
+            <condition property="parameters.external.${lib.name}.downloaded">
+                <and>
+                    <isset property="parameters.external.@{libname}.is.zip"/>
+                    <available file="${external.arch.dir}/${url.file}"/>
+                </and>
+            </condition>
+            <!-- determine if it is a jar library -->
+            <condition property="parameters.external.@{libname}.is.jar">
+                <contains string="${parameters.external.@{libname}.url.basename}?" 
+                          substring=".jar?"/>
+            </condition>
+            <!-- check jar for presence -->
+            <condition property="parameters.external.${lib.name}.downloaded">
+                <isset property="parameters.external.${lib.name}.exists"/>
+            </condition>
+        </sequential>
+    </macrodef>
+
+    <!-- Do download to the temporal directory 
+         and split control flow on the base of resource type -->
+    <target name="-fetch" depends="-download, -fetch-zip, -fetch-jar"/>
+
+    <!-- Do download external zip and extract it into external.libs.dir -->
+    <target name="-fetch-zip" 
+            if="parameters.external.${lib.name}.is.zip">
+        <echo>==> Fetch ZIP: ${url.file}</echo>
+        <!-- file was downloaded, place it to the destination -->
+        <move file="${temp.files.dir}/${url.file}"
+              tofile="${external.arch.dir}/${url.file}"
+              failonerror="false"/>
+        <!-- .. and unzip -->
+        <antcall target="-do-unzip"/>
+    </target>
+
+    <!-- Do unzip the archive on the base of its content -->
+    <target name="-do-unzip" depends="-do-unzip-jar, -do-unzip-dir"/>
+
+    <!-- Do unzip the specified jar library -->
+    <target name="-do-unzip-jar" if="parameters.external.${lib.name}.jar">
+        <unzip src="${external.arch.dir}/${url.file}"
+               dest="${temp.files.dir}">
+            <patternset>
+                <include name="**/${lib.file}"/>
+            </patternset>
+        </unzip>
+        <move todir="${external.libs.dir}" flatten="true">
+            <fileset dir="${temp.files.dir}">
+                <include name="**/${lib.file}"/>
+            </fileset>
+        </move>
+    </target>
+
+    <!-- Do unzip the archive into specified by 'dir' attribute directory -->
+    <target name="-do-unzip-dir" if="parameters.external.${lib.name}.dir">
+        <do-unzip-dir libname="${lib.name}"/>
+    </target>
+
+    <macrodef name="do-unzip-dir">
+        <attribute name="libname"/>
+        <sequential>
+            <!-- If 'inc' attribute specifying the extract includes was not
+                 specified, unzip all -->
+            <property name="parameters.external.@{libname}.inc" value="**/*"/>
+            <!-- Do all the work in the special directory -->
+            <tempfile 
+                destdir="${temp.files.dir}"
+                property="parameters.external.@{libname}.tempfile"/>
+            <mkdir dir="${parameters.external.@{libname}.tempfile}"/>
+            <unzip src="${external.arch.dir}/${url.file}"
+                   dest="${parameters.external.@{libname}.tempfile}">
+                <patternset includes="${parameters.external.@{libname}.inc}"/>
+            </unzip>
+            <!-- If archive's root dir name equals to target dir name
+                 (specified by 'dir' attribute) move it to libs dir, 
+                 otherwise - move all extracted files to target dir 
+                 (under libs dir) -->
+            <move todir="${external.libs.dir}/${parameters.external.@{libname}.dir}">
+                <fileset dir="${parameters.external.@{libname}.tempfile}">
+                    <include name="**/*"/>
+                </fileset>
+                <mapper type="glob" 
+                        from="${parameters.external.@{libname}.dir}${file.separator}"
+                        to="*"/>
+            </move>
+            <delete dir="${parameters.external.@{libname}.tempfile}"
+                    failonerror="false"/>
+        </sequential>
+    </macrodef>
+
+    <!-- Do download external jar into external.libs.dir -->
+    <target name="-fetch-jar" if="parameters.external.${lib.name}.is.jar">
+        <echo>==> Fetch JAR: ${url.file}</echo>
+        <!-- file was downloaded, place it to the destination -->
+        <move file="${temp.files.dir}/${url.file}"
+              tofile="${external.libs.dir}/${lib.file}"
+              failonerror="false"/>
+    </target>
+    
+    <target name="-download" unless="parameters.external.${lib.name}.downloaded">
+        <do-download libname="${lib.name}"/>
+    </target>
+
+    <!-- Downloads external dependency pointed by @{libname}'s URL
+         into ${temp.files.dir}/${url.file} and checks its checksum -->
+    <macrodef name="do-download">
+        <attribute name="libname"/>
+        <sequential>
+            <echo>==> Do Download from ${parameters.external.@{libname}.url}</echo>
+            <get src="${parameters.external.@{libname}.url}" 
+                 dest="${temp.files.dir}/${url.file}" 
+                 usetimestamp="true" 
+                 verbose="true"
+            />
+            <!-- compute the checksum and check the downloaded file -->
+            <checksum
+                file="${temp.files.dir}/${url.file}"
+                property="parameters.external.@{libname}.url.md5"/>
+            <fail>
+                <condition>
+                    <not><equals 
+                        arg1="${parameters.external.@{libname}.url.md5}" 
+                        arg2="${parameters.external.@{libname}.md5}"
+                    /></not>
+                </condition>
+...
+File
+    ${lib.file} 
+downloaded from:
+    ${parameters.external.@{libname}.url} 
+has incorrect MD5 checksum:
+    '${parameters.external.@{libname}.url.md5}'
+while expected is:
+    '${parameters.external.@{libname}.md5}'
+            </fail>
+        </sequential>
+    </macrodef>
+
+    <target name="-make-dep-dirs" unless="${depends.jars}.exists">
+        <!-- Make the directories to store external dependencies -->
+        <mkdir dir="${external.libs.dir}"/>
+        <mkdir dir="${external.arch.dir}"/>
+        <mkdir dir="${temp.files.dir}"/>
+    </target>
+
+    <target name="-setup-proxy" if="http.proxyHost">
+        <echo>==> Setting Up the proxy: ${http.proxyHost}:${http.proxyPort}</echo>
+        <setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}"/>
+    </target>
+
+</project>
+

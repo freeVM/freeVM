@@ -1,0 +1,71 @@
+<!-- framework implementation source -->
+<!-- ENTITY frameworkImplementation SYSTEM "scripts/framework.xml" -->
+
+<!-- Error Messages -->
+<!ENTITY nl "
+">
+<!ENTITY divisionLine "========================================">
+<!ENTITY messagePrefix "...&nl;&divisionLine;&nl;">
+<!ENTITY messageSuffix "&divisionLine;">
+<!ENTITY failurePrefix "&messagePrefix;FAILURE: ">
+<!ENTITY installationFailureMessage 
+"&failurePrefix;
+Could not found some of the framework components.
+Please, do
+
+    > ant install
+
+first.
+&messageSuffix;
+">
+<!ENTITY nullFilePointerMessage 
+"&failurePrefix;
+Property '@{property}' acting as a file pointer was not set.  
+Actualy such an error can appear only while framework development.
+Please, check your development fixes.
+&messageSuffix;
+">
+<!ENTITY unexistingFilePointerMessage 
+"&failurePrefix;
+Property '@{property}' is pointing to unexisting @{type}:
+    ${@{property}}
+Actualy such an error can appear only while framework development.
+Please, check your development fixes.
+&messageSuffix;
+">
+
+<!-- Documentation Strings -->
+<!ENTITY installDocumentation "
+install:
+    1. Download ./scripts and ./adaptors from SVN (do ant checkout)
+    2. Create build configuration file for local framework configuration
+    [>idx.1]
+">
+
+<!ENTITY setupDocumentation "
+setup:
+    1. Setup framework itself
+    2. Setup specified by _suites_ property test suites (or all the
+       available suites if property was not specified)
+    If test suites' configuration parameters was not fully provided,
+      framework will demand to repeat this step.
+    [>idx.2]
+">
+<!ENTITY runDocumentation "
+run:
+    foreach adaptor from @selected test suites:
+       #> ant adaptor.xml update
+         : updates the test suite (svn co, download from external
+         sources, unzipping and so on - everything connected with
+         external fetching)
+       #> ant adaptor.xml setup
+         : do setup work for selected test suites (all the needed
+         configuration properties were set up during step 4.)
+       #> ant adaptor.xml run
+         : run the test suite with specified configuration
+         properties.
+       #> ant adaptor.xml publish
+         : publich expected results (built product, test results)
+         to the specified place.
+    [>idx.3]
+">

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!DOCTYPE buildtest SYSTEM "../buildtest.dtd">
+
+<!-- ====================================================================== 
+               BT Framework Implementation of Adaptors Execution 
+     ====================================================================== -->
+<project name="exec-adaptor" default="call" basedir=".">
+
+    <import file="${framework.implementation.file}"/>
+    <import file="${adaptors.dir}/${suite.name}/adaptor.xml"/>
+
+    <!-- calls the adaptor's target specified by 
+         '@{target}' attribute value.
+         Supposed parameters:
+             ${suite.name} - the name of the suite to call
+             @{target}     - the target of the adaptor to launch
+             ${result.file.location} - the location of the file for
+                    storing of the resulting parameters values
+         It's supposed that all of the properties needed to be known
+         by Test Suite are already defined and passed to this call
+         with Ant's environment.
+         -->
+    <macrodef name="call-target">
+        <attribute name="target"/>
+        <sequential>
+            <trycatch property="execution.exception">
+            <try>
+                <runtarget target="@{target}"/>
+            </try>
+            <catch>
+                <echo>
+--------
+WARNING: Target @{target} of adaptor for Test Suite '${suite.name}' FAILED
+-------- with the following exception:
+${execution.exception}
+</echo>
+                <property name="${suite.name}.parameters.@{target}.failed" value="true"/>
+            </catch>
+            </trycatch>
+            <resolve-parameters suite="${suite.name}" file="${result.file.location}"/>
+            <save-parameters suite="${suite.name}" file="${result.file.location}"/>
+        </sequential>
+    </macrodef>
+
+    <target name="setup-suite">
+        <call-target target="setup"/>
+    </target>
+
+    <target name="run-suite">
+        <call-target target="run"/>
+    </target>
+
+    <!-- just load all defined parameters -->
+    <target name="import-suite">
+        <xmlproperty file="parameters.xml"
+                     collapseAttributes="true"
+                     semanticAttributes="true"
+                     prefix="${suite.name}"
+        />
+        <save-parameters suite="${suite.name}" file="${result.file.location}"/>
+    </target>
+
+</project>
+

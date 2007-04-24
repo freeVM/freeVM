@@ -1,0 +1,31 @@
+<parameters>
+    <required/>
+
+    <!-- optional framework preferences -->
+    <optional>
+        <dolog value="false" description="Do you want to see Framework execution log?"/>
+    </optional>
+    
+    <cc doclean="false" description="Do clean working CC directory before execution?"/>
+    <cc webport="8080" description="The port on which CC will make its web publishing"/>
+    <cc jmxport="8000" description="The port for CC's JMX console."/>
+
+    <external>
+        <ant-contrib
+            jar="ant-contrib-1.0b3.jar"
+            url="http://kent.dl.sourceforge.net/sourceforge/ant-contrib/ant-contrib-1.0b3-bin.zip"
+            md5="c5a75fc28cbc52f09bd43b5506978601"
+        />
+        <junit
+            url="http://mirrors.ibiblio.org/pub/mirrors/maven2/junit/junit/3.8.2/junit-3.8.2.jar"
+            md5="28e7eb9eeefe31a657c68755bfccc541"
+        />
+        <cc
+            url="http://downloads.sourceforge.net/cruisecontrol/cruisecontrol-bin-2.6.1.zip"
+            md5="1ea23663d90cc7d59ce6c6b8fbe79c95"
+            dir="cruisecontrol-bin-2.6.1"
+            inc="*/lib/**,*/webapps/**"
+        />
+    </external>
+</parameters>
+

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!DOCTYPE buildtest SYSTEM "buildtest.dtd">
+
+<!-- ====================================================================== 
+                   Main Entry Point for BUILD TEST Framework
+     ====================================================================== -->
+<project name="build-test-infrastructure" default="run" basedir=".">
+
+    <!-- define only the properties used before installation 
+         other properties should be defined in ${framework.properties.file} -->
+    <property name="root.dir" location="${basedir}"/>
+    <property name="adaptors.dir" location="adaptors"/>
+    <property name="scripts.dir" location="scripts"/>
+
+    <property name="framework.properties.file" 
+              location="${scripts.dir}/framework.properties"/>
+    <property file="${framework.properties.file}"/>
+
+    <property file="${local.configuration.file}"/>
+
+    <property name="framework.implementation.file" 
+              location="${scripts.dir}/framework.xml"/>
+    <import file="${framework.implementation.file}" optional="true"/>
+    
+    <!-- Use this property to specify particular test suites to run -->
+    <!-- Use 
+            -Dtest.suites=classlib
+         or 
+            -Dtest.suites=classlib,drlvm
+         to specify particular suites to execute -->
+    <property name="test.suites" value="*"/>
+    <dirset id="test.suites.dirs.ref"
+            dir="${adaptors.dir}"
+            includes="${test.suites}"/>
+    <pathconvert pathsep=","
+                 property="test.suites.names.list"
+                 refid="test.suites.dirs.ref">
+        <flattenmapper/>
+    </pathconvert>
+
+    <!-- For correct framework operation, all global properties defined 
+         in this file SHOULD be added to this set -->
+    <propertyset id="global.build.parameters.id">
+        <propertyref name="root.dir"/>
+        <propertyref name="ant.home"/>
+        <propertyref name="adaptors.dir"/>
+        <propertyref name="scripts.dir"/>
+        <propertyref name="framework.properties.file"/>
+        <propertyref name="framework.implementation.file"/>
+        <propertyref name="test.suites.names.list"/>
+    </propertyset>
+
+
+    <!-- ================================================================== 
+                      Framework Installation Functionality
+         ================================================================== -->
+    <target name="install" description="install">
+        <description>&installDocumentation;</description>
+        <!-- checkout framework -->
+        <!-- TODO: check svn on path -->
+        <!-- TODO: uncomment when integrated 
+        <exec executable="svn" dir="${root.dir}" failonerror="true">
+            <arg line="update ${scripts.dir} ${adaptors.dir}"/>
+        </exec>
+        -->
+        <!-- create the file for local framework configuration -->
+        <copy file="${local.configuration.template.file}"
+              tofile="${local.configuration.file}"/>
+    </target>
+    
+    <target name="check-install">
+        <fail>
+            <condition>
+                <not>
+                    <and>
+                        <available file="${adaptors.dir}" type="dir"/>
+                        <available file="${scripts.dir}" type="dir"/>
+                        <available file="${framework.implementation.file}"/>
+                        <available file="${local.configuration.file}"/>
+                    </and>
+                </not>
+            </condition>
+            &installationFailureMessage;
+        </fail>
+    </target>
+
+    <!-- ================================================================== 
+                         Framework Setup Functionality
+         ================================================================== -->
+    <target name="setup" description="setup" 
+            depends="install, check-install, init-framework, setup-suites">
+        <description>&setupDocumentation;</description>
+    </target>
+
+    <!-- ================================================================== 
+                          Test Execution Functionality
+         ================================================================== -->
+    <target name="run" depends="init-framework, setup-suites, run-suites">
+        <description>&runDocumentation;</description>
+    </target>
+
+    <target name="create-cc-configuration_"/>
+
+    <target name="run-cc" description="run-cc"
+            depends="init-framework, init-suites, setup-suites, check-status,
+                        prepare-cc, create-cc-configuration">
+        <java jar="${ext.cc.location}/lib/cruisecontrol-launcher.jar" dir="${cc.work.dir}" fork="true">
+            <classpath>
+                <fileset dir="${ext.cc.location}/lib">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+            <sysproperty key="javax.management.builder.initial" value="mx4j.server.MX4JMBeanServerBuilder"/>
+            <arg line="-configfile ${cc.config.file} -webapppath ${ext.cc.location}/webapps/cruisecontrol -jmxport ${framework.parameters.cc.jmxport} -webport ${framework.parameters.cc.webport}"/>
+        </java>
+    </target>
+
+    <target name="clean" description="clean" depends="init-framework">
+        <antfetch dir="scripts" target="distclean" antfile="../build.xml"/>
+    </target>
+
+    <target name="distclean" description="distclean">
+    </target>
+
+</project>

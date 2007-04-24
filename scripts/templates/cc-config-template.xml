@@ -1,0 +1,10 @@
+<cruisecontrol>
+    <!-- root dir of the BT Infra -->
+    <property name="root.dir" value="@BT.ROOTDIR@"/>
+    <!-- global properties of the BT Infra -->
+    <property name="framework.properties.location" value="@BT.PROPERTIES@"/>
+    <!-- import framework properties -->
+    <property file="${framework.properties.location}"/>
+    
+    <!-- test suites selected for execution -->@PROJECT@
+</cruisecontrol>

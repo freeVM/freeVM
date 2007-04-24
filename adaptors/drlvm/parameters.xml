@@ -1,0 +1,29 @@
+<parameters depends="classlib">
+    <!-- required -->
+    <required>
+        <!-- path to built classlib, use classlib's shared value -->
+        <classlib.trunk 
+            description="Path to Classlib Workspace" 
+            value="${classlib.parameters.shared.trunk.dir}"/>
+    </required>
+
+    <!-- shared values -->
+    <shared>
+        <!-- define the place where drlvm workspace will be placed -->
+        <trunk.dir value="${checkouts.dir}/${suite.name}" id="trunk.dir.id"/>
+        <!-- the trunk url for svn -->
+        <svn.url value="http://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk"/>
+        <!-- the path to built DRLVM JRE -->
+        <jre.dir value="${drlvm.parameters.shared.trunk.dir}/build/deploy/jdk/jre"/>
+        <!-- the path to built DRLVM JVM -->
+        <jvm.location value="${drlvm.parameters.shared.trunk.dir}/build/deploy/jdk/jre/bin/java${exe}"/>
+    </shared>
+
+    <!-- CC specific configuration -->
+    <cc> 
+        <!-- reference to the value by parameter ID -->
+        <usesvn refid="trunk.dir.id"/>
+        <!-- reference to the value by property name -->
+        <trigger value="${drlvm.parameters.shared.trunk.dir}/${suite.name}.trigger"/>
+    </cc>
+</parameters>

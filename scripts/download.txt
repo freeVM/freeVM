@@ -1,0 +1,38 @@
+= External Dependencies Downloading Implementation Notes
+
+o Control Flow
+
+- can be implemented as component independent (no fwk.perameters)
+
+1. <fetch libname>
+  - macro
+  : extracts information regarding libname
+
+2. <ancall -fetch>
+  : is called with parameters from 1.
+  : do split of the control flow on the base of parameters (is.zip, is.jar, ...)
+
+  1. <target fetch-jar>
+    : downloads jar file
+    : checks for file presence
+
+    1. <antcall -do-download>
+      : executes if target lib file does not exist in lib dir
+
+    2. <do-download libname>
+      - macro
+      : downloads jar to temp dir, checksum, move to lib dir
+
+  2. <target fetch-zip>
+    : downloads zip file, extracts jar lib, places it to lib dir
+    : checks for file presence
+
+    1. <antcall -do-download>
+      : executes if target lib file does not exist in lib dir
+
+    2. <do-download libname>
+      - macro
+      : downloads zip to temp dir, checksum, unzip jar lib, move lib to lib dir
+
+--------------------
+ vim:ft=notes:fo=vtcql:tw=80:sts=2
