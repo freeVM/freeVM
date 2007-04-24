@@ -83,8 +83,9 @@
     <shared>
         <!-- define the place where drlvm workspace will be placed -->
         <trunk.dir value="${scenario.dir}" id="trunk.dir.id"/>
-        <!-- the trunk url for svn -->
-        <svn.url value="http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk/tests/JettyScenario"/>
+
+        <!-- FIXME: the scenario shouldn't depend on its location in svn -->
+        <svn.url value="http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0/tests/JettyScenario"/>
     </shared>
 
     <!-- CC specific configuration -->
