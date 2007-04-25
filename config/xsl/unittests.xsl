@@ -72,11 +72,11 @@
 
             <xsl:choose>
                 <xsl:when test="count($testsuite.list) = 0">
-                     <xsl:text>No Tests Run: This project doesn't have any tests&#10;</xsl:text>
+                     <xsl:text>No Tests Run: This project doesn't have any tests or tests were not run&#10;</xsl:text>
                 </xsl:when>
 
                 <xsl:when test="$totalErrorsAndFailures = 0">
-                    <xsl:text>All Tests Passed&#10;</xsl:text>
+                    <!--xsl:text>All Tests Passed&#10;</xsl:text-->
                 </xsl:when>
             </xsl:choose>
 

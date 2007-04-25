@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License. 
 
-<property name="cl.test.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} ${build_cfg}: classlib tests"/>
-<property name="cl.test.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os} ${cc} ${build_cfg}: classlib tests"/>
+<property name="cl.test.prefix" value="[build-test alert] BUILD FAILED ${os.name} ${os.arch} ${cc} ${build_cfg}: classlib tests run"/>
+<property name="cl.test.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os.name} ${os.arch} ${cc} ${build_cfg}: classlib tests run"/>
 
 <project name="classlib-drlvm">
 
@@ -37,8 +37,8 @@
     <schedule interval="${timeout}">
         <ant target="test" antWorkingDir="${classlib}" timeout="${ttimeout}" usedebug="false">
             <jvmarg arg="-Dtest.jre.home=${wdir}/${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/deploy/jdk/jre" />
-            <jvmarg arg="-Dhy.test.vm.name=${tested.vm.name}" />
             <jvmarg arg="-Xmx700M" />
+            <jvmarg arg="-Dexclude.interm=true" />
         </ant>
     </schedule>
 

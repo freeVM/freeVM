@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License. 
 
-<property name="cl.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} ${build_cfg}: classlib " />
-<property name="cl.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os} ${cc} ${build_cfg}: classlib " />
+<property name="cl.prefix" value="[build-test alert] BUILD FAILED ${os.name} ${os.arch} ${cc} ${build_cfg}: classlib build" />
+<property name="cl.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os.name} ${os.arch} ${cc} ${build_cfg}: classlib build" />
 
 <property name="classlib" value="projects/classlib/trunk" />
 
@@ -37,6 +37,7 @@
             <jvmarg arg="-D${proxy.host.property}=${proxy.value}" />
             <jvmarg arg="-D${proxy.port.property}=${port.value}" />
             <jvmarg arg="-Xmx700M" />
+            <jvmarg arg="-Dkeep.working=true" />
         </ant>
     </schedule>
 

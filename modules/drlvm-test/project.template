@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License. 
 
-<property name="vm.test.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} ${build_cfg}: drlvm tests"/>
-<property name="vm.test.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os} ${cc} ${build_cfg}: drlvm tests"/>
+<property name="vm.test.prefix" value="[build-test alert] BUILD FAILED ${os.name} ${os.arch} ${cc} ${build_cfg}: drlvm tests run"/>
+<property name="vm.test.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os.name} ${os.arch} ${cc} ${build_cfg}: drlvm tests run"/>
 
 <project name="drlvm-test">
 
@@ -39,10 +39,10 @@
             <jvmarg arg="-D${proxy.port.vm}=${port.value}"/>
             <jvmarg arg="-Dexternal.dep.CLASSLIB.loc=${wdir}/${classlib}" />
             <jvmarg arg="-Dbuild.arch=${build_arch}" />
-            <jvmarg arg="-DBUILD_CFG=${build_cfg}" />
-            <jvmarg arg="-DCXX=${cc}" />
+            <jvmarg arg="-Dbuild.cfg=${build_cfg}" />
+            <jvmarg arg="-Dbuild.cxx=${cc}" />
             <jvmarg arg="-Drun.all.tests=true" />
-            <jvmarg arg="-Dtest.mode=jit,jet,opt,int" />
+            <jvmarg arg="-Dtest.mode=jit,jet,opt,int,srv" />
         </ant>
     </schedule>
 
@@ -51,12 +51,14 @@
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/jet" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/jit" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/opt" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/jvmti.tests/reports/srv" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/vm/_cunit.tests/report" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/vm/_smoke.tests/reports" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/jet.mode" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/jit.mode" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/opt.mode" pattern="TEST-*.xml" />
         <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/int.mode" pattern="TEST-*.xml" />
+        <merge dir="${drlvm}/build/${os}_${build_arch}_${cc}_${build_cfg}/semis/kernel.tests/reports/srv.mode" pattern="TEST-*.xml" />
     </log>
 
     <publishers>
@@ -73,7 +75,7 @@
                 <property name="mailhost" value="${server_addr}"/>
                 <property name="fromaddress" value="${report_from}"/>
                 <property name="toaddress" value="${report_to}"/>
-                <property name="subject" value="${vm.prefix}"/>
+                <property name="subject" value="${vm.test.prefix}"/>
                 <property name="flag" value="${project.name}"/>
             </antpublisher> 
         </onfailure>
@@ -90,7 +92,7 @@
                 <property name="mailhost" value="${server_addr}"/>
                 <property name="fromaddress" value="${report_from}"/>
                 <property name="toaddress" value="${report_to}"/>
-                <property name="subject" value="${vm.prefix.ok}"/>
+                <property name="subject" value="${vm.test.prefix.ok}"/>
                 <property name="flag" value="${project.name}"/>
             </antpublisher> 
         </onsuccess>

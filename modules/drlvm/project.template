@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License. 
 
-<property name="vm.prefix" value="[build-test alert] BUILD FAILED ${os} ${cc} ${build_cfg}: drlvm"/>
-<property name="vm.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os} ${cc} ${build_cfg}: drlvm"/>
+<property name="vm.prefix" value="[build-test alert] BUILD FAILED ${os.name} ${os.arch} ${cc} ${build_cfg}: drlvm build"/>
+<property name="vm.prefix.ok" value="[build-test alert] BUILD SUCCEEDED ${os.name} ${os.arch} ${cc} ${build_cfg}: drlvm build"/>
 
 <property name="drlvm" value="projects/drlvm/trunk" />
 
@@ -46,6 +46,8 @@
             <jvmarg arg="-D${proxy.port.vm}=${port.value}"/>
             <jvmarg arg="-Dexternal.dep.CLASSLIB.loc=${wdir}/${classlib}" />
             <jvmarg arg="-Dbuild.arch=${build_arch}" />
+            <jvmarg arg="-Dbuild.cfg=${build_cfg}" />
+            <jvmarg arg="-Dbuild.cxx=${cc}" />
             <jvmarg arg="-Ddeploy.canonical.flag=true" />
         </ant>
     </schedule>

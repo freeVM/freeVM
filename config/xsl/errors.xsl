@@ -68,7 +68,7 @@
 
         <xsl:if test="$total.errorMessage.count > 0">
             <xsl:text>&#10;***********************************************************&#10;</xsl:text>
-            <xsl:text>Errors/Warnings:	</xsl:text>(<xsl:value-of select="$total.errorMessage.count"/>)
+            <xsl:text>Execution log (errors/warnings messages):	</xsl:text>
             <xsl:text>&#10;</xsl:text>
                 
             <xsl:if test="count($error.messages) > 0">
