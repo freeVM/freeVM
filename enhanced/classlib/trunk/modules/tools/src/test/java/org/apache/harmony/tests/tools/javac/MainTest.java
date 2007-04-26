@@ -15,27 +15,24 @@
  * limitations under the License.
  */
 
-package com.sun.tools.javac;
+package org.apache.harmony.tests.tools.javac;
 
+import junit.framework.TestCase;
 import java.io.PrintWriter;
-import org.apache.harmony.tools.toolutils.Util;
+import java.io.StringWriter;
 
-public class Main {
+import com.sun.tools.javac.Main;
 
-    public Main() {
-        super();
+public class MainTest extends TestCase {
+
+    public void test_main() throws Exception {
+        StringWriter out = new StringWriter();
+        String testStr = "no_this_test.java";
+        Main.compile(new String[]{testStr}, new PrintWriter(out));
+        assertTrue("The output should have " + testStr, out.toString().contains(testStr));
     }
 
-    public static int compile(String[] args) {
-        return compile(args, Util.getDefaultWriter(System.out), Util.getDefaultWriter(System.err));
-    }
-
-    public static int compile(String[] args, PrintWriter out) {
-        return compile(args, out, out);
-    }
-
-    public static int compile(String[] args, PrintWriter out, PrintWriter err) {
-        org.apache.harmony.tools.javac.Main hyMain = new org.apache.harmony.tools.javac.Main();
-        return hyMain.compile(args, out, err) ? 0 : 1;
-    }
+	public void test_nothing() {
+		// bogus test
+	}
 }
