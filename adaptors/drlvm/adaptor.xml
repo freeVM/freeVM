@@ -65,10 +65,15 @@
         </exec>
     </target>
 
-    <target name="clean">
-        <description>
-            to do clean
-        </description>
+    <target name="clean" depends="-set-properties">
+        <exec executable="${sh}" dir="${trunk.dir}/build" failonerror="true">
+            <arg line="${cmd.prefix} ${cmd}"/>
+            <arg line="-Dproxy.host.vm=${http.proxyHost} -Dproxy.port.vm=${http.proxyPort}"/>
+            <arg line="-Ddeploy.canonical.flag=true"/>
+            <arg line="-Dbuild.cfg=release"/>
+            <arg line="-Dexternal.dep.CLASSLIB.loc=${classlib.trunk}"/>
+            <arg line="clean" />
+        </exec>
     </target>
 
     <!-- platform depending configuration properties -->

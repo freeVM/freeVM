@@ -55,6 +55,13 @@
         </exec>
     </target>
 
+    <target name="clean" depends="-set-properties">
+        <ant target="clean" 
+             dir="${trunk.dir}" 
+             inheritAll="false">
+        </ant>
+    </target>
+
     <target name="-set-properties" depends="-set-properties-win, -set-properties-other"/>
 
     <condition property="is.windows">
@@ -71,12 +78,6 @@
         <property name="sh" value="sh"/>
         <property name="cmd.prefix" value=""/>
         <property name="cmd" value='"${ant.home}/bin/ant"'/>
-    </target>
-
-    <target name="clean">
-        <description>
-            to do clean
-        </description>
     </target>
 
 </project>

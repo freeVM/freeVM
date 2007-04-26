@@ -25,6 +25,9 @@
     <import file="${framework.implementation.file}"/>
     <import file="${adaptors.dir}/${suite.name}/adaptor.xml"/>
 
+    <!-- import default inmlementations of the adaptor interface -->
+    <import file="${scripts.dir}/adaptor-interface.xml"/>
+
     <!-- calls the adaptor's target specified by 
          '@{target}' attribute value.
          Supposed parameters:
@@ -64,6 +67,10 @@ ${execution.exception}
 
     <target name="run-suite">
         <call-target target="run"/>
+    </target>
+
+    <target name="clean-suite">
+        <call-target target="clean"/>
     </target>
 
     <!-- just load all defined parameters -->

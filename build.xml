@@ -131,9 +131,7 @@
         </java>
     </target>
 
-    <target name="clean" description="clean" depends="init-framework">
-        <antfetch dir="scripts" target="distclean" antfile="../build.xml"/>
-    </target>
+    <target name="clean" description="clean" depends="init-framework, clean-suites"/>
 
     <target name="distclean" description="distclean">
     </target>

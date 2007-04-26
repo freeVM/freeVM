@@ -497,6 +497,20 @@ WARNING: Suite '@{suite}' won't be launched as some of its superior
         <antcall target="check-status"/>
     </target>
 
+    <!-- Clean the suites -->
+    <target name="clean-suites" depends="define-tasks">
+        <!-- load suites properties -->
+        <for list="${test.suites.names.list}" param="suite">
+        <sequential>
+            <echo>===========================================</echo>
+            <log message="Cleaning of '@{suite}' Test Suite.."/>
+            <call-to-adaptor suite="@{suite}" call="clean-suite"/>
+        </sequential>
+        </for>
+        <antcall target="check-status"/>
+    </target>
+
+
     <macrodef name="call-to-adaptor">
         <attribute name="suite"/>
         <attribute name="call"/>
