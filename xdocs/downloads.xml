@@ -115,7 +115,7 @@ of the distribution, and put the <code>bin/</code> directory on your <code>PATH<
 
     <dd>
         The HDK is targeted at Harmony developers. It includes the pre-built class library and VM binaries,
-        necessary include files, test cases, and dependencies. It is not a replacement for the common JDK.
+        necessary include files, and dependencies. It is not a replacement for the common JDK. 
     </dd>
 
     <ul> 
@@ -136,6 +136,12 @@ of the distribution, and put the <code>bin/</code> directory on your <code>PATH<
         </li>
     </ul>
 </dl>
+<p>
+    We plan to include the Harmony test suite in the HDK in future.  Please see 
+    <a href="http://issues.apache.org/jira/browse/HARMONY-950">HARMONY-950</a> and 
+    <a href="http://issues.apache.org/jira/browse/HARMONY-984">HARMONY-984</a> for details and current progress.
+</p>
+
 <p>
     These are not official releases of the Apache Software Foundation, nor are they
     complete or compatible with the Java specification. They are snapshots provided
