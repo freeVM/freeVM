@@ -26,7 +26,7 @@ include $(HY_HDK)/build/make/defines.mk
 COMMON=../../common/
 CMNTRANS=$(COMMON)transport/
 
-HYCFLAGS += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
+INCLUDES += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
             -I$(COMMON)generic -Idt_socket
 
 HYLDFLAGS += -lstdc++ -lgcc_s

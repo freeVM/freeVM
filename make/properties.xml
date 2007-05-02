@@ -342,6 +342,7 @@ properties in preference to these:
                 <env key="HY_OS" value="${hy.os}" />
                 <env key="HY_NO_SIG" value="false" />
                 <env key="HY_NO_THR" value="false" />
+                <env key="HY_SHLIB_SUFFIX" value="${shlib.suffix}" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />
                 <env key="HY_CFLAGS" value="${hy.cflags}" />
                 <env key="HY_ARCH_DEFINE" value="${hy.arch.define}" />

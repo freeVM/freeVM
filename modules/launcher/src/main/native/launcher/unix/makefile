@@ -20,13 +20,15 @@
 include $(HY_HDK)/build/make/defines.mk
 
 BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
-	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
-	$(SHAREDSUB)libhlp.o
+             $(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
+             $(SHAREDSUB)libhlp.o
+
 ifeq ($(HY_NO_THR),false)
 MDLLIBFILES += $(DLLPATH)libhyprt$(HY_SHLIB_SUFFIX)
 else
 BUILDFILES += main_hlp.o
 endif
+
 EXENAME = $(EXEPATH)java
 
 include $(HY_HDK)/build/make/rules.mk

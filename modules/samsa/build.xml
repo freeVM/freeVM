@@ -50,14 +50,15 @@
         <echo message="hy.drlvm=${hy.drlvm}" />
         <echo message="harmony.jdktools=${harmony.jdktools}" />
             
-        <make dir="${hy.samsa.src.main.native}/samsa/${hy.os}" />
+        <make dir="${hy.samsa.src.main.native}/samsa/${hy.os.family}" />
 
     </target>
 
     <!-- copy samsa executable for different tools -->
     <target name="-copy-native-exe" >
 
-        <property name="hy.samsa.exe" location="${hy.samsa.src.main.native}/samsa/${hy.os}/samsa${exe.suffix}" />
+        <property name="hy.samsa.exe"
+                  location="${hy.samsa.src.main.native}/samsa/${hy.os.family}/samsa${exe.suffix}" />
 
         <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/javac${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/javac${exe.suffix}" perm="ugo+x" />
@@ -79,7 +80,8 @@
     <!-- copy samsa symbol info for different tools -->
     <target name="-copy-native-progdb" if="is.windows" >
 
-        <property name="hy.samsa.progdb" location="${hy.samsa.src.main.native}/samsa/${hy.os}/samsa${progdb.suffix}" />
+        <property name="hy.samsa.progdb"
+                  location="${hy.samsa.src.main.native}/samsa/${hy.os.family}/samsa${progdb.suffix}" />
 
         <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/javac${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/javah${progdb.suffix}" />
@@ -124,7 +126,7 @@
     <!-- Clean natives -->
     <target name="clean-native">
         <echo message="Cleaning SAMSA natives" />
-        <make dir="${hy.samsa.src.main.native}/samsa/${hy.os}"
+        <make dir="${hy.samsa.src.main.native}/samsa/${hy.os.family}"
               target="clean" />
     </target>
 

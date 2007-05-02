@@ -48,7 +48,7 @@
         <echo message="harmony.jdktools=${harmony.jdktools}" />
             
         <!-- Build launcher executables -->
-        <make dir="${hy.luni.src.main.native}/launcher/${hy.os}" />
+        <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}" />
 
         <!-- Copy across the built executables -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -89,7 +89,7 @@
     <!-- Clean natives -->
     <target name="clean-native">
         <echo message="Cleaning LAUNCHER natives" />
-        <make dir="${hy.luni.src.main.native}/launcher/${hy.os}"
+        <make dir="${hy.luni.src.main.native}/launcher/${hy.os.family}"
               target="clean" />
     </target>
 
