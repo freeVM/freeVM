@@ -56,14 +56,14 @@
         <echo message="Compiling JPDA natives" />
 
         <!-- Build agent shared lib -->
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os}/agent" />
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/agent" />
         
         <!-- Build transport shared lib -->
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os}/transport" />
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport" />
 
         <!-- copy to our local jdk skeleton -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.jpda.src.main.native}/jdwp/${hy.os}">
+            <fileset dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}">
                 <include name="*${shlib.suffix}"/>
                 <include name="*${progdb.suffix}" if="is.windows" />
             </fileset>
@@ -79,8 +79,8 @@
     <!-- Clean natives -->
     <target name="clean-native">
         <echo message="Cleaning JPDA natives" />
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os}/agent" target="clean" />
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os}/transport" target="clean" />
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/agent" target="clean" />
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport" target="clean" />
     </target>
 
     <!-- Compile JDWP tests always with debug info included -->

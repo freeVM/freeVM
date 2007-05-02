@@ -51,9 +51,24 @@
     <condition property="is.linux">
         <os name="linux" />
     </condition>
+    <condition property="is.macosx">
+        <os name="mac os x" />
+    </condition>
+    <condition property="is.freebsd">
+        <os name="freebsd" />
+    </condition>
+    <condition property="is.aix">
+        <os name="aix" />
+    </condition>
     <condition property="is.unix">
         <os family="unix" />
     </condition>
+
+    <!-- Normalized operating system family -->
+    <condition property="hy.os.family" value="windows">
+        <isset property="is.windows" />
+    </condition>
+    <property name="hy.os.family" value="unix" />
 
     <!-- Normalized operating system name -->
 
@@ -64,8 +79,18 @@
     <condition property="hy.os" value="linux">
         <os name="linux" />
     </condition>
+    <condition property="hy.os" value="freebsd">
+        <os name="freebsd" />
+    </condition>
+    <condition property="hy.os" value="macosx">
+        <isset property="is.macosx"/>
+    </condition>
+    <condition property="hy.os" value="aix">
+        <os name="aix" />
+    </condition>
 
     <property name="hy.os" value="${os.name}" />
+
 
     <!-- Conditions for different architectures -->
     <condition property="is.x86_64">
@@ -77,7 +102,7 @@
     <condition property="is.x86">
 	<and>
 	    <not>
-                <isset property="is.x86_64" />
+        <isset property="is.x86_64" />
             </not>
             <or>
                 <equals arg1="x86" arg2="${os.arch}"/>

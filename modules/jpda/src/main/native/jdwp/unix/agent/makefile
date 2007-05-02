@@ -15,9 +15,6 @@
 
 #
 # Makefile for module jdwp
-# export HY_HDK=/home/geir/dev/apache/harmony/enhanced/trunk/working_classlib/deploy/
-# export HY_DRLVM=/home/geir/dev/apache/harmony/enhanced/trunk/working_vm/build/deploy/
-
 #
 
 include $(HY_HDK)/build/make/defines.mk
@@ -25,7 +22,7 @@ include $(HY_HDK)/build/make/defines.mk
 COMMON=../../common/
 CMNAGENT=$(COMMON)agent/
 
-HYCFLAGS += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
+INCLUDES += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
             -I$(COMMON)generic -Icore
 
 HYLDFLAGS += -lstdc++ -lgcc_s
