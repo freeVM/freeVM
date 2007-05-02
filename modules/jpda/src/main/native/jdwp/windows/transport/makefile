@@ -16,12 +16,8 @@
 #
 # Makefile for module jdwp - transport
 #
-# export HY_HDK=/home/geir/dev/apache/harmony/enhanced/trunk/working_classlib/deploy/
-# export HY_DRLVM=/home/geir/dev/apache/harmony/enhanced/trunk/working_vm/build/deploy/
 
-#
-
-!include <$(HY_JDKTOOLS)\make\defines.mak>
+!include <$(HY_HDK)\build\make\defines.mak>
 
 COMMON=..\..\common\# comment to avoid \ being treated as continuation
 CMNTRANS=$(COMMON)transport\# comment to avoid \ being treated as continuation
@@ -34,9 +30,9 @@ INCLUDES = $(INCLUDES) \
          -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
          -I$(COMMON)generic -Idt_socket
 
-HY_CFLAGS = $(HY_CFLAGS) $(INCLUDES) -GX -wd4290
+HYCFLAGS = $(HYCFLAGS) $(INCLUDES) -GX -wd4290
 
-HY_LDFLAGS = $(HY_LDFLAGS) -def:dt_socket\$(LIBBASE).def
+HYLDFLAGS = $(HYLDFLAGS) -def:dt_socket\$(LIBBASE).def
 
 BUILDFILES = \
     $(CMNTRANS)common\LastTransportError.obj \
@@ -51,4 +47,4 @@ MDLLIBFILES =
 DLLBASE=0x13200000
 COMMENT=/comment:"JDWP socket transport native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."
 
-!include <$(HY_JDKTOOLS)\make\rules.mak>
+!include <$(HY_HDK)\build\make\rules.mak>

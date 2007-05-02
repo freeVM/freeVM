@@ -20,15 +20,15 @@
 
 #
 
-include $(HY_JDKTOOLS)/make/defines.mk
+include $(HY_HDK)/build/make/defines.mk
 
 COMMON=../../common/
 CMNAGENT=$(COMMON)agent/
 
-HY_CFLAGS += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
-             -I$(COMMON)generic -Icore
+HYCFLAGS += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
+            -I$(COMMON)generic -Icore
 
-HY_LDFLAGS += -lstdc++ -lgcc_s
+HYLDFLAGS += -lstdc++ -lgcc_s
 
 BUILDFILES = \
     $(CMNAGENT)commands/ArrayReference.o \
@@ -57,4 +57,4 @@ MDLLIBFILES =
 
 DLLNAME = ../libjdwp.so
 
-include $(HY_JDKTOOLS)/make/rules.mk
+include $(HY_HDK)/build/make/rules.mk

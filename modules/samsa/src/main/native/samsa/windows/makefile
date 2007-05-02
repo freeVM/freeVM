@@ -17,11 +17,11 @@
 # Makefile for module samsa
 #
 
-!include <$(HY_JDKTOOLS)\make\defines.mak>
+!include <$(HY_HDK)\build\make\defines.mak>
 
 EXENAME = samsa.exe
 BUILDFILES = ..\samsa.obj
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)
 
-!include <$(HY_JDKTOOLS)\make\rules.mak>
+!include <$(HY_HDK)\build\make\rules.mak>

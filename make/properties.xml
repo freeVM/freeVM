@@ -315,6 +315,8 @@ properties in preference to these:
                 <env key="HY_CFG" value="${hy.cfg}" />
                 <env key="HY_ARCH" value="${hy.arch}" />
                 <env key="HY_OS" value="${hy.os}" />
+                <env key="HY_NO_SIG" value="false" />
+                <env key="HY_NO_THR" value="false" />
                 <env key="HY_PLATFORM" value="${hy.platform}" />
                 <env key="HY_CFLAGS" value="${hy.cflags}" />
                 <env key="HY_ARCH_DEFINE" value="${hy.arch.define}" />

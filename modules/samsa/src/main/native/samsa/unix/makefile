@@ -17,10 +17,10 @@
 # Makefile for 'samsa'
 #
 
-include $(HY_JDKTOOLS)/make/defines.mk
+include $(HY_HDK)/build/make/defines.mk
 
 BUILDFILES = ../samsa.o
 
 EXENAME = samsa
 
-include $(HY_JDKTOOLS)/make/rules.mk
+include $(HY_HDK)/build/make/rules.mk

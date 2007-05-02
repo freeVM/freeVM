@@ -14,16 +14,29 @@
 #  limitations under the License.
 
 #
-# Makefile for 'launcher'
+# Makefile for module jdwp - transport
+#
+# export HY_HDK=/home/geir/dev/apache/harmony/enhanced/trunk/working_classlib/deploy/
+# export HY_DRLVM=/home/geir/dev/apache/harmony/enhanced/trunk/working_vm/build/deploy/
+
 #
 
-include $(HY_JDKTOOLS)/make/defines.mk
+include $(HY_HDK)/build/make/defines.mk
 
-BUILDFILES = $(SHAREDSUB)main.o $(SHAREDSUB)cmain.o \
-	$(SHAREDSUB)launcher_copyright.o $(SHAREDSUB)strbuf.o \
-	$(SHAREDSUB)libhlp.o  
-MDLLIBFILES = $(LIBPATH)libhycommon.a $(DLLPATH)libhyprt.so \
-	$(DLLPATH)libhythr.so $(DLLPATH)libhysig.so
-EXENAME = $(EXEPATH)java
+COMMON=../../common/
+CMNTRANS=$(COMMON)transport/
 
-include $(HY_JDKTOOLS)/make/rules.mk
+HYCFLAGS += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
+            -I$(COMMON)generic -Idt_socket
+
+HYLDFLAGS += -lstdc++ -lgcc_s
+
+BUILDFILES = \
+    $(CMNTRANS)common/LastTransportError.o \
+    $(CMNTRANS)dt_socket/SocketTransport.o 
+
+MDLLIBFILES = 
+
+DLLNAME = ../libdt_socket.so
+
+include $(HY_HDK)/build/make/rules.mk
