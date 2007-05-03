@@ -115,8 +115,6 @@
         <description>&runDocumentation;</description>
     </target>
 
-    <target name="create-cc-configuration_"/>
-
     <target name="run-cc" description="run-cc"
             depends="init-framework, init-suites, setup-suites, check-status,
                         prepare-cc, create-cc-configuration">

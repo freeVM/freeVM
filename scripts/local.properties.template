@@ -4,6 +4,9 @@
 # framework.parameters.usemail.to=some@mail.address.net
 # framework.parameters.usemail.from=me@some.host
 
+# Prefix to be used in subject field of the mail notifications
+framework.parameters.mail.prefix=[build-test alert]
+
 # Do you want to see framework execution log?
 framework.parameters.options.dolog=false
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                        Status Publisher Implementation
+     ====================================================================== -->
+<project name="publisher" default="run" basedir=".">
+
+    <condition property="execution.status" 
+               value="BUILD PASSED"
+               else="BUILD FAILED">
+        <istrue value="${thisbuildsuccessful}"/>
+    </condition>
+
+    <property name="mail.subject.line" 
+              value="${framework.parameters.mail.prefix} ${execution.status} ${os.name} ${os.arch}: ${suite.name}"/>
+
+    <!-- implement publisher interface -->
+    <target name="publish" if="framework.parameters.usemail" depends="-compose-message">
+        <mail mailhost="${framework.parameters.usemail}"
+              tolist="${framework.parameters.usemail.to}"
+              from="${framework.parameters.usemail.from}"
+              subject="${mail.subject.line}">
+            <message src="${temp.files.dir}/${suite.name}-email-message.txt"/>
+        </mail>
+    </target>
+
+    <target name="-compose-message" if="framework.parameters.usemail">
+        <property name="cc.xsl.files.dir" 
+                  value="${ext.cc.location}/webapps/cruisecontrol/xsl"/>
+        <property name="transformed.file" 
+                  value="${temp.files.dir}/${suite.name}-email-message.txt"/>
+		<xslt basedir="${scripts.dir}/xslt"
+			  in="${logdir}/${logfile}" 
+			  style="${scripts.dir}/xslt/br.xsl" 
+              out="${transformed.file}"
+			  classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar"/>
+    </target>
+
+</project>
+

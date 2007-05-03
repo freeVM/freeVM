@@ -45,7 +45,9 @@
     </target>
 
     <!-- is called from CC to launch the custom ant publisher for ${test.suite} -->
-    <target name="cc-publish" depends="load-properties, define-ant-contrib">
+    <target name="cc-publish" 
+            depends="load-properties, define-ant-contrib"
+            if="framework.parameters.usemail">
         <dirname property="publisher.dir" file="${publisher.location}"/>
         <log message="Calling Publisher ${publisher.location} at ${publisher.dir} for ${suite.name}"/>
         <ant dir="${publisher.dir}" 
@@ -138,12 +140,23 @@
                 </if>
                 <!-- insert custom publisher -->
                 <if>
-                    <isset property="@{suite.name}.parameters.cc.publisher"/>
+                    <not><isfalse value="${@{suite.name}.parameters.cc.publish}"/></not>
                 <then>
-                    <insert-publisher
-                        suite="@{suite.name}"
-                        publisher="${@{suite.name}.parameters.cc.publisher}"
-                        ccfile="${@{suite.name}.parameters.cc.file.location}"/>
+                    <if>
+                        <isset property="@{suite.name}.parameters.cc.publisher"/>
+                    <then>
+                        <insert-publisher
+                            suite="@{suite.name}"
+                            publisher="${@{suite.name}.parameters.cc.publisher}"
+                            ccfile="${@{suite.name}.parameters.cc.file.location}"/>
+                    </then>
+                    <else>
+                        <insert-publisher
+                            suite="@{suite.name}"
+                            publisher="${scripts.dir}/publisher.xml"
+                            ccfile="${@{suite.name}.parameters.cc.file.location}"/>
+                    </else>
+                    </if>
                 </then>
                 </if>
                 <!-- insert the results directory publisher -->
@@ -476,7 +489,7 @@
                 />
                 <replacefilter 
                     token="&lt;!-- @BT.PUBLISHER@ --&gt;" 
-                    value="&lt;antpublisher 
+                    value="&lt;antpublisher@NL@
                 anthome='${ant.home}'@NL@
                 timeout='${cc.project.execution.timeout}'@NL@
                 antWorkingDir='${root.dir}'@NL@
