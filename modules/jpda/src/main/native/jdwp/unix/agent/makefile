@@ -22,6 +22,8 @@ include $(HY_HDK)/build/make/defines.mk
 COMMON=../../common/
 CMNAGENT=$(COMMON)agent/
 
+CFLAGS += -fpic
+
 INCLUDES += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
             -I$(COMMON)generic -Icore
 

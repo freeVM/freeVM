@@ -26,6 +26,8 @@ include $(HY_HDK)/build/make/defines.mk
 COMMON=../../common/
 CMNTRANS=$(COMMON)transport/
 
+CFLAGS += -fpic
+
 INCLUDES += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
             -I$(COMMON)generic -Idt_socket
 
