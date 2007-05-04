@@ -41,12 +41,17 @@
 
     <!-- this list of components to test will grow to eventually be all modules -->
     <target name="test-all"
-        depends="clean, test-modules, gen-report, check-test-result">
+        depends="clean-tests-output, test-modules, gen-report, check-test-result">
     </target>
 
-    <target name="clean">
-        <delete dir="${tests.output}" />
+    <target name="clean" depends="clean-tests-output, clean-tests, clean-jre" />
+
+    <target name="clean-tests">
         <delete dir="${tests.build.output}" />
+    </target>
+
+    <target name="clean-tests-output">
+        <delete dir="${tests.output}" />
     </target>
 
     <target name="test-modules" depends="copy-jre" >
@@ -93,10 +98,20 @@
         <fail if="test.failures" message="There were test failures." />
     </target>
 
-    <target name="copy-jre" unless="not.copy.jre">
+    <target name="copy-jre" depends="copy-jre-files, chmod-jre-files" unless="not.copy.jre"/>
+
+    <target name="copy-jre-files">
         <copy todir="${hy.jdk}/jre" overwrite="no">
               <fileset dir="${hy.deploy}/jdk/jre" />
         </copy>
+    </target>
+
+    <target name="chmod-jre-files" if="is.unix">
+        <chmod file="${hy.jdk}/jre/bin/java" perm="ugo+x" />
+    </target>
+
+    <target name="clean-jre">
+        <delete dir="${hy.jdk}/jre" />
     </target>
 
 </project>
