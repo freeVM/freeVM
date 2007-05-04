@@ -33,7 +33,7 @@ import org.apache.harmony.tools.toolutils.Util;
 class Compiler {
 
     /* FIXME: Hard-coded for now, the name of the ECJ JAR file */
-    static final String ECJ_JAR_FILE = "ecj_3.2.jar"; //$NON-NLS-1$
+    static final String ECJ_JAR_FILE = "ecj_3.3M7.jar"; //$NON-NLS-1$
 
     static final String TOOLS_JAR_FILE = "tools.jar"; //$NON-NLS-1$
 
