@@ -347,14 +347,15 @@ limitations under the License.
           any JDK. For maximum portablility, we plan to write all of the
           tools in Java, using the Harmony launcher as the portable native
           code that starts the VM and invokes the tool. Currently, we have
-          javac completed via the Eclipse compiler, but we need the following:
+          javac completed via the Eclipse compiler, javah, keytool, jarsigner 
+          implemented in Harmony, and we need the following:
         </p>
                                 <ul>
           <li>
-            <code>javac (Done), javadoc, apt, appletviewer, jar, jdb, javah, javap, extcheck</code>
+            <code>javadoc, apt, appletviewer, jar, jdb, javap, extcheck</code>
         </li>
         <li>
-            <code>keytool, jarsigner, policytool, kinit, klist, ktab</code>
+            <code>policytool, kinit, klist, ktab</code>
         </li>
         <li>
             <code>native2ascii,rmic, rmiregistry, rmid, serialver</code>
