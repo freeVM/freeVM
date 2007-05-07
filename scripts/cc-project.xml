@@ -139,6 +139,8 @@
                 </then>
                 </if>
                 <!-- insert custom publisher -->
+                <!-- do status notification by default -->
+                <property name="@{suite.name}.parameters.cc.publish" value="true"/>
                 <if>
                     <not><isfalse value="${@{suite.name}.parameters.cc.publish}"/></not>
                 <then>
