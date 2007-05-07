@@ -290,13 +290,15 @@
 
         <p>
           There is an <a href="http://svn.apache.org/viewvc/harmony/enhanced/buildtest/">
-            initial implementation</a> in place in SVN, but much more work is needed.
-          Ideas include:
+           implementation</a> in place in SVN and it is continuously being
+          improved. The implementation was installed and is running on a number of
+          different <a href="http://wiki.apache.org/harmony/Automated_Testing">platforms</a>.
+          E-mail alerts are sent to a specially created
+          <a href="http://mail-archives.apache.org/mod_mbox/harmony-alerts">mailing list</a>.
+
+          But much more work is needed. Ideas include:
         </p>
         <ul>
-          <li>
-            Send mail to project on success/fail transition
-          </li>
           <li>
             Create live "status dashboard" with a summary of results from all tested platforms,
             as well as history for each tested platform.
