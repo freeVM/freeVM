@@ -200,6 +200,19 @@ limitations under the License.
                 against the
                 <a href="http://people.apache.org/builds/harmony/snapshots/">Harmony class library snapshots.</a>
             </p>
+                                <p>
+              The comparisons above is measuring compatibility with RI's
+              implementation. There is a number of
+              <a href="http://java.sun.com/j2se/1.5.0/docs/guide/standards/index.html">endorsed packages</a>
+              for which it is allowed to implement a later version of theirs specification.
+              In case of newer specification it is acceptable to have difference with RI (for
+              example, <a href="http://incubator.apache.org/projects/yoko.html">CORBA implementation</a>).
+              To measure Harmony API completeness (i.e. differences that have to be
+              fixed) the reports without endorsed packages are provided. See:
+              <a href="http://people.apache.org/~apetrenko/japitool/jdk5vsharmony5.javajavax.html">RI vs Harmony M1</a>
+              and 
+              <a href="http://people.apache.org/~apetrenko/japitool/harmony5vsjdk5.javajavax.html">Harmony M1 vs RI</a>
+            </p>
                 <p><a href="#top">Back to top</a></p>
                     
                                                             </td>
