@@ -43,41 +43,22 @@
         <svn-co url="${svn.url}" trunk="${trunk.dir}"/>
     </target>
     
-    <target name="run" depends="-set-properties">
+    <target name="run">
         <ant target="fetch-depends" 
              dir="${trunk.dir}" 
-             inheritAll="false">
-        </ant>
-
-        <exec executable="${sh}" dir="${trunk.dir}" failonerror="true">
-            <arg line="${cmd.prefix} ${cmd}"/>
-            <arg line="rebuild"/>
-        </exec>
+             inheritAll="false"/>
+        <!-- Use BTI staff to execute Ant Build in new process -->
+        <exec-ant dir="${trunk.dir}" targets="rebuild">
+            <!-- workaround on classlib-build's InvocationTargetException -->
+            <jvmarg line="-Xmx1000M"/>
+        </exec-ant>
     </target>
 
-    <target name="clean" depends="-set-properties">
+    <target name="clean">
         <ant target="clean" 
              dir="${trunk.dir}" 
              inheritAll="false">
         </ant>
-    </target>
-
-    <target name="-set-properties" depends="-set-properties-win, -set-properties-other"/>
-
-    <condition property="is.windows">
-        <os family="windows" />
-    </condition>
-
-    <target name="-set-properties-win" if="is.windows">
-        <property name="sh" value="cmd"/>
-        <property name="cmd.prefix" value="/c"/>
-        <property name="cmd" value='"${ant.home}/bin/ant.bat"'/>
-    </target>
-
-    <target name="-set-properties-other" unless="is.windows">
-        <property name="sh" value="sh"/>
-        <property name="cmd.prefix" value=""/>
-        <property name="cmd" value='"${ant.home}/bin/ant"'/>
     </target>
 
 </project>

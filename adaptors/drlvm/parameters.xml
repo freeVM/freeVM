@@ -7,6 +7,11 @@
             value="${classlib.parameters.shared.trunk.dir}"/>
     </required>
 
+    <optional>
+        <build.cfg description="DRLVM Build Configuration Switch (debug/release)"
+                   value="debug"/>
+    </optional>
+
     <!-- shared values -->
     <shared>
         <!-- define the place where drlvm workspace will be placed -->
@@ -17,6 +22,8 @@
         <jre.dir value="${drlvm.parameters.shared.trunk.dir}/build/deploy/jdk/jre"/>
         <!-- the path to built DRLVM JVM -->
         <jvm.location value="${drlvm.parameters.shared.trunk.dir}/build/deploy/jdk/jre/bin/java${exe}"/>
+        <!-- DRLVM build configuration (debug/release) -->
+        <build.config value="${build.config}"/>
     </shared>
 
     <!-- CC specific configuration -->

@@ -834,6 +834,42 @@ ERROR: Execution of Test Suite '@{suite}' FAILED.
         </sequential>
     </macrodef>
 
+    <!-- Execute Ant Build in new process -->
+    <macrodef name="exec-ant">
+        <attribute name="dir" default="."/>
+        <attribute name="lib" default="${ant.home}/lib"/>
+        <attribute name="file" default="build.xml"/>
+        <attribute name="targets" default=""/>
+        <attribute name="failonerror" default="true"/>
+        <attribute name="failproperty" default="tmp.ant.exec.fail.property"/>
+        <element name="ant-params" implicit="yes" optional="yes"/>
+        <sequential>
+            <java jar="${ant.home}/lib/ant-launcher.jar"
+                  fork="true"
+                  dir="@{dir}" 
+                  failonerror="@{failonerror}"
+                  resultproperty="tmp.@{failproperty}">
+                <sysproperty key="ant.home" value="${ant.home}"/>
+                <!-- caller's specific libraries to be used with ant -->
+                <arg line='-lib "@{lib}"'/>
+                <arg line='-lib "${ext.junit.location}"'/>
+                <!-- proxy settings (if specified) -->
+                <syspropertyset>
+                    <propertyref name="http.proxyHost"/>
+                    <propertyref name="http.proxyPort"/>
+                </syspropertyset>
+                <!-- caller's build specific staff -->
+                <ant-params/>
+                <!-- targets to execute -->
+                <arg line="-f @{file} @{targets}"/>
+            </java>
+            <!-- set up failproperty in case of Ant Build failure -->
+            <condition property="@{failproperty}" value="true">
+                <not><equals arg1="${tmp.@{failproperty}}" arg2="0"/></not>
+            </condition>
+        </sequential>
+    </macrodef>
+
     <macrodef name="log">
         <attribute name="message"/>
         <sequential>
