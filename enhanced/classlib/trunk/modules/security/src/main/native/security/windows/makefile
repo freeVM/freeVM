@@ -14,22 +14,22 @@
 # limitations under the License.
 
 #
-# Makefile for module 'text'
+# Makefile for module 'security'
 #
 
-include $(HY_HDK)/build/make/defines.mk
+!include <$(HY_HDK)\build\make\defines.mak>
 
-CFLAGS += -fpic
-INCLUDES += -I$(HY_HDK)/include/icu4c
+LIBBASE=hysecurity
+DLLNAME=..\$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+BUILDFILES = security_copyright.obj getWindowsRandom.obj
+VIRTFILES = $(LIBBASE).res
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-BUILDFILES = $(SHAREDSUB)text_copyright.o $(SHAREDSUB)BidiWrapper.o
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES += \
-	$(DLLPATH)libicuuc$(HY_LINKLIB_SUFFIX).34 \
-	$(LIBPATH)libhyzip.a $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX) \
-	$(LIBPATH)libhypool.a $(LIBPATH)libhyfdlibm.a $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES = $(LIBPATH)hycommon$(HY_LINKLIB_SUFFIX) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX)
+DLLBASE=0x1300000
+COMMENT=/comment:"Security component native code. (c) Copyright 2006 The Apache Software Foundation or its licensors, as applicable."
 
-DLLNAME = ../libhytext$(HY_SHLIB_SUFFIX)
-EXPNAME = HYTEXT_0.1
-
-include $(HY_HDK)/build/make/rules.mk
+!include <$(HY_HDK)\build\make\rules.mak>
