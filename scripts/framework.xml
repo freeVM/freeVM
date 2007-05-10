@@ -48,7 +48,6 @@
 -->
 <project name="framework-implementation" default="run" basedir=".">
 
-    <import file="download.xml"/>
     <import file="cc-project.xml"/>
 
     <!-- check framework parameters passed to adaptors -->
@@ -59,9 +58,33 @@
 
     <!-- Sets up the framework -->
     <target name="init-framework" 
-            depends="define-tasks, make-dirs, patch-ant, reorder-suites, load-parameters,
-                        fetch-depends,
+            depends="fetch-depends,define-tasks, make-dirs, patch-ant, reorder-suites, load-parameters,
                             -delete-temporal-properties"/>
+
+    <target name="fetch-depends" >
+        <property name="download.xml" location="${scripts.dir}/download.xml" />
+        <property name="resources.location" location="resources.location"/>
+
+        <!-- create empty file -->
+        <echo file="resources.location" message=""/>
+        
+        <!-- download framework dependencies -->
+        <subant genericantfile="${download.xml}" target="download-all" buildpath="${scripts.dir}" inheritall="true"/>
+        
+        <!-- download suites dependencies -->
+        <subant genericantfile="${download.xml}" target="download-all"  inheritall="true">
+            <dirset dir="${adaptors.dir}" includes="${test.suites}"/>
+        </subant>
+        
+        <!-- load collected locations                  -->
+        <!-- FIXME: the file should be created once    -->
+        <!-- during setup and reused by run and run-cc -->
+        <loadproperties srcfile="${resources.location}">
+            <filterchain>
+                <replaceregex pattern="\\" replace="/" flags="g"/>
+            </filterchain>
+        </loadproperties>
+    </target>
 
     <!-- Fixes Ant's Bug described at: 
          http://issues.apache.org/bugzilla/show_bug.cgi?id=30569
@@ -98,7 +121,7 @@
         <mkdir dir="${classes.dir}"/>
     </target>
 
-    <target name="define-tasks" depends="fetch-ant-contrib, define-ant-contrib"/>
+    <target name="define-tasks" depends="fetch-depends,define-ant-contrib"/>
 
     <target name="define-ant-contrib">
         <!-- plug in the ANTCONTRIB -->

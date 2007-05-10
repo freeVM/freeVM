@@ -15,60 +15,94 @@
      See the License for the specific language governing permissions and
      limitations under the License. -->
 
-<!DOCTYPE buildtest SYSTEM "../buildtest.dtd">
-
 <!-- ====================================================================== 
                    External Libraries Fetching Implementation
      ====================================================================== -->
-<project name="external-libraries-fetching" default="fetch-depends" basedir=".">
+<project name="external-libraries-fetching" default="download-all" basedir=".">
 
-    <target name="-init" depends="-make-dep-dirs, load-framework-parameters, -setup-proxy"/>
+    <!-- temporary file to store intermediate results of iteration -->
+    <property name="tmp.file" value="tmp.txt" />
 
-    <target name="fetch-ant-contrib" depends="-init">
-        <fetch libname="ant-contrib" subcomponent="framework"/>
+    <propertyset id="required.pops">
+        <propertyref prefix="parameters.external" />
+        <propertyref name="download.xml" />
+        <propertyref name="subcomponent" />
+        <propertyref name="external.libs.dir" />
+        <propertyref name="external.arch.dir" />
+        <propertyref name="temp.files.dir" />
+        <propertyref name="resources.location" />
+    </propertyset>
+
+    <target name="download-all" depends="-make-dep-dirs,-setup-proxy">
+        <!-- default properties file -->
+        <property name="props.file" value="parameters.xml" />
+
+        <xmlproperty file="${props.file}" collapseAttributes="true"
+            semanticAttributes="true" />
+
+        <!-- flash propertyset as string to file for iteration   -->
+        <!-- the string has the following format:                -->
+        <!--     "name1=url1, name2=url2 ..."                    -->
+        <propertyset id="tmp.id">
+            <propertyref regex="parameters\.external\..+\.url$" />
+            <regexpmapper from="parameters\.external\.(.+)\.url$" to="\1" />
+        </propertyset>
+        <property name="tmp.str" refid="tmp.id" />
+        <echo message="${tmp.str}" file="${tmp.file}" />
+
+        <basename file="${basedir}" property="subcomponent"/>
+
+        <!-- iterate over propertyset fetching required dependencies -->
+        <ant antfile="${download.xml}" target="-iterate" inheritall="false">
+            <propertyset refid="required.pops" />
+        </ant>
+
+        <delete file="${tmp.file}" />
     </target>
 
-    <target name="fetch-depends"
-            depends="define-tasks, load-framework-parameters, load-suites-parameters, -make-dep-dirs, -setup-proxy">
-        <description>
-            Fetches all external dependencies needed by framework itself.
-            Network connection is required.
-            (You can set up proxy settings in local configuration file).
-        </description>
+    <!-- ============================
+        Targets for iteration over propertyset of external dependencies
+        ============================ -->
+    <target name="-download-next" if="donext">
+        <!-- make ant iterate over propertyset:                   -->
+        <!-- load a 'name' of dependency from temporary file and  -->
+        <!-- flash the 'rest' of dependencies back to the file.   -->
+        <loadproperties srcfile="${tmp.file}">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^([^=]+)=.*" replace="name=\1" />
+                </tokenfilter>
+            </filterchain>
+        </loadproperties>
+        <loadproperties srcfile="${tmp.file}">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^[^=]+=[^,]+,? ?(.*)$"
+                                  replace="rest=\1" />
+                </tokenfilter>
+            </filterchain>
+        </loadproperties>
+        <echo message="${rest}" file="${tmp.file}" />
 
-        <propertyset id="external.propertyset.id">
-            <propertyref regex="[^\.]*\.parameters\.external\."/>
-        </propertyset>
-        
-        <!--  XXX debug print -->
-        <echoproperties>
-            <propertyset refid="external.propertyset.id"/>
-        </echoproperties>
+        <!-- do download for the dependency -->
+        <fetch libname="${name}" subcomponent="${subcomponent}"/>
 
-        <for list="framework,${test.suites.names.list}" param="subcomponent">
-            <sequential>
-            <!-- declare property containing the list of externals 
-                 to download -->
-            <property name="@{subcomponent}.external.names.list" value=""/>
-            <propertyselector 
-                    property="@{subcomponent}.external.names.list"
-                    delimiter=","
-                    match="^@{subcomponent}\.parameters\.external\.(.*)\.url"
-                    select="\1"
-                    distinct="true"
-                    override="true"/>
-            <for list="${@{subcomponent}.external.names.list}" param="dependency">
-            <sequential>
-                <fetch libname="@{dependency}" subcomponent="@{subcomponent}"/>
-            </sequential>
-            </for>
-            </sequential>
-        </for>
-        <echoproperties>
+        <ant antfile="${download.xml}" target="-iterate" inheritall="false">
+            <propertyset refid="required.pops" />
+        </ant>
+    </target>
+
+    <target name="-iterate">
+        <!-- check if next iteration should be done -->
+        <condition property="donext">
+            <length file="${tmp.file}" length="0" when="greater" />
+        </condition>
+        <ant antfile="${download.xml}" target="-download-next" inheritAll="false">
             <propertyset>
-                <propertyref prefix="ext."/>
+                <propertyset refid="required.pops" />
+                <propertyref name="donext" />
             </propertyset>
-        </echoproperties>
+        </ant>
     </target>
 
     <!-- expected parameters: 
@@ -93,53 +127,53 @@
             <!-- Determine the basename of the URL pointing to library file
                  (further procedure of the library fetching depends on its 
                  type)                                                      -->
-            <basename file="${@{subcomponent}.parameters.external.@{libname}.url}"
-                      property="@{subcomponent}.parameters.external.@{libname}.url.basename"/>
+            <basename file="${parameters.external.@{libname}.url}"
+                      property="parameters.external.@{libname}.url.basename"/>
 
             <!-- Determine the [base]name of the library file:              -->
             <!-- firstly: check if it was expicitly specified 
                           by 'jar' attribute: -->
-            <condition property="@{subcomponent}.parameters.external.@{libname}.basename"
-                       value="${@{subcomponent}.parameters.external.@{libname}.jar}">
-                <isset property="@{subcomponent}.parameters.external.@{libname}.jar"/>
+            <condition property="parameters.external.@{libname}.basename"
+                       value="${parameters.external.@{libname}.jar}">
+                <isset property="parameters.external.@{libname}.jar"/>
             </condition>
             <!-- secondly: check if it was expicitly specified 
                           by 'dir' attribute: -->
-            <condition property="@{subcomponent}.parameters.external.@{libname}.basename"
-                       value="${@{subcomponent}.parameters.external.@{libname}.dir}">
-                <isset property="@{subcomponent}.parameters.external.@{libname}.dir"/>
+            <condition property="parameters.external.@{libname}.basename"
+                       value="${parameters.external.@{libname}.dir}">
+                <isset property="parameters.external.@{libname}.dir"/>
             </condition>
             <!-- at last: if the name was not explicitly specified,
                  use URL's basename. -->
-            <property name="@{subcomponent}.parameters.external.@{libname}.basename"
-                      value="${@{subcomponent}.parameters.external.@{libname}.url.basename}"/>
+            <property name="parameters.external.@{libname}.basename"
+                      value="${parameters.external.@{libname}.url.basename}"/>
             
             <!-- Set up the library accessing property: -->
             <property 
                 name="ext.@{libname}.location" 
-                location="${external.libs.dir}/${@{subcomponent}.parameters.external.@{libname}.basename}"/>
+                location="${external.libs.dir}/${parameters.external.@{libname}.basename}"/>
+            <echo file="${resources.location}" append="true">ext.@{libname}.location=${ext.@{libname}.location}
+</echo>
             
             <!-- Check for lib file presence -->
-            <condition property="@{subcomponent}.parameters.external.@{libname}.exists">
+            <condition property="parameters.external.@{libname}.exists">
                 <available file="${ext.@{libname}.location}"/>
             </condition>
 
             <echo message="===> Library Info: @{libname}"/>
-            <echo message="         Basename: ${@{subcomponent}.parameters.external.@{libname}.basename}"/>
+            <echo message="         Basename: ${parameters.external.@{libname}.basename}"/>
             <echo message="         Location: ${ext.@{libname}.location}"/>
-            <echo message="         Presence: ${@{subcomponent}.parameters.external.@{libname}.exists}"/>
+            <echo message="         Presence: ${parameters.external.@{libname}.exists}"/>
 
             <!-- Proceed fetching if the target file does not exist -->
             <antcall target="-fetch-unless-exists">
                 <param name="lib.name" value="@{libname}"/>
                 <param name="url.file"
-                       value="${@{subcomponent}.parameters.external.@{libname}.url.basename}"/>
+                       value="${parameters.external.@{libname}.url.basename}"/>
                 <param name="lib.file"
-                       value="${@{subcomponent}.parameters.external.@{libname}.basename}"/>
+                       value="${parameters.external.@{libname}.basename}"/>
                 <propertyset>
-                    <propertyref regex="^@{subcomponent}.parameters\.external\..*"/>
-                    <!-- remove @{subcomponent} prefix -->
-                    <mapper type="regexp" from="^@{subcomponent}\.(.*)" to="\1"/>
+                    <propertyref regex="^parameters\.external\..*"/>
                 </propertyset>
             </antcall>
         </sequential>
