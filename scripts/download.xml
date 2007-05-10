@@ -333,7 +333,7 @@ while expected is:
         </sequential>
     </macrodef>
 
-    <target name="-make-dep-dirs" unless="${depends.jars}.exists">
+    <target name="-make-dep-dirs">
         <!-- Make the directories to store external dependencies -->
         <mkdir dir="${external.libs.dir}" />
         <mkdir dir="${external.arch.dir}" />
