@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                    BT Adaptor Executing CLASSLIB Unit Tests
+     ====================================================================== -->
+<project name="classlib-test" default="run" basedir=".">
+
+    <property name="classlib-test.results.dir"
+              value="${results.dir}/${suite.name}"/>
+
+    <!-- the default value for JRE options -->
+    <property name="jre.options" value="-showversion"/>
+
+    <!-- do setup -->
+    <target name="setup">
+        <mkdir dir="${classlib-test.results.dir}"/>
+    </target>
+
+    <!-- do run -->
+    <target name="run">
+        <!-- remove old results (they have been archived after the run) -->
+        <delete quiet="true" verbose="false">
+            <fileset dir="${classlib-test.results.dir}" includes="**/*"/>
+        </delete>
+
+        <!-- time of the current test run -->
+        <tstamp>
+            <format property="classlib-test.run.time" pattern="yyyyMMdd_HHmm"/>
+        </tstamp>
+
+        <exec-ant dir="${classlib-test.trunk.dir}"
+                  targets="test"
+                  failonerror="false"
+                  failproperty="classlib-test.run.failed">
+            <jvmarg line="-Xmx800M"/>
+            <sysproperty key="test.jre.home"
+                            value="${classlib-test.tested.jre}"/>
+            <sysproperty key="tested.jre.options"
+                            value="${jre.options}"/>
+        </exec-ant>
+
+        <!-- define the resulting files -->
+        <fileset id="classlib-test.results.set"
+                 dir="${classlib-test.trunk.dir}/build/test_report"
+                 includes="TEST-*.xml">
+            <date datetime="${classlib-test.run.time}"
+                  pattern="yyyyMMdd_HHmm"
+                  when="after"/>
+        </fileset>
+
+        <copy todir="${classlib-test.results.dir}">
+            <fileset refid="classlib-test.results.set"/>
+            <packagemapper from="*" to="*"/>
+        </copy>
+
+        <!-- store the results in an archive -->
+        <zip destfile="${results.dir}/${suite.name}_${classlib-test.run.time}.zip"
+             basedir="${classlib-test.results.dir}"/>
+
+        <fail message="There were CLASSLIB Unit Test failures."
+              if="classlib-test.run.failed"/>
+    </target>
+
+</project>
+
