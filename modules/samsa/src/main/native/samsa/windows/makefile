@@ -24,4 +24,8 @@ BUILDFILES = ..\samsa.obj
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)
 
+VIRTFILES =
+SYSLIBFILES =
+MDLLIBFILES =
+
 !include <$(HY_HDK)\build\make\rules.mak>

@@ -23,4 +23,6 @@ BUILDFILES = ../samsa.o
 
 EXENAME = samsa
 
+MDLLIBFILES = 
+
 include $(HY_HDK)/build/make/rules.mk
