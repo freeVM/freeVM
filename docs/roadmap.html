@@ -255,19 +255,34 @@ limitations under the License.
           </strike>
         </li>
         <li>
-          Dec 2006: 97% of Java SE 5 class library coverage
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
+            Dec 2006: 97% of Java SE 5 class library coverage
+          </strike>
         </li>
         <li>
           Q1 2007: 100% Java SE 5 class library coverage
         </li>
         <li>
-          Q1 2007: DRLVM is stable with reasonable performance
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
+            Q1 2007: DRLVM is stable with reasonable performance
+          </strike>
         </li>
         <li>
           Q1 2007: begin testing with TCK
         </li>
         <li>
-          Q1 2007: work begins on Java SE 6 features
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
+            Q1 2007: work begins on Java SE 6 features
+          </strike>
         </li>
         <li>
           Feb 2007: Jave SE 5 JDK toolset complete
@@ -347,8 +362,15 @@ limitations under the License.
           any JDK. For maximum portablility, we plan to write all of the
           tools in Java, using the Harmony launcher as the portable native
           code that starts the VM and invokes the tool. Currently, we have
-          javac completed via the Eclipse compiler, javah, keytool, jarsigner 
-          implemented in Harmony, and we need the following:
+          the following completed:
+        </p>
+                                <ul>
+          <li>
+            <code>jarsigner, javac (via the Eclipse compiler), javah, keytool</code>
+        </li>
+        </ul>
+                                <p>
+          But we need the following:
         </p>
                                 <ul>
           <li>
@@ -514,8 +536,12 @@ limitations under the License.
       
                         <p>
           The  class library is an important (and large!) part of the Java SE
-          platform. While we have made significant progress so far (~80% at last
+          platform. While we have made significant progress so far (&gt;97% of Java 5 at last
           check), there are many, many interesting things remaining to be done.
+        </p>
+                                <p>
+          The work on Java 6 features is <a href="http://wiki.apache.org/harmony/ClasslibJava6">underway</a>
+          in a dedicated branch.
         </p>
                                 <ul>
           <li>
@@ -567,9 +593,6 @@ limitations under the License.
             could be a nice start for newbies to get acquainted with the code.
           </li>
           <li>
-            <a href="http://wiki.apache.org/harmony/TODO_Items">TODO Items</a>
-          </li>
-          <li>
             <a href="http://wiki.apache.org/harmony/Documentation_TODO">Documentation TODO</a>
           </li>
         </ul>
@@ -617,7 +640,7 @@ limitations under the License.
                                 <tr>
                         <th class="TableHeading" colspan="" rowspan="">
                 
-              IA32 <br>(SSE/SSE2 only)</br>
+              IA32 <br>(Pentuim III or better)</br>
             
         </th>
                                 <td class="TableCell" colspan="" rowspan="" >
@@ -657,7 +680,7 @@ limitations under the License.
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
-                ?
+                +
         </td>
                                 <td class="TableCell" colspan="" rowspan="" >
     
