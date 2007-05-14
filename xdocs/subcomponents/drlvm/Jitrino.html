@@ -984,15 +984,6 @@ find_inline_candidates(method_HIR) {
                   side effects are considered movable. Instructions can be
                   moved up and down the dominator tree.
                </li>
-               <li>
-                  <strong>Lowering</strong> (<code>lower</code>) performs basic
-                  instruction-level transformations to replace common helper
-                  calls with the corresponding HIR code. A helper call
-                  generally is performance-expensive, so that inlining the
-                  operation performed by a helper method can improve
-                  performance. This is especially true for operations that are
-                  proved to be redundant afterwards.
-               </li>
             </ul>
          </dd>
       </dl>
