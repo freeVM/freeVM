@@ -192,11 +192,11 @@ limitations under the License.
                                                                 <div>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements. See the NOTICE file distributed with
+    contributor license agreements.  See the NOTICE file distributed with
     this work for additional information regarding copyright ownership.
     The ASF licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
-    the License. You may obtain a copy of the License at
+    the License.  You may obtain a copy of the License at
   
        http://www.apache.org/licenses/LICENSE-2.0
   
@@ -217,13 +217,14 @@ limitations under the License.
       <title>
            Abstract Windowing Toolkit
       </title>
-      <link rel="stylesheet" type="text/css" href="../../site.css" />
+      <link rel="stylesheet" type="text/css" href="site.css" />
    </head>
    <body>
       <h1>
          <a id="A1" name="top"></a>Abstract Window Toolkit Framework
       </h1>
-  <ol id="TOC">
+  
+        <ol id="TOC">
       <li><a href="#Revision_History">Revision History</a></li>
         <li><a href="#About_This_document">About This Document</a>
           <ol>
@@ -298,7 +299,7 @@ limitations under the License.
             <td class="TableCell">
                May 10, 2006
             </td>
-            </tr>
+        </tr>
             <tr>
             <td class="TableCell">
                Formatting update
@@ -310,6 +311,11 @@ limitations under the License.
                September 21, 2006
             </td>
          </tr>
+            <tr>
+              <td class="TableCell">Update: event handling and synchronizer </td>
+              <td class="TableCell">Nadya Morozova, Alexey Petrenko </td>
+              <td class="TableCell">April, 2007 </td>
+        </tr>
       </table>
      
       <h1>
@@ -340,8 +346,8 @@ limitations under the License.
          name="Documentation_Conventions"></a>Documentation Conventions
       </h2>
       <p>
-         This document uses the <a href="../../documentation/conventions.html">
-        unified conventions</a> for the DRL documentation kit.
+         This document uses the <a href="conventions.htm"
+         target="_blank">unified conventions</a> for the DRL documentation kit.
       </p>
       <p class="backtotop">
          <a href="#top">Back to Top</a>
@@ -387,7 +393,7 @@ limitations under the License.
             href="#Visual_Themes_in_AWT">visual themes</a>
          </li>
          <li>
-            Support for <a href="#Multi-threading_Support">multi-threading</a>
+            Support for <a href="#Multi-Threading_support">multi-threading</a>
          </li>
       </ul>
       <p class="backtotop">
@@ -404,6 +410,9 @@ limitations under the License.
          specifically, the GUI subsystem of OS. For information on application
          events handling, consult the AWT specification [<a
          href="#AWTSpec">1</a>].
+ </p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
       </p>
       <h3>
          <a id="EventTypeDefinition" name="EventTypeDefinition"></a>Native and
@@ -432,15 +441,8 @@ limitations under the License.
          AWT has the <i>event dispatch thread</i> (EDT) at its basis,
          represented by the class <code>java.awt.EventDispatchThread</code>.
          This thread handles all generated types of events by going over the
-         loop shown in Figure 1. EDT starts on AWT Toolkit creation and stops
+         loop. EDT starts on AWT Toolkit creation and stops
          on application termination.
-      </p>
-      <p style="text-align: center">
-         <img alt="AWT and native event handling order"
-         src="images/EventFlow.gif" />
-      </p>
-      <p class="special">
-         Figure 1: Native and AWT Events Handling
       </p>
       <p>
          In more detail, EDT performs the following <em>event loop</em>:
@@ -499,7 +501,7 @@ limitations under the License.
             href="#Native_Event_classification">invisible</a>.
          </li>
       </ul>
-      <p class="backtotop">
+	        <p class="backtotop">
          <a href="#top">Back to Top</a>
       </p>
       <h3>
@@ -509,19 +511,20 @@ limitations under the License.
          This section defines native events types and the way AWT handles these
          events based on their type.
       </p>
-      <p class="class">
+      <dl>
+      <dt>
          <a id="Native_Event_classification"
          name="Native_Event_classification"></a>Native Events Classification
-      </p>
-      <p>
-         Figure 2 below demonstrates how native events can be classified by
+      </dt>
+      <dd>
+      <p>         Figure 1 below demonstrates how native events can be classified by
          their role in the AWT framework.
       </p>
       <p style="text-align: center">
          <img alt="Native events: 4 subtypes" src="images/NativeEventCL.gif" />
       </p>
       <p class="special">
-         Figure 2: Native Events Classification
+         Figure 1: Native Events Classification
       </p>
       <ul>
          <li>
@@ -544,235 +547,65 @@ limitations under the License.
             not supported by AWT, so these events are ignored.
          </li>
       </ul>
-      <p class="class">
+      </dd>
+      <dt>
          Abstracting the Native Platform
-      </p>
-      <p>
-         Native events handling goes in two stages: the first stage depends on
-         the native platform, and the second stage is the same on all supported
-         platforms. Platform-dependent functionality comprises the <em>Window
-         Toolkit</em>, WTK, in the <code>org.apache.harmony.awt.wtk</code>
-         package. The platform-dependent and platform-independent levels
-         cooperate via three main interfaces of this
-         package: <code>NativeEventListener</code>, <code>NativeEvent</code>,
-         and <code>NativeEventQueue</code>, as shown in Figure 3. Classes
-         implementing the <code>NativeEvent</code>
-         and <code>NativeEventQueue</code> interfaces are platform-specific.
-         For example, the <code>NativeEvent</code> interface is implemented by
-         the classes <code>LinuxEvent</code> and <code>WinEvent</code> for the
-         Linux<a href="#*">*</a> and Windows<a href="#*">*</a> systems
-         respectively.
-      </p>
-      <p style="text-align: center">
-         <img
-         alt="Interfaces depending and not depending on the underlying platform"
-          src="images/ImplementationDetails.gif" />
-      </p>
-      <p class="special">
-         Figure 3: Interfaces for Abstracting the Native Platform
-      </p>
-
-      <p>
-         Classes of the <code>NativeEvent</code> interface convert information
-         about native events to a platform-independent format.
-         The <code>NativeEventQueue</code> interface fetches native events, and
-         the <code>NativeEventListener</code> interface of the Java<a
-         href="#*">*</a> EDT thread handles native events. In the DRL AWT
-         implementation, native and AWT events are handled by the single EDT
-         thread. See the <a href="#Multi-threading_Support">Multi-threading
-         Support</a> section for more information.
-      </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
-      <p class="class">
+      </dt>
+      <dd>
+      <p>Native events handling goes in two stages: the first stage depends on the
+        native platform, and the second stage is the same on all supported platforms.
+        Platform-dependent functionality comprises the <i>Window Toolkit</i>, WTK,
+        in the&nbsp;<code>org.apache.harmony.awt.wtk</code> package. This package
+        declares interfaces and abstract classes, the platform-specific classes inherited
+        from them.</p>
+      </dd>
+      <dt>
          <a id="Native_Event_Dispatching"
          name="Native_Event_Dispatching"></a>Native Event Dispatching
-      </p>
-      <p>
-         The method <code>onEvent()</code> in the
-         platform-dependent <code>NativeEventListener</code> interface
-         processes native events. Platform-dependent classes
-         implementing <code>NativeEventQueue</code> call this method to handle
-         a relevant native event, see Figure 4.
-      </p>
+      </dt>
+      <dd>
       <p>
          AWT handles relevant native events by following these steps:
       </p>
       <ol>
-         <li>
-            The platform-specific implementation of
-            the <code>NativeEvent</code> interface translates the event to a
-            unified format described by the interface <code>NativeEvent</code>.
-         </li>
-         <li>
-            The platform-specific implementation
-            of <code>NativeEventQueue</code> calls the EDT
-            method <code>onEvent()</code> and passes the decoded event as a
-            parameter.
-         </li>
-         <li>
-            EDT passes the event to the <code>java.awt.Dispatcher class</code>
-            identifying the type of event.
-         </li>
-         <li>
-            Depending on the event type, the dispatcher can handle the event or
-            transmit it to a specific sub-dispatcher. For
-            example, <code>java.awt.MouseDispatcher</code> works with mouse
-            events, <code>java.awt.Dispatcher.KeyDispatcher</code> processes
-            keyboard events.
-         </li>
-      </ol>
+         <li><span class="MsoNormal"> The native events thread receives a native
+         event from the operating system.</span></li>
+         <li> The platform-specific implementation
+             of the&nbsp;<code>NativeEvent</code> interface translates the event
+             to a unified format described by the interface&nbsp;<code>NativeEvent</code>,
+         puts that event to <code>tiveEventQueue,</code> and notifies the event dispatch
+         thread.</li>
+         <li>EDT gets a notification that an event has arrived, fetches
+             that event from the native event queue, and passes the event to the&nbsp;<code>java.awt.Dispatcher</code> object.</li>
+         <li>Depending
+             on the event type, the dispatcher can handle the event or transmit it
+             to a specific sub-dispatcher. For example,&nbsp;<code>java.awt.MouseDispatcher</code> works
+             with mouse events,&nbsp;<code>java.awt.Dispatcher.KeyDispatcher</code> processes
+             keyboard events. </li>
+        </ol>
       <p>
          The result of native event dispatching depends on the event type:
          state event, signal or invisible. Signal native events are translated
-         to AWT events explicitly (Figure 4, second column). For state and
+         to AWT events explicitly (Figure 2, second column). For state and
          invisible events, the AWT framework updates the state of the AWT
          object corresponding to the native object that sent the event. For
          state events, this implicitly generates an AWT event signaling an AWT
-         object state change (Figure 4, third column). For invisible events,
-         the AWT object state gets updated silently (Figure 4, fourth column).
+         object state change (Figure 2, third column). For invisible events,
+         the AWT object state gets updated silently (Figure 2, fourth column).
       </p>
       <p style="text-align: center">
          <img alt="Native events handling by the 4 subtypes"
          src="images/NativeEvent.gif" />
       </p>
       <p class="special">
-         Figure 4: Native Events Handling by Type
+         Figure 2: Native Events Handling by Type
       </p>
+      </dd>
+      </dl>
       <p class="backtotop">
          <a href="#top">Back to Top</a>
       </p>
-      <h3>
-         <a id="Native_and_AWT_Event_Handlers_Cooperation"
-         name="Native_and_AWT_Event_Handlers_Cooperation"></a> Native and AWT
-         Event Handlers Cooperation
-      </h3>
-      <p>
-         Native events often result in new AWT events that need to be handled.
-         This section describes when and how AWT event handlers are called for
-         this purpose.
-      </p>
-      <p>
-         The Windows<a href="#*">*</a> OS generates synchronous and
-         asynchronous native events, so that AWT must be ready to handle nested
-         calls to the event handler. In this case, AWT makes an additional
-         effort to handle AWT events one by one. DRL AWT uses
-         the <code>WindowProc</code> event handler inside WTK for interaction
-         with Windows<a href="#*">*</a>. The OS calls this handler for handling
-         any native event in AWT.
-      </p>
-      <p>
-         The Linux<a href="#*">*</a> event handling mechanism is different with
-         its own method for handling native events. In this OS, all native
-         events are asynchronous and no nesting happens.
-      </p>
-      <p class="class">
-         Handling a single event
-      </p>
-      <p>
-         Figure 5 is an example of mouse click event handling in AWT. In the
-         given case, the AWT listener does not co-operate with the underlying
-         native system, and, consequently, no other native events are produced
-         during the listener's operation. The example demonstrates handling an
-         event on Windows*.
-      </p>
-      <p style="text-align: center">
-         <img alt="Native events handling by the 4 subtypes"
-         src="images/EventHanglingInAWT.gif" />
-      </p>
-      <p class="special">
-         Figure 5: Mouse Click Event Handling
-      </p>
-      <p>
-         Numbers in the figure above correspond to the following steps in the
-         event handling flow:
-      </p>
-      <ol>
-         <li>
-            The OS calls <code>WindowProc</code> to handle the native event.
-            The type of event is determined, information about this event is
-            gathered and passed to the <code>onEvent()</code> method
-            of <code>NativeEventListener</code>.
-         </li>
-         <li>
-            The <code>java.awt.Dispatcher</code> class finds the appropriate
-            target for this event and posts an AWT event to the AWT event
-            queue. In this example, it is <code>MouseEvent</code>.
-         </li>
-         <li>
-            The method <code>onEventNestingEnd()</code> is called to handle all
-            accumulated AWT events. <code>MouseEvent</code> is fetched from the
-            event queue and finally dispatched. Listeners of the event's target
-            are called at this point.
-         </li>
-         <li>
-             <code>WindowProc</code> returns.
-         </li>
-      </ol>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
-      <p class="class">
-         Handling nested events
-      </p>
-      <p>
-         Figure 6 is an example of mouse click event handling with the event
-         listener requests keyboard focus on the clicked component.
-      </p>
-      <p style="text-align: center">
-         <img alt="Nested Event handling" src="images/EventHandling.gif" />
-      </p>
-      <p class="special">
-         Figure 6: Mouse Click Event Handling with a Nested Event
-      </p>
-      <p>
-         Numbers in the figure above correspond to the following steps in the
-         event handling flow:
-      </p>
-      <ol>
-         <li>
-            The OS calls <code>WindowProc</code>, the native event is
-            transformed into an AWT event and stored in the event queue.
-         </li>
-         <li>
-            The event listener calls <code>requestFocus()</code>, which
-            indirectly results in a native API call.
-         </li>
-         <li>
-            The OS calls <code>WindowProc</code> to report the focus change
-            event. Because the previous call to <code>WindowProc</code> is not
-            complete yet, the new call is recognized as nested.
-         </li>
-         <li>
-            The dispatcher adds another AWT event, <code>FocusEvent</code>, to
-            the event queue.
-         </li>
-         <li>
-             <code>WindowProc</code> returns without handling AWT events
-            because it is a nested native event handler.
-         </li>
-         <li>
-            The method <code>onEventNestingEnd()</code> is still working in the
-            first-level <code>WindowProc</code> handler. This method fetches
-            and dispatches the <code>FocusEvent</code> added at step 4.
-         </li>
-         <li>
-            When the AWT event queue is empty, <code>WindowProc</code> returns.
-         </li>
-      </ol>
-      <p>
-         This technique guarantees that AWT event handlers are called
-         sequentially. The nested native event handler does not attempt to
-         handle pending AWT events. Instead, these events are collected in the
-         event queue to be handled later. The first-level native event handler
-         dispatches all the AWT events waiting in the queue.
-      </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
-      <h2>
-         <a id="Focus_Subsystem" name="Focus_Subsystem"></a>Focus Subsystem
+      <h2><a id="Focus_Subsystem" name="Focus_Subsystem"></a>Focus Subsystem
       </h2>
       <p>
          The AWT focus subsystem is a set of classes for managing keyboard
@@ -814,14 +647,14 @@ limitations under the License.
       </ul>
       <p>
          The interaction between user code and these levels of the focus
-         subsystem is shown on Figure 7 below.
+         subsystem is shown on Figure 3 below.
       </p>
       <p style="text-align: center">
          <img alt="Detailed event handling schema"
          src="images/FocusFramework.gif" />
       </p>
       <p class="special">
-         Figure 7. Focus Event Data Flow
+         Figure 3. Focus Event Data Flow
       </p>
       <p>
          The following code entities perform the major focus subsystem tasks:
@@ -840,9 +673,6 @@ limitations under the License.
          Subsequent sections describe the levels of focus management in more
          detail and give specifics of the DRL implementation compared to the
          focus specification [<a href="#FocusRef">3</a>].
-      </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
       </p>
       <h3>
          <a id="Focus_Dispatcher" name="Focus_Dispatcher"></a>Focus Dispatcher
@@ -893,7 +723,7 @@ limitations under the License.
                src="images/FocusProxying.gif" />
             </p>
             <p class="special">
-               Figure 8. Focus Proxy
+               Figure 4. Focus Proxy
             </p>
             <p>
                If the active window is the focused window, no proxying occurs.
@@ -903,7 +733,7 @@ limitations under the License.
             </p>
          </dd>
       </dl>
-      <p class="backtotop">
+            <p class="backtotop">
          <a href="#top">Back to Top</a>
       </p>
       <h3>
@@ -960,9 +790,6 @@ limitations under the License.
             focus owner to clear the focus owner value.
          </li>
       </ul>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
       <h3>
          <a id="DRL_Focus_Implementation_Specifics"
          name="DRL_Focus_Implementation_Specifics"></a>DRL Focus Implementation
@@ -999,7 +826,7 @@ limitations under the License.
             heavy-weight, automatically initiates a focus traversal.
          </dd>
       </dl>
-      <p class="backtotop">
+            <p class="backtotop">
          <a href="#top">Back to Top</a>
       </p>
       <h2>
@@ -1012,7 +839,7 @@ limitations under the License.
          platform-specific native API or using both approaches.
       </p>
       <h3>
-         <a id="Default_theme" name="Default_theme"></a>Default Theme
+         <a id="Default_theme" name="Default_theme"></a>Default theme
       </h3>
       <p>
          You can paint standard components in many ways, including drawing the
@@ -1048,17 +875,14 @@ limitations under the License.
          disabled or not available, or when the native theme re-uses
          functionality of the standard theme.
       </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
       <h3>
-         <a id="Delivered_themes" name="Delivered_themes"></a> Derived Themes
+         <a id="Delivered_themes" name="Delivered_themes"></a> Derived themes
       </h3>
       <p>
          You can create a custom theme that inherits from the default theme and
          contains specific features. The current implementation contains
          the <code>WinTheme</code> class that extends the default theme as
-         shown in Figure 9.
+         shown in Figure 5.
       </p>
       <p>
          To use the native API in your theme, extend the default theme
@@ -1066,7 +890,7 @@ limitations under the License.
          additional features of specific implementation of
          the <code>Graphics</code> class, and explicitly call native API
          functions via wrappers, see <code>org.apache.harmony.misc</code>
-         package for details. Figure 9 below demonstrates theme-related classes
+         package for details. Figure 5 below demonstrates theme-related classes
          hierarchy with methods related to the <code>Button</code> component as
          an example. A block of code for extending
          the <code>drawButton()</code> method is shown in <a
@@ -1077,10 +901,7 @@ limitations under the License.
          src="images/ThemesHierachy.gif" />
       </p>
       <p class="special">
-         Figure 9: Hierarchy of Theme Classes
-      </p>
-      <p>
-          
+         Figure 5: Hierarchy of Theme Classes
       </p>
       <p>
          After creating a derived theme, turn it on by using the
@@ -1097,12 +918,12 @@ limitations under the License.
          option <code>-Dawt.theme=0</code>. As long as zero is an invalid class
          name, this does the job.
       </p>
-      <p class="backtotop">
+            <p class="backtotop">
          <a href="#top">Back to Top</a>
       </p>
       <h3>
          <a id="Implementation_details"
-         name="Implementation_details"></a>Implementation Details
+         name="Implementation_details"></a>Implementation details
       </h3>
       <p>
          Painting standard components requires access to their internal state,
@@ -1159,7 +980,7 @@ protected void drawButtonText(Graphics g, ButtonState s) {
          protected methods.
       </p>
       <p>
-         Figure 10 shows an example of component classes relation, inner states
+         Figure 6 shows an example of component classes relation, inner states
          and the inheritance hierarchy of component state interfaces. The
          figure contains short names for convenience, for example,
           <code>Component</code> actually means
@@ -1170,9 +991,9 @@ protected void drawButtonText(Graphics g, ButtonState s) {
          src="images/ThemesStates.gif" />
       </p>
       <p class="special">
-         Figure 10: Inheritance and Composition for Components' State
+         Figure 6: Inheritance and Composition for Components' State
       </p>
-      <p class="backtotop">
+            <p class="backtotop">
          <a href="#top">Back to Top</a>
       </p>
       <h3>
@@ -1203,12 +1024,9 @@ void prepaint(Graphics g) {
          and all the information it requires is contained in the state
          variable.
       </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
       <h3>
          <a id="Windows theme" name="Windows theme"></a>Windows<a
-         href="#*">*</a> Theme
+         href="#*">*</a> theme
       </h3>
       <p>
          In DRL, the Windows<a href="#*">*</a> theme is implemented by the
@@ -1263,8 +1081,8 @@ void prepaint(Graphics g) {
          <a href="#top">Back to Top</a>
       </p>
       <h2>
-         <a id="Multi-threading_Support"
-         name="Multi-threading_Support"></a>Multi-threading Support
+         <a id="Multi-Threading_support"
+         name="Multi-Threading_support"></a>Multi-Threading support
       </h2>
       <p>
          Complying to the specification [<a href="#AWTSpec">1</a>], DRL AWT can
@@ -1273,7 +1091,7 @@ void prepaint(Graphics g) {
          For that, AWT synchronizes its key classes.
       </p>
       <h3>
-         <a id="WhySynchronize" name="WhySynchronize"></a>Why Synchronize
+         <a id="WhySynchronize" name="WhySynchronize"></a>Why synchronize
       </h3>
       <p>
          The main purpose of synchronization is keeping the component hierarchy
@@ -1295,11 +1113,8 @@ void prepaint(Graphics g) {
          container children list, which makes the behavior of the first thread
          unpredictable. Synchronization helps avoid such problems.
       </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
       <h3>
-         <a id="HowtoSync" name="HowtoSync"></a>How to Synchronize
+         <a id="HowtoSync" name="HowtoSync"></a>How to synchronize
       </h3>
       <p>
          When a method or a block of code deals with the data that must not be
@@ -1342,12 +1157,17 @@ public Color getBackground() {
          called after doing the useful work in the body of try block.
          Logically, it is used as an ordinary synchronized block, except when
          using AWT lock extended functionality.
-      </p>
-      <p class="backtotop">
+</p>
+      <p>The AWT synchronizer is similar to the object <code>java.util.concurrent.ReentrantLock</code>
+        with one significant addition: it has methods <code>storeStateAndFree()</code> and <code>lockAndRestoreState()</code>,
+        which help to implement the <code>unsafeInvokeAndWait()</code> functionality for opening
+        modal dialogs and pop-up menus from a non-dispatch thread. This approach
+      is not ideal, so suggestions on a better approach are welcome.</p>
+            <p class="backtotop">
          <a href="#top">Back to Top</a>
       </p>
       <h3>
-         <a id="WhentoSync" name="WhentoSync"></a>When to Synchronize
+         <a id="WhentoSync" name="WhentoSync"></a>When to synchronize
       </h3>
       <p>
          AWT synchronization covers the following classes:
@@ -1374,9 +1194,11 @@ public Color getBackground() {
          or <code>Point</code>, are not protected from concurrent modifications
          for performance reasons.
       </p>
-      <p class="class">
+      <dl>
+      <dt>
          General rules on how to use synchronized sections
-      </p>
+      </dt>
+      <dd>
       <ul>
          <li>
             Only public and protected methods of the public API must be
@@ -1390,9 +1212,11 @@ public Color getBackground() {
             event listeners or frequently overridden methods.
          </li>
       </ul>
-      <p class="class">
+      </dd>
+      <dt>
          <a id="SyncExceptions" name="SyncExceptions"></a>Exceptions
-      </p>
+      </dt>
+      <dd>
       <ul>
          <li>
             Layout managers are always called with the AWT lock.
@@ -1409,203 +1233,8 @@ public Color getBackground() {
             the AWT lock explicitly.
          </li>
       </ul>
-      <p class="note">
-         Note
-      </p>
-      <p class="notetext">
-         In platform-specific event handling code, the event listener uses this
-         lock by calling methods <code>onEventBegin()</code>
-         and <code>onEventEnd()</code>. These methods
-         call <code>lockAWT()</code> and <code>unlockAWT()</code> respectively.
-         This is done to ensure that the dispatcher can find the event target
-         and that the data is not modified by another thread.
-      </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
-      <h3>
-         <a id="Synchronizer" name="Synchronizer"></a>Synchronizer
-      </h3>
-      <p>
-         The <code>org.apache.harmony.awt.wtk.Synchronizer</code> class
-         implements the AWT lock. The <code>Toolkit</code> class holds the
-         reference to the synchronizer instance. In a standalone
-         application, <code>Toolkit</code> and <code>Synchronizer</code> are
-         singleton classes. In the multi-context mode, AWT provides
-         independent <code>Toolkit</code> and <code>Synchronizer</code>
-         instances per each context.
-      </p>
-      <p>
-         Figure 11 shows the inheritance relationship of synchronizer classes.
-         The Linux<a href="#*">*</a> and Windows<a href="#*">*</a> operating
-         systems have their own classes.
-      </p>
-      <p style="text-align: center">
-         <img
-         alt="Windows and Linux synchronizers are subclasses of Synchronizer"
-         src="images/threadsMajorClasses.gif" />
-      </p>
-      <p class="special">
-         Figure 11: Synchronizer Classes
-      </p>
-      <p>
-         The base class <code>Synchronizer</code> represents a mutex with a
-         high-priority <a href="#Event_Handling">event dispatch thread</a>. All
-         user threads are served in the FIFO (first in first out) order,
-         whereas EDT has higher priority and is served in the LIFO (last in
-         first out) order.
-      </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
-      <p class="class">
-         Synchronizer for Linux<a href="#*">*</a>
-      </p>
-      <p>
-         AWT uses the Xlib library to access native window resources on Linux<a
-         href="#*">*</a>. The Xlib library is thread-safe and all user and EDT
-         threads can freely access the native system through the AWT interface,
-         as shown in Figure 12. As a result, the
-         class <code>org.apache.harmony.awt.wtk.linux.LinuxSynchronizer</code>
-         contains no extensions to <code>java.awt.Synchronizer</code>.
-      </p>
-      <p style="text-align: center">
-         <img
-         alt="user threads access native resources independently of the EDT thread"
-          src="images/ThreadEDT1.gif" />
-      </p>
-      <p class="special">
-         Figure 12: Access to the Native System on Linux<a href="#*">*</a>
-      </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
-      <p class="class">
-         Synchronizer for Windows<a href="#*">*</a>
-      </p>
-      <p>
-         Synchronization on Windows<a href="#*">*</a> is different due to
-         Windows<a href="#*">*</a> libraries specifics. Firstly, changing the
-         state of a native window usually produces a synchronous event that
-         reports this change. Secondly, only the thread that created a window
-         receives native events related to that window.
-      </p>
-      <p>
-         In DRL AWT, the <a href="#Event_Handling">event dispatch thread</a>
-         handles all native events and, consequently, is the only thread that
-         can create windows. EDT also changes the window&rsquo;s state to
-         simplify the native events handling scheme. Non-EDT threads can create
-         and manipulate native windows by giving tasks to EDT. User and EDT
-         threads cooperation is shown in Figure 13.
-      </p>
-      <p style="text-align: center">
-         <img alt="user threads access native resources via of the EDT thread"
-         src="images/ThreadEDT2.gif" />
-      </p>
-      <p class="special">
-         Figure 13: Access to the Native System on Windows<a href="#*">*</a>
-         with EDT
-      </p>
-      <p>
-         The <code>org.apache.harmony.awt.wtk.windows.WinSynchronizer</code>
-         class, the extension of <code>Synchronizer</code>, implements the
-         interface <code>NativeServer</code>, which enables user threads to
-         query EDT for access to native resources.
-      </p>
-      <p>
-         However, delegating access to native resources to EDT requires a more
-         complicated synchronization mechanism. Using
-         the <code>Synchronizer</code> logic as is results in a potential
-         deadlock while handling native Windows<a href="#*">*</a> events.
-         Figure 14 shows the scenario of the deadlock.
-      </p>
-      <p style="text-align: center">
-         <img alt="thread execution flows with deadlock illustrated"
-         src="images/ThreadDeadlock.gif" />
-      </p>
-      <p class="special" style="text-align: center">
-         Figure 14: Deadlock with the user thread and EDT
-      </p>
-      <p>
-         <em>t1</em>: The user thread starts.
-      </p>
-      <p>
-         <em>t2</em>: EDT starts.
-      </p>
-      <p>
-         <em>t3</em>: The user thread obtains the AWT lock.
-      </p>
-      <p>
-         <em>t4</em>: EDT tries to obtain the AWT lock and gets blocked.
-      </p>
-      <p>
-         <em>t5</em>: The user thread requests a service from EDT via
-         the <code>NativeServer</code> interface and gets blocked forever
-         because EDT is blocked too.
-      </p>
-      <p>
-         The <code>WinSynchronizer</code> class resolves the deadlock issue by
-         combining the synchronizer&rsquo;s protocol and the native server
-         protocol. For that, EDT switches between handling events and providing
-         access to native resources for other running threads, as shown in
-         Figure 15.
-      </p>
-      <p style="text-align: center">
-         <img alt="EDT modes" src="images/ThreadAWTLock.gif" />
-      </p>
-      <p class="special">
-         Figure 15. EDT Operation
-      </p>
-      <p>
-         This algorithm enables detecting a potential deadlock and resolving
-         it. When EDT is requested to provide access to native resources while
-         it is waiting to obtain the AWT lock, EDT awakes, serves the request
-         and resumes waiting. Serving the native resource request is
-         transparent for the event-handling side of EDT because this operation
-         is performed while EDT is inside of <code>lockAWT()</code> method. The
-         deadlock is resolved, as shown in Figure 16.
-      </p>
-      <p style="text-align: center">
-         <img alt="Thread execution flow with no deadlock"
-         src="images/ThreadNoDeadlock.gif" />
-      </p>
-      <p class="special" style="text-align: center">
-         Figure 16: Deadlock Resolution by WinSynchronizer
-      </p>
-      <p>
-         <em>t1</em>: The user thread starts.
-      </p>
-      <p>
-         <em>t2</em>: EDT starts.
-      </p>
-      <p>
-         <em>t3</em>: The user thread obtains the AWT lock.
-      </p>
-      <p>
-         <em>t4</em>: EDT tries to obtain the AWT lock and gets blocked.
-      </p>
-      <p>
-         <em>t5</em>: The user thread requests EDT service and also gets
-         blocked. EDT starts processing the request.
-      </p>
-      <p>
-         <em>t6</em>: EDT finishes processing request. The user thread resumes.
-      </p>
-      <p>
-         <em>t7</em>: The user thread releases the AWT lock, EDT obtains it.
-      </p>
-      <p>
-         <em>t8</em>: The user thread may continue its work or exit.
-      </p>
-      <p>
-         <em>t9</em>: EDT releases the AWT lock.
-      </p>
-      <p>
-         <em>t10</em>: EDT continues operation.
-      </p>
-      <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
+      </dd>
+   </dl>
       <h2>
          <a id="References" name="References"></a> References
       </h2>
@@ -1625,17 +1254,15 @@ public Color getBackground() {
          href="http://java.sun.com/j2se/1.5.0/docs/api/java/awt/doc-files/FocusSpec.html"
           target="_blank">http://java.sun.com/j2se/1.5.0/docs/api/java/awt/doc-files/FocusSpec.html</a>
       </p>
-            <p class="backtotop">
-         <a href="#top">Back to Top</a>
-      </p>
-     
-      <p>
+            <p>
          <a id="*" name="*">*</a> Other brands and names are the property of
          their respective owners.
+</p>
+      <p class="backtotop">
+         <a href="#top">Back to Top</a>
       </p>
    </body>
 </html>
-
 
 
 
