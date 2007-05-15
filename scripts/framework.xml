@@ -899,7 +899,7 @@ ERROR: Execution of Test Suite '@{suite}' FAILED.
             <if>
                 <istrue value="${framework.parameters.optional.dolog}"/>
             <then>
-                <echo>[${ant.project.name}]: @{message}</echo>
+                <echo level="debug">[${ant.project.name}]: @{message}</echo>
             </then>
             </if>
         </sequential>
