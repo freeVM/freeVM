@@ -174,9 +174,6 @@
                        value="${parameters.external.@{libname}.url.basename}" />
                 <param name="lib.file"
                        value="${parameters.external.@{libname}.basename}" />
-                <propertyset>
-                    <propertyref regex="^parameters\.external\..*" />
-                </propertyset>
             </antcall>
         </sequential>
     </macrodef>
