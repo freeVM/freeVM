@@ -1,0 +1,23 @@
+<parameters depends="drlvm">
+    <!-- required parameters -->
+    <required>
+        <!-- path to runtime to be tested, use drlvm jvm by default -->
+        <tested.runtime 
+            description="Path to Tested Runtime" 
+            value="${drlvm.parameters.shared.jvm.location}"/>
+    </required>
+
+    <!-- used external libraries -->
+    <external>
+        <!-- SciMark benchmark -->
+        <scimark
+            url="http://math.nist.gov/scimark2/scimark2lib.jar"
+            md5="e90a3b88b66d8efa9bdc4bff76f370b1"
+        />
+    </external>
+
+    <!-- CC related settings -->
+    <cc
+        publisher="${suite.adaptor.dir}/adaptor.xml"
+    />
+</parameters>
