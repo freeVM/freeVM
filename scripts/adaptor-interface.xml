@@ -22,6 +22,15 @@
      ====================================================================== -->
 <project name="adaptor-interface" basedir=".">
 
+    <!-- Default setup target implementation. -->
+    <target name="setup">
+        <echo>
+--------
+WARNING: The adaptor.xml for '${suite.name}' Test Suite does not implement
+-------- the setup target. Default implementation does nothing...
+</echo>
+    </target>
+
     <!-- Default clean target implementation. -->
     <target name="clean">
         <echo>

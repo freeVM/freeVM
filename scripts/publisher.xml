@@ -20,17 +20,34 @@
      ====================================================================== -->
 <project name="publisher" default="run" basedir=".">
 
-    <condition property="execution.status" 
+    <!-- check whether we should send notification or not -->
+    <condition property="do.mail">
+        <and>
+            <!-- if framework was configured to send notifications -->
+            <isset property="framework.parameters.usemail"/>
+            <or>
+                <!-- and it was configured to always notify about run status -->
+                <istrue value="${framework.parameters.usemail.always}"/>
+                <!-- or, in case of run-status change -->
+                <not>
+                    <equals arg1="${thisbuildsuccessful}"
+                            arg2="${lastbuildsuccessful}"/>
+                </not>
+            </or>
+        </and>
+    </condition>
+
+    <condition property="execution.status"
                value="BUILD PASSED"
                else="BUILD FAILED">
         <istrue value="${thisbuildsuccessful}"/>
     </condition>
 
-    <property name="mail.subject.line" 
-              value="${framework.parameters.mail.prefix} ${execution.status} ${os.name} ${os.arch}: ${suite.name}"/>
+    <property name="mail.subject.line"
+              value="${framework.parameters.usemail.subject.prefix} ${execution.status} ${os.name} ${os.arch}: ${suite.name}"/>
 
     <!-- implement publisher interface -->
-    <target name="publish" if="framework.parameters.usemail" depends="-compose-message">
+    <target name="publish" if="do.mail" depends="-compose-message">
         <mail mailhost="${framework.parameters.usemail}"
               tolist="${framework.parameters.usemail.to}"
               from="${framework.parameters.usemail.from}"
@@ -39,16 +56,16 @@
         </mail>
     </target>
 
-    <target name="-compose-message" if="framework.parameters.usemail">
-        <property name="cc.xsl.files.dir" 
+    <target name="-compose-message" if="do.mail">
+        <property name="cc.xsl.files.dir"
                   value="${ext.cc.location}/webapps/cruisecontrol/xsl"/>
-        <property name="transformed.file" 
+        <property name="transformed.file"
                   value="${temp.files.dir}/${suite.name}-email-message.txt"/>
-		<xslt basedir="${scripts.dir}/xslt"
-			  in="${logdir}/${logfile}" 
-			  style="${scripts.dir}/xslt/br.xsl" 
+        <xslt basedir="${scripts.dir}/xslt"
+              in="${logdir}/${logfile}"
+              style="${scripts.dir}/xslt/br.xsl"
               out="${transformed.file}"
-			  classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar"/>
+              classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar"/>
     </target>
 
 </project>

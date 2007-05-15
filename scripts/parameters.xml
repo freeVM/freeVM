@@ -10,6 +10,18 @@
     <cc webport="8080" description="The port on which CC will make its web publishing"/>
     <cc jmxport="8000" description="The port for CC's JMX console."/>
 
+    <usemail 
+        description="Specify the SMTP server to be used for E-Mail Notifications">
+        <always 
+            description="Do always notify Run Status or only when status is changed"
+            value="true"/>
+        <to description="E-Mail address to send notifications to"/>
+        <from description="E-Mail address to send notifications from"/>
+        <subject.prefix 
+            description="Subject prefix of E-Mail Notifications"
+            value="[build-test alert]"/>
+    </usemail>
+
     <external>
         <ant-contrib
             jar="ant-contrib-1.0b3.jar"
