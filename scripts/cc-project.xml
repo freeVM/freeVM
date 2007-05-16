@@ -22,40 +22,6 @@
      ====================================================================== -->
 <project name="cc" default="fetch-depends" basedir=".">
 
-    <import file="framework.xml"/>
-
-    <!--
-                        CC-project Retated Functionality
-    -->
-
-    <!-- loads properties passed from CC-config -->
-    <target name="load-properties">
-        <property file="${parameters.dump.file}"/>
-        <property file="${framework.properties.file}"/>
-    </target>
-
-    <!-- is called from CC to launch the test suite named ${test.suite} -->
-    <target name="cc-run" depends="load-properties, define-ant-contrib">
-        <property name="suite.adaptor.dir" value="${root.dir}/adaptors/${suite.name}"/>
-        <log message="Test Suite '${suite.name}' execution. Repository updated: ${repository.updated}"/>
-        <ant dir="${root.dir}/adaptors/${suite.name}" 
-             antfile="adaptor.xml" 
-             target="run"
-             inheritAll="true"/>
-    </target>
-
-    <!-- is called from CC to launch the custom ant publisher for ${test.suite} -->
-    <target name="cc-publish" 
-            depends="load-properties, define-ant-contrib"
-            if="framework.parameters.usemail">
-        <dirname property="publisher.dir" file="${publisher.location}"/>
-        <log message="Calling Publisher ${publisher.location} at ${publisher.dir} for ${suite.name}"/>
-        <ant dir="${publisher.dir}" 
-             antfile="${publisher.location}" 
-             target="publish"
-             inheritAll="true"/>
-    </target>
-
     <!--
                         Framework Retated Functionality
     -->
@@ -93,6 +59,25 @@
                 <property name="@{suite.name}.parameters.cc.file.location"
                           location="${cc.work.dir}/${@{suite.name}.parameters.cc.filename}"/>
                 <delete file="${@{suite.name}.parameters.cc.file.location}"/>
+
+                <!-- Create the property files for inclusion into the 
+                     CC-config file for @{suite.name}, and for passing
+                     them through the CC to adaptors -->
+                <var name="tmp.cc-props-file"
+                     value="${cc.work.dir}/cc-@{suite.name}.properties"/>
+                <var name="tmp.ant-props-file"
+                     value="${cc.work.dir}/@{suite.name}.properties"/>
+                <antcall target="make-property-files" inheritAll="true">
+                    <param name="suite" value="@{suite.name}"/>
+                    <param name="cc-params-file" value="${tmp.cc-props-file}"/>
+                    <param name="ant-params-file" value="${tmp.ant-props-file}"/>
+                    <propertyset>
+                        <propertyset refid="@{suite.name}.parameters.id"/>
+                        <!-- do map keys to separate the properties 
+                             need to be passed to the project -->
+                        <globmapper from="*" to="-TO-PASS-.*"/>
+                    </propertyset>
+                </antcall>
                 
                 <if><!-- check for custom configuration file -->
                     <isset property="@{suite.name}.parameters.cc.config"/>
@@ -117,7 +102,10 @@
                 <!-- insert 'MUSTHAVE' project name and call to adaptor -->
                 <insert-adaptorcall
                     suite="@{suite.name}"
-                    ccfile="${@{suite.name}.parameters.cc.file.location}"/>
+                    ccfile="${@{suite.name}.parameters.cc.file.location}"
+                    ccpropsfile="${tmp.cc-props-file}"
+                    antpropsfile="${tmp.ant-props-file}"
+                    />
                 <!-- insert svn using -->
                 <if>
                     <isset property="@{suite.name}.parameters.cc.usesvn"/>
@@ -150,13 +138,18 @@
                         <insert-publisher
                             suite="@{suite.name}"
                             publisher="${@{suite.name}.parameters.cc.publisher}"
-                            ccfile="${@{suite.name}.parameters.cc.file.location}"/>
+                            ccfile="${@{suite.name}.parameters.cc.file.location}"
+                            ccpropsfile="${tmp.cc-props-file}"
+                            antpropsfile="${tmp.ant-props-file}"
+                            target="cc-publish-custom"/>
                     </then>
                     <else>
                         <insert-publisher
                             suite="@{suite.name}"
                             publisher="${scripts.dir}/publisher.xml"
-                            ccfile="${@{suite.name}.parameters.cc.file.location}"/>
+                            ccfile="${@{suite.name}.parameters.cc.file.location}"
+                            ccpropsfile="${tmp.cc-props-file}"
+                            antpropsfile="${tmp.ant-props-file}"/>
                     </else>
                     </if>
                 </then>
@@ -210,7 +203,7 @@
     </target>
 
     <!-- Creates the CC properties file for specified by ${suite} project -->
-    <target name="make-parameter-files">
+    <target name="make-property-files">
         <propertyselector 
             property="tmp.params.list"
             delimiter=","
@@ -245,25 +238,9 @@
     <macrodef name="insert-adaptorcall">
         <attribute name="suite"/>
         <attribute name="ccfile"/>
+        <attribute name="ccpropsfile"/>
+        <attribute name="antpropsfile"/>
         <sequential>
-            <!-- Create the parameter files for inclusion into the 
-                 CC-config file for @{suite} project, and for passing
-                 them through the CC to adaptors -->
-            <var name="tmp.cc-params-file"
-                 value="${cc.work.dir}/cc-@{suite}.properties"/>
-            <var name="tmp.ant-params-file"
-                 value="${cc.work.dir}/@{suite}.properties"/>
-            <antcall target="make-parameter-files" inheritAll="true">
-                <param name="suite" value="@{suite}"/>
-                <param name="cc-params-file" value="${tmp.cc-params-file}"/>
-                <param name="ant-params-file" value="${tmp.ant-params-file}"/>
-                <propertyset>
-                    <propertyset refid="@{suite}.parameters.id"/>
-                    <!-- do map keys to separate the properties 
-                         need to be passed to the project -->
-                    <globmapper from="*" to="-TO-PASS-.*"/>
-                </propertyset>
-            </antcall>
             <replace file="@{ccfile}">
                 <!-- Define the name of the project as name of a current 
                      test suite -->
@@ -273,7 +250,7 @@
                 <!-- Include the parameters known by test suite -->
                 <replacefilter 
                     token="&lt;!-- @BT.PARAMETERS.INCLUDE@ --&gt;" 
-                    value="&lt;property file='${tmp.cc-params-file}'/&gt;"
+                    value="&lt;property file='@{ccpropsfile}'/&gt;"
                 />
                 <replacefilter 
                     token="&lt;!-- @BT.LISTENER@ --&gt;" 
@@ -284,11 +261,11 @@
                     value="&lt;ant anthome='${ant.home}'@NL@
                 antWorkingDir='${root.dir}'@NL@
                 timeout='${cc.project.execution.timeout}'@NL@
-                buildfile='${root.dir}/scripts/cc-project.xml'@NL@
+                buildfile='${root.dir}/scripts/cc-exec-adaptor.xml'@NL@
                 target='cc-run'&gt;@NL@
                &lt;property name='suite.name' value='@{suite}'/&gt;@NL@
-               &lt;property name='parameters.dump.file'@NL@
-                         value='${tmp.ant-params-file}'/&gt;@NL@
+               &lt;property name='properties.dump.file'@NL@
+                         value='@{antpropsfile}'/&gt;@NL@
            &lt;/ant&gt;@NL@"/>
             </replace>
         </sequential>
@@ -455,25 +432,10 @@
         <attribute name="suite"/>
         <attribute name="publisher"/>
         <attribute name="ccfile"/>
+        <attribute name="ccpropsfile"/>
+        <attribute name="antpropsfile"/>
+        <attribute name="target" default="cc-publish"/>
         <sequential>
-            <!-- Create the parameter files for inclusion into the 
-                 CC-config file for @{suite} project, and for passing
-                 them through the CC to adaptors -->
-            <var name="tmp.cc-params-file"
-                 value="${cc.work.dir}/cc-@{suite}.properties"/>
-            <var name="tmp.ant-params-file"
-                 value="${cc.work.dir}/@{suite}.properties"/>
-            <antcall target="make-parameter-files" inheritAll="true">
-                <param name="suite" value="@{suite}"/>
-                <param name="cc-params-file" value="${tmp.cc-params-file}"/>
-                <param name="ant-params-file" value="${tmp.ant-params-file}"/>
-                <propertyset>
-                    <propertyset refid="@{suite}.parameters.id"/>
-                    <!-- do map keys to separate the properties 
-                         need to be passed to the project -->
-                    <globmapper from="*" to="-TO-PASS-.*"/>
-                </propertyset>
-            </antcall>
             <replace file="@{ccfile}">
                 <!-- Define the name of the project as name of a current 
                      test suite -->
@@ -483,7 +445,7 @@
                 <!-- Include the parameters known by test suite -->
                 <replacefilter 
                     token="&lt;!-- @BT.PARAMETERS.INCLUDE@ --&gt;" 
-                    value="&lt;property file='${tmp.cc-params-file}'/&gt;"
+                    value="&lt;property file='@{ccpropsfile}'/&gt;"
                 />
                 <replacefilter 
                     token="&lt;!-- @BT.LISTENER@ --&gt;" 
@@ -495,12 +457,12 @@
                 anthome='${ant.home}'@NL@
                 timeout='${cc.project.execution.timeout}'@NL@
                 antWorkingDir='${root.dir}'@NL@
-                buildfile='${root.dir}/scripts/cc-project.xml'@NL@
-                target='cc-publish'&gt;@NL@
+                buildfile='${root.dir}/scripts/cc-exec-adaptor.xml'@NL@
+                target='@{target}'&gt;@NL@
                &lt;property name='suite.name' value='@{suite}'/&gt;@NL@
                &lt;property name='publisher.location' value='@{publisher}'/&gt;@NL@
-               &lt;property name='parameters.dump.file'@NL@
-                         value='${tmp.ant-params-file}'/&gt;@NL@
+               &lt;property name='properties.dump.file'@NL@
+                         value='@{antpropsfile}'/&gt;@NL@
            &lt;/antpublisher&gt;@NL@"/>
             </replace>
         </sequential>

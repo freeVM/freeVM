@@ -6,9 +6,23 @@
         <dolog value="false" description="Do you want to see Framework execution log?"/>
     </optional>
     
-    <cc doclean="false" description="Do clean working CC directory before execution?"/>
-    <cc webport="8080" description="The port on which CC will make its web publishing"/>
-    <cc jmxport="8000" description="The port for CC's JMX console."/>
+    <cc>
+        <webport 
+            value="8080" 
+            description="The port on which CC will make its web publishing"/>
+        <jmxport
+            value="8000" 
+            description="The port for CC's JMX console."/>
+        <quietperiod 
+            value="30" 
+            description="The number of seconds since last SVN modification to wait before Test Suites execution."/>
+        <interval 
+            value="300" 
+            description="Interval period in seconds to check for necessity of Test Suite Execution."/>
+        <doclean 
+            value="false" 
+            description="Do clean working CC directory before execution?"/>
+    </cc>
 
     <usemail 
         description="Specify the SMTP server to be used for E-Mail Notifications">

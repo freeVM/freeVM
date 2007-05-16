@@ -24,7 +24,7 @@
             <!-- @BT.BOOTSTRAPPER@ -->
         </bootstrappers>
 
-        <modificationset quietperiod="60">
+        <modificationset quietperiod="${framework.parameters.cc.quietperiod}">
             <!-- Tag Resolution Rules: 
                 - in case of defined SVN (@{suite.name}.parameters.cc.usesvn),
                   resolved to
@@ -42,7 +42,7 @@
             <!-- @BT.MODIFICATIONSET@ -->
         </modificationset>
 
-        <schedule interval="300">
+        <schedule interval="${framework.parameters.cc.interval}">
             <!-- This tag MUST be present!
                  It makes correct call to adaptor's run target -->
             <!-- @BT.ADAPTORCALL@ -->
