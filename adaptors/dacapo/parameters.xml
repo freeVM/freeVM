@@ -1,4 +1,4 @@
-<parameters depends="classlib,drlvm">
+<parameters depends="drlvm">
 
     <required>
         <jdk.to.test.home description="Home of the Java runtime to run Dacapo on" 
@@ -18,9 +18,7 @@
             value="dacapo-2006-10-MR2.jar"/>
     </optional>
 
-    <cc>
-        <publisher value="${adaptors.dir}/${suite.name}/publisher.xml"/>
-    </cc>
+    <cc/>
 
 </parameters>
 

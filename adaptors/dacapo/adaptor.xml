@@ -17,6 +17,8 @@
 
 <project name="dacapo" default="run" basedir=".">
 
+    <property environment="env"/>
+    
     <property name="work.dir" location="${results.dir}/${suite.name}"/>
     <property name="output.log" value="${work.dir}/${suite.name}_output.txt"/>
     
@@ -28,24 +30,46 @@
         <!-- download dacapo if needed-->
         <available property="doesnt.need.download" file="${checkouts.dir}/${suite.name}/${dacapo.parameters.optional.jar.name}"/>
         <antcall target="-dacapo.download"/>
+
+        <!-- extract xalan.jar from dacapo.jar as it's needed for xalan workload -->
+        <!-- we're checking here antlr/* presence by xalan.jar presence for simplicity -->
+        <available property="doesnt.need.extracting" file="${checkouts.dir}/${suite.name}/xalan.jar"/>
+        <antcall target="-xalan_antlr.extracting"/>
+
     </target>
 
     <target name="-dacapo.download" unless="doesnt.need.download">
         <get src="${dacapo.parameters.optional.download.address}/${dacapo.parameters.optional.jar.name}"
             dest="${checkouts.dir}/${suite.name}/${dacapo.parameters.optional.jar.name}" usetimestamp="false" verbose="true"/>
     </target>
-    
+
+    <target name="-xalan_antlr.extracting" unless="doesnt.need.extracting">
+        <unjar src="${checkouts.dir}/${suite.name}/${dacapo.parameters.optional.jar.name}" dest="${checkouts.dir}/${suite.name}">
+            <patternset includes="xalan.jar,antlr/**/*"/>
+        </unjar>
+    </target>
+
     <target name="run">
         <description>${suite.name} run</description>
         
         <echo file="${output.log}" message="Running of ${dacapo.parameters.optional.jar.name} on ${dacapo.jdk.to.test.home} runtime...${line.separator}"/>
         <echo file="${output.log}" message="Set of tests: ${dacapo.parameters.optional.benchmarks}${line.separator}" append="true"/>
-        
+
+        <!-- get version info from runtime to attach it to report -->
+        <echo file="${results.dir}/${suite.name}/version.log"></echo>
+        <exec executable="${dacapo.jdk.to.test.home}/bin/java" dir="${results.dir}/${suite.name}" failonerror="false">
+            <arg line="-version"/>
+            <redirector alwaysLog="true" output="${results.dir}/${suite.name}/version.log"/>
+        </exec>
+
         <exec executable="${dacapo.jdk.to.test.home}/bin/java" dir="${results.dir}/${suite.name}" append="true" failonerror="false">
+            <arg line="-Xbootclasspath/p:${checkouts.dir}/${suite.name}/xalan.jar${path.separator}${checkouts.dir}/${suite.name}"/>
             <arg line="-jar ${checkouts.dir}/${suite.name}/${dacapo.parameters.optional.jar.name}"/>
             <arg line="-s ${dacapo.parameters.optional.size}"/>
             <arg line="${dacapo.parameters.optional.benchmarks}"/>
             <redirector alwaysLog="true" output="${output.log}"/>
+            <env key="JAVA_HOME" value="${dacapo.jdk.to.test.home}"/>
+            <env key="PATH" value="${dacapo.jdk.to.test.home}/bin${path.separator}${env.PATH}"/>
         </exec>
 
         <!-- count "number" of requested workloads -->
