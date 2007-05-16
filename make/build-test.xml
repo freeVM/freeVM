@@ -100,13 +100,13 @@
 
     <target name="copy-jre" depends="copy-jre-files, chmod-jre-files" unless="not.copy.jre"/>
 
-    <target name="copy-jre-files">
+    <target name="copy-jre-files" unless="not.copy.jre">
         <copy todir="${hy.jdk}/jre" overwrite="no">
               <fileset dir="${hy.deploy}/jdk/jre" />
         </copy>
     </target>
 
-    <target name="chmod-jre-files" if="is.unix">
+    <target name="chmod-jre-files" if="is.unix" unless="not.copy.jre">
         <chmod file="${hy.jdk}/jre/bin/java" perm="ugo+x" />
     </target>
 
