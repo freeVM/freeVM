@@ -14,50 +14,32 @@
      See the License for the specific language governing permissions and
      limitations under the License. -->
 
-<parameters depends="classlib,drlvm">
+<parameters depends="drlvm">
 
     <!-- Required parameters -->
     <required>
-        <jetty.server.jre
-            description="Path to JRE on which Jetty server will be started (current build of drlvm+classlib by default)."
-            value="${drlvm.parameters.shared.jre.dir}"/>
-        <scenario.framework.jre
-            description="Path to JRE on which the scenario framework will be started (current build of drlvm+classlib by default)."
-            value="${drlvm.parameters.shared.jre.dir}"/>
-        <use.mail.notifications
-            description="Tells Cruise Control whether it should send email notifications or not (default is yes)."
-            value="yes"/>
-        <mail.notification.from
-            description="Email address of notification sender (e.g. somebody@mail.server)."
-            value=""/>
-        <mail.notification.to
-            description="A comma-separated list of email addresses where to send notifications."
-            value=""/>
-        <mail.notification.mailhost
-            description="Name of SMTP server to use for sending notifications (default is localhost)."
-            value="localhost"/>
+        <jetty.server.jvm
+            description="Path to JVM on which Jetty server will be started (current build of drlvm by default)."
+            value="${drlvm.parameters.shared.jvm.location}"/>
+        <scenario.framework.jvm
+            description="Path to JVM on which the scenario framework will be started (current build of drlvm by default)."
+            value="${drlvm.parameters.shared.jvm.location}"/>
     </required>
 
     <!-- Optional parameters -->
     <optional>
+        <jetty.server.port
+            description="Port on which Jetty server will startup."
+            value="7070"/>
+        <jetty.server.stop.port
+            description="Port for stopping Jetty server."
+            value="4444"/>
         <jetty.server.timeout
-            description="Timeout for waiting Jetty server loaded."
-            value="30000"/>
+            description="Timeout for waiting Jetty server loaded (seconds)."
+            value="300"/>
         <do.save.pages
             description="Tells scenario whether it should store downloaded pages or not."
             value="yes"/>
-        <ant.home.dir
-            description="Home directory of the ant (this is workaround for stupid CC configs)."
-            value="${ant.home}"/>
-        <mail.notification.mailhost.port
-            description="Port of SMTP server (default is 25)."
-            value="25"/>
-        <mail.notification.mailhost.username
-            description="User name for accessing SMTP server (if required)."
-            value=""/>
-        <mail.notification.mailhost.password
-            description="User password for accessing SMTP server (if required)."
-            value=""/>
     </optional>
 
     <!-- External dependencies -->
@@ -65,34 +47,25 @@
         <jetty-6.1.2rc1
             url="http://dist.codehaus.org/jetty/jetty-6.1.2rc1.zip"
             md5="b35a6c1767c116999a1f3d205174429c"
-            dir="jetty-6.1.2rc1"
-        />
+            dir="jetty-6.1.2rc1"/>
         <htmlunit-1.11
             url="http://downloads.sourceforge.net/htmlunit/htmlunit-1.11.zip"
             md5="829ff23c7d921b6cb04df2b6fdcd4672"
             dir="htmlunit-1.11"
-            inc="*/lib/**,*/*.txt"
-        />
-        <junit-3.8.2
-            url="http://mirrors.ibiblio.org/pub/mirrors/maven2/junit/junit/3.8.2/junit-3.8.2.jar"
-            md5="28e7eb9eeefe31a657c68755bfccc541"
-        />
+            inc="*/lib/**,*/*.txt"/>
     </external>
 
     <!-- Shared parameters -->
     <shared>
-        <!-- define the place where drlvm workspace will be placed -->
-        <trunk.dir value="${scenario.dir}" id="trunk.dir.id"/>
-
-        <!-- FIXME: the scenario shouldn't depend on its location in svn -->
-        <svn.url value="http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0/tests/JettyScenario"/>
+        <!-- define where the scenario sources are placed -->
+        <trunk.dir value="${scenario.src.dir}" id="trunk.dir.id"/>
     </shared>
 
     <!-- CC specific configuration -->
-    <cc config="${adaptors.dir}/${suite.name}/cc-config.xml">
+    <cc>
         <!-- Re-run if changes in SVN -->
-        <!-- HINT: Uncomment this if you want to re-run if changes in scenario repository.
         <usesvn refid="trunk.dir.id"/>
-        -->
+        <!-- Run this script for publishing results -->
+        <publisher value="${adaptors.dir}/${suite.name}/adaptor.xml"/>
     </cc>
 </parameters>

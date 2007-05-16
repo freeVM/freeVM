@@ -46,7 +46,7 @@ public class JettyTestCase extends TestCase {
     protected static PrintStream LOG_ERR = System.err;
 
     protected static final int SERVER_START_TIMEOUT = Integer.valueOf(
-        System.getProperty("jetty.server.startup.timeout", "10000")).intValue();
+        System.getProperty("jetty.server.startup.timeout", "60")).intValue() * 1000;
 
     static {
         scenarioRoot = ".";

@@ -2,13 +2,13 @@
                          Jetty automated scenario
                          ========================    
 
----------------
-Archive Content
----------------
+--------------
+Scenario files
+--------------
 
-This archive contains automated scenario which performs user-like actions such
-as viewing and navigating with browser through web site hosted by Mortbay*
-Jetty application server.
+This is automated scenario which performs user-like actions such as viewing
+and navigating with browser through web site hosted by Mortbay* Jetty
+application server. The scenario consists of the following files:
 
  +/
   |-+adaptors/             - Adaptors connecting test suites to Build Test
@@ -19,17 +19,17 @@ Jetty application server.
   |     |
   |     |--parameters.xml  - Parameters file
   |     |
-  |     |--cc-config.xml   - Cruise Control configuration file
+  |     |--publisher.xml   - publisher for running in Cruise Control mode
+  |     |
+  |     |--README.txt      - This readme file
   |
   |-+tests/                - Tests suites placed under Build Test repository
-  |  |
-  |  |-+JettyScenario/     - Jetty scenario root directory
-  |     |
-  |     |-+resources/      - Resources required for Jetty scenario
-  |     |
-  |     |-+src/            - Jetty scenario sources
-  |
-  |-README.txt             - Readme File
+     |
+     |-+JettyScenario/     - Jetty scenario root directory
+        |
+        |-+resources/      - Resources required for Jetty scenario
+        |
+        |-+src/            - Jetty scenario sources
 
 
 ----------------
@@ -86,9 +86,9 @@ Scenario execution
 
 The following steps should by made to run Jetty scenario:
 
-1. Check out Build Test installer from SVN
+1. Check out Build Test from SVN
 
-     svn co -r HEAD -N http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk
+     svn co -r HEAD -N http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0
 
 2. Setup Build Test and required suites with the following command:
 
@@ -120,31 +120,6 @@ The following steps should by made to run Jetty scenario:
    or
 
      ant -Dtest.suites=JettyScenario run-cc
-
-
------------------
-Known limitations
------------------
-
-If you want to try this scenario without checkouts of BT and the scenario from
-SVN, you should do the following:
-
-1. Download BT from JIRA: http://issues.apache.org/jira/browse/HARMONY-3501
-
-2. Unzip BT into some directory (e.g. WORKDIR)
-
-3. Unzip this archive into WORKDIR
-
-4. Copy directory JettyScenario from WORKDIR/tests to WORKDIR/build/checkouts
-
-5. Comment in WORKDIR/adaptors/JettyScenario/adaptor.xml all tasks starting:
-
-     <exec executable="svn" ...
-
-   there should be only two tasks (first in setup target and second in update
-   one).
-
-6. Make steps from 2nd of above instructions (scenario execution).
 
 
 -----------------------------------------------
