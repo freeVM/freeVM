@@ -37,7 +37,7 @@
     </target>
 
     <target name="download" description="Download required jars"
-            depends="-download" />
+            depends="-download,-extract" />
 
     <target name="-download">
 
@@ -45,12 +45,54 @@
     <download-one-file src="${ecj.url}" dest="${ecj.jar}"
                            md5="${ecj.md5}" />
         
+    <mkdir dir="${icu.dir}" />
+    <download-one-file src="${icu.url}" dest="${icu.zip}"
+                           md5="${icu.md5}" />
+        
+    <mkdir dir="${jdt.dir}" />
+    <download-one-file src="${jdt.url}" dest="${jdt.zip}"
+                           md5="${jdt.md5}" />
+        
     <mkdir dir="${junit.dir}" />
     <download-one-file src="${junit.url}" dest="${junit.jar}"
                            md5="${junit.md5}" />
 
     </target>
 
+    <target name="-extract" depends="-extract-props,-really-extract" />
+    <target name="-extract-props" depends="-extract-props-icu,-extract-props-jdt"/>
+    <target name="-really-extract" depends="-really-extract-icu,-really-extract-jdt"/>
+
+    <target name="-extract-props-icu">
+        <uptodate property="icu.uptodate"
+                  srcfile="${icu.zip}"
+                  targetfile="${icu.jar}" />
+    </target>
+    <target name="-extract-props-jdt">
+        <uptodate property="jdt.uptodate"
+                  srcfile="${jdt.zip}"
+                  targetfile="${jdt.jdi.jar}" />
+    </target>
+
+    <target name="-really-extract-icu" unless="icu.uptodate">
+        <unzip src="${icu.zip}" dest="${icu.dir}.tmp" />
+        <copy todir="${icu.dir}" flatten="yes">
+            <fileset dir="${icu.dir}.tmp/eclipse/plugins">
+                <include name="com.ibm.icu.base_*.jar"/>
+            </fileset>
+        </copy>
+        <delete dir="${icu.dir}.tmp" />
+    </target>
+    <target name="-really-extract-jdt" unless="jdt.uptodate">
+        <unzip src="${jdt.zip}" dest="${jdt.dir}.tmp" />
+        <copy todir="${jdt.dir}" flatten="yes">
+            <fileset dir="${jdt.dir}.tmp/eclipse/plugins">
+                <include name="org.eclipse.jdt.debug_*/jdi.jar"/>
+                <include name="org.eclipse.jdt.debug_*/jdimodel.jar"/>
+            </fileset>
+        </copy>
+        <delete dir="${jdt.dir}.tmp" />
+    </target>
 
     <macrodef name="download-one-file">
         <attribute name="src" />

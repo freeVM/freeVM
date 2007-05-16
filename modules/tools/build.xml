@@ -98,6 +98,10 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
+
+            <classpath>
+                <pathelement path="${jdt.jdi.jar}"/>
+            </classpath>
         </javac>
     </target>
 
@@ -115,7 +119,13 @@
 
         <jar destfile="${hy.jdk}/lib/tools.jar"
              manifest="${hy.tools}/META-INF/MANIFEST.MF">
+
             <fileset refid="classes" />
+            <zipfileset src="${jdt.jdi.jar}">
+                <exclude name="com/sun/jdi/Bootstrap.class"/>
+                <exclude name="META-INF/*"/>
+            </zipfileset>
+
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>

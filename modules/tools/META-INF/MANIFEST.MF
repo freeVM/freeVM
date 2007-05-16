@@ -34,4 +34,11 @@ Import-Package: java.io,
  org.apache.harmony.security.x501;version="1.0.0",
  org.apache.harmony.security.x509;version="1.0.0"
 Export-Package: org.apache.harmony.tools.javac,
- org.apache.harmony.tools.keytool
+ org.apache.harmony.tools.javah,
+ org.apache.harmony.tools.jarsigner,
+ org.apache.harmony.tools.keytool,
+ com.sun.tools.javac,
+ com.sun.tools.jdi,
+ com.sun.tools.jdi.connect,
+ com.sun.tools.jdi.event,
+ com.sun.tools.jdi.request

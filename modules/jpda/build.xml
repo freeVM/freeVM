@@ -30,6 +30,17 @@
     <!-- filename for tests exclude list -->
     <property name="jpda.exclude.file" location="${hy.hdk}/build/jdktools.jpda.exclude" />
 
+    <fileset id="classes" dir="${hy.build}">
+        <or>
+            <present targetdir="${hy.jpda.src.main.java}" />
+            <present targetdir="${hy.jpda.src.main.java}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
+    </fileset>
+
     <property file="../../make/depends.properties" />
 
     <target name="build" depends="build-java, build-native" />
@@ -48,7 +59,66 @@
     </target>
 
     <!-- Build Java code -->
-    <target name="build-java"/>
+    <target name="build-java" depends="compile-java, build-jar, copy-jars" />
+
+    <target name="compile-java">
+        <echo message="Compiling JPDA classes" />
+
+        <mkdir dir="${hy.build}" />
+        <mkdir dir="${hy.jdk}/lib" />
+
+        <javac sourcepath=""
+               srcdir="${hy.jpda.src.main.java}"
+               destdir="${hy.build}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <classpath>
+                <pathelement path="${jdt.jdi.jar}"/>
+                <pathelement path="${jdt.jdimodel.jar}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- create jdtstub.jar to resolve JDI implementation dependency -->
+    <target name="build-jar" depends="svn-info">
+        <mkdir dir="${hy.jdk}/lib" />
+
+        <jar destfile="${hy.jdk}/lib/jdtstub.jar"
+             manifest="${hy.jpda}/META-INF/MANIFEST.MF">
+
+            <fileset refid="classes" />
+
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/lib/jdtstub-src.jar">
+            <fileset dir="${hy.jpda.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+    </target>
+
+    <!-- copy all required jars with JDI implementation and dependent classes -->
+    <target name="copy-jars">
+        <mkdir dir="${hy.jdk}/lib" />
+        <copy todir="${hy.jdk}/lib" flatten="true">
+            <fileset file="${icu.jar}"/>
+            <fileset file="${jdt.jdimodel.jar}"/>
+        </copy>
+    </target>
 
     <!-- Build native code -->
     <target name="build-native">
@@ -74,7 +144,21 @@
     <target name="test-module" depends="build-tests, prepare-exclude, run-tests" />
 
     <!-- Clean Java -->
-    <target name="clean-java"/>
+    <target name="clean-java">
+        <echo message="Cleaning JPDA classes" />
+
+        <delete file="${hy.jdk}/lib/jdtstub.jar" />
+        <delete file="${hy.jdk}/lib/jdtstub-src.jar" />
+
+        <delete file="${hy.jdk}/lib/${icu.jar.name}" />
+        <delete file="${hy.jdk}/lib/${jdt.jdimodel.jar.name}" />
+
+        <delete includeemptydirs="true" failonerror="false">
+            <!--fileset refid="classes" /-->
+            <fileset dir="${hy.build}" />
+            <fileset dir="${tests.build.output}/classes" />
+        </delete>
+    </target>
 
     <!-- Clean natives -->
     <target name="clean-native">
