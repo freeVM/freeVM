@@ -318,16 +318,14 @@ VirtualMachine::TopLevelThreadGroupsHandler::Execute(JNIEnv *jni)
 
 #ifndef NDEBUG    
         if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
-            for (i = 0; i < groupCount; i++) {
-                jvmtiThreadGroupInfo info;
-                info.name = 0;
-                JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadGroupInfo(groups[i], &info));
-                JvmtiAutoFree jafInfoName(info.name);
+            jvmtiThreadGroupInfo info;
+            info.name = 0;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadGroupInfo(groups[i], &info));
+            JvmtiAutoFree jafInfoName(info.name);
         
-                JDWP_TRACE_DATA("TopLevelThreadGroup: send: group#" << i 
+            JDWP_TRACE_DATA("TopLevelThreadGroup: send: group#" << i 
                 << ", groupID=" << groups[i]
                 << ", name=" << JDWP_CHECK_NULL(info.name));
-            }
         }
 #endif
 
