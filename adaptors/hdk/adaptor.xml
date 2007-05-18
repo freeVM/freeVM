@@ -45,7 +45,7 @@
         </replace>
     </target>
 
-    <target name="run" depends="copy-awt-libs, copy-msvcr80">
+    <target name="run">
         <exec-ant dir="${hdk.trunk.dir}">
             <jvmarg line="-Xmx1000M"/>
             <sysproperty key="auto.fetch" value="true"/>
@@ -58,72 +58,5 @@
             <sysproperty key="hy.cfg" value="${hdk.hy.cfg}"/>
         </exec-ant>
     </target>
-
-    <!-- ================================================================ -->
-    <!--         Workarounds needed to build HDK on 64 workstations       -->
-    <!-- ================================================================ -->
-
-    <condition property="is.linux.64">
-        <and>
-            <os name="linux"/>
-            <or>
-                <os arch="ia64"/>
-                <os arch="x86_64"/>
-            </or>
-        </and>
-    </condition>
-
-    <condition property="is.windows.64">
-        <and>
-            <os family="windows"/>
-            <or>
-                <os arch="ia64"/>
-                <os arch="x86_64"/>
-            </or>
-        </and>
-    </condition>
-
-    <!-- check if it is a 64 bit Linux Workstation and 
-         if it is so, demand path to prebuilt libraries -->
-    <condition property="demand.if.lin64"
-               value="Not In Use (as it is not a 64 bit Linux)"
-               else="">
-        <not><isset property="is.linux.64"/></not>
-    </condition>
-
-    <!-- check if it is a 64 bit Windows Workstation and 
-         if it is so, demand path to msvcr80.dll -->
-    <condition property="demand.if.win64"
-               value="Not In Use (as it is not a 64 bit Windows)"
-               else="">
-        <not><isset property="is.windows.64"/></not>
-    </condition>
-
-    <!-- copy prebuilt AWT libraries into HDK resources dir -->
-    <target name="copy-awt-libs" if="is.linux.64">
-        <mkdir dir="${hdk.trunk.dir}/working_classlib/depends/libs/build/jpeg"/>
-        <mkdir dir="${hdk.trunk.dir}/working_classlib/depends/libs/build/png"/>
-        <mkdir dir="${hdk.trunk.dir}/working_classlib/depends/libs/build/lcms"/>
-        <copy file="${hdk.linux.64.libs.dir}/jpeg/libjpeg.linux.x86_64" 
-              tofile="${hdk.trunk.dir}/working_classlib/depends/libs/build/jpeg/libjpeg.linux.x86_64"/>
-        <copy file="${hdk.linux.64.libs.dir}/png/libpng.linux.x86_64" 
-              tofile="${hdk.trunk.dir}/working_classlib/depends/libs/build/png/libpng.linux.x86_64"/>
-        <copy file="${hdk.linux.64.libs.dir}/lcms/liblcms.linux.x86_64" 
-              tofile="${hdk.trunk.dir}/working_classlib/depends/libs/build/lcms/liblcms.linux.x86_64"/>
-    </target>
-
-    <!-- copy msvcr80.dll into HDK resources dirs -->
-    <target name="copy-msvcr80" if="is.windows.64">
-        <property name="rel.path" value="depends/libs/windows.x86_64"/>
-
-        <mkdir dir="${hdk.trunk.dir}/common_resources/${rel.path}"/>
-		<copy file="${hdk.windows.64.msvcr80}"
-		      todir="${hdk.trunk.dir}/common_resources/${rel.path}"/>
-
-        <mkdir dir="${hdk.trunk.dir}/working_classlib/${rel.path}"/>
-		<copy file="${hdk.windows.64.msvcr80}"
-		      todir="${hdk.trunk.dir}/working_classlib/${rel.path}"/>
-    </target>
-
 </project>
 

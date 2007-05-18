@@ -15,16 +15,7 @@
      limitations under the License. -->
 
 <parameters>
-    <required>
-        <!-- the value of this parameter will be demanded only on Linux 64 -->
-        <linux.64.libs.dir 
-            description="Path to prebuilt AWT libraries on Linux 64"
-            value="${demand.if.lin64}"/>
-        <!-- the value of this parameter will be demanded only on Windows 64 -->
-        <windows.64.msvcr80 
-            description="Path to msvcr80.dll on Windows 64"
-            value="${demand.if.win64}"/>
-    </required>
+    <required/>
 
     <!-- shared values -->
     <shared>
