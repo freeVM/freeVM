@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                    BT Adaptor for Harmony HDK Project
+     ====================================================================== -->
+<project name="hdk" default="run" basedir=".">
+
+    <property name="cc.hdk.config.template" 
+              value="${temp.files.dir}/cc-hdk-project.xml"/>
+
+    <!-- do setup of the HDK workspace -->
+    <target name="setup">
+        <mkdir dir="${hdk.trunk.dir}"/>
+
+        <echo message="Checkout HDK trunk into ${hdk.trunk.dir}"/>
+        <svn-co url="${svn.url}" trunk="${hdk.trunk.dir}"/>
+        <!-- CC does not handle the modifications in 'switched' sub-trunks,
+             so manually add each of sub-trunks to modificationset -->
+        <copy file="${scripts.dir}/templates/cc-project-template.xml" 
+              tofile="${cc.hdk.config.template}"/>
+        <property name="nl" value="${line.separator}"/>
+        <replace file="${cc.hdk.config.template}">
+            <replacefilter 
+                token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;" 
+                value="${nl}
+           &lt;svn localWorkingCopy='${hdk.trunk.dir}' property='repository.updated'/&gt;${nl}
+           &lt;svn localWorkingCopy='${hdk.classlib.trunk.dir}' property='repository.updated'/&gt;${nl}
+           &lt;svn localWorkingCopy='${hdk.drlvm.trunk.dir}' property='repository.updated'/&gt;${nl}
+           &lt;svn localWorkingCopy='${hdk.jdktools.trunk.dir}' property='repository.updated'/&gt;${nl}"/>
+        </replace>
+    </target>
+
+    <target name="run" depends="copy-awt-libs, copy-msvcr80">
+        <exec-ant dir="${hdk.trunk.dir}">
+            <jvmarg line="-Xmx1000M"/>
+            <sysproperty key="auto.fetch" value="true"/>
+            <sysproperty key="hy.cfg" value="${hdk.hy.cfg}"/>
+        </exec-ant>
+    </target>
+
+    <target name="clean">
+        <exec-ant dir="${hdk.trunk.dir}" targets="clean">
+            <sysproperty key="hy.cfg" value="${hdk.hy.cfg}"/>
+        </exec-ant>
+    </target>
+
+    <!-- ================================================================ -->
+    <!--         Workarounds needed to build HDK on 64 workstations       -->
+    <!-- ================================================================ -->
+
+    <condition property="is.linux.64">
+        <and>
+            <os name="linux"/>
+            <or>
+                <os arch="ia64"/>
+                <os arch="x86_64"/>
+            </or>
+        </and>
+    </condition>
+
+    <condition property="is.windows.64">
+        <and>
+            <os family="windows"/>
+            <or>
+                <os arch="ia64"/>
+                <os arch="x86_64"/>
+            </or>
+        </and>
+    </condition>
+
+    <!-- check if it is a 64 bit Linux Workstation and 
+         if it is so, demand path to prebuilt libraries -->
+    <condition property="demand.if.lin64"
+               value="Not In Use (as it is not a 64 bit Linux)"
+               else="">
+        <not><isset property="is.linux.64"/></not>
+    </condition>
+
+    <!-- check if it is a 64 bit Windows Workstation and 
+         if it is so, demand path to msvcr80.dll -->
+    <condition property="demand.if.win64"
+               value="Not In Use (as it is not a 64 bit Windows)"
+               else="">
+        <not><isset property="is.windows.64"/></not>
+    </condition>
+
+    <!-- copy prebuilt AWT libraries into HDK resources dir -->
+    <target name="copy-awt-libs" if="is.linux.64">
+        <mkdir dir="${hdk.trunk.dir}/working_classlib/depends/libs/build/jpeg"/>
+        <mkdir dir="${hdk.trunk.dir}/working_classlib/depends/libs/build/png"/>
+        <mkdir dir="${hdk.trunk.dir}/working_classlib/depends/libs/build/lcms"/>
+        <copy file="${hdk.linux.64.libs.dir}/jpeg/libjpeg.linux.x86_64" 
+              tofile="${hdk.trunk.dir}/working_classlib/depends/libs/build/jpeg/libjpeg.linux.x86_64"/>
+        <copy file="${hdk.linux.64.libs.dir}/png/libpng.linux.x86_64" 
+              tofile="${hdk.trunk.dir}/working_classlib/depends/libs/build/png/libpng.linux.x86_64"/>
+        <copy file="${hdk.linux.64.libs.dir}/lcms/liblcms.linux.x86_64" 
+              tofile="${hdk.trunk.dir}/working_classlib/depends/libs/build/lcms/liblcms.linux.x86_64"/>
+    </target>
+
+    <!-- copy msvcr80.dll into HDK resources dirs -->
+    <target name="copy-msvcr80" if="is.windows.64">
+        <property name="rel.path" value="depends/libs/windows.x86_64"/>
+
+        <mkdir dir="${hdk.trunk.dir}/common_resources/${rel.path}"/>
+		<copy file="${hdk.windows.64.msvcr80}"
+		      todir="${hdk.trunk.dir}/common_resources/${rel.path}"/>
+
+        <mkdir dir="${hdk.trunk.dir}/working_classlib/${rel.path}"/>
+		<copy file="${hdk.windows.64.msvcr80}"
+		      todir="${hdk.trunk.dir}/working_classlib/${rel.path}"/>
+    </target>
+
+</project>
+

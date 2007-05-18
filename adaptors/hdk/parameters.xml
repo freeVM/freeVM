@@ -1,0 +1,44 @@
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<parameters>
+    <required>
+        <!-- the value of this parameter will be demanded only on Linux 64 -->
+        <linux.64.libs.dir 
+            description="Path to prebuilt AWT libraries on Linux 64"
+            value="${demand.if.lin64}"/>
+        <!-- the value of this parameter will be demanded only on Windows 64 -->
+        <windows.64.msvcr80 
+            description="Path to msvcr80.dll on Windows 64"
+            value="${demand.if.win64}"/>
+    </required>
+
+    <!-- shared values -->
+    <shared>
+        <svn.url value="https://svn.apache.org/repos/asf/harmony/enhanced/trunk"/>
+        <trunk.dir location="${checkouts.dir}/hdk" id="trunk.dir.id"/>
+        <classlib.trunk.dir location="${checkouts.dir}/hdk/working_classlib"/>
+        <drlvm.trunk.dir location="${checkouts.dir}/hdk/working_vm"/>
+        <jdktools.trunk.dir location="${checkouts.dir}/hdk/working_jdktools"/>
+        <binaries.jre.dir location="${checkouts.dir}/hdk/target/hdk/jdk/jre"/> 
+        <hy.cfg value="debug"/>
+    </shared>
+
+    <!-- CC specific configuration -->
+    <cc config="${cc.hdk.config.template}">
+        <usesvn refid="trunk.dir.id"/>
+    </cc>
+</parameters>
