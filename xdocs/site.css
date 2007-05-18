@@ -23,21 +23,26 @@ body {
     font-size: small;
 }
 
-@media print {
-    body {
-        font-family: serif;
-    }
+
+#pageHeader {
+    padding-bottom: 5px;
+    border-bottom: 1px solid gray;
+    margin-bottom: 5px;
 }
 
-td.menuItem {
-    vertical-align: top;
+#pageFooter {
+    margin-top: 5px;
+    border-top: 1px solid gray;
+    padding-top: 5px;
 }
+
 
 p.menuItem {
     padding: 0pt;
     margin: 0pt;
 }
-td.menuItem ul {
+
+#navigationmenu ul {
     margin-top: 0pt;
 }
 

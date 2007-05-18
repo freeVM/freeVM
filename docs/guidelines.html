@@ -2,11 +2,11 @@
 
 <!--
 Licensed to the Apache Software Foundation (ASF) under one or more
-contributor license agreements.  See the NOTICE file distributed with
+contributor license agreements. See the NOTICE file distributed with
 this work for additional information regarding copyright ownership.
 The ASF licenses this file to You under the Apache License, Version 2.0
 (the "License"); you may not use this file except in compliance with
-the License.  You may obtain a copy of the License at
+the License. You may obtain a copy of the License at
 
 http://www.apache.org/licenses/LICENSE-2.0
 
@@ -40,46 +40,28 @@ limitations under the License.
 
                         
                 
-        <link rel="stylesheet" type="text/css" href="site.css"/>
+        <link rel="stylesheet" type="text/css" href="site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="print.css" media="print" />
         </head>
 
-        <body>        
-            <table  width="100%" cellspacing="0">
-                <!-- TOP IMAGE -->
-                <tr>
-                    <td align='LEFT'>
-                    <table><tr><td>
-                    <td>
-<a href="http://harmony.apache.org/"><img  src="./images/harmony-logo-new.png" alt="Apache Harmony" /></a>
-</td>
-</td>
-                    </td></tr></table>
-                    </td>
-                    <td align='RIGHT'>
-                    <a href="http://www.us.apachecon.com/">
-                    <img src="http://www.apache.org/ads/ApacheCon/2007-usa-234x60.png"
-                    	alt="ApacheCon US 2007" /></a>                    
-                    </td>
-                </tr>
-            </table>
-            <table width="100%" cellspacing="4">
-                <tr><td colspan="2">
-                    <hr noshade="" size="1"/>
-                </td></tr>
+        <body>
+            <div id="pageHeader">
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="./images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement -->
+            <a href="http://www.apachecon.com/2007/EU/index.html">
+                <img id="advertisement"
+                     src="http://www.apache.org/ads/ApacheCon/2007-usa-234x60.png"
+                     width="234" height="60"
+                     alt="ApacheCon US 2007" /></a>
+            </div> <!-- pageHeader -->
 
-                <tr>
+            <div id="navigationmenu">
                     <!-- LEFT SIDE NAVIGATION -->
-                    <td class="menuItem" width="20%" nowrap="true">
-
-                    <!-- special ACon Logo - leave here for next time
-                    <a href="http://www.us.apachecon.com/">
-                        <img src="http://www.apache.org/ads/ApacheCon/2007-europe-125x125.png"
-                             alt="ApacheCon Europe 2007" />
-                    </a> -->
-
-                   <!-- regular menu -->
-
-                    
+                
     <!-- ============================================================ -->
 
                 <p class="menuItem"><strong>General</strong></p>
@@ -186,9 +168,11 @@ limitations under the License.
                         
         
         </ul>
-                        </td>
-                    <td width="80%" valign="top"><a name="top"></a>
-                                                                    <h1>
+                </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                                        <h1>
       <a name="Project Guidelines">Project Guidelines</a>
     </h1>
                         <p>
@@ -205,7 +189,7 @@ can be avoided, but at least we can agree on the procedures for conflict
 to be resolved.
 </p>
                 <p><a href="#top">Back to top</a></p>
-                                                <h1>
+                                        <h1>
       <a name="People, Places, and Things">People, Places, and Things</a>
     </h1>
                         <dl>
@@ -287,7 +271,7 @@ to be resolved.
   </dd>
 </dl>
                 <p><a href="#top">Back to top</a></p>
-                                                <h1>
+                                        <h1>
       <a name="STATUS">STATUS</a>
     </h1>
                         <p>Each of the Apache Harmony's active source code repositories contain a 
@@ -306,7 +290,7 @@ mailing list as soon as they are identified. Action items
 relevant STATUS file. All action items may be voted on, but not all 
 of them will require a formal vote.</p>
                 <p><a href="#top">Back to top</a></p>
-                                                <h1>
+                                        <h1>
       <a name="Voting">Voting</a>
     </h1>
                         <p>Any of the Apache Developers may vote on any issue or action item.
@@ -359,7 +343,7 @@ depending upon the type of action item.</p>
                                 <p>Votes are tallied within the STATUS file, adjacent to the action
 item under vote. All votes must be sent to the mailing list.</p>
                 <p><a href="#top">Back to top</a></p>
-                                                <h1>
+                                        <h1>
       <a name="Types of Action Items">Types of Action Items</a>
     </h1>
                         <dl>
@@ -431,7 +415,7 @@ item under vote. All votes must be sent to the mailing list.</p>
   </dd>
 </dl>
                 <p><a href="#top">Back to top</a></p>
-                                                <h1>
+                                        <h1>
       <a name="When to Commit a Change">When to Commit a Change</a>
     </h1>
                         <p>
@@ -477,7 +461,7 @@ voting committers and the veto conditions cannot be immediately satisfied by
 the equivalent of a "bug fix" commit. The veto must be rescinded before 
 the change can be included in any public release.</p>
                 <p><a href="#top">Back to top</a></p>
-                                                <h1>
+                                        <h1>
       <a name="Patch Format">Patch Format</a>
     </h1>
                         <p>When a specific change to the software is proposed for discussion or
@@ -504,7 +488,7 @@ command,</p>
                                 <pre>patch -s &lt; patchfile</pre>
                                 <p>is issued in the target repository.</p>
                 <p><a href="#top">Back to top</a></p>
-                                                <h1>
+                                        <h1>
       <a name="Addendum">Addendum</a>
     </h1>
                         <p>Outstanding issues with this document</p>
@@ -515,23 +499,17 @@ command,</p>
     <li>Should we set a time limit on vetos of patches? Two weeks?</li>
 </ul>
                 <p><a href="#top">Back to top</a></p>
-                    
-                                                            </td>
-                </tr>
+                
+                                            </div> <!-- top aka Main Content -->
 
-                <!-- FOOTER -->
-                <tr><td colspan="2">
-                    <hr noshade="" size="1"/>
-                </td></tr>
-                <tr><td colspan="2">
-                    <div class="special"><em>
-                    Copyright &#169; 2003-2007, The Apache Software Foundation
-                    </em></div>
-                </td></tr>
-            </table>
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special"><em>
+                Copyright &#169; 2003-2007, The Apache Software Foundation
+            </em></div>
         </body>
     </html>
 <!-- end the processing -->
+
 
 
 
