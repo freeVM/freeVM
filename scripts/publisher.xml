@@ -18,7 +18,7 @@
 <!-- ====================================================================== 
                         Status Publisher Implementation
      ====================================================================== -->
-<project name="publisher" default="run" basedir=".">
+<project name="publisher" default="publish" basedir=".">
 
     <!-- check whether we should send notification or not -->
     <condition property="do.mail">
@@ -36,37 +36,88 @@
             </or>
         </and>
     </condition>
+    <condition property="do.mail">
+        <isset property="framework.parameters.usemail.force"/>
+    </condition>
 
-    <condition property="execution.status"
+    <condition property="mail.execution.status"
                value="BUILD PASSED"
                else="BUILD FAILED">
         <istrue value="${thisbuildsuccessful}"/>
     </condition>
 
     <property name="mail.subject.line"
-              value="${framework.parameters.usemail.subject.prefix} ${execution.status} ${os.name} ${os.arch}: ${suite.name}"/>
+              value="${framework.parameters.usemail.subject.prefix} ${mail.execution.status} ${os.name} ${os.arch}: ${suite.name}"/>
 
     <!-- implement publisher interface -->
-    <target name="publish" if="do.mail" depends="-compose-message">
-        <mail mailhost="${framework.parameters.usemail}"
-              tolist="${framework.parameters.usemail.to}"
-              from="${framework.parameters.usemail.from}"
-              subject="${mail.subject.line}">
-            <message src="${temp.files.dir}/${suite.name}-email-message.txt"/>
-        </mail>
+    <target name="publish" if="do.mail">
+        <log message=""/>
+        <log message="    Sending mail notification:"/>
+        <log message="        smtp: '${framework.parameters.usemail}'"/>
+        <log message="        to: '${framework.parameters.usemail.to}'"/>
+        <log message="        from: '${framework.parameters.usemail.from}'"/>
+        <log message="    Files to attach: ${mail.attach.files}"/>
+        <log message=""/>
+
+        <trycatch property="mail.sending.exception">
+        <try>
+            <if>
+                <available file="${mail.summary.file}"/>
+            <then>
+                <!-- 'if' suppresses 'nonexistence' warning -->
+                <loadfile property="mail.summary" 
+                          srcFile="${mail.summary.file}" 
+                          failonerror="false"/>
+            </then>
+            </if>
+            <!-- summary by default -->
+            <property name="mail.summary" value=""/>
+            <loadfile property="mail.message" 
+                      srcFile="${mail.message.file}" 
+                      failonerror="false"/>
+            <!-- empty message by default -->
+            <property name="mail.message" value=""/>
+            <!-- no attachments by default -->
+            <property name="mail.attach.files" value=""/>
+            <mail mailhost="${framework.parameters.usemail}"
+                  tolist="${framework.parameters.usemail.to}"
+                  from="${framework.parameters.usemail.from}"
+                  subject="${mail.subject.line}"
+                  files="${mail.attach.files}">
+                <message>${mail.summary}${mail.message}</message>
+            </mail>
+        </try>
+        <catch>
+            <echo>
+--------
+WARNING: Mail notification sending for Test Suite '${suite.name}' FAILED
+-------- with the following exception:
+${mail.sending.exception}
+
+</echo>
+            <error-notify>
+Mail Notification Sending failed with the following message: ${mail.sending.exception}
+
+----------
+Test Suite '${suite.name}' execution status: ${mail.execution.status}
+            </error-notify>
+        </catch>
+        </trycatch>
     </target>
 
-    <target name="-compose-message" if="do.mail">
-        <property name="cc.xsl.files.dir"
-                  value="${ext.cc.location}/webapps/cruisecontrol/xsl"/>
-        <property name="transformed.file"
-                  value="${temp.files.dir}/${suite.name}-email-message.txt"/>
-        <xslt basedir="${scripts.dir}/xslt"
-              in="${logdir}/${logfile}"
-              style="${scripts.dir}/xslt/br.xsl"
-              out="${transformed.file}"
-              classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar"/>
-    </target>
+    <macrodef name="error-notify">
+        <text name="text"/>
+        <sequential>
+            <mail mailhost="${framework.parameters.usemail}"
+                  tolist="${framework.parameters.usemail.to}"
+                  from="${framework.parameters.usemail.from}"
+                  subject="${mail.subject.line}">
+                <message>
+@{text}
+                </message>
+            </mail>
+        </sequential>
+    </macrodef>
 
 </project>
 

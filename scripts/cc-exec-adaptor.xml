@@ -18,7 +18,7 @@
 <!-- ====================================================================== 
                           CC to Ant Adaptors Execution 
      ====================================================================== -->
-<project name="cc-ant" default="call" basedir=".">
+<project name="cc-ant" default="cc-publish" basedir=".">
 
     <property file="${properties.dump.file}"/>
     <property file="${framework.properties.file}"/>
@@ -39,23 +39,80 @@
             depends="define-ant-contrib"
             if="framework.parameters.usemail">
         <dirname property="publisher.dir" file="${publisher.location}"/>
-        <log message="Calling Publisher ${publisher.location} at ${publisher.dir} for ${suite.name}"/>
+        <log message="Calling Custom Publisher ${publisher.location} at ${publisher.dir} for ${suite.name}"/>
         <ant dir="${publisher.dir}" 
              antfile="${publisher.location}" 
              target="publish"
              inheritAll="true"/>
     </target>
-
+    
     <!-- Called from CC to launch the default ant publisher for test suite -->
     <target name="cc-publish" 
             depends="define-ant-contrib"
             if="framework.parameters.usemail">
-        <dirname property="publisher.dir" file="${publisher.location}"/>
-        <log message="Calling Publisher ${publisher.location} at ${publisher.dir} for ${suite.name}"/>
-        <ant dir="${publisher.dir}" 
-             antfile="${publisher.location}" 
+
+        <!-- set up mail message file (if it was defined by test suite) -->
+        <get-parameter-value
+            property="mail.message.file" 
+            parameter="${suite.name}.parameters.cc.message"/>
+        <!-- set up mail message summary file
+             (if it was defined by test suite) -->
+        <get-parameter-value
+            property="mail.summary.file" 
+            parameter="${suite.name}.parameters.cc.summary"/>
+        <!-- set up mail attachments -->
+        <get-parameter-value
+            property="mail.attach.files" 
+            parameter="${suite.name}.parameters.cc.attachs"/>
+
+        <!-- compose message from CC logs (it there is no mail.message.file) -->
+        <runtarget target="-compose-message-file"/>
+
+        <!-- do mail notifiaction -->
+        <ant dir="${scripts.dir}" 
+             antfile="${scripts.dir}/publisher.xml" 
              target="publish"
-             inheritAll="true"/>
+             inheritAll="false">
+            <!-- if there are Test Suite specific 'to' and 'from' addresses
+                 use them for mailing -->
+            <propertyset>
+                <propertyref name="${suite.name}.parameters.cc.to"/>
+                <propertyref name="${suite.name}.parameters.cc.from"/>
+                <globmapper from="${suite.name}.parameters.cc.*" to="framework.parameters.usemail.*"/>
+            </propertyset>
+            <propertyset>
+                <propertyref name="thisbuildsuccessful"/>
+                <propertyref name="lastbuildsuccessful"/>
+                <propertyref regex="framework.parameters.*"/>
+                <propertyref regex="mail.*"/>
+            </propertyset>
+        </ant>
+        
     </target>
+
+    <!-- compose message from CC logs -->
+    <target name="-compose-message-file"
+            unless="mail.message.file">
+        <property name="cc.xsl.files.dir"
+                  value="${ext.cc.location}/webapps/cruisecontrol/xsl"/>
+        <property name="mail.message.file"
+                  value="${temp.files.dir}/${suite.name}-email-message.txt"/>
+        <xslt basedir="${scripts.dir}/xslt"
+              in="${logdir}/${logfile}"
+              style="${scripts.dir}/xslt/br.xsl"
+              out="${mail.message.file}"
+              classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar"/>
+    </target>
+
+    <!-- places the value of the parameter to the provided property -->
+    <macrodef name="get-parameter-value">
+        <attribute name="parameter"/>
+        <attribute name="property"/>
+        <sequential>
+            <condition property="@{property}" value="${@{parameter}}">
+                <isset property="@{parameter}"/>
+            </condition>
+        </sequential>
+    </macrodef>
 
 </project>
