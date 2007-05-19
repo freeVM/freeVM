@@ -58,28 +58,5 @@
     <!-- nothing to cleanup -->
     <target name="clean"/>
 
-    <!-- 
-        ==================== Publisher Implementation ======================
-    -->
-
-    <condition property="scimark.status" value="ERROR">
-        <not><available file="${scimark.output.file}"/></not>
-    </condition>
-
-    <condition property="scimark.status" value="OK" else="FAILED">
-        <istrue value="${thisbuildsuccessful}"/>
-    </condition>
-
-    <!-- implement publisher interface -->
-    <target name="publish" if="framework.parameters.usemail">
-        <!-- make empty file in case of error -->
-        <touch file="${scimark.output.file}"/>
-        <mail mailhost="${framework.parameters.usemail}"
-              tolist="${framework.parameters.usemail.to}"
-              from="${framework.parameters.usemail.from}"
-              subject="SciMark ${scimark.status}"
-              messagefile="${scimark.output.file}"/>
-    </target>
-
 </project>
 
