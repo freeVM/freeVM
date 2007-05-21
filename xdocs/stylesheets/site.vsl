@@ -155,7 +155,7 @@ limitations under the License.
             $items
         #end
     #end
-    <p><a href="#top">Back to top</a></p>
+    <p class="backtotop"><a href="#top">Back to top</a></p>
 #end
 
 #macro ( makeProject )
@@ -164,7 +164,7 @@ limitations under the License.
 
     #set ($menus = $project.getChild("body").getChildren("menu"))
     #foreach ( $menu in $menus )
-        <p class="menuItem"><strong>$menu.getAttributeValue("name")</strong></p>
+        <p class="menuItem">$menu.getAttributeValue("name")</p>
         <ul>
         #foreach ( $item in $menu.getChildren() )
             #set ($name = $item.getAttributeValue("name"))
@@ -284,6 +284,7 @@ limitations under the License.
         </body>
     </html>
 #end
+
 
 
 

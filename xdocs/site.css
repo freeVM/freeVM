@@ -40,6 +40,7 @@ body {
 p.menuItem {
     padding: 0pt;
     margin: 0pt;
+    font-weight: bold;
 }
 
 #navigationmenu ul {
@@ -155,8 +156,11 @@ pre {
 }
 
 .backtotop {
-    font-weight: bold;
     margin-left: 0pt;
+}
+
+.backtotop a {
+	color: black;
 }
 
 .note {
