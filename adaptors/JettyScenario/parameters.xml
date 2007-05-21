@@ -67,5 +67,7 @@
         <usesvn refid="trunk.dir.id"/>
         <!-- Run this script for publishing results -->
         <publisher value="${adaptors.dir}/${suite.name}/adaptor.xml"/>
+        <!-- Merge results with CC log -->
+        <results value="${scenario.results.dir}"/>
     </cc>
 </parameters>

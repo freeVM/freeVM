@@ -137,7 +137,8 @@
                             <include name="lib/*.jar"/>
                         </fileset>
                     </classpath>
-                    <formatter type="plain" />
+                    <formatter type="plain"/>
+                    <formatter type="xml"/>
                     <test name="JettyScenario" todir="${scenario.results.dir}"/>
                 </junit>
 
