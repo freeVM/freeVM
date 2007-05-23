@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ======================================================================
+                     BT Adaptor for Tomcat simple scenario
+     ====================================================================== -->
+<project name="tomcat-scenario" default="run" basedir=".">
+
+    <property name="tomcat.results.dir" location="${results.dir}/${suite.name}"/>
+    <property name="tomcat.src.dir" location="${test.sources.dir}/${suite.name}"/>
+    <property environment="env"/>
+
+    <condition property="shell" value="cmd" else="sh">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="start.script" value="/C startup.bat" else="startup.sh">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="stop.script" value="/C shutdown.bat" else="shutdown.sh">
+        <os family="windows"/>
+    </condition>
+
+    <!-- data urls -->
+    <property name="index.location"
+              value="http://localhost:${tomcat-scenario.parameters.optional.port.number}/index.jsp"/>
+    <property name="jsp.ex"
+              value="http://localhost:${tomcat-scenario.parameters.optional.port.number}/examples/jsp/jsp2/el/basic-comparisons.jsp"/>
+
+    <!-- Setup of the Tomcat scenario -->
+    <target name="setup">
+
+        <!--
+            Setup port number for Tomcat server
+        -->
+        <replaceregexp file="${ext.tomcat.location}/conf/server.xml"
+                       match="port=\&quot;.*\&quot; protocol=\&quot;HTTP(.*)\&quot;"
+                       replace="port=\&quot;${tomcat-scenario.parameters.optional.port.number}\&quot; protocol=\&quot;HTTP\1\&quot;"
+                       flags="g" byline="true"/>
+        <!--
+            Create results directory
+        -->
+        <mkdir dir="${tomcat.results.dir}"/>
+
+        <!--
+            Make Tomcat startup scripts executable
+        -->
+        <chmod perm="a+x">
+            <fileset dir="${ext.tomcat.location}/bin" includes="*.sh"/>
+        </chmod>
+
+    </target>
+    
+    <target name="run" depends="clean">
+
+        <parallel>
+            <sequential>
+
+                <!--
+                    Starting Tomcat server
+                -->
+                <exec executable="${shell}"
+                      dir="${ext.tomcat.location}/bin"
+                      spawn="true">
+                    <arg line="${start.script}"/>
+                    <env key="JRE_HOME" path="${tested.runtime}"/>
+                    <env key="JAVA_OPTS" value="${tomcat-scenario.parameters.optional.tested.vm.options}"/>
+                    <env key="PATH" path="${tested.runtime}${file.separator}bin${path.separator}${env.PATH}"/>
+                </exec>
+
+            </sequential>
+            <sequential>
+
+                <!--
+                    Wait for Tomcat server started
+                -->
+                <waitfor maxwait="300" maxwaitunit="second" timeoutproperty="failed.timeout">
+                    <length when="greater" length="0">
+                        <fileset dir="${ext.tomcat.location}/logs">
+                            <filename name="catalina*.log"/>
+                            <contains text="INFO: Server startup in"/>
+                        </fileset>
+                    </length>
+                </waitfor>
+                <fail message="Tomcat server startup timeout exceeded" if="failed.timeout"/>
+
+                <!--
+                    Get data from started server
+                -->
+                <get src="${index.location}"
+                     dest="${tomcat.results.dir}/index.htm"
+                     usetimestamp="true"
+                     verbose="true"/>
+                <get src="${jsp.ex}"
+                     dest="${tomcat.results.dir}/jsp_ex.htm"
+                     usetimestamp="true"
+                     verbose="true"/>
+
+                <!--
+                    Stop Tomcat server
+                -->
+                <exec executable="${shell}"
+                      dir="${ext.tomcat.location}/bin">
+                    <arg line="${stop.script}"/>
+                    <env key="JRE_HOME" path="${tested.runtime}"/>
+                    <env key="JAVA_OPTS" value="${tomcat-scenario.parameters.optional.tested.vm.options}"/>
+                    <env key="PATH" path="${tested.runtime}${file.separator}bin${path.separator}${env.PATH}"/>
+                </exec>
+            </sequential>
+        </parallel>
+
+        <!--
+            Check the data is valid
+        -->
+        <condition property="passed">
+            <and>
+                <filesmatch file1="${tomcat.results.dir}/index.htm" file2="${tomcat.src.dir}/index.g"/>
+                <filesmatch file1="${tomcat.results.dir}/jsp_ex.htm" file2="${tomcat.src.dir}/jsp_ex.g"/>
+            </and>
+        </condition>
+
+        <fail message="Tomcat scenario failed: data retrieved from server is not valid." unless="passed"/>
+
+    </target>
+
+    <target name="clean">
+        <!--
+            Removing results of previous build
+        -->
+        <delete file="${tomcat.results.dir}/index.htm" failonerror="false"/>
+        <delete file="${tomcat.results.dir}/jsp_ex.htm" failonerror="false"/>
+
+        <!--
+            Removing logs of previous Tomcat run
+        -->
+        <delete failonerror="false">
+            <fileset dir="${ext.tomcat.location}/logs" includes="*.log"/>
+        </delete>
+    </target>
+
+</project>
