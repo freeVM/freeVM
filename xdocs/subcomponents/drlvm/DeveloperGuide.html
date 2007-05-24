@@ -1553,6 +1553,32 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
                maximum use of its capabilities. See help message <code>ij
                -X</code> for details on the logger command-line options.
             </p>
+            <p>The current VM logging system supports internationalization,
+               so that VM can print messages in the language of the customer system.
+               To use the internationalization feature, initialize one of the <code>LC_ALL</code>,
+               <code>LC_MESSAGES</code> or <code>LANG</code> system environment variables
+               in the <code>&lt;Lang&gt;_&lt;Region&gt;.&lt;Variant&gt;</code> locale format.
+               You can find a list of localized messages for a certain locale in the
+               <code>&lt;drlvm_trunk&gt;/vm/vmcore/src/init/harmony_&lt;locale_name&gt;.properties.</code>
+               message catalogue. For a convenient set of macros for printing internationalized
+               messages, refer to the <code>cxxlog.h</code> header file.
+           </p>
+           <p>A record from the message catalogue has the following structure:<br>
+              <code><b>&lt;XXXX&gt;&lt;YYY&gt;=&lt;localized_message&gt;</b></code><br>
+              Where:</ br>
+              <ul><li><code>&lt;XXXX&gt;</code> - a set of four letters; the current implementation contains
+              <code>&lt;ECHO&gt;</code>, <code>&lt;LDIE&gt;</code> and <code>&lt;WARN&gt;</code> sets;</li>
+              <li><code>&lt;YYY&gt;</code> - the localized message number, for example <code>&lt;005&gt;</code>;</li>
+              <li><code>&lt;localized_message&gt;</code> - the message written in the native language
+              (may be UTF8 coded), which can contain some substitution parameters, 
+              for example <code>&lt;message with two parameters {0} and {1}&gt;</code>.</li>
+</ul>
+           </p>
+           <p class="example">Example</p>
+           <p class="exampletext">Here is the example of using the <code><b>&lt;ECHO030=Unknown option {0}&gt;</b></code>
+            record from the message catalogue in VM code:</p>
+<pre>LECHO(30, "Unknown option {0}" << option);</pre>
+           
          </dd>
       </dl>
       <p class="note">
@@ -2115,8 +2141,8 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
                Note
             </p>
             <p class="notetext">
-               The <code>vm.other_natives_dlls</code> property defines the list
-               of libraries to be loaded.
+               The private <code>vm.other_natives_dlls</code> property defines
+               the list of libraries to be loaded.
             </p>
          </li>
          <li>
