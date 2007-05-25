@@ -76,6 +76,14 @@
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
+            <!-- HDK class library -->
+            <classpath>
+                <fileset dir="${hy.hdk}/jdk/jre/lib/boot">
+                    <include name="**/*.jar" />
+                    <exclude name="**/*-src.jar" />
+                </fileset>
+            </classpath>
+
             <classpath>
                 <pathelement path="${jdt.jdi.jar}"/>
                 <pathelement path="${jdt.jdimodel.jar}"/>
@@ -182,6 +190,14 @@
             target="${hy.javac.target}"
             debug="on">
 
+            <!-- HDK class library -->
+            <classpath>
+                <fileset dir="${hy.hdk}/jdk/jre/lib/boot">
+                    <include name="**/*.jar" />
+                    <exclude name="**/*-src.jar" />
+                </fileset>
+            </classpath>
+            
             <classpath>
                 <pathelement path="${tests.build.output}/classes"/>
                 <pathelement path="${junit.jar}"/>
