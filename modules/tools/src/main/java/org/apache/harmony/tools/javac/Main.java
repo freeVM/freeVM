@@ -18,6 +18,7 @@
 package org.apache.harmony.tools.javac;
 
 import java.io.PrintWriter;
+import java.io.File;
 import org.apache.harmony.tools.toolutils.Util;
 
 /**
@@ -82,11 +83,19 @@ public final class Main {
      * libraries.
      */
     private String[] addBootclasspath(String[] args) {
+        StringBuilder sb = new StringBuilder();
         String[] result = new String[args.length + 2];
+
         System.arraycopy(args, 0, result, 0, args.length);
         result[args.length] = "-classpath"; //$NON-NLS-1$
-        result[args.length + 1] = System.getProperty(
-                "org.apache.harmony.boot.class.path", "."); //$NON-NLS-1$ //$NON-NLS-2$
+        sb.append(System.getProperty(
+                 "org.apache.harmony.boot.class.path", ".")); //$NON-NLS-1$ //$NON-NLS-2$
+        sb.append(File.pathSeparator);
+        sb.append(System.getProperty(
+                 "sun.boot.class.path", ".")); //$NON-NLS-1$ //$NON-NLS-2$
+        sb.append(File.pathSeparator);
+        sb.append("."); //$NON-NLS-1$
+        result[args.length + 1] = sb.toString();
         return result;
     }
 }
