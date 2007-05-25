@@ -129,7 +129,7 @@ Building Java component archives...
         <ant antfile="make/build-java.xml" inheritall="false" target="build">
             <property name="hy.hdk" value="${hy.hdk}"/>
             <property name="hy.jdk" value="${hy.jdk}"/>
-	    <property name="hy.drlvm" value="${hy.drlvm}"/>
+            <property name="hy.drlvm" value="${hy.drlvm}"/>
             <property name="harmony.jdktools" value="${harmony.jdktools}"/>
             <property name="external.resources" value="${external.resources}"/>
         </ant>
@@ -150,7 +150,7 @@ Cleaning Java component archives...
         <ant antfile="make/build-java.xml" inheritall="false" target="clean">
             <property name="hy.hdk" value="${hy.hdk}"/>
             <property name="hy.jdk" value="${hy.jdk}"/>
-	    <property name="hy.drlvm" value="${hy.drlvm}"/>
+            <property name="hy.drlvm" value="${hy.drlvm}"/>
             <property name="harmony.jdktools" value="${harmony.jdktools}"/>
             <property name="external.resources" value="${external.resources}"/>
         </ant>
@@ -179,7 +179,7 @@ Building native libs and executables...
         <ant antfile="make/build-native.xml" inheritall="false" target="build">
             <property name="hy.hdk" value="${hy.hdk}"/>
             <property name="hy.jdk" value="${hy.jdk}"/>
-	    <property name="hy.drlvm" value="${hy.drlvm}"/>
+            <property name="hy.drlvm" value="${hy.drlvm}"/>
             <property name="harmony.jdktools" value="${harmony.jdktools}"/>
             <property name="external.resources" value="${external.resources}"/>
         </ant>
@@ -200,7 +200,7 @@ Cleaning native libs and executables...
         <ant antfile="make/build-native.xml" inheritall="false" target="clean">
             <property name="hy.hdk" value="${hy.hdk}"/>
             <property name="hy.jdk" value="${hy.jdk}"/>
-	    <property name="hy.drlvm" value="${hy.drlvm}"/>
+            <property name="hy.drlvm" value="${hy.drlvm}"/>
             <property name="harmony.jdktools" value="${harmony.jdktools}"/>
             <property name="external.resources" value="${external.resources}"/>
         </ant>
