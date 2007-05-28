@@ -1,0 +1,46 @@
+Eclipse Hello World Application (EHWA) scenario for Eclipse 3.2.1
+
+EHWA description:
+
+1.	Start Eclipse. 
+	"Workspace Launcher" window will popup.
+
+2.	Select Eclipse workspace directory. 
+	Press “OK” button.
+
+3.	Check that "Java - Eclipse SDK" window is appeared.
+	Close "Welcome" page.
+    
+4.  In menu select File -> New -> Project. 
+	The dialog “New Project” will popup.
+
+5.	Select “Java project” and press “Next >” button.
+
+6.	Type “EHWA” in the text field “Project name:” and press “Finish” button.
+
+7.	In menu select File -> New -> Class. 
+	Dialog “New Java Class” will popup.
+
+8.	Type “EHWA” in the text field “Name:”.
+
+9.	Select the checkbox “public static void main(String[] args)” 
+	to create method "main" in the EHWA class.
+	
+10. Press “Finish” button.
+	Check that "EHWA" is created.
+
+11. In the right pane in the method “main” of the class EHWA.EHWA put the line:
+	System.out.println(“Hello, world!”);
+
+12.	Press Ctrl+S to save changes.
+
+13.	In menu select Run -> Run… The dialog “Run” will popup.
+
+14.	Select Java application -> New_application in the left pane.
+
+15.	Ensure that “EHWA” is typed in the “Main” tab in the test field “Project:” 
+	and “EHWA” is typed in the text field “Main class:”.
+	Press “Run” button.
+
+16.	Ensure that the string “Hello, world!” is output in the console and 
+	that status “<terminated> … <time>” is output just above the console.

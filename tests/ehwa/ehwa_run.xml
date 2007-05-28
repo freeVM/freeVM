@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+     
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+-->
+
+<project name="ehwa" default="run" basedir=".">
+	
+	<description>
+		Eclipse 3.2.1 Hello World Application scenario 
+    	for Apache Harmony http://incubator.apache.org/harmony
+    </description>
+	
+	<tstamp>
+		<format property="timestamp" pattern="yyyyMMdd_hhmm" />
+	</tstamp>
+	
+	<condition property="is.windows.x86">
+    	    	<and>
+        	 	<os family="windows"/>
+        		<contains string="${os.arch}" substring="86"/>
+        		<not><contains string="${os.arch}" substring="64"/></not>                                           
+       	</and>
+	</condition>
+
+	<condition property="is.windows.x86_64">
+	    <and>
+	        <os family="windows"/>
+		 	<or>
+	        	<contains string="${os.arch}" substring="86_64"/> 
+		    	<contains string="${os.arch}" substring="amd64"/>
+		 	</or>
+	    </and>                              
+	</condition>
+
+	
+	<condition property="is.linux.x86">
+	    <and>
+	    	<os family="unix"/>
+	        <os name="linux"/>
+            <contains string="${os.arch}" substring="86"/>
+	    	<not><contains string="${os.arch}" substring="64"/></not>
+	    </and>                                 
+	</condition>
+
+	<condition property="is.linux.x86_64">
+	    <and>
+	        <os family="unix"/>
+	        <os name="linux"/>
+		 	<or>
+	        	<contains string="${os.arch}" substring="86_64"/> 
+		    	<contains string="${os.arch}" substring="amd64"/>
+		 	</or>
+	    </and>                              
+	</condition>
+													
+	<condition property="is.linux">
+	    <or>
+	    	<istrue value="${is.linux.x86}"/>
+	      <istrue value="${is.linux.x86_64}"/>
+	    </or>                                 
+	</condition>
+	
+	<condition property="is.windows">
+	    <or>
+	    	<istrue value="${is.windows.x86}"/>
+	      <istrue value="${is.windows.x86_64}"/>
+	    </or>                                 
+	</condition>
+
+	<condition property="platform.supported">
+		<or>
+		    <istrue value="${is.windows}"/>
+		    <istrue value="${is.linux}"/>
+		</or>                                 
+	</condition>
+	
+	<property environment="env"/>
+
+	<condition property="runner" value="AutoIt3.exe">
+		<isset property="is.windows"/>
+	</condition>
+	       
+	<condition property="runner" value="perl">
+		<isset property="is.linux"/>
+	</condition>
+	
+	<condition property="file.ext" value=".exe">
+		<isset property="is.windows"/>
+	</condition>	
+	
+	<condition property="file.ext" value="">
+		<isset property="is.linux"/>
+	</condition>
+	
+	<condition property="jre.options" value="${tested.jre.options}" else="">
+		<and>
+			<isset property="tested.jre.options"/>
+			<length string="${tested.jre.options}" trim="true" length="0" when="greater"/>
+		</and>
+	</condition>
+	
+	<condition property="res.dir" value="${result.dir}/${timestamp}" else="${basedir}/results/${timestamp}">
+		<isset property="result.dir"/>
+	</condition>
+	
+	<condition property="args" 
+		value="ehwa_eclipse_3.2.1.au3 &quot;${eclipse.home}&quot; &quot;${tested.jre}&quot; &quot;${res.dir}&quot; &quot;${jre.options}&quot;">
+		<isset property="is.windows"/>
+	</condition>
+	
+	<condition property="args" 
+		value="./ehwa_eclipse_3.2.1.pl x86 &quot;${eclipse.home}&quot; &quot;${tested.jre}&quot; &quot;${res.dir}&quot; &quot;${jre.options}&quot;">
+		<isset property="is.linux.x86"/>
+	</condition>
+	
+	<condition property="args" 
+		value="./ehwa_eclipse_3.2.1.pl x86_64 &quot;${eclipse.home}&quot; &quot;${tested.jre}&quot; &quot;${res.dir}&quot; &quot;${jre.options}&quot;">
+		<isset property="is.linux.x86_64"/>
+	</condition>
+	
+	<target name="run" description="Run EHWA scenario" if="platform.supported">
+		
+		<echo>--- Run EHWA scenario on the following configuration ---</echo>
+		<echo>TESTED JRE = ${tested.jre}</echo>
+		<echo>TESTED JRE OPTIONS = ${jre.options}</echo>
+		<echo>ECLIPSE HOME = ${eclipse.home}</echo>
+		<echo>---------------------------------------------------------</echo>
+
+		<antcall target="check.autoit"/>
+		<antcall target="check.tested.jre"/>
+		<antcall target="check.eclipse"/>
+		<antcall target="check.eclipse.version"/> 
+		
+		<echo>Cleaning Eclipse configuration ...</echo>
+		<echo>Save a copy of Eclipse configuration to ${eclipse.home}/configuration.backup</echo>
+		<copy todir="${eclipse.home}/configuration.backup" failonerror="false">
+			<fileset dir="${eclipse.home}/configuration"/>
+		</copy>
+		<delete dir="${eclipse.home}/configuration/org.eclipse.osgi"/>
+		<delete dir="${eclipse.home}/configuration/org.eclipse.core.runtime"/>
+		<delete dir="${eclipse.home}/configuration/org.eclipse.update"/>
+		<delete dir="${eclipse.home}/configuration/.settings"/>
+		
+		<echo>Removing Eclipse workspace ...</echo>
+		<delete dir="${basedir}/workspace"/>
+
+		<echo>Creating results directory ...</echo>
+		<mkdir dir="${res.dir}"/> 
+		
+		<echo>Start EHWA scenario</echo>
+		<echo>Please, see ${res.dir}/EHWA.log for details</echo>
+		<exec executable="${runner}" dir="${basedir}" resultproperty="ehwa.exit.code">
+		    <arg line="${args}"/>
+		</exec>
+			
+		<condition property="ehwa.passed">
+			<equals arg1="${ehwa.exit.code}" arg2="0"/>
+		</condition>
+		
+		<loadfile property="ehwa.log" srcFile="${res.dir}/EHWA.log"/>
+		<loadfile property="eclipse.log" srcFile="${res.dir}/eclipse.log" failonerror="false"/>
+		
+		<condition property="eclipse.log.message" value="
+${line.separator}======================= eclipse.log =======================
+${line.separator}${eclipse.log}" else="">
+			<isset property="eclipse.log"/>
+		</condition>
+		
+		<property name="fail.message" value="
+${line.separator}========================== EHWA.log =======================
+${line.separator}${ehwa.log}
+${eclipse.log.message}
+${line.separator}==========================================================="/>
+		
+		<condition property="ehwa.passed">
+			<equals arg1="${ehwa.exit.code}" arg2="0"/>
+		</condition>
+			
+		<antcall target="print.fail.message"/>
+		<fail message="EHWA FAILED!" unless="ehwa.passed"/>
+		<echo>EHWA PASSED!</echo>
+	</target>
+		
+	<target name="print.fail.message" unless="ehwa.passed">
+		<echo message="${line.separator}${fail.message}${line.separator}"/>
+	</target>
+	
+	<target name="check.tested.jre" description="Checks if tested.jre is correct">
+		<condition property="no.java">
+			<not><available file="${tested.jre}/bin/java${file.ext}"/></not>
+		</condition>
+		<fail message="ERROR! Tested JRE home is incorrect.${line.separator}
+Please, use -Dtested.jre=&lt;JRE UNDER TEST&gt;.
+${line.separator}EHWA FAILED!" if="no.java"/>
+	</target>
+	
+	<target name="check.eclipse" description="Checks if eclipse.home is correct">
+		<condition property="eclipse" value="eclipse.exe">
+			<isset property="is.windows"/>
+		</condition>	
+		<condition property="eclipse" value="eclipse">
+			<isset property="is.linux"/>
+		</condition>
+		<condition property="no.eclipse">
+			<not><available file="${eclipse.home}/${eclipse}"/></not>
+		</condition>
+		<fail message="ERROR! Eclipse home is incorrect.
+${line.separator}Please, use -Declipse.home=&lt;ECLIPSE_HOME&gt; or set eclipse.home variable.
+${line.separator}EHWA FAILED!" if="no.eclipse"/>
+	</target>
+	
+	<target name="check.eclipse.version" description="Checks if eclipse.home points to Eclipse 3.2.1">
+		<fileset id="found.plugin" dir="${eclipse.home}/plugins" includes="org.eclipse.jdt.core_3.2.1*.jar"/>
+		<property name="plugin-3.2.1" refid="found.plugin"/>
+		<condition property="wrong.eclipse.version">
+			<length string="${plugin-3.2.1}" when="less" length="1"/>
+		</condition>
+		<fail message="ERROR! eclipse.home doesn't point to Ecipse 3.2.1.${line.separator}EHWA FAILED!" if="wrong.eclipse.version"/>
+	</target>
+	
+	<target name="check.autoit" if="is.windows" description="Checks if AutoIt3 is installed for EHWA run on Windows">
+		<available file="AutoIt3.exe" filepath="${env.Path}" property="autoit"/>
+		<fail message="ERROR! AutoIt3 is not installed or it is not in the Path.${line.separator}EHWA FAILED!" unless="autoit"/>
+	</target>
+	
+</project>
+
