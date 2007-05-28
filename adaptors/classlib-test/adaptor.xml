@@ -52,6 +52,8 @@
                             value="${classlib-test.tested.jre}"/>
             <sysproperty key="tested.jre.options"
                             value="${jre.options}"/>
+            <sysproperty key="exclude.interm"
+                            value="true"/>
         </exec-ant>
 
         <!-- define the resulting files -->
