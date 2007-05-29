@@ -117,7 +117,7 @@
 
     <target name="run-cc" description="run-cc"
             depends="init-framework, init-suites, setup-suites, check-status,
-                        prepare-cc, create-cc-configuration">
+                        create-cc-configuration">
         <java jar="${ext.cc.location}/lib/cruisecontrol-launcher.jar" dir="${cc.work.dir}" fork="true">
             <classpath>
                 <fileset dir="${ext.cc.location}/lib">

@@ -26,7 +26,7 @@
                         Framework Retated Functionality
     -->
 
-    <target name="prepare-cc">
+    <target name="-prepare-cc">
         <sequential>
         <if>
             <istrue value="${framework.parameters.cc.doclean}"/>
@@ -42,7 +42,7 @@
         </sequential>
     </target>
     
-    <target name="create-cc-configuration" depends="init-framework, init-suites">
+    <target name="create-cc-configuration" depends="-prepare-cc, init-framework, init-suites">
         <!-- Create Main CC Configuration File -->
         <delete file="${cc.config.file}"/>
         <copy file="${cc.config.template}" 
