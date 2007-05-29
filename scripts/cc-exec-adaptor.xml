@@ -24,20 +24,78 @@
     <property file="${framework.properties.file}"/>
     <import file="${framework.implementation.file}"/>
 
+    <property name="suite.adaptor.dir" 
+              value="${root.dir}/adaptors/${suite.name}"/>
+    
+    <!-- load test suites execution statuses -->
+    <property file="${cc.execution.status.file}"/>
+
+    <property name="suite.adaptor.dir" 
+              value="${root.dir}/adaptors/${suite.name}"/>
+    
     <!-- Called from CC to launch the test suite named ${test.suite} -->
     <target name="cc-run" depends="define-ant-contrib">
-        <property name="suite.adaptor.dir" value="${root.dir}/adaptors/${suite.name}"/>
         <log message="Test Suite '${suite.name}' execution. Repository updated: ${repository.updated}"/>
-        <ant dir="${root.dir}/adaptors/${suite.name}" 
-             antfile="adaptor.xml" 
-             target="run"
-             inheritAll="true"/>
+
+        <!-- clear previous status -->
+        <replaceregexp file="${cc.execution.status.file}"
+                       match="^${suite.name}\.parameters\..*\n"
+                       replace=""
+                       byline="true"/>
+
+        <check-superior-failures
+            suite="${suite.name}"
+            check-target="run"
+            property="failed.superiors"
+        />
+        <if>
+            <isset property="failed.superiors"/>
+        <then>
+            <!-- write 'skipped' status -->
+            <propertyfile file="${cc.execution.status.file}"
+                          comment="${cc.execution.status.file.header}.">
+                <entry key="${suite.name}.parameters.run.skipped" value="true"/>
+            </propertyfile>
+            <echo level="warning">
+Test Suite '${suite.name}' was not executed (SKIPPED) 
+as the following preceding suites on which '${suite.name}' depends upon
+failed to run or have been skipped:
+    ${failed.superiors}
+</echo>
+            <fail message="Execution SKIPPED (failed superiors: ${failed.superiors})."/>
+
+        </then>
+        </if>
+
+        <trycatch property="exception" reference="execution.exception.ref">
+        <try>
+            <ant dir="${root.dir}/adaptors/${suite.name}" 
+                 antfile="adaptor.xml" 
+                 target="run"
+                 inheritAll="true"/>
+        </try>
+        <catch>
+            <echo>
+Test Suite '${suite.name}' Execution FAILED with the following exception:
+${exception}
+</echo>
+            <!-- write 'failed' status -->
+            <propertyfile file="${cc.execution.status.file}"
+                          comment="${cc.execution.status.file.header}.">
+                <entry key="${suite.name}.parameters.run.failed" value="true"/>
+            </propertyfile>
+        </catch>
+        </trycatch>
+        <fail message="${exception}" if="exception"/>
     </target>
 
     <!-- Called from CC to launch the custom ant publisher for test suite -->
+    <!-- Does nothing if the execution has been skipped (due to failures
+         of preceding suites) -->
     <target name="cc-publish-custom" 
             depends="define-ant-contrib"
-            if="framework.parameters.usemail">
+            if="framework.parameters.usemail" 
+            unless="${suite.name}.parameters.run.skipped">
         <dirname property="publisher.dir" file="${publisher.location}"/>
         <log message="Calling Custom Publisher ${publisher.location} at ${publisher.dir} for ${suite.name}"/>
         <ant dir="${publisher.dir}" 
@@ -49,7 +107,8 @@
     <!-- Called from CC to launch the default ant publisher for test suite -->
     <target name="cc-publish" 
             depends="define-ant-contrib"
-            if="framework.parameters.usemail">
+            if="framework.parameters.usemail"
+            unless="${suite.name}.parameters.run.skipped">
 
         <!-- set up mail message file (if it was defined by test suite) -->
         <get-parameter-value

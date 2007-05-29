@@ -454,17 +454,11 @@ ERROR: Some of the Required Parameters for selected Test Suites:
             <echo>===========================================</echo>
             <echo>Setup of '@{suite}' Test Suite..</echo>
             <!-- check for the failures of the superior suites -->
-            <for list="${@{suite}.parameters.depends}" param="superior">
-            <sequential>
-                <log message="Check for setup failure of @{superior} = ${@{superior}.parameters.run.failed}"/>
-                <condition property="@{suite}.has.failed.superior">
-                    <or>
-                        <isset property="@{superior}.parameters.setup.failed"/>
-                        <isset property="@{superior}.parameters.setup.skipped"/>
-                    </or>
-                </condition>
-            </sequential>
-            </for>
+            <check-superior-failures
+                suite="@{suite}"
+                check-target="setup"
+                property="@{suite}.has.failed.superior"
+            />
             <if>
                 <isset property="@{suite}.has.failed.superior"/>
             <then>
@@ -506,17 +500,11 @@ WARNING: Suite '@{suite}' won't be launched because its setup failed.
             </then>
             <else>
                 <!-- check for the failures of the superior suites -->
-                <for list="${@{suite}.parameters.depends}" param="superior">
-                <sequential>
-                    <log message="Check for failure of @{superior} = ${@{superior}.parameters.run.failed}"/>
-                    <condition property="@{suite}.has.failed.superior">
-                        <or>
-                            <isset property="@{superior}.parameters.run.failed"/>
-                            <isset property="@{superior}.parameters.run.skipped"/>
-                        </or>
-                    </condition>
-                </sequential>
-                </for>
+                <check-superior-failures
+                    suite="@{suite}"
+                    check-target="run"
+                    property="@{suite}.has.failed.superior"
+                />
                 <if>
                     <isset property="@{suite}.has.failed.superior"/>
                 <then>
@@ -818,6 +806,35 @@ ERROR: Execution of Test Suite '@{suite}' FAILED.
         <fail message="There are Test Suites failures" if="has.failure"/>
     </target>
 
+    <!-- check for the failures of the superior suites and place their
+         names (if any) into specified property -->
+    <macrodef name="check-superior-failures">
+        <attribute name="suite"/>
+        <attribute name="check-target"/>
+        <attribute name="property" default="@{suite}.has.failed.superior"/>
+        <sequential>
+            <var name="@{property}" unset="true"/>
+
+            <for list="${@{suite}.parameters.depends}" param="superior">
+            <sequential>
+                <log message="Check for '@{check-target}' failure of @{superior} = ${@{superior}.parameters.@{check-target}.failed}"/>
+                <if>
+                    <or>
+                        <istrue value="${@{superior}.parameters.@{check-target}.failed}"/>
+                        <istrue value="${@{superior}.parameters.@{check-target}.skipped}"/>
+                    </or>
+                <then>
+                    <!-- empty value as initial -->
+                    <property name="@{property}" value=""/>
+                    <var name="@{property}" value="${@{property}}@{superior} "/>
+                </then>
+                </if>
+            </sequential>
+            </for>
+            <log message="Result: @{property} = '${@{property}}'"/>
+        </sequential>
+    </macrodef>
+
     <!-- removes svn locks leaved after unsuccessful checkout or update-->
     <macrodef name="svn-cleanup">
         <attribute name="trunk"/>
@@ -919,7 +936,7 @@ ERROR: Execution of Test Suite '@{suite}' FAILED.
             <if>
                 <istrue value="${framework.parameters.optional.dolog}"/>
             <then>
-                <echo level="debug">[${ant.project.name}]: @{message}</echo>
+                <echo level="warning">[${ant.project.name}]: @{message}</echo>
             </then>
             </if>
         </sequential>

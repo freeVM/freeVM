@@ -36,8 +36,9 @@
             </delete>
         </then>
         </if>
-        <mkdir dir="${build.dir}/cc"/>
+        <mkdir dir="${cc.work.dir}"/>
         <mkdir dir="${cc.log.dir}"/>
+        <touch file="${cc.execution.status.file}"/>
         </sequential>
     </target>
     
