@@ -6,8 +6,9 @@
     
     <!-- Tag resolved to the name of 
          the test suite this config is related to. -->
-    <project name="@BT.PROJECT@" buildafterfailed="false">
-
+    <project name="@BT.PROJECT@" 
+             buildafterfailed="${framework.parameters.cc.buildafterfailed}" 
+             requireModification="@BT.REQMODS@">
         <listeners>
             <!-- Resolved to <currentbuildstatuslistener file="${logs.dir}/...">
                  Should be here if there are any suites depending
@@ -25,7 +26,10 @@
         </bootstrappers>
 
         <modificationset quietperiod="${framework.parameters.cc.quietperiod}">
-            <!-- Tag Resolution Rules: 
+            <!-- veto tag MUST be present as it controls the test suite 
+                 execution order -->
+            <!-- @BT.VETO@ -->
+            <!-- tag is resolved to modification sets defined for test suite:
                 - in case of defined SVN (@{suite.name}.parameters.cc.usesvn),
                   resolved to
                     <svn LocalWorkingCopy="${path.to.local.svn.repository}"/>
@@ -34,12 +38,12 @@
                     <filesystem folder="${path.to.trigger.file}"
                 - for any dependency it is resolved to
                     <buildstatus logdir='${path.to.log.for.some.suite}'/>
-                  if the dependency uses svn, it is aslo resolved to
+                - if the dependency uses svn, it is aslo resolved to
                     <svn localWorkingCopy=../>
                 - in any case it is additionally resolved to
                     <forceonly/>
             -->
-            <!-- @BT.MODIFICATIONSET@ -->
+<!-- @BT.MODIFICATIONSET@ -->
         </modificationset>
 
         <schedule interval="${framework.parameters.cc.interval}">

@@ -58,6 +58,15 @@
                           value="cc-@{suite.name}-project.xml"/>
                 <property name="@{suite.name}.parameters.cc.file.location"
                           location="${cc.work.dir}/${@{suite.name}.parameters.cc.filename}"/>
+                <!-- check if the suite is independent -->
+                <condition property="@{suite.name}.independent">
+                    <or>
+                        <not><isset property="@{suite.name}.parameters.depends"/></not>
+                        <length string="${@{suite.name}.parameters.depends}" 
+                                when="equal" length="0"/>
+                    </or>
+                </condition>
+
                 <delete file="${@{suite.name}.parameters.cc.file.location}"/>
 
                 <!-- Create the property files for inclusion into the 
@@ -98,35 +107,71 @@
                 </else>
                 </if>
 
-                <!-- Do Tag Substitutions -->
+                <!-- ======================================================= -->
+                <!--    Do CC-Config Template Filling (Tag Substitutions)    -->
+                <!-- ======================================================= -->
+
+                <!-- do not require modifications in case of scheduled execution
+                     and do require in case of execution triggered by 
+                     modifications (of svn repository, successful execution of 
+                     superior test suite, local trigger files, etc) -->
+                <condition property="@{suite.name}.require.modifications" 
+                           value="false"
+                           else="true">
+                    <and>
+                        <isset property="framework.parameters.schedule.time"/>
+                        <isset property="@{suite.name}.independent"/>
+                    </and>
+                </condition>
+                <replace file="${@{suite.name}.parameters.cc.file.location}">
+                    <replacefilter token="@BT.REQMODS@" 
+                               value="${@{suite.name}.require.modifications}"/>
+                </replace>
+
                 <!-- insert 'MUSTHAVE' project name and call to adaptor -->
+                <!-- if it is scheduled run and it is independent test suite,
+                     retrieve the time and define it in ant caller -->
+                <var name="tmp.build.time" unset="true"/>
+                <condition property="tmp.build.time" 
+                        value="time='${framework.parameters.schedule.time}' "
+                        else="">
+                    <and>
+                        <isset property="framework.parameters.schedule.time"/>
+                        <isset property="@{suite.name}.independent"/>
+                    </and>
+                </condition>
+                <var name="tmp.build.day" unset="true"/>
+                <condition property="tmp.build.day" 
+                        value="day='${framework.parameters.schedule.day}' "
+                        else="">
+                    <and>
+                        <isset property="framework.parameters.schedule.day"/>
+                        <isset property="@{suite.name}.independent"/>
+                    </and>
+                </condition>
+
                 <insert-adaptorcall
                     suite="@{suite.name}"
                     ccfile="${@{suite.name}.parameters.cc.file.location}"
                     ccpropsfile="${tmp.cc-props-file}"
                     antpropsfile="${tmp.ant-props-file}"
-                    />
-                <!-- insert svn using -->
-                <if>
-                    <isset property="@{suite.name}.parameters.cc.usesvn"/>
-                <then>
-                    <!-- use svn to check for changes -->
-                    <insert-svnuse
-                        localWorkingCopy="${@{suite.name}.parameters.cc.usesvn}"
-                        ccfile="${@{suite.name}.parameters.cc.file.location}"/>
-                </then>
-                </if>
-                <!-- insert trigger file -->
-                <if>
-                    <isset property="@{suite.name}.parameters.cc.trigger"/>
-                <then>
-                    <!-- use svn to check for changes -->
-                    <insert-trigger
-                        triggerfile="${@{suite.name}.parameters.cc.trigger}"
-                        ccfile="${@{suite.name}.parameters.cc.file.location}"/>
-                </then>
-                </if>
+                    time="${tmp.build.day}${tmp.build.time}"
+                />
+                
+                <!-- set up veto on building dependent test suites before 
+                     superiour ones -->
+                <insert-veto
+                    suite="@{suite.name}"
+                    ccfile="${@{suite.name}.parameters.cc.file.location}"
+                />
+                
+                <insert-modification-sets
+                    suite="@{suite.name}"
+                    ccfile="${@{suite.name}.parameters.cc.file.location}"
+                />
+
                 <!-- insert custom publisher -->
+
                 <!-- do status notification by default -->
                 <property name="@{suite.name}.parameters.cc.publish" value="true"/>
                 <if>
@@ -154,7 +199,7 @@
                     </if>
                 </then>
                 </if>
-                <!-- insert the results directory publisher -->
+                <!-- insert test results to be merged into log -->
                 <if>
                     <isset property="@{suite.name}.parameters.cc.results"/>
                 <then>
@@ -163,15 +208,8 @@
                         ccfile="${@{suite.name}.parameters.cc.file.location}"/>
                 </then>
                 </if>
-                <!-- insert dependencies on other test suites -->
-                <!-- if>
-                    <isset property="@{suite.name}.parameters.depends"/>
-                <then -->
-                <insert-dependencies
-                    suite="@{suite.name}"
-                    ccfile="${@{suite.name}.parameters.cc.file.location}"/>
-                <!-- /then>
-                </if -->
+
+                <!-- finalize the cc config file fro this suite -->
                 <insert-finish
                         ccfile="${@{suite.name}.parameters.cc.file.location}"/>
 
@@ -240,12 +278,13 @@
         <attribute name="ccfile"/>
         <attribute name="ccpropsfile"/>
         <attribute name="antpropsfile"/>
+        <attribute name="time"/>
         <sequential>
             <replace file="@{ccfile}">
                 <!-- Define the name of the project as name of a current 
                      test suite -->
                 <replacefilter 
-                    token="@BT.PROJECT@@" 
+                    token="@BT.PROJECT@"
                     value="@{suite}"/>
                 <!-- Include the parameters known by test suite -->
                 <replacefilter 
@@ -260,9 +299,9 @@
                     token="&lt;!-- @BT.ADAPTORCALL@ --&gt;" 
                     value="&lt;ant anthome='${ant.home}'@NL@
                 antWorkingDir='${root.dir}'@NL@
-                timeout='${cc.project.execution.timeout}'@NL@
+                timeout='${framework.parameters.cc.timeout}'@NL@
                 buildfile='${root.dir}/scripts/cc-exec-adaptor.xml'@NL@
-                target='cc-run'&gt;@NL@
+                @{time}target='cc-run'&gt;@NL@
                &lt;property name='suite.name' value='@{suite}'/&gt;@NL@
                &lt;property name='properties.dump.file'@NL@
                          value='@{antpropsfile}'/&gt;@NL@
@@ -271,19 +310,107 @@
         </sequential>
     </macrodef>
 
-    <macrodef name="insert-svnuse">
-        <attribute name="localWorkingCopy"/>
+    <macrodef name="insert-veto">
+        <attribute name="suite"/>
         <attribute name="ccfile"/>
         <sequential>
+            <for list="${@{suite}.parameters.depends}" param="dependency">
+            <sequential>
+                <if>
+                    <isset property="@{dependency}.parameters.cc.usesvn"/>
+                <then>
+                    <!-- veto on execution before superior with svn 
+                         modifications -->
+                    <replace file="@{ccfile}">
+                        <replacefilter 
+                            token="&lt;!-- @BT.VETO@ --&gt;" 
+                            value="&lt;!-- veto on execution before superior with svn modifications --&gt;@NL@
+           &lt;veto&gt;@NL@
+               &lt;triggers&gt;@NL@
+                   &lt;svn localWorkingCopy='${@{dependency}.parameters.cc.usesvn}'/&gt;@NL@
+               &lt;/triggers&gt;@NL@
+               &lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@NL@
+           &lt;/veto&gt;@NL@
+           &lt;!-- @BT.VETO@ --&gt;"
+                        />
+                    </replace>
+                </then>
+                </if>
+                <if>
+                    <isset property="framework.parameters.schedule.time"/>
+                <then>
+                    <!-- veto on scheduled execution before superior one -->
+                    <replace file="@{ccfile}">
+                        <replacefilter 
+                            token="&lt;!-- @BT.VETO@ --&gt;" 
+                            value="&lt;!-- veto on execution before scheduled superior --&gt;@NL@
+           &lt;veto&gt;@NL@
+               &lt;triggers&gt;@NL@
+                   &lt;buildstatus logdir='${cc.log.dir}/@{suite}'/&gt;@NL@
+               &lt;/triggers&gt;@NL@
+               &lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@NL@
+           &lt;/veto&gt;@NL@
+           &lt;!-- @BT.VETO@ --&gt;"
+                    />
+                    </replace>
+                </then>
+                </if>
+            </sequential>
+            </for>
             <replace file="@{ccfile}">
                 <replacefilter 
-                    token="&lt;!-- @BT.BOOTSTRAPPER@ --&gt;" 
-                    value="&lt;svnbootstrapper localWorkingCopy='@{localWorkingCopy}'/&gt;"
+                    token="&lt;!-- @BT.VETO@ --&gt;" 
+                    value=""/>
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <!-- insert modification sets defined for test suite 
+         see: test-insert-modification-sets for unit test -->
+    <macrodef name="insert-modification-sets">
+        <attribute name="suite"/>
+        <attribute name="ccfile"/>
+        <sequential>
+            <var name="tmp.tree" unset="true"/>
+            <build-modification-tree
+                suite="@{suite}"
+                property="tmp.tree"
+            />
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;"
+                    value="${tmp.tree}
+           &lt;!-- @BT.MODIFICATIONSET@ --&gt;"
                 />
+            </replace>
+            <if>
+                <isset property="@{suite}.parameters.cc.usesvn"/>
+            <then>
+                <replace file="@{ccfile}">
+                    <replacefilter 
+                        token="&lt;!-- @BT.BOOTSTRAPPER@ --&gt;" 
+                        value="&lt;svnbootstrapper localWorkingCopy='${@{suite}.parameters.cc.usesvn}'/&gt;"
+                    />
+                </replace>
+            </then>
+            </if>
+            <if>
+                <and>
+                    <isset property="@{suite}.parameters.cc.trigger"/>
+                    <!-- no need in triggers in scheduled execution mode -->
+                    <not><isset property="framework.parameters.schedule.time"/></not>
+                </and>
+            <then>
+                <insert-trigger
+                    triggerfile="${@{suite}.parameters.cc.trigger}"
+                    ccfile="@{ccfile}"
+                />
+            </then>
+            </if>
+            <replace file="@{ccfile}">
                 <replacefilter 
                     token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;" 
-                    value="&lt;svn localWorkingCopy='@{localWorkingCopy}' property='repository.updated'/&gt;@NL@
-           &lt;!-- @BT.MODIFICATIONSET@ --&gt;"
+                    value="&lt;forceonly/&gt;"
                 />
             </replace>
         </sequential>
@@ -296,6 +423,9 @@
             <if>
                 <not><available file="@{triggerfile}"/></not>
             <then>
+                <var name="tmp.dir.name" unset="true"/>
+                <dirname property="tmp.dir.name" file="@{triggerfile}"/>
+                <mkdir dir="${tmp.dir.name}"/>
                 <touch file="@{triggerfile}"/>
             </then>
             </if>
@@ -309,117 +439,83 @@
         </sequential>
     </macrodef>
 
-    <!-- process dependencies and insert corresponding CC configuration -->
-    <macrodef name="insert-dependencies">
+    <!-- goes though the dependencies and looks for 
+         actual svn modification sets -->
+    <macrodef name="build-modification-tree">
         <attribute name="suite"/>
-        <attribute name="ccfile"/>
+        <attribute name="property"/>
+        <attribute name="visited" default=",@{suite}"/>
+        <attribute name="indent" default="            "/>
+        <attribute name="top" default="true"/>
+        <attribute name="nl" default="${line.separator}"/>
         <sequential>
-            <do-insert-direct-dependencies
-                suite="@{suite}"
-                ccfile="${@{suite}.parameters.cc.file.location}"/>
-        </sequential>
-    </macrodef>
 
-    <!-- insert dependencies on succesfull status of superiour suites -->
-    <macrodef name="do-insert-direct-dependencies">
-        <attribute name="suite"/>
-        <attribute name="ccfile"/>
-        <sequential>
-            <if>
-                <isset property="@{suite}.parameters.depends"/>
-            <then>
-                <for list="${@{suite}.parameters.depends}" param="dependency">
-                <sequential>
-                    <if>
-                        <isset property="@{dependency}.parameters.cc.usesvn"/>
-                    <then>
-                        <!-- if dependency uses svn, insert its modification set 
-                             (for better reporting) -->
-                        <replace file="@{ccfile}">
-                            <replacefilter 
-                                token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;"
-                                value="&lt;!-- @BT.SVN.MODIFICATIONSET@ --&gt;@NL@
-           &lt;!-- @BT.MODIFICATIONSET@ --&gt;"
-                            />
-                        </replace>
-                        <!-- to remember processed suites -->
-                        <var name="tmp.processed.suites" value=",@{suite},"/>
-                        <do-insert-svnmod-dependencies
-                            suite="@{dependency}"
-                            ccfile="${@{suite}.parameters.cc.file.location}"/>
-                        <var name="tmp.processed.suites" unset="true"/>
-                        <replace file="@{ccfile}">
-                            <replacefilter 
-                                token="&lt;!-- @BT.SVN.MODIFICATIONSET@ --&gt;"
-                                value="&lt;!-- end of svn modifications set possible in case of rebuilding of @{dependency} --&gt;"
-                            />
-                        </replace>
-                    </then>
-                    <else>
-                        <replace file="@{ccfile}">
-                            <replacefilter 
-                                token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;"
-                                value="&lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@NL@
-           &lt;!-- @BT.MODIFICATIONSET@ --&gt;"
-                            />
-                        </replace>
-                    </else>
-                    </if>
-                </sequential>
-                </for>
-            </then>
-            </if>
-        </sequential>
-    </macrodef>
-
-    <!-- insert the modification sets of superiour suites using SVN -->
-    <macrodef name="do-insert-svnmod-dependencies">
-        <attribute name="suite"/>
-        <attribute name="ontop" default="true"/>
-        <attribute name="indent" default="           "/>
-        <attribute name="ccfile"/>
-        <sequential>
-            <!-- insert SVN modifications processing for @{suite}-->
+            <!-- empty resulting value for empty modset -->
+            <condition property="@{property}" value="">
+                <istrue value="@{top}"/>
+            </condition>
             <if>
                 <isset property="@{suite}.parameters.cc.usesvn"/>
             <then>
-                <replace file="@{ccfile}">
-                    <replacefilter 
-                        token="&lt;!-- @BT.SVN.MODIFICATIONSET@ --&gt;"
-                        value="&lt;compound includeTriggerChanges='@{ontop}'&gt;@NL@
-@{indent}    &lt;triggers&gt;@NL@
-@{indent}        &lt;buildstatus logdir='${cc.log.dir}/@{suite}'/&gt;@NL@
-@{indent}    &lt;/triggers&gt;@NL@
-@{indent}    &lt;targets&gt;@NL@
-@{indent}        &lt;svn localWorkingCopy='${@{suite}.parameters.cc.usesvn}'/&gt;@NL@
-@{indent}        &lt;!-- @BT.SVN.MODIFICATIONSET@ --&gt;@NL@
-@{indent}    &lt;/targets&gt;@NL@
-@{indent}&lt;/compound&gt;"
-                    />
-                </replace>
+                <!-- echo message=" -::: @{suite}-svn"/ -->
+                <property name="@{property}" value=""/>
+                <var name="@{property}" 
+                     value="${@{property}}@{indent}&lt;svn localWorkingCopy"/>
+                <var name="@{property}" 
+                     value="${@{property}}='${@{suite}.parameters.cc.usesvn}'"/>
+                <if>
+                    <istrue value="@{top}"/>
+                <then>
+                    <var name="@{property}" 
+                         value="${@{property}} property='repository.updated'"/>
+                </then>
+                </if>
+                <var name="@{property}" 
+                     value="${@{property}}/&gt;@{nl}"/>
             </then>
             </if>
-            <!-- remember processed suite -->
-            <var name="tmp.processed.suites" value="${tmp.processed.suites}@{suite},"/>
-
-            <!-- insert SVN modifications processing for 
-                 @{suite}'s superior suites -->
             <if>
                 <isset property="@{suite}.parameters.depends"/>
             <then>
                 <for list="${@{suite}.parameters.depends}" param="dependency">
                 <sequential>
                     <if>
-                        <not><contains string="${tmp.processed.suites}" 
+                        <not><contains string="@{visited}" 
                                        substring=",@{dependency},"/></not>
                     <then>
-                        <!-- do recursion -->
-                        <do-insert-svnmod-dependencies
+                        <build-modification-tree
                             suite="@{dependency}"
-                            ontop="false"
-                            indent="@{indent}        "
-                            ccfile="@{ccfile}"/>
+                            visited="@{visited},@{dependency},"
+                            top="false"
+                            property="tmp.@{property}.@{dependency}"
+                            indent="@{indent}    "
+                        />
                     </then>
+                    </if>
+                    <if>
+                        <isset property="tmp.@{property}.@{dependency}"/>
+                    <then>
+                        <!-- there were svn modsets, so build <compound> structure -->
+                        <property name="@{property}" value=""/>
+                        <var name="@{property}" 
+value="${@{property}}@{indent}&lt;compound includeTriggerChanges='@{top}'&gt;@{nl}
+@{indent}&lt;triggers&gt;@{nl}
+@{indent}    &lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@{nl}
+@{indent}&lt;/triggers&gt;@{nl}
+@{indent}&lt;targets&gt;@{nl}
+${tmp.@{property}.@{dependency}}
+@{indent}&lt;/targets&gt;@{nl}@{indent}&lt;/compound&gt;@{nl}"/>
+                    </then>
+                    <else>
+                        <if>
+                            <istrue value="@{top}"/>
+                        <then>
+                            <!-- insert just the build status listener -->
+                            <var name="@{property}" 
+                                 value="${@{property}}@{indent}&lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@{nl}"/>
+                        </then>
+                        </if>
+                    </else>
                     </if>
                 </sequential>
                 </for>
@@ -440,7 +536,7 @@
                 <!-- Define the name of the project as name of a current 
                      test suite -->
                 <replacefilter 
-                    token="@BT.PROJECT@@" 
+                    token="@BT.PROJECT@" 
                     value="@{suite}"/>
                 <!-- Include the parameters known by test suite -->
                 <replacefilter 
@@ -455,7 +551,7 @@
                     token="&lt;!-- @BT.PUBLISHER@ --&gt;" 
                     value="&lt;antpublisher@NL@
                 anthome='${ant.home}'@NL@
-                timeout='${cc.project.execution.timeout}'@NL@
+                timeout='${framework.parameters.cc.timeout}'@NL@
                 antWorkingDir='${root.dir}'@NL@
                 buildfile='${root.dir}/scripts/cc-exec-adaptor.xml'@NL@
                 target='@{target}'&gt;@NL@
@@ -484,12 +580,6 @@
     <macrodef name="insert-finish">
         <attribute name="ccfile"/>
         <sequential>
-            <replace file="@{ccfile}">
-                <replacefilter 
-                    token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;" 
-                    value="&lt;forceonly/&gt;"
-                />
-            </replace>
             <replace file="@{ccfile}">
                 <replacetoken>@NL@</replacetoken>
                 <replacevalue><![CDATA[

@@ -22,7 +22,18 @@
         <doclean 
             value="false" 
             description="Do clean working CC directory before execution?"/>
+        <timeout
+            value="5000000"
+            description="Time to wait for finish of Test Suite execution."/>
+        <buildafterfailed
+            value="false"
+            description="Do recurring execution after failure?"/>
     </cc>
+
+    <schedule>
+        <time description="Schedules the framework to launch test run in particular time (in HHMM format)."/>
+        <day description="Schedules the framework to launch test run in particular week day (english anycase)."/>
+    </schedule>
 
     <usemail 
         description="Specify the SMTP server to be used for E-Mail Notifications">
