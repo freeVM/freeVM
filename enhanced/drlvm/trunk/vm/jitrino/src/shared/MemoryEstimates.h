@@ -15,31 +15,19 @@
  *  limitations under the License.
  */
 
-#ifndef _CG_SUPPORT_H_
-#define _CG_SUPPORT_H_
+/**
+ * @author Intel, Mikhail Y. Fursov
+ * @version $Revision: 1.8.24.4 $
+ *
+ */
 
-#include "open/types.h"
-#include "MemoryManager.h"
-#include "VMInterface.h"
-
-#define ILLEGAL_BC_MAPPING_VALUE 0xFFFF
-
-#define ESTIMATED_LIR_SIZE_PER_HIR 0x3
-#define ESTIMATED_HIR_SIZE_PER_BYTECODE 0x8
+#ifndef _MEMORYESTIMATES_H_
+#define _MEMORYESTIMATES_H_
 
 namespace Jitrino {
 
-extern const char* bcOffset2LIRHandlerName;
-extern const char* bcOffset2HIRHandlerName;
+#define ESTIMATED_TRANSLATOR_MEMORY_PER_BYTECODE 128
 
-void initHandleMap(MemoryManager& mm, MethodDesc* meth);
+} //namespace Jitrino 
 
-void addContainerHandler(void* contHandler, const char* name, MethodDesc* meth);
-void* getContainerHandler(const char* name, MethodDesc* meth);
-
-size_t getNumBCMapEntries(void* vectorHandler);
-uint16 getBCMappingEntry(void* mappingHandler, uint32 key);
-void setBCMappingEntry(void* mappingHandler, uint32 key, uint16 bcOffset);
-}
-
-#endif
+#endif // _MEMORYESTIMATES_H_
