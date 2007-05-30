@@ -1,0 +1,146 @@
+ <!--
+     Licensed to the Apache Software Foundation (ASF) under one or more
+     contributor license agreements.  See the NOTICE file distributed with
+     this work for additional information regarding copyright ownership.
+     The ASF licenses this file to You under the Apache License, Version 2.0
+     (the "License"); you may not use this file except in compliance with
+     the License.  You may obtain a copy of the License at
+      
+          http://www.apache.org/licenses/LICENSE-2.0
+      
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+  -->
+
+<wsdl:definitions 
+    xmlns:axis2="http://harmony.apache.org/test/lab_stat_app/" 
+    xmlns:ns="http://harmony.apache.org/test/lab_stat_app/xsd" 
+    targetNamespace="http://harmony.apache.org/test/lab_stat_app/" 
+    xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" 
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+<wsdl:types>
+<xs:schema 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://harmony.apache.org/test/lab_stat_app/xsd"
+    attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:complexType name="statData">
+      <xs:sequence>
+        <xs:element name="CPU_load" nillable="true" type="xs:float" />
+        <xs:element name="RAM_load" nillable="true" type="xs:float" />
+        <xs:element name="active_users" nillable="true" type="xs:int" />
+      </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="statItem">
+      <xs:sequence>
+        <xs:element name="date" nillable="true" type="xs:date" />
+        <xs:element name="stat" type="ns:statData" />
+      </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="statId">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="server_name" nillable="false" type="xs:string" />
+        <xs:element name="date" nillable="true" type="xs:date" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="statResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="statData" nillable="true" type="ns:statData" />
+      </xs:sequence>
+      <xs:attribute name="empty" type="xs:boolean" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="serverStat">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="server_name" nillable="false" type="xs:string" />
+        <xs:element name="statItem" type="ns:statItem"
+        		minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+</wsdl:types>
+
+<wsdl:message name="getStatMessage">
+  <wsdl:part name="part1" element="ns:statId" />
+</wsdl:message>
+<wsdl:message name="getStatResponseMessage">
+  <wsdl:part name="part1" element="ns:statResponse" />
+</wsdl:message>
+<wsdl:message name="updateMessage">
+  <wsdl:part name="part1" element="ns:serverStat" />
+</wsdl:message>
+
+<wsdl:portType name="LabStatServicePortType">
+  <wsdl:operation name="getStat">
+    <wsdl:input message="axis2:getStatMessage" />
+    <wsdl:output message="axis2:getStatResponseMessage" />
+  </wsdl:operation>
+  <wsdl:operation name="update">
+    <wsdl:input message="axis2:updateMessage" />
+  </wsdl:operation>
+</wsdl:portType>
+
+<wsdl:binding name="LabStatServiceSOAP11Binding" type="axis2:LabStatServicePortType">
+  <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+  <wsdl:operation name="getStat">
+    <soap:operation soapAction="urn:getStat" style="document" />
+    <wsdl:input>
+      <soap:body use="literal" namespace="http://harmony.apache.org/test/lab_stat_app/" />
+    </wsdl:input>
+    <wsdl:output>
+      <soap:body use="literal" namespace="http://harmony.apache.org/test/lab_stat_app/" />
+    </wsdl:output>
+  </wsdl:operation>
+  <wsdl:operation name="update">
+    <soap:operation soapAction="urn:update" style="document" />
+    <wsdl:input>
+      <soap:body use="literal" namespace="http://harmony.apache.org/test/lab_stat_app/" />
+    </wsdl:input>
+  </wsdl:operation>
+</wsdl:binding>
+
+<wsdl:binding name="LabStatServiceSOAP12Binding" type="axis2:LabStatServicePortType">
+  <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+  <wsdl:operation name="getStat">
+    <soap12:operation soapAction="urn:getStat" style="document" />
+    <wsdl:input>
+      <soap12:body use="literal" 
+             namespace="http://harmony.apache.org/test/lab_stat_app/" />
+    </wsdl:input>
+    <wsdl:output>
+      <soap12:body use="literal" 
+             namespace="http://harmony.apache.org/test/lab_stat_app/" />
+    </wsdl:output>
+  </wsdl:operation>
+  <wsdl:operation name="update">
+    <soap12:operation soapAction="urn:update" style="document" />
+    <wsdl:input>
+      <soap12:body use="literal" namespace="http://harmony.apache.org/test/lab_stat_app/" />
+    </wsdl:input>
+  </wsdl:operation>
+</wsdl:binding>
+
+<wsdl:service name="LabStatService">
+  <wsdl:port name="LabStatServiceSOAP11port" binding="axis2:LabStatServiceSOAP11Binding">
+    <soap:address location="http://localhost:8080/axis2/services/LabStatService" />
+  </wsdl:port>
+  <wsdl:port name="LabStatServiceSOAP12port" binding="axis2:LabStatServiceSOAP12Binding">
+    <soap12:address location="http://localhost:8080/axis2/services/LabStatService" />
+  </wsdl:port>
+</wsdl:service>
+
+</wsdl:definitions>
