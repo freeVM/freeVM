@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:19:26
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/validation/nonFieldValidatorsExample.jsp</h3>
+<pre>
+
+1: &lt;%-- 
+2:     nonFieldValidatorsExample.jsp
+3:     
+4:     @author tm_jee
+5:     @version $Date: 2006-09-06 00:07:10 -0400 (Wed, 06 Sep 2006) $ $Id: nonFieldValidatorsExample.jsp 440609 2006-09-06 04:07:10Z wsmoak $
+6: --%&gt;
+7: 
+8: 
+9: &lt;%@taglib prefix=&quot;s&quot; uri=&quot;/struts-tags&quot; %&gt;
+10: 
+11: &lt;html&gt;
+12:     &lt;head&gt;
+13:         &lt;title&gt;Showcase - Validation - Non Field Validator Example&lt;/title&gt;
+14:         &lt;s:url id=&quot;siteCss&quot; value=&quot;/validation/validationExamplesStyles.css&quot; includeContext=&quot;true&quot; /&gt;
+15:         &lt;s:head /&gt;
+16:         &lt;!-- link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href='&lt;s:property value=&quot;%{siteCss}&quot; /&gt;'--&gt;
+17:     &lt;/head&gt;
+18:     &lt;body&gt;
+19:     
+20:        
+21:        &lt;!-- START SNIPPET: nonFieldValidatorsExample --&gt;
+22:         &lt;s:actionerror /&gt;
+23:     
+24:         &lt;s:form method=&quot;POST&quot; action=&quot;submitNonFieldValidatorsExamples&quot; namespace=&quot;/validation&quot;&gt;
+25:             &lt;s:textfield name=&quot;someText&quot; label=&quot;Some Text&quot; /&gt;
+26:             &lt;s:textfield name=&quot;someTextRetype&quot; label=&quot;Retype Some Text&quot; /&gt;  
+27:             &lt;s:textfield name=&quot;someTextRetypeAgain&quot; label=&quot;Retype Some Text Again&quot; /&gt;
+28:             &lt;s:submit label=&quot;Submit&quot; /&gt;
+29:         &lt;/s:form&gt;
+30:         
+31:         
+32:         &lt;!--  END SNIPPET: nonFieldValidatorsExample --&gt;
+33:         
+34:         
+35:         &lt;s:include value=&quot;footer.jsp&quot; /&gt;
+36:     &lt;/body&gt;
+37: &lt;/html&gt;
+38: 
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts-validation.xml</h3>
+<pre>
+
+
+45: 			&lt;result name=&quot;input&quot; type=&quot;dispatcher&quot;&gt;/validation/fieldValidatorsExample.jsp&lt;/result&gt;
+46: 			&lt;result type=&quot;dispatcher&quot;&gt;/validation/successFieldValidatorsExample.jsp&lt;/result&gt;
+47: 		&lt;/action&gt;
+48: 		
+49: 		
+50: 		
+51: 		&lt;!-- ============================ --&gt;
+52: 		&lt;!-- === Non Field Validators === --&gt;
+53: 		&lt;!-- ============================ --&gt;
+54: 		
+<span style="background-color:yellow">55: 		&lt;action name=&quot;showNonFieldValidatorsExamples&quot; class=&quot;org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction&quot; method=&quot;input&quot;&gt;</span>
+56: 			&lt;result name=&quot;input&quot;&gt;/validation/nonFieldValidatorsExample.jsp&lt;/result&gt;		
+57: 		&lt;/action&gt;
+58: 		
+59: 		&lt;action name=&quot;submitNonFieldValidatorsExamples&quot; class=&quot;org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction&quot; method=&quot;submit&quot;&gt;
+60: 			&lt;result name=&quot;input&quot;&gt;/validation/nonFieldValidatorsExample.jsp&lt;/result&gt;		
+61: 			&lt;result&gt;/validation/successNonFieldValidatorsExample.jsp&lt;/result&gt;
+62: 		&lt;/action&gt;
+63: 		
+64: 		
+65: 		
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>/org/apache/struts2/showcase/validation/NonFieldValidatorsExampleAction.java</h3>
+<pre>
+
+1: /*
+2:  * $Id: NonFieldValidatorsExampleAction.java 471756 2006-11-06 15:01:43Z husted $
+3:  *
+4:  * Licensed to the Apache Software Foundation (ASF) under one
+5:  * or more contributor license agreements.  See the NOTICE file
+6:  * distributed with this work for additional information
+7:  * regarding copyright ownership.  The ASF licenses this file
+8:  * to you under the Apache License, Version 2.0 (the
+9:  * &quot;License&quot;); you may not use this file except in compliance
+10:  * with the License.  You may obtain a copy of the License at
+11:  *
+12:  *  http://www.apache.org/licenses/LICENSE-2.0
+13:  *
+14:  * Unless required by applicable law or agreed to in writing,
+15:  * software distributed under the License is distributed on an
+16:  * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+17:  * KIND, either express or implied.  See the License for the
+18:  * specific language governing permissions and limitations
+19:  * under the License.
+20:  */
+21: package org.apache.struts2.showcase.validation;
+22: 
+23: /**
+24:  */
+25: 
+26: // START SNIPPET: nonFieldValidatorsExample
+27: 
+28: public class NonFieldValidatorsExampleAction extends AbstractValidationActionSupport {
+29: 
+30:     private static final long serialVersionUID = -524460368233581186L;
+31: 
+32:     private String someText;
+33:     private String someTextRetype;
+34:     private String someTextRetypeAgain;
+35: 
+36:     public String getSomeText() {
+37:         return someText;
+38:     }
+39:     public void setSomeText(String someText) {
+40:         this.someText = someText;
+41:     }
+42:     public String getSomeTextRetype() {
+43:         return someTextRetype;
+44:     }
+45:     public void setSomeTextRetype(String someTextRetype) {
+46:         this.someTextRetype = someTextRetype;
+47:     }
+48:     public String getSomeTextRetypeAgain() {
+49:         return someTextRetypeAgain;
+50:     }
+51:     public void setSomeTextRetypeAgain(String someTextRetypeAgain) {
+52:         this.someTextRetypeAgain = someTextRetypeAgain;
+53:     }
+54: }
+55: 
+56: 
+57: // END SNIPPET: nonFieldValidatorsExample
+58: 
+59: 
+60: 
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A55&amp;page=%2Fvalidation%2F%2Fvalidation%2FnonFieldValidatorsExample.jsp&amp;className=org.apache.struts2.showcase.validation.NonFieldValidatorsExampleAction">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

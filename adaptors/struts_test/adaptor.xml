@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                  BT 2.0 Adaptor for Apache Struts2 test
+     ====================================================================== -->
+<project name="struts_test" default="run" basedir=".">
+
+    <!-- hardcoded properties -->
+    <property name="suite.dir" location="${test.sources.dir}/${suite.name}"/>
+    <property name="tests.src.dir" location="${suite.dir}/src"/>
+    <property name="tests.res.dir" location="${suite.dir}/resources/showcase"/>
+    <property name="tests.classes.dir" location="${checkouts.dir}/${suite.name}/classes"/>
+    <property name="tests.results.dir" location="${results.dir}/${suite.name}/test-results"/>
+
+    <property name="catalina.localhost.port.default" value="8080" />
+    <property name="catalina.config.file"  location="${ext.tomcat-5.0.30.location}/conf/server.xml"/>
+    <property name="catalina.base.dir" location="${ext.tomcat-5.0.30.location}"/>
+    <property name="catalina.home.dir" location="${ext.tomcat-5.0.30.location}"/>
+    <property name="catalina.tmp.dir"  location="${ext.tomcat-5.0.30.location}/temp"/>
+    <property name="catalina.out.file" location="${results.dir}/${suite.name}/catalina.out"/>
+    <property name="catalina.maxwait" value="180"/>
+
+    <property name="tomcat.deploy.app.name" value="struts2-showcase-2.0.6"/>
+
+
+    <!-- ================================= 
+          Public targets (adaptor interface)
+         ================================= -->
+
+    <!-- ================================= 
+          target: setup
+         ================================= -->
+    <target name="setup" depends="
+        -setup-conditions,
+        -create-build-dirs,
+        -compile-test-sources,
+        -deploy-web-app-and-prepare-data">
+    </target>
+
+    <!-- ================================= 
+          target: run
+         ================================= -->
+    <target name="run" depends="-setup-conditions">
+        <delete file="${catalina.out.file}" />
+        <delete dir="${tests.results.dir}" />
+        <mkdir dir="${tests.results.dir}"/>
+        <antcall target="-prepare-run" />
+        <parallel failonany="true">
+            <antcall target="-start-server" />
+            <sequential>
+                <antcall target="-wait-for-server-started" />
+                <antcall target="-run-test" />
+                <antcall target="-stop-server" />
+            </sequential>
+        </parallel>
+        <antcall target="-finish-run" />
+    </target>
+
+    <target name="clean"/>
+
+
+    <!-- ================================= 
+          Private targets
+         ================================= -->
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -setup-conditions                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-setup-conditions">
+        <condition property="already-deployed" >
+            <available file="${catalina.home.dir}/webapps/${tomcat.deploy.app.name}" type="dir"/>
+        </condition>
+        <condition property="data-generation-not-needed">
+            <available file="${catalina.home.dir}/work/Catalina/localhost/${tomcat.deploy.app.name}/org/apache/jsp/validation" type="dir" />
+        </condition>
+        <condition property="already-deployed-and-generated">
+            <and>
+                <istrue value="${already-deployed}" />
+                <istrue value="${data-generation-not-needed}" />
+            </and>
+        </condition>
+        <condition property="server-port-must-be-set">
+            <and>
+                <isset property="struts_test.parameters.optional.catalina.localhost.port" />
+                <not>
+                    <isfileselected file="${catalina.config.file}">
+                        <contains text="Connector port=&#x22;${struts_test.parameters.optional.catalina.localhost.port}&#x22;" />
+                    </isfileselected>
+                </not>
+            </and>
+        </condition>
+        <condition property="custom-server-port-is-set">
+            <isset property="struts_test.parameters.optional.catalina.localhost.port" />
+        </condition>
+        <condition property="server-port-must-be-reset" >
+            <and>
+                <not>
+                    <isset property="struts_test.parameters.optional.catalina.localhost.port" />
+                </not>
+                <not>
+                    <isfileselected file="${catalina.config.file}">
+                        <contains text="Connector port=&#x22;${catalina.localhost.port.default}&#x22;" />
+                    </isfileselected>
+                </not>
+            </and>
+        </condition>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -create-build-dirs                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-create-build-dirs">
+        <mkdir dir="${suite.dir}"/>
+        <mkdir dir="${tests.classes.dir}"/>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -compile-test-sources                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-compile-test-sources">
+        <javac srcdir="${tests.src.dir}" destdir="${tests.classes.dir}">
+            <classpath refid="htmlunit-jars" />
+            <classpath refid="junit-jars" />
+        </javac>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -deploy-web-app-and-prepare-data     
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-deploy-web-app-and-prepare-data"
+        depends="-copy-war"
+        unless="already-deployed-and-generated">
+        <mkdir dir="${tests.results.dir}"/>
+        <delete file="${catalina.out.file}" />
+        <parallel failonany="true">
+            <antcall target="-start-server-for-setup" />
+            <sequential>
+                <antcall target="-wait-for-server-started" />
+                <condition property="deployed.ok">
+                    <available file="${catalina.home.dir}/webapps/${tomcat.deploy.app.name}" type="dir" />
+                </condition>
+                <antcall target="-generate-test-data" />
+                <antcall target="-stop-server-for-setup" />
+            </sequential>
+        </parallel>
+        <fail message="couldn't deploy web app" unless="deployed.ok" />
+        <fail message="couldn't generate test data" if="test.not.passed" />
+        <fail message="couldn't generate test data" if="test.error" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -generate-test-data                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-generate-test-data"
+        depends="-set-vmarg-server-port,-unset-vmarg-server-port"
+        unless="data-generation-not-needed">
+        <junit
+            fork="yes"
+            printsummary="withOutAndErr"
+            errorproperty="test.error"
+            failureproperty="test.not.passed"
+            showoutput="on"
+            dir="${suite.dir}"
+            jvm="${req.driver.java.home}/bin/java">
+            <jvmarg value="-Dwebapptest.app.name=showcase" />
+            <jvmarg value="-Dwebapptest.nocheck=1" />
+            <jvmarg value="-Dwebapptest.debug=${struts_test.parameters.optional.driver.debug}" />
+            <jvmarg value="${vm.arg.app.port}" />
+            <classpath refid="test-driver-start-jars" />
+            <formatter type="xml" />
+            <batchtest todir="${tests.results.dir}">
+                <fileset refid="launch-test-files" />
+            </batchtest>
+        </junit>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -run-test                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-run-test"
+        depends="-set-vmarg-server-port,-unset-vmarg-server-port" >
+        <junit fork="yes"
+            printsummary="withOutAndErr"
+            errorproperty="test.error"
+            failureproperty="test.not.passed"
+            showoutput="on"
+            dir="${suite.dir}"
+            jvm="${req.driver.java.home}/bin/java">
+            <jvmarg value="-Dwebapptest.app.name=showcase" />
+            <jvmarg value="-Dwebapptest.debug=${struts_test.parameters.optional.driver.debug}" />
+            <jvmarg value="${vm.arg.app.port}" />
+            <classpath refid="test-driver-start-jars" />
+            <formatter type="xml" />
+            <batchtest todir="${tests.results.dir}">
+                <fileset refid="launch-test-files" />
+            </batchtest>
+        </junit>
+        <junitreport todir="${tests.results.dir}">
+            <fileset dir="${tests.results.dir}">
+                <include name="TEST*-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${tests.results.dir}/html"/>
+        </junitreport>
+        <fail message="Test failed" if="test.not.passed" />
+        <fail message="Test execution error" if="test.error" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -set-vmarg-server-port                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-set-vmarg-server-port" if="custom-server-port-is-set">
+        <property name="vm.arg.app.port" value="-Dshowcase.app.port=${struts_test.parameters.optional.catalina.localhost.port}"/>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -unset-vmarg-server-port                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-unset-vmarg-server-port" unless="custom-server-port-is-set">
+        <property name="vm.arg.app.port" value=""/>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -set-server-port                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-set-server-port" if="server-port-must-be-set">
+        <echo message="Setting server port to ${struts_test.parameters.optional.catalina.localhost.port}..." />
+        <replaceregexp file="${catalina.config.file}" 
+        match="Connector port=&#x22;[0-9]*&#x22;"
+        replace="Connector port=&#x22;${struts_test.parameters.optional.catalina.localhost.port}&#x22;" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -reset-server-port                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-reset-server-port" if="server-port-must-be-reset">
+        <echo message="Resetting server port to default value ${catalina.localhost.port.default}..." />
+        <replaceregexp file="${catalina.config.file}"
+        match="Connector port=&#x22;[0-9]*&#x22;"
+        replace="Connector port=&#x22;${catalina.localhost.port.default}&#x22;" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -copy-war                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-copy-war">
+        <copy file="${ext.struts-2.0.6.location}/apps/${tomcat.deploy.app.name}.war"
+             todir="${catalina.home.dir}/webapps" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -start-server                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-start-server" depends="-set-server-port,-reset-server-port" >
+        <server-java output="${catalina.out.file}" append="false" arg="start" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -start-server-for-setup
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-start-server-for-setup" depends="-set-server-port,-reset-server-port" >
+        <server-java jvm="${req.driver.java.home}/bin/java"
+            output="${catalina.out.file}" append="false" arg="start" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -wait-for-server-started                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-wait-for-server-started">
+        <waitfor maxwait="${catalina.maxwait}" maxwaitunit="second" timeoutproperty="failed.timeout"  >
+            <and>
+                <available file="${catalina.out.file}" />
+                <isfileselected file="${catalina.out.file}">
+                    <contains text="INFO: Server startup in" />
+                </isfileselected>
+            </and>
+        </waitfor>
+        <fail if="failed.timeout" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -stop-server                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-stop-server">
+        <parallel failonany="true">
+            <server-java output="${catalina.out.file}" append="true" arg="stop" />
+            <waitfor maxwait="${catalina.maxwait}" maxwaitunit="second" timeoutproperty="failed.timeout">
+                <isfileselected file="${catalina.out.file}">
+                    <contains text="INFO: Stopping Coyote HTTP/1.1 on http-" />
+                </isfileselected>
+            </waitfor>
+        </parallel>
+        <fail if="failed.timeout" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -stop-server-for-setup
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-stop-server-for-setup">
+        <parallel failonany="true">
+            <server-java jvm="${req.driver.java.home}/bin/java"
+                output="${catalina.out.file}" append="true" arg="stop" />
+            <waitfor maxwait="${catalina.maxwait}" maxwaitunit="second"
+                timeoutproperty="failed.timeout">
+                <isfileselected file="${catalina.out.file}">
+                    <contains text="INFO: Stopping Coyote HTTP/1.1 on http-" />
+                </isfileselected>
+            </waitfor>
+        </parallel>
+        <fail if="failed.timeout" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -prepare-run
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-prepare-run">
+        <copy file="${req.test.java.home}/lib/boot/bootclasspath.properties"
+            tofile="${req.test.java.home}/lib/boot/bootclasspath.properties.bak"
+            failonerror="false"
+        />
+        <replaceregexp
+            file="${req.test.java.home}/lib/boot/bootclasspath.properties"
+            match="(bootclasspath.*/mx4j.*\.jar)"
+            replace="#\1"
+            flags="g"
+        />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -finish-run                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-finish-run">
+        <copy file="${req.test.java.home}/lib/boot/bootclasspath.properties.bak"
+            tofile="${req.test.java.home}/lib/boot/bootclasspath.properties"
+            overwrite="true"
+            failonerror="false"
+        />
+    </target>
+
+
+    <!-- ================================= 
+          Various paths, filesets macrodefs...
+         ================================= -->
+
+    <path id="junit-jars">
+        <pathelement location="${ext.junit-4.1.location}" />
+    </path>
+
+    <path id="htmlunit-jars">
+        <fileset dir="${ext.htmlunit-1.11.location}">
+            <include name="**/**.jar"/>
+        </fileset>
+    </path>
+
+    <path id="test-driver-start-jars">
+        <pathelement location="${tests.classes.dir}" />
+        <path refid="junit-jars" />
+        <path refid="htmlunit-jars" />
+    </path>
+
+    <path id="catalina-start-jars">
+        <pathelement location="${req.driver.java.home}/lib/tools.jar" />
+        <fileset dir="${catalina.base.dir}/bin">
+            <include name="**/bootstrap.jar"/>
+            <include name="**/commons-logging-api.jar"/>
+        </fileset>
+        <pathelement location="${ext.xalan-2.4.1.location}/bin/xalan.jar" />
+    </path>
+
+    <fileset id="launch-test-files" dir="${tests.src.dir}">
+        <include name="**/*Test.java"/>
+    </fileset>
+
+    <macrodef name="server-java">
+        <attribute name="jvm" default="${req.test.java.home}/bin/java" />
+        <attribute name="output"/>
+        <attribute name="append"/>
+        <attribute name="arg"/>
+        <sequential  >
+        <condition property="vm.options"
+            value="${struts_test.parameters.optional.tested.vm.options}"
+            else="" >
+            <equals arg1="@{jvm}" arg2="${req.test.java.home}/bin/java" />
+        </condition>
+        <java jvm="@{jvm}"
+            fork="true"
+            failonerror="true"
+            errorproperty="failed.server.java"
+            classname="org.apache.catalina.startup.Bootstrap"
+            output="@{output}"
+            append="@{append}">
+            <classpath refid="catalina-start-jars" />
+            <jvmarg line="${vm.options}" />
+            <jvmarg value="-Djava.endorsed.dirs=${catalina.home.dir}/common/endorsed" />
+            <jvmarg value="-Dcatalina.base=${catalina.base.dir}" />
+            <jvmarg value="-Dcatalina.home=${catalina.home.dir}" />
+            <jvmarg value="-Djava.io.tmpdir=${catalina.tmp.dir}" />
+            <arg value="@{arg}" />
+        </java>
+        </sequential>
+    </macrodef>
+
+</project>

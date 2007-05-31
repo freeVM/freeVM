@@ -1,0 +1,85 @@
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<parameters depends="drlvm">
+
+    <required>
+        <req.driver.java.home
+            description="Used to run test driver. Must point to stable JDK root" 
+            value=""
+        />
+        <req.test.java.home
+            description="Root dir of the implementation under test. Used to run test's server part. May point to JDK/JRE root" 
+            value="${drlvm.parameters.shared.jre.dir}"
+        />
+    </required>
+
+    <optional>
+        <tested.vm.options
+            description="JVM options for tested runtime"
+            value=""
+        />
+        <driver.debug
+            description="Excessive test output to stdout if some value is set"
+            value="1"
+        />
+        <catalina.localhost.port
+            description="Specify value if Catalina port must be other than 8080"
+            value="8093"
+        />
+    </optional>
+
+    <external>
+        <htmlunit-1.11
+            url="http://downloads.sourceforge.net/htmlunit/htmlunit-1.11.zip"
+            md5="829ff23c7d921b6cb04df2b6fdcd4672"
+            dir="htmlunit-1.11"
+            inc="*/lib/**"
+        />
+        <junit-4.1
+            jar="junit-4.1.jar"
+            url="http://downloads.sourceforge.net/junit/junit4.1.zip"
+            md5="e66d3e77c70b3297f2c6a12990fc3120"
+        />
+        <tomcat-5.0.30
+            url="http://archive.apache.org/dist/tomcat/tomcat-5/v5.0.30/bin/jakarta-tomcat-5.0.30.zip"
+            md5="8d5c3150f7b8b04dd78e38d653259132"
+            dir="jakarta-tomcat-5.0.30"
+        />
+        <struts-2.0.6
+            url="http://archive.apache.org/dist/struts/binaries/struts-2.0.6-all.zip"
+            md5="aae4949040d99d38e3d778ac5098d944"
+            dir="struts-2.0.6"
+            inc="*/apps/struts2-showcase-2.0.6.war"
+        />
+        <xalan-2.4.1
+            url="http://archive.apache.org/dist/xml/xalan-j/binaries/xalan-j_2_4_1-bin.zip"
+            md5="d1e26ebcab761a4cd91d810ad6d6b692"
+            dir="xalan-j_2_4_1"
+            inc="*/bin/xalan.jar"
+        />
+    </external>
+
+    <!-- shared values -->
+    <shared>
+    </shared>
+
+    <!-- CC specific configuration -->
+    <cc
+        results="${tests.results.dir}' pattern='TEST-*.xml"
+    />
+
+</parameters>

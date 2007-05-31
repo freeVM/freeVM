@@ -1,0 +1,305 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:17:44
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/conversion/enterPersonInfo.jsp</h3>
+<pre>
+
+1: &lt;%@taglib prefix=&quot;s&quot; uri=&quot;/struts-tags&quot; %&gt;
+2: &lt;html&gt;
+3: &lt;head&gt;
+4: &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+5: &lt;title&gt;Showcase - Conversion - Populate Object into Struts' action List&lt;/title&gt;
+6: &lt;/head&gt;
+7: &lt;body&gt;
+8: 
+9: &lt;p/&gt;
+10: An example populating a list of object (Person.java) into Struts' action (PersonAction.java)
+11: 
+12: &lt;p/&gt;
+13: 
+14: See the jsp code &lt;s:url id=&quot;url&quot; action=&quot;showPersonJspCode&quot; namespace=&quot;/conversion&quot; /&gt;&lt;s:a href=&quot;%{#url}&quot;&gt;here.&lt;/s:a&gt;&lt;br/&gt;
+15: See the code for PersonAction.java &lt;s:url id=&quot;url&quot; action=&quot;showPersonActionJavaCode&quot; namespace=&quot;/conversion&quot; /&gt;&lt;s:a href=&quot;%{#url}&quot;&gt;here.&lt;/s:a&gt;&lt;br/&gt;
+16: See the code for Person.java &lt;s:url id=&quot;url&quot; action=&quot;showPersonJavaCode&quot; namespace=&quot;/conversion&quot; /&gt;&lt;s:a href=&quot;%{#url}&quot;&gt;here.&lt;/s:a&gt;&lt;br/&gt;
+17: 
+18: &lt;p/&gt;
+19: 
+20: &lt;s:actionerror /&gt;
+21: &lt;s:fielderror /&gt;
+22: 
+23: &lt;s:form action=&quot;submitPersonInfo&quot; namespace=&quot;/conversion&quot; method=&quot;post&quot;&gt;
+24:     &lt;%--
+25:         The following is done Dynamically
+26:     --%&gt;
+27:     &lt;s:iterator value=&quot;new int[3]&quot; status=&quot;stat&quot;&gt;
+28:         &lt;s:textfield    label=&quot;%{'Person '+#stat.index+' Name'}&quot; 
+29:                         name=&quot;%{'persons['+#stat.index+'].name'}&quot; /&gt;
+30:         &lt;s:textfield    label=&quot;%{'Person '+#stat.index+' Age'}&quot; 
+31:                         name=&quot;%{'persons['+#stat.index+'].age'}&quot; /&gt;
+32:     &lt;/s:iterator&gt;
+33:     
+34:     
+35:     
+36:     &lt;%--
+37:     The following is done statically:-
+38:     --%&gt;
+39:     &lt;%-- 
+40:     &lt;s:textfield    label=&quot;Person 1 Name&quot; 
+41:                     name=&quot;persons[0].name&quot; /&gt;
+42:     &lt;s:textfield    label=&quot;Person 1 Age&quot;
+43:                     name=&quot;persons[0].age&quot; /&gt;
+44:     &lt;s:textfield    label=&quot;Person 2 Name&quot; 
+45:                     name=&quot;persons[1].name&quot; /&gt;
+46:     &lt;s:textfield    label=&quot;Person 2 Age&quot;
+47:                     name=&quot;persons[1].age&quot; /&gt;
+48:     &lt;s:textfield    label=&quot;Person 3 Name&quot; 
+49:                     name=&quot;persons[2].name&quot; /&gt;
+50:     &lt;s:textfield    label=&quot;Person 3 Age&quot;
+51:                     name=&quot;persons[2].age&quot; /&gt;
+52:     --%&gt;                
+53:                     
+54:     &lt;s:submit /&gt;
+55: &lt;/s:form&gt;
+56: 
+57: &lt;/body&gt;
+58: &lt;/html&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts-conversion.xml</h3>
+<pre>
+
+
+2: 
+3: &lt;!DOCTYPE struts PUBLIC
+4:     &quot;-//Apache Software Foundation//DTD Struts Configuration 2.0//EN&quot;
+5:     &quot;http://struts.apache.org/dtds/struts-2.0.dtd&quot;&gt;
+6: 	
+7: &lt;struts&gt;
+8: 	&lt;package name=&quot;conversion&quot; namespace=&quot;/conversion&quot; extends=&quot;struts-default&quot;&gt;
+9: 	
+10: 		&lt;!-- Example populating a List inside an Action --&gt;
+11: 		&lt;action name=&quot;enterPersonsInfo&quot; method=&quot;input&quot;
+<span style="background-color:yellow">12: 				class=&quot;org.apache.struts2.showcase.conversion.PersonAction&quot;&gt;</span>
+13: 			&lt;result&gt;enterPersonInfo.jsp&lt;/result&gt;
+14: 		&lt;/action&gt;
+15: 		&lt;action name=&quot;submitPersonInfo&quot; method=&quot;submit&quot;
+16: 				class=&quot;org.apache.struts2.showcase.conversion.PersonAction&quot;&gt;
+17: 			&lt;result&gt;showPersonInfo.jsp&lt;/result&gt;	
+18: 			&lt;result name=&quot;input&quot;&gt;enterPersonInfo.jsp&lt;/result&gt;
+19: 		&lt;/action&gt;
+20: 		&lt;action name=&quot;showPersonJspCode&quot;&gt;
+21: 			&lt;result type=&quot;plaintext&quot;&gt;/conversion/enterPersonInfo.jsp&lt;/result&gt;
+22: 		&lt;/action&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>/org/apache/struts2/showcase/conversion/PersonAction.java</h3>
+<pre>
+
+1: /*
+2:  * $Id: PersonAction.java 471756 2006-11-06 15:01:43Z husted $
+3:  *
+4:  * Licensed to the Apache Software Foundation (ASF) under one
+5:  * or more contributor license agreements.  See the NOTICE file
+6:  * distributed with this work for additional information
+7:  * regarding copyright ownership.  The ASF licenses this file
+8:  * to you under the Apache License, Version 2.0 (the
+9:  * &quot;License&quot;); you may not use this file except in compliance
+10:  * with the License.  You may obtain a copy of the License at
+11:  *
+12:  *  http://www.apache.org/licenses/LICENSE-2.0
+13:  *
+14:  * Unless required by applicable law or agreed to in writing,
+15:  * software distributed under the License is distributed on an
+16:  * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+17:  * KIND, either express or implied.  See the License for the
+18:  * specific language governing permissions and limitations
+19:  * under the License.
+20:  */
+21: package org.apache.struts2.showcase.conversion;
+22: 
+23: import java.util.List;
+24: 
+25: import com.opensymphony.xwork2.ActionSupport;
+26: 
+27: /**
+28:  *
+29:  */
+30: public class PersonAction extends ActionSupport {
+31: 
+32:     private List persons;
+33: 
+34:     public List getPersons() { return persons; }
+35:     public void setPersons(List persons) { this.persons = persons; }
+36: 
+37: 
+38: 
+39:     public String input() throws Exception {
+40:         return SUCCESS;
+41:     }
+42: 
+43:     public String submit() throws Exception {
+44:         return SUCCESS;
+45:     }
+46: }
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-conversion.xml%3A12&amp;page=%2Fconversion%2FenterPersonInfo.jsp&amp;className=org.apache.struts2.showcase.conversion.PersonAction">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

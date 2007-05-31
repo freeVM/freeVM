@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:19:23
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/validation/clientSideValidationExample.jsp</h3>
+<pre>
+
+1: &lt;%--
+2:    fieldValidatorExample.jsp
+3: 
+4:    @author tm_jee
+5:    @version $Date: 2006-09-06 00:07:10 -0400 (Wed, 06 Sep 2006) $ $Id: clientSideValidationExample.jsp 440609 2006-09-06 04:07:10Z wsmoak $
+6: --%&gt;
+7: 
+8: &lt;%@taglib prefix=&quot;s&quot; uri=&quot;/struts-tags&quot; %&gt;
+9: 
+10: &lt;html&gt;
+11:     &lt;head&gt;
+12:         &lt;title&gt;Showcase - Validation - Field Validators Example&lt;/title&gt;
+13:         &lt;s:url id=&quot;siteCss&quot; includeContext=&quot;true&quot; value=&quot;/validation/validationExamplesStyles.css&quot; /&gt;
+14:         &lt;s:head /&gt;
+15:         &lt;!--  link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href='&lt;s:property value=&quot;%{siteCss}&quot; /&gt;'--&gt;
+16:     &lt;/head&gt;
+17:     &lt;body&gt;
+18: 
+19:     &lt;!-- START SNIPPET: fieldValidatorsExample --&gt;
+20: 
+21:         &lt;h3&gt;All Field Errors Will Appear Here&lt;/h3&gt;
+22:         &lt;s:fielderror /&gt;
+23:         &lt;hr/&gt;
+24: 
+25:         &lt;h3&gt;Field Error due to 'Required String Validator Field' Will Appear Here&lt;/h3&gt;
+26:         &lt;s:fielderror&gt;
+27:             &lt;s:param value=&quot;%{'requiredStringValidatorField'}&quot; /&gt;
+28:         &lt;/s:fielderror&gt;
+29:         &lt;hr/&gt;
+30: 
+31:         &lt;h3&gt;Field Error due to 'String Length Validator Field' Will Appear Here&lt;/h3&gt;
+32:         &lt;s:fielderror&gt;
+33:             &lt;s:param&gt;stringLengthValidatorField&lt;/s:param&gt;
+34:         &lt;/s:fielderror&gt;
+35:         &lt;hr/&gt;
+36: 
+37:         &lt;s:form action=&quot;submitClientSideValidationExample&quot; namespace=&quot;/validation&quot; method=&quot;POST&quot; validate=&quot;true&quot;&gt;
+38:             &lt;s:textfield label=&quot;Required Validator Field&quot; name=&quot;requiredValidatorField&quot; /&gt;
+39:             &lt;s:textfield label=&quot;Required String Validator Field&quot; name=&quot;requiredStringValidatorField&quot; /&gt;
+40:             &lt;s:textfield label=&quot;Integer Validator Field&quot; name=&quot;integerValidatorField&quot; /&gt;
+41:             &lt;s:textfield label=&quot;Date Validator Field&quot; name=&quot;dateValidatorField&quot; /&gt;
+42:             &lt;s:textfield label=&quot;Email Validator Field&quot; name=&quot;emailValidatorField&quot; /&gt;
+43:             &lt;s:textfield label=&quot;URL Validator Field&quot; name=&quot;urlValidatorField&quot; /&gt;
+44:             &lt;s:textfield label=&quot;String Length Validator Field&quot; name=&quot;stringLengthValidatorField&quot; /&gt;
+45:             &lt;s:textfield label=&quot;Regex Validator Field&quot; name=&quot;regexValidatorField&quot;/&gt;
+46:             &lt;s:textfield label=&quot;Field Expression Validator Field&quot; name=&quot;fieldExpressionValidatorField&quot; /&gt;
+47:             &lt;s:submit label=&quot;Submit&quot; /&gt;
+48:         &lt;/s:form&gt;
+49: 
+50:     &lt;!-- END SNIPPET: fieldValidatorsExample --&gt;
+51: 
+52: 
+53:         &lt;s:include value=&quot;footer.jsp&quot; /&gt;
+54:     &lt;/body&gt;
+55: &lt;/html&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts-validation.xml</h3>
+<pre>
+
+
+75: 			&lt;result name=&quot;input&quot;&gt;/validation/visitorValidatorsExample.jsp&lt;/result&gt;
+76: 			&lt;result&gt;/validation/successVisitorValidatorsExample.jsp&lt;/result&gt;
+77: 		&lt;/action&gt;
+78: 
+79: 
+80: 
+81: 		&lt;!-- ========================== --&gt;
+82: 		&lt;!-- === Visitor Validators === --&gt;
+83: 		&lt;!-- ========================== --&gt;
+84: 
+<span style="background-color:yellow">85: 		&lt;action name=&quot;clientSideValidationExample&quot; class=&quot;org.apache.struts2.showcase.validation.FieldValidatorsExampleAction&quot; method=&quot;input&quot;&gt;</span>
+86: 			&lt;result name=&quot;input&quot;&gt;/validation/clientSideValidationExample.jsp&lt;/result&gt;
+87: 		&lt;/action&gt;
+88: 
+89: 		&lt;action name=&quot;submitClientSideValidationExample&quot; class=&quot;org.apache.struts2.showcase.validation.FieldValidatorsExampleAction&quot; method=&quot;submit&quot;&gt;
+90: 			&lt;result name=&quot;input&quot;&gt;/validation/clientSideValidationExample.jsp&lt;/result&gt;
+91: 			&lt;result&gt;/validation/successClientSideValidationExample.jsp&lt;/result&gt;
+92: 		&lt;/action&gt;
+93: 
+94: 		&lt;!-- =========================================== --&gt;
+95: 		&lt;!-- === Store Error Messages Across Request === --&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>/org/apache/struts2/showcase/validation/FieldValidatorsExampleAction.java</h3>
+<pre>
+
+1: /*
+2:  * $Id: FieldValidatorsExampleAction.java 471756 2006-11-06 15:01:43Z husted $
+3:  *
+4:  * Licensed to the Apache Software Foundation (ASF) under one
+5:  * or more contributor license agreements.  See the NOTICE file
+6:  * distributed with this work for additional information
+7:  * regarding copyright ownership.  The ASF licenses this file
+8:  * to you under the Apache License, Version 2.0 (the
+9:  * &quot;License&quot;); you may not use this file except in compliance
+10:  * with the License.  You may obtain a copy of the License at
+11:  *
+12:  *  http://www.apache.org/licenses/LICENSE-2.0
+13:  *
+14:  * Unless required by applicable law or agreed to in writing,
+15:  * software distributed under the License is distributed on an
+16:  * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+17:  * KIND, either express or implied.  See the License for the
+18:  * specific language governing permissions and limitations
+19:  * under the License.
+20:  */
+21: package org.apache.struts2.showcase.validation;
+22: 
+23: import java.sql.Date;
+24: 
+25: /**
+26:  */
+27: 
+28: // START SNIPPET: fieldValidatorsExample
+29: 
+30: public class FieldValidatorsExampleAction extends AbstractValidationActionSupport {
+31: 
+32:     private static final long serialVersionUID = -4829381083003175423L;
+33: 
+34:     private String requiredValidatorField = null;
+35:     private String requiredStringValidatorField = null;
+36:     private Integer integerValidatorField = null;
+37:     private Date dateValidatorField = null;
+38:     private String emailValidatorField = null;
+39:     private String urlValidatorField = null;
+40:     private String stringLengthValidatorField = null;
+41:     private String regexValidatorField = null;
+42:     private String fieldExpressionValidatorField = null;
+43: 
+44: 
+45: 
+46:     public Date getDateValidatorField() {
+47:         return dateValidatorField;
+48:     }
+49:     public void setDateValidatorField(Date dateValidatorField) {
+50:         this.dateValidatorField = dateValidatorField;
+51:     }
+52:     public String getEmailValidatorField() {
+53:         return emailValidatorField;
+54:     }
+55:     public void setEmailValidatorField(String emailValidatorField) {
+56:         this.emailValidatorField = emailValidatorField;
+57:     }
+58:     public Integer getIntegerValidatorField() {
+59:         return integerValidatorField;
+60:     }
+61:     public void setIntegerValidatorField(Integer integerValidatorField) {
+62:         this.integerValidatorField = integerValidatorField;
+63:     }
+64:     public String getRegexValidatorField() {
+65:         return regexValidatorField;
+66:     }
+67:     public void setRegexValidatorField(String regexValidatorField) {
+68:         this.regexValidatorField = regexValidatorField;
+69:     }
+70:     public String getRequiredStringValidatorField() {
+71:         return requiredStringValidatorField;
+72:     }
+73:     public void setRequiredStringValidatorField(String requiredStringValidatorField) {
+74:         this.requiredStringValidatorField = requiredStringValidatorField;
+75:     }
+76:     public String getRequiredValidatorField() {
+77:         return requiredValidatorField;
+78:     }
+79:     public void setRequiredValidatorField(String requiredValidatorField) {
+80:         this.requiredValidatorField = requiredValidatorField;
+81:     }
+82:     public String getStringLengthValidatorField() {
+83:         return stringLengthValidatorField;
+84:     }
+85:     public void setStringLengthValidatorField(String stringLengthValidatorField) {
+86:         this.stringLengthValidatorField = stringLengthValidatorField;
+87:     }
+88:     public String getFieldExpressionValidatorField() {
+89:         return fieldExpressionValidatorField;
+90:     }
+91:     public void setFieldExpressionValidatorField(
+92:             String fieldExpressionValidatorField) {
+93:         this.fieldExpressionValidatorField = fieldExpressionValidatorField;
+94:     }
+95: 
+96:     public String getUrlValidatorField() {
+97:         return urlValidatorField;
+98:     }
+99: 
+100:     public void setUrlValidatorField(String urlValidatorField) {
+101:         this.urlValidatorField = urlValidatorField;
+102:     }
+103: }
+104: 
+105: 
+106: // END SNIPPET: fieldValidatorsExample
+107: 
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-validation.xml%3A85&amp;page=%2Fvalidation%2F%2Fvalidation%2FclientSideValidationExample.jsp&amp;className=org.apache.struts2.showcase.validation.FieldValidatorsExampleAction">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

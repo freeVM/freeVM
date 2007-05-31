@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Validation - Basic</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/css_xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:19:37
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <!-- START SNIPPET: clientCssValidation -->
+
+
+
+
+
+
+<script src="/struts2-showcase-2.0.6/struts/css_xhtml/validation.js" type="text/javascript"></script>
+        
+<form namespace="/validation" id="quizClientCss" name="quizClientCss" onsubmit="return validateForm_quizClientCss();" action="/struts2-showcase-2.0.6/validation/quizClientCss.action" method="post">
+
+    <div id="wwgrp_quizClientCss_name" class="wwgrp">
+<div id="wwlbl_quizClientCss_name" class="wwlbl">
+<label for="quizClientCss_name" class="label">        Name:
+</label></div> <br/><div id="wwctrl_quizClientCss_name" class="wwctrl">
+<input type="text" name="name" value="" id="quizClientCss_name"/>
+</div> </div>
+
+    <div id="wwgrp_quizClientCss_age" class="wwgrp">
+<div id="wwlbl_quizClientCss_age" class="wwlbl">
+<label for="quizClientCss_age" class="label">        Age:
+</label></div> <br/><div id="wwctrl_quizClientCss_age" class="wwctrl">
+<input type="text" name="age" value="0" id="quizClientCss_age"/>
+</div> </div>
+
+    <div id="wwgrp_quizClientCss_answer" class="wwgrp">
+<div id="wwlbl_quizClientCss_answer" class="wwlbl">
+<label for="quizClientCss_answer" class="label">        Favorite color:
+</label></div> <br/><div id="wwctrl_quizClientCss_answer" class="wwctrl">
+<input type="text" name="answer" value="" id="quizClientCss_answer"/>
+</div> </div>
+
+    <div align="right"    id="wwctrl_quizClientCss_0"><input type="submit" id="quizClientCss_0" value="Submit"/>
+</div> 
+</form>
+
+
+
+<script type="text/javascript">
+    function validateForm_quizClientCss() {
+        form = document.getElementById("quizClientCss");
+        clearErrorMessages(form);
+        clearErrorLabels(form);
+
+        var errors = false;
+        // field name: name
+        // validator name: requiredstring
+        if (form.elements['name']) {
+            field = form.elements['name'];
+            var error = "You must enter a name";
+            if (field.value != null && (field.value == "" || field.value.replace(/^\s+|\s+$/g,"").length == 0)) {
+                addError(field, error);
+                errors = true;
+            }
+        }
+        // field name: age
+        // validator name: int
+        if (form.elements['age']) {
+            field = form.elements['age'];
+            var error = "Only people ages 13 to 19 may take this quiz";
+            if (field.value != null) {
+                if (parseInt(field.value) <
+                     13 ||
+                        parseInt(field.value) >
+                           19) {
+                    addError(field, error);
+                    errors = true;
+                }
+            }
+        }
+
+        return !errors;
+    }
+</script>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts-validation.xml:17&className=org.apache.struts2.showcase.validation.QuizAction&page=/validation/quiz-client-css.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

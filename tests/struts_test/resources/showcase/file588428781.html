@@ -1,0 +1,371 @@
+
+
+ 
+<html>
+<head>
+    <title>Ajax examples - tabbled panel</title>
+
+    
+<!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+    <script type="text/javascript">
+        dojo.event.connect(window, "onload", function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        });
+    </script>
+</head>
+
+
+
+<body>
+
+    <table cellpadding="0" cellspacing="10" border="0" width="600">
+        <tr>
+            <td align="top">
+                <script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="one"    label="one"    showError="true">
+
+                        This is the first pane<br/>
+                        			
+<form id="example1" onsubmit="return true;" action="/struts2-showcase-2.0.6/example1.jsp" method="POST">
+<table class="wwFormTable">
+                            <tr>
+    <td class="tdLabel"><label for="example1_tt" class="label">Test Text:</label></td>
+    <td
+><input type="text" name="tt" value="" id="example1_tt"/>
+</td>
+</tr>
+  <br/>
+                            <tr>
+    <td class="tdLabel"><label for="example1_tt2" class="label">Test Text2:</label></td>
+    <td
+><input type="text" name="tt2" value="" id="example1_tt2"/>
+</td>
+</tr>
+
+                        </table></form>
+
+
+
+
+                    </div>
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="two"    showError="true">
+
+                        This is the second panel
+                    </div>
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="three"    showError="true">
+
+                        This is the three
+                    </div>
+
+                </div>
+
+            </td>
+            <td align="top">
+                <script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test2"    doLayout="false">
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="left"    label="left"    showError="true">
+
+                        This is the left pane<br/>
+                        			
+<form id="example1" onsubmit="return true;" action="/struts2-showcase-2.0.6/example1.jsp" method="POST">
+<table class="wwFormTable">
+                            <tr>
+    <td class="tdLabel"><label for="example1_tt" class="label">Test Text:</label></td>
+    <td
+><input type="text" name="tt" value="" id="example1_tt"/>
+</td>
+</tr>
+  <br/>
+                            <tr>
+    <td class="tdLabel"><label for="example1_tt2" class="label">Test Text2:</label></td>
+    <td
+><input type="text" name="tt2" value="" id="example1_tt2"/>
+</td>
+</tr>
+
+                        </table></form>
+
+
+
+
+                    </div>
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="ryh1"    label="remote one"  	href="/struts2-showcase-2.0.6/AjaxTest.action"    showError="true">
+</div>
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="middle"    label="middle"    showError="true">
+
+                        middle tab<br/>
+                        			
+<form id="example1" onsubmit="return true;" action="/struts2-showcase-2.0.6/example1.jsp" method="POST">
+<table class="wwFormTable">
+                            <tr>
+    <td class="tdLabel"><label for="example1_tt" class="label">Test Text44:</label></td>
+    <td
+><input type="text" name="tt" value="" id="example1_tt"/>
+</td>
+</tr>
+  <br/>
+                            <tr>
+    <td class="tdLabel"><label for="example1_tt2" class="label">Test Text442:</label></td>
+    <td
+><input type="text" name="tt2" value="" id="example1_tt2"/>
+</td>
+</tr>
+
+                        </table></form>
+
+
+
+
+                    </div>
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="ryh21"    label="remote right"  	href="/struts2-showcase-2.0.6/AjaxTest.action"    showError="true">
+</div>
+
+                </div>
+
+            </td>
+        </tr>
+        <tr>
+            <td align="top">
+                <script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="testremote"    doLayout="false">
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="r1"    label="remote one"  	href="/struts2-showcase-2.0.6/AjaxTest.action"    showError="true">
+
+                        
+
+
+
+Result: 2 @ 1175847418715 
+<br/>
+
+
+                    </div>
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="r2"    label="remote two"  	href="/struts2-showcase-2.0.6/AjaxTest.action"    showError="true">
+</div>
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="r3"    label="remote three"  	href="/struts2-showcase-2.0.6/AjaxTest.action"    showError="true">
+</div>
+
+                </div>
+
+            </td>
+            <td align="top">
+                <script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test3"    doLayout="false">
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="left1"    label="out one"    showError="true">
+
+                        Outer one<br/>
+                        <script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test11"    doLayout="false">
+
+                            <div
+                   id="i11"         
+    
+    
+    
+    >
+Inner 1</div>
+
+                            <div
+                   id="112"         
+    
+    
+    
+    >
+Inner 2</div>
+
+                            <div
+                   id="i13"         
+    
+    
+    
+    >
+Inner 3</div>
+
+                        </div>
+
+                    </div>
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="middle1"    label="out two"    showError="true">
+
+                        Outer two<br/>
+                        <script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test12"    doLayout="false">
+
+                            <div dojoType="struts:BindDiv"
+    
+  	id="i21"    label="inner 2 one"    showError="true">
+Inner 21</div>
+
+                            <div dojoType="struts:BindDiv"
+    
+  	id="122"    label="inner 2 two"    showError="true">
+Inner 22</div>
+
+                            <div dojoType="struts:BindDiv"
+    
+  	id="i23"    label="inner 2 three"    showError="true">
+Inner 23</div>
+
+                        </div>
+
+                    </div>
+
+                    <div dojoType="struts:BindDiv"
+    
+  	id="right1"    label="out three"    showError="true">
+
+                        Outer three<br/>
+                        <script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test13"    doLayout="false">
+
+                            <div dojoType="struts:BindDiv"
+    
+  	id="i31"    label="inner 3 one"    showError="true">
+Inner 31</div>
+
+                            <div dojoType="struts:BindDiv"
+    
+  	id="132"    label="inner 3 two"    showError="true">
+Inner 32</div>
+
+                            <div dojoType="struts:BindDiv"
+    
+  	id="i33"    label="inner 3 three"    showError="true">
+Inner 33</div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </td>
+        </tr>
+    </table>
+
+
+
+<hr/>
+
+
+
+<a
+	
+	href=".."
+
+>
+Back To AJAX Examples</a>
+&nbsp;
+
+
+
+
+</body>
+</html>

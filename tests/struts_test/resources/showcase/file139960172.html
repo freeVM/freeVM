@@ -1,0 +1,228 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Non-UI Tags Example: Debug</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:18:53
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>Debug Tag Usage</h1>
+
+	<p/>
+	This page shows a simple example of using the debug tag.  <br/>
+	Just add <tt style="font-size: 12px; font-weight:bold;color: blue;">&lt;s:debug /&gt;</tt> to your JSP page
+    and you will see the debug link.
+    <p/>
+    Just click on the Debug label to see the Struts ValueStack Debug information.
+    <p/>
+    <script language="JavaScript" type="text/javascript">
+<!--
+    function toggleDebug(debugId) {
+        var debugDiv = document.getElementById(debugId);
+        if (debugDiv) {
+            var display = debugDiv.style.display;
+            if (display == 'none') {
+                debugDiv.style.display = 'block';
+            } else if (display == 'block') {
+                debugDiv.style.display = 'none';
+            }
+        }
+    }
+-->
+</script>
+<p/>
+
+<a href="#" onclick="toggleDebug('debug');return false;">[Debug]</a>
+<div style="display:none" id="debug">
+<h2>Struts ValueStack Debug</h2>
+<p/>
+
+<h3>Value Stack Contents</h3>
+<table border="0" cellpadding="2" cellspacing="0" width="400" bgcolor="#DDDDDD">
+    <tr><th>Object</th><th>Property Name</th><th>Property Value</th></tr>
+
+    <tr>
+        <td rowspan="1">com.opensymphony.xwork2.DefaultTextProvider</td>
+
+              
+            <td bgcolor="#CCCCCC">texts</td>
+            <td bgcolor="#CCCCCC">null</td>
+    </tr>
+</table>
+<p/>
+
+<h3>Stack Context</h3>
+<i>These items are available using the #key notation</i>
+<table border="0" cellpadding="2" cellspacing="0" width="400" bgcolor="#DDDDDD">
+    <tr>
+        <th>Key</th><th>Value</th>
+    </tr>
+
+    <tr bgcolor="#CCCCCC">
+        <td>__requestWrapper.getAttribute</td><td>false</td>
+    </tr>
+    <tr bgcolor="#BBBBBB">
+        <td>com.opensymphony.xwork2.ActionContext.parameters</td><td>{}</td>
+    </tr>
+    <tr bgcolor="#CCCCCC">
+        <td>last.bean.accessed</td><td>null</td>
+    </tr>
+    <tr bgcolor="#BBBBBB">
+        <td>parameters</td><td>{}</td>
+    </tr>
+    <tr bgcolor="#CCCCCC">
+        <td>com.opensymphony.xwork2.ActionContext.locale</td><td>en_US</td>
+    </tr>
+    <tr bgcolor="#BBBBBB">
+        <td>__link</td><td>[Ljava.lang.Object;@804a77</td>
+    </tr>
+    <tr bgcolor="#CCCCCC">
+        <td>current.property.path</td><td>null</td>
+    </tr>
+    <tr bgcolor="#BBBBBB">
+        <td>session</td><td>{org.apache.myfaces.application.jsp.JspStateManagerImpl.SERIALIZED_VIEW=org.apache.myfaces.application.jsp.JspStateManagerImpl$SerializedViewCollection@4e68fb, __sitemesh__robot=false, jsf_sequence=6, javax.faces.request.charset=ISO-8859-1, Hangman_Session_Key=org.apache.struts2.showcase.hangman.Hangman@1441b16}</td>
+    </tr>
+    <tr bgcolor="#CCCCCC">
+        <td>attr</td><td>org.apache.struts2.util.AttributeMap@18d9ab8</td>
+    </tr>
+    <tr bgcolor="#BBBBBB">
+        <td>com.opensymphony.xwork2.util.ValueStack.ValueStack</td><td>com.opensymphony.xwork2.util.OgnlValueStack@1a8a9e7</td>
+    </tr>
+    <tr bgcolor="#CCCCCC">
+        <td>com.opensymphony.xwork2.ActionContext.application</td><td>{javax.servlet.context.tempdir=C:\mol\tools\jakarta-tomcat-5.0.30\work\Catalina\localhost\struts2-showcase-2.0.6, org.apache.catalina.resources=org.apache.naming.resources.ProxyDirContext@a6a7d2, org.apache.myfaces.config.RuntimeConfig=org.apache.myfaces.config.RuntimeConfig@a8a271, org.apache.catalina.WELCOME_FILES=[Ljava.lang.String;@153d79c, org.apache.catalina.jsp_classpath=/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/antlr-2.7.2.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/aopalliance-1.0.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-beanutils-1.7.0.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-chain-1.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-codec-1.3.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-collections-3.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-digester-1.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-el-1.0.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-fileupload-1.1.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-io-1.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-lang-2.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-logging-1.0.4.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-validator-1.3.0.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/dwr-1.1-beta-3.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/freemarker-2.3.8.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/jstl-1.1.0.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/log4j-1.2.9.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/myfaces-api-1.1.2.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/myfaces-impl-1.1.2.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/ognl-2.6.11.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/oro-2.0.8.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/sitemesh-2.2.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/spring-beans-2.0.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/spring-context-2.0.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/spring-core-2.0.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/spring-web-2.0.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts-core-1.3.5.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-codebehind-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-config-browser-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-core-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-jsf-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-sitemesh-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-spring-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-struts1-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-tiles-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/tiles-api-2.0-20070207.130156-4.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/tiles-core-2.0-20070207.130156-4.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/velocity-1.4.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/velocity-dep-1.4.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/velocity-tools-1.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/xwork-2.0.1.jar;C:/mol/tools/jakarta-tomcat-5.0.30/shared/classes/;C:/mol/tools/jakarta-tomcat-5.0.30/shared/lib/xalan.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/classes/;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/ant-launcher.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/ant.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/commons-collections-3.1.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/commons-dbcp-1.2.1.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/commons-el.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/commons-pool-1.2.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/jasper-compiler.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/jasper-runtime.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/jsp-api.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/naming-common.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/naming-factory.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/naming-java.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/naming-resources.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/servlet-api.jar;/C:/mol/tools/jdk1.5.0_06/lib/tools.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/bin/bootstrap.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/bin/commons-logging-api.jar;/C:/mol/tools/jdk1.5.0_06/jre/lib/ext/dnsns.jar;/C:/mol/tools/jdk1.5.0_06/jre/lib/ext/localedata.jar;/C:/mol/tools/jdk1.5.0_06/jre/lib/ext/sunjce_provider.jar;/C:/mol/tools/jdk1.5.0_06/jre/lib/ext/sunpkcs11.jar, org.apache.myfaces.webapp.StartupServletContextListener.FACES_INIT_DONE=true, sitemesh.factory=com.opensymphony.module.sitemesh.factory.DefaultFactory@c042ab, org.apache.myfaces.shared_impl.webapp.webxml.WebXml=org.apache.myfaces.shared_impl.webapp.webxml.WebXml@58f124, org.springframework.web.context.WebApplicationContext.ROOT=org.springframework.web.context.support.XmlWebApplicationContext: display name [Root WebApplicationContext]; startup date [Fri Apr 06 15:15:58 NOVST 2007]; root of context hierarchy; config locations [/WEB-INF/applicationContext.xml], org.apache.tiles.CONTAINER=org.apache.tiles.impl.BasicTilesContainer@f1bcde, freemarker.Configuration=freemarker.template.Configuration@13f9276, org.apache.tiles.CONTAINER_FACTORY=org.apache.struts2.tiles.StrutsTilesContainerFactory, org.apache.myfaces.shared_impl.config.MyfacesConfig=org.apache.myfaces.shared_impl.config.MyfacesConfig@140c3b9}</td>
+    </tr>
+    <tr bgcolor="#BBBBBB">
+        <td>__component_stack</td><td>[org.apache.struts2.components.Debug@1dee0d7]</td>
+    </tr>
+    <tr bgcolor="#CCCCCC">
+        <td>com.opensymphony.xwork2.dispatcher.HttpServletRequest</td><td>org.apache.struts2.dispatcher.StrutsRequestWrapper@17b650a</td>
+    </tr>
+    <tr bgcolor="#BBBBBB">
+        <td>com.opensymphony.xwork2.dispatcher.ServletContext</td><td>org.apache.catalina.core.ApplicationContextFacade@1542094</td>
+    </tr>
+    <tr bgcolor="#CCCCCC">
+        <td>last.property.accessed</td><td>null</td>
+    </tr>
+    <tr bgcolor="#BBBBBB">
+        <td>com.opensymphony.xwork2.dispatcher.PageContext</td><td>org.apache.jasper.runtime.PageContextImpl@26db62</td>
+    </tr>
+    <tr bgcolor="#CCCCCC">
+        <td>com.opensymphony.xwork2.dispatcher.HttpServletResponse</td><td>com.opensymphony.module.sitemesh.filter.PageResponseWrapper@de648</td>
+    </tr>
+    <tr bgcolor="#BBBBBB">
+        <td>request</td><td>{struts.valueStack=com.opensymphony.xwork2.util.OgnlValueStack@1a8a9e7, __cleanup_recursion_counter=1, .freemarker.Request=freemarker.ext.servlet.HttpRequestHashModel@12394f8, __sitemesh__filterapplied=true, .freemarker.RequestParameters=freemarker.ext.servlet.HttpRequestParametersHashModel@12dd1b8}</td>
+    </tr>
+    <tr bgcolor="#CCCCCC">
+        <td>com.opensymphony.xwork2.ActionContext.session</td><td>{org.apache.myfaces.application.jsp.JspStateManagerImpl.SERIALIZED_VIEW=org.apache.myfaces.application.jsp.JspStateManagerImpl$SerializedViewCollection@4e68fb, __sitemesh__robot=false, jsf_sequence=6, javax.faces.request.charset=ISO-8859-1, Hangman_Session_Key=org.apache.struts2.showcase.hangman.Hangman@1441b16}</td>
+    </tr>
+    <tr bgcolor="#BBBBBB">
+        <td>application</td><td>{javax.servlet.context.tempdir=C:\mol\tools\jakarta-tomcat-5.0.30\work\Catalina\localhost\struts2-showcase-2.0.6, org.apache.catalina.resources=org.apache.naming.resources.ProxyDirContext@a6a7d2, org.apache.myfaces.config.RuntimeConfig=org.apache.myfaces.config.RuntimeConfig@a8a271, org.apache.catalina.WELCOME_FILES=[Ljava.lang.String;@153d79c, org.apache.catalina.jsp_classpath=/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/antlr-2.7.2.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/aopalliance-1.0.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-beanutils-1.7.0.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-chain-1.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-codec-1.3.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-collections-3.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-digester-1.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-el-1.0.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-fileupload-1.1.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-io-1.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-lang-2.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-logging-1.0.4.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/commons-validator-1.3.0.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/dwr-1.1-beta-3.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/freemarker-2.3.8.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/jstl-1.1.0.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/log4j-1.2.9.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/myfaces-api-1.1.2.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/myfaces-impl-1.1.2.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/ognl-2.6.11.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/oro-2.0.8.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/sitemesh-2.2.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/spring-beans-2.0.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/spring-context-2.0.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/spring-core-2.0.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/spring-web-2.0.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts-core-1.3.5.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-codebehind-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-config-browser-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-core-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-jsf-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-sitemesh-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-spring-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-struts1-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/struts2-tiles-plugin-2.0.6.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/tiles-api-2.0-20070207.130156-4.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/tiles-core-2.0-20070207.130156-4.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/velocity-1.4.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/velocity-dep-1.4.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/velocity-tools-1.1.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/lib/xwork-2.0.1.jar;C:/mol/tools/jakarta-tomcat-5.0.30/shared/classes/;C:/mol/tools/jakarta-tomcat-5.0.30/shared/lib/xalan.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/classes/;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/ant-launcher.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/ant.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/commons-collections-3.1.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/commons-dbcp-1.2.1.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/commons-el.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/commons-pool-1.2.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/jasper-compiler.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/jasper-runtime.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/jsp-api.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/naming-common.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/naming-factory.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/naming-java.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/naming-resources.jar;C:/mol/tools/jakarta-tomcat-5.0.30/common/lib/servlet-api.jar;/C:/mol/tools/jdk1.5.0_06/lib/tools.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/bin/bootstrap.jar;/C:/mol/tools/jakarta-tomcat-5.0.30/bin/commons-logging-api.jar;/C:/mol/tools/jdk1.5.0_06/jre/lib/ext/dnsns.jar;/C:/mol/tools/jdk1.5.0_06/jre/lib/ext/localedata.jar;/C:/mol/tools/jdk1.5.0_06/jre/lib/ext/sunjce_provider.jar;/C:/mol/tools/jdk1.5.0_06/jre/lib/ext/sunpkcs11.jar, org.apache.myfaces.webapp.StartupServletContextListener.FACES_INIT_DONE=true, sitemesh.factory=com.opensymphony.module.sitemesh.factory.DefaultFactory@c042ab, org.apache.myfaces.shared_impl.webapp.webxml.WebXml=org.apache.myfaces.shared_impl.webapp.webxml.WebXml@58f124, org.springframework.web.context.WebApplicationContext.ROOT=org.springframework.web.context.support.XmlWebApplicationContext: display name [Root WebApplicationContext]; startup date [Fri Apr 06 15:15:58 NOVST 2007]; root of context hierarchy; config locations [/WEB-INF/applicationContext.xml], org.apache.tiles.CONTAINER=org.apache.tiles.impl.BasicTilesContainer@f1bcde, freemarker.Configuration=freemarker.template.Configuration@13f9276, org.apache.tiles.CONTAINER_FACTORY=org.apache.struts2.tiles.StrutsTilesContainerFactory, org.apache.myfaces.shared_impl.config.MyfacesConfig=org.apache.myfaces.shared_impl.config.MyfacesConfig@140c3b9}</td>
+    </tr>
+</table>
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?page=/tags/non-ui/debug.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

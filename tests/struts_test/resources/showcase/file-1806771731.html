@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?page=%2Fshowcase.jsp">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?page=%2Fshowcase.jsp">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?page=%2Fshowcase.jsp" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?page=%2Fshowcase.jsp"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:19:45
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/showcase.jsp</h3>
+<pre>
+
+1: &lt;%--
+2:     showcase.jsp
+3: 
+4:     @version $Date: 2007-02-18 20:26:47 -0500 (Sun, 18 Feb 2007) $ $Id: showcase.jsp 509048 2007-02-19 01:26:47Z husted $
+5: --%&gt;
+6: 
+7: &lt;%@ taglib prefix=&quot;s&quot; uri=&quot;/struts-tags&quot; %&gt;
+8: &lt;html&gt;
+9: &lt;head&gt;
+10:     &lt;title&gt;Showcase&lt;/title&gt;
+11:     &lt;s:head theme=&quot;simple&quot;/&gt;
+12: &lt;/head&gt;
+13: 
+14: &lt;body&gt;
+15:     &lt;blockquote&gt;
+16:         &lt;p&gt;
+17:             The Struts Showcase demonstrates a variety of use cases and tag usages.
+18:             Essentially, the application exercises various framework features in isolation.
+19:             &lt;em&gt;The Showcase is &lt;strong&gt;not&lt;/strong&gt; meant as a &quot;best practices&quot; example.&lt;/em&gt;
+20:         &lt;/p&gt;
+21:         &lt;ul&gt;
+22:             &lt;li&gt;
+23:                 For more &quot;by example&quot; solutions,
+24:                 see the &lt;a href=&quot;http://struts.apache.org/2.x/docs/cookbook.html&quot;&gt;Struts Cookbook&lt;/a&gt; pages.
+25:             &lt;/li&gt;
+26:             &lt;li&gt;
+27:                 For a &quot;best practices&quot; example, see the
+28:                 &lt;a href=&quot;http://planetstruts.org/struts2-mailreader/&quot;&gt;MailReader application&lt;/a&gt; Tour and source code.
+29:             &lt;/li&gt;
+30:         &lt;/ul&gt;
+31:     &lt;/blockquote&gt;
+32:     &lt;p&gt;
+33:     &lt;%-- THIS LIST IS MAINTAINED IN WEB-INF/decorators/main.jsp TO CREATE THE MENU BAR -- EDIT THERE AND COPY HERE --%&gt;
+34:     &lt;ul&gt;
+35:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/showcase.jsp&quot;/&gt;&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
+36:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/ajax/index.jsp&quot; /&gt;&quot;&gt;Ajax Theme for Struts Tags&lt;/a&gt;&lt;/li&gt;
+37:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/chat/index.jsp&quot;/&gt;&quot;&gt;Ajax Chat&lt;/a&gt;
+38:         &lt;li&gt;&lt;a href=&quot;&lt;s:url action=&quot;actionChain1!input&quot; namespace=&quot;/actionchaining&quot;  includeParams=&quot;none&quot; /&gt;&quot;&gt;Action Chaining&lt;/a&gt;&lt;/li&gt;
+39:         &lt;li&gt;&lt;a href=&quot;&lt;s:url action=&quot;index&quot; namespace=&quot;/config-browser&quot; includeParams=&quot;none&quot; /&gt;&quot;&gt;Config Browser&lt;/a&gt;&lt;/li&gt;
+40:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/conversion/index.jsp&quot;/&gt;&quot;&gt;Conversion&lt;/a&gt;&lt;/li&gt;
+41:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/empmanager/index.jsp&quot;/&gt;&quot;&gt;CRUD&lt;/a&gt;&lt;/li&gt;
+42:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/wait/index.jsp&quot;/&gt;&quot;&gt;Execute &amp; Wait&lt;/a&gt;&lt;/li&gt;
+43:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/filedownload/index.jsp&quot;/&gt;&quot;&gt;File Download&lt;/a&gt;&lt;/li&gt;
+44:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/fileupload/index.jsp&quot; /&gt;&quot;&gt;File Upload&lt;/a&gt;&lt;/li&gt;
+45:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/freemarker/index.jsp&quot;/&gt;&quot;&gt;Freemarker&lt;/a&gt;
+46:         &lt;li&gt;&lt;a href=&quot;&lt;s:url action=&quot;hangmanMenu&quot; namespace=&quot;/hangman&quot;/&gt;&quot;&gt;Hangman&lt;/a&gt;&lt;/li&gt;
+47:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/jsf/index.jsp&quot;/&gt;&quot;&gt;JavaServer Faces&lt;/a&gt;&lt;/li&gt;
+48:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/person/index.jsp&quot;/&gt;&quot;&gt;Person Manager&lt;/a&gt;&lt;/li&gt;
+49:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/tags/index.jsp&quot;/&gt;&quot;&gt;Tags&lt;/a&gt;&lt;/li&gt;
+50:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/tiles/index.action&quot; /&gt;&quot;&gt;Tiles&lt;/a&gt;&lt;/li&gt;
+51:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/token/index.jsp&quot;/&gt;&quot;&gt;Token&lt;/a&gt;&lt;/li&gt;
+52:         &lt;li&gt;&lt;a href=&quot;&lt;s:url value=&quot;/validation/index.jsp&quot;/&gt;&quot;&gt;Validation&lt;/a&gt;&lt;/li&gt;
+53:         &lt;li class=&quot;last&quot;&gt;&lt;a href=&quot;&lt;s:url value=&quot;/help.jsp&quot;/&gt;&quot;&gt;Help&lt;/a&gt;&lt;/li&gt;
+54:      &lt;/ul&gt;
+55: &lt;/p&gt;
+56: 
+57: &lt;/body&gt;
+58: &lt;/html&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>Unknown configuration</h3>
+<pre>
+
+
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>Unknown or unavailable Action class</h3>
+<pre>
+
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?page=%2Fshowcase.jsp">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?page=%2Fshowcase.jsp">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?page=%2Fshowcase.jsp">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?page=%2Fshowcase.jsp">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?page=%2Fshowcase.jsp">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?page=%2Fshowcase.jsp">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?page=%2Fshowcase.jsp">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?page=%2Fshowcase.jsp">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?page=%2Fshowcase.jsp">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?page=%2Fshowcase.jsp">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?page=%2Fshowcase.jsp">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?page=%2Fshowcase.jsp">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?page=%2Fshowcase.jsp">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?page=%2Fshowcase.jsp">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?page=%2Fshowcase.jsp">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?page=%2Fshowcase.jsp">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?page=%2Fshowcase.jsp">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>
