@@ -39,7 +39,7 @@
 
         <!-- clear previous status -->
         <replaceregexp file="${cc.execution.status.file}"
-                       match="^${suite.name}\.parameters\..*\n"
+                       match="^${suite.name}\.parameters\..*$"
                        replace=""
                        byline="true"/>
 
