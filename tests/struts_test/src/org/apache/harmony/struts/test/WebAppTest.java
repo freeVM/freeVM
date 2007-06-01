@@ -153,8 +153,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  */
 public class WebAppTest {
     
-    private static final String SPLIT_PATTERN = "\\r\\n";
-    
     private static final String ACTION_URL = "URL";
     private static final String ACTION_ANCHOR = "ANCHOR";
     private static final String ACTION_FORM = "FORM";
@@ -611,8 +609,8 @@ public class WebAppTest {
                 return;
             }
             // Compare line by line
-            String[] localLines = expected.split(SPLIT_PATTERN);
-            String[] remoteLines = resp.split(SPLIT_PATTERN);
+            String[] localLines = fixEOL(expected).split("\\n");
+            String[] remoteLines = fixEOL(resp).split("\\n");
             String failureMessage = "";
             if (localLines.length != remoteLines.length) {
                 failed = true;
@@ -654,12 +652,26 @@ public class WebAppTest {
                 }
             }
             // check that there was no lines mismatches
+	    if (failed) {
+		System.out.println(failureMessage);
+	    }
             Assert.assertFalse(failureMessage, failed);
         } finally {
             if (localStream != null) {
                 localStream.close();
             }
         }
+    }
+    
+    private String fixEOL(String text) {
+        String fixed = text;
+        if (fixed.indexOf("\r\n") >= 0) {
+            fixed = fixed.replaceAll("\\r\\n", "\n");
+        }
+        if (fixed.indexOf("\r") >= 0) {
+            fixed = fixed.replaceAll("\\r", "\n");
+        }
+        return fixed;
     }
     
     /**

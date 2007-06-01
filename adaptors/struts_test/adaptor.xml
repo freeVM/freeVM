@@ -216,8 +216,25 @@
             </fileset>
             <report format="frames" todir="${tests.results.dir}/html"/>
         </junitreport>
+	<move file="${suite.dir}/resources/showcase/showcase.err"
+	      todir="${results.dir}/${suite.name}"
+	      failonerror="false"/>
+	<condition property="finish-run-required">
+	    <or>
+		<isset property="test.not.passed"/>
+		<isset property="test.error"/>
+	    </or>
+	</condition>
+        <antcall target="-finish-run-if-failed" />
         <fail message="Test failed" if="test.not.passed" />
         <fail message="Test execution error" if="test.error" />
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: -finish-run-if-failed
+         - - - - - - - - - - - - - - - - - -->
+    <target name="-finish-run-if-failed" if="finish-run-required">
+        <antcall target="-finish-run" />
     </target>
 
     <!-- - - - - - - - - - - - - - - - - - 
@@ -344,7 +361,7 @@
           target: -finish-run                      
          - - - - - - - - - - - - - - - - - -->
     <target name="-finish-run">
-        <copy file="${req.test.java.home}/lib/boot/bootclasspath.properties.bak"
+        <move file="${req.test.java.home}/lib/boot/bootclasspath.properties.bak"
             tofile="${req.test.java.home}/lib/boot/bootclasspath.properties"
             overwrite="true"
             failonerror="false"
