@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+-->
+
+<!-- ======================================================================
+           BT Adaptor for Eclipse Geronimo Application (EGA) scenario
+     ====================================================================== -->
+<project name="ega" default="run" basedir=".">
+    
+    <!-- SETUP -->
+    <target name="setup" description="Setup configuration for EGA scenario run">
+        <log message="============= Adaptor for ${suite.name}: Set Up ..."/>
+        <svn-update-bt path="${tests.sources.dir}/${suite.name}"/>
+        <exec-ant dir="${test.sources.dir}/${suite.name}" 
+                  targets="setup">
+            <sysproperty key="eclipse.download.address"  value="${ega.parameters.optional.eclipse.download.address}"/>
+            <sysproperty key="maven.download.address"    value="${ega.parameters.optional.maven.download.address}"/>
+            <sysproperty key="maven.version"             value="${ega.parameters.optional.maven.version}"/>
+            <sysproperty key="geronimo.download.address" value="${ega.parameters.optional.geronimo.download.address}"/>
+            <sysproperty key="download.dir"              value="${external.arch.dir}"/>
+            <sysproperty key="install.dir"               value="${external.libs.dir}"/>
+        </exec-ant>
+      </target>
+    
+    <!-- RUN -->
+    <target name="run">
+        <log message="============= Adaptor for ${suite.name}: Run ..."/>
+        <exec-ant dir="${test.sources.dir}/${suite.name}" 
+                  targets="run"
+                  failonerror="false"
+                  failproperty="ega.run.failed">
+            <sysproperty key="download.dir"                 value="${external.arch.dir}"/>
+            <sysproperty key="install.dir"                  value="${external.libs.dir}"/>
+            <sysproperty key="result.dir"                   value="${results.dir}/${suite.name}"/>
+            <sysproperty key="tested.jre"                   value="${tested.runtime}"/>
+            <sysproperty key="iteration.num"                value="${ega.parameters.optional.iteration.num}"/>
+            <sysproperty key="run.time"                     value="${ega.parameters.optional.run.time}"/>
+            <sysproperty key="delay.factor"                 value="${ega.parameters.optional.delay.factor}"/>
+            <sysproperty key="kill.eclipse"                 value="${ega.parameters.optional.kill.eclipse.process}"/>
+            <sysproperty key="tested.jre.options"           value="${ega.parameters.optional.tested.vm.options}"/>
+            <sysproperty key="tested.jre.options.for.debug" value="${ega.parameters.optional.tested.vm.options.for.debug}"/>
+        </exec-ant>
+
+        <fail message="EGA scenario failed." if="ega.run.failed"/>
+    </target>
+    
+    <!-- CLEAN -->
+    <target name="clean">    
+        <log message="============= Adaptor for ${suite.name}: Clean ..."/>
+        <log message="Removing all generated data from ${test.sources.dir}/${suite.name} ..."/>
+        <delete dir="${test.sources.dir}/${suite.name}/project"/>
+        <delete dir="${test.sources.dir}/${suite.name}/workspace"/>
+        <delete file="${test.sources.dir}/${suite.name}/test.class"/>
+    </target>
+
+</project>

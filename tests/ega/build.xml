@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+-->
+
+<project name="ega" default="setup" basedir=".">
+    
+    <description>
+        Eclipse 3.2.1 Geronimo Application scenario 
+        for Apache Harmony http://incubator.apache.org/harmony
+    </description>
+
+    <property file="ega.properties"/>
+    
+    <property environment="env"/>
+    
+    <tstamp>
+        <format property="timestamp" pattern="yyyyMMdd_hhmm" />
+    </tstamp>
+    
+    <property name="download.dir" value="${basedir}"/>
+    <property name="install.dir" value="${basedir}"/>
+    
+    <condition property="is.windows">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="is.linux">
+        <and>
+            <os family="unix"/>
+            <os name="linux"/>
+        </and>
+    </condition>
+
+    <condition property="is.64bit">
+        <or>
+            <contains string="${os.arch}" substring="86_64"/>
+            <contains string="${os.arch}" substring="amd64"/>
+        </or>
+    </condition>
+
+    <condition property="is.windows.x86">
+        <and>
+            <isset property="is.windows"/>
+            <not><isset property="is.64bit"/></not>
+        </and>
+    </condition>
+
+    <condition property="is.windows.x86_64">
+        <and>
+            <isset property="is.windows"/>
+            <isset property="is.64bit"/>
+        </and>
+    </condition>
+
+    <condition property="is.linux.x86">
+        <and>
+            <isset property="is.linux"/>
+            <not><isset property="is.64bit"/></not>
+        </and>
+    </condition>
+
+    <condition property="is.linux.x86_64">
+        <and>
+            <isset property="is.linux"/>
+            <isset property="is.64bit"/>
+        </and>
+    </condition>
+    
+    <condition property="platform.supported">
+        <or>
+            <istrue value="${is.windows}"/>
+            <istrue value="${is.linux}"/>
+        </or>                                 
+    </condition>
+    
+    <condition property="eclipse.archive" value="eclipse-SDK-3.2.1-win32.zip">
+           <isset property="is.windows.x86"/>
+    </condition>
+    
+    <condition property="eclipse.archive" value="eclipse-SDK-3.2.1-win32-x86_64.zip">
+           <isset property="is.windows.x86_64"/>
+    </condition>
+    
+    <condition property="eclipse.archive" value="eclipse-SDK-3.2.1-linux-gtk.tar.gz">
+        <isset property="is.linux.x86"/>
+    </condition>
+
+    <condition property="eclipse.archive" value="eclipse-SDK-3.2.1-linux-gtk-x86_64.tar.gz">
+        <isset property="is.linux.x86_64"/>
+    </condition>
+
+    <condition property="eclipse-3.2.1.basedir" value="${install.dir}/eclipse-3.2.1-win-x86">
+        <isset property="is.windows.x86"/>
+    </condition>
+                
+    <condition property="eclipse-3.2.1.basedir" value="${install.dir}/eclipse-3.2.1-win-x86_64">
+        <isset property="is.windows.x86_64"/>
+    </condition>
+                
+    <condition property="eclipse-3.2.1.basedir" value="${install.dir}/eclipse-3.2.l-lnx-x86">
+        <isset property="is.linux.x86"/>
+    </condition>
+
+    <condition property="eclipse-3.2.1.basedir" value="${install.dir}/eclipse-3.2.1-lnx-x86_64">
+        <isset property="is.linux.x86_64"/>
+    </condition>
+
+    <property name="eclipse-3.2.1.homedir" value="${eclipse-3.2.1.basedir}/eclipse"/>
+
+    <condition property="eclipse.exists">
+        <available file="${eclipse-3.2.1.homedir}/startup.jar"/>
+    </condition>
+
+    <condition property="eclipse.archive.exists">
+        <available file="${download.dir}/${eclipse.archive}"/>
+    </condition>
+    
+    <condition property="maven.archive" value="maven-${maven.version}-bin.zip">
+        <isset property="is.windows"/>
+    </condition>
+        
+    <condition property="maven.archive" value="maven-${maven.version}-bin.tar.gz">
+        <isset property="is.linux"/>
+    </condition>
+        
+    <condition property="maven.archive.exists">
+        <available file="${download.dir}/${maven.archive}"/>
+    </condition>
+    
+    <condition property="maven.exec" value="mvn.bat">
+        <isset property="is.windows"/>
+    </condition>
+            
+    <condition property="maven.exec" value="mvn">
+        <isset property="is.linux"/>
+    </condition>
+    
+    <condition property="geronimo.archive" value="geronimo-1.2-beta-src.zip">
+        <isset property="is.windows"/>
+    </condition>
+            
+    <condition property="geronimo.archive" value="geronimo-1.2-beta-src.tar.gz">
+        <isset property="is.linux"/>
+    </condition>
+            
+    <condition property="geronimo.archive.exists">
+        <available file="${download.dir}/${geronimo.archive}"/>
+    </condition>
+    
+    <condition property="geronimo.unpacked">
+        <available file="${basedir}/project/geronimo-1.2-beta/testsupport/testsupport-common/src/main/java/org/apache/geronimo/testsupport/XmlBeansTestSupport.java"/>
+    </condition>
+    
+    <condition property="geronimo.already.built">
+        <available file="${basedir}/project/geronimo-1.2-beta/build.ok"/>
+    </condition>
+    
+    <condition property="test.class.compiled">
+        <available file="${basedir}/test.class"/>
+    </condition>
+    
+    <!-- ========================= Run Properties ========================= -->
+    
+    <condition property="ext" value=".exe" else="">
+        <isset property="is.windows"/>
+    </condition>    
+
+    <condition property="delay.factor.set" value="${delay.factor}" else="2">
+        <isset property="delay.factor"/>
+    </condition>
+
+    <condition property="iteration.num.set" value="${iteration.num}" else="0">
+        <isset property="iteration.num"/>
+    </condition>
+
+    <condition property="run.time.set" value="${run.time}" else="48">
+        <isset property="run.time"/>
+    </condition>
+
+    <condition property="kill.eclipse.set" value="${kill.eclipse}" else="1">
+        <isset property="kill.eclipse"/>
+    </condition>
+        
+    <condition property="eclipse.home.set" value="${eclipse.home}" else="${eclipse-3.2.1.homedir}">
+        <isset property="eclipse.home"/>
+    </condition>
+        
+    <condition property="jre.options" value="${tested.jre.options}" else="-showversion -Xmx1024M -Xms512M">
+        <and><isset property="tested.jre.options"/>
+        <length string="${tested.jre.options}" trim="true" length="0" when="greater"/></and>
+    </condition>
+                
+    <condition property="jre.options.for.debug" value="${tested.jre.options.for.debug}" else="">
+        <and><isset property="tested.jre.options.for.debug"/>
+        <length string="${tested.jre.options.for.debug}" trim="true" length="0" when="greater"/></and>
+    </condition>
+    
+    <condition property="runner" value="AutoIt3.exe">
+        <isset property="is.windows"/>
+    </condition>
+               
+    <condition property="runner" value="perl">
+        <isset property="is.linux"/>
+    </condition>
+
+    <condition property="linux.arch" value="x86">
+        <isset property="is.linux.x86"/>
+    </condition>
+                   
+    <condition property="linux.arch" value="x86_64">
+        <isset property="is.linux.x86_64"/>
+    </condition>
+    
+    <condition property="res.dir" value="${result.dir}/${timestamp}" else="${basedir}/results/${timestamp}">
+        <isset property="result.dir"/>
+    </condition>
+        
+    <condition property="args" value="ega_eclipse_3.2.1.au3 &quot;${eclipse.home.set}&quot; &quot;${tested.jre}&quot; 
+        &quot;${res.dir}&quot; ${iteration.num.set} ${run.time.set} ${delay.factor.set} 
+        ${kill.eclipse.set} &quot;${jre.options}&quot; &quot;${jre.options.for.debug}&quot;">
+        <isset property="is.windows"/>
+    </condition>
+        
+    <condition property="args" value="./ega_eclipse_3.2.1.pl &quot;${eclipse.home.set}&quot; &quot;${tested.jre}&quot; 
+        &quot;${res.dir}&quot; ${linux.arch} ${iteration.num.set} ${run.time.set} ${delay.factor.set} 
+        ${kill.eclipse.set} &quot;${jre.options}&quot; &quot;${jre.options.for.debug}&quot;">
+        <isset property="is.linux"/>
+    </condition>
+
+    <!-- ========================= Setup ========================= -->
+    
+    <target name="setup" description="Setup EGA scenario" depends="set.proxy" if="platform.supported">
+        <antcall target="install.eclipse"/>
+        <antcall target="install.maven"/>
+        <antcall target="install.geronimo"/>
+    </target>
+    
+     <target name="set.proxy" if="http.proxyHost">
+        <echo>Set proxy: ${http.proxyHost}:${http.proxyPort}</echo>
+        <setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}"/>
+     </target>
+    
+    <!-- ========================= Setup eclipse-3.2.1 ========================= -->
+    
+    <target name="install.eclipse" description="Install Eclipse SDK 3.2.1 if Eclipse doesn't exist locally" unless="eclipse.exists">
+        <antcall target="download.eclipse"/>
+        <antcall target="unpack.eclipse.win"/>
+        <antcall target="unpack.eclipse.lnx"/>
+    </target>
+    
+    <target name="unpack.eclipse.win" description="Unpack Eclipse SDK 3.2.1 on Windows" if="is.windows">
+        <unzip src="${download.dir}/${eclipse.archive}" dest="${eclipse-3.2.1.basedir}"/>
+    </target>
+    
+    <target name="unpack.eclipse.lnx" description="Unpack Eclipse SDK 3.2.1 on Linux" if="is.linux">
+        <gunzip src="${download.dir}/${eclipse.archive}" dest="${download.dir}/eclipse_tmp.tar"/>
+        <untar src="${download.dir}/eclipse_tmp.tar" dest="${eclipse-3.2.1.basedir}"/>
+        <delete file="${download.dir}/eclipse_tmp.tar"/>
+        <chmod file="${eclipse-3.2.1.homedir}/eclipse" perm="744"/>
+    </target>
+    
+    <target name="download.eclipse" description="Download Eclipse SDK 3.2.1 if Eclipse archive doesn't exist locally" unless="eclipse.archive.exists">
+        <get src="${eclipse.download.address}/${eclipse.archive}" dest="${download.dir}/${eclipse.archive}" verbose="true"/>
+    </target>
+
+    <target name="update.eclipse.config.win" if="is.windows">
+        <unzip src="${download.dir}/${eclipse.archive}" dest="${eclipse-3.2.1.basedir}">
+            <patternset includes="eclipse/configuration/config.ini"/>
+        </unzip>
+    </target>
+
+    <target name="update.eclipse.config.lnx" if="is.linux">
+        <gunzip src="${download.dir}/${eclipse.archive}" dest="${download.dir}/eclipse_tmp.tar"/>
+        <untar src="${download.dir}/eclipse_tmp.tar" dest="${eclipse-3.2.1.basedir}">
+            <patternset includes="eclipse/configuration/config.ini"/>
+        </untar>
+        <delete file="${download.dir}/eclipse_tmp.tar"/>
+    </target>
+    
+    <!-- ========================= Setup maven ========================= -->
+    
+    <target name="install.maven" description="Install maven">
+        <antcall target="download.maven"/>
+        <antcall target="unpack.maven.win"/>
+        <antcall target="unpack.maven.lnx"/>
+        <antcall target="configure.maven"/>
+    </target>
+    
+    <target name="unpack.maven.win" description="Unpack maven on Windows if it doesn't exist locally" if="is.windows">
+        <unzip src="${download.dir}/${maven.archive}" dest="${install.dir}"/>
+    </target>
+    
+    <target name="unpack.maven.lnx" description="Unpack maven on Linux if it doesn't exist locally" if="is.linux">
+        <gunzip src="${download.dir}/${maven.archive}" dest="${download.dir}/maven_tmp.tar"/>
+        <untar src="${download.dir}/maven_tmp.tar" dest="${install.dir}"/>
+        <delete file="${download.dir}/maven_tmp.tar"/>
+        <chmod file="${install.dir}/maven-${maven.version}/bin/${maven.exec}" perm="744"/>
+    </target>
+    
+    <target name="download.maven" description="Download maven if maven archive doesn't exist locally" unless="maven.archive.exists">
+        <get src="${maven.download.address}/${maven.archive}" dest="${download.dir}/${maven.archive}" verbose="true"/>
+    </target>
+    
+    <target name="configure.maven">
+        <echo message="Set maven repository location to ${basedir}/project/.m2/repository"/>
+        <echo file="${install.dir}/maven-${maven.version}/conf/ega.settings.xml">
+&lt;localRepository&gt;${basedir}/project/.m2/repository&lt;/localRepository&gt;
+        </echo>
+        <antcall target="configure.maven.proxy"/>
+    </target>
+        
+    <target name="configure.maven.proxy" if="http.proxyHost">
+        <echo message="proxy.host=${http.proxyHost}"/>
+        <echo message="proxy.port=${http.proxyPort}"/>
+        <echo file="${install.dir}/maven-${maven.version}/conf/ega.settings.xml">
+&lt;settings&gt;
+    &lt;localRepository&gt;${basedir}/project/.m2/repository&lt;/localRepository&gt;
+    &lt;proxies&gt;
+        &lt;proxy&gt;
+            &lt;host&gt;${http.proxyHost}&lt;/host&gt;
+            &lt;port&gt;${http.proxyPort}&lt;/port&gt;
+        &lt;/proxy&gt;
+    &lt;/proxies&gt;
+&lt;/settings&gt;
+        </echo>
+    </target>
+    
+    <!-- ========================= Setup geronimo-1.2-beta ========================= -->
+    
+    <target name="install.geronimo" description="Install Geronimo">
+        <antcall target="download.geronimo"/>
+        <antcall target="unpack.geronimo.win"/>
+        <antcall target="unpack.geronimo.lnx"/>
+        <antcall target="build.geronimo"/>
+    </target>
+    
+    <target name="unpack.geronimo.win" description="Unpack Geronimo on Windows if it doesn't exist locally" 
+        if="is.windows" unless="geronimo.unpacked">
+        <unzip src="${download.dir}/${geronimo.archive}" dest="${basedir}/project"/>
+    </target>
+        
+    <target name="unpack.geronimo.lnx" description="Unpack Geronimo on Linux if it doesn't exist locally" 
+        if="is.linux" unless="geronimo.unpacked">
+        <gunzip src="${download.dir}/${geronimo.archive}" dest="${download.dir}/geronimo_tmp.tar"/>
+        <untar src="${download.dir}/geronimo_tmp.tar" dest="${basedir}/project"/>
+        <delete file="${download.dir}/geronimo_tmp.tar"/>
+    </target>
+        
+    <target name="download.geronimo" description="Download Geronimo if geronimo archive doesn't exist locally" unless="geronimo.archive.exists">
+        <get src="${geronimo.download.address}/${geronimo.archive}" dest="${download.dir}/${geronimo.archive}" verbose="true"/>
+    </target>
+    
+    <target name="build.geronimo" description="Build Geronimo projects for Eclipse" unless="geronimo.already.built">
+        <mkdir dir="${basedir}/project/.m2/repository"/>
+        
+        <echo message="MAVEN=${install.dir}/maven-${maven.version}/bin/${maven.exec}"/>
+        <echo message="GERONIMO_HOME=${basedir}/project/geronimo-1.2-beta"/>
+        <echo message="JAVA_HOME=${env.JAVA_HOME}"/>
+        
+        <exec executable="${install.dir}/maven-${maven.version}/bin/${maven.exec}" 
+                dir="${basedir}/project/geronimo-1.2-beta" 
+                failonerror="true" logError="true">
+                    <redirector outputproperty="geronimo.build.result" alwayslog="true"/>
+                    <arg line="-s ${install.dir}/maven-${maven.version}/conf/ega.settings.xml"/>
+                    <arg value="clean"/>
+                    <arg value="eclipse:eclipse"/>
+                    <env key="MAVEN_OPTS" value="-Xmx512m -XX:MaxPermSize=128m"/>
+                    <env key="JAVA_HOME" value="${env.JAVA_HOME}"/>
+        </exec>
+        <condition property="geronimo.build.failed">
+            <or>
+                <contains string="${geronimo.build.result}" substring="FATAL ERROR"/> 
+                <contains string="${geronimo.build.result}" substring="BUILD FAILED"/> 
+                <contains string="${geronimo.build.result}" substring="BUILD ERROR"/> 
+            </or>
+        </condition>
+        <antcall target="save.build.status"/>
+        <fail message="ERROR: Geronimo build failed!" if="geronimo.build.failed"/>
+    </target>
+    
+    <target name="save.build.status" unless="geronimo.build.failed">
+        <echo file="${basedir}/project/geronimo-1.2-beta/build.ok" 
+            message="Geronimo was successfully built at ${timestamp}"/>
+    </target>
+    
+    <!-- ========================= Run ========================= -->
+
+    <target name="run" description="Run EGA scenario" if="platform.supported">
+        <echo>----- Run EGA scenario on the following configuration -----</echo>
+        <echo>Tested JRE = ${tested.jre}</echo>
+        <echo>Eclipse Home = ${eclipse.home.set}</echo>
+        <echo>${line.separator}</echo>
+        <echo>Scenario iteration number = ${iteration.num.set}</echo>
+        <echo>Scenario run time = ${run.time.set}</echo>
+        <echo>Delay factor = ${delay.factor.set}</echo>
+        <echo>Kill Eclipse if scenario fails = ${kill.eclipse.set}</echo>
+        <echo>${line.separator}</echo>
+        <echo>Tested JRE options for Eclipse launching = ${jre.options}</echo>
+        <echo>Tested JRE options for EGA debug step = ${jre.options.for.debug}</echo>
+        <echo>------------------------------------------------------------</echo>
+        <antcall target="check.autoit"/>
+        <antcall target="check.java"/>
+        <antcall target="check.eclipse"/>
+        <antcall target="check.eclipse.version"/> 
+        <antcall target="check.vm.options"/>
+        <antcall target="check.vm.debug.options"/>
+        <echo>Cleaning Eclipse configuration ...</echo>
+        <delete dir="${eclipse.home.set}/configuration/org.eclipse.osgi"/>
+        <delete dir="${eclipse.home.set}/configuration/org.eclipse.core.runtime"/>
+        <delete dir="${eclipse.home.set}/configuration/org.eclipse.update"/>
+        <delete dir="${eclipse.home.set}/configuration/.settings"/>
+        <delete file="${eclipse.home.set}/configuration/config.ini"/>
+        <antcall target="update.eclipse.config.win"/>
+        <antcall target="update.eclipse.config.lnx"/>
+        <echo>Removing Eclipse workspace ...</echo>
+        <delete dir="${basedir}/workspace"/>
+        <echo>Creating results directory ...</echo>
+        <mkdir dir="${res.dir}"/> 
+        <echo>Start EGA scenario</echo>
+        <echo>Please, see ${res.dir}/EGA.log for details</echo>
+        <exec executable="${runner}" dir="${basedir}" resultproperty="ega.exit.code">
+            <redirector outputproperty="ega.output"/>
+            <arg line="${args}"/>
+        </exec>
+        <echo>${ega.output}</echo>
+        <condition property="ega.passed">
+            <equals arg1="${ega.exit.code}" arg2="0"/>
+        </condition>
+        <loadfile property="ega.log" srcFile="${res.dir}/EGA.log">
+            <filterchain>
+                <tokenfilter>
+                    <filetokenizer/>
+                    <replaceregex pattern="-*\s*Iteration\s*\d*\s*start\s*-*.*-*\s*Iteration\s*\d*\s*end\s*-*" 
+                        flags="s" replace="..."/>
+                </tokenfilter>
+            </filterchain>
+        </loadfile>
+        <loadfile property="eclipse.log" srcFile="${res.dir}/eclipse.log" failonerror="false"/>
+        <condition property="eclipse.log.message" value="
+${line.separator}======================= eclipse.log =======================
+${line.separator}${eclipse.log}" else="">
+            <isset property="eclipse.log"/>
+        </condition>    
+        <property name="fail.message" value="
+${line.separator}========================== EGA.log =======================
+${line.separator}${ega.log}
+${eclipse.log.message}
+${line.separator}==========================================================="/>
+        <antcall target="print.fail.message"/>
+        <fail message="EGA FAILED!" unless="ega.passed"/>
+        <echo>EGA PASSED!</echo>    
+    </target>
+    
+    <target name="print.fail.message" unless="ega.passed">
+        <echo level="error" message="${line.separator}${fail.message}${line.separator}"/>
+    </target>
+    
+    <target name="check.java" description="Checks if tested.jre is correct">
+        <condition property="no.java">
+            <not><available file="${tested.jre}/bin/java${ext}"/></not>
+        </condition>
+        <fail message="ERROR! Tested Java home is incorrect.${line.separator}
+Please, use -Dtested.jre=&lt;TESTED_JRE_HOME&gt;
+${line.separator}EGA FAILED!" if="no.java"/>
+    </target>
+    
+    <target name="check.eclipse" description="Checks if eclipse.home is correct">
+        <condition property="no.eclipse">
+            <not><available file="${eclipse.home.set}/eclipse${ext}"/></not>
+        </condition>
+        <fail message="ERROR! Eclipse home is incorrect.${line.separator}
+Please, use -Declipse.home=&lt;ECLIPSE_HOME&gt;
+${line.separator}EGA FAILED!" if="no.eclipse"/>
+    </target>
+        
+    <target name="check.eclipse.version" description="Checks if eclipse.home points to Eclipse 3.2.1">
+        <fileset id="found.plugin" dir="${eclipse.home.set}/plugins" includes="org.eclipse.jdt.core_3.2.1*.jar"/>
+        <property name="plugin-3.2.1" refid="found.plugin"/>
+        <condition property="wrong.eclipse.version">
+            <length string="${plugin-3.2.1}" when="less" length="1"/>
+        </condition>
+        <fail message="ERROR! eclipse.home doesn't point to Ecipse 3.2.1.${line.separator}EGA FAILED!" if="wrong.eclipse.version"/>
+    </target>
+        
+    <target name="check.autoit" if="is.windows" description="Checks if AutoIt3 is installed for EGA run on Windows">
+        <available file="AutoIt3.exe" filepath="${env.Path}" property="autoit"/>
+        <fail message="ERROR! AutoIt3 is not installed or it is not in the Path.${line.separator}EGA FAILED!" unless="autoit"/>
+    </target>
+
+    <target name="check.vm.options" if="tested.jre.options">
+        <antcall target="compile.test.class"/>
+        <exec executable="${tested.jre}/bin/java${ext}" failonerror="true">
+            <arg line="-cp ${basedir}"/>
+            <arg line="${jre.options}"/>
+            <arg value="test"/>
+        </exec>
+    </target>
+        
+    <target name="check.vm.debug.options" if="tested.jre.options.for.debug">
+        <antcall target="compile.test.class"/>
+        <exec executable="${tested.jre}/bin/java${ext}" failonerror="true">
+            <arg line="-cp ${basedir}"/>
+            <arg line="${jre.options.for.debug}"/>
+            <arg value="test"/>
+        </exec>
+    </target>
+        
+    <target name="compile.test.class" unless="test.class.compiled">
+        <exec executable="${env.JAVA_HOME}/bin/javac${ext}" dir="${basedir}" failonerror="true">
+            <arg value="test.java"/>
+        </exec>
+    </target>
+    
+</project>
+
