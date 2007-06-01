@@ -30,7 +30,7 @@
         <propertyref name="external.libs.dir" />
         <propertyref name="external.arch.dir" />
         <propertyref name="temp.files.dir" />
-        <propertyref name="resources.location" />
+        <propertyref name="external.resources.location" />
     </propertyset>
 
     <target name="download-all" depends="-make-dep-dirs,-setup-proxy">
@@ -154,7 +154,7 @@
             <!-- Set up the library accessing property: -->
             <property name="ext.@{libname}.location"
                       location="${external.libs.dir}/${parameters.external.@{libname}.basename}" />
-            <echo file="${resources.location}" append="true">ext.@{libname}.location=${ext.@{libname}.location}
+            <echo file="${external.resources.location}" append="true">ext.@{libname}.location=${ext.@{libname}.location}
 </echo>
 
             <!-- Check for lib file presence -->

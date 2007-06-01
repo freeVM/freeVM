@@ -15,8 +15,6 @@
      See the License for the specific language governing permissions and
      limitations under the License. -->
 
-<!DOCTYPE buildtest SYSTEM "../buildtest.dtd">
-
 <!-- ====================================================================== 
                    BT Framework Implementation Specific Code 
      ====================================================================== 
@@ -50,23 +48,62 @@
 
     <import file="cc-project.xml"/>
 
-    <!-- check framework parameters passed to adaptors -->
-    <target name="check-framework-parameters">
-        <check-file-pointer property="build.dir" type="dir"/>
-        <check-file-pointer property="checkouts.dir" type="dir"/>
+    <!-- Sets up the framework -->
+    <target name="setup-framework" 
+            depends="fetch-depends, load-depends, define-tasks, make-dirs, patch-ant, 
+                        check-selected-names, reorder-suites, -delete-temporal-properties"/>
+
+    <!-- Initialize the framework for test execution -->
+    <target name="init-framework" 
+            depends="load-depends, define-tasks, load-suites-configuration, 
+                        load-parameters, -delete-temporal-properties"/>
+    
+    <!-- check the names of selected test suites -->
+    <target name="check-selected-names">
+        <if>
+            <not><equals arg1="${test.suites}" arg2="*"/></not>
+        <then>
+            <for list="${test.suites}" param="suite" trim="yes">
+            <sequential>
+                <fail>
+                    <condition>
+                        <not><available 
+                            file="${adaptors.dir}/@{suite}" type="dir"/>
+                        </not>
+                    </condition>...
+------
+ERROR: Could not found adaptor for '@{suite}' test suite. 
+------ 
+Please, check the names specified by test.suites property:
+        test.suites=${test.suites}
+                </fail>
+            </sequential>
+            </for>
+        </then>
+        </if>
     </target>
 
-    <!-- Sets up the framework -->
-    <target name="init-framework" 
-            depends="fetch-depends,define-tasks, make-dirs, patch-ant, reorder-suites, load-parameters,
-                            -delete-temporal-properties"/>
+    <!-- load information about external dependencies locations
+         obtained on setup stage -->
+    <target name="load-depends">
+        <loadproperties srcfile="${external.resources.location}">
+            <filterchain>
+                <replaceregex pattern="\\" replace="/" flags="g"/>
+            </filterchain>
+        </loadproperties>
+    </target>
 
-    <target name="fetch-depends" >
-        <property name="download.xml" location="${scripts.dir}/download.xml" />
-        <property name="resources.location" location="resources.location"/>
+    <!-- load information about test run configuration
+         obtained on setup stage -->
+    <target name="load-suites-configuration" depends="define-ant-contrib">
+        <var file="${selected.suites.configuration}"/>
+    </target>
+
+    <target name="fetch-depends">
+        <property name="download.xml" location="${scripts.dir}/download.xml"/>
 
         <!-- create empty file -->
-        <echo file="resources.location" message=""/>
+        <echo file="${external.resources.location}" message=""/>
         
         <!-- download framework dependencies -->
         <subant genericantfile="${download.xml}" target="download-all" buildpath="${scripts.dir}" inheritall="true"/>
@@ -75,15 +112,6 @@
         <subant genericantfile="${download.xml}" target="download-all"  inheritall="true">
             <dirset dir="${adaptors.dir}" includes="${test.suites}"/>
         </subant>
-        
-        <!-- load collected locations                  -->
-        <!-- FIXME: the file should be created once    -->
-        <!-- during setup and reused by run and run-cc -->
-        <loadproperties srcfile="${resources.location}">
-            <filterchain>
-                <replaceregex pattern="\\" replace="/" flags="g"/>
-            </filterchain>
-        </loadproperties>
     </target>
 
     <condition property="ant.to.patch" value="1.6.5">
@@ -141,7 +169,7 @@
         <mkdir dir="${classes.dir}"/>
     </target>
 
-    <target name="define-tasks" depends="fetch-depends,define-ant-contrib"/>
+    <target name="define-tasks" depends="define-ant-contrib"/>
 
     <target name="define-ant-contrib">
         <!-- plug in the ANTCONTRIB -->
@@ -196,8 +224,8 @@
 
         <!-- required parameters with keys in simple form -->
         <propertyset id="required.parameters.simple.id">
-            <propertyref regex="[^.][^.]*\.parameters\.required"/>
-            <regexpmapper from="^([^.][^.]*)\.parameters\.required\.(.*)$" to="\1.\2"/>
+            <propertyref regex="[^.]+\.parameters\.required"/>
+            <regexpmapper from="^([^.]+)\.parameters\.required\.(.*)$" to="\1.\2"/>
         </propertyset>
 
         <!-- shared parameters with keys in extended form -->
@@ -217,30 +245,39 @@
         </propertyset>
     </target>
 
-    <target name="process-required-parameters" depends="load-parameters">
-        <!-- Load and define (as extended) preset required parameters -->
-        <property file="${required.parameters.location}" prefix="tmp.required.preset"/>
-        <!-- XXX echoproperties>
+    <target name="load-required-parameters" depends="load-parameters">
+        <touch file="${required.parameters.location}"/>
+        <!-- load preset required parameters from the file -->
+        <loadproperties srcfile="${required.parameters.location}">
+            <filterchain>
+                <striplinecomments>
+                    <comment value="#"/>
+                </striplinecomments>
+                <deletecharacters chars="\t"/>
+                <trim/>
+                <ignoreblank/>
+                <replaceregex pattern="\\" replace="\\\\\\\\" flags="g"/>
+                <prefixlines prefix="tmp.preset.required."/>
+            </filterchain>
+        </loadproperties>
+        <!-- echoproperties>
             <propertyset>
-                <propertyref prefix="tmp.required.preset"/>
+                <propertyref prefix="tmp.preset.required."/>
             </propertyset>
         </echoproperties -->
-        <property name="tmp.preset.required.params.list" value=""/>
+        <property name="tmp.preset.params.list" value=""/>
         <propertyselector 
-            property="tmp.preset.required.params.list"
+            property="tmp.preset.params.list"
             override="true"
             delimiter=","
-            match="^tmp\.required\.preset\.(.*)$"
+            match="^tmp\.preset\.required\.(.*)$"
             select="\1"
             distinct="true"
         />
-        <log message="Preset Required Parameters: ${tmp.preset.required.params.list}"/>
+        <log message="Preset required parameters: ${tmp.preset.params.list}"/>
         <!-- Set up Required Parameter values and remove possible trash 
-             properties got from the file (local configuration properties put
-             into the wrong place (${local.configuration.file} should be used
-             instead of ${required.parameters.location}) 
-             or required parameters of unsellected suites) -->
-        <for list="${tmp.preset.required.params.list}" param="preset">
+             properties got from the file -->
+        <for list="${tmp.preset.params.list}" param="preset">
             <sequential>
                 <var name="tmp.param.key" unset="true"/>
                 <property name="tmp.param.key" value=""/>
@@ -252,10 +289,8 @@
                     replace="\1.parameters.required.\2"
                     override="true"
                 />
-                <var name="tmp.param.value" unset="true"/>
-                <property name="tmp.param.value" 
-                          value="${tmp.required.preset.@{preset}}"/>
-                <!-- log message="Processing: ${tmp.param.key} = ${tmp.param.value} (${tmp.required.preset.@{preset}})"/ -->
+                <var name="tmp.param.value" 
+                     value="${tmp.preset.required.@{preset}}"/>
                 <if>
                     <not><isset property="${tmp.param.key}.description"/></not>
                 <then>
@@ -271,9 +306,9 @@ It is removed from required properties settings file
 and it's backed up into
             ${backup.parameters.location}
 file.
-</echo>
-                    <echo file="${backup.parameters.location}" append="true">
-@{preset}=${tmp.param.value}</echo>
+                    </echo>
+                    <echo file="${backup.parameters.location}" append="true"
+                          message="@{preset}=${tmp.param.value}${line.separator}"/>
                 </then>
                 <else>
                     <if>
@@ -290,35 +325,11 @@ file.
                 </if>
             </sequential>
         </for>
-
-        <antcall target="update-required-parameters-file" inheritAll="true">
-            <propertyset>
-                <propertyset refid="required.parameters.simple.id"/>
-                <globmapper from="*" to="R-EQUIRED.*"/>
-            </propertyset>
-        </antcall>
     </target>
 
     <!-- Updates the file containing all of the required properties -->
-    <!-- This target should be called with propertyset containing all the
-         required parameter properties with names prefixed with 
-         "required." -->
-    <target name="update-required-parameters-file">
-        <property name="tmp.required.parameters.list" value=""/>
-        <propertyselector 
-            property="tmp.required.parameters.list"
-            override="true"
-            delimiter=","
-            match="^R-EQUIRED\.(.*?)(?:\.description)?$"
-            select="\1"
-            distinct="true"
-        />
-        <sortlist 
-            property="tmp.required.parameters.sorted.list"
-            value="${tmp.required.parameters.list}"
-            delimiter=","
-            override="true"
-        />
+    <target name="save-required-parameters">
+        
         <echo file="${required.parameters.location}">#
 # Required Parameters Settings File
 #
@@ -341,61 +352,62 @@ file.
 #
 
 </echo>
-        <for list="${tmp.required.parameters.sorted.list}" param="required" trim="yes">
+        <for list="${test.suites.names.list}" param="suite">
+        <sequential>
+            <log message="Update required parameters for '@{suite}'"/>
+            <var name="tmp.required.parameters.list" value=""/>
+            <propertyselector 
+                property="tmp.required.parameters.list"
+                override="true"
+                delimiter=","
+                match="^(@{suite}\.parameters\.required\..*?)(?:\.description)?$"
+                select="\1"
+                distinct="true"
+            />
+            <for list="${tmp.required.parameters.list}" param="required" trim="yes">
             <sequential>
-
-                <log message="Precessing of @{required} = ${R-EQUIRED.@{required}}"/>
-
-                <!-- Print Description -->
+                <var name="tmp.short.param.key" value=""/>
+                <!-- bring the parameter key to short form -->
+                <propertyregex
+                    property="tmp.short.param.key" 
+                    input="@{required}"
+                    regexp="^@{suite}\.parameters\.required\.(.*?)$"
+                    replace="@{suite}.\1"
+                    override="true"
+                />
+                <log message="Processing of @{required} = ${@{required}}"/>
+                <!-- write description -->
+                <echo file="${required.parameters.location}" append="true"
+                      message="# ${@{required}.description}${line.separator}"/>
                 <if>
-                    <isset property="R-EQUIRED.@{required}.description"/>
-                <then>
-                    <echo append="true"
-                          file="${required.parameters.location}"># ${R-EQUIRED.@{required}.description}
-</echo>
-                </then>
-                </if>
-
-                <var name="tmp.param.value" unset="true"/>
-                <property name="tmp.param.value" value=""/>
-                <if>
-                    <or>
-                        <not><isset property="R-EQUIRED.@{required}"/></not>
-                        <equals arg1="${R-EQUIRED.@{required}}" arg2="" trim="true"/>
-                        <contains string="${R-EQUIRED.@{required}}" substring=".parameters.shared."/>
+                    <or><not><isset property="@{required}"/></not>
+                        <equals arg1="${@{required}}" arg2="" trim="true"/>
+                        <contains string="${@{required}}" 
+                                  substring=".parameters.shared."/>
                     </or>
                 <then>
-                    <echo append="true"
-                          file="${required.parameters.location}">@{required}=
-</echo>
+                    <echo file="${required.parameters.location}" append="true"
+                          message="${tmp.short.param.key}=${line.separator}"/>
                     <property name="tmp.unset.required.parameter.exists" value="true"/>
                     <echo>
 --------
 WARNING: The value of the Required Parameter 
---------    @{required}
+--------    ${tmp.short.param.key}
          was not set! 
          Please, update Required Parameters Settings File:
             ${required.parameters.location}
-
-</echo>
+                    </echo>
                 </then>
                 <else>
-                    <propertyregex
-                        property="tmp.param.value" 
-                        input="${R-EQUIRED.@{required}}"
-                        regexp="\\"
-                        replace="\\\\\\\\"
-                        global="true"
-                        override="true"
-                        defaultValue="${R-EQUIRED.@{required}}"
-                    />
-                    <echo append="true"
-                          file="${required.parameters.location}">@{required}=${tmp.param.value}
-</echo>
+                    <echo file="${required.parameters.location}" append="true"
+                          message="${tmp.short.param.key}=${@{required}}${line.separator}"/>
                 </else>
                 </if>
             </sequential>
+            </for>
+        </sequential>
         </for>
+
         <fail if="tmp.unset.required.parameter.exists">...
 ------
 ERROR: Some of the Required Parameters for selected Test Suites:
@@ -403,8 +415,7 @@ ERROR: Some of the Required Parameters for selected Test Suites:
        were not set. 
        Please, update Requirted Parameters Settings File:
             ${required.parameters.location}
-</fail>
-
+        </fail>
     </target>
 
     <target name="define-suites-ids">
@@ -443,8 +454,9 @@ ERROR: Some of the Required Parameters for selected Test Suites:
 
     <!-- do test suites initialization work before adaptors execution -->
     <target name="init-suites" 
-                depends="init-framework, process-required-parameters, 
-                            define-suites-ids, -delete-temporal-properties"/>
+                depends="init-framework, 
+                    load-required-parameters, save-required-parameters,
+                        define-suites-ids, -delete-temporal-properties"/>
 
     <!-- Sets up the suites -->
     <target name="setup-suites" depends="init-suites">
@@ -482,6 +494,7 @@ WARNING: Suite '@{suite}' won't be set up as some of its superior
 
     <!-- Run suites -->
     <target name="run-suites" depends="init-suites">
+        <log message="Running the following suites: ${test.suites.names.list}."/>
         <for list="${test.suites.names.list}" param="suite">
         <sequential>
             <log message="Run of '@{suite}' Test Suite."/>
@@ -839,6 +852,7 @@ ERROR: Execution of Test Suite '@{suite}' FAILED.
     <macrodef name="svn-cleanup">
         <attribute name="trunk"/>
         <sequential>
+            <log message="Do cleanup for @{trunk}"/>
             <delete quiet="true" verbose="false">
                 <fileset dir="@{trunk}" defaultexcludes="no" includes="**/.svn/lock"/>
             </delete>
@@ -861,36 +875,178 @@ ERROR: Execution of Test Suite '@{suite}' FAILED.
     <macrodef name="svn-update-bt">
         <attribute name="path"/>
         <sequential>
-            <!-- svn-cleanup trunk="@{trunk}"/>
-            <exec executable="svn" dir="@{trunk}" failonerror="true">
-                <arg line="up @{url} @{trunk}"/>
-            </exec -->
+            <!-- first: extract the relative path -->
+            <get-relative-path root="${root.dir}"
+                               path="@{path}"
+                               property="tmp.relative.path"/>
+            <log message="Do BTI repository update of: '${tmp.relative.path}'"/>
+
+            <if>
+                <and>
+                    <not><isset property="framework.parameters.repository.noupdate"/></not>
+                    <not><contains string="${framework.parameters.repository.awaited}"
+                                   substring="|${tmp.relative.path}|"/></not>
+                </and>
+            <then>
+                <do-svn-update-bt path="${tmp.relative.path}"/>
+            </then>
+            </if>
         </sequential>
     </macrodef>
 
-    <!-- macrodefinition checking the property pointing to the file -->
-    <macrodef name="check-file-pointer">
-        <attribute name="property"/>
-        <attribute name="type" default="file"/>
+    <!-- does svn update of BT workspace -->
+    <macrodef name="do-svn-update-bt">
+        <attribute name="path"/>
         <sequential>
-            <echo>Check for @{property} pointing to '${@{property}}' file</echo>
-            <fail>
-                <condition>
-                    <not>
-                        <isset property="@{property}"/>
-                    </not>
+            <!-- create the SVN path -->
+            <var name="tmp.svn-make-path.failure" unset="true"/>
+            <svn-make-path path="${tmp.relative.path}" 
+                           failureproperty="tmp.svn-make-path.failure"/>
+            <fail if="tmp.svn-make-path.failure">...
+------
+ERROR: While SVN path creation
+------  ${tmp.relative.path}
+for BTI workspace:
+        ${root.dir}
+the following error has occured:
+------
+${tmp.svn-make-path.failure}
+------
+</fail>
+            <var name="tmp.svn-make-path.failure" unset="true"/>
+        </sequential>
+    </macrodef>
+
+    <!-- creates the path in ${root.dir} svn repository 
+         (does consequent non-recursive updates of all non-existing
+         parents and recursive update of requested leaf) -->
+    <macrodef name="svn-make-path">
+        <attribute name="path"/>
+        <attribute name="failureproperty"/>
+        <attribute name="initial" default="@{path}"/>
+        <sequential>
+            <var name="tmp.exec.svn.result" unset="true"/>
+            <!-- try to get info to determine the path existence -->
+            <exec executable="svn" dir="${root.dir}" 
+                  failonerror="false" resultproperty="tmp.exec.svn.result">
+                <arg line="info @{path}"/>
+            </exec>
+            <!-- check for svn info failure
+                 (if it is so then no such 'svn' path) -->
+            <var name="tmp.svn.path.not.exists" unset="true"/>
+            <condition property="tmp.svn.path.not.exists" value="true">
+                <not><equals arg1="${tmp.exec.svn.result}" arg2="0"/></not>
+            </condition>
+            <if>
+                <isset property="tmp.svn.path.not.exists"/>
+            <then>
+                <!-- so svn path does not exists locally, 
+                     so check parent directory and create it -->
+                <log message="svn path '@{path}' does not exist!"/>
+                <var name="tmp.svn.path.dirname" unset="true"/>
+                <dirname property="tmp.svn.path.dirname" file="${root.dir}/@{path}"/>
+                <get-relative-path root="${root.dir}"
+                                   path="${tmp.svn.path.dirname}"
+                                   property="tmp.svn.path.dirname"/>
+                <if>
+                    <!-- less than 4 because Windows root is 'C:\' -->
+                    <length string="${tmp.svn.path.dirname}" 
+                            when="less" length="4"/>
+                <then>
+                    <!-- report error -->
+                    <property name="@{failureproperty}" 
+                              value="Supplied path is not a part of SVN repository."
+                    />
+                </then>
+                </if>
+                <log message="try to create parent svn path: '${tmp.svn.path.dirname}'"/>
+                <if>
+                    <not><isset property="@{failureproperty}"/></not>
+                <then>
+                    <svn-make-path 
+                        path="${tmp.svn.path.dirname}"
+                        initial="@{initial}"
+                        failureproperty="@{failureproperty}"/>
+                </then>
+                </if>
+            </then>
+            </if>
+            <var name="tmp.exec.svn.result" unset="true"/>
+            <if>
+                <not><isset property="@{failureproperty}"/></not>
+            <then>
+                <!-- claenup the parent svn path -->
+                <svn-cleanup trunk="${root.dir}/@{path}/.."/>
+                <!-- do recursive update only for requested path -->
+                <var name="tmp.is.initial" unset="true"/>
+                <condition property="tmp.is.initial" value="" else="-N">
+                    <equals arg1="@{initial}" arg2="@{path}"/>
                 </condition>
-                &nullFilePointerMessage;
-            </fail>
-            <fail>
-                <condition>
-                    <not>
-                        <available file="${@{property}}" type="@{type}"/>
-                    </not>
+                <log message="Do svn update ${tmp.is.initial} for @{path}"/>
+                <exec executable="svn" dir="${root.dir}"
+                      failonerror="false" resultproperty="tmp.exec.svn.result">
+                    <arg line="update ${tmp.is.initial} @{path}"/>
+                </exec>
+                <!-- report error in case of update failure -->
+                <condition property="@{failureproperty}" 
+                           value="SVN reported error while updating of:${line.separator}    @{path}">
+                    <not><equals arg1="${tmp.exec.svn.result}" arg2="0"/></not>
                 </condition>
-                &unexistingFilePointerMessage;
-            </fail>
-            <echo message="ok"/>
+                <!-- report error in case of path unexistence -->
+                <condition property="@{failureproperty}" 
+value="SVN repository does not contain such a path:${line.separator}
+    @{path}${line.separator}
+Please, check the supplied path.${line.separator}
+If you're developing new BTI subcomponent which is not under SVN yet,${line.separator}
+use whether${line.separator}
+    framework.parameters.repository.noupdate=true${line.separator}
+to turn off repository updates, or${line.separator}
+    framework.parameters.repository.awaited=|@{path}|${line.separator}
+to skip it from being updated.">
+                    <not><available file="${root.dir}/@{path}"/></not>
+                </condition>
+            </then>
+            </if>
+            <var name="tmp.is.initial" unset="true"/>
+            <var name="tmp.svn.path.dirname" unset="true"/>
+            <var name="tmp.svn.path.not.exists" unset="true"/>
+            <var name="tmp.exec.svn.result" unset="true"/>
+        </sequential>
+    </macrodef>
+
+    <!-- retrieves relative constituent of the path 
+         if supplied path is not under root, it will be provided as is -->
+    <macrodef name="get-relative-path">
+        <attribute name="root"/>
+        <attribute name="path"/>
+        <attribute name="property"/>
+        <sequential>
+            <var name="tmp.@{root}.normalized" unset="true"/>
+            <!-- convert back slashes to direct in root -->
+            <pathconvert property="tmp.@{root}.normalized">
+                <path location="@{root}"/>
+                <mapper>
+                    <filtermapper>
+                        <replacestring from="\" to="/"/>
+                    </filtermapper>
+                </mapper>
+            </pathconvert>
+
+            <var name="@{property}" unset="true"/>
+            <pathconvert property="@{property}">
+                <path location="@{path}"/>
+                <mapper>
+                    <chainedmapper>
+                        <filtermapper>
+                            <replacestring from="\" to="/"/>
+                        </filtermapper>
+                        <regexpmapper
+                            from="^(?:${tmp.@{root}.normalized}/)?(.*)$"
+                            to="\1" casesensitive="no"/>
+                    </chainedmapper>
+                </mapper>
+            </pathconvert>
+            <var name="tmp.@{root}.normalized" unset="true"/>
         </sequential>
     </macrodef>
 

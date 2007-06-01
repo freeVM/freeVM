@@ -15,144 +15,61 @@
      See the License for the specific language governing permissions and
      limitations under the License. -->
 
-<!DOCTYPE buildtest SYSTEM "buildtest.dtd">
-
 <!-- ====================================================================== 
-                   Main Entry Point for BUILD TEST Framework
+                           Main Entry Points for BTI
      ====================================================================== -->
 <project name="build-test-infrastructure" default="run" basedir=".">
+
+    <!-- Use this property on setup stage to specify particular 
+         test suites to run -->
+    <property name="test.suites" value="*"/>
 
     <!-- define only the properties used before installation 
          other properties should be defined in ${framework.properties.file} -->
     <property name="root.dir" location="${basedir}"/>
-    <property name="adaptors.dir" location="adaptors"/>
-    <property name="scripts.dir" location="scripts"/>
+    <property name="adaptors.dir" location="${root.dir}/adaptors"/>
+    <property name="scripts.dir" location="${root.dir}/scripts"/>
 
-    <property name="framework.properties.file" 
-              location="${scripts.dir}/framework.properties"/>
-    <property file="${framework.properties.file}"/>
-
-    <property file="${local.configuration.file}"/>
-
-    <property name="framework.implementation.file" 
-              location="${scripts.dir}/framework.xml"/>
-    <import file="${framework.implementation.file}" optional="true"/>
-    
-    <!-- Use this property to specify particular test suites to run -->
-    <!-- Use 
-            -Dtest.suites=classlib
-         or 
-            -Dtest.suites=classlib,drlvm
-         to specify particular suites to execute -->
-    <property name="test.suites" value="*"/>
-    <dirset id="test.suites.dirs.ref"
-            dir="${adaptors.dir}"
-            includes="${test.suites}"/>
-    <pathconvert pathsep=","
-                 property="test.suites.names.list"
-                 refid="test.suites.dirs.ref">
-        <flattenmapper/>
-    </pathconvert>
-
-    <!-- For correct framework operation, all global properties defined 
-         in this file SHOULD be added to this set -->
-    <propertyset id="global.build.parameters.id">
-        <propertyref name="root.dir"/>
-        <propertyref name="ant.home"/>
-        <propertyref name="adaptors.dir"/>
-        <propertyref name="scripts.dir"/>
-        <propertyref name="framework.properties.file"/>
-        <propertyref name="framework.implementation.file"/>
-        <propertyref name="test.suites.names.list"/>
-    </propertyset>
-
+    <property name="framework.local.configuration.file" 
+              location="${root.dir}/framework.local.properties"/>
+    <property file="${framework.local.configuration.file}"/>
 
     <!-- ================================================================== 
                       Framework Installation Functionality
          ================================================================== -->
-    <target name="install" description="install">
-        <description>&installDocumentation;</description>
-        <!-- checkout framework -->
-        <!-- TODO: check svn on path -->
-        <!-- TODO: uncomment when integrated 
+    <target name="install" description="installs the BTI on local workstation"
+            depends="update-framework, create-local-configuration">
+    </target>
+
+    <target name="update-framework" 
+            unless="framework.parameters.repository.noupdate">
+        <!-- do update of framework implementation and test suite 
+             integration scripts -->
         <exec executable="svn" dir="${root.dir}" failonerror="true">
             <arg line="update ${scripts.dir} ${adaptors.dir}"/>
         </exec>
-        -->
-        <!-- create the file for local framework configuration -->
-        <copy file="${local.configuration.template.file}"
-              tofile="${local.configuration.file}"/>
     </target>
-    
-    <target name="check-install">
-        <fail>
-            <condition>
-                <not>
-                    <and>
-                        <available file="${adaptors.dir}" type="dir"/>
-                        <available file="${scripts.dir}" type="dir"/>
-                        <available file="${framework.implementation.file}"/>
-                        <available file="${local.configuration.file}"/>
-                    </and>
-                </not>
-            </condition>
-            &installationFailureMessage;
-        </fail>
+
+    <condition property="framework.local.config.exists">
+        <available file="${framework.local.configuration.file}"/>
+    </condition>
+
+    <target name="create-local-configuration"
+            unless="framework.local.config.exists">
+        <!-- create the file for local BTI configuration -->
+        <echo file="${framework.local.configuration.file}">#
+# Any BTI framework local configuration properties 
+# should be specified in this file. 
+# For more information on which parameters can be configured see
+#     ${scripts.dir}/parameters.xml
+</echo>
     </target>
 
     <!-- ================================================================== 
-                         Framework Setup Functionality
+                      Import BTI Framework command line UI
          ================================================================== -->
-    <target name="setup" description="setup" 
-            depends="install, check-install, init-framework, setup-suites">
-        <description>&setupDocumentation;</description>
-    </target>
-
-    <!-- ================================================================== 
-                          Test Execution Functionality
-         ================================================================== -->
-    <target name="run" depends="init-framework, setup-suites, run-suites">
-        <description>&runDocumentation;</description>
-    </target>
-
-    <target name="run-cc" description="run-cc"
-            depends="init-framework, init-suites, setup-suites, check-status,
-                        create-cc-configuration">
-        <java jar="${ext.cc.location}/lib/cruisecontrol-launcher.jar" dir="${cc.work.dir}" fork="true">
-            <classpath>
-                <fileset dir="${ext.cc.location}/lib">
-                    <include name="*.jar"/>
-                </fileset>
-            </classpath>
-            <sysproperty key="javax.management.builder.initial" value="mx4j.server.MX4JMBeanServerBuilder"/>
-            <arg line="-configfile ${cc.config.file} -webapppath ${ext.cc.location}/webapps/cruisecontrol -jmxport ${framework.parameters.cc.jmxport} -webport ${framework.parameters.cc.webport}"/>
-        </java>
-    </target>
-
-    <target name="test-mail" depends="define-ant-contrib">
-        <xmlproperty file="${scripts.dir}/parameters.xml"
-            collapseAttributes="true" 
-            semanticAttributes="true"
-            prefix="framework"
-        />
-        <ant antfile="${scripts.dir}/cc-exec-adaptor.xml">
-            <property name="suite.name" value="test-mail"/>
-            <property name="test-mail.parameters.cc.from" value="Test-Mail@Test.Com"/>
-            <property name="test-mail.parameters.cc.summary" 
-                      value="${root.dir}/.summary.txt"/>
-            <property name="test-mail.parameters.cc.message" 
-                      value="${root.dir}/README.txt"/>
-            <property name="test-mail.parameters.cc.attachs" 
-                      value="${root.dir}/README.txt,${root.dir}/build.xml"/>
-
-            <property name="mail.execution.status" value="TEST MAIL"/>
-            <property name="framework.parameters.usemail.force" value="true"/>
-        </ant>
-    </target>
-
-    <target name="clean" description="clean" depends="init-framework, clean-suites"/>
-
-    <target name="distclean" description="distclean">
-    </target>
+    <property name="framework.main.file" 
+              location="${scripts.dir}/main.xml"/>
+    <import file="${framework.main.file}" optional="true"/>
 
 </project>

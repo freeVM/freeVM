@@ -5,6 +5,11 @@
     <optional>
         <dolog value="false" description="Do you want to see Framework execution log?"/>
     </optional>
+
+    <repository>
+        <noupdate description="Turns off local BTI repository updates on 'install' and 'setup' stages."/>
+        <awaited description="Pipe (|) separated list of relative path awaited to be in repository. Usefull while new test development. Value example: '|tests/new_test|'"/>
+    </repository>
     
     <cc>
         <webport 

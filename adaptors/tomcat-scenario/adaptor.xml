@@ -44,6 +44,11 @@
 
     <!-- Setup of the Tomcat scenario -->
     <target name="setup">
+        
+        <!-- 
+            Load the test sources into BTI workspace
+        -->
+        <svn-update-bt path="${tomcat.src.dir}"/>
 
         <!--
             Setup port number for Tomcat server
