@@ -247,6 +247,7 @@ limitations under the License.
                <li><a href="#Class_Support">3.2.4 Class Support</a></li>
                <li><a href="#VM_Services">3.2.5 Services</a></li>
                <li><a href="#Utilities">3.2.6 Utilities</a></li>
+               <li><a href="#Initialization_Module">3.2.7 Initialization Module</a></li>
               </ol>
           </li>
           <li><a href="#EE">3.3 Execution Engine</a>
@@ -313,7 +314,7 @@ limitations under the License.
             <li><a href="#Lazy_Exceptions">4.7.4 Lazy Exceptions</a></li>
             </ol>
         </li>
-        <li><a href="#Destroying_VM">4.8 Destroying the VM</a></li>
+        <li><a href="#VM_Shutdown">4.8 VM Shutdown</a></li>
       </ol>
       </li>
    <li><a href="#References">5. References</a></li>
@@ -1766,6 +1767,47 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
          system and supports its own memory manager. Check component
          documentation for more details.
       </p>
+      <h2>
+        <a id="Initialization_Module" name="Initialization_Module"></a>
+        3.2.7 Initialization Module
+      </h2>
+      <p>The initialization module is a part of VM core component responsible
+         for basic operations of the virtual machine, specifically
+         <a href="#Initialization">initialization</a>, parsing command-line input,
+         <a href="#Finalization">object finalization</a>, and <a href="#VM_Shutdown">VM shutdown</a>.
+         This section describes the part of VM initialization responsible for handling VM properties.</p>
+ <h3><a id="vm_properties" name="vm_properties">VM Properties</a>
+ </h3>
+ <p>VM properties are a VM Core part providing centralized access to the common
+ properties table that is unique for the whole VM. A property is a pair of 
+ strings <code>&lt;key&gt; and &lt;value&gt;</code>. Properties represent configuration settings
+ for a separate component, such as VM Core, GC, JIT, or for the whole system,
+ and serve for communication between different components.</p>
+ <p>The current VM properties module is thread-safe and supports two types of properties:</p>
+ <ul>
+ <li><b>Public properties</b> available for all VM subcomponents and for Java applications
+        by means of the <code>java.lang.System.getProperties()</code> method. To initialize
+        these properties, use the <code>-D&lt;key&gt;=&lt;value&gt;</code> command-line option.
+        For details on the <code>-D</code> command-line option, see the help message
+        <code>java -help</code>. Please also note the files <code>harmony.properties</code>
+        that create localized echo, die and warning messages, and <code>bootclasspath.properties</code> that
+        define elements of the VM boot class path.</li>
+<li><b>Private properties</b> available inside VM only. To initialize these properties,
+       use the <code>-XX&lt;key&gt;=&lt;value&gt;</code> command-line option. For details on
+       the <code>-XX</code> command-line option, see the help message
+       <code>java -X</code>.</li></ul>
+
+<p class="note">Note</p>
+<p class="notetext">In the current implementation, property values can be <code>NULL</code>.</p>
+<p>
+For exported interface functions, refer to the <code>vm/include/open/vm.h</code>
+header file.<br>
+For properties constants, refer to the <code>vm/include/vm_properties.h</code>
+header file.<br>
+For properties definitions, refer to the <code>vm/vmcore/include/properties.h</code>
+header file.<br>
+</p>
+
       <p class="backtotop">
          <a href="#Top">Back to Top</a>
       </p>
@@ -2193,8 +2235,8 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
          machine start-up before execution of user applications. Currently,
          DRLVM does not support the invocation API [<a
          href="#Invoc_api_ref">7</a>], and initialization follows the sequence
-         described below. The subsection <a href="#destroying_vm">4.8
-         Destroying the VM</a> below also describes the virtual machine
+         described below. The subsection <a href="#VM_Shutdown">4.8
+         VM Shutdown</a> below also describes the virtual machine
          shutdown sequence.
       </p>
       <p>
@@ -3451,7 +3493,7 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
          <a href="#Top">Back to Top</a>
       </p>
       <h2>
-         <a id="Destroying_VM" name="Destroying_VM"></a>4.8 Destroying the VM
+         <a id="VM_Shutdown" name="VM_Shutdown"></a>4.8 VM Shutdown
       </h2>
       <p>
          The VM destruction functionality is currently part of the
@@ -3612,6 +3654,7 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
       </p>
    </body>
 </html>
+
 
 
 
