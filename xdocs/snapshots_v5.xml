@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>Draft page: Snapshot Builds for Harmony 5.0</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
+
+  <body>
+
+<section name="Snapshot Builds for Harmony 5.0">
+  <p class="note">Note</p>
+  <p class="notetext">This is draft page and it is under development so 
+    its content will be changed and some links may be broken.
+  </p>
+  <p>
+    We offer the following Harmony binaries for the Linux and Windows platforms:
+    <ul>
+      <li>
+        The Java Runtime Environment (JRE) lets you run your Java programs.
+      </li>
+      <li>
+        The Java Development Kit (JDK) lets you build and run your Java programs.
+        It includes javac and other standard JDK tools.
+      </li>
+      <li>
+        The Harmony Development Kit (HDK) is targeted at Harmony developers.
+        It includes the pre-built class library and VM binaries, necessary
+        include files, and dependencies. It is not a replacement for the common
+        JDK. We plan to include the Harmony test suite in the HDK in future.
+        Please see 
+        <a href="http://issues.apache.org/jira/browse/HARMONY-950">HARMONY-950</a> and 
+        <a href="http://issues.apache.org/jira/browse/HARMONY-984">HARMONY-984</a>
+        for details and current progress.
+      </li>
+    </ul>
+  </p>
+  <p>
+    These are not official releases of the Apache Software Foundation, nor are they
+    complete or compatible with the Java specification. They are snapshots provided
+    to make testing and experimentation easier.
+  </p>
+  <p class="note">Note</p>
+  <p class="notetext">We recommend that you set <code>JAVA_HOME to</code> the
+    root directory of the distribution, and put the <code>bin/</code> directory
+    on your <code>PATH</code>.
+  </p>
+  <p>
+    For the next SVN revisions snapshots are avaliable:
+    <ul>
+      <li>
+        <a href="#r543217">543217</a>
+      </li>
+    </ul>
+  </p>
+
+  <a name="543217" />
+  <subsection name="Snapshot r543217">
+    <dl>
+
+    <dt>Java Runtime Environment (JRE)</dt>
+
+    <ul>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-linux-x86.tar.gz">Latest 32-bit Linux JRE (tar.gz)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-linux-x86.tar.gz.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-linux-x86.tar.gz.sha">(SHA)</a>
+      </li>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-linux-x86_64.tar.gz">Latest 64-bit Linux JRE (tar.gz)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-linux-x86_64.tar.gz.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-linux-x86_64.tar.gz.sha">(SHA)</a>
+      </li>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-windows-x86.zip">Latest 32-bit Windows JRE (zip)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-windows-x86.zip.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-windows-x86.zip.sha">(SHA)</a>
+      </li>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-windows-x86_64.zip">Latest 64-bit Windows JRE (zip)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-windows-x86_64.zip.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jre-r543217-windows-x86_64.zip.sha">(SHA)</a>
+      </li>
+    </ul>
+    
+      <dt>Java Development Kit (JDK)</dt>
+
+    <ul>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-linux-x86.tar.gz">Latest 32-bit Linux JDK (tar.gz)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-linux-x86.tar.gz.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-linux-x86.tar.gz.sha">(SHA)</a>
+      </li>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-linux-x86_64.tar.gz">Latest 64-bit Linux JDK (tar.gz)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-linux-x86_64.tar.gz.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-linux-x86_64.tar.gz.sha">(SHA)</a>
+      </li>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-windows-x86.zip">Latest 32-bit Windows JDK (zip)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-windows-x86.zip.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-windows-x86.zip.sha">(SHA)</a>
+      </li>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-windows-x86_64.zip">Latest 64-bit Windows JDK (zip)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-jdk-r543217-windows-x86_64.zip.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/latest-harmony-jdk-windows-x86_64.zip.sha">(SHA)</a>
+      </li>
+    </ul>
+
+    <dt>Harmony Development Kit (HDK)</dt>
+
+    <ul> 
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-linux-x86.tar.gz">Latest 32-bit Linux HDK (tar.gz)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-linux-x86.tar.gz.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-linux-x86.tar.gz.sha">(SHA)</a>
+      </li>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-linux-x86_64.tar.gz">Latest 64-bit Linux HDK (tar.gz)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-linux-x86_64.tar.gz.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-linux-x86_64.tar.gz.sha">(SHA)</a>
+      </li>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-windows-x86.zip">Latest 32-bit Windows HDK (zip)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-windows-x86.zip.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-windows-x86.zip.sha">(SHA)</a>
+      </li>
+      <li>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-windows-x86_64.zip">Latest 64-bit Windows HDK (zip)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-windows-x86_64.zip.md5">(MD5)</a>
+        <a href="http://people.apache.org/builds/harmony/snapshots/r543217/apache-harmony-hdk-r543217-windows-x86_64.zip.sha">(SHA)</a>
+      </li>
+    </ul>
+  </dl>
+
+  <p>
+    These are not official releases of the Apache Software Foundation, nor are they
+    complete or compatible with the Java specification. They are snapshots provided
+    to make testing and experimentation easier.
+  </p>
+
+  </subsection>
+
+</section>
+</body>
+</document>
+ 
+
+
+
+
+
+
+
