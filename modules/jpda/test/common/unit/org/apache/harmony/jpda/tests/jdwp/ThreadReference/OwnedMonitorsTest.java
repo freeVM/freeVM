@@ -47,15 +47,28 @@ public class OwnedMonitorsTest extends JDWPSyncTestCase {
      * This testcase exercises ThreadReference.OwnedMonitors command.
      * <BR>At first the test starts OwnedMonitorsDebuggee which runs
      * the tested thread 'TESTED_THREAD'. 
-     * <BR> Then the tests performs the ThreadReference.OwnedMonitors command 
+     * <BR>Then the test performs the ThreadReference.OwnedMonitors command 
      * for the tested thread and gets list of monitor objects. 
+     * It is expected that this command returns at least two monitors 
+     * owned by 'TESTED_THREAD' thread
      * <BR>After this for each received monitor object the test performs 
      * ObjectReference.MonitorInfo command.
-     * <BR>it is expected that this command returns the 'TESTED_THREAD' thread
+     * It is expected that this command returns the 'TESTED_THREAD' thread
      * as owner for each monitor.
      */
     public void testOwnedMonitors001() {
+
         synchronizer.receiveMessage(JPDADebuggeeSynchronizer.SGNL_READY);
+
+        // checking capability relevant for this test
+        logWriter.println("==> Check capability: canGetOwnedMonitorInfo");
+        debuggeeWrapper.vmMirror.capabilities();
+        boolean isCapability = debuggeeWrapper.vmMirror.targetVMCapabilities.canGetOwnedMonitorInfo;
+        if (!isCapability) {
+            logWriter.println("##WARNING: this VM dosn't possess capability: canGetOwnedMonitorInfo");
+            synchronizer.sendMessage(JPDADebuggeeSynchronizer.SGNL_CONTINUE);
+            return;
+        }
 
         // getting ID of the tested thread
         logWriter.println("==> testedThreadName = " + OwnedMonitorsDebuggee.TESTED_THREAD);
@@ -95,16 +108,22 @@ public class OwnedMonitorsTest extends JDWPSyncTestCase {
             checkReplyPacket(replyObj, "ObjectReference::MonitorInfo command");
             
             ownerThread = replyObj.getNextValueAsThreadID();
+            logWriter.println("\t\t" + "ownerThread ID:   " + ownerThread);
+
             ownerName = debuggeeWrapper.vmMirror.getThreadName(ownerThread);
-            logWriter.println("\towner: "
-                    + " " + ownerName
-                    + "(" + ownerThread + ")");
+            logWriter.println("\t\t" + "ownerThread name: " + ownerName);
+
             if (ownerThread != testedThreadID) {
-                printErrorAndFail("wrong owner: " + ownerThread);
+                printErrorAndFail("wrong owner thread: " + ownerThread);
             }
             if (!ownerName.equals(OwnedMonitorsDebuggee.TESTED_THREAD)) {
-                printErrorAndFail("wrong owner name: " + ownerName);
+                printErrorAndFail("wrong owner thread name: " + ownerName);
             }
+        }
+
+        // check that at least two owned monitors are returned
+        if (owned < 2) {
+             printErrorAndFail("wrong number of owned monitors: " + owned + " (expected at least 2)");
         }
 
         synchronizer.sendMessage(JPDADebuggeeSynchronizer.SGNL_CONTINUE);
