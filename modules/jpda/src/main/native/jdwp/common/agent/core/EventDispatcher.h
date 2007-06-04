@@ -255,6 +255,12 @@ namespace jdwp {
          * Flag to reset all data.
          */
         bool volatile m_resetFlag;
+
+        /**
+         * Associated thread object.
+         */
+        jthread m_threadObject;
+
     };
 
 }

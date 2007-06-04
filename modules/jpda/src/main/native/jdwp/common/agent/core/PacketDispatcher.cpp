@@ -37,9 +37,9 @@ PacketDispatcher::PacketDispatcher() throw()
     :AgentBase()
 {
     m_isProcessed = false;
-    m_isRunning = false;
     m_completionMonitor = 0;
     m_executionMonitor = 0;
+    m_threadObject = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ PacketDispatcher::Start(JNIEnv *jni) throw(AgentException)
 
     try
     {
-        GetThreadManager().RunAgentThread(jni, StartFunction, this,
+        m_threadObject = GetThreadManager().RunAgentThread(jni, StartFunction, this,
             JVMTI_THREAD_MAX_PRIORITY, "_jdwp_PacketDispatcher");
     }
     catch (const AgentException& e)
@@ -83,8 +83,6 @@ PacketDispatcher::Run(JNIEnv *jni)
     JDWP_TRACE_ENTRY("Run(" << jni << ")");
 
     try {
-        m_isRunning = true;
-        
         MonitorAutoLock lock(m_completionMonitor JDWP_FILE_LINE);
         TransportManager &transport = GetTransportManager();
         
@@ -208,7 +206,9 @@ PacketDispatcher::Run(JNIEnv *jni)
                             << e.what() << " [" << e.ErrCode() << "]");
         }
 
-        m_isRunning = false;
+        // release completion monitor and wait forever until VM kills this thread
+        // TODO: remove this workaround to prevent from resource leak
+        m_completionMonitor->Wait(0);
     }
     catch (const AgentException& e)
     {
@@ -221,22 +221,20 @@ PacketDispatcher::Run(JNIEnv *jni)
 //-----------------------------------------------------------------------------
 
 void 
-PacketDispatcher::Stop() throw(AgentException)
+PacketDispatcher::Stop(JNIEnv *jni) throw(AgentException)
 {
     JDWP_TRACE_ENTRY("Stop()");
-
-    if (!m_isRunning) return;
 
     // cause thread loop to break
     m_isProcessed = false;
     
-    // wait for thread finished
+    // wait for loop finished and EventDispatcher is also stopped
     {
         MonitorAutoLock lock(m_completionMonitor JDWP_FILE_LINE);
     }
-    JDWP_ASSERT(!m_isRunning);
 
-    // EventDispatcher is also stopped
+    // wait for thread finished
+//    GetThreadManager().Join(jni, m_threadObject);
 }
 
 void 
@@ -246,10 +244,14 @@ PacketDispatcher::Clean(JNIEnv *jni) throw(AgentException)
 
     JDWP_TRACE_PROG("Clean: clean internal data");
 
+    // do not delete m_completionMonitor because thread is waiting on it
+    // TODO: remove this workaround to prevent from resource leak
+    /*
     if (m_completionMonitor != 0) {
         delete m_completionMonitor;
         m_completionMonitor = 0;
     }
+    */
 
     if (m_executionMonitor != 0) {
         delete m_executionMonitor;
@@ -304,7 +306,7 @@ PacketDispatcher::ShutdownAll(JNIEnv *jni) throw(AgentException)
 
         // stop PacketDispatcher and EventDispatcher threads, and reset all modules
         JDWP_TRACE_PROG("ShutdownAll: stop agent threads");
-        GetPacketDispatcher().Stop();
+        GetPacketDispatcher().Stop(jni);
 
         // clean all modules
         JDWP_TRACE_PROG("ShutdownAll: clean agent modules");

@@ -36,6 +36,7 @@ EventDispatcher::EventDispatcher(size_t limit) throw() {
     m_waitMonitor = 0;
     m_invokeMonitor = 0;
     m_completeMonitor = 0;
+    m_threadObject = 0;
     m_stopFlag = true;
     m_holdFlag = false;
     m_resetFlag = false;
@@ -55,12 +56,14 @@ void EventDispatcher::Run(JNIEnv* jni) {
                 // get next event from queue
                 {
                     MonitorAutoLock lock(m_queueMonitor JDWP_FILE_LINE);
+
                     while (m_holdFlag || m_eventQueue.empty()) {
                         m_queueMonitor->Wait();
-                        if (m_stopFlag) {
-                            return;
-                        }
+                        if (m_stopFlag) break; // break event waiting loop
                     }
+
+                    if (m_stopFlag) break; // break events handling loop
+
                     ec = m_eventQueue.front();
                     m_eventQueue.pop();
                     m_queueMonitor->NotifyAll();
@@ -79,6 +82,10 @@ void EventDispatcher::Run(JNIEnv* jni) {
             JDWP_TRACE_PROG("Run: reset session after exception");
             GetPacketDispatcher().ResetAll(jni);
         }
+
+        // release completion monitor and wait forever until VM kills this thread
+        // TODO: remove this workaround to prevent from resource leak
+        m_completeMonitor->Wait(0);
     }
     catch (const AgentException& e)
     {
@@ -109,7 +116,7 @@ void EventDispatcher::Init(JNIEnv *jni) throw(AgentException) {
 void EventDispatcher::Start(JNIEnv *jni) throw(AgentException) {
     JDWP_TRACE_ENTRY("Start(" << jni << ')');
 
-    GetThreadManager().RunAgentThread(jni, StartFunction, this,
+    m_threadObject = GetThreadManager().RunAgentThread(jni, StartFunction, this,
         JVMTI_THREAD_MAX_PRIORITY, "_jdwp_EventDispatcher");
 }
 
@@ -164,6 +171,8 @@ void EventDispatcher::Stop(JNIEnv *jni) throw(AgentException) {
         MonitorAutoLock lock(m_completeMonitor JDWP_FILE_LINE);
     } 
 
+    // wait for thread finished
+//    GetThreadManager().Join(jni, m_threadObject);
 }
 
 void EventDispatcher::Clean(JNIEnv *jni) throw(AgentException) {
@@ -201,10 +210,15 @@ void EventDispatcher::Clean(JNIEnv *jni) throw(AgentException) {
         delete m_invokeMonitor;
         m_invokeMonitor = 0;
     }
+
+    // do not delete m_completeMonitor because thread is waiting on it
+    // TODO: remove this workaround to prevent from resource leak
+    /*
     if (m_completeMonitor != 0){
         delete m_completeMonitor;
         m_completeMonitor = 0;
     }
+    */
 
     // clean counter for packet id
 

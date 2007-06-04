@@ -232,6 +232,17 @@ namespace jdwp {
             throw(AgentException);
         
         /**
+         * Join the specified thread.
+         * 
+         * @param jni       - the JNI interface pointer
+         * @param thread    - the thread to be joined
+         * 
+         * @exception AgentException is thrown in case an universal 
+         *            error, with the corresponded error code.
+         */
+        void Join(JNIEnv *jni, jthread thread);
+
+        /**
          * Checks if the specified thread is an agent thread.
          *
          * @param jni    - the JNI interface pointer

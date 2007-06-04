@@ -223,7 +223,7 @@ TransportManager::Connect() throw(TransportException)
         CheckReturnStatus(err);
     }
     JDWP_TRACE_PROG("Connect: connection established");
-} // TransportManager::Start()
+} // TransportManager::Connect()
 
 void 
 TransportManager::Launch(const char* command) throw(TransportException)
@@ -264,13 +264,12 @@ TransportManager::Reset() throw(TransportException)
         CheckReturnStatus(err);
     }
     JDWP_TRACE_PROG("Reset: connection closed");
-} // TransportManager::Close()
+} // TransportManager::Reset()
 
 
 void 
 TransportManager::Clean() throw(TransportException)
 {
-    JDWP_ASSERT(m_ConnectionPrepared);
     JDWP_TRACE_PROG("Clean: close connection and stop listening");
     if (m_env != 0) {
         m_env->Close();
@@ -339,4 +338,4 @@ TransportManager::TracePacket(const char* message, const jdwpPacket* packet)
                 << " cmdSet=" << (int)(packet->type.cmd.cmdSet) 
                 << " cmd=" << (int)(packet->type.cmd.cmd)); 
     } 
-} // TracePacket()
+} // TransportManager::TracePacket()

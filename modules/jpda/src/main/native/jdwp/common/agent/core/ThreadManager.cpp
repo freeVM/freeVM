@@ -654,6 +654,24 @@ ThreadManager::Stop(JNIEnv *jni, jthread thread, jobject throwable)
 
 //-----------------------------------------------------------------------------
 
+void
+ThreadManager::Join(JNIEnv *jni, jthread thread)
+{
+    JDWP_TRACE_ENTRY("Join(" << jni << ',' << thread << ')');
+
+    ClassManager &clsMgr = GetClassManager();
+    jclass threadClass = clsMgr.GetThreadClass();
+
+    jmethodID joinMethodID = jni->GetMethodID(threadClass, "join", "()V");
+    clsMgr.CheckOnException(jni);
+    JDWP_ASSERT(joinMethodID != NULL);
+
+    jni->CallVoidMethod(thread, joinMethodID);
+    clsMgr.CheckOnException(jni);
+}
+
+//-----------------------------------------------------------------------------
+
 bool
 ThreadManager::IsAgentThread(JNIEnv *jni, jthread thread)
 {

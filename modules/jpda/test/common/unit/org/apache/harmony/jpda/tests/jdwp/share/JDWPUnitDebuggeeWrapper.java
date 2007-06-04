@@ -208,7 +208,11 @@ public class JDWPUnitDebuggeeWrapper extends JDWPDebuggeeWrapper {
             logWriter.println("Finished debuggee with exit code: " + exitCode);
         } catch (IllegalThreadStateException e) {
             logWriter.printError("Enforced debuggee termination");
+            process.destroy();
+            throw new TestErrorException("Debuggee process did not finish during timeout", e);
         }
+
+        // dispose any resources of the process
         process.destroy();
     }
 

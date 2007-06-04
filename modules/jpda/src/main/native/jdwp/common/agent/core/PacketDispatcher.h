@@ -88,9 +88,11 @@ namespace jdwp {
         /**
          * Stops the <code>PacketDispatcher</code>'s thread.
          *
+         * @param jni - the JNI interface pointer
+         *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Stop() throw(AgentException);
+        void Stop(JNIEnv *jni) throw(AgentException);
 
         /**
          * Resets the <code>PacketDispatcher</code> object.
@@ -165,6 +167,7 @@ namespace jdwp {
         CommandDispatcher   m_cmdDispatcher;
         AgentMonitor*       m_completionMonitor;
         AgentMonitor*       m_executionMonitor;
+        jthread             m_threadObject;
 
     };//class PacketDispatcher
 
