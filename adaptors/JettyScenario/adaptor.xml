@@ -142,6 +142,13 @@
                     <test name="JettyScenario" todir="${scenario.results.dir}"/>
                 </junit>
 
+                <junitreport todir="${scenario.results.dir}">
+                    <fileset dir="${scenario.results.dir}">
+                        <include name="TEST*-*.xml"/>
+                    </fileset>
+                    <report format="frames" todir="${scenario.results.dir}/html"/>
+                </junitreport>
+
                 <echo level="info" message="Stopping Jetty server"/>
                 <java jvm="${JettyScenario.parameters.required.jetty.server.jvm}"
                       dir="${ext.jetty-6.1.2rc1.location}"
