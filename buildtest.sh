@@ -6,7 +6,7 @@ export SVN_HOME=/usr/local
 export ANT_OPTS="-XX:MaxPermSize=512m -Xmx700M -Dhttp.proxyHost=my.proxy.com -Dhttp.proxyPort=1111"
 
 export PATH=$SVN_HOME/bin:$PATH:$ANT_HOME/bin
-export CLASSPATH=./build/classes
+export CLASSPATH=.:$PWD/build/classes
 
 $COMPILER_CFG_SCRIPT
 

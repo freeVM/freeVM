@@ -6,7 +6,7 @@
 @set ANT_OPTS=-XX:MaxPermSize=512m -Xmx1000M -Dhttp.proxyHost=my.proxy.com -Dhttp.proxyPort=1111
 
 @set PATH=%SVN_HOME%\bin;%PATH%;%ANT_HOME%\bin
-@set CLASSPATH=%~dp0\build\classes
+@set CLASSPATH=.;%CD%\build\classes
 
 @call "%COMPILER_CFG_SCRIPT%"
 call ant %* 2>&1
