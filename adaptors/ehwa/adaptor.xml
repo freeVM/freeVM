@@ -119,7 +119,7 @@
         <log message="============= Adaptor for ${suite.name}: Set Up ..."/>
 
         <log message="Updating scenario sources..."/>
-        <svn-update-bt path="${tests.sources.dir}/${suite.name}"/>
+        <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
 
         <log message="Installing Eclipse..."/>
         <antcall target="-install-eclipse"/>
