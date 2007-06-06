@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>Project Roadmap</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
+
+  <body>
+    <section name="Stable builds">
+
+      <p>
+      We have just started to create 
+      <a href="http://people.apache.org/builds/harmony/milestones/">stable builds</a>: these are
+      builds of the most recent tested code provided for your convenience. They have been declared
+      best-so-far but they are not official releases of the Apache Harmony project or the
+      Apache Software Foundation. Here you can find schedule and requirements for M2 milestone.
+      </p>
+    </section>
+
+    <section name="M2 Schedule">
+
+      <p>
+        We are planning to deliver stable builds each two months. Below is the schedule for the M2 stable build
+      </p>
+      <ul>
+        <li>
+          <b>30-Jun-2007</b>:
+          M2 release
+        </li>
+        <li>
+          <b>23-Jun-2007</b>:
+          M2 code freeze. Only critical bug fixes go in.
+        </li>
+        <li>
+          <b>13-Jun-2007</b>:
+          M2 feature freeze. No major redesigns since that date.
+        </li>
+      </ul>
+    </section>
+
+    <section name="M2 Requirements">
+      <p>
+        Each stable build is intended to have best achived stability, perfomance, compatibility, and completeness.
+        The requirements below set specific focus for M2.
+      </p>
+
+      <ul>
+        <li>
+          Harmony class library and VM tests pass, no new tests are excluded
+        </li>
+        <li>
+          Harmony works smoothly with Eclipse 3.2 (no known bugs)
+        </li>
+        <li>
+          All Dacapo benches correctly with all workloads, new features or patches that will be commit prior M2 do not 
+          introduce degradations
+        </li>
+        <li>
+          Scimark benchmark works correctly, new features or patches that will be commit prior M2 do not 
+          introduce degradations
+        </li>
+      </ul>
+
+    </section>
+  </body>
+</document>
