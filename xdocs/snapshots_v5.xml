@@ -20,13 +20,13 @@
 <document>
 
   <properties>
-    <title>Draft page: Snapshot Builds for Harmony 5.0</title>
+    <title>Snapshot Builds and Test Results for Harmony 5.0</title>
     <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
   </properties>
 
   <body>
 
-    <section name="Snapshot Builds for Harmony 5.0">
+    <section name="Snapshot Builds and Test Results for Harmony 5.0">
       <p>
         We offer the following Harmony binaries for the Linux and Windows platforms:
         <ul>
@@ -66,15 +66,17 @@
         <table>
 
           <tr>
-            <th class="TableHeading">SVN revision</th>
-            <th class="TableHeading" colspan="3">Windows 32</th>
+            <th class="TableHeading" colspan="1" rowspan="2">SVN revision</th>
+            <th class="TableHeading" colspan="3" rowspan="1">Windows 32</th>
             <th class="TableHeading">Linux 32</th>
             <th class="TableHeading">Windows 64</th>
             <th class="TableHeading">Linux 64</th>
+            <th class="TableHeading" colspan="1" rowspan="2">
+              Tests Results<br/><small><em>(pass/fail)</em></small>
+            </th>
           </tr>
           <tr>
-            <th class="TableHeading" colspan="1"></th>
-            <th class="TableHeading">JRE</th>
+            <th class="TableHeading" colspan="1" rowspan="1">JRE</th>
             <th class="TableHeading">JDK</th>
             <th class="TableHeading">HDK</th>
 
@@ -92,19 +94,6 @@
           </tr>
           <tr>
             <td class="TableCell" colspan="1" rowspan="1">544040
-              <br />
-              <small><em>
-                <a href="http://people.apache.org/~smishura/r544040/index.html">
-                  tests status: <br />
-                  <font color="green">
-                    passed(8)
-                  </font>
-                  /
-                  <font color="red">
-                    failed(4)
-                  </font>
-                </a>
-              </em></small>
             </td>
             <td class="TableCell">
               <a href="http://people.apache.org/builds/harmony/snapshots/r544040/apache-harmony-jre-r544040-windows-x86-32-snapshot.zip">zip</a>
@@ -243,6 +232,13 @@
               <small><em>
                 <a href="http://people.apache.org/builds/harmony/snapshots/r544040/apache-harmony-hdk-r544040-linux-x86_64-64-snapshot.tar.gz.sha">sha</a>
               </em></small>
+            </td>
+            <td style="vertical-align: middle; text-align: center;">
+              <big>
+                <a href="http://people.apache.org/~smishura/r544040/index.html">
+                  <font color="green">8</font>/<font color="red">4</font>
+                </a>
+              </big>
             </td>
 
 
