@@ -205,24 +205,92 @@ limitations under the License.
       </ul>
                 <p class="backtotop"><a href="#top">Back to top</a></p>
                                         <h1>
-      <a name="M2 requirements">M2 requirements</a>
+      <a name="M2 Requirements - Draft. Don't use the names please until the requirements are final">M2 Requirements - Draft. Don't use the names please until the requirements are final</a>
     </h1>
                         <p>
         Each stable build is intended to have best achived stability, perfomance, compatibility, and completeness.
-        The requirements below set specific focus for M2.
+        The requirements below set specific focus for M2. Pass rates are measured for <b>knowingly valid</b> tests.
       </p>
                                 <ul>
         <li>
-          Harmony class library and VM tests pass, no new tests are excluded
+          <b>M2_TEST1</b>:
+          98% pass rate for class libraries tests; no regression since M1
         </li>
         <li>
-          Harmony works smoothly with Eclipse 3.2 (no known bugs)
+          <b>M2_TEST2</b>:
+          98% pass rate for drl vm tests; no regression since M1
         </li>
         <li>
+          <b>M2_TEST3</b>:
+          98% pass rate for jdk_tools tests; no regression since M1
+        </li>
+        <li>
+          <b>M2_TEST4</b>:
+          98% pass rate of VM validation test suite - HARMONY-3206; no regression since M1
+        </li>
+        <li>
+          <b>M2_TEST5</b>:
+          98% pass rate of Functional test suite - HARMONY-3528; no regression since M1
+        </li>
+        <li>
+          <b>M2_TEST6</b>:
+          98% pass rate of Stress tests - HARMONY-3536; no regression since M1
+        </li>
+        <li>
+          <b>M2_TEST7</b>:
+          98% pass rate of Reliability test - HARMONY-2918; no regression since M1
+        </li>
+        <li>
+          <b>M2_TEST8</b>:
+          98% pass rate of Eclipse 3.2 unit tests; no regression since M1
+        </li>
+        <li>
+          <b>M2_TEST9</b>:
+          98% pass rate of Geronimo unit tests; no regression since M1
+        </li>
+        <li>
+          <b>M2_TEST10</b>:
+          98% pass rate of Eclipse TPTP profiler tests; no regression since M1
+        </li>
+        <li>
+          <b>M2_APP1</b>:
+          Harmony works smoothly with Eclipse 3.2; no known bugs; no regression since M1
+        </li>
+        <li>
+          <b>M2_APP2</b>:
+          Run Eclipse 3.2 Hello World Application scenario (link)
+        </li>
+        <li>
+          <b>M2_APP3</b>:
+          Run HDK self-hosting (link)
+        </li>
+        <li>
+          <b>M2_APP4</b>:
+          Run Simple Tomcat scenario (link)
+        </li>
+        <li>
+          <b>M2_APP5</b>:
+          Run Apache Axis scenario (link)
+        </li>
+        <li>
+          <b>M2_APP6</b>:
+          Run Apache Struts scenario (link)
+        </li>
+        <li>
+          <b>M2_APP7</b>:
+          Run Jetty scenario (link)
+        </li>
+        <li>
+          <b>M2_LONG1</b>:
+          48 hour Eclipse scenario (link)
+        </li>
+        <li>
+          <b>M2_PERF1</b>:
           All Dacapo benches correctly with all workloads, new features or patches that will be commit prior M2 do not 
           introduce degradations
         </li>
         <li>
+          <b>M2_PERF2</b>:
           Scimark benchmark works correctly, new features or patches that will be commit prior M2 do not 
           introduce degradations
         </li>
