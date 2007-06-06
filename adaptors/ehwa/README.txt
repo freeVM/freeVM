@@ -81,6 +81,7 @@ NOTE:
        2) make
        3) make test 
        4) make install
+       (or set PERL5LIB env.var to $AUTOIT_HOME/blib/lib:$AUTOIT_HOME/blib/arch)
    But for Linux/em64t you may need to correct path to X11 libs 
    in Makefile.PL before the step 1):
    
