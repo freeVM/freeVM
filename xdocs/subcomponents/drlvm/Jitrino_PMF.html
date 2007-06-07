@@ -65,6 +65,7 @@
     <li><a href="#Logging_System">Logging System</a>
         <ol>
         <li><a href="#Defining_Streams">Defining Streams</a></li>
+        <li><a href="#Using_Filters_In_Logging">Using Filters in Logging</a>
         <li><a href="#Assigning_a_Stream_to_a_File">Assigning a Stream to a File</a>
             <ol>
             <li><a href="#Using_Filename_Masks">Using Filename Masks</a></li>
@@ -386,14 +387,14 @@
 
     <p>The general form of the JIT command is the following:</p>
     <pre>
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.&lt;<b>parameter</b>&gt;=&lt;<b>value</b>&gt;
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.&lt;<b>parameter</b>&gt;=&lt;<b>value</b>&gt;
 </pre>
 
     <p>Where</p>
 
     <ul>
         <li>
-            <code>-XDjit.</code> is the mandatory prefix enabling
+            <code>-XX:jit.</code> is the mandatory prefix enabling
             JIT commands selection from VM commands. 
 
             <p class="note">Note</p>
@@ -462,13 +463,13 @@
     a <i>command file</i> and read this file with a special <i>read
     command</i>:</p>
     <pre>
--XDjit.read=&lt;<b>command filename</b>&gt;
+-XX:jit.read=&lt;<b>command filename</b>&gt;
 </pre>
 
     <p class="note">Note</p>
 
     <p class="notetext">Write commands in the command file without
-    the prefix <code>-XDjit</code>. The <code>read</code> command
+    the prefix <code>-XX:jit</code>. The <code>read</code> command
     itself can be used in the command file. The command file can
     contain empty lines and comment lines starting with
     <code>#</code> or <code>//</code>.</p>
@@ -497,7 +498,7 @@
     non-terminal node of the tree is called a <i>path</i> and
     defined by the following <i>path definition</i> command:</p>
     <pre>
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.path.&lt;<b>name</b>&gt;=&lt;<b>child1</b>&gt;,&lt;<b>child2</b>&gt;,...
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.path.&lt;<b>name</b>&gt;=&lt;<b>child1</b>&gt;,&lt;<b>child2</b>&gt;,...
 </pre>
 
     <p>The given command introduces a node with the specified name
@@ -521,9 +522,9 @@
     and <code><b>a</b></code>, <code><b>b</b></code> and
     <code><b>c</b></code> are the action names.</p>
     <pre>
--XDjit.OPT.path=M,N
--XDjit.OPT.path.M=a
--XDjit.OPT.path.N=b,c
+-XX:jit.OPT.path=M,N
+-XX:jit.OPT.path.M=a
+-XX:jit.OPT.path.N=b,c
 </pre>
 
     <p class="exampletext">The given commands describe the simple
@@ -581,7 +582,7 @@
 
     <p>To define a filter, use the following command format:</p>
     <pre>
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.filter=&lt;<b>class</b>&gt;.&lt;<b>method</b>&gt;&lt;<b>signature</b>&gt;
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.filter=&lt;<b>class</b>&gt;.&lt;<b>method</b>&gt;&lt;<b>signature</b>&gt;
 </pre>
 
     <p>Where</p>
@@ -616,7 +617,7 @@
 
     <p class="example">Example</p>
     <pre>
--XDjit.OPT.p.filter=java/lang/Thread.check
+-XX:jit.OPT.p.filter=java/lang/Thread.check
 </pre>
 
     <p class="exampletext">The following methods can match the
@@ -634,12 +635,12 @@
 
     <p class="example">Example</p>
     <pre>
--XDjit.OPT.path=M,N
--XDjit.OPT.path.M=a
--XDjit.OPT.path.N=b,c
--XDjit.OPT.p.path=M,N,O
--XDjit.OPT.p.path.O=a
--XDjit.OPT.p.filter=java/lang/Thread.check
+-XX:jit.OPT.path=M,N
+-XX:jit.OPT.path.M=a
+-XX:jit.OPT.path.N=b,c
+-XX:jit.OPT.p.path=M,N,O
+-XX:jit.OPT.p.path.O=a
+-XX:jit.OPT.p.filter=java/lang/Thread.check
 </pre>
 
     <p class="exampletext">The commands above are associated with
@@ -677,7 +678,7 @@
     parameters passing convention. The parameter definition command
     pattern is the following:</p>
     <pre>
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.&lt;<b>param</b>&gt;=&lt;<b>value</b>&gt;
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.&lt;<b>param</b>&gt;=&lt;<b>value</b>&gt;
 </pre>
 
     <p>Where</p>
@@ -709,7 +710,7 @@
 
     <p class="example">Example</p>
     <pre>
--XDjit.OPT.p.arg.a.verify=1
+-XX:jit.OPT.p.arg.a.verify=1
 </pre>
 
     <p class="exampletext">The given command sets the
@@ -734,7 +735,7 @@
 
         <tr>
             <td class="TableCell">
-            <code>-XDjit.OPT.p.arg.N.b.verify=2</code></td>
+            <code>-XX:jit.OPT.p.arg.N.b.verify=2</code></td>
 
             <td class="TableCell">
                 <center>
@@ -752,7 +753,7 @@
 
         <tr>
             <td class="TableCell">
-            <code>-XDjit.OPT.p.arg.N.verify=2</code></td>
+            <code>-XX:jit.OPT.p.arg.N.verify=2</code></td>
 
             <td class="TableCell">
                 <center>
@@ -767,7 +768,7 @@
 
         <tr>
             <td class="TableCell">
-            <code>-XDjit.OPT.p.arg.verify=2</code></td>
+            <code>-XX:jit.OPT.p.arg.verify=2</code></td>
 
             <td class="TableCell"><code>&lt;<b>full
             name</b>&gt;</code></td>
@@ -781,7 +782,7 @@
 
         <tr>
             <td class="TableCell">
-            <code>-XDjit.OPT.arg.N.verify=2</code></td>
+            <code>-XX:jit.OPT.arg.N.verify=2</code></td>
 
             <td class="TableCell">
             <code>&lt;<b>pipeline</b>&gt;</code></td>
@@ -797,8 +798,8 @@
     <p>The special form of argument definition commands controls
     the pipeline construction process:</p>
     <pre>
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;=on
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;=off
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;=on
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;=off
 </pre>
 
     <p class="note">Note</p>
@@ -818,7 +819,7 @@
     <p class="exampletext">To exclude action <code><b>b</b></code>
     from the pipeline, apply the following command:</p>
     <pre>
--XDjit.OPT.p.arg.N.b=off
+-XX:jit.OPT.p.arg.N.b=off
 </pre>
 
     <p>To enable/disable nodes directly in the path definition
@@ -868,7 +869,7 @@
     enabled, <code>c2</code> is disabled and <code>c3</code> is
     enabled and mandatory:</p>
     <pre>
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.path.&lt;<b>name</b>&gt;=c1+,c2-,c3!
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.path.&lt;<b>name</b>&gt;=c1+,c2-,c3!
 </pre>
 
     <p>If you try to disable any mandatory node with the
@@ -971,7 +972,7 @@
     <p>To enable outputting log information to a stream, enter a
     command of the following syntax:</p>
     <pre>
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log=&lt;<b>stream1</b>&gt;,&lt;<b>stream2</b>&gt;,...
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log=&lt;<b>stream1</b>&gt;,&lt;<b>stream2</b>&gt;,...
 </pre>
 
     <p>The left part of the command specifies the name of the JIT
@@ -1001,8 +1002,28 @@
     <code><b>N.b</b></code> and <code><b>N.c</b></code> by the same
     name. The streams can be assigned to different files.</p>
     <pre>
--XDjit.OPT.p.arg.N.b.log=ct
--XDjit.OPT.p.arg.N.c.log=ct
+-XX:jit.OPT.p.arg.N.b.log=ct
+-XX:jit.OPT.p.arg.N.c.log=ct
+</pre>
+
+    <p class="backtotop"><a href="#top">Back to Top</a></p>
+
+    <h2><a
+       name="Using_Filters_In_Logging"></a>Using Filters in Logging</h2>
+
+    <p>A <a href="#Method_Filter">method filter</a> can be used to filter
+    logging by package, class or method name. For logging purposes,  define an empty
+    pipeline with an appropriate method filter, with this pipeline
+    considered a filter name for simplicity.</p>
+    
+    <p class="example">Example</p>
+    <p class="exampletext">The following commands implicitly define
+    an empty pipeline <code><b>f</b></code> for filtering purposes,
+    defines a method filter for this pipeline and enables logging for
+    the methods corresponding to <code><b>f</b></code>.</p>
+
+    <pre>-XX:jit.OPT.f.filter=main
+-XX:jit.f.arg.log=ct
 </pre>
 
     <p class="backtotop"><a href="#top">Back to Top</a></p>
@@ -1014,7 +1035,7 @@
     <p>To assign a stream to a file, use the following command
     syntax:</p>
     <pre>
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.file=&lt;<b>filename mask</b>&gt;
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.file=&lt;<b>filename mask</b>&gt;
 </pre>
 
     <p>In the given command, the &lt;<b>filename mask</b>&gt;
@@ -1190,8 +1211,8 @@ log/%jit%/%class%/%method%/%log%.log
     append/truncate mode for the log files that are opened for the
     first time:</p>
     <pre>
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.append=true
--XDjit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.append=false
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.append=true
+-XX:jit.&lt;<b>JIT</b>&gt;.&lt;<b>pipeline</b>&gt;.arg.&lt;<b>full name</b>&gt;.log.&lt;<b>stream</b>&gt;.append=false
 </pre>
 
     <p class="backtotop"><a href="#top">Back to Top</a></p>
@@ -1233,7 +1254,7 @@ log/%jit%/%class%/%method%/%log%.log
                                 &lt;prefix&gt; &lt;arg def&gt;
                                 &lt;prefix&gt; &lt;file read&gt;
 
-&lt;prefix&gt;                  :     -XDjit.
+&lt;prefix&gt;                  :     -XX:jit.
 
 &lt;base&gt;                    :     [ &lt;JIT&gt; . ] [ &lt;pipeline&gt; . ]
 
