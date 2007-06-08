@@ -67,18 +67,26 @@ failed to run or have been skipped:
         </then>
         </if>
 
+        <echo file="${cc.execution.log.file}" 
+              message="&lt;html>&lt;body>"/>
+        <echo file="${cc.execution.log.file}" append="true"
+              message="&lt;pre>&lt;a style='font-size: 80%;'>"/>
+        <record name="${cc.execution.log.file}" append="yes" action="start"/>
         <trycatch property="exception" reference="execution.exception.ref">
         <try>
             <ant dir="${root.dir}/adaptors/${suite.name}" 
                  antfile="adaptor.xml" 
                  target="run"
                  inheritAll="true"/>
+            <record name="${cc.execution.log.file}" action="stop"/>
         </try>
         <catch>
+            <record name="${cc.execution.log.file}" emacsmode="true"/>
             <echo>
-Test Suite '${suite.name}' Execution FAILED with the following exception:
+The execution FAILED with the following exception:
 ${exception}
 </echo>
+            <record name="${cc.execution.log.file}" action="stop"/>
             <!-- write 'failed' status -->
             <propertyfile file="${cc.execution.status.file}"
                           comment="${cc.execution.status.file.header}.">
@@ -86,6 +94,10 @@ ${exception}
             </propertyfile>
         </catch>
         </trycatch>
+        <echo file="${cc.execution.log.file}" append="true" 
+              message="&lt;/a>&lt;/pre>"/>
+        <echo file="${cc.execution.log.file}" append="true" 
+              message="&lt;/body>&lt;/html>"/>
         <fail message="${exception}" if="exception"/>
     </target>
 

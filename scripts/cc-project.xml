@@ -40,7 +40,7 @@
         </sequential>
     </target>
     
-    <target name="create-cc-configuration" depends="-prepare-cc, init-framework, init-suites">
+    <target name="create-cc-configuration" depends="define-tasks, -prepare-cc, init-framework, init-suites">
         <!-- Create Main CC Configuration File -->
         <delete file="${cc.config.file}"/>
         <copy file="${cc.config.template}" 
@@ -198,6 +198,9 @@
                     </if>
                 </then>
                 </if>
+                <insert-execution_logs-publisher
+                    suite="@{suite.name}"
+                    ccfile="${@{suite.name}.parameters.cc.file.location}"/>
                 <!-- insert test results to be merged into log -->
                 <if>
                     <isset property="@{suite.name}.parameters.cc.results"/>
@@ -558,7 +561,22 @@ ${tmp.@{property}.@{dependency}}
                &lt;property name='publisher.location' value='@{publisher}'/&gt;@NL@
                &lt;property name='properties.dump.file'@NL@
                          value='@{antpropsfile}'/&gt;@NL@
-           &lt;/antpublisher&gt;@NL@"/>
+           &lt;/antpublisher&gt;@NL@
+           &lt;!-- @BT.PUBLISHER@ --&gt;"/>
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="insert-execution_logs-publisher">
+        <attribute name="suite"/>
+        <attribute name="ccfile"/>
+        <sequential>
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="&lt;!-- @BT.PUBLISHER@ --&gt;"
+                    value="&lt;artifactspublisher@NL@
+                file='${cc.execution.log.file}'@NL@
+                dest='${cc.log.dir}/@{suite}'/>"/>
             </replace>
         </sequential>
     </macrodef>
