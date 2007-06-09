@@ -1,0 +1,12 @@
+Index: trunk/build.xml
+===================================================================
+--- trunk/build.xml	(revision 476263)
++++ trunk/build.xml	(working copy)
+@@ -146,6 +146,7 @@
+ 	
+ 		<antcall target="co-classlib"/>
+ 		<subant target="fetch-depends" buildpath="${target.dir}/projects/classlib/trunk"/>
++		<copy file="${target.dir}/projects/classlib/trunk/depends/jars/ecj_3.2/ecj_3.2.jar" todir="${target.dir}/lib"/>
+ 		<subant target="rebuild" buildpath="${target.dir}/projects/classlib/trunk" failonerror="true"/>
+ 
+ 		<antcall target="co-drlvm"/>

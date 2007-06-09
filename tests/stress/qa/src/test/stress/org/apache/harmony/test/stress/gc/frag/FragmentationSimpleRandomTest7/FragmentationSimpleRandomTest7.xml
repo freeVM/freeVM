@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<!DOCTYPE Test SYSTEM "test.dtd">
+<Test
+	ID="FragmentationSimpleRandomTest7"
+        date-of-creation="2005-12-07"
+        timeout="1"
+        >
+        <!--
+        Author:  Alexander Esin
+        Version: $Revision: 1.5 $
+        -->
+    	<Copyright value="apache"/>
+        <Author value="Alexander Esin"/>
+        	<Description>
+                   Creates many objects of equal sizes (1 MB), randomly delete some of them. Make sure that total allocated objects size does not reach initial size of heap (128 MB). Check if OutOfMemoryError not thrown.
+        	</Description>
+        
+        <Keyword name="stress"/>
+        <Source name="../share/FragmentationSimpleRandomTest.java"/>
+        <Modification date="2005-12-07" author="Alexander Esin"/>
+
+        <Runner ID="Runtime">
+                <Option name="-Xmx128m"/>
+               	<Option value="-Dorg.apache.harmony.test.share.stress.ReliabilityRunner.params=
+					org.apache.harmony.test.stress.gc.frag.share.FragmentationSimpleRandomTest {}"/>
+				<Option value="-Dorg.apache.harmony.test.stress.gc.frag.share.FragmentationAbstractTest.MAX_MEM=122000000"/>
+				<Option value="-Dorg.apache.harmony.test.stress.gc.frag.share.FragmentationAbstractTest.FACTOR=1.0"/>
+				<Option value="-Dorg.apache.harmony.test.stress.gc.frag.share.FragmentationAbstractTest.BLOB_SIZE=1048576"/>
+			<Param name="toRun" value="org.apache.harmony.test.share.stress.ReliabilityRunner">
+			</Param>
+		</Runner>
+	<Restriction name="OtherVMOnly"/>
+</Test>
