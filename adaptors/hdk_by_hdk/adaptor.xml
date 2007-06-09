@@ -18,8 +18,12 @@
 <project name="hdk_by_hdk" default="run" basedir=".">
 
     <target name="setup"/>
-    
     <property environment="env"/>
+    
+    <!-- workaround: properties are case sensitive -->
+    <!-- even the env. vars on OS are not          -->
+    <property name="env.PATH" value="${env.Path}" />
+    
     <property name="my.path" value="${tested.jdk}/bin${path.separator}${env.PATH}"/>
 
     <target name="run">
