@@ -40,6 +40,7 @@ body {
 p.menuItem {
     padding: 0pt;
     margin: 0pt;
+    font-weight: bold;
 }
 
 #navigationmenu ul {
@@ -113,6 +114,12 @@ td.TableCell {
     background-color: #a0ddf0;
 }
 
+td.OddRowCell {
+    vertical-align: top;
+    text-align: left;
+    background-color: #a0ddb0;
+}
+
 th.TableHeading {
     background-color: #039acc;
     text-align: center;
@@ -155,8 +162,11 @@ pre {
 }
 
 .backtotop {
-    font-weight: bold;
     margin-left: 0pt;
+}
+
+.backtotop a {
+	color: black;
 }
 
 .note {

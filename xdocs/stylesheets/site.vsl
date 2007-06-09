@@ -53,7 +53,12 @@ limitations under the License.
 #if ($value.getAttributeValue("rowspan"))
 #set ($rowspan = $value.getAttributeValue("rowspan"))
 #end
-<td class="TableCell" colspan="$!colspan" rowspan="$!rowspan" >
+#if ($value.getAttributeValue("class"))
+#set ($class = $value.getAttributeValue("class"))
+#else
+#set ($class = "TableCell")
+#end
+<td class="$!class" colspan="$!colspan" rowspan="$!rowspan" >
     
         #if ($value.getText().length() != 0 || $value.hasChildren())
         $value.getContent()
