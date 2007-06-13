@@ -24,7 +24,7 @@
     <!-- SETUP -->
     <target name="setup" description="Setup configuration for EGA scenario run">
         <log message="============= Adaptor for ${suite.name}: Set Up ..."/>
-        <svn-update-bt path="${tests.sources.dir}/${suite.name}"/>
+        <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
         <exec-ant dir="${test.sources.dir}/${suite.name}" 
                   targets="setup">
             <sysproperty key="eclipse.download.address"  value="${ega.parameters.optional.eclipse.download.address}"/>
