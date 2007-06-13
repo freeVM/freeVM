@@ -79,9 +79,11 @@ int main (int argc, char **argv, char **envp)
     STARTUPINFO startInfo;
 #endif
     int myArgvCount = argc;
-    char **myArgv = (char **) malloc(sizeof(char*) * myArgvCount);    
+    int moreArgvCount = /* -cp <classpath> */ 2 + /* <tool-class> */ 1 + /* NULL */ 1;
+    char **myArgv = (char **) malloc(sizeof(char*) * (myArgvCount + moreArgvCount));    
     char *toolName = NULL;
     int i, j;
+    int exit_code = -1;
     int newIndex = 0;
     char *jdkRoot = NULL;
     char *fullExePath = NULL;
@@ -144,7 +146,7 @@ int main (int argc, char **argv, char **envp)
         int size;
         int i;
 
-        myArgvCount = argc + 4;
+        myArgvCount = argc + moreArgvCount;
         
         size = (strlen(jdkRoot) + strlen(LIB_POSTFIX)) * pToolData->numJars +
                    strlen(CLASSPATH_SEP) * (pToolData->numJars - 1) + 1;
@@ -231,20 +233,58 @@ int main (int argc, char **argv, char **envp)
     memset(&procInfo, 0, sizeof(PROCESS_INFORMATION));
     memset(&startInfo, 0, sizeof(STARTUPINFO));
     startInfo.cb = sizeof(STARTUPINFO);
-            
-    if (CreateProcess(NULL, toolName, NULL, NULL,
-                    FALSE, 0, NULL, NULL, &startInfo, &procInfo)) { 
-
-        WaitForSingleObject( procInfo.hProcess, INFINITE );
+    //startInfo.dwFlags = STARTF_USERSTDHANDLES; // to inherit stdin, stdout, stderr handles 
         
-        CloseHandle(procInfo.hProcess);
-        CloseHandle(procInfo.hThread);
-    }
-    else {
+    // create child process
+    if (!CreateProcess(NULL, toolName, NULL, NULL,
+                    TRUE, 0, NULL, NULL, &startInfo, &procInfo)) { 
+
         fprintf(stderr, "Error creating process : %d\n", GetLastError());
+        return exit_code;
     }
+
+    // wait for child process to finish
+    if (WAIT_FAILED == WaitForSingleObject(procInfo.hProcess, INFINITE)) {
+
+        fprintf(stderr, "Error waiting for process : %d\n", GetLastError());
+
+        // terminate child process before exiting
+        if (!TerminateProcess(procInfo.hProcess, -1)) {
+            fprintf(stderr, "Error terminating process : %d\n", GetLastError());
+        }
+
+    } 
+    else {
+
+        // get exit code of the finished child process
+        DWORD res = 0;
+        if (GetExitCodeProcess(procInfo.hProcess, &res)) {
+            exit_code = (int)res;
+        }
+        else {
+            fprintf(stderr, "Error getting process exit code : %d\n", GetLastError());
+        } 
+
+    }
+
+    // close child process handles
+    CloseHandle(procInfo.hProcess);
+    CloseHandle(procInfo.hThread);
+
+    return exit_code;
+
 #else    
-    execv(fullExePath, myArgv);
+
+    /*
+     * linux - use execv() to replace current process
+     */
+     
+    exit_code = execv(fullExePath, myArgv);
+
+    // execv returns here only in case of error
+    perror("Error creating process");
+    return exit_code;
+
 #endif
 
 }
