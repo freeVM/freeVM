@@ -1,0 +1,47 @@
+        ######################################################
+        How to run Geronimo Unit Tests suite on Apache Harmony
+        ######################################################
+
+
+This document describes how to run Apache Geronimo Unit Tests (GUT) on Apache Harmony.
+The following platforms are currently supported:
+    Windows x86, Linux x86, Linux x86_64.
+
+--------------
+Configuration:
+--------------
+Make sure that PATH environment variable contains JDK 1.5 (use RI) and Apache
+Ant (version >=1.6.5), and that JAVA_HOME and ANT_HOME are properly set up. If
+you use proxy server, specify proxy settings by setting ANT_OPTS environment variable:
+Windows:
+    set ANT_OPTS="-Dhttp.proxyHost=proxy.com -Dhttp.proxyPort=1111"
+Linux:
+    export ANT_OPTS="-Dhttp.proxyHost=proxy.com -Dhttp.proxyPort=1111"
+
+Edit gut.properties file:
+    * specify JRE to use for GUT run;
+    * specify different Geronimo/Maven versions (and locations) if necessary
+
+------
+Setup:
+------
+$cd <directory where build.xml is located>
+$ant setup
+
+----
+Run:
+----
+To exclude specific GUT tests, create (or edit) exclude.list file
+(see exclude.list.example). It should be named as exclude.list.${os}.${arch}
+where ${os}.${arch} can be win32.x86, linux.x86 or linux.x86_64.
+
+$cd <directory where build.xml is located>
+$ant
+
+--------
+Results:
+--------
+Results summary can be found in the file results/<timestamp>/report.txt, detailed tests output is
+stored in the file results/<timestamp>/output.txt, where <timestamp> is the directory name based
+suite's run date and time.
+

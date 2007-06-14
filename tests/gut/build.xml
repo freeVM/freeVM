@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="gut" default="run" basedir=".">
+
+    <description>
+        Build Apache Geronimo and run Apache Geronimo Unit Tests on Apache Harmony
+        http://harmony.apache.org/
+    </description>
+
+    <!--The gut.properties file contains the names and values of properties-->
+    <property file="gut.properties" />
+
+    <tstamp>
+        <format property="timestamp" pattern="yyyyMMdd_hhmm" />
+    </tstamp>
+
+    <property name="work.dir" value="${basedir}"/>
+
+    <property name="maven.dir" value="${work.dir}"/>
+
+    <condition property="res.dir" value="${result.dir}/${timestamp}"
+        else="${basedir}/results/${timestamp}">
+        <isset property="result.dir" />
+    </condition>
+
+    <!-- Geronimo working directory -->
+    <property name="geronimo.dir"
+        value="${work.dir}/geronimo-${geronimo.version}"/>
+
+    <condition property="geronimo.exists">
+        <available file="${work.dir}/geronimo-1.2-beta"/>
+    </condition>
+
+    <condition property="maven.exists">
+        <available file="${maven.dir}/maven-${maven.version}"/>
+    </condition>
+
+    <condition property="vm.args" value="${vm.options}" else="">
+        <isset property="vm.options"/>
+    </condition>
+
+    <condition property="is.windows">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="is.linux">
+        <and>
+            <os family="unix"/>
+            <os name="linux"/>
+        </and>
+    </condition>
+
+    <condition property="os" value="linux">
+        <and>
+            <os family="unix"/>
+            <os name="linux"/>
+        </and>
+    </condition>
+
+    <condition property="os" value="windows">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="arch" value="x86">
+        <and>
+            <contains string="${os.arch}" substring="86" />
+            <not>
+                <contains string="${os.arch}" substring="64" />
+            </not>
+        </and>
+    </condition>
+
+    <condition property="arch" value="x86_64">
+        <or>
+            <contains string="${os.arch}" substring="86_64" />
+            <contains string="${os.arch}" substring="amd64" />
+        </or>
+    </condition>
+
+    <condition property="cmd.suffix" value=".bat" else="">
+        <isset property="is.windows"/>
+    </condition>
+
+    <condition property="cmd" value="sh" else="cmd">
+        <isset property="is.linux"/>
+    </condition>
+
+     <condition property="cmd.arg" value="-" else="/c">
+        <isset property="is.linux"/>
+    </condition>
+
+    <path id="maven.cmd.id">
+        <pathelement
+            location="${maven.dir}/maven-${maven.version}/bin/mvn${cmd.suffix}"/>
+    </path>
+    <pathconvert targetos="unix" property="maven.cmd" refid="maven.cmd.id"/>
+
+    <target name="config.maven.settings" if="http.proxyHost"
+        description="Create maven settings file with proxy configuration if necessary">
+        <echo file="${work.dir}/settings.xml"><![CDATA[<settings>
+    <proxies>
+        <proxy>
+            <protocol>http</protocol>
+            <host>]]>${http.proxyHost}<![CDATA[</host>
+            <port>]]>${http.proxyPort}<![CDATA[</port>
+        </proxy>
+    </proxies>
+</settings>]]>
+        </echo>
+    </target>
+
+    <target name="download.geronimo" description="Download Geronimo">
+        <mkdir dir="${geronimo.dir}"/>
+        <get src="${geronimo.location}/${geronimo.filename}"
+            dest="${work.dir}/${geronimo.filename}"
+            usetimestamp="true"
+            verbose="true" />
+    </target>
+
+    <target name="unpack.geronimo" description="Unpack Geronimo">
+        <untar src="${work.dir}/${geronimo.filename}" dest="${work.dir}"
+            compression="gzip"/>
+    </target>
+
+    <target name="install.geronimo"
+            description="Download and unpack Geronimo"
+            unless="geronimo.exists">
+        <antcall target="download.geronimo"/>
+        <antcall target="unpack.geronimo"/>
+    </target>
+
+    <target name="download.maven"
+        description="Download Maven">
+        <mkdir dir="${maven.dir}"/>
+        <get src="${maven.location}/${maven.filename}"
+            dest="${work.dir}/${maven.filename}"
+            usetimestamp="true"
+            verbose="true" />
+    </target>
+
+    <target name="unpack.maven"
+        description="Unpack Maven">
+         <untar src="${work.dir}/${maven.filename}" dest="${maven.dir}"
+            compression="gzip"/>
+        <chmod perm="u+rwx">
+            <fileset dir="${maven.dir}/maven-${maven.version}/bin"/>
+        </chmod>
+   </target>
+
+    <target name="install.maven"
+            description="Download, unpack and configure Maven"
+            unless="maven.exists">
+        <antcall target="download.maven"/>
+        <antcall target="unpack.maven"/>
+        <antcall target="config.maven.settings"/>
+    </target>
+
+    <target name="setup"
+        description="Setup Geronimo and its pre-requisites"
+        depends="install.geronimo,install.maven">
+
+        <condition property="java.exists">
+            <available file="${test.jre.home}"/>
+        </condition>
+
+        <fail message="Path to tested runtime does not exist: ${test.jre.home}" unless="java.exists"/>
+
+        <!-- Running maven with "test" target in order to make sure that all
+        necessary jar-s are downloaded and all necessary classes are compiled -->
+        <exec executable="${cmd}"
+            dir="${geronimo.dir}"
+            failonerror="false"
+            logError="true">
+            <arg line="${cmd.arg} ${maven.cmd} -s ${work.dir}/settings.xml compile test-compile"/>
+            <env key="MAVEN_HOME" value="${maven.dir}/maven-${maven.version}"/>
+            <env key="MAVEN_OPTS" value="-Xmx512m -Dmaven.test.failure.ignore=true"/>
+       </exec>
+    </target>
+
+    <condition property="os.specific.exclude.list.exists">
+        <available file="${basedir}/exclude.list.${os}.${arch}"/>
+    </condition>
+
+    <condition property="exclude.list" value="exclude.list.${os}.${arch}"
+        else="exclude.list.empty">
+        <isset property="os.specific.exclude.list.exists"/>
+    </condition>
+
+    <target name="setup.empty.exclude.list" unless="os.specific.exclude.list.exists">
+        <!-- Create empty exclude list in order to use if no exclude lists for the platform are specified -->
+        <delete file="${work.dir}/${exclude.list}"/>
+        <touch file="${work.dir}/${exclude.list}"/>
+    </target>
+
+    <target name="setup.non-empty.exclude.list" if="os.specific.exclude.list.exists">
+        <delete file="${work.dir}/${exclude.list}"/>
+        <!-- Copy exclude list and remove comments -->
+        <copy file="${basedir}/exclude.list.${os}.${arch}"
+            tofile="${work.dir}/exclude.list.${os}.${arch}"
+            overwrite="true"
+            failonerror="false">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="(.*?)#.*" replace="\1" flags="m"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+   </target>
+
+    <target name="configure.exclude.list"
+        depends="setup.empty.exclude.list,setup.non-empty.exclude.list"
+        description="Process x-list if there is one or create the empty x-list">
+        <copy file="${basedir}/alltests.list"
+            tofile="${work.dir}/tests.list"
+            overwrite="true"/>
+        <!-- Use fake token and value to avoid failure if exclude.list is empty -->
+        <replace file="${work.dir}/tests.list"
+        replacefilterfile="${work.dir}/${exclude.list}"
+        token="fake_token"
+        value="fake_token"/>
+        <replaceregexp  file="${work.dir}/tests.list"
+            match="\s+"
+            replace=","
+            flags="g"/>
+    </target>
+
+    <condition property="geronimo.pom.orig.exists">
+        <available file="${geronimo.dir}/pom.xml.orig"/>
+    </condition>
+
+    <target name="backup.geronimo.pom" unless="geronimo.pom.orig.exists">
+        <copy file="${geronimo.dir}/pom.xml"
+            tofile="${geronimo.dir}/pom.xml.orig"
+            failonerror="false"/>
+    </target>
+
+    <target name="restore.geronimo.pom" if="geronimo.pom.orig.exists">
+        <copy file="${geronimo.dir}/pom.xml.orig"
+        tofile="${geronimo.dir}/pom.xml"
+        failonerror="false"
+        overwrite="true"/>
+    </target>
+
+    <target name="configure.run.options"
+        depends="restore.geronimo.pom,backup.geronimo.pom,configure.exclude.list">
+        <loadfile property="tests" srcFile="${work.dir}/tests.list" failonerror="false"/>
+        <!-- specify VM options and tests list -->
+        <replaceregexp file="${geronimo.dir}/pom.xml"
+            match='(&lt;build>\s*&lt;pluginManagement>\s*&lt;plugins>)'
+            replace='\1${line.separator}
+                &lt;plugin>${line.separator}
+                    &lt;groupId>org.apache.maven.plugins&lt;/groupId>${line.separator}
+                    &lt;artifactId>maven-surefire-plugin&lt;/artifactId>${line.separator}
+                    &lt;configuration>${line.separator}
+                        &lt;argLine>${vm.args}&lt;/argLine>${line.separator}
+                        &lt;test>${tests}&lt;/test>${line.separator}
+                    &lt;/configuration>${line.separator}
+                &lt;/plugin>${line.separator}'/>
+    </target>
+
+    <target name="clean.logs.before.run"
+        description="Remove old logs before running">
+        <delete>
+            <fileset dir="${geronimo.dir}" includes="**/surefire-reports/*"/>
+        </delete>
+        <delete file="${work.dir}/output.txt"/>
+   </target>
+
+    <target name="run.tests" description="Launch GUT runs">
+        <exec executable="${cmd}"
+            dir="${geronimo.dir}"
+            failonerror="false"
+            logError="true">
+            <arg line="${cmd.arg} ${maven.cmd} -s ${work.dir}/settings.xml test"/>
+            <env key="MAVEN_HOME" value="${maven.dir}/maven-${maven.version}"/>
+            <env key="MAVEN_OPTS"
+                value="-Xmx512m -Djvm=${test.jre.home}${file.separator}bin${file.separator}java -Dmaven.test.failure.ignore=true -Dsurefire.reportFormat=plain -DtrimStackTrace=false"/>
+            <redirector alwaysLog="true"
+                logError="true"
+                output="${work.dir}/output.txt"/>
+        </exec>
+        <antcall target="restore.geronimo.pom"/>
+    </target>
+
+    <target name="check.status">
+        <loadfile property="status.failed"
+            srcFile="${work.dir}/output.txt"
+            failonerror="false">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="\[ERROR\] There are test failures.|\[ERROR\] BUILD ERROR"/>
+                </linecontainsregexp>
+            </filterchain>
+        </loadfile>
+        <loadfile property="status.successful"
+            srcFile="${work.dir}/output.txt"
+            failonerror="false">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="BUILD SUCCESSFUL"/>
+                </linecontainsregexp>
+            </filterchain>
+        </loadfile>
+       <fail message="GUT run failed: there are test failures" if="status.failed"/>
+       <fail message="GUT run failed: see results directory for more details" unless="status.successful"/>
+    </target>
+
+    <target name="compose.report">
+        <delete dir="${work.dir}/logs"/>
+        <delete>
+            <fileset dir="${work.dir}" includes="tmpfile.*"/>
+        </delete>
+        <delete file="${work.dir}/report.txt"/>
+        <mkdir dir="${work.dir}/logs"/>
+        <copy todir="${work.dir}/logs" flatten="true">
+            <fileset dir="${geronimo.dir}" includes="**/surefire-reports/*.txt"/>
+        </copy>
+        <mkdir dir="${res.dir}/reports"/>
+        <copy todir="${res.dir}/reports" flatten="true">
+            <fileset dir="${geronimo.dir}" includes="**/surefire-reports/*.txt"/>
+        </copy>
+        <concat destfile="${work.dir}/tmpfile.results.txt">
+            <fileset dir="${work.dir}/logs" includes="*.txt"/>
+        </concat>
+        <copy file="${work.dir}/tmpfile.results.txt"
+            tofile="${work.dir}/tmpfile.results.failed.error.txt"
+            failonerror="false"/>
+        <replaceregexp flags='mg'
+            file="${work.dir}/tmpfile.results.failed.error.txt"
+            match='^test.*sec\s*$\n|^-+\s*$\n|^Tests run:.*\s*$\n|^Test set:.*\s*$\n'
+            replace=''>
+        </replaceregexp>
+        <copy file="${work.dir}/tmpfile.results.failed.error.txt"
+            tofile="${work.dir}/tmpfile.results.failed.txt"
+            failonerror="false">
+            <filterchain>
+                <linecontains>
+                    <contains value="&lt;&lt;&lt; FAILURE!" />
+                </linecontains>
+                <replaceregex pattern="^.*FAILURE.*$" replace='@' flags="g" byline="true"/>
+                <striplinebreaks/>
+            </filterchain>
+        </copy>
+        <length file="${work.dir}/tmpfile.results.failed.txt" property="failed"/>
+        <copy file="${work.dir}/tmpfile.results.failed.error.txt"
+            tofile="${work.dir}/tmpfile.results.error.txt"
+            failonerror="false">
+            <filterchain>
+                <linecontains>
+                    <contains value="&lt;&lt;&lt; ERROR!" />
+                </linecontains>
+                <replaceregex pattern="^.*ERROR.*$" replace='@' flags="g" byline="true"/>
+                <striplinebreaks/>
+            </filterchain>
+        </copy>
+        <length file="${work.dir}/tmpfile.results.error.txt" property="error"/>
+        <echo file="${work.dir}/report.txt">
+Failures: ${failed}, errors: ${error}
+-------------------------------------
+
+        </echo>
+        <concat destfile="${work.dir}/report.txt" append="true">
+             <filelist dir="${work.dir}" files="tmpfile.results.failed.error.txt"/>
+        </concat>
+        <mkdir dir="${res.dir}"/>
+        <copy todir="${res.dir}">
+            <fileset dir="${work.dir}" includes="output.txt,report.txt"/>
+        </copy>
+    </target>
+
+    <target name="run"
+        depends="clean.logs.before.run,configure.run.options,run.tests,compose.report,check.status"
+        description="Configure, run and process GUT and run results">
+    </target>
+
+    <target name="clean"
+        description="Clean Geronimo workspace (.class files and run results)" depends="clean.logs.before.run">
+        <exec executable="${cmd}"
+            dir="${geronimo.dir}"
+            failonerror="false"
+            logError="true">
+            <arg line="${cmd.arg} ${maven.cmd} -s ${work.dir}/settings.xml clean"/> 
+            <env key="MAVEN_HOME" value="${maven.dir}/maven-${maven.version}"/>
+        </exec>
+    </target>
+
+</project>
