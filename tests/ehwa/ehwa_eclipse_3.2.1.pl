@@ -38,31 +38,37 @@ use X11::GUITest qw/
     RunApp
 /;
 
- # Set option
- SetKeySendDelay(150);
-
  # Current directory
  $curdir = `pwd`;
  $curdir =~ s/\n//;
 
  # Set variables
  $vm_options = "";
- if ((scalar(@ARGV) == 4) || (scalar(@ARGV) == 5)) {
+ if ((scalar(@ARGV) == 5) || (scalar(@ARGV) == 6)) {
     $os_arch = $ARGV[0];
  	$eclipse_home = $ARGV[1];
     $java_home = $ARGV[2];
 	$resultsDir = $ARGV[3];
-	if(scalar(@ARGV) == 5) {
-	    $vm_options = $ARGV[4];
+	$delay_factor = $ARGV[4];
+	if(scalar(@ARGV) == 6) {
+	    $vm_options = $ARGV[5];
 	}
+	if ($delay_factor < 1) {
+        LogWrite("\nERROR: Delay factor < 1! \n\nEHWA FAILED!\n");
+        die "ERROR: Delay factor < 1!";
+    }
     LogWrite("\nEclipse Home = $eclipse_home\n");
 	LogWrite("Tested JRE = $java_home\n");
-	LogWrite("Tested JRE options for Eclipse launching = $vm_options\n\n");
+	LogWrite("Tested JRE options for Eclipse launching = $vm_options\n");
+	LogWrite("Delay factor = $delay_factor \n\n");
  } else {
     print("ERROR: Wrong number of input parameters! \n\nEHWA FAILED!\n");
     die "ERROR: Wrong number of input parameters!";
  }
 
+  # Set option
+  SetKeySendDelay(200*$delay_factor);
+ 
  LogWrite("--- Automated EHWA scenario for Eclipse 3.2.1 --- \n\n");
 
  # Check if some Eclipse window is already olpened
@@ -113,6 +119,7 @@ use X11::GUITest qw/
 
  # Wait New Java Project window to appear      
  $winID = WinWaitImpl('New Java Project');
+ SleepImpl();
  LogWrite("Type 'EHWA' as project name \n");
  WinSendKeys('EHWA', 'New Java Project');
  SleepImpl();
@@ -159,7 +166,7 @@ use X11::GUITest qw/
  SleepImpl();
  WinSendKeys('{TAB}', 'Java - EHWA.java - Eclipse SDK');
  SleepImpl();
- WinSendKeys('System.out.println{(}"Hello, World{RIG}{RIG};', 'Java - EHWA.java - Eclipse SDK');
+ WinSendKeys('System.out.println{(}"Hello, World{!}{RIG}{RIG};', 'Java - EHWA.java - Eclipse SDK');
  SleepImpl();
 
  # Save EHWA class
@@ -181,9 +188,7 @@ use X11::GUITest qw/
  # Exit Eclipse
  LogWrite("Exit Eclipse \n");
  $winID = WinWaitImpl('Java - EHWA.java - Eclipse SDK');
- WinSendKeys('%(f)', 'Java - EHWA.java - Eclipse SDK');
- SleepImpl();
- WinSendKeys('x', 'Java - EHWA.java - Eclipse SDK');
+ WinSendKeys('%(f)x', 'Java - EHWA.java - Eclipse SDK');
  WinWaitCloseImpl($winID);
  SleepImpl();
 
@@ -196,7 +201,7 @@ use X11::GUITest qw/
 
 sub WinWaitImpl {    
       my $winName = shift;
-      my $delay = shift || 120;       
+      my $delay = (shift || 120) * $delay_factor;       
       LogWrite(" wait window '".$winName."' to appear ...\n");
       my @wins = WaitWindowViewable($winName, 0, $delay);
       if(scalar(@wins) > 0) {
@@ -225,7 +230,7 @@ sub WinWaitImpl {
 sub WinWaitCloseImpl {    
       my $win = shift;
       my $winName = GetWindowName($win);
-      my $delay = shift || 120;     
+      my $delay = (shift || 120) * $delay_factor;     
       LogWrite(" wait window '".$winName."' to close ...\n");
       my $result = WaitWindowClose($win, $delay);
       if($result > 0) {                
@@ -324,12 +329,13 @@ sub PrintScreen {
  	if ($result != 0) {	
  		LogWrite("\tERROR: Can't save screen picture to $resultsDir/error.xwd! \n");
  	} else {
-		LogWrite("\tPicture was saved to $resultsDir/error.xwd \n");
+		LogWrite("\tPicture was saved to $resultsDir/error.xwd. Use 'xwud -in error.xwd' to view the saved file. \n");
 	}
 }
 
 sub SleepImpl {
       $delay = shift || 6000;
+      $delay = $delay*$delay_factor;
       SendKeys('{PAUSE '.$delay.'}');
 }
 

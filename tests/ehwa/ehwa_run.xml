@@ -115,27 +115,32 @@
 		<isset property="result.dir"/>
 	</condition>
 	
+	<condition property="delay.factor.set" value="${delay.factor}" else="2">
+	        <isset property="delay.factor"/>
+	</condition>
+	
 	<condition property="args" 
-		value="ehwa_eclipse_3.2.1.au3 &quot;${eclipse.home}&quot; &quot;${tested.jre}&quot; &quot;${res.dir}&quot; &quot;${jre.options}&quot;">
+		value="ehwa_eclipse_3.2.1.au3 &quot;${eclipse.home}&quot; &quot;${tested.jre}&quot; &quot;${res.dir}&quot; ${delay.factor.set} &quot;${jre.options}&quot;">
 		<isset property="is.windows"/>
 	</condition>
 	
 	<condition property="args" 
-		value="./ehwa_eclipse_3.2.1.pl x86 &quot;${eclipse.home}&quot; &quot;${tested.jre}&quot; &quot;${res.dir}&quot; &quot;${jre.options}&quot;">
+		value="./ehwa_eclipse_3.2.1.pl x86 &quot;${eclipse.home}&quot; &quot;${tested.jre}&quot; &quot;${res.dir}&quot; ${delay.factor.set} &quot;${jre.options}&quot;">
 		<isset property="is.linux.x86"/>
 	</condition>
 	
 	<condition property="args" 
-		value="./ehwa_eclipse_3.2.1.pl x86_64 &quot;${eclipse.home}&quot; &quot;${tested.jre}&quot; &quot;${res.dir}&quot; &quot;${jre.options}&quot;">
+		value="./ehwa_eclipse_3.2.1.pl x86_64 &quot;${eclipse.home}&quot; &quot;${tested.jre}&quot; &quot;${res.dir}&quot; ${delay.factor.set} &quot;${jre.options}&quot;">
 		<isset property="is.linux.x86_64"/>
 	</condition>
 	
 	<target name="run" description="Run EHWA scenario" if="platform.supported">
 		
 		<echo>--- Run EHWA scenario on the following configuration ---</echo>
-		<echo>TESTED JRE = ${tested.jre}</echo>
-		<echo>TESTED JRE OPTIONS = ${jre.options}</echo>
-		<echo>ECLIPSE HOME = ${eclipse.home}</echo>
+		<echo>Tested JRE = ${tested.jre}</echo>
+		<echo>Tested JRE options = ${jre.options}</echo>
+		<echo>Eclipse Home = ${eclipse.home}</echo>
+		<echo>Delay factor = ${delay.factor.set}</echo>
 		<echo>---------------------------------------------------------</echo>
 
 		<antcall target="check.autoit"/>
@@ -189,12 +194,13 @@ ${line.separator}==========================================================="/>
 		</condition>
 			
 		<antcall target="print.fail.message"/>
+		<copy file="${res.dir}/EHWA.log" tofile="${result.dir}/EHWA-message.txt"/>
 		<fail message="EHWA FAILED!" unless="ehwa.passed"/>
-		<echo>EHWA PASSED!</echo>
+		<echo message="EHWA PASSED!" level="error"/>
 	</target>
 		
 	<target name="print.fail.message" unless="ehwa.passed">
-		<echo message="${line.separator}${fail.message}${line.separator}"/>
+		<echo message="${line.separator}${fail.message}${line.separator}" level="error"/>
 	</target>
 	
 	<target name="check.tested.jre" description="Checks if tested.jre is correct">

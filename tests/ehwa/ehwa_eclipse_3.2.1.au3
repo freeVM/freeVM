@@ -16,28 +16,33 @@
 ;     specific language governing permissions and limitations
 ;     under the License.   
 
-; Set options
-Opt("WinWaitDelay", 1000) ; wait for 1c
-Opt("SendKeyDelay", 150) ; wait for 150mc
-Opt("WinTitleMatchMode", 4)
-Opt("WinDetectHiddenText", 1)
-Opt("TrayIconDebug", 1)
-
 ; Set variables
 Select 
-	Case $CmdLine[0] = 3 OR $CmdLine[0] = 4
+	Case $CmdLine[0] = 4 OR $CmdLine[0] = 5
 		Dim Const $eclipse_home = $CmdLine[1]
 		Dim Const $tested_jre = $CmdLine[2]
 		Dim Const $resultsDir = $CmdLine[3]
+		Dim Const $delay_factor = Number($CmdLine[4])
 		Dim $jre_options = ""
-		If $CmdLine[0] = 4 Then
-			$jre_options  = $CmdLine[4]
+		If $CmdLine[0] = 5 Then
+			$jre_options  = $CmdLine[5]
 		EndIf
+		If $delay_factor < 1 Then
+            ConsoleWrite(@LF & "ERROR: Delay factor < 1! " & @LF & "EHWA FAILED!" & @LF)
+            Exit(1)
+        EndIf
 	Case Else 
 		ConsoleWrite("ERROR! Wrong number of input parameters! STOP." & @LF & "EHWA FAILED!" & @LF)
 		Sleep(3000)
 		Exit(1)
 EndSelect
+	
+; Set options
+Opt("WinWaitDelay", 1000) ; wait for 1c
+Opt("SendKeyDelay", 200*$delay_factor) ; wait for 150mc
+Opt("WinTitleMatchMode", 4)
+Opt("WinDetectHiddenText", 1)
+Opt("TrayIconDebug", 1)
 
 LogWrite(@LF & "--- Automated Eclipse EHWA scenario for Eclipse 3.2.1 ---" & @LF & @LF)
 
@@ -52,6 +57,7 @@ EndIf
 LogWrite("Eclipse Home = " & $eclipse_home & @LF)
 LogWrite("Tested JRE = " &  $tested_jre & @LF)
 LogWrite("Tested JRE options for Eclipse launching = " & $jre_options & @LF)
+LogWrite("Delay factor = " & $delay_factor & @LF)
 
 ; Start
 LogWrite(@LF & "Start:" & @LF)
@@ -63,7 +69,7 @@ Run(@ComSpec & " /c " & $run, "", @SW_HIDE)
 ; 1
 LogWrite(@TAB & "Wait Eclipse 'Workspace Launcher' window to appear " & @LF)
 WinWaitImpl("Workspace Launcher", "", 180)
-If Not WinActive("Workspace Launcher", "Select a workspace") Then WinActivate("Workspace Launcher")
+If Not WinActive("Workspace Launcher") Then WinActivate("Workspace Launcher")
 WinWaitActiveImpl("Workspace Launcher", "", 30)
 LogWrite(@TAB & "window appeared " & @LF)
 
@@ -78,29 +84,18 @@ WinWaitCloseImpl("Workspace Launcher", "", 60)
 ; 3
 LogWrite(@TAB & "Wait 'Java - Eclipse SDK' window to appear " & @LF)
 WinWaitImpl("Java - Eclipse SDK", "", 180)
-If Not WinActive("Java - Eclipse SDK", "") Then WinActivate("Java - Eclipse SDK","")
+If Not WinActive("Java - Eclipse SDK") Then WinActivate("Java - Eclipse SDK")
 WinWaitActiveImpl("Java - Eclipse SDK", "", 30)
 LogWrite(@TAB & "window appeared " & @LF)
-ControlFocus("Java - Eclipse SDK", "", "ToolbarWindow321") 
-ControlClick("Java - Eclipse SDK", "", "ToolbarWindow321") 
-If @error=1 Then 	
-	LogWrite(@TAB & "ERROR! Welcome page window wasn't found. STOP." & @LF)
-	PrintErrorScreen()
-	ExitImpl(1)
-EndIf
+SleepImpl(1000)
 LogWrite(@TAB & "Close Welcome page " & @LF)
-ControlFocus("Java - Eclipse SDK", "", "ToolbarWindow321") 
-ControlSend("Java - Eclipse SDK", "", "ToolbarWindow321", "!+Q") 
-WinWaitNotActive("Java - Eclipse SDK", "")
-Send("p")
-WinWaitActiveImpl("Java - Eclipse SDK", "", 30)
-Sleep(3000)
+;Send("!wvp{ENTER}")
+Send("!+{NUMPADSUB}c")
+SleepImpl(3000)
 
 ; 4
 LogWrite(@TAB & "Create new  Java project" & @LF)
-Send("!f")
-Send("n")
-Send("r")
+Send("!fnr")
 
 ; 5
 LogWrite(@TAB & "Wait 'New Project' window to appear" & @LF)
@@ -127,6 +122,7 @@ WinWaitImpl("New Java Project","",60)
 If Not WinActive("New Java Project") Then WinActivate("New Java Project")
 WinWaitActiveImpl("New Java Project","",30)
 LogWrite(@TAB & "window appeared, " & @LF)
+SleepImpl(1000)
 LogWrite(@TAB & "Type EHWA as a project name" & @LF)
 ControlFocus("New Java Project", "", "Edit2") 
 ControlSetText("New Java Project", "", "Edit2", "EHWA" )
@@ -158,6 +154,7 @@ WinWaitImpl("New Java Class","",60)
 If Not WinActive("New Java Class") Then WinActivate("New Java Class")
 WinWaitActiveImpl("New Java Class","",30)
 LogWrite(@TAB & "window appeared " & @LF)
+SleepImpl(1000)
 
 ; 8
 LogWrite(@TAB & "Type EHWA as class name" & @LF)
@@ -186,12 +183,12 @@ WinWaitImpl("Java - EHWA.java - Eclipse SDK","",60)
 If Not WinActive("New Java Class") Then WinActivate("Java - EHWA.java - Eclipse SDK")
 WinWaitActiveImpl("Java - EHWA.java - Eclipse SDK","",30)
 LogWrite(@TAB & "EHWA class was successfully created" & @LF)
-Sleep(3000)
+SleepImpl(3000)
 LogWrite(@TAB & "Add System.out.println(""Hello, world!""); string in the main method of EHWA class" & @LF)
 ControlFocus("Java - EHWA.java - Eclipse SDK", "", "SWT_Window039")
 ControlSend("Java - EHWA.java - Eclipse SDK", "", "SWT_Window039", "{DOWN 8}{TAB}")
 ControlSend("Java - EHWA.java - Eclipse SDK", "", "SWT_Window039", "System.out.println(""Hello, world{!}"");")
-Sleep(3000)
+SleepImpl(3000)
 
 ; 12
 WinWaitImpl("Java - EHWA.java - Eclipse SDK","",60)
@@ -208,7 +205,7 @@ LogWrite(@TAB & "Open console" & @LF)
 Send("!w")
 Send("v")
 Send("c")
-Sleep(3000)
+SleepImpl(3000)
 
 ; 13
 WinWaitImpl("Java - EHWA.java - Eclipse SDK","",60)
@@ -265,7 +262,7 @@ While StringInStr(WinGetText("Java - EHWA.java - Eclipse SDK"), "<terminated>") 
 		ExitImpl(1)
 	EndIf
 WEnd
-Sleep(3000)
+SleepImpl(3000)
 If Not WinExists("Java - EHWA.java - Eclipse SDK") Then
 	LogWrite(@TAB & "ERROR! Window 'Java - EHWA.java - Eclipse SDK' doesn't exists. STOP." & @LF)
 	PrintErrorScreen()
@@ -276,6 +273,10 @@ EndIf
 ExitImpl(0)
 
 ; Auxiliary functions
+
+Func SleepImpl($sleep_time)
+    Sleep($sleep_time*$delay_factor)
+EndFunc
 
 Func LogWrite($string)
 	Dim Const $logfile = $resultsDir & "\EHWA.log"

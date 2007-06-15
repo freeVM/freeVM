@@ -25,9 +25,12 @@
     </required>
     
     <optional>
-        <tested.vm.options
-            description="JVM options for tested runtime"
+        <tested.jre.options
+            description="Options for the tested runtime"
             value=""/>
+        <delay.factor
+            description="Factor used in time delays inside the scenario" 
+            value="2"/>  
         <eclipse.download.address
             description="Url where Eclipse download archives can be found" 
             value="http://mirrors.nsa.co.il/eclipse/eclipse/downloads/drops/R-3.2.1-200609210945"/>
@@ -37,10 +40,6 @@
     
     <shared/> 
     
-    <cc>
-        <summary
-            description="EHWA scenario logs to attach to CC notification"
-            value="${results.dir}/${suite.name}/EHWA-message.txt"/>
-    </cc>
+    <cc/>
 
 </parameters>

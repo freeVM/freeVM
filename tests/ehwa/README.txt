@@ -90,10 +90,11 @@ To run EHWA on Eclipse 3.2.1 scenario, please, do the following:
    ant -buildfile ehwa_run.xml -Declipse.home=<Eclipse-3.2.1 Home> \
                                -Dtested.jre=<Path to JRE under test> \
                                [-Dtested.jre.options=<Tested JRE options>] \
-                               [-Dresult.dir=<Dir for storing EHWA run results>]
+                               [-Dresult.dir=<Dir for storing EHWA run results>] \
+                               [-Ddelay.factor=<N>]
  
-Where tested.jre.options property is empty by default and
-result.dir is <INSTALL_DIR> by default
+Where by default tested.jre.options property is empty,
+result.dir is <INSTALL_DIR> and delay.factor is equal to 2.
                                   
 NOTE: Use only 'clean' Eclipse, which isn't bound to any working projects, 
       for running EHWA scenario, because Eclipse config will be cleaned 
@@ -110,6 +111,27 @@ It contains EHWA log and may contain Eclipse launching log,
 Eclipse workspace log and picture of the screen if an error has occurred.
 
 
+KNOWN ISSUES
+============
+       
+    1) If the scenario often fails to observe some window, 
+       but no configuration or JRE errors is visible, 
+       it is recommended to increase delay.factor.
+     
+    2) If the scenario fails to observe some menu on Windows*,
+       it is recommended to uncheck 'Hide underlined letters 
+       for keyboard navigation until I press Alt key' in
+       Display properties -> Appearance -> Effects.
+ 
+    3) If any unexpected problems appear during scenario contiguous run
+       under Cruise Control, it is strongly recommended to run BT framework 
+       using Sun JDK* 1.5.
+      
+    4) If use Remote Desktop Connection for the scenario run you should not 
+       minimize remote desktop window. Also, please, turn off screen saver. 
+       These are needed for correct work of GUI automation tool.
+       
+       
 DISCLAIMER AND LEGAL INFORMATION
 ================================
 

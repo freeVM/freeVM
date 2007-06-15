@@ -18,6 +18,7 @@
 <!-- ======================================================================
          BT Adaptor for Eclipse Hello World Application (EHWA) scenario
      ====================================================================== -->
+
 <project name="ehwa" default="run" basedir=".">
     
     <property environment="env"/>
@@ -126,7 +127,7 @@
     </target>
     
     <!-- Run of the EHWA scenario -->
-    <target name="run" depends="clean">
+    <target name="run">
         <log message="============= Adaptor for ${suite.name}: Run ..."/>
 
         <exec-ant file="ehwa_run.xml"
@@ -134,29 +135,9 @@
             <sysproperty key="result.dir"         value="${results.dir}/${suite.name}"/>
             <sysproperty key="eclipse.home"       value="${eclipse-3.2.1.homedir}/eclipse"/>
             <sysproperty key="tested.jre"         value="${tested.runtime}"/>
-            <sysproperty key="tested.jre.options" value="${ehwa.parameters.optional.tested.vm.options}"/>
+            <sysproperty key="tested.jre.options" value="${ehwa.parameters.optional.tested.jre.options}"/>
+            <sysproperty key="delay.factor"       value="${ehwa.parameters.optional.delay.factor}"/>
         </exec-ant>
-
-        <fileset id="ehwa.log.file.id"    dir="${results.dir}/${suite.name}" includes="**/EHWA.log"/>
-        <fileset id="eclipse.log.file.id" dir="${results.dir}/${suite.name}" includes="**/eclipse.log"/>
-
-        <property name="ehwa.log.file"    refid="ehwa.log.file.id"/>
-        <property name="eclipse.log.file" refid="eclipse.log.file.id"/>
-
-        <loadfile srcfile="${results.dir}/${suite.name}/${ehwa.log.file}"    property="ehwa.log"/>
-        <loadfile srcfile="${results.dir}/${suite.name}/${eclipse.log.file}" property="eclipse.log"/>
-
-        <echo file="${results.dir}/${suite.name}/EHWA-message.txt" append="false"
-              message="${ehwa.log}${line.separator}"/>
-
-        <echo file="${results.dir}/${suite.name}/EHWA-message.txt" append="true"
-              message="***********************************************************${line.separator}"/>
-
-        <echo file="${results.dir}/${suite.name}/EHWA-message.txt" append="true"
-              message="Eclipse log:${line.separator}${line.separator}${eclipse.log}${line.separator}"/>
-
-        <echo file="${results.dir}/${suite.name}/EHWA-message.txt" append="true"
-              message="***********************************************************${line.separator}"/>
     </target>
     
     <!-- Clean of the EHWA scenario results -->

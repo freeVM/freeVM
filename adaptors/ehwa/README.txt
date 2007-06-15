@@ -140,9 +140,15 @@ The following steps should be made to run EHWA on the tested JRE:
      ehwa.parameters.optional.tested.jre.options=<Tested JRE options>
      - sets JRE options for eclipse launching, default is "-showversion"
      
+     To configure scenario run, use the following option:
+    
+     ehwa.parameters.optional.delay.factor=<N>     
+     - sets factor used in time delays inside the scenario, default value is 2.
+     
      Cruise Control Web Port and Port for JMX console can be specified by the following properties:
          framework.parameters.cc.jmxport
          framework.parameters.cc.webport
+         
      Please, see BT Readmes for more information.
     
   7. Run EHWA on the previously built Harmony JRE the with command:
