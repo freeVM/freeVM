@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                    BT Adaptor for Harmony Classlib Project
+     ====================================================================== -->
+<project name="snapshot" default="run" basedir=".">
+
+    <condition property="is.windows">
+        <os family="Windows" />
+    </condition>
+
+    <condition property="exe" value=".exe" else="">
+        <isset property="is.windows" />
+    </condition>
+    <condition property="snapshot.file"
+               value="latest-harmony-hdk-windows-x86.zip"
+               else="latest-harmony-hdk-linux-x86.tar.gz">
+        <isset property="is.windows" />
+    </condition>
+
+    <target name="setup" depends="download.snapshot" />
+
+    <property name="downloads.url"
+              value="http://people.apache.org/builds/harmony/snapshots" />
+
+    <property name="snapshot" location="${checkouts.dir}/snapshot" />
+    <condition property="is.zip">
+        <contains string="${snapshot.file}" substring=".zip" />
+    </condition>
+
+    <property name="snapshot.results.dir" location="${snapshot}/results" />
+
+    <target name="run" depends="-unzip,-gunzip,-svn.revision">
+        <delete dir="${snapshot.results.dir}" />
+        <mkdir dir="${snapshot.results.dir}" />
+    </target>
+
+    <target name="download.snapshot" depends="-setup-proxy">
+
+        <mkdir dir="${snapshot}" />
+        <get src="${downloads.url}/${snapshot.file}"
+             dest="${snapshot}/${snapshot.file}"
+             usetimestamp="true"
+             verbose="true" />
+    </target>
+
+    <target name="-unzip" if="is.zip">
+        <delete dir="${snapshot}/hdk" />
+        <unzip src="${snapshot}/${snapshot.file}" dest="${snapshot}" />
+    </target>
+
+    <target name="-setup-proxy" if="http.proxyHost">
+        <setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+    </target>
+
+    <target name="-gunzip" unless="is.zip">
+
+        <delete dir="${snapshot}/hdk" />
+
+        <gunzip src="${snapshot}/${snapshot.file}" dest="${snapshot}" />
+        <untar dest="${snapshot}">
+            <fileset dir="${snapshot}">
+                <include name="*.tar" />
+            </fileset>
+        </untar>
+    </target>
+
+    <target name="-svn.revision" depends="-unzip,-gunzip">
+
+        <!-- rename 'harmony-hdk-rXXXXXX' to 'hdk' dir -->
+        <dirset id="snapshot.dir.id"
+                dir="${snapshot}"
+                includes="harmony-hdk-*" />
+        <pathconvert property="snapshot.path" refid="snapshot.dir.id" />
+        <basename file="${snapshot.path}" property="snapshot.name" />
+        <move file="${snapshot}/${snapshot.name}" tofile="${snapshot}/hdk" />
+
+        <!-- store snapshot svn revision -->
+        <echo file="${svn.revision.file}"
+              message="svn.revision=${snapshot.name}" />
+
+        <!-- restore file permissions on extracted files -->
+        <chmod perm="a+x">
+            <fileset dir="${snapshot}/hdk/jdk/jre/bin">
+                <include name="java" />
+            </fileset>
+            <fileset dir="${snapshot}/hdk/jdk/bin">
+                <include name="*" />
+            </fileset>
+        </chmod>
+    </target>
+
+    <target name="clean">
+        <delete dir="${snapshot}" />
+    </target>
+
+    <!--                     -->
+    <!-- snapshot publishers -->
+    <!--                     -->
+    <target name="publish-axis2_app">
+        <mkdir dir="${snapshot.results.dir}/axis2_app" />
+
+        <concat destfile="${snapshot.results.dir}/axis2_app/index.html">
+            <header trimleading="yes" filtering="no">
+                &lt;html&gt;
+            </header>
+
+            <fileset file="${results.dir}/axis2_app/Axis2-message.txt" />
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="(.*)" replace="\1&lt;br/&gt;" />
+                </tokenfilter>
+            </filterchain>
+
+            <footer trimleading="yes" filtering="no">
+                &lt;/html&gt;
+            </footer>
+        </concat>
+    </target>
+
+    <target name="publish-JettyScenario">
+        <mkdir dir="${snapshot.results.dir}/JettyScenario" />
+        <copy todir="${snapshot.results.dir}/JettyScenario">
+            <fileset dir="${results.dir}/JettyScenario/html">
+                <include name="**" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="publish-dacapo">
+        <mkdir dir="${snapshot.results.dir}/dacapo" />
+        <concat destfile="${snapshot.results.dir}/dacapo/index.html">
+            <header trimleading="yes" filtering="no">
+                &lt;html&gt;
+            </header>
+
+            <fileset file="${results.dir}/dacapo/dacapo_output.txt"/>
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="^===== DaCapo.*"/>
+                </linecontainsregexp>
+                <tokenfilter>
+                    <replaceregex pattern="=$" replace="=&lt;br/&gt;"/>
+                </tokenfilter>
+            </filterchain>
+            
+            <footer trimleading="yes" filtering="no">
+                &lt;/html&gt;
+            </footer>
+        </concat>
+    </target>
+
+    <target name="publish-ehwa">
+        <mkdir dir="${snapshot.results.dir}/ehwa" />
+        <concat destfile="${snapshot.results.dir}/ehwa/index.html">
+            <header trimleading="yes" filtering="no">
+                &lt;html&gt;
+            </header>
+
+            <fileset file="${results.dir}/ehwa/EHWA-message.txt"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="(.*)" replace="\1&lt;br/&gt;"/>
+                </tokenfilter>
+            </filterchain>
+            
+            <footer trimleading="yes" filtering="no">
+                &lt;/html&gt;
+            </footer>
+        </concat>
+    </target>
+
+    <target name="publish-scimark">
+        <mkdir dir="${snapshot.results.dir}/scimark" />
+
+        <concat destfile="${snapshot.results.dir}/scimark/index.html">
+            <header trimleading="yes" filtering="no">
+                &lt;html&gt;
+            </header>
+
+            <fileset file="${results.dir}/scimark/score.txt" />
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="(.*)" replace="\1&lt;br/&gt;" />
+                </tokenfilter>
+            </filterchain>
+
+            <footer trimleading="yes" filtering="no">
+                &lt;/html&gt;
+            </footer>
+        </concat>
+    </target>
+
+    <target name="publish-struts_test">
+        <mkdir dir="${snapshot.results.dir}/struts_test" />
+        <copy todir="${snapshot.results.dir}/struts_test">
+            <fileset dir="${results.dir}/struts_test/test-results/html">
+                <include name="**" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="publish-tomcat-scenario">
+        <mkdir dir="${snapshot.results.dir}/tomcat-scenario" />
+        <echo file="${snapshot.results.dir}/tomcat-scenario/index.html">
+&lt;html&gt;
+NO OUTPUT
+&lt;/html&gt;
+        </echo>
+    </target>
+
+</project>
+
