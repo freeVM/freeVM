@@ -84,6 +84,11 @@ public class Selector {
     /* the constant to multiply the day field for time selection */
     public static final int     DAY_MULTIPLIER       = 1;
 
+    protected boolean           excludePredefinedNames = true;
+    protected String[]          predefinedNames        = { "/~", "/#", "/.#",
+        "/%", "/._", "/CVS/", "/.cvsignore/", "/SCCS/", "/vssver.scc/",
+        "/.svn/", "/.DS_Store/"                       };
+
     /* the list of tests that should be executed in the current run */
     protected Main              curCore              = Main.getCurCore();
 
@@ -188,9 +193,48 @@ public class Selector {
      * default constructor: parse the config and create the arrays for selection
      */
     public Selector() {
+        setDefaultExclude();
         createSortArr();
         createDateNumber();
         createExcStat();
+    }
+
+    /*
+     * setup default exclude option: true/ false and list of substring Section
+     * in the configuration file for 'selector' plugin can looks like <parameter
+     * name="excludeDefault"> <value name="use">true </value> <value
+     * name="substring">/.svn </value> <value name="substring">/CVS </value>
+     * </parameter>
+     */
+    void setDefaultExclude() {
+        HashMap params;
+        HashMap tmpH;
+        ArrayList tmpA;
+
+        tmpA = (ArrayList)cfg.getPlugins().get("Selector");
+        if (tmpA == null) {
+            return;
+        }
+        tmpH = (HashMap)(tmpA).get(1);
+        if (tmpH == null) {
+            return;
+        }
+        params = (HashMap)tmpH.get("excludeDefault");
+        if (params != null) {
+            tmpA = (ArrayList)params.get("use");
+            if (tmpA != null && tmpA.size() > 0) {
+                if ("false".equalsIgnoreCase(tmpA.get(0).toString())) {
+                    excludePredefinedNames = false;
+                }
+            }
+            tmpA = (ArrayList)params.get("substring");
+            if (tmpA != null && tmpA.size() > 0) {
+                predefinedNames = new String[tmpA.size()];
+                for (int i = 0; i < tmpA.size(); i++) {
+                    predefinedNames[i] = tmpA.get(i).toString();
+                }
+            }
+        }
     }
 
     /*
@@ -1056,6 +1100,15 @@ public class Selector {
             + "\trunSelect(): ";
 
         boolean testAccepted = true;
+
+        //if test name has 'predefined exclude' part - exclude it
+        if (excludePredefinedNames) {
+            for (int i = 0; i < predefinedNames.length; i++) {
+                if (test.getTestID().contains(predefinedNames[i])) {
+                    return false;
+                }
+            }
+        }
 
         //if exclude list is defined and this test is excluded in this list:
         // skip it for run
