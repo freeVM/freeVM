@@ -149,16 +149,16 @@
                 &lt;html&gt;
             </header>
 
-            <fileset file="${results.dir}/dacapo/dacapo_output.txt"/>
+            <fileset file="${results.dir}/dacapo/dacapo_output.txt" />
             <filterchain>
                 <linecontainsregexp>
-                    <regexp pattern="^===== DaCapo.*"/>
+                    <regexp pattern="^===== DaCapo.*" />
                 </linecontainsregexp>
                 <tokenfilter>
-                    <replaceregex pattern="=$" replace="=&lt;br/&gt;"/>
+                    <replaceregex pattern="=$" replace="=&lt;br/&gt;" />
                 </tokenfilter>
             </filterchain>
-            
+
             <footer trimleading="yes" filtering="no">
                 &lt;/html&gt;
             </footer>
@@ -172,17 +172,26 @@
                 &lt;html&gt;
             </header>
 
-            <fileset file="${results.dir}/ehwa/EHWA-message.txt"/>
+            <fileset file="${results.dir}/ehwa/EHWA-message.txt" />
             <filterchain>
                 <tokenfilter>
-                    <replaceregex pattern="(.*)" replace="\1&lt;br/&gt;"/>
+                    <replaceregex pattern="(.*)" replace="\1&lt;br/&gt;" />
                 </tokenfilter>
             </filterchain>
-            
+
             <footer trimleading="yes" filtering="no">
                 &lt;/html&gt;
             </footer>
         </concat>
+    </target>
+
+    <target name="publish-gut">
+        <mkdir dir="${snapshot.results.dir}/gut" />
+        <junitreport todir="${checkouts.dir}/gut/logs">
+            <fileset dir="${checkouts.dir}/gut/geronimo-1.2-beta"
+                     includes="**/surefire-reports/TEST*-*.xml" />
+            <report format="frames" todir="${snapshot.results.dir}/gut" />
+        </junitreport>
     </target>
 
     <target name="publish-scimark">
