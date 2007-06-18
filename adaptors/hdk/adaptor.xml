@@ -48,6 +48,7 @@
     <target name="run">
         <exec-ant dir="${hdk.trunk.dir}">
             <jvmarg line="-Xmx1000M"/>
+            <sysproperty key="keep.working" value="true"/>
             <sysproperty key="auto.fetch" value="true"/>
             <sysproperty key="hy.cfg" value="${hdk.hy.cfg}"/>
         </exec-ant>

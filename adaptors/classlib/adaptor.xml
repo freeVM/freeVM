@@ -49,6 +49,7 @@
              inheritAll="false"/>
         <!-- Use BTI staff to execute Ant Build in new process -->
         <exec-ant dir="${trunk.dir}" targets="rebuild">
+            <sysproperty key="keep.working" value="true"/>
             <!-- workaround on classlib-build's InvocationTargetException -->
             <jvmarg line="-Xmx1000M"/>
         </exec-ant>
