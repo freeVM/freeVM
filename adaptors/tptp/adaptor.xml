@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                  BT Adaptor for TPTP profiler tests suite
+     ====================================================================== -->
+<project name="tptp" default="run" basedir=".">
+
+    <!--- Define used properties -->    
+    <property environment="env"/>
+    <property name="work.dir"        value="${checkouts.dir}/${suite.name}"/> 
+    <property name="tests.dir"       value="${test.sources.dir}/${suite.name}"/>
+    <property name="tests.module"    value="${tptp.parameters.optional.tptp.tests.module}"/>
+    <property name="tptp.results"    value="${results.dir}/${suite.name}"/>
+    <property name="tptp.report"     value="${tptp.results}/tptp_report"/>      
+    <property name="tptp.failed.zip" value="${tptp.results}/FailedTests.zip"/>      
+
+    <!-- Setup of the TPTP profiler test suite -->
+    <target name="setup">
+        <log message="============= Adaptor for ${suite.name}.  Set Up .."/>
+
+        <!-- update suite resources from SVN -->
+        <svn-update-bt path="${tests.dir}"/>
+
+        <!-- make the dir to store built tests -->
+        <mkdir dir="${work.dir}/${tests.module}"/>
+
+        <!-- Copy tests from build to build/checkouts/tptp -->
+        <copy todir="${work.dir}/${tests.module}" failonerror="true">
+            <fileset dir="${tptp.tests.build.home}/${tests.module}"/>
+        </copy>        
+
+        <!-- Copy additional files from tests/tptp to build/checkouts/tptp -->
+        <copy todir="${work.dir}" file="${tests.dir}/build.xml"/>
+        <copy todir="${work.dir}" file="${tests.dir}/testsCount.java"/>
+        <copy todir="${work.dir}" file="${tests.dir}/updateExclude.java"/>
+        <copy todir="${work.dir}" file="${tests.dir}/updateResults.java"/>
+        <copy todir="${work.dir}" file="${tests.dir}/report.xsl"/>
+        <copy todir="${work.dir}" file="${tests.dir}/test.xsl"/>
+
+        <!-- Compile sources -->
+        <javac srcdir="${work.dir}"
+               destdir="${work.dir}"
+               includes="*.java"/>
+    </target>
+
+    <!-- Run the TPTP profiler test suite -->
+    <target name="run" description="Run TPTP profiler tests."> 
+        <log message="============= Adaptor for ${suite.name}. Run .."/>
+
+        <!-- Copy exclude list file for updating suite's config -->
+        <copy todir="${tptp.results}" file="${tests.dir}/${tptp.parameters.optional.exclude.list}"/>
+
+        <!-- Remember start time -->
+        <tstamp>
+            <format property="time.stamp" pattern="yyyy-MM-dd_hhmm" />
+        </tstamp>
+
+        <!-- call ant script of the tptp project -->
+        <exec-ant dir="${work.dir}"
+                  targets="run"
+                  failonerror="false"
+                  failproperty="tptp.tests.failed">
+            <sysproperty key="test.home"         value="${work.dir}/${tests.module}"/>
+            <sysproperty key="tested.runtime"    value="${tested.runtime}"/>
+            <sysproperty key="ac.home"           value="${agent.controller.home}"/>
+            <sysproperty key="tptp.test.class"   value="${tptp.parameters.optional.tptp.test.class}"/>
+            <sysproperty key="runner.arguments"  value="${tptp.parameters.optional.runner.arguments}"/>
+            <sysproperty key="tptp.options"      value="${tptp.parameters.optional.runner.vm.options}"/>
+            <sysproperty key="tested.vm.options" value="${tptp.parameters.optional.tested.vm.options}"/>
+            <sysproperty key="test.timeout"      value="${tptp.parameters.optional.test.timeout}"/>
+            <sysproperty key="exclude.name"      value="${tptp.parameters.optional.exclude.list}"/>
+            <sysproperty key="results.dir"       value="${tptp.results}"/>
+            <sysproperty key="report.dir"        value="${tptp.report}"/>
+            <sysproperty key="failed.zip"        value="${tptp.failed.zip}"/>
+        </exec-ant>
+
+        <!-- Store recent results -->
+        <copy todir="${tptp.report}_${time.stamp}">
+            <fileset dir="${tptp.report}"/>
+        </copy>
+
+        <fail message="Some TPTP tests failed" if="tptp.tests.failed"/>
+    </target>
+
+    <!-- Clean TPTP profiler test suite -->
+    <target name="clean">
+    <log message="============= Adaptor for ${suite.name}. Clean .."/>
+        <delete dir="${work.dir}"/>
+        <delete dir="${tptp.results}"/>
+    </target>
+
+</project>

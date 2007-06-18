@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="run.tptp.tests" default="run" basedir=".">
+
+    <description>Run TPTP profiler testsuite</description>
+
+<!-- To run TPTP profiler tests use the following command
+
+${JAVA_HOME}/bin/java \
+    -Dtest.param="${EM_OPT}" \
+    -Dtest.timeout=${test.timeout} \
+    -Dconfigfile="$CFGFILE" \
+    -Dtest.output=${OUTPUT} \
+    -Dtest.java=${UT_RUNTIME} \
+    -Dtest.home=${TEST_HOME} \
+    -Dac.home=${AC_HOME} \
+    -Dtest.verbose=false \
+    -Xbootclasspath/p:${BOOTCLASSPATH} \
+    -classpath ${CLASSPATH} \
+    org.eclipse.tptp.ac.testautomation.AllStandaloneProfiling > ${OUTPUT}/log.txt 2>&1
+
+   where:
+
+   JAVA_HOME - reference runtime location 
+   EM_OPT - running mode 
+            for DRLVM -Xint/-Xem:opt/-Xem:jet or default +  -XX:vm.assert_dialog=false
+            for RI it is empty
+   TIME_OUT - time in milliseconds for 1 test
+   CFGFILE - configure file location 
+   OUTPUT  - output directory location
+   UT_RUNTIME - tested JRE location
+   TEST_HOME  - tests directory location
+   AC_HOME - agent directory location
+   BOOTCLASSPATH - used bootclasspath
+   CLASSPATH - used jar files                              
+
+-->
+
+    <!-- path to the reference runtime -->
+    <property name="jvm.reference" location="${java.home}/bin/java"/>
+    
+    <!-- CFGFILE, BOOTCLASSPATH, CLASSPATH arguments -->
+    <property name="config.file"       location="${test.home}/automation-files/config/local_config_file.xml"/> 
+    <property name="config.file.new"   location="${results.dir}/local_config_file.xml"/> 
+    
+    <property name="test_jars"         location="${test.home}/automation-files/required_jars"/>
+    <property name="classpath_jar"     location="${test_jars}/hlcore.jar${path.separator}${test_jars}/org.eclipse.emf.common_2.2.0.jar${path.separator}${test_jars}/org.eclipse.emf.ecore_2.2.0.jar${path.separator}${test_jars}/hlcbe101.jar${path.separator}${test_jars}/junit.jar${path.separator}${test_jars}/hexcore.jar${path.separator}${test_jars}/hexl.jar${path.separator}${test.home}/bin"/>
+    <property name="bootclasspath_jar" location="${test_jars}/xml-apis.jar${path.separator}${test_jars}/xercesImpl.jar"/>
+
+    <echo message="CLASSPATH: ${classpath_jar}"/>
+    <echo message="BOOTCLASSPATH: ${bootclasspath_jar}"/>
+
+    <!-- All arguments -->
+    <property name="jvm.args" value="${tptp.options} -Dtest.param='${tested.vm.options}' -Dtest.timeout=${test.timeout} -Dconfigfile=${config.file.new} -Dtest.output=${report.dir} -Dtest.java=${tested.runtime} -Dtest.home=${test.home} -Dac.home=${ac.home} -Dtest.verbose=false -Xbootclasspath/p:${bootclasspath_jar} "/> 
+      
+    <!-- Tests running -->     
+    <target name="run"> 
+        <!-- Clear previous results -->
+        <delete dir="${report.dir}" failonerror="false"/>
+        <mkdir dir="${report.dir}"/>
+
+        <echo message="=====Used RI:  ${jvm.reference}"/>
+        <echo message="=====TPTP profiler tests were set to ${test.home}"/>
+        <echo message="=====Agent was set to ${ac.home}"/>    
+        <echo message="=====Used jvm args: ${jvm.args}"/>
+        <echo message="=====Running class: ${tptp.test.class}"/>  
+
+        <java classname="updateExclude"
+              classpath="."
+              fork="yes"
+              failonerror="true">
+            <arg value="${config.file}"/>
+            <arg value="${config.file.new}"/>
+            <arg value="${results.dir}/${exclude.name}.txt"/>
+            <arg value="${results.dir}/${exclude.name}"/>
+        </java>         
+
+        <java jvm="${jvm.reference}"
+              classname="${tptp.test.class}"     
+              output="${report.dir}/AllTests.txt"
+              error="${report.dir}/AllTests_error.txt"
+              failonerror="true"
+              fork="yes">
+            <jvmarg line="${jvm.args}"/>
+            <arg line="${runner.arguments}"/>
+            <classpath>
+                <pathelement path="${classpath_jar}"/>
+            </classpath>
+        </java>
+
+        <!-- Move thr files to xml -->
+        <move todir="${report.dir}" includeemptydirs="false">
+            <fileset dir="${report.dir}">
+                <exclude name="**/*.xml"/>
+            </fileset>
+            <mapper type="glob" from="*.thr" to="*.xml"/>
+        </move>   
+
+        <!-- Copy additional files from tptp tests build -->
+        <copy todir="${report.dir}" file="report.xsl"/>
+        <copy todir="${report.dir}" file="test.xsl"/>
+        
+        <!-- Migrate txt results file to xml -->
+        <java classname="updateResults"
+              classpath="."
+              fork="yes"
+              failonerror="true">
+            <arg value="${report.dir}/AllTests.txt"/>
+            <arg value="${report.dir}/AllTests.xml"/>
+        </java>         
+        
+        <!-- Prepere summary report -->       
+        <java classname="testsCount"
+              classpath="."
+              fork="yes"
+              resultproperty="test.res.code">
+            <arg value="${report.dir}"/>
+            <arg value="${results.dir}/${exclude.name}.txt"/>
+            <arg value="${test.home}"/>
+            <arg value="${test.home}"/>
+            <arg value="${tested.runtime}"/>
+            <arg value="${os.name}_${os.version}_${os.arch}"/>
+            <arg value="${failed.zip}"/>
+        </java>         
+
+        <!-- Delete config files and exclude list  file -->
+        <delete file="${config.file.new}"/>
+        <delete file="${results.dir}/${exclude.name}.txt"/>
+        <delete file="${results.dir}/${exclude.name}"/>
+
+        <condition property="tptp.tests.failed">
+            <not>
+                <equals arg1="${test.res.code}" arg2="0"/>
+            </not>
+        </condition>
+
+        <fail message="Some tests failed on ${tested.runtime}" if="tptp.tests.failed"/>
+
+    </target>   
+
+</project>
