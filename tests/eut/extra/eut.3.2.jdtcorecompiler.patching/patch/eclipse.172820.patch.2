@@ -1,0 +1,36 @@
+--- sources_to_patch/org/eclipse/jdt/core/tests/util/Util.java	2006-04-07 05:03:48.000000000 +0700
++++ sources_patched/org/eclipse/jdt/core/tests/util/Util.java	2007-06-04 18:46:31.921276895 +0700
+@@ -7,11 +7,14 @@
+  *
+  * Contributors:
+  *     IBM Corporation - initial API and implementation
++ *     Nina Rinskaya
++ *     		Fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=172820.
+  *******************************************************************************/
+ package org.eclipse.jdt.core.tests.util;
+ 
+ import java.io.File;
+ import java.io.FileInputStream;
++import java.io.FilenameFilter;
+ import java.io.FileNotFoundException;
+ import java.io.FileOutputStream;
+ import java.io.IOException;
+@@ -499,6 +502,18 @@
+ 	if ("J9".equals(vmName)) {
+ 		return new String[] { toNativePath(jreDir + "/lib/jclMax/classes.zip")};
+ 	}
++	if ("DRLVM".equals(vmName)) {
++		FilenameFilter jarFilter = new FilenameFilter() {
++			public boolean accept(File dir, String name) {
++				return name.endsWith(".jar") & !name.endsWith("-src.jar");
++			}
++		};
++		String[] jars = new File(jreDir + "/lib/boot/").list(jarFilter);
++		for (int i = 0; i < jars.length; i++) {
++			jars[i] = toNativePath(jreDir + "/lib/boot/" + jars[i]);
++		}
++		return jars;
++	}
+ 	File file = new File(jreDir + "/lib/rt.jar");
+ 	if (file.exists()) {
+ 		return new String[] {

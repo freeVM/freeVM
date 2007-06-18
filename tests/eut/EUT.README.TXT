@@ -1,0 +1,115 @@
+        #####################################################
+        How to run Eclipse Unit Tests suite on Apache Harmony
+        #####################################################
+
+This document describes how to run Eclipse Unit Tests (EUT) on Apache Harmony.
+The following platforms are currently supported:
+    Windows x86, Linux x86, Linux x86_64.
+
+---------------
+Directory Content
+---------------
+
+This directory contains scripts for running EUT. The directorie structure
+is as follows:
+
+eut/                                       - EUT scripts directory
+  |
+  |-+extra/                                - extra scripts and patches that might be useful for EUT runs
+  |  |
+  |  |-+eut.3.2.jdtcorecompiler.patching/  - patches for EUT 3.2 'jdtcorecompiler' suite in order to pass on Apache Harmony
+  |    |
+  |    |-+patch/                           - directory containing patches to be applied
+  |    |
+  |    |--build.xml                        - script that applies the patches
+  |    |
+  |    |--properties                       - patching pre-requisites settings (EUT and Eclipse 3.2 location)
+  |    |
+  |    |--readme.txt                       - readme file describing the patches
+  |
+  |--build.xml                             - main EUT suite launching script
+  |
+  |--efl.${os}.${arch}                     - platform specific expected failures lists
+  |
+  |--EUT.README.txt                        - this readme file describing standalone EUT run
+  |
+  |--eut.properties                        - EUT properties
+
+--------------
+Configuration:
+--------------
+* Make sure that PATH environment variable contains JRE 1.5 (use RI) and Apache
+Ant (version >=1.6.5), and that JAVA_HOME and ANT_HOME are properly set up. Make
+sure that 'unzip' tool can also be found in your PATH.
+
+* If you use proxy server,
+specify proxy settings by setting ANT_OPTS environment variable:
+Windows:
+    set ANT_OPTS="-Dhttp.proxyHost=proxy.com -Dhttp.proxyPort=1111"
+Linux:
+    export ANT_OPTS="-Dhttp.proxyHost=proxy.com -Dhttp.proxyPort=1111"
+
+* For Linux only: make sure that X server is up and running and set $DISPLAY
+environment variable to the appropriate value.
+
+* Edit eut.properties file:
+    * specify JRE to use for EUT run (test.jre.home=)
+    * for Linux only: specify windowing system type if it differs from gtk
+    (ws=motif)
+    * modify other properties if necessary (optional): vm.options (options to
+    specify for JRE under test), tests (comma-separated testsuites list), timeout
+    (in milliseconds, default is 7200000)
+    * specify CVS settings if you want to run Team CVS tests (cvs_user, cvs_password,
+    cvs_host, cvs_root)
+
+* Create or edit expected failures list (platform specific list of testcases
+that are expected to fail) if necessary. It should be stored at the same
+directory as build.xml and named as efl.${os}.${arch} where ${os}.${arch}
+can be windows.x86, linux.x86 or linux.x86_64.
+
+* Note: the patches from 'extra' are not applied automatically, please see
+'Know Issues' section below.
+
+------
+Setup:
+------
+$cd <directory where build.xml is located>
+$ant setup
+
+----
+Run:
+----
+For Linux only: set DISPLAY to appropriate value.
+$cd <directory where build.xml is located>
+$ant [-Dtests=suite1,suite2,suite3,...]
+where suite1,suite2,suite3,... is a comma-separated list of test suites to run.
+By default (no target suites specified) all suites will be run. Please see
+readme.html in eclipse-Automated-Tests*.zip for more details.
+
+--------
+Results:
+--------
+Results summary can be found in the file results/<timestamp>/report.txt, detailed
+tests output is stored in the file results/<timestamp>/output.txt, where <timestamp>
+is the directory name based suite's run date and time. Note that expected failures
+list (specific for the platform) are used to process EUT run results and only
+unexpected failures, error and crashes are reported. Full test results list
+(including expected failures) in xml and html format can be found at
+results/<timestamp>/results.
+
+-------------
+Known Issues:
+-------------
+1. https://bugs.eclipse.org/bugs/show_bug.cgi?id=172820:
+   Several classes from org/eclipse/jdt/core/tests/compiler, org/eclipse/jdt/core/tests/runtime,
+   org/eclipse/jdt/core/tests/util use hard-coded class library path that doesn't
+   work for Apache Harmony. The patch extra/eut.3.2.jdtcorecompiler.patching/patch/patch_eclipse172820
+   contains workaround for this issue for EUT 3.2, because its fix is committed
+   to Eclipse 3.3 only. See 'extra/eut.3.2.jdtcorecompiler.patching/readme.txt'
+   for details on how to apply the patch.
+2. https://bugs.eclipse.org/bugs/show_bug.cgi?id=188127:
+   Some tests from org.eclipse.jdt.core.tests.eval suite fail because the timeout
+   for VM launch is not enough for DRLVM. The patch consists in increasing the
+   timeout to 30 seconds.
+3. As a temporary workaround for http://issues.apache.org/jira/browse/HARMONY-2914
+   set open files limit to 64000 when running on Linux.

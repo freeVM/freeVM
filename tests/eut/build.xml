@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="buildeut" default="run" basedir=".">
+
+    <description>
+        Run Eclipse Unit Tests suites on Apache Harmony
+        http://harmony.apache.org
+    </description>
+
+    <!-- ================ Setting global properties ================ -->
+    <property file="eut.properties" />
+
+    <!-- Work properties -->
+    <tstamp>
+        <format property="timestamp" pattern="yyyyMMdd_hhmm" />
+    </tstamp>
+
+    <property name="work.dir" value="${basedir}"/>
+
+    <property name="eut.work.dir" location="${work.dir}/eclipse-testing"/>
+
+    <!-- Test suite specific properties -->
+    <property name="tests" value="jdttext relEng pdeui ant compare coreruntime coreresources osgi coreexpressions help update teamcore jdtcoreperf jdtcorebuilder jdtcorecompiler jdtcoremodel ui uiperformance uieditors uinavigator uiworkbenchtexteditor uircp uiviews jdtdebug jdtui jdtuirefactoring ltkuirefactoringtests ltkcorerefactoringtests text jface jfacedatabinding filebuffers antui swt teamcvs jdtapt ua"/>
+
+    <property name="eut.filename" value="eclipse-Automated-Tests-3.2.zip"/>
+
+    <!-- Properties that can be optionally set outside this build.xml file -->
+    <property name="result.dir" value="${basedir}/results"/>
+    <property name="res.dir" value="${result.dir}/${timestamp}"/>
+
+    <property name="vm.options" value=""/>
+    <!-- Deafult value -->
+    <property name="timeout" value="7200000"/>
+
+    <condition property="cvs.settings.specified">
+        <and>
+            <isset property="cvs_user"/>
+            <isset property="cvs_password"/>
+            <isset property="cvs_host"/>
+            <isset property="cvs_root"/>
+        </and>
+    </condition>
+
+    <!-- Define architecture and OS -->
+    <condition property="os" value="linux">
+        <and>
+            <os family="unix"/>
+            <os name="linux"/>
+        </and>
+    </condition>
+
+    <condition property="os" value="windows">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="arch" value="x86">
+        <and>
+            <contains string="${os.arch}" substring="86" />
+            <not>
+                <contains string="${os.arch}" substring="64" />
+            </not>
+        </and>
+    </condition>
+
+    <condition property="arch" value="x86_64">
+        <or>
+            <contains string="${os.arch}" substring="86_64" />
+            <contains string="${os.arch}" substring="amd64" />
+        </or>
+    </condition>
+
+    <condition property="is.windows">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="is.linux">
+        <and>
+            <os family="unix"/>
+            <os name="linux"/>
+        </and>
+    </condition>
+
+    <condition property="is.windows.x86">
+        <and>
+            <isset property="is.windows"/>
+            <equals arg1="${arch}" arg2="x86"/>
+        </and>
+    </condition>
+
+     <condition property="is.linux.x86">
+        <and>
+            <isset property="is.linux"/>
+            <equals arg1="${arch}" arg2="x86"/>
+        </and>
+    </condition>
+
+     <condition property="is.linux.x86_64">
+        <and>
+            <isset property="is.linux"/>
+            <equals arg1="${arch}" arg2="x86_64"/>
+        </and>
+    </condition>
+
+    <!-- Define arch/os -specific properties -->
+
+    <condition property="eclipse.filename" value="${eclipse.filename.prefix}-win32.zip">
+        <isset property="is.windows.x86"/>
+    </condition>
+
+    <condition property="eclipse.filename" value="${eclipse.filename.prefix}-linux-gtk.tar.gz">
+        <isset property="is.linux.x86"/>
+    </condition>
+
+    <condition property="eclipse.filename" value="${eclipse.filename.prefix}-linux-gtk-x86_64.tar.gz">
+        <isset property="is.linux.x86_64"/>
+     </condition>
+
+
+    <condition property="cmd.suffix" value=".bat" else="">
+        <isset property="is.windows"/>
+    </condition>
+
+    <condition property="cmd" value="sh" else="cmd">
+        <isset property="is.linux"/>
+    </condition>
+
+    <condition property="cmd.arg" value="-" else="/c">
+        <isset property="is.linux"/>
+    </condition>
+
+    <condition property="os.eclipse.notation" value="win32">
+        <and>
+            <isset property="is.windows"/>
+            <equals arg1="${arch}" arg2="x86"/>
+        </and>
+    </condition>
+
+    <condition property="os.eclipse.notation" value="linux">
+        <and>
+            <isset property="is.linux"/>
+        </and>
+    </condition>
+
+    <condition property="ws" value="win32">
+         <and>
+            <isset property="is.windows"/>
+            <equals arg1="${arch}" arg2="x86"/>
+        </and>
+   </condition>
+
+    <!-- Assuming that GTK is default Window System type on Linux -->
+    <condition property="ws" value="gtk">
+        <isset property="is.linux"/>
+    </condition>
+
+    <!-- ================ Setup ================ -->
+    <target name="setup"
+        depends="install.eut,install.eclipse,setup.configuration"
+        description="Download and install EUT, Eclipse SDK; configuring EUT settings">
+    </target>
+
+    <target name="install.eut"
+        description="Download and unpack Eclipse Unit Tests archive">
+        <mkdir dir="${work.dir}"/>
+        <get src="${eut.location}/${eut.filename}"
+            dest="${work.dir}/${eut.filename}"
+            usetimestamp="true"
+            verbose="true" />
+        <unzip src="${work.dir}/${eut.filename}" dest="${work.dir}"/>
+   </target>
+
+    <target name="install.eclipse"
+        description="Download Eclipse archive"
+        depends="install.eut">
+        <mkdir dir="${work.dir}"/>
+        <get src="${eclipse.location}/${eclipse.filename}"
+            dest="${eut.work.dir}/${eclipse.filename}"
+            usetimestamp="true"
+            verbose="true" />
+        <!-- Delete unused Eclipse SDK archives in order to make EUT scripts
+        work properly -->
+        <delete failonerror="false">
+            <fileset dir="${eut.work.dir}">
+                <filename name="eclipse-SDK*.tar.gz"/>
+                <filename name="eclipse-SDK*.zip"/>
+                <not>
+                    <filename name="${eclipse.filename}"/>
+                </not>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="setup.configuration"
+        depends="patch.linux.x86_64,patch.runtests.display,patch.label.properties,patch.test.xml"
+        description="Configure EUT settings files">
+    </target>
+
+    <target name="patch.linux.x86_64" if="is.linux.x86_64">
+        <replace file="${eut.work.dir}/runtests"
+            token="$vm -jar eclipse/startup.jar -Dosgi.ws=$ws"
+            value="$vm -jar eclipse/startup.jar -DsetupTarget=setup-tar.gz -DruntimeArchive=${eclipse.filename} -Dosgi.ws=$ws"/>
+    </target>
+
+    <target name="patch.runtests.display" if="is.linux">
+        <replace file="${eut.work.dir}/runtests"
+            token="DISPLAY="
+            value="#DISPLAY="/>
+    </target>
+
+    <target name="patch.label.properties"
+        description="Set Eclipse build id to use">
+        <echo file="${eut.work.dir}/label.properties" append="false">
+            buildId=${eclipse.buildid}
+        </echo>
+   </target>
+
+    <target name="patch.test.xml"
+        description="Modify EUT test.xml configuration file to always use J2SE-5.0">
+        <replace file="${eut.work.dir}/test.xml">
+            <replacetoken><![CDATA[<param name="testPlugin"]]></replacetoken>
+            <replacevalue><![CDATA[<param name="jvm" value="${J2SE-5.0}" />
+            <param name="testPlugin"]]></replacevalue>
+        </replace>
+   </target>
+
+
+    <!-- ================ Run ================ -->
+    <path id="test.jre.home.path.id">
+        <pathelement
+        location="${test.jre.home}"/>
+    </path>
+    <pathconvert targetos="unix"
+        property="test.jre.home.path"
+        refid="test.jre.home.path.id"/>
+
+    <target name="run"
+        depends="run.configuration,run.tests,run.postprocess"
+        description="Configure and run EUT, process results">
+    </target>
+
+    <target name="run.configuration"
+        depends="configure.properties.file,clean.before.run">
+    </target>
+
+    <target name="configure.properties.file"
+        description="Delete old properties file and specify the path to JRE under test and other properties"
+        depends="delete.properties.file,configure.properties.file.common,configure.properties.file.teamcvs">
+    </target>
+
+     <target name="delete.properties.file"
+        description="Delete old eclipse-testing/properties.file">
+        <delete file="${eut.work.dir}/properties.file"  failonerror="false"/>
+    </target>
+
+    <target name="configure.properties.file.teamcvs"
+        description="Specify CVS settings for Team CVS tests"
+        if="cvs.settings.specified">
+        <echo file="${eut.work.dir}/properties.file" append="true">
+            cvs_user=${cvs_user}
+            cvs_password=${cvs_password}
+            cvs_host=${cvs_host}
+            cvs_root=${cvs_root}
+        </echo>
+    </target>
+
+    <target name="configure.properties.file.common"
+        description="Specify the path to JRE under test and other properties">
+        <delete file="${eut.work.dir}/properties.file"  failonerror="false"/>
+        <echo file="${eut.work.dir}/properties.file" append="true">
+            J2SE-5.0=${test.jre.home.path}/bin/java
+            extraVMargs=${vm.options}
+            timeout=${timeout}
+        </echo>
+    </target>
+
+    <!-- Delete old results files and work directories -->
+    <target name="clean.before.run"
+        description="Delete old results files and work directories">
+        <delete dir="${eut.work.dir}/results" failonerror="false"/>
+        <delete dir="${eut.work.dir}/eclipse" failonerror="false"/>
+        <delete file="${work.dir}/report.txt" failonerror="false"/>
+    </target>
+
+    <!-- Launch main EUT script -->
+    <target name="run.tests" description="Launch EUT run">
+        <exec executable="${cmd}" dir="${eut.work.dir}" failonerror="false" logError="false" resultproperty="resultproperty">
+            <arg line="${cmd.arg} runtests${cmd.suffix} -os ${os.eclipse.notation} -ws ${ws} -arch ${arch} -properties properties.file ${tests}"/>
+            <redirector alwaysLog="true" logError="false" output="${work.dir}/output.txt"/>
+        </exec>
+        <loadfile srcfile="${work.dir}/output.txt"
+            property="output.contains.build.failed.message">
+            <filterchain>
+                <linecontains>
+                    <contains value="BUILD FAILED"/>
+                </linecontains>
+            </filterchain>
+        </loadfile>
+        <loadfile srcfile="${work.dir}/output.txt"
+            property="output.contains.build.success.message">
+            <filterchain>
+                <linecontains>
+                    <contains value="BUILD SUCCESSFUL"/>
+                </linecontains>
+            </filterchain>
+        </loadfile>
+        <condition property="eut.script.status" value="EUT SCRIPT FAILED" else="EUT SCRIPT PASSED">
+            <or>
+                <isset property="output.contains.build.failed.message"/>
+                <not>
+                <isset property="output.contains.build.success.message"/>
+                </not>
+                <not>
+                    <equals arg1="${resultproperty}" arg2="0"/>
+                </not>
+            </or>
+        </condition>
+        <echo file="${work.dir}/output.txt"
+            message="${eut.script.status}"
+            append="true"/>
+    </target>
+
+    <!-- Post-process run results, compose report, store results and decide whether run failed or not -->
+    <target name="run.postprocess"
+        depends="create.postprocess.tmpdir,run.postprocess.check.output,compose.report,store.results,clean.postprocess.tmpdir,check.status"
+        description="Post-process run results">
+    </target>
+
+    <!-- clean & create tmp directory for temporary files generated during results post-processing -->
+    <target name="create.postprocess.tmpdir">
+        <delete dir="${work.dir}/postprocess.tmpdir"/>
+        <mkdir dir="${work.dir}/postprocess.tmpdir"/>
+        <property name="tmp.dir" location="${work.dir}/postprocess.tmpdir"/>
+    </target>
+
+    <!-- clean tmp directory -->
+    <target name="clean.postprocess.tmpdir">
+        <delete dir="${tmp.dir}"/>
+    </target>
+
+    <!-- Make some preparations before post-processing results -->
+    <target name="run.postprocess.check.output">
+        <condition property="output.txt.available">
+            <available file="${work.dir}/output.txt"/>
+        </condition>
+        <condition property="result.xml.directory.not.empty">
+            <and>
+                <available file="${eut.work.dir}/results/xml"/>
+                <length when="greater" length="0">
+                    <fileset dir="${eut.work.dir}/results/xml" includes="*.xml"/>
+                </length>
+           </and>
+        </condition>
+        <condition property="all.output.available">
+            <and>
+                <isset property="output.txt.available"/>
+                <isset property="result.xml.directory.not.empty"/>
+            </and>
+        </condition>
+    </target>
+
+    <!-- Process run results and compose report taking into account efl -->
+    <target name="compose.report"
+        depends="configure.efl,setup.efl,compose.report.header,compose.report.print.unexpected,compose.report.fatal.failure.message"
+        description="Process run results and compose report taking into account efl">
+    </target>
+
+    <!-- Look for os specific efl or use the empty one if necessary -->
+    <target name="configure.efl">
+        <condition property="os.specific.efl.exists">
+            <available file="${basedir}/efl.${os}.${arch}"/>
+        </condition>
+        <condition property="efl" value="efl.${os}.${arch}"
+            else="efl.empty">
+            <isset property="os.specific.efl.exists"/>
+        </condition>
+    </target>
+
+    <target name="setup.efl"
+        depends="setup.empty.efl,setup.non-empty.efl"
+        description="Process efl if there is one or create the empty efl">
+    </target>
+
+    <target name="setup.empty.efl" unless="os.specific.efl.exists">
+        <!-- Create empty expected failures list in order to use if
+        no expected failures lists for the platform are specified -->
+        <delete file="${tmp.dir}/${efl}"/>
+        <touch file="${tmp.dir}/${efl}"/>
+        <copy file="${tmp.dir}/${efl}" tofile="${tmp.dir}/efl.work" overwrite="true"/>
+    </target>
+
+    <target name="setup.non-empty.efl" if="os.specific.efl.exists">
+        <!-- Copy efl and remove comments -->
+        <copy file="${basedir}/${efl}"
+            tofile="${tmp.dir}/efl.work"
+            overwrite="true"
+            failonerror="false">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="(.*?)#.*" replace="\1" flags="m"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+    </target>
+
+    <!-- Print arch, os and JRE under test info to report file -->
+    <target name="compose.report.header" depends="compose.report.get.java.version">
+        <concat destfile="${work.dir}/report.txt" append="false">
+            <header trimleading="true">
+            ================================================
+            Eclipse Unit Tests on ${os} ${arch}. Tested JRE:
+            ================================================
+            </header>
+            <fileset dir="${work.dir}" includes="tmpfile.java.version"/>
+            <footer trimleading="true">
+            JRE options: ${vm.options}
+            ===============================
+            </footer>
+        </concat>
+    </target>
+
+    <!-- Print unexpected failures, errors, crashes details to report file -->
+    <target name="compose.report.print.unexpected"
+        depends="compose.report.crashes,compose.report.failures.errors"
+        description="Print the list of unexpected failures, errors and crashes"
+        if="all.output.available">
+        <length file="${tmp.dir}/tmpfile.unexpected.crash.count" property="unexpected.crash.count"/>
+        <length file="${tmp.dir}/tmpfile.unexpected.failure.count" property="unexpected.failure.count"/>
+        <length file="${tmp.dir}/tmpfile.unexpected.error.count" property="unexpected.error.count"/>
+        <concat destfile="${work.dir}/report.txt" append="false">
+            <header trimleading="true">
+            ================================================
+            Eclipse Unit Tests on ${os} ${arch}. Tested JRE:
+            ================================================
+            </header>
+            <fileset dir="${tmp.dir}" includes="tmpfile.java.version"/>
+            <footer trimleading="true">
+            JRE options: ${vm.options}
+            ===============================
+            </footer>
+        </concat>
+        <concat destfile="${work.dir}/report.txt" append="true">
+            <header trimleading="true">
+                Unexpected failures (${unexpected.failure.count}):
+            </header>
+            <fileset dir="${tmp.dir}" includes="tmpfile.unexpected.failure"/>
+        </concat>
+        <concat destfile="${work.dir}/report.txt" append="true">
+            <header trimleading="true">
+                Unexpected errors (${unexpected.error.count}):
+            </header>
+            <fileset dir="${tmp.dir}" includes="tmpfile.unexpected.error"/>
+        </concat>
+        <concat destfile="${work.dir}/report.txt" append="true">
+            <header trimleading="true">
+                Unexpected crashes (${unexpected.crash.count}):
+            </header>
+            <fileset dir="${tmp.dir}" includes="tmpfile.unexpected.crash"/>
+        </concat>
+    </target>
+
+    <!-- If results files (eclipse-testing/results/xml/*.xml or output file miss,
+    compose fatal error report -->
+    <target name="compose.report.fatal.failure.message"
+        depends="compose.report.check.fatal.failure.type,compose.report.if.no.output,compose.report.if.eut.script.failed,compose.report.if.results.dir.empty"
+        unless="all.output.available">
+    </target>
+
+    <!-- Copy report file and detailed output to specified results directory -->
+    <target name="store.results"
+        depends="compose.report">
+        <copy todir="${res.dir}">
+            <fileset dir="${work.dir}" includes="output.txt,report.txt"/>
+        </copy>
+        <mkdir dir="${res.dir}/results"/>
+        <copy todir="${res.dir}/results">
+            <fileset dir="${eut.work.dir}/results"/>
+        </copy>
+
+    </target>
+
+    <!-- Check whether there are fatal failure messages in report file or
+    unexpected failures information and fail/pass depending on this check -->
+    <target name="check.status"
+        depends="compose.report">
+        <loadfile srcfile="${work.dir}/report.txt"
+                property="fatal.failed.status">
+                <filterchain>
+                    <linecontains>
+                        <contains value="EUT FAILED:"/>
+                    </linecontains>
+                </filterchain>
+        </loadfile>
+        <loadfile srcfile="${work.dir}/report.txt"
+            property="report.contains.unexpected.failures.info">
+            <filterchain>
+                <linecontains>
+                    <contains value="Unexpected failures ("/>
+                </linecontains>
+            </filterchain>
+        </loadfile>
+        <loadfile srcfile="${work.dir}/report.txt"
+            property="no.unexpected.failures">
+            <filterchain>
+                <linecontains>
+                    <contains value="Unexpected failures (0):"/>
+                </linecontains>
+            </filterchain>
+        </loadfile>
+        <loadfile srcfile="${work.dir}/report.txt"
+            property="no.unexpected.errors">
+            <filterchain>
+                <linecontains>
+                    <contains value="Unexpected errors (0):"/>
+                </linecontains>
+            </filterchain>
+        </loadfile>
+        <loadfile srcfile="${work.dir}/report.txt"
+            property="no.unexpected.crashes">
+            <filterchain>
+                <linecontains>
+                    <contains value="Unexpected crashes (0):"/>
+                </linecontains>
+            </filterchain>
+        </loadfile>
+        <condition property="unexpected.failures.exist">
+            <and>
+                <isset property="report.contains.unexpected.failures.info"/>
+                <not>
+                    <and>
+                        <isset property="no.unexpected.failures"/>
+                        <isset property="no.unexpected.errors"/>
+                        <isset property="no.unexpected.crashes"/>
+                    </and>
+                </not>
+            </and>
+        </condition>
+        <fail message="EUT failed: Fatal error">
+            <condition>
+                <or>
+                    <isset property="fatal.failed.status"/>
+                    <not>
+                        <isset property="report.contains.unexpected.failures.info"/>
+                    </not>
+                </or>
+            </condition>
+        </fail>
+        <fail message="EUT failed: There are unexpected failures">
+            <condition>
+                <isset property="unexpected.failures.exist"/>
+            </condition>
+        </fail>
+        <echo message="EUT passed!"/>
+   </target>
+
+   <!-- Auxiliary results post-process tasks -->
+    <target name="compose.report.crashes"
+        description="Compose the list of unexpected crashes and its number"
+        if="all.output.available">
+        <!-- Getting the list of all suites that were actually run -->
+        <copy file="${work.dir}/output.txt"
+            tofile="${tmp.dir}/tmpfile.all.run.suites"
+            overwrite="true">
+            <filterchain>
+                <linecontains>
+                    <contains value="Running org.eclipse." />
+                </linecontains>
+                <tokenfilter>
+                    <containsregex pattern=".*(org.eclipse[\.|\w]+).*"
+                        replace="\1"
+                        flags=""/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+        <!-- Getting the list of suites that have results written in junit format logs (not crashed) -->
+        <concat destfile="${tmp.dir}/tmpfile.not.crashed.suites"
+            append="false">
+            <fileset dir="${eut.work.dir}/results/xml" includes="*.xml"/>
+               <filterchain>
+                <tokenfilter>
+                    <containsregex pattern=".*?testsuite.*name=&quot;(.*?)&quot;.*package=&quot;(.*?)&quot;.*"
+                        replace="\2.\1"
+                        flags="mg"/>
+                </tokenfilter>
+            </filterchain>
+        </concat>
+        <!-- Getting crashes list -->
+        <copy file="${tmp.dir}/tmpfile.all.run.suites"
+            tofile="${tmp.dir}/tmpfile.crashes.list"
+            overwrite="true"/>
+        <!-- Using fake token and value in order to avoid failures in case of empty replacefilterfile -->
+        <replace file="${tmp.dir}/tmpfile.crashes.list"
+            replacefilterfile="${tmp.dir}/tmpfile.not.crashed.suites"
+            token="fake_token"
+            value="fake_token">
+        </replace>
+        <!-- Get unexpected crashes only -->
+        <copy file="${tmp.dir}/tmpfile.crashes.list"
+            tofile="${tmp.dir}/tmpfile.unexpected.crash"
+            overwrite="true"/>
+        <replace file="${tmp.dir}/tmpfile.unexpected.crash"
+            replacefilterfile="${tmp.dir}/efl.work"
+            token="fake_token"
+            value="fake_token">
+        </replace>
+        <!-- Get the number of unexpected crashes -->
+        <replaceregexp file="${tmp.dir}/tmpfile.unexpected.crash"
+            match="^\s*$"
+            replace=""
+            flags="gm"/>
+        <copy file="${tmp.dir}/tmpfile.unexpected.crash"
+            tofile="${tmp.dir}/tmpfile.unexpected.crash.ignoreblank"
+            overwrite="true">
+            <filterchain>
+                <ignoreblank/>
+            </filterchain>
+        </copy>
+        <move file="${tmp.dir}/tmpfile.unexpected.crash.ignoreblank" tofile="${tmp.dir}/tmpfile.unexpected.crash"/>
+        <copy file="${tmp.dir}/tmpfile.unexpected.crash"
+            tofile="${tmp.dir}/tmpfile.unexpected.crash.count.tmp"
+            overwrite="true">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^.*$" replace="+" flags="mg"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+        <copy file="${tmp.dir}/tmpfile.unexpected.crash.count.tmp"
+            tofile="${tmp.dir}/tmpfile.unexpected.crash.count"
+            overwrite="true">
+            <filterchain>
+                <striplinebreaks/>
+            </filterchain>
+        </copy>
+    </target>
+
+    <target name="compose.report.pre-process.failures.and.errors"
+        description="Pre-processing results to compose the list of unexpected failures and errors and its number"
+        if="all.output.available">
+        <!-- Process run results and remove passed testcases and properties tags,
+        leaving failures, errors and additional testsuites info in order to work
+        with a smaller file -->
+        <concat destfile="${tmp.dir}/tmpfile.failures.errors.testcases"
+            append="false">
+            <header trimleading="true">This file shouldn't be empty</header>
+            <fileset dir="${eut.work.dir}/results/xml" includes="*.xml"/>
+             <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern='\s*&lt;testcase.*?&gt;\s*&lt;\/testcase&gt;\s*'
+                        replace=""
+                        flags="mg"/>
+                </tokenfilter>
+                <tokenfilter>
+                    <replaceregex pattern='\s*&lt;property.*?&gt;\s*&lt;\/property&gt;\s*'
+                        replace=""
+                        flags="mg"/>
+                </tokenfilter>
+                <tokenfilter>
+                    <ignoreblank/>
+                </tokenfilter>
+            </filterchain>
+        </concat>
+        <fixcrlf srcdir="${tmp.dir}"
+            eol="unix"
+            includes="tmpfile.failures.errors.testcases"
+        />
+        <!-- Make copy of efl.work with replace pattern in order to match expected failures -->
+        <copy file="${tmp.dir}/efl.work" tofile="${tmp.dir}/tmpfile.efl.work.pattern">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern='(.*)\.([a-z].*)'
+                        replace='&lt;testcase\\\\\\\ classname\\\\\\\=\\\\\\\"\1\\\\\\\"\\\\\\\ name\\\\\\\=\\\\\\\"\2\\\\\\\"=EXPECTED&lt;testcase classname="\1" name="\2"'
+                        flags="mg"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+        <!-- Mark all expected failures and errors -->
+        <replace file="${tmp.dir}/tmpfile.failures.errors.testcases"
+            replacefilterfile="${tmp.dir}/tmpfile.efl.work.pattern"
+            token="fake_token"
+            value="fake_token"/>
+        <!-- Remove all expected failures and errors -->
+        <copy file="${tmp.dir}/tmpfile.failures.errors.testcases"
+            tofile="${tmp.dir}/tmpfile.unexpected.failures.errors.testcases"/>
+        <replaceregexp file="${tmp.dir}/tmpfile.unexpected.failures.errors.testcases"
+            match='\s*EXPECTED&lt;testcase.*?&lt;\/testcase&gt;'
+            replace=''
+            flags="sg"/>
+    </target>
+
+    <target name="compose.report.process.unexpected.failures.errors"
+        description="Process the log file with marked expected failure and cut unexpected failures or errors depending on given ${type}"
+        if="all.output.available">
+        <!-- Type should be specified as param: failure or error -->
+        <echo message="Processing: ${type} using file ${work.dir}/tmpfile.unexpected.failures.errors.testcases"/>
+        <fail message="FAIL: type of failure (failure or error) should be specified!">
+            <condition>
+                <not>
+                    <isset property="type"/>
+                </not>
+            </condition>
+        </fail>
+        <copy file="${tmp.dir}/tmpfile.unexpected.failures.errors.testcases" tofile="${tmp.dir}/tmpfile.unexpected.${type}"/>
+        <!-- Mark testcases -->
+        <replaceregexp
+            file="${tmp.dir}/tmpfile.unexpected.${type}"
+            match='\s*&lt;testcase\s*classname="(\S*?)"\s*name="([\S ]*?)"[\S ]*?&gt;\s*&lt;${type}.*?&gt;(.*?)&lt;\/${type}&gt;.*?&lt;\/testcase&gt;\s*'
+            replace='@BEGIN_MARK@${line.separator}Testcase: \1.\2:${line.separator}\3@END_MARK@'
+            flags="sg"
+        />
+        <concat append="true" destfile="${tmp.dir}/tmpfile.unexpected.${type}.tmp">
+            <header trimleading="true">@END_MARK@</header>
+            <fileset dir="${tmp.dir}" includes="tmpfile.unexpected.${type}"/>
+        </concat>
+        <copy file="${tmp.dir}/tmpfile.unexpected.${type}.tmp"
+            tofile="${tmp.dir}/tmpfile.unexpected.${type}"/>
+        <!-- Remove everything expect marked testcases -->
+        <move file="${tmp.dir}/tmpfile.unexpected.${type}.tmp"
+            tofile="${tmp.dir}/tmpfile.unexpected.${type}"/>
+        <replaceregexp file="${tmp.dir}/tmpfile.unexpected.${type}"
+            match='@END_MARK@.*?@BEGIN_MARK@'
+            replace=''
+            flags="sg"/>
+        <replaceregexp file="${tmp.dir}/tmpfile.unexpected.${type}"
+            match='@END_MARK@.*'
+            replace=''
+            flags="s"/>
+        <!-- Get the number of unexpected failures/errors -->
+        <copy file="${tmp.dir}/tmpfile.unexpected.${type}"
+            tofile="${tmp.dir}/tmpfile.unexpected.${type}.count">
+            <filterchain>
+                <tokenfilter>
+                    <containsregex pattern="\s*Testcase:.*" replace="+" flags=""/>
+                </tokenfilter>
+                <striplinebreaks/>
+            </filterchain>
+        </copy>
+    </target>
+
+    <target name="compose.report.failures.errors"
+        description="Compose the list of unexpected failures and errors and its number"
+        depends="compose.report.pre-process.failures.and.errors"
+        if="all.output.available">
+         <!-- Get the list of unexpected failures -->
+        <antcall target="compose.report.process.unexpected.failures.errors">
+            <param name="type" value="failure"/>
+        </antcall>
+        <!-- Get the list of unexpected errors -->
+        <antcall target="compose.report.process.unexpected.failures.errors">
+            <param name="type" value="error"/>
+        </antcall>
+    </target>
+
+    <target name="compose.report.get.java.version">
+        <java jvm="${test.jre.home.path}/bin/java"
+            fork="true"
+            classname="."
+            failonerror="false"
+            logError="false"
+            output="${tmp.dir}/tmpfile.java.version">
+            <jvmarg value="-version"/>
+        </java>
+    </target>
+
+    <target name="compose.report.check.fatal.failure.type"
+        unless="all.output.available">
+        <loadfile srcfile="${work.dir}/output.txt"
+                property="eut.script.passed">
+                <filterchain>
+                    <linecontains>
+                        <contains value="EUT SCRIPT PASSED"/>
+                    </linecontains>
+                </filterchain>
+        </loadfile>
+        <condition property="eut.script.failed">
+            <not>
+                <isset property="eut.script.passed"/>
+            </not>
+        </condition>
+        <condition property="output.txt.not.avaliable">
+            <not>
+        <isset property="output.txt.available"/>
+            </not>
+        </condition>
+    </target>
+
+    <target name="compose.report.if.no.output"
+        description="Fail if not output file found"
+        if="output.txt.not.available"
+        unless="all.output.available">
+        <echo
+            file="${work.dir}/report.txt"
+            append="true">
+EUT FAILED: Fatal error. EUT output (${work.dir}/output.txt) not found!
+        </echo>
+    </target>
+
+    <target name="compose.report.if.results.dir.empty"
+        description="Fail if result xml directory is empty"
+        depends="compose.report.tail.eut.output"
+        unless="all.output.available"
+        if="output.txt.available">
+        <echo
+            file="${work.dir}/report.txt"
+            append="true">
+EUT FAILED: Fatal error. Results directory is empty!
+        </echo>
+    </target>
+
+    <target name="compose.report.if.eut.script.failed"
+        description="Fail if output contains failure message or EUT script returned non-zero code"
+        depends="compose.report.tail.eut.output"
+        unless="all.output.available"
+        if="eut.script.failed">
+        <echo
+            file="${work.dir}/report.txt"
+            append="true">
+EUT FAILED: Fatal error. Output contains failure message or EUT script returned non-zero code
+        </echo>
+    </target>
+
+    <target name="compose.report.tail.eut.output"
+        unless="all.output.available">
+        <concat destfile="${work.dir}/report.txt"
+            append="true"
+            fixlastline="true">
+            <header trimleading="true">
+                ===========
+                EUT output:
+
+            </header>
+            <filelist dir="${work.dir}" files="output.txt"/>
+            <filterchain>
+                <tailfilter lines="20"/>
+            </filterchain>
+            <footer trimleading="true">
+                =================
+            </footer>
+        </concat>
+    </target>
+
+</project>

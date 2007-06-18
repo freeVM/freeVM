@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ======================================================================
+                    BT Adaptor for Eclipse Unit Tests Project
+     ====================================================================== -->
+<project name="eut" default="run" basedir=".">
+
+    <!-- Setup Eclipse Unit Tests and its pre-requisites -->
+    <target name="setup">
+        <description>
+            setup: Install, configure Eclipse Unit Tests and its pre-requisites
+        </description>
+        <log message="============= Adaptor for ${suite.name}: Set Up ..." />
+        <svn-update-bt path="${test.sources.dir}/${suite.name}" />
+        <ant antfile="build.xml"
+            dir="${test.sources.dir}/${suite.name}"
+            target="setup"
+            inheritAll="false">
+            <property name="eut.location"
+                value="${eut.parameters.optional.eut.location}" />
+            <property name="eclipse.location"
+                value="${eut.parameters.optional.eclipse.location}" />
+            <property name="eclipse.filename.prefix"
+                value="${eut.parameters.optional.eclipse.filename.prefix}" />
+            <property name="work.dir"
+                value="${checkouts.dir}/${suite.name}"/>
+            <property name="result.dir"
+                value="${results.dir}/${suite.name}"/>
+        </ant>
+    </target>
+
+    <target name="run" description="Run Eclipse Unit Tests">
+        <log message="============= Adaptor for ${suite.name}: Run ..." />
+         <ant antfile="build.xml"
+            dir="${test.sources.dir}/${suite.name}"
+            target="run"
+            inheritAll="false">
+            <property name="eut.location"
+                value="${eut.parameters.optional.eut.location}" />
+            <property name="eut.filenae"
+                value="${eut.parameters.optional.eut.filename}" />
+            <property name="eclipse.location"
+                value="${eut.parameters.optional.eclipse.location}" />
+            <property name="eclipse.filename.prefix"
+                value="${eut.parameters.optional.eclipse.filename.prefix}" />
+            <property name="eclipse.buildid"
+                value="${eut.parameters.optional.eclipse.buildid}" />
+            <property name="timeout"
+                value="${eut.parameters.optional.timeout}" />
+            <property name="work.dir"
+                value="${checkouts.dir}/${suite.name}"/>
+            <property name="result.dir"
+                value="${results.dir}/${suite.name}"/>
+            <propertyset id="ws.id">
+                <propertyref name="eut.parameters.optional.ws"/>
+                <mapper type="glob" from="eut.parameters.optional.ws" to="ws"/>
+            </propertyset>
+            <propertyset id="tests.id">
+                <propertyref name="eut.parameters.optional.tests"/>
+                <mapper type="glob" from="eut.parameters.optional.tests" to="tests"/>
+            </propertyset>
+            <propertyset id="cvs_user.id">
+                <propertyref name="eut.parameters.optional.cvs_user"/>
+                <mapper type="glob" from="eut.parameters.optional.cvs_user" to="cvs_user"/>
+            </propertyset>
+            <propertyset id="cvs_password.id">
+                <propertyref name="eut.parameters.optional.cvs_password"/>
+                <mapper type="glob" from="eut.parameters.optional.cvs_password" to="cvs_password"/>
+            </propertyset>
+            <propertyset id="cvs_host.id">
+                <propertyref name="eut.parameters.optional.cvs_host"/>
+                <mapper type="glob" from="eut.parameters.optional.cvs_host" to="cvs_host"/>
+            </propertyset>
+            <propertyset id="cvs_root.id">
+                <propertyref name="eut.parameters.optional.cvs_root"/>
+                <mapper type="glob" from="eut.parameters.optional.cvs_root" to="cvs_root"/>
+            </propertyset>
+
+            <property name="vm.options"
+                value="${eut.parameters.optional.tested.vm.options}"/>
+            <property name="test.jre.home"
+                value="${eut.parameters.required.tested.runtime}"/>
+        </ant>
+   </target>
+
+    <target name="clean">
+        <!-- Not implemented -->
+    </target>
+</project>
+
