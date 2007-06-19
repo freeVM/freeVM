@@ -22,7 +22,7 @@ package org.apache.harmony.test.func.reg.vm.btest5542;
 public class Btest5542 extends Thread {
     
     static {
-        System.loadLibrary("bug5542");
+        System.loadLibrary("Btest5542");
     }           
 
     public static void main(String[] args) {

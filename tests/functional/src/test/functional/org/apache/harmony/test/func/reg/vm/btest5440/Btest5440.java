@@ -25,7 +25,7 @@ public class Btest5440 {
     private static final int MAX_STR_COUNT = 100000;
     
     static {
-        System.loadLibrary("bug5440");
+        System.loadLibrary("Btest5440");
     }  
 
     public static void main(String [] args) {

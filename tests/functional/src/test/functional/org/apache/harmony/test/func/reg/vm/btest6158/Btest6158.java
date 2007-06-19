@@ -28,7 +28,7 @@ public class Btest6158 extends RegressionTest {
 
     public int test(Logger logger, String[] args) {
         try {
-            System.loadLibrary("nativeMethod");
+            System.loadLibrary("Btest6158");
             Class c = Class.forName("org.apache.harmony.test.func.reg.vm.btest6158.Btest6158");
             Method m = c.getDeclaredMethod("nativeFunc", new Class[]{Object.class });
             m.setAccessible(true);

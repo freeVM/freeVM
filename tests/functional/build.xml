@@ -53,11 +53,13 @@
 	
 	<target name="build-n-run" depends="build,run-tests" />
 
-	<target name="build" depends="compile_jpda,compile_java,compile_ccode,post_compile">
+	<target name="build" depends="compile_jpda,compile_java,compile_ccode,build.native,post_compile">
 		<description>
 			Prepare binaries for test run
 		</description>
 	</target>
+
+    <import file="build-native.xml"/>
 
     <!-- Build test classes from jasmine sources -->
 	<target name="compile_jj" depends="depends-check" >
