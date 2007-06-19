@@ -72,10 +72,10 @@ public class StoreRes implements Storage {
     protected final int[]         errVal             = cfg.getRepError();
     protected final int[]         merVal             = cfg.getRepModErr();
 
-    String                        xmlVersion;
-    String[][]                    maps;
+    protected String              xmlVersion;
+    protected String[][]          maps;
 
-    private String                repSuffix          = Constants.RESULTS_EXT;
+    protected String              repSuffix          = Constants.RESULTS_EXT;
 
     public StoreRes() {
         final String methodLogPrefix = MessageInfo.MSG_PREFIX + classID
@@ -317,11 +317,11 @@ public class StoreRes implements Storage {
      * default, do nothing
      */
     protected String convertOutToSpecificFormat(String[] data) {
-        String tmpVal = "<pre><![CDATA[";
+        String tmpVal = "<![CDATA[";
         for (int i = 0; i < data.length; i++) {
             tmpVal = tmpVal + correctDataToCD(data[i]) + OUT_MSG_DELIMITER;
         }
-        tmpVal = tmpVal + "]]></pre>";
+        tmpVal = tmpVal + "]]>";
         return tmpVal;
     }
 

@@ -262,40 +262,42 @@ public class TestHandler extends DefaultHandler {
 
                 if (theTestIR.getTestID() == null) {
                     throw new SAXException(methodLogPrefix
-                        + "The attribute 'ID' test is null");
+                        + "The attribute 'ID' of test is null");
                 }
                 if (theTestIR.getTestID() == "") {
                     throw new SAXException(methodLogPrefix
-                        + "The attribute 'ID' test is empty");
+                        + "The attribute 'ID' of test is empty");
                 }
                 if (theTestIR.getRunnerID() == null) {
                     throw new SAXException(
                         methodLogPrefix
-                            + "The attribute 'ID' of element 'Runner' in this test is null");
+                            + "The attribute 'ID' of element 'Runner' of test "
+                        + theTestIR.getTestID() + " is null");
                 }
                 if (theTestIR.getRunnerID() == "") {
                     throw new SAXException(
                         methodLogPrefix
-                            + "The attribute 'ID' of element 'Runner' in this test is empty");
+                            + "The attribute 'ID' of element 'Runner' of test "
+                        + theTestIR.getTestID() + " is empty");
                 }
                 if (theTestIR.getProperty("date-of-creation") == null
                     || theTestIR.getProperty("date-of-creation").trim() == "") {
-                    log.add(Level.WARNING, methodLogPrefix
-                        + "The attribute 'date-of-creation' of test '"
+                    log.add(Level.INFO, methodLogPrefix
+                        + "The attribute 'date-of-creation' of the test '"
                         + theTestIR.getTestID() + "' is absent or empty");
                 }
                 if (theTestIR.getProperty("Description") == null
                     || theTestIR.getProperty("Description").trim() == "") {
-                    log.add(Level.WARNING, methodLogPrefix
-                        + "The element 'Description' of test '"
+                    log.add(Level.INFO, methodLogPrefix
+                        + "The element 'Description' of the test '"
                         + theTestIR.getTestID() + "' is absent or empty");
                 }
                 if (theTestIR.getProperty((Object)"copyrights") == null
                     || ((ArrayList)theTestIR.getProperty((Object)"copyrights"))
                         .size() <= 0) {
-                    //log.add(Level.WARNING, methodLogPrefix
-                    //    + "There are not elements 'Copyright' of test '"
-                    //    + theTestIR.getTestID() + "'");
+                    //log.add(Level.INFO, methodLogPrefix
+                    //    + "The elements 'Copyright' of test '"
+                    //    + theTestIR.getTestID() + "' is empty");
                 } else {
                     boolean empty = false;
                     for (int i = 0; i < ((ArrayList)theTestIR
@@ -305,16 +307,16 @@ public class TestHandler extends DefaultHandler {
                             empty = true;
                     }
                     if (empty)
-                        log.add(Level.WARNING, methodLogPrefix
-                            + "There are empty elements 'Copyright' of test '"
-                            + theTestIR.getTestID() + "'");
+                        log.add(Level.INFO, methodLogPrefix
+                            + "The element 'Copyright' of the test '"
+                            + theTestIR.getTestID() + "' is empty");
                 }
                 if (theTestIR.getProperty((Object)"authors") == null
                     || ((ArrayList)theTestIR.getProperty((Object)"authors"))
                         .size() <= 0) {
-                    log.add(Level.WARNING, methodLogPrefix
-                        + "There are not elements 'Author' of test '"
-                        + theTestIR.getTestID() + "'");
+                    log.add(Level.INFO, methodLogPrefix
+                        + "The element 'Author' of the test '"
+                        + theTestIR.getTestID() + "' is empty");
                 } else {
                     boolean empty = false;
                     for (int i = 0; i < ((ArrayList)theTestIR
@@ -324,16 +326,16 @@ public class TestHandler extends DefaultHandler {
                             empty = true;
                     }
                     if (empty)
-                        log.add(Level.WARNING, methodLogPrefix
-                            + "There are empty elements 'Author' of test '"
+                        log.add(Level.INFO, methodLogPrefix
+                            + "There are empty elements 'Author' in the test '"
                             + theTestIR.getTestID() + "'");
                 }
                 if (theTestIR.getProperty((Object)"sources") == null
                     || ((ArrayList)theTestIR.getProperty((Object)"sources"))
                         .size() <= 0) {
-                    log.add(Level.WARNING, methodLogPrefix
-                        + "There are not elements 'Source' of test '"
-                        + theTestIR.getTestID() + "'");
+                    log.add(Level.INFO, methodLogPrefix
+                        + "The element 'Source' of the test '"
+                        + theTestIR.getTestID() + "' is absent");
                 } else {
                     for (int i = 0; i < ((ArrayList)theTestIR
                         .getProperty((Object)"sources")).size(); i++) {
@@ -341,11 +343,11 @@ public class TestHandler extends DefaultHandler {
                             .getProperty((Object)"sources")).get(i));
                         if (src == null) {
                             log.add(Level.INFO, methodLogPrefix
-                                + "incorrect element 'Source' of test '"
+                                + "incorrect element 'Source' of the test '"
                                 + theTestIR.getTestID() + "'");
                         } else if (src.trim() == "") {
                             log.add(Level.INFO, methodLogPrefix
-                                + "empty element 'Source' of test '"
+                                + "empty element 'Source' of the test '"
                                 + theTestIR.getTestID() + "'");
                         }
                     }
@@ -357,8 +359,8 @@ public class TestHandler extends DefaultHandler {
                             empty = true;
                     }
                     if (empty)
-                        log.add(Level.WARNING, methodLogPrefix
-                            + "There are empty elements 'Keyword' of test '"
+                        log.add(Level.INFO, methodLogPrefix
+                            + "There are empty elements 'Keyword' in the test '"
                             + theTestIR.getTestID() + "'");
                 }
                 if (((ArrayList)theTestIR.getModifications()).size() > 0) {
@@ -380,16 +382,16 @@ public class TestHandler extends DefaultHandler {
                     if (emptyDate)
                         log
                             .add(
-                                Level.WARNING,
+                                Level.INFO,
                                 methodLogPrefix
-                                    + "There are empty attributes 'date' of element 'Modification' in test '"
+                                    + "There are empty attributes 'date' of element 'Modification' in the test '"
                                     + theTestIR.getTestID() + "'");
                     if (emptyAuthor)
                         log
                             .add(
-                                Level.WARNING,
+                                Level.INFO,
                                 methodLogPrefix
-                                    + "There are empty attributes 'author' of element 'Modification' in test '"
+                                    + "There are empty attributes 'author' of element 'Modification' in the test '"
                                     + theTestIR.getTestID() + "'");
                 }
             }

@@ -1183,6 +1183,10 @@ public class Main {
                 + "Create Selector: OK");
             startSynChannel();
 
+            //preload classes
+            new ProcDestroy(null);
+            new ThreadDestroy(null);
+            
             if (cfgM.getLocalM() == REMOTE) { // || getExecM() == SAME) {
                 clients = new MCPool();
                 (new RRunner()).start();
@@ -1276,6 +1280,10 @@ public class Main {
                         internalLog.add(Level.CONFIG, methodLogPrefix
                             + "Can't close communication server: " + cs[i]
                             + " " + e);
+                    } catch (Error e) {
+                        internalLog.add(Level.CONFIG, methodLogPrefix
+                            + "Can't close communication server: " + cs[i]
+                            + " " + e, e);
                     }
                 }
                 internalLog.add(Level.CONFIG, methodLogPrefix
@@ -1295,6 +1303,9 @@ public class Main {
                 } catch (Exception e) {
                     internalLog.add(Level.CONFIG, methodLogPrefix
                         + "Can't close synchronization server: " + e);
+                } catch (Error e) {
+                    internalLog.add(Level.WARNING, methodLogPrefix
+                        + "Can't close synchronization server: " + e, e);
                 }
                 internalLog.add(Level.CONFIG, methodLogPrefix
                     + "Close sync channel: OK ");
@@ -1308,6 +1319,9 @@ public class Main {
                     } catch (Exception e) {
                         internalLog.add(Level.CONFIG, methodLogPrefix
                             + "Can't close mcore: " + clients.get(i) + " " + e);
+                    } catch (Error e) {
+                        internalLog.add(Level.CONFIG, methodLogPrefix
+                            + "Can't close mcore: " + clients.get(i) + " " + e, e);
                     }
                 }
                 internalLog.add(Level.CONFIG, methodLogPrefix
@@ -1336,6 +1350,10 @@ public class Main {
                     } catch (InterruptedException ie) {
                         //do noting
                     }
+                } catch (Error ior) {
+                    internalLog.add(Level.SEVERE, methodLogPrefix
+                        + "Process to destroy: " + proc
+                        + "\nNote, some processes can hang up");
                 }
                 internalLog.add(Level.CONFIG, methodLogPrefix
                     + "Process was destroyed : OK " + proc);
