@@ -741,7 +741,7 @@ WARNING: Suite '@{suite}' won't be launched as some of its superior
         <attribute name="property"/>
         <sequential>
             <var name="@{property}" value=""/>
-            <for list="@{depends.list}" param="depends">
+            <for list="@{depends.list}" param="depends" trim="true">
                 <sequential>
                     <if>
                         <contains string=",@{selected.list}," substring=",@{depends},"/>
