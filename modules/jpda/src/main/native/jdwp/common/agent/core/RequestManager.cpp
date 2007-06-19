@@ -1379,6 +1379,45 @@ void JNICALL RequestManager::HandleFramePop(jvmtiEnv* jvmti, JNIEnv* jni,
         << ',' << method << ',' << was_popped_by_exception << ')');
 
     try {
+
+#ifndef NDEBUG
+        if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
+            jvmtiError err;
+            EventInfo eInfo;
+            memset(&eInfo, 0, sizeof(eInfo));
+            eInfo.kind = JDWP_EVENT_METHOD_EXIT;
+            eInfo.thread = thread;
+        
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodDeclaringClass(method,
+                &eInfo.cls));
+            if (err != JVMTI_ERROR_NONE) {
+                throw AgentException(err);
+            }
+        
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
+                &eInfo.signature, 0));
+            JvmtiAutoFree jafSignature(eInfo.signature);
+            if (err != JVMTI_ERROR_NONE) {
+                throw AgentException(err);
+            }
+        
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
+                &eInfo.method, &eInfo.location));
+            if (err != JVMTI_ERROR_NONE) {
+                throw AgentException(err);
+            }
+            JDWP_ASSERT(method == eInfo.method);
+
+            char* name = 0;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
+            JDWP_TRACE_EVENT("FRAME_POP event:"
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
+                << " method=" << JDWP_CHECK_NULL(name)
+                << " loc=" << eInfo.location
+                << " by_exception=" << was_popped_by_exception);
+        }
+#endif // NDEBUG
+
         StepRequest* step = GetRequestManager().FindStepRequest(jni, thread);
         if (step != 0) {
             step->OnFramePop(jni);

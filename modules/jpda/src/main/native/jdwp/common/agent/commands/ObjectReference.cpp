@@ -657,26 +657,12 @@ ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
     m_methodID = m_cmdParser->command.ReadMethodID(jni);
     int arguments = m_cmdParser->command.ReadInt();
 
-#ifndef NDEBUG
-    if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
-        jvmtiError err;
-        char* signature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &signature, 0));
-        JvmtiAutoFree afs(signature);
-        jvmtiThreadInfo threadInfo;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(m_thread, &threadInfo));
-        JvmtiAutoFree aftn(threadInfo.name);
-        char* methodName = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(m_methodID, &methodName, 0, 0));
-        JvmtiAutoFree afmn(methodName);
-        JDWP_TRACE_DATA("InvokeMethod: received: objectID=" << m_object
-            << ", classSignature=" << JDWP_CHECK_NULL(signature) 
-            << ", threadName=" << JDWP_CHECK_NULL(threadInfo.name)
-            << ", classID=" << m_clazz
-            << ", methodName=" << JDWP_CHECK_NULL(methodName)
-            << ", arguments=" << arguments);
-    }
-#endif
+    JDWP_TRACE_DATA("InvokeMethod: received: "
+        << "objectID=" << m_object 
+        << ", classID=" << m_clazz 
+        << ", threadID=" << m_thread 
+        << ", methodID=" << m_methodID
+        << ", arguments=" << arguments);
 
     if (AgentBase::GetClassManager().IsClass(jni, m_clazz) != JNI_TRUE) {
         throw AgentException(JDWP_ERROR_INVALID_CLASS);
@@ -692,6 +678,22 @@ ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
     }
     JvmtiAutoFree afv2(signature);
     JvmtiAutoFree afv3(name);
+
+#ifndef NDEBUG
+    if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
+        jvmtiError err;
+        char* classSignature = 0;
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &classSignature, 0));
+        JvmtiAutoFree afs(classSignature);
+        jvmtiThreadInfo threadInfo;
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(m_thread, &threadInfo));
+        JvmtiAutoFree aftn(threadInfo.name);
+        JDWP_TRACE_DATA("InvokeMethod: call: method=" << JDWP_CHECK_NULL(name)
+            << ", sig=" << JDWP_CHECK_NULL(signature)
+            << ", class=" << JDWP_CHECK_NULL(classSignature) 
+            << ", thread=" << JDWP_CHECK_NULL(threadInfo.name));
+    }
+#endif
 
     JDWP_ASSERT(signature[0] == '(');
     JDWP_ASSERT(strlen(signature) >= 3);
@@ -754,11 +756,20 @@ ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
         throw AgentException(m_returnError);
     }
     
-    JDWP_LOG("InvokeMethod: return: method=" << JDWP_CHECK_NULL(name) 
-        << ", sig=" << JDWP_CHECK_NULL(signature) 
-        << ", thread=" << m_thread 
-        << ", returnValueTag=" << m_returnValue.tag
-        << ", returnException=" << m_returnException);
+#ifndef NDEBUG
+    if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
+        jvmtiError err;
+        char* classSignature = 0;
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &classSignature, 0));
+        JvmtiAutoFree afs(classSignature);
+        JDWP_LOG("InvokeMethod: return: method=" << JDWP_CHECK_NULL(name)
+            << ", sig=" << JDWP_CHECK_NULL(signature)
+            << ", class=" << JDWP_CHECK_NULL(classSignature)
+            << ", thread=" << m_thread
+            << ", returnValueTag=" << m_returnValue.tag
+            << ", returnException=" << m_returnException);
+    }
+#endif
 
 }
 

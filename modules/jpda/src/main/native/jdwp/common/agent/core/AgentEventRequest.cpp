@@ -268,7 +268,7 @@ void StepRequest::Init(JNIEnv *jni, jthread thread, jint size, jint depth)
         ControlSingleStep(true);
     }
 
-    JDWP_TRACE_EVENT("step start: size=" << m_size << "(depth=" << m_depth
+    JDWP_TRACE_EVENT("step start: size=" << m_size << ", depth=" << m_depth
         << ", frame=" << m_frameCount << ", line=" << m_lineNumber);
 }
 
@@ -328,6 +328,6 @@ bool StepRequest::ApplyModifiers(JNIEnv *jni, EventInfo &eInfo)
     m_frameCount = currentCount;
     m_lineNumber = currentLine;
 
-    JDWP_TRACE_EVENT("step: frame=" << m_frameCount << "(line=" << m_lineNumber);
+    JDWP_TRACE_EVENT("step: frame=" << m_frameCount << ", line=" << m_lineNumber);
     return AgentEventRequest::ApplyModifiers(jni, eInfo);
 }

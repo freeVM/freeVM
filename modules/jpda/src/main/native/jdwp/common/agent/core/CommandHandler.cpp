@@ -160,8 +160,13 @@ void SpecialAsyncCommandHandler::WaitDeferredInvocation(JNIEnv *jni)
 
 //-----------------------------------------------------------------------------
 
+/**
+ * Counts number of arguments in in the method signature.
+ */
 jint SpecialAsyncCommandHandler::getArgsNumber(char* sig)
 {
+    JDWP_TRACE_ENTRY("Async::getArgsNumber(" << JDWP_CHECK_NULL(sig) << ')');
+
     if (sig == 0) return 0;
 
     jint argsCount = 0;
@@ -173,13 +178,18 @@ jint SpecialAsyncCommandHandler::getArgsNumber(char* sig)
         }
         argsCount++;
     }
-    JDWP_TRACE_CMD("sig=" << sig << "(args=" << argsCount);
+    JDWP_TRACE_DATA("getArgsNumber: sig=" << sig << ", args=" << argsCount);
 
     return argsCount;
 }
 
+/**
+ * Extracts jdwpTag letter for given argument index in the method signature.
+ */
 jdwpTag SpecialAsyncCommandHandler::getTag(jint index, char* sig)
 {
+    JDWP_TRACE_ENTRY("Async::getArgsNumber(" << index << ',' << JDWP_CHECK_NULL(sig) << ')');
+
     if (sig == 0) return JDWP_TAG_NONE;
 
     const size_t len = strlen(sig);
@@ -195,9 +205,19 @@ jdwpTag SpecialAsyncCommandHandler::getTag(jint index, char* sig)
     return (index == 0) ? static_cast<jdwpTag>(sig[i]) : JDWP_TAG_NONE;
 }
 
+/**
+ * Extracts class name for given argument index in the method signature.
+ * Type signature for this argument should start with 'L' or '[' tag.
+ *
+ * @return extracted class name in 'name' argument or JNI_FALSE if any error occured
+ */
 bool SpecialAsyncCommandHandler::getClassNameArg(jint index, char* sig, char* name)
 {
+    JDWP_TRACE_ENTRY("Async::getArgsNumber(" << index << ',' << JDWP_CHECK_NULL(sig) << ')');
+
     if (sig == 0) return false;
+
+    // skip previous arguments
 
     const size_t len = strlen(sig);
     size_t i;
@@ -209,44 +229,62 @@ bool SpecialAsyncCommandHandler::getClassNameArg(jint index, char* sig, char* na
         index--;
     }
 
-    if (index > 0 || (sig[i] != '[' && sig[i] != 'L')) return false;
+    if (index > 0) return false;
 
+    // extract type name for the next argument
+
+    bool isArrayType = false;
     size_t j = 0;
-    for (bool arrayFlag = false, classFlag = false; i < len; i++) {
-        char c = sig[i];
-        if (c == '[') {
-             if (classFlag) return false;
-             arrayFlag = true;
-             name[j++] = c;
-        } else if (c == 'L') {
-             if (classFlag) return false;
-             classFlag = true;
-             if (arrayFlag) {
-                 name[j++] = c;
-             }
-        } else if (c == ';') {
-             if (!classFlag) return false;
-             if (arrayFlag) {
-                 name[j++] = c;
-             }
-             break;
-        } else {
-             name[j++] = c;
-             if (arrayFlag && !classFlag) break;
+
+    if (sig[i] == '[') {
+        // copy all starting '[' chars for array type
+        isArrayType = true;
+        for (; i < len && sig[i] == '['; i++) {
+            name[j++] = sig[i];
         }
     }
-    name[j] = '\0';
 
+    if (sig[i] == 'L') {
+        // copy class name until ';'
+        if (!isArrayType) {
+            i++; // skip starting 'L' for not array type
+        }
+        for (; i < len && sig[i] != ';'; i++) {
+            name[j++] = sig[i];
+        }
+        if (isArrayType) {
+            name[j++] = sig[i]; // add trailing ';' for array type
+        }
+    } else if (isArrayType) {
+        // copy single char tag for primitive array type
+        name[j++] = sig[i];
+    } else {
+        // not a class or array type
+        return false;
+    }
+        
+    name[j] = '\0';
     return true;
 }
 
+/**
+ * Checks that type of the argument value matches declared type for given argument index 
+ * in the method signature.
+ *
+ * @return JNI_FALSE in case of any mismatch or error
+ */
 jboolean
 SpecialAsyncCommandHandler::IsArgValid(JNIEnv *jni, jint index,
                                        jdwpTaggedValue value, char* sig)
                                        throw(AgentException)
 {
-    JDWP_TRACE_ENTRY("IsArgValid: index=" << index 
-        << ", value.tag=" << value.tag << ", arg tag=" << getTag(index, sig));
+    JDWP_TRACE_ENTRY("IsArgValid(" << jni << ',' << index 
+        << ',' << (int)value.tag << ',' << JDWP_CHECK_NULL(sig) << ')');
+
+    jdwpTag argTag = getTag(index, sig);
+
+    JDWP_TRACE_DATA("IsArgValid: index=" << index << ", value.tag=" << value.tag << ", argTag=" << argTag);
+
     switch (value.tag) {
         case JDWP_TAG_BOOLEAN:
         case JDWP_TAG_BYTE:
@@ -256,13 +294,15 @@ SpecialAsyncCommandHandler::IsArgValid(JNIEnv *jni, jint index,
         case JDWP_TAG_LONG:
         case JDWP_TAG_FLOAT:
         case JDWP_TAG_DOUBLE:
-            if (value.tag != getTag(index, sig)) {
+            if (value.tag != argTag) {
+                JDWP_TRACE_DATA("IsArgValid: mismatched primitive type tag: index=" << index << ", value.tag=" << value.tag << ", argTag=" << argTag);
                 return JNI_FALSE;
             } else {
                 return JNI_TRUE;
             }
         case JDWP_TAG_ARRAY:
-            if ('[' != getTag(index, sig)) {
+            if ('[' != argTag) {
+                JDWP_TRACE_DATA("IsArgValid: mismatched array type tag: index=" << index << ", value.tag=" << value.tag << ", argTag=" << argTag);
                 return JNI_FALSE;
             }
             break;
@@ -272,24 +312,31 @@ SpecialAsyncCommandHandler::IsArgValid(JNIEnv *jni, jint index,
         case JDWP_TAG_THREAD_GROUP:
         case JDWP_TAG_CLASS_LOADER:
         case JDWP_TAG_CLASS_OBJECT:
-            if ('L' != getTag(index, sig)) {
+            if ('L' != argTag) {
+                JDWP_TRACE_DATA("IsArgValid: mismatched reference type tag: index=" << index << ", value.tag=" << value.tag << ", argTag=" << argTag);
                 return JNI_FALSE;
             }
             break;
         default: 
+            JDWP_TRACE_DATA("IsArgValid: unknown value type tag: index=" << index << ", value.tag=" << value.tag << ", argTag=" << argTag);
             return JNI_FALSE;
     }
     char* name = reinterpret_cast<char*>(GetMemoryManager().Allocate(strlen(sig) JDWP_FILE_LINE));
     AgentAutoFree afv(name JDWP_FILE_LINE);
     if (!getClassNameArg(index, sig, name)) {
+        JDWP_TRACE_DATA("IsArgValid: bad class name: index=" << index << ", class=" << JDWP_CHECK_NULL(name));
         return JNI_FALSE;
     }
-    JDWP_TRACE_CMD("IsArgValid: name =" << JDWP_CHECK_NULL(name));
     jclass cls = jni->FindClass(name);
     if (jni->ExceptionCheck() == JNI_TRUE) {
         jni->ExceptionClear();
+        JDWP_TRACE_DATA("IsArgValid: unknown class name: index=" << index << ", class=" << JDWP_CHECK_NULL(name));
         return JNI_FALSE;
     }
-    JDWP_TRACE_CMD("IsArgValid: class=" << cls);
-    return jni->IsInstanceOf(value.value.l, cls);
+    if (!jni->IsInstanceOf(value.value.l, cls)) {
+        JDWP_TRACE_DATA("IsArgValid: unmatched class: index=" << index << ", class=" << JDWP_CHECK_NULL(name));
+        return JNI_FALSE;
+    }
+    JDWP_TRACE_DATA("IsArgValid: matched class: index=" << index << ", class=" << JDWP_CHECK_NULL(name));
+    return JNI_TRUE;
 }

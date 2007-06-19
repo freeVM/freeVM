@@ -269,13 +269,14 @@ ClassType::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
     JvmtiAutoFree afv3(name);
 
 #ifndef NDEBUG
-    if (JDWP_TRACE_ENABLED(LOG_KIND_LOG)) {
+    if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
-        char* signature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &signature, 0));
-        JvmtiAutoFree afs(signature);
+        char* classSignature = 0;
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &classSignature, 0));
+        JvmtiAutoFree afs(classSignature);
         JDWP_TRACE_DATA("InvokeMethod: call: method=" << JDWP_CHECK_NULL(name) 
-            << ", classSignature=" << JDWP_CHECK_NULL(signature)
+            << ", sig=" << JDWP_CHECK_NULL(signature)
+            << ", class=" << JDWP_CHECK_NULL(classSignature)
             << ", thread=" << m_thread);
     }
 #endif
@@ -343,13 +344,14 @@ ClassType::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
     }
 
 #ifndef NDEBUG
-    if (JDWP_TRACE_ENABLED(LOG_KIND_LOG)) {
+    if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
-        char* signature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &signature, 0));
-        JvmtiAutoFree afs(signature);
+        char* classSignature = 0;
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &classSignature, 0));
+        JvmtiAutoFree afs(classSignature);
         JDWP_LOG("InvokeMethod: return: method=" << JDWP_CHECK_NULL(name)
-            << ", classSignature=" << JDWP_CHECK_NULL(signature)
+            << ", sig=" << JDWP_CHECK_NULL(signature)
+            << ", class=" << JDWP_CHECK_NULL(classSignature)
             << ", thread=" << m_thread
             << ", returnValueTag=" << m_returnValue.tag
             << ", returnException=" << m_returnException);
@@ -458,13 +460,14 @@ ClassType::NewInstanceHandler::Execute(JNIEnv *jni) throw(AgentException)
     JvmtiAutoFree afv3(name);
 
 #ifndef NDEBUG
-    if (JDWP_TRACE_ENABLED(LOG_KIND_LOG)) {
+    if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
-        char* signature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &signature, 0));
-        JvmtiAutoFree afs(signature);
+        char* classSignature = 0;
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &classSignature, 0));
+        JvmtiAutoFree afs(classSignature);
         JDWP_TRACE_DATA("NewInstance: call method=" << JDWP_CHECK_NULL(name) 
-            << ", signature=" << JDWP_CHECK_NULL(signature)
+            << ", sig=" << JDWP_CHECK_NULL(signature)
+            << ", class=" << JDWP_CHECK_NULL(classSignature)
             << ", thread=" << m_thread);
     }
 #endif
@@ -520,13 +523,14 @@ ClassType::NewInstanceHandler::Execute(JNIEnv *jni) throw(AgentException)
     }
 
 #ifndef NDEBUG
-    if (JDWP_TRACE_ENABLED(LOG_KIND_LOG)) {
+    if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
-        char* signature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &signature, 0));
-        JvmtiAutoFree afs(signature);
+        char* classSignature = 0;
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &classSignature, 0));
+        JvmtiAutoFree afs(classSignature);
         JDWP_LOG("NewInstance: return: methodName=" << JDWP_CHECK_NULL(name)
-            << ", signature=" << JDWP_CHECK_NULL(signature)
+            << ", sig=" << JDWP_CHECK_NULL(signature)
+            << ", class=" << JDWP_CHECK_NULL(classSignature)
             << ", thread=" << m_thread
             << ", returnObject=" << m_returnValue
             << ", returnException=" << m_returnException);
