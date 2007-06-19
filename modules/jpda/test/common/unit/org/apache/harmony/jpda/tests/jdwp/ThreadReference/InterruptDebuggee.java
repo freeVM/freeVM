@@ -43,6 +43,7 @@ public class InterruptDebuggee extends SyncDebuggee {
     public static final String TESTED_THREAD = "TestedThread";
     
     static Object waitForStart = new Object();
+    static Object waitForInterrupt = new Object();
     static Object waitForFinish = new Object();
     
     public void run() {
@@ -82,12 +83,15 @@ public class InterruptDebuggee extends SyncDebuggee {
                 synchronized(InterruptDebuggee.waitForStart){
 
                     InterruptDebuggee.waitForStart.notifyAll();
+                }
 
+                synchronized(InterruptDebuggee.waitForInterrupt){
+                
                     logWriter.println(getName() +  ": started");
                     synchronizer.sendMessage(JPDADebuggeeSynchronizer.SGNL_READY);
 
                     try {
-                        InterruptDebuggee.waitForStart.wait();
+                        InterruptDebuggee.waitForInterrupt.wait();
                     } catch (InterruptedException e) {
                         logWriter.println("Expected " + e);
                         synchronizer.sendMessage(e.toString());
