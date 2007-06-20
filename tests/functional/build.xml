@@ -26,14 +26,14 @@
 	<property name="bin"           location="bin" />
 	<property name="bin.classes"   location="${bin}/classes" />
 	<property name="bin.lib"       location="${bin}/lib" />
-    <property name="tests.reports" location="${bin}/report" />
-    <property name="test.java.cmd" location="c:/jrockit-jdk1.5.0/bin/java.exe" />
+        <property name="tests.reports" location="${bin}/report" />
+        <property name="test.java.cmd" location="${java.home}/bin/java" />
 
 	<property name="harness.jar" location="${depends}/th.jar" />
 	<property name="harness.main" value="org.apache.harmony.harness.Main" />
 
 	<property name="jasmin.jar" location="${depends}/jasmin.jar" />
-	<property name="vmtt.jar" location="${depends}/VMTT.jar" />
+	<property name="vmtt.jar" location="${depends}/vmtt.jar" />
 	<!--property name="junit.jar" location="${depends}/junit.jar" /-->
 
 	<property name="jpda-framework" location="${depends}/jpda-framework" />
