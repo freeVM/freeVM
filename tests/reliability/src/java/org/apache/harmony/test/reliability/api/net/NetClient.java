@@ -80,6 +80,7 @@ public class NetClient  extends Test {
     private PrintWriter prnWriter;
     private FileInputStream fis;
     private static int clientcounter = 0;
+    private final static int NUMBER_OF_TRIES_TO_START_SERVER = 50;
 
     private static int threadcnt = 0;
     private static int cycle = 0;
@@ -142,14 +143,24 @@ public class NetClient  extends Test {
 
         
         //log.add("PORT = " + PORT++);
-
-        try {    
-            server = new ServerSocket(NetClient.PORT);
-            //log.add("Creates a server socket " + server + ", bound to the" + NetClient.PORT + " port");
-        }  catch (Exception e) {
-
-            log.add("Creates a ServerSocket(" + NetClient.PORT + "): Exception during test execution");
-            log.add(e);
+        // try to create ServerSocket NUMBER_OF_TRIES_TO_START_SERVER times with 
+        // different PORT values as some PORT values could already be taken!
+        int count = 0;
+        while (count < NUMBER_OF_TRIES_TO_START_SERVER){
+            try {    
+                server = new ServerSocket(NetClient.PORT);
+                log.add("Creates a server socket " + server + ", bound to the" + NetClient.PORT + " port");
+            }  catch (Exception e) {
+                // try next PORT number
+                count++;
+                NetClient.PORT++;
+                continue;
+            }
+            break;
+        }
+         
+        if (server == null){
+                log.add("Creates a ServerSocket in the range(" + NetClient.PORT + ":" + NetClient.PORT + "): Exception during test execution");
             return fail("Failed.");
         }
 
@@ -200,29 +211,29 @@ public class NetClient  extends Test {
         //Creates some sockets and connects to the specified port 
         while(true) {
 
-            if(threadcnt() < THREAD) {
+                if(threadcnt() < THREAD) {
 
-                Client client =  new Client(ia);
-            }
+                       Client client =  new Client(ia);
+                }
 
-            try {    
-                Thread.currentThread().sleep(NetClient.SLEEP);
-            }  catch (InterruptedException e) {
-                log.add(e);
-                return fail("another thread has interrupted the current thread");
+                try {    
+                    Thread.currentThread().sleep(NetClient.SLEEP);
+                }  catch (InterruptedException e) {
+                    log.add(e);
+                    return fail("another thread has interrupted the current thread");
 
-            }
-            if(cnt() == CNT) {
-                clientcounter = 0;
-                break;
-            }
+                 }
+                if(cnt() == CNT) {
+                    clientcounter = 0;
+                    break;
+                }
         }
 
 
         if (result()) {
-            return pass("OK");
+                return pass("OK");
         } else {
-            return fail("Failed.");
+                return fail("Failed.");
         }
     }
 
@@ -325,11 +336,11 @@ public class NetClient  extends Test {
 
             // arrays to be tested for equality
             if(java.util.Arrays.equals(a, b)) {
-                //log.add("checks "+ filename + " : true");
-                return true;
+                    //log.add("checks "+ filename + " : true");
+                    return true;
             } else {
-                log.add("checks "+ filename + " : false");        
-                return false;
+                    log.add("checks "+ filename + " : false");        
+                    return false;
             }
         }
 
@@ -378,8 +389,8 @@ public class NetClient  extends Test {
                 bufReader.close();
                 in.close();
             }  catch (Exception e) {
-                log.add(e);
-                log.add("error occurs when closing the streams");
+                    log.add(e);
+                    log.add("error occurs when closing the streams");
             } finally {
                 try {
                     socket.close();

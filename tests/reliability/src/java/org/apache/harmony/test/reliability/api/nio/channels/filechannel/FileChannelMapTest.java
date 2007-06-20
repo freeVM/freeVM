@@ -204,5 +204,11 @@ class FileChannelThread implements Runnable {
             }
 
         }
+        try {
+            fc.close();
+        } catch (IOException e) {
+            // Expected
+        }
+
     }
 }

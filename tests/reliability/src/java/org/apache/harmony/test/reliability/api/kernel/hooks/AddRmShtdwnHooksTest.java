@@ -384,7 +384,11 @@ class AppNormalCompletion {
         Thread[] hooks = createHookThreads(Integer.parseInt(args[0]));
 
         for (int i = 0; i < hooks.length; ++ i){
-            Runtime.getRuntime().addShutdownHook(hooks[i]);
+            try{
+                Runtime.getRuntime().addShutdownHook(hooks[i]);
+            } catch (IllegalArgumentException iae){
+                // Ignore
+            }
         }
 
     }
@@ -411,7 +415,11 @@ class AppNormalCompletionFinishedHooks {
         Thread[] hooks = createExecutedHookThreads(Integer.parseInt(args[0]));
 
         for (int i = 0; i < hooks.length; ++ i){
-            Runtime.getRuntime().addShutdownHook(hooks[i]);
+            try{
+                Runtime.getRuntime().addShutdownHook(hooks[i]);
+            } catch (IllegalArgumentException iae){
+                // Ignore
+            }
         }
 
     }

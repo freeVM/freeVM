@@ -188,8 +188,10 @@ class Dekkerthread extends Thread {
 
             base.commonVar = vars[threadNum];
             Thread.yield(); // to give a chance to another thread
-            if (base.commonVar != vars[threadNum]) {
+            if (base.commonVar != vars[0] &&
+                base.commonVar != vars[1]) {
                 base.statuses[threadNum] = DStatus.FAIL;
+                regionOut(threadNum);
                 return;
             }
             // end of critical region

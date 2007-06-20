@@ -44,7 +44,7 @@
    <target name="run.api.kernel.exec">
    
         <run-pjava-test test="api.kernel.exec.RunExec" args="${api.kernel.exec.RunExec.num_execs} 
-        					${api.kernel.exec.RunExec.num_threads} ${test.classes.dir} ${jvm.under.test}" />
+        					${api.kernel.exec.RunExec.num_threads} ${test.classes.dir} ${jvm.under.test} ${test.classes.dir}" />
 
    </target>
 

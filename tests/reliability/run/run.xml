@@ -20,12 +20,22 @@
 
     <description>Run reliability testsuite </description>
 
+    <condition property="exe" value=".exe" else="">
+        <os family="windows"/>
+    </condition>
+
     <!-- path to the tested runtime -->
-    <property name="jvm.under.test" location="C:\jdk1.5.0_06\jre\bin\java" /> 
+    <property name="jvm.under.test" location="${java.home}/bin/java${exe}" /> 
 
     <property name="jvm.args" value="-Xmx256m" /> 
 
-	<!-- This VM option may be needed as well: -Djava.security.policy= [...]/config/java.policy	 -->
+    <condition property="no.jvm.found">
+        <not>
+            <available file="${jvm.under.test}"/>
+        </not>
+    </condition>
+
+    <!-- This VM option may be needed as well: -Djava.security.policy= [...]/config/java.policy	 -->
 
     <!-- specify directory where tests can create their working files -->
     <property name="work.dir" location="../work" />
@@ -90,6 +100,13 @@
         <attribute name="args" default=""/>
         <element name="java-element" optional="true"/>
         <sequential>
+        <if>
+            <isset property="no.jvm.found"/>
+        <then>	
+            <fail>Could not locate jvm executable to test, please, set "jvm.under.test" property.</fail>
+        </then>
+        </if>	
+
 	<if>
 	    <not>
 		<isset property="@{test}"/>

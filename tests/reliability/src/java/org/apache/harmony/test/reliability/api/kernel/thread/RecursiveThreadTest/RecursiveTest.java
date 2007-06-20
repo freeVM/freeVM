@@ -43,7 +43,7 @@ import org.apache.harmony.test.reliability.share.Test;
 
 public class RecursiveTest extends Test {
     
-    public static int depth = 1000;
+    public static int depth = 500;
     public static int size = 1000;
     public static volatile boolean finish = false;
 
@@ -98,7 +98,7 @@ class recurThread extends Thread {
         // just wasting memory
         Object[] array = new Object[RecursiveTest.size];
         for (int i = 0; i < RecursiveTest.size; i++) {
-            array[i] = new recurThread();
+            array[i] = new char[10];
         }
     }
 

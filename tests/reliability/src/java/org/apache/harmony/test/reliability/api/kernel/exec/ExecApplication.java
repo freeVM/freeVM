@@ -150,7 +150,8 @@ class ExecApplication extends Thread {
             prnWriter = new PrintWriter(new BufferedWriter(new FileWriter(
                 filename)));
         } catch (IOException e) {
-            e.printStackTrace();
+            RunExec.log.add("Failed to create PrintWriter, file name: " + filename);
+            return;
         }
 
         try {
@@ -159,14 +160,15 @@ class ExecApplication extends Thread {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+        	RunExec.log.add("Failed print into file: " + filename);
         } finally {
             try {
                 prnWriter.close();
                 bufReader.close();
                 in.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+            	// Expected 
             }
         }
     }
@@ -195,11 +197,11 @@ class ExecApplication extends Thread {
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Read the content of the file" + filename + ". The file does not exist");
-            e.printStackTrace();
+            RunExec.log.add("Read the content of the file" + filename + ". The file does not exist: " + e.getMessage());
+            //e.printStackTrace();
         } catch (IOException ee) {
-            System.out.println("Read a line of text: I/O error occurs");
-            ee.printStackTrace();
+        	RunExec.log.add("Read a line of text: I/O error occurs: " + ee.getMessage());
+            //ee.printStackTrace();
         } finally {
             try {
                 bufReader.close();
@@ -228,20 +230,20 @@ class ExecApplication extends Thread {
             }
         }
         if (!result) {
-            System.out.println("Line is not found in the file " + filename
+        	RunExec.log.add("Line is not found in the file " + filename
                 + ". Number of lines = " + strcounter);
+        	return result;
         }
         strcounter = strcounter - 2;
         if (strcounter != cntline) {
-            System.out.println("Invalid number of lines in the file "
+        	RunExec.log.add("Invalid number of lines in the file "
                 + filename + ". Number of lines = " + strcounter);
             result = false;
         }
         return result;
     }
 
-    public boolean checkSomeLine(String filename, String linestartswith,
-        String lineendswith, int cntline) {
+    public boolean checkSomeLine2(String filename, String linestartswith, int cntline) {
         int strcounter = 0;
         String line;
         boolean result = false;
@@ -249,7 +251,7 @@ class ExecApplication extends Thread {
             line = readLineFromFile(filename, strcounter);
             if (line != null) {
                 for (int i = 0; i <= cntline; i++) {
-                    if (checkLine(line, linestartswith, lineendswith)) {
+                    if (checkLine(line, linestartswith, "")) {
                         result = true;
                         break;
                     }
@@ -258,7 +260,7 @@ class ExecApplication extends Thread {
             }
         }
         if (!result) {
-            System.out.println("Invalid number of lines in the file "
+        	RunExec.log.add("Invalid number of lines in the file "
                 + filename + ". Number of lines = " + strcounter);
         }
         return result;
@@ -281,7 +283,7 @@ class ExecApplication extends Thread {
             fln = listFiles[i].getName();
             if (fln.equals(filename)) {
                 if (!listFiles[i].delete()) {
-                    System.out.println("delete " + fln + " : failed");
+                	RunExec.log.add("delete " + fln + " : failed");
                     return false;
                 }
 
@@ -296,7 +298,7 @@ class ExecApplication extends Thread {
         if (process != null) {
             exitvalue = processWaitFor(process);
             if (exitvalue != 104) {
-                System.out.println("the exit value = " + exitvalue
+            	RunExec.log.add("the exit value = " + exitvalue
                     + " The exit value of the process should be 104.");
             }
         }

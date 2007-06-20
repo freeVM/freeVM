@@ -40,7 +40,6 @@ import java.io.File;
 
 public class RunExec extends Test {
 
-    int cnt = ExecApplication.getCnt();
     String ins = ExecApplication.fileNameforIn();
     String err = ExecApplication.fileNameforErr();
     String ins_i;
@@ -48,12 +47,9 @@ public class RunExec extends Test {
     String line;
     int secarg = 0;
     int strcounter;
+    String tmpFolder = System.getProperty("java.io.tmpdir");
 
     public int test(String params[]) {
-        String userdir = System.getProperty("java.io.tmpdir") + File.separator + "reliability_exec";
-        File temp = new File(userdir);
-        temp.mkdir();
-
         if (params.length >= 1) {
             ExecApplication.setId(Integer.parseInt(params[0]));
         }        
@@ -70,6 +66,21 @@ public class RunExec extends Test {
             ExecApplication.testedruntime = params[3];
         }        
 
+        if (params.length >= 5) {
+        	tmpFolder = params[4];
+        }        
+
+        int cnt = ExecApplication.getCnt();
+        
+        String userdir = tmpFolder + File.separator + "reliability_exec";
+        File temp = new File(userdir);
+        if (!temp.exists())
+        {
+        	if (!temp.mkdir()){
+        		return fail("Failed to create folder " + temp.getAbsolutePath());
+        	}
+        }
+        
         String longstr = ShutdownHookApp.getLongString();
 
         for (int i = 0; i < cnt; i++) {
@@ -92,8 +103,7 @@ public class RunExec extends Test {
             }
 
             for (int j = 1; j < secarg; j++) {
-                if (!ex.checkSomeLine(ins_i, ExecApplication.currThreadStr(), Integer
-                    .toString(j), secarg)) {
+                if (!ex.checkSomeLine2(ins_i, ExecApplication.currThreadStr(), secarg)) {
                     return fail("Check line from file " + ins_i
                         + " : failed");
                 }
@@ -135,8 +145,7 @@ public class RunExec extends Test {
             }
 
             for (int j = 1; j < secarg; j++) {
-                if (!ex.checkSomeLine(ins_i, ExecApplication.currThreadStr(), Integer
-                    .toString(j), secarg)) {
+                if (!ex.checkSomeLine2(ins_i, ExecApplication.currThreadStr(), secarg)) {
                     return fail("Check line from file " + ins_i
                         + " : failed");
                 }
