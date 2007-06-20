@@ -312,8 +312,11 @@ char *cleanToolName(const char *name)
         temp = strdup(name);
     }
     
-    exe = strstr(temp, ".exe");
-         
+    // convert name to lower case on Windows
+    _strlwr(temp);
+
+    // remove possible '.exe' suffix
+	exe = strstr(temp, ".exe");
     if (exe) { 
        *exe = '\0';
     }
