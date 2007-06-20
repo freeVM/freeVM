@@ -157,6 +157,8 @@ found:
     <target name="run.tests" depends="check.config">
         <replace file="${harness.cfg}">
             <replacefilter token="#TestSuiteRoot#" value="${qa.location}" />
+            <replacefilter token="#TestSuiteClassRoot#" value="${qa.bin.classes}" />
+            <replacefilter token="#TestSuiteLibRoot#" value="${qa.bin.lib}" />
             <replacefilter token="#TestResultRoot#" value="${qa.location}_result" />
             <replacefilter token="#TestedRuntime#" value="${tested.runtime}" />
             <replacefilter token="#ReferenceRuntime#" value="${reference.runtime}" />
@@ -175,7 +177,7 @@ found:
             <arg value="${harness.cfg}" />
             <arg value="-exclude" />
             <arg value="${qa.exclude.list}" />
-            <arg value="-version" />
+            <arg line="-version -failonerror" />
         </java>
     </target>
 

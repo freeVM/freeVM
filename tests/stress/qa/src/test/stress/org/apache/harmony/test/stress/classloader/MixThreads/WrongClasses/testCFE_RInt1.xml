@@ -51,7 +51,7 @@ Version: $Revision: 1.5 $
             <Option value="-Dorg.apache.harmony.test.stress.classloader.MixThreads.WrongClasses.testCFE_RInt.arg2=5"/>
             <Option value="-Dorg.apache.harmony.test.stress.classloader.MixThreads.WrongClasses.testCFE_RInt.arg3=100"/>
             <Option value="-Dorg.apache.harmony.test.stress.classloader.MixThreads.WrongClasses.testCFE_RInt.arg4=5"/>
-            <Option value="-Dorg.apache.harmony.test.stress.classloader.MixThreads.WrongClasses.testCFE_RInt.arg5=$TestSuiteRoot/bin/classes"/>
+            <Option value="-Dorg.apache.harmony.test.stress.classloader.MixThreads.WrongClasses.testCFE_RInt.arg5=$TestSuiteClassRoot"/>
 		<Param name="toRun" value="org.apache.harmony.test.share.stress.ReliabilityRunner">
 		</Param>
 		</Runner>      

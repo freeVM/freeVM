@@ -44,7 +44,7 @@ Version: $Revision $
             <Option value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg0=0"/>
             <Option value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg1=10"/>
             <Option value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg2=1000"/>
-            <Option value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg3=$TestSuiteRoot/bin/classes"/>
+            <Option value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg3=$TestSuiteClassRoot"/>
 		<Param name="toRun" value="org.apache.harmony.test.share.stress.ReliabilityRunner">
 		</Param>
 		</Runner> 
