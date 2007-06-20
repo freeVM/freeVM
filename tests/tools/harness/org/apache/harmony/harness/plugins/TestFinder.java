@@ -79,7 +79,7 @@ public class TestFinder extends DirFinder {
                     + "Can not read the directory " + root);
             }
         }
-        if (root.getName().indexOf(TST_SUFFIX) != -1) {
+        if (root.getName().endsWith(TST_SUFFIX)) {
             if (mask != null && mask.length > 0) {
                 for (int i = 0; i < mask.length; i++) {
                     String tmp = root.getPath();
@@ -126,7 +126,7 @@ public class TestFinder extends DirFinder {
             return false;
         }
         try {
-            if (testName.indexOf(TST_SUFFIX) == -1) {
+            if (!testName.endsWith(TST_SUFFIX)) {
                 return false;
             }
             fl = new File(testName);
