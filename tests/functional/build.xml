@@ -327,7 +327,8 @@
         <echo message="Running tests" />
         <java fork="yes" classname="${harness.main}" dir="${tests.reports}"
                output="${tests.reports}/th.log" 
-                error="${tests.reports}/th.error"
+               error="${tests.reports}/th.error"
+               failonerror="true"
                >
             <classpath>
                 <pathelement location="${bin.classes}" />
@@ -335,7 +336,7 @@
                 <pathelement location="${harness.jar}" />
             </classpath>
 
-            <arg line="-version -logl 1 ${qa.run} ${qa.suite} ${qa.select}" />
+            <arg line="-version -logl 6 -failonerror ${qa.run} ${qa.suite} ${qa.select}" />
             <!--  ${qa.subs} -->
         </java>
     </target>
