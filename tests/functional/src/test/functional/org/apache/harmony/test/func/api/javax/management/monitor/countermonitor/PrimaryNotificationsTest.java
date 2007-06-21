@@ -37,7 +37,7 @@ import org.apache.harmony.share.Test;
  * <li>NotificationListener is added to CounterMonitor.
  * <li>Counter is started in a separate thread, CounterMonitor is activated.
  * <li>Notification handler checks that counter threshold is actually reached
- * <li>Notification handler reconfigures monitor – removes existing handler and
+ * <li>Notification handler reconfigures monitor removes existing handler and
  * adds another handler (to handle errors)
  * <li>Notification handler sets invalid type threshold value
  * <li>New notification handler expects to receive corresponding error

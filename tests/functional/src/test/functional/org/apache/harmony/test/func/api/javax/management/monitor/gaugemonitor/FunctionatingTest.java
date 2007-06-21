@@ -35,7 +35,7 @@ import org.apache.harmony.share.Result;
  * <br>
  * testLowHigh:<br>
  * The Sensor class represents monotonous function (of type double), which
- * does’t reach boundary values.<br>
+ * does't reach boundary values.<br>
  * <br>
  * testIntPeriodic():<br>
  * The sensor class represents a periodic function (of type int to provide

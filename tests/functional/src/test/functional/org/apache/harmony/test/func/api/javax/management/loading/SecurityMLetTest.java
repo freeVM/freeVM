@@ -61,14 +61,14 @@ public class SecurityMLetTest extends MultiCase {
 
             boolean res = server.isRegistered(new ObjectName(
                     "test:name=FirstRemoteClass"));
-            System.out.println("Is MBean register – " + res);
+            System.out.println("Is MBean register: " + res);
             if (!res) {
                 Set set = (Set) obj;
                 ((Exception) (set.iterator().next())).printStackTrace();
                 return passed();
             } else {
 
-                return failed("Exception doesn’t throw");
+                return failed("Exception doesn't throw");
 
             }
 
@@ -96,7 +96,7 @@ public class SecurityMLetTest extends MultiCase {
 
             boolean res = server.isRegistered(new ObjectName(
                     "test:name=FirstRemoteClass"));
-            System.out.println("Is MBean register – " + res);
+            System.out.println("Is MBean register: " + res);
             } catch (Exception e) {
             e.printStackTrace();
         }

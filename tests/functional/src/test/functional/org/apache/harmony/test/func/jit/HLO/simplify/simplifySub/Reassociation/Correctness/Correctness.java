@@ -42,9 +42,9 @@ public class Correctness extends MultiCase {
            (s + C1) - C2 -> s + (C1 - C2)
            (C1 + s) - C2 -> s + (C1 - C2)
            C1 - (C2 - s) -> (C1-C2) + s
-           C1 - (s - C2) -> (C1+C2) – s 
+           C1 - (s - C2) -> (C1+C2) - s 
            C1 - (s + C2) -> (C1-C2) - s
-           C1 - (C2 + s) -> (C1-C2) – s */
+           C1 - (C2 + s) -> (C1-C2) - s */
         
         public static void main(String[] args) {
             log.info("Start Correctness test...");
