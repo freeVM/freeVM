@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                        BT Adaptor for Functional Test Suite
+     ====================================================================== -->
+<project name="func" default="run" basedir=".">
+
+    <condition property="exe" value=".exe" else="">
+        <os family="windows"/>
+    </condition>
+
+    <property name="func.root.dir" location="${test.sources.dir}/functional"/>
+    <property name="func.make.dir" location="${func.root.dir}"/>
+    <available file="${func.bin.dir}/setup.OK" property="setup.OK"/>
+
+    <property name="func.results.dir" value="${results.dir}/${suite.name}"/>
+    <property name="func.res.dir" location="${func.results.dir}" />
+    <mkdir dir="${func.res.dir}"/>
+    <property name="run.log" location="${func.res.dir}/th.log"/>
+    <touch file="${run.log}"/>
+
+    <!-- do setup of func suite -->
+    <target name="setup" unless="setup.OK">
+        <svn-update-bt path="${test.sources.dir}/functional"/>
+        <call-func target="fetch-depends"/>
+        <antcall target="setup-tools"/>
+
+        <delete quiet="true" verbose="false">
+            <fileset dir="${func.bin.dir}" includes="**/*"/>
+        </delete>
+        <call-func target="build"/>
+        
+        <!-- Patch configuration of Test Harness -->
+        <!-- use XML Junit reporter -->
+        <replace file="${func.root.dir}/config/cfg_env.xml">
+            <replacefilter token='harness.plugins.StoreRes"' 
+                           value='harness.ReportTool.StoreResAsJU"' />
+        </replace>
+        <touch file="${func.bin.dir}/setup.OK"/>
+    </target>
+
+    <target name="setup-tools">
+        <svn-update-bt path="${test.sources.dir}/tools"/>
+        <ant dir="${test.sources.dir}/tools/harness"/>
+        <copy file="${test.sources.dir}/tools/th.dest/bin/th.jar"
+              todir="${func.depends.dir}" failonerror="false" />
+        <ant dir="${test.sources.dir}/tools/vmtt"/>
+        <copy file="${test.sources.dir}/tools/vmtt.dest/bin/vmtt.jar"
+              todir="${func.depends.dir}" failonerror="false"/>
+    </target>
+
+    <!-- do test execution -->
+    <target name="run">
+
+        <!-- remove old results (they were archived after creation) -->
+        <delete quiet="true" verbose="false">
+            <fileset dir="${func.res.dir}" includes="**/*"/>
+        </delete>
+
+        <!-- tested.runtime is a required parameter for this adaptor -->
+        <call-func target="run-tests" 
+            jvm="${tested.runtime}/bin/java${exe}" 
+            results="${func.res.dir}"/>
+    </target>
+
+    <!-- cleanup the func workspace -->
+    <target name="clean">
+        <call-func target="clean"/>
+        <!-- delete files fetched by the 'fetch-depends' in the func/build.xml -->
+        <delete includeEmptyDirs="true" 
+                dir="${func.depends.dir}/jpda-framework"/>
+    </target>
+
+    <!-- calls func's main build file -->
+    <macrodef name="call-func">
+        <attribute name="target"/>
+        <!-- func checks for tested jvm presence on setup and build stages,
+             so it must be already built before call to func setup and build.
+             Here, for these checks we use jvm we are working on -->
+        <attribute name="jvm" default="${java.home}/bin/java${exe}"/>
+        <!-- Path to directory to store results -->
+        <attribute name="results" default="${func.bin.dir}/report"/>
+        <sequential>
+            <exec-ant dir="${func.make.dir}" targets="@{target}">
+               <arg line="-Dtest.java.cmd=@{jvm}"/>
+               <arg line="-Ddepends=${func.depends.dir}" />
+               <arg line="-Dbin=${func.bin.dir}" />
+               <arg line="-Dtests.reports=@{results}" />
+            </exec-ant>
+        </sequential>
+    </macrodef>
+
+</project>
+
