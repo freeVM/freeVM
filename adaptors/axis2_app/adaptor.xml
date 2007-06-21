@@ -58,9 +58,7 @@
     </target>
 
     <!-- do test execution -->
-    <target name="run">
-
-        <antcall target="-generate-client" />
+    <target name="run" depends="-generate-client">
 
         <!-- Deleting previous client/server logs -->
         <delete file="${server.run.log}" />
