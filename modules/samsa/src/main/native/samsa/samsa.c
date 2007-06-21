@@ -272,8 +272,11 @@ int main (int argc, char **argv, char **envp)
                     TRUE, 0, NULL, NULL, &startInfo, &procInfo)) { 
 
         fprintf(stderr, "Error creating process : %d\n", GetLastError());
+        free(cmd_line);
         return exit_code;
     }
+
+    free(cmd_line);
 
     // wait for child process to finish
     if (WAIT_FAILED == WaitForSingleObject(procInfo.hProcess, INFINITE)) {
