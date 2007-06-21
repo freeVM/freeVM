@@ -46,11 +46,6 @@ Version: $Revision: 1.6 $
 							org.apache.harmony.test.stress.exceptions.catcher.StackUnwindingManyThreads{}
 						}
 					}"/>
-            <Option value="-Dorg.apache.harmony.test.share.stress.ReliabilityRunner.params=
-					generator.Thread {
-						org.apache.harmony.test.stress.exceptions.thrower.{}
-						org.apache.harmony.test.stress.exceptions.catcher.StackUnwindingManyThreads{}
-					}"/>
 			<Param name="toRun" value="org.apache.harmony.test.share.stress.ReliabilityRunner">
 			</Param>
 		</Runner>

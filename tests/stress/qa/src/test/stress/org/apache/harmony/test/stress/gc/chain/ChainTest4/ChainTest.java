@@ -44,11 +44,10 @@ public class ChainTest extends TestCase {
                 chain = next;
                 System.gc();
             }
-
+            ReliabilityRunner.debug("OutOfMemoryError is not thrown");
+            ReliabilityRunner.mainTest.addError(this, new GCTestError());
         } catch (OutOfMemoryError e) {
             ReliabilityRunner.debug("OutOfMemoryError is thrown on iteration " + i);
         }
-        ReliabilityRunner.debug("OutOfMemoryError is not thrown");
-        ReliabilityRunner.mainTest.addError(this, new GCTestError());
     }
 }

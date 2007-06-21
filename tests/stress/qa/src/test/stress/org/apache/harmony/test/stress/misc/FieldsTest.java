@@ -30,9 +30,9 @@ import org.apache.harmony.test.stress.misc.MiscTestError;
 import org.apache.harmony.test.share.stress.ReliabilityRunner;
 
 public class FieldsTest extends TestCase {
-    private static long l;
+    private static volatile long l;
 
-    private static double d;
+    private static volatile double d;
 
     private static final int ITERATIONS_COUNT = 100000000;
 
