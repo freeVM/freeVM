@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                        BT Adaptor for Stress Test Suite
+     ====================================================================== -->
+<project name="stress" default="run" basedir=".">
+
+    <condition property="exe" value=".exe" else="">
+        <os family="windows"/>
+    </condition>
+
+    <property name="junit.jar"      value="${ext.junit.location}"/>
+    <property name="antcontrib.jar" value="${ext.ant-contrib.location}"/>
+    <property name="cpptasks.jar"   value="${ext.cpptasks.location}/"/>
+    <property name="jasmin.jar"     value="${stress.depends.dir}/jasmin.jar"/>
+    <property name="th.jar"         value="${stress.depends.dir}/th.jar"/>
+    <property name="vmtt.jar"       value="${stress.depends.dir}/vmtt.jar"/>
+
+    <property name="stress.root.dir" location="${test.sources.dir}/stress/qa"/>
+    <property name="stress.make.dir" location="${stress.root.dir}"/>
+
+    <property name="stress.results.dir" value="${results.dir}/${suite.name}"/>
+    <property name="stress.res.dir" location="${stress.results.dir}" />
+    <property name="stress.config.dir" value="${stress.root.dir}/cfg"/>
+    <available file="${stress.bin.dir}/setup.OK" property="setup.OK"/>
+
+    <!-- do setup of stress suite -->
+    <target name="setup" unless="setup.OK">
+        <svn-update-bt path="${test.sources.dir}/stress"/>
+        <antcall target="setup-tools"/>
+
+        <call-stress target="build.qa"/>
+        <!-- call-stress target="set.tasks,build.java,build.native"/ -->
+
+        <mkdir dir="${stress.config.dir}"/>
+        <copy todir="${stress.config.dir}">
+            <fileset dir="${stress.root.dir}/config"
+                     includes="cfg_env.*,exclude.file"/>
+        </copy>
+
+        <!-- Patch configuration of Test Harness -->
+        <!-- use XML Junit reporter -->
+        <replace file="${stress.config.dir}/cfg_env.xml">
+            <replacefilter token='harness.plugins.StoreRes"' 
+                           value='harness.ReportTool.StoreResAsJU"' />
+            <replacefilter token='GenTimeout">80' 
+                           value='GenTimeout">180' />
+            <replacefilter token="#TestSuiteLibRoot#"
+                           value="${stress.bin.dir}/lib" />
+            <replacefilter token="#TestSuiteClassRoot#"
+                           value="${stress.bin.dir}/classes" />
+            <replacefilter token="#TestResultRoot#"
+                           value="${stress.res.dir}" />
+            <replacefilter token="#TempStorage#"
+                           value="${stress.res.dir}/temp/" />
+        </replace>
+        <replace file="${stress.make.dir}/build.xml">
+            <replacetoken><![CDATA[<arg value="-version" />]]></replacetoken>
+            <replacevalue><![CDATA[<arg line="-version -failonerror" />]]></replacevalue>
+        </replace>
+        <touch file="${stress.bin.dir}/setup.OK"/>
+    </target>
+
+    <target name="setup-tools">
+        <svn-update-bt path="${test.sources.dir}/tools"/>
+        <ant dir="${test.sources.dir}/tools/harness"/>
+        <copy file="${test.sources.dir}/tools/th.dest/bin/th.jar"
+              todir="${stress.depends.dir}" failonerror="false" />
+        <ant dir="${test.sources.dir}/tools/vmtt"/>
+        <copy file="${test.sources.dir}/tools/vmtt.dest/bin/vmtt.jar"
+              todir="${stress.depends.dir}" failonerror="false"/>
+    </target>
+
+    <!-- do test execution -->
+    <target name="run">
+
+        <mkdir dir="${stress.res.dir}"/>
+        <!-- remove old results (they were archived after creation) -->
+        <delete quiet="true" verbose="false">
+            <fileset dir="${stress.res.dir}" includes="**/*"/>
+        </delete>
+
+        <!-- tested.runtime.dir is a required parameter for this adaptor -->
+        <call-stress target="run.tests" 
+                    jvm="${tested.runtime}/bin/java${exe}"/>
+    </target>
+
+    <!-- cleanup the stress workspace -->
+    <target name="clean">
+        <call-stress target="clean"/>
+    </target>
+
+    <!-- calls stress's main build file -->
+    <macrodef name="call-stress">
+        <attribute name="target"/>
+        <!-- stress checks for tested jvm presence on setup and build stages,
+             so it must be already built before call to stress setup and build.
+             Here, for these checks we use jvm we are working on -->
+        <attribute name="jvm" default="${java.home}/bin/java${exe}"/>
+        <sequential>
+            <exec-ant dir="${stress.make.dir}" targets="@{target}">
+               <jvmarg line="-Xmx500M -Xss96M"/>
+               <arg line="-Dtested.runtime=@{jvm}"/>
+               <arg line="-Dharness.cfg=${stress.config.dir}/cfg_env.xml" />
+               <arg line="-Dqa.exclude.list=${stress.config.dir}/exclude.file" />
+               <arg line="-Dqa.bin=${stress.bin.dir}" />
+               <arg line="-Djunit.jar=${junit.jar}"/>
+               <arg line="-Dantcontrib.jar=${antcontrib.jar}"/>
+               <arg line="-Dcpptasks.jar=${cpptasks.jar}/"/>
+               <arg line="-Djasmin.jar=${jasmin.jar}"/>
+               <arg line="-Dth.jar=${th.jar}"/>
+               <arg line="-Dvmtt.jar=${vmtt.jar}"/>
+            </exec-ant>
+        </sequential>
+    </macrodef>
+
+</project>
+
