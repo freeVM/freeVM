@@ -174,12 +174,6 @@
         description="Setup Geronimo and its pre-requisites"
         depends="install.geronimo,install.maven">
 
-        <condition property="java.exists">
-            <available file="${test.jre.home}"/>
-        </condition>
-
-        <fail message="Path to tested runtime does not exist: ${test.jre.home}" unless="java.exists"/>
-
         <!-- Running maven with "test" target in order to make sure that all
         necessary jar-s are downloaded and all necessary classes are compiled -->
         <exec executable="${cmd}"
@@ -282,6 +276,12 @@
    </target>
 
     <target name="run.tests" description="Launch GUT runs">
+        <condition property="java.exists">
+            <available file="${test.jre.home}"/>
+        </condition>
+
+        <fail message="Path to tested runtime does not exist: ${test.jre.home}" unless="java.exists"/>
+
         <exec executable="${cmd}"
             dir="${geronimo.dir}"
             failonerror="false"
