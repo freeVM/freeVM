@@ -82,7 +82,9 @@ int main (int argc, char **argv, char **envp)
     int moreArgvCount = /* -cp <classpath> */ 2 + /* <tool-class> */ 1 + /* NULL */ 1;
     char **myArgv = (char **) malloc(sizeof(char*) * (myArgvCount + moreArgvCount));    
     char *toolName = NULL;
-    int i, j;
+    char *cmd_line = NULL;
+    int size, i, j;
+    int cmd_len = 0;
     int exit_code = -1;
     int newIndex = 0;
     char *jdkRoot = NULL;
@@ -122,7 +124,7 @@ int main (int argc, char **argv, char **envp)
     pToolData = getToolData(toolName, jdkRoot);
        
     if (pToolData == NULL) { 
-        fprintf(stderr, "error : unable to get tool data for %s");
+        fprintf(stderr, "Unable to get tool data for %s");
         return 2;
     }
     
@@ -143,11 +145,16 @@ int main (int argc, char **argv, char **envp)
     if (strcmp(toolName, "java")) {
         char *classpath;
         char *buffer;
-        int size;
-        int i;
 
         myArgvCount = argc + moreArgvCount;
         
+        // hangle non-empty -J<flag> options
+        for (i = 1; i < argc; i++) { 
+            if (argv[i] != NULL && argv[i][0] == '-' && argv[i][1] == 'J' && argv[i][2] != '\0') {
+                myArgv[newIndex++] = argv[i] + 2;
+            }
+        }
+     
         size = (strlen(jdkRoot) + strlen(LIB_POSTFIX)) * pToolData->numJars +
                    strlen(CLASSPATH_SEP) * (pToolData->numJars - 1) + 1;
 
@@ -178,13 +185,23 @@ int main (int argc, char **argv, char **envp)
         strcat(buffer, CLASS_POSTFIX);
         
         myArgv[newIndex++] = buffer;
-    }
+
+        // copy remaining arguments (skipping -J options)
+        for (i = 1; i < argc; i++) {
+            if (argv[i] != NULL && argv[i][0] == '-' && argv[i][1] == 'J') continue;
+            myArgv[newIndex++] = argv[i];
+        }
+
+    } else {
         
-    for (i = 1; i < argc; i++) {
-        myArgv[newIndex++] = argv[i];
+        // for 'java' wrappper copy all arguments without changes
+        for (i = 1; i < argc; i++) {
+            myArgv[newIndex++] = argv[i];
+        }
+
     }
     
-    myArgv[newIndex] = '\0';
+    myArgv[newIndex] = NULL;
 
 //    for (i=0; i < myArgvCount; i++) { 
 //        printf(" %d = %s\n", i, myArgv[i]);
@@ -200,43 +217,58 @@ int main (int argc, char **argv, char **envp)
 
     /*
      * win32 - CreateProcess() needs a cmd line string
-     *  so simply build one
+     *   - double quote all arguments to avoid breaking spaces
+     *   - prepend existing double quotes with '\'
      */
      
-    j = 0;
+    // determine required memory size for command line arguments
+    size = 0;
     for (i=1; i < myArgvCount; i++) {
         if (myArgv[i] != NULL) {
-            j += strlen(myArgv[i]);
-            j++; // for the needed spaces
+            int arg_len = strlen(myArgv[i]);
+            size += /* space */ 1 + /* quotes */ 2 + arg_len;
+            for (j = 0; j < arg_len; j++) {
+                 if (myArgv[i][j] == '\"') size++;
+            }
         }
     }
     
-    toolName = (char *) malloc(sizeof(char) * j + strlen(fullExePath) + 1 + 1);
+    // allocate memory for whole command line
+    cmd_line = (char *) malloc(strlen(fullExePath) + /* quotes */ 2 + /* arguments */ size + /* NULL */ 1);
     
-    if (toolName == NULL) { 
+    if (cmd_line == NULL) { 
+        fprintf(stderr, "Unable to allocate memory for tool command line %s\n", argv[0]);
         return 4;
     }
     
-    strcpy(toolName, fullExePath);
-    strcat(toolName, " ");
+    // copy quoted exe path
+    sprintf(cmd_line, "\"%s\"", fullExePath);
+    cmd_len = strlen(cmd_line);
         
+    // copy quoted arguments and prepend existing double quotes with '\'
     for (i=1; i < myArgvCount; i++) {
         if (myArgv[i] != NULL) {
-            strcat(toolName,myArgv[i]);
-            strcat(toolName, " ");
-        }
-        else {
-            break;
+            int arg_len = strlen(myArgv[i]);
+            cmd_line[cmd_len++] = ' ';  // space delimiter
+            cmd_line[cmd_len++] = '\"'; // starting quote
+            for (j = 0; j < arg_len; j++) {
+                char ch = myArgv[i][j];
+                if (ch == '\"') {
+                    cmd_line[cmd_len++] = '\\';
+                }  
+                cmd_line[cmd_len++] = ch;
+            }
+            cmd_line[cmd_len++] = '\"'; // ending quote
         }
     }
+    cmd_line[cmd_len] = '\0';
     
+    // create child process
     memset(&procInfo, 0, sizeof(PROCESS_INFORMATION));
     memset(&startInfo, 0, sizeof(STARTUPINFO));
     startInfo.cb = sizeof(STARTUPINFO);
-    //startInfo.dwFlags = STARTF_USERSTDHANDLES; // to inherit stdin, stdout, stderr handles 
         
-    // create child process
-    if (!CreateProcess(NULL, toolName, NULL, NULL,
+    if (!CreateProcess(NULL, cmd_line, NULL, NULL,
                     TRUE, 0, NULL, NULL, &startInfo, &procInfo)) { 
 
         fprintf(stderr, "Error creating process : %d\n", GetLastError());
