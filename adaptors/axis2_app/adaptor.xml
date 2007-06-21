@@ -20,149 +20,170 @@
      ====================================================================== -->
 <project name="axis2_app" default="run" basedir=".">
 
-    <property name="AXIS2_HOME" location="${ext.axis2_111.location}"/>
+    <property name="AXIS2_HOME" location="${ext.axis2_111.location}" />
 
     <condition property="axis.java.home" value="${java.home}">
-        <equals arg1="true" arg2="${axis2_app.parameters.optional.test.client.only}"/>
+        <equals arg1="true"
+                arg2="${axis2_app.parameters.optional.test.client.only}" />
     </condition>
 
     <condition property="axis.vm.options"
                value=""
                else="${axis2_app.parameters.optional.tested.vm.options}">
-        <equals arg1="true" arg2="${axis2_app.parameters.optional.test.client.only}"/>
+        <equals arg1="true"
+                arg2="${axis2_app.parameters.optional.test.client.only}" />
     </condition>
 
-    <property name="axis.java.home" value="${tested.runtime}"/>
+    <property name="axis.java.home" value="${tested.runtime}" />
 
-    <property name="axis.res.dir"   location="${results.dir}/${suite.name}"/>
-    <property name="server.run.log" location="${axis.res.dir}/SimpleAxis2Server.log"/>
-    <property name="client.run.log" location="${axis.res.dir}/client.run.log"/>
-    <property name="axis.summary"   location="${axis.res.dir}/Axis2-message.txt"/>
+    <property name="axis.res.dir" location="${results.dir}/${suite.name}" />
+    <property name="server.run.log"
+              location="${axis.res.dir}/SimpleAxis2Server.log" />
+    <property name="client.run.log" location="${axis.res.dir}/client.run.log" />
+    <property name="axis.summary"
+              location="${axis.res.dir}/Axis2-message.txt" />
 
-    <available file="${AXIS2_HOME}/repository/services/LabStatService.aar" 
-               property="app.OK"/>
+    <available file="${AXIS2_HOME}/repository/services/LabStatService.aar"
+               property="app.OK" />
 
     <condition property="do.generate.client">
-        <equals arg1="true" arg2="${axis2_app.parameters.optional.generate.client}"/>
+        <equals arg1="true"
+                arg2="${axis2_app.parameters.optional.generate.client}" />
     </condition>
 
     <!-- setup AXIS2 server -->
     <target name="setup" unless="app.OK">
-        <log message="AXIS2_HOME: ${AXIS2_HOME}"/>
-        <call-axis2_app target="setup_axis2server"/>
+        <log message="AXIS2_HOME: ${AXIS2_HOME}" />
+        <call-axis2_app target="setup_axis2server" />
     </target>
 
     <!-- do test execution -->
     <target name="run">
 
-        <antcall target="-generate-client"/>
+        <antcall target="-generate-client" />
 
         <!-- Deleting previous client/server logs -->
-        <delete file="${server.run.log}"/>
-        <delete file="${client.run.log}"/>
+        <delete file="${server.run.log}" />
+        <delete file="${client.run.log}" />
 
         <parallel>
 
             <sequential>
                 <!-- Start Axis2 server -->
-                <call-axis2_app target="start.server" failureproperty="server.start.failed"/>
-                <axis2-fail message="Axis2 server failed to start" if="server.start.failed"/>
+                <call-axis2_app target="start.server"
+                                failureproperty="server.start.failed" />
+                <axis2-fail message="Axis2 server failed to start"
+                            if="server.start.failed" />
             </sequential>
 
             <sequential>
                 <!-- Wait Axis2 server is started -->
                 <waitfor maxwait="${axis2_app.parameters.optional.server.startup.timeout}"
-                         maxwaitunit="second" timeoutproperty="failed.timeout">
+                         maxwaitunit="second"
+                         timeoutproperty="failed.timeout">
                     <and>
-                        <available file="${server.run.log}"/>
+                        <available file="${server.run.log}" />
                         <isfileselected file="${server.run.log}">
-                            <contains text="INFO: [SimpleAxisServer] Started"/>
+                            <contains text="INFO: [SimpleAxisServer] Started" />
                         </isfileselected>
                     </and>
                 </waitfor>
-                <axis2-fail message="Axis2 server startup timeout exceeded" if="failed.timeout"/>
+                <axis2-fail message="Axis2 server startup timeout exceeded"
+                            if="failed.timeout" />
 
                 <!-- Run client -->
-                <call-axis2_app target="run.client" failureproperty="run.client.failed"/>
+                <call-axis2_app target="run.client"
+                                failureproperty="run.client.failed" />
 
                 <!-- Stop Axis2 server -->
-                <call-axis2_app target="stop.server" failureproperty="server.stop.failed"/>
+                <call-axis2_app target="stop.server"
+                                failureproperty="server.stop.failed" />
             </sequential>
         </parallel>
 
-        <axis2-fail message="Axis2 client failed" if="run.client.failed"/>
-        <axis2-fail message="Axis2 server failed to stop" if="server.stop.failed"/>
+        <axis2-fail message="Axis2 client failed" if="run.client.failed" />
+        <axis2-fail message="Axis2 server failed to stop"
+                    if="server.stop.failed" />
 
-        <property name="generate.summary" value="true"/>
-        <antcall target="-generate-summary"/>
+        <property name="generate.summary" value="true" />
+        <antcall target="-generate-summary" />
 
     </target>
 
     <target name="clean">
-        <call-axis2_app target="clean"/>
+        <call-axis2_app target="clean" />
     </target>
 
     <target name="-generate-client" if="do.generate.client">
-        <call-axis2_app target="generate.client" failureproperty="generate.client.failed"/>
-        <fail message="Failed to generate client" if="generate.client.failed"/>
+        <call-axis2_app target="generate.client"
+                        failureproperty="generate.client.failed" />
+        <fail message="Failed to generate client" if="generate.client.failed" />
     </target>
 
     <target name="-generate-summary" if="generate.summary">
         <echo file="${axis.summary}"
-              message="Axis-2 client log:${line.separator}${line.separator}"/>
+              message="Axis-2 client log:${line.separator}${line.separator}" />
 
         <concat destfile="${axis.summary}" append="true">
-            <filelist dir="${axis.res.dir}" files="client.run.log"/>
+            <filelist dir="${axis.res.dir}" files="client.run.log" />
         </concat>
 
-        <echo file="${axis.summary}" append="true"
-              message="${line.separator}***********************************************************${line.separator}"/>
+        <echo file="${axis.summary}"
+              append="true"
+              message="${line.separator}***********************************************************${line.separator}" />
 
-        <echo file="${axis.summary}" append="true"
-              message="Axis-2 server log:${line.separator}${line.separator}"/>
+        <echo file="${axis.summary}"
+              append="true"
+              message="Axis-2 server log:${line.separator}${line.separator}" />
 
         <concat destfile="${axis.summary}" append="true">
-            <filelist dir="${axis.res.dir}" files="SimpleAxis2Server.log"/>
+            <filelist dir="${axis.res.dir}" files="SimpleAxis2Server.log" />
         </concat>
 
-        <echo file="${axis.summary}" append="true"
-              message="${line.separator}***********************************************************${line.separator}"/>
+        <echo file="${axis.summary}"
+              append="true"
+              message="${line.separator}***********************************************************${line.separator}" />
     </target>
 
     <!-- calls axis2_app's main build file -->
     <macrodef name="call-axis2_app">
-        <attribute name="target"/>
-        <attribute name="failureproperty" default="fail.property.not.required"/>
+        <attribute name="target" />
+        <attribute name="failureproperty"
+                   default="fail.property.not.required" />
         <sequential>
             <condition property="do.fail" value="true" else="false">
-                <equals arg1="@{failureproperty}" arg2="fail.property.not.required"/>
+                <equals arg1="@{failureproperty}"
+                        arg2="fail.property.not.required" />
             </condition>
             <exec-ant dir="${test.sources.dir}/${suite.name}"
                       targets="@{target}"
                       failonerror="${do.fail}"
                       failproperty="@{failureproperty}">
-                <sysproperty key="AXIS2_HOME"        value="${AXIS2_HOME}"/>
-                <sysproperty key="axis.result.dir"   value="${axis.res.dir}"/>
-                <sysproperty key="axis.build.dir"    value="${axis.res.dir}/build"/>
-                <sysproperty key="axis.web.port"     value="${axis2_app.parameters.optional.web.port}"/>
-                <sysproperty key="axis.java.home"    value="${axis.java.home}"/>
-                <sysproperty key="axis.vm.options"   value="${axis.vm.options}"/>
-                <sysproperty key="client.java.home"  value="${tested.runtime}"/>
-                <sysproperty key="client.vm.options" value="${axis2_app.parameters.optional.tested.vm.options}"/>
+                <sysproperty key="AXIS2_HOME" value="${AXIS2_HOME}" />
+                <sysproperty key="axis.result.dir" value="${axis.res.dir}" />
+                <sysproperty key="axis.build.dir"
+                             value="${axis.res.dir}/build" />
+                <sysproperty key="axis.web.port"
+                             value="${axis2_app.parameters.optional.web.port}" />
+                <sysproperty key="axis.java.home" value="${axis.java.home}" />
+                <sysproperty key="axis.vm.options" value="${axis.vm.options}" />
+                <sysproperty key="client.java.home" value="${tested.runtime}" />
+                <sysproperty key="client.vm.options"
+                             value="${axis2_app.parameters.optional.tested.vm.options}" />
             </exec-ant>
         </sequential>
     </macrodef>
 
     <!-- fail task with summary generation before failing -->
     <macrodef name="axis2-fail">
-        <attribute name="message"/>
-        <attribute name="if"/>
+        <attribute name="message" />
+        <attribute name="if" />
         <sequential>
             <condition property="generate.summary">
-                <isset property="@{if}"/>
+                <isset property="@{if}" />
             </condition>
-            <antcall target="-generate-summary"/>
-            <fail message="@{message}" if="@{if}"/>
+            <antcall target="-generate-summary" />
+            <fail message="@{message}" if="@{if}" />
         </sequential>
     </macrodef>
 
