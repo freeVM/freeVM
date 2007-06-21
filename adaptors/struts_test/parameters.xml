@@ -19,7 +19,7 @@
     <required>
         <req.driver.java.home
             description="Used to run test driver. Must point to stable JDK root" 
-            value=""
+            value="${java.home}"
         />
         <req.test.java.home
             description="Root dir of the implementation under test. Used to run test's server part. May point to JDK/JRE root" 
