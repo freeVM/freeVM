@@ -16,12 +16,12 @@
      limitations under the License. 
 -->
 
-<parameters depends="drlvm">
+<parameters depends="hdk">
 
     <required>
         <tested.runtime
             description="Path to Tested Runtime"
-            value="${drlvm.parameters.shared.jre.dir}"/>
+            value="${hdk.parameters.shared.binaries.jre.dir}"/>
     </required>
 
     <shared>
