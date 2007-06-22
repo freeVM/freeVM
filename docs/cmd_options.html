@@ -1,0 +1,1017 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - JRE Command-Line Options</title>
+
+                        
+                
+        <link rel="stylesheet" type="text/css" href="site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="print.css" media="print" />
+        </head>
+
+        <body>
+            <div id="pageHeader">
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="./images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement -->
+            <a href="http://www.apachecon.com/2007/EU/index.html">
+                <img id="advertisement"
+                     src="http://www.apache.org/ads/ApacheCon/2007-usa-234x60.png"
+                     width="234" height="60"
+                     alt="ApacheCon US 2007" /></a>
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="./index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./license.html">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./downloads.html">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./faq.html">FAQ</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="./get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="./svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="./sitemap.html">Sitemap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./hdk.html">HDK</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+                </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                                        <h1>
+      <a name="Harmony JRE Command-Line Options">Harmony JRE Command-Line Options</a>
+    </h1>
+                        <p>
+      This document gives tips on how to get the help on DRLVM DRL virtual machine (DRLVM) command line options. It also lists the of DRLVM component specific options and properties which can be used during code development or issues evaluation.</p>
+                                    
+    <h2>
+        <a name="Standard JRE Options">Standard JRE Options</a>
+    </h2>
+      
+                        <p>
+          To get the list of standard JRE options, run DRLVM with the <code>-help</code> option:
+        </p>
+                                <pre>java -help</pre>
+                   
+                                    
+    <h2>
+        <a name="Non-standard JRE Options">Non-standard JRE Options</a>
+    </h2>
+      
+                        <p>
+          To get the list of non-standard JRE options, run DRLVM with the <code>-X</code> option:
+        </p>
+                                <pre>java -X</pre>
+                   
+                                    
+    <h2>
+        <a name="Component-specific Options and Properties">Component-specific Options and Properties</a>
+    </h2>
+      
+                        <p>
+          <em>
+            <strong>
+              <code>(since revision r549299, (Jun 21 2007))</code>
+            </strong>
+          </em>
+        
+</p>
+                                <h3>VM Core (vm/vmcore)</h3>
+                                <table>
+                        <tr>
+                        <th class="TableHeading" colspan="" rowspan="">
+                
+             OPTIONS
+     
+            
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="">
+                
+              COMMENTS
+            
+        </th>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:-vm.assert_dialog</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to prevent assertion failures from popping up a dialog box.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:+vm.crash_handler</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to invoke gdb on crashes (POSIX only)
+
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:-vm.finalize</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to disable finalization subsystem, that is, not to start finalization threads and to ignore finalization requests from the GC.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:+vm.jvmti_compiled_method_load_inlined</code>
+                </strong>
+              
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to report inlined methods with JVMTI_EVENT_COMPILED_METHOD_LOAD. Makes sense for optimizing jit.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:+vm_bootclasspath_appendclasspath</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+               Use to append classpath to the bootclasspath.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:vm.dlls=&lt;list&gt;</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              A PATH_SEPARATOR-delimited list of modular dynamic libraries (GC/etc.) to load at startup.
+            
+        </td>
+            </tr>
+            </table>
+                                <h3>EM (Execution Manager)</h3>
+                                <table>
+                        <tr>
+                        <th class="TableHeading" colspan="" rowspan="">
+                
+          
+                  OPTIONS
+
+            
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="">
+                
+             COMMENTS
+            
+        </th>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-Xtrace:em</code>
+                </strong>
+              
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                a commonly-used options to print method compilation events to <code>stdout</code>. Helps detect which method failed to compile (not an EM option, but very informative at EM behavior). This option is available in debug build only.
+              
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-Xem:&lt;config&gt;</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+               Specify Execution Manager configuration file to use. There is a set of predefined configuration files (client, server, opt, jet - please see below). You may also define your own EM configuration file. 
+
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-Xem:client</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+               use optimization sequence for client applications (default EM configuration) 
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-Xem:server</code>
+                </strong>
+              
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                use optimization sequence for server applications ('server' mode execution - analogous to <strong>
+                  <code>'java -server'</code>
+                </strong> in <code>HotSpot</code>)
+              
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-Xem:jet</code>
+                </strong>
+              
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+               use fast-compiling non-optimizing JIT only (Jitrino.JET) 
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-Xem:opt</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+               use aggressively optimising JIT compiler only (Jitrino.OPT) 
+            
+        </td>
+            </tr>
+            </table>
+                                <h3>Jitrino</h3>
+                                <table>
+                        <tr>
+                        <th class="TableHeading" colspan="" rowspan="">
+                
+
+                  OPTIONS
+             
+            
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="">
+                
+              COMMENTS
+            
+        </th>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:jit.arg.log=&lt;log_type&gt;</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+               Enabling compilation logging for the Jitrino.OPT JIT compiler. &lt;log_type&gt; - a comma-separated list of the logging types to enable (see below the examples). 
+
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:jit.arg.log=rt</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+               turn ON all runtime logging 
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+
+              
+                <strong>
+                  <code>-XX:jit.arg.log=ct,dbg</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+               turn ON compile-time logging and debug information 
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:jit.arg.log=ct,irdump,dotdump,info</code>
+                </strong>
+              
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+               full compile-time logging for Jitrino (warning: takes much disk space) 
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:jit.p.filter=.main -XX:jit.p.arg.log=ct,irdump,dotdump</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                enable compile-time logging for methods having names started with <code>main</code>
+              
+
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:jit.p.filter=java/lang/Math. -XX:jit.p.arg.log=ct,irdump,dotdump</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+               enable logging for all methods of a single class 
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+
+              
+                <strong>
+                  <code>-XX:jit.arg.codegen.iprof=on</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                enable internal profiler dumps (<code>iprof.stat</code>) in Jitrino.OPT (needs <code>iprof.cfg</code>)
+              
+            
+        </td>
+            </tr>
+            </table>
+                                <h3>GCv5 (vm/gc_gen)</h3>
+                                <table>
+                        <tr>
+                        <th class="TableHeading" colspan="" rowspan="">
+                
+
+              OPTIONS
+              
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="">
+                
+           COMMENTS
+            
+        </th>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+
+              
+                <strong>
+                  <code>-XX:gc.ms=N</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Same as -Xms
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:gc.mx=N</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              same as -Xmx
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:gc.nos_size=N</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Specify a fixed size for NOS (nursery object space or young generation).
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:gc.num_collectors=N</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+
+              Specify the number of collectors used for collections for parallel collection.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:+gc.use_large_page</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to turn on large page support of the platform.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:+gc.verify</code>
+                </strong>
+              
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to turn on GC verifier for GC debugging, type to see available options.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:+gc.force_major_collect</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to force every collection to be full heap collection (i.e., no minor collections).
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:+gc.ignore_finref</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to do not process finalizer and weak references.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:-gc.heap_iteration</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to disable JVMTI functionality of heap iteration.
+
+            
+        </td>
+            </tr>
+            </table>
+                                <h3>GCv41 (vm/gc_cc)</h3>
+                                <table>
+                        <tr>
+                        <th class="TableHeading" colspan="" rowspan="">
+                
+
+              OPTIONS
+              
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="">
+                
+              COMMENTS
+            
+        </th>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-verbose:gc</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to enable init messages from GC and information about GC pauses.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:gc.adaptive=0</code>
+                </strong>
+              
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to disable adaptive selection between GC algorithms: copying and sliding compaction.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:gc.type=N</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                Use to specify the number of the GC algorithm to use (use together with <code>-Dgc.adaptive=0</code>). Available algorithms: 1.copying + fallback to sliding compaction; 2.full collection using sliding compaction; 3.sliding compaction.
+              
+
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:gc.heap_iteration=1</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                Use to enable heap iteration support needed for using the JVMTI function <code>IterateOverHeap</code>.
+              
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:gc.ignore_finalizers=1</code>
+                </strong>
+              
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to ignore finalizable objects, that is, not to track reachability of finalizable object, not to revive them and not to pass revived objects to VM for finalization.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:gc.lp=1</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                Use on Windows to enable (<code>1</code>) or disable (<code>0</code>) using of large pages to utilize TLB more efficiently. Use <code>-verbose:gc.lp</code> for more diagnostics.
+              
+
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:gc.lp=/mnt/huge</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                Use on Linux to enable (<code>1</code>) or disable (<code>0</code>) using of large pages to utilize TLB more efficiently. Huge pages are allocated with the <code>mmap</code> method. You should specify the mount point where <code>hugetlbfs</code> is mounted. Use <code>-verbose:gc.lp</code> for more  diagnostics.
+              
+
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              
+                <strong>
+                  <code>-XX:gc.remember_root_set=1</code>
+                </strong>
+              
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to enable a root-set caching mode. By default, the copying collector starts evacuating objects as soon as it starts receiving roots during root set enumeration. This option disables immediate evacuation and ensures no objects are moved until the root-set enumeration is complete.
+            
+        </td>
+            </tr>
+            </table>
+                   
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                
+                                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special"><em>
+                Copyright &#169; 2003-2007, The Apache Software Foundation
+            </em></div>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
