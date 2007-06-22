@@ -36,7 +36,7 @@
     <target name="setup" depends="download.snapshot" />
 
     <property name="downloads.url"
-              value="http://people.apache.org/builds/harmony/snapshots" />
+              value="http://people.apache.org/builds/harmony/snapshots/autotesting" />
 
     <property name="snapshot" location="${checkouts.dir}/snapshot" />
     <condition property="is.zip">
@@ -93,6 +93,9 @@
         <!-- store snapshot svn revision -->
         <echo file="${svn.revision.file}"
               message="svn.revision=${snapshot.name}" />
+        <replaceregexp file="${svn.revision.file}"
+                       match="svn.revision=\D+(\d\d\d\d\d\d)"
+                       replace="svn.revision=\1" />
 
         <!-- restore file permissions on extracted files -->
         <chmod perm="a+x">
