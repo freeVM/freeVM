@@ -24,6 +24,8 @@
         <os family="windows"/>
     </condition>
 
+    <property name="jasmin.jar"     value="${ext.jasmin_1.1.location}/jasmin.jar"/>
+
     <property name="func.root.dir" location="${test.sources.dir}/functional"/>
     <property name="func.make.dir" location="${func.root.dir}"/>
     <available file="${func.bin.dir}/setup.OK" property="setup.OK"/>
@@ -101,6 +103,7 @@
                <arg line="-Ddepends=${func.depends.dir}" />
                <arg line="-Dbin=${func.bin.dir}" />
                <arg line="-Dtests.reports=@{results}" />
+               <arg line="-Djasmin.jar=${jasmin.jar}"/>
             </exec-ant>
         </sequential>
     </macrodef>

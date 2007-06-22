@@ -35,10 +35,16 @@
 
     <!-- used external libraries -->
     <external>
-        <jasmin
+        <!--jasmin
             jar="jasmin.jar"
             url="http://heanet.dl.sourceforge.net/sourceforge/jasmin/jasmin-2.2.zip"
             md5="c2f4a1df004983850046e1d9eaf724f3"
+        /-->
+        <jasmin_1.1
+            url="http://heanet.dl.sourceforge.net/sourceforge/jasmin/jasmin-1.1.zip"
+            md5="bb96616023ab4efdffa173601004fa17"
+            dir="jasmin-1.1"
+            inc="*/jasmin.jar"
         />
         <cpptasks
             url="http://www.ibiblio.org/maven2/ant-contrib/cpptasks/1.0b3/cpptasks-1.0b3.jar"
