@@ -76,7 +76,7 @@ import org.apache.harmony.share.Result;
  * testIrregularValues:<br>
  * This test is intended to check the functionality of StringMonitor in case
  * when string-to-compare and observed string can be assigned with boundary
- * values (null and ?)<br>
+ * values (null and "")<br>
  * <ul>
  * <li>MBeanServer is created; StringMonitor and MyStringBuffer aMBeans are
  * registered.
