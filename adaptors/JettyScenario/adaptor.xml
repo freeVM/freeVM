@@ -25,6 +25,10 @@
     <property name="scenario.bin.dir" location="${scenario.dir}/classes"/>
     <property name="scenario.results.dir" location="${results.dir}/${suite.name}"/>
 
+    <condition property="test.fw.vm.opts" value="${JettyScenario.parameters.optional.tested.vm.options}" else="">
+        <equals arg1="${jetty.server.jvm}" arg2="${scenario.framework.jvm}"/>
+    </condition>
+
     <target name="setup">
         <echo level="info" message="============= Adaptor for ${suite.name}: Set Up .."/>
         <echo level="info" message=""/>
@@ -77,6 +81,7 @@
         <!--
             Performing scenario run in the following order:
 
+            0. Check that specified java executable exists
             1. Create directory for scenario results
             2. Remove previous Jetty server log, if any
             3. Start Jetty server and wait until it is started
@@ -84,6 +89,20 @@
             5. Stop Jetty server
             6. Collect logs and results in results directory
         -->
+
+        <condition property="server.vm.not.exist">
+            <not>
+                <available file="${jetty.server.jvm}"/>
+            </not>
+        </condition>
+        <fail message="Path to JVM does not exist: ${jetty.server.jvm}" if="server.vm.not.exist"/>
+
+        <condition property="fw.vm.not.exist">
+            <not>
+                <available file="${scenario.framework.jvm}"/>
+            </not>
+        </condition>
+        <fail message="Path to JVM does not exist: ${scenario.framework.jvm}" if="fw.vm.not.exist"/>
 
         <mkdir dir="${scenario.results.dir}"/>
         <delete file="${scenario.results.dir}/jetty.log"/>
@@ -100,7 +119,7 @@
                     <sysproperty key="jetty.port" value="${JettyScenario.parameters.optional.jetty.server.port}"/>
                     <sysproperty key="STOP.PORT"  value="${JettyScenario.parameters.optional.jetty.server.stop.port}"/>
                     <sysproperty key="STOP.KEY"   value="kill"/>
-                    <jvmarg value="-jar"/>
+                    <jvmarg line="${JettyScenario.parameters.optional.tested.vm.options} -jar"/>
                 </java>
             </sequential>
 
@@ -124,6 +143,7 @@
                        haltonfailure="false"
                        printsummary="on"
                        failureproperty="scenario.failed">
+                    <jvmarg line="${test.fw.vm.opts}"/>
                     <sysproperty key="jetty.scenario.resources.path"  value="${scenario.src.dir}/resources"/>
                     <sysproperty key="jetty.scenario.results.path"    value="${scenario.results.dir}"/>
                     <sysproperty key="jetty.scenario.savepages"       value="${JettyScenario.parameters.optional.do.save.pages}"/>
@@ -139,15 +159,17 @@
                     </classpath>
                     <formatter type="plain"/>
                     <formatter type="xml"/>
-                    <test name="JettyScenario" todir="${scenario.results.dir}"/>
+                    <test name="org.apache.harmony.test.jetty.JettyScenario" todir="${scenario.results.dir}"/>
                 </junit>
 
                 <junitreport todir="${scenario.results.dir}">
                     <fileset dir="${scenario.results.dir}">
-                        <include name="TEST*-*.xml"/>
+                        <include name="TEST-*.xml"/>
                     </fileset>
                     <report format="frames" todir="${scenario.results.dir}/html"/>
                 </junitreport>
+
+                <antcall target="-compose-notification"/>
 
                 <echo level="info" message="Stopping Jetty server"/>
                 <java jvm="${JettyScenario.parameters.required.jetty.server.jvm}"
@@ -158,7 +180,7 @@
                     <sysproperty key="jetty.port" value="${JettyScenario.parameters.optional.jetty.server.port}"/>
                     <sysproperty key="STOP.PORT" value="${JettyScenario.parameters.optional.jetty.server.stop.port}"/>
                     <sysproperty key="STOP.KEY" value="kill"/>
-                    <jvmarg value="-jar"/>
+                    <jvmarg line="${JettyScenario.parameters.optional.tested.vm.options} -jar"/>
                     <arg value="--stop"/>
                 </java>
                 <fail message="Jetty scenario failed" if="scenario.failed"/>
@@ -171,33 +193,14 @@
         <echo level="info" message="============= Adaptor for ${suite.name}: Clean .."/>
         <echo level="info" message="Removing all from working directory"/>
         <delete dir="${scenario.dir}"/>
+        <echo level="info" message="Removing all from results directory"/>
+        <delete dir="${scenario.results.dir}"/>
     </target>
 
     <!--
-        Jetty scenario publisher
+        Compose Jetty scenario summary
     -->
 
-    <condition property="subject"
-        value="${framework.parameters.usemail.subject.prefix} BUILD PASSED ${os.name} ${os.arch}: Jetty scenario"
-        else="${framework.parameters.usemail.subject.prefix} BUILD FAILED ${os.name} ${os.arch}: Jetty scenario">
-            <istrue value="${thisbuildsuccessful}"/>
-    </condition>
-
-    <condition property="do.send">
-        <and>
-            <isset property="framework.parameters.usemail"/>
-            <or>
-                <equals arg1="${framework.parameters.usemail.always}"
-                        arg2="true"/>
-                <not>
-                    <equals arg1="${thisbuildsuccessful}"
-                            arg2="${lastbuildsuccessful}"/>
-                </not>
-            </or>
-        </and>
-    </condition>
-
-    <property name="scenario.results.dir" location="${results.dir}/${suite.name}"/>
     <property name="ls" value="${line.separator}"/>
 
     <target name="-compose-notification">
@@ -221,7 +224,7 @@
               message="${ls}================================================================================${ls}Scenario results:${ls}${ls}"/>
 
         <concat destfile="${scenario.results.dir}/notification.txt" append="true">
-            <filelist dir="${scenario.results.dir}" files="TEST-JettyScenario.txt"/>
+            <fileset dir="${scenario.results.dir}" includes="TEST-*.txt"/>
         </concat>
 
         <echo file="${scenario.results.dir}/notification.txt" append="true"
@@ -231,33 +234,8 @@
             <filelist dir="${scenario.results.dir}" files="jetty.log"/>
         </concat>
 
-        <xslt basedir="${scripts.dir}/xslt"
-              in="${logdir}/${logfile}"
-              style="${scripts.dir}/xslt/br.xsl"
-              out="${scenario.results.dir}/buildresults.txt"
-              classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar">
-        </xslt>
-
         <echo file="${scenario.results.dir}/notification.txt" append="true"
               message="${ls}================================================================================${ls}"/>
-
-        <concat destfile="${scenario.results.dir}/notification.txt" append="true">
-            <filelist dir="${scenario.results.dir}" files="buildresults.txt"/>
-        </concat>
-
-        <delete file="${scenario.results.dir}/buildresults.txt"/>
     </target>
     
-    <target name="publish" if="do.send" depends="-compose-notification">
-        <echo>Sending notification</echo>
-        <mail from="${framework.parameters.usemail.from}" 
-              tolist="${framework.parameters.usemail.to}"
-              messagefile="${scenario.results.dir}/notification.txt"
-              failonerror="true"
-              mailhost="${framework.parameters.usemail}"
-              subject="${subject}"
-              encoding="plain"
-              messagemimetype="text/plain"/>
-    </target>
-
 </project>

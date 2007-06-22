@@ -15,6 +15,8 @@
  *  limitations under the License.
  */
 
+package org.apache.harmony.test.jetty;
+
 import com.gargoylesoftware.htmlunit.*;
 
 import java.io.File;
@@ -27,6 +29,8 @@ import java.io.StringReader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import java.util.Vector;
 
 import junit.framework.TestCase;
 
@@ -101,20 +105,18 @@ public class JettyTestCase extends TestCase {
 
         String cs = null;
         String fs = null;
+        Vector cv = new Vector();
+        Vector fv = new Vector();
+        Vector sv = new Vector();
         try {
             cs = creader.readLine();
             fs = freader.readLine();
             while (cs != null && fs != null) {
                 if (!compareLines(cs, fs)) {
-                    LOG_OUT.println("Lines:");
-                    LOG_OUT.println("--content-----------------------------------------------------------------------");
-                    LOG_OUT.println("(" + creader.getLineNumber() + ") " + cs);
-                    LOG_OUT.println("--etalon------------------------------------------------------------------------");
-                    LOG_OUT.println("(" + freader.getLineNumber() + ") " + fs);
-                    LOG_OUT.println("--------------------------------------------------------------------------------");
-                    LOG_OUT.println("do not match each other.");
-                    return false;
+                    cv.add(cs);
+                    sv.add(fs);
                 }
+                fv.add(fs);
                 cs = creader.readLine();
                 fs = freader.readLine();
             }
@@ -125,8 +127,15 @@ public class JettyTestCase extends TestCase {
         }
 
         if (cs != null || fs != null) {
-            LOG_OUT.println("Files have different number of lines.");
+            LOG_OUT.println("Page have different number of lines than etalon.");
             return false;
+        }
+
+        if (cv.size() != 0 || fv.size() != 0) {
+            if (!compareRegardlessOrder(cv, sv, fv)) {
+                LOG_OUT.println("Page differs from etalon (even if lines order is not checked).");
+                return false;
+            }
         }
 
         try {
@@ -138,6 +147,34 @@ public class JettyTestCase extends TestCase {
             return false;
         }
         LOG_OUT.println("Page is equal to etalon.");
+        return true;
+    }
+
+    protected boolean compareRegardlessOrder(Vector first, Vector second, Vector third) {
+        for (int i = 0; i < first.size(); i++) {
+            boolean ok = false;
+            for (int j = 0; j < third.size(); j++) {
+                if (compareLines((String)first.elementAt(i), (String)third.elementAt(j))) {
+                    ok = true;
+                }
+            }
+            if (!ok) {
+                LOG_OUT.println("Lines:");
+                int linesCount = (first.size() > 20) ? 20 : first.size();
+                for (int j = 0; j < linesCount; j++) {
+                    LOG_OUT.println("--content-----------------------------------------------------------------------");
+                    LOG_OUT.println((String)first.elementAt(j));
+                    LOG_OUT.println("--etalon------------------------------------------------------------------------");
+                    LOG_OUT.println((String)second.elementAt(j));
+                }
+                LOG_OUT.println("--------------------------------------------------------------------------------");
+                if (first.size() > 20) {
+                    LOG_OUT.println("and " + (first.size() - 20) + " lines more");
+                }
+                LOG_OUT.println("do not match each other.");
+                return false;
+            }
+        }
         return true;
     }
 

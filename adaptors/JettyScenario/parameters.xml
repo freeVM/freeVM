@@ -28,6 +28,9 @@
 
     <!-- Optional parameters -->
     <optional>
+        <tested.vm.options
+            description="JVM options for tested runtime"
+            value=""/>
         <jetty.server.port
             description="Port on which Jetty server will startup."
             value="7070"/>
@@ -66,8 +69,8 @@
         <!-- Re-run if changes in SVN -->
         <usesvn refid="trunk.dir.id"/>
         <!-- Run this script for publishing results -->
-        <publisher value="${adaptors.dir}/${suite.name}/adaptor.xml"/>
+        <summary value="${scenario.results.dir}/notification.txt"/>
         <!-- Merge results with CC log -->
-        <results value="${scenario.results.dir}"/>
+        <results value="${scenario.results.dir}' pattern='TEST-*.xml"/>
     </cc>
 </parameters>

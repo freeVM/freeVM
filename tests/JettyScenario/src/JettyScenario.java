@@ -15,6 +15,8 @@
  *  limitations under the License.
  */
 
+package org.apache.harmony.test.jetty;
+
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
 
