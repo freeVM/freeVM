@@ -255,10 +255,10 @@ Any test run produces the following set of additional directories
 6. TODO
 -------
 
-1. Eliminate Abbot/Harmony patches (see 3 in chapter 6 above).
+1. Eliminate Abbot/Harmony patches (see 3 in chapter 5 above).
 
 
-8. DISCLAIMER AND LEGAL INFORMATION
+7. DISCLAIMER AND LEGAL INFORMATION
 ------------------------------------
 
 **) Other brands and names are the property of their respective owners.
