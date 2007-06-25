@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<project name="JEditTest" default="help" basedir=".">
+
+    <description>
+  Main purpose:
+  Run automated GUI test scenarios for jEdit application (http://www.jedit.org/)
+  using Abbot Java GUI Test Framework (http://abbot.sourceforge.net) 
+  on Harmony's DRLVM (http://harmony.apache.org)
+    </description>
+
+    <property file="jedit_test.build.properties" />
+
+    <!-- The following are input props and may be changed by caller -->   
+    <property name="abbot.install.dir" location="${target.dir}"/>
+    <property name="jedit.install.dir" location="${target.dir}/jedit"/>
+     
+    <property name="jedit.dist" location="${download.dir}/${jedit.distr}"/>
+    <property name="abbot.dist" location="${download.dir}/${abbot.distr}"/>
+    <property name="javastyle.pl.dist"
+        location="${download.dir}/${jedit.plugin.javastyle.distr}"/>
+    <property name="jcompiler.pl.dist"
+        location="${download.dir}/${jedit.plugin.jcompiler.distr}"/>
+    <property name="console.pl.dist"
+        location="${download.dir}/${jedit.plugin.console.distr}"/>
+    <property name="errlist.pl.dist"
+        location="${download.dir}/${jedit.plugin.errlist.distr}"/>
+    <property name="jcore.pl.dist"
+        location="${download.dir}/${jedit.plugin.jcore.distr}"/>
+    <property name="jaccomms.pl.dist"
+        location="${download.dir}/${jedit.plugin.jaccomms.distr}"/>
+    <property name="pviewer.pl.dist"
+        location="${download.dir}/${jedit.plugin.pviewer.distr}"/>
+    <property name="commcntl.pl.dist"   
+        location="${download.dir}/${jedit.plugin.commcntl.distr}"/>
+    
+    <!-- The following are hardcoded props -->
+    <property name="abbot.root" location="${abbot.install.dir}/${abbot.name}"/>
+    <property name="patched.src.dir" location="${abbot.root}/psrc"/>
+    <property name="jedit.pl.install.dir" location="${jedit.install.dir}/jars"/>
+
+    <!-- Check if we need to compile patch for Harmony -->
+    <condition property="need.compile.harmony.patch">
+        <not>
+            <equals arg1="${harmony.boot.dir}" arg2=""/>
+        </not>
+    </condition>
+
+    <!-- ================================= 
+          target: public targets              
+         ================================= -->
+
+    <target name="help">
+        <echo>Builds/runs automated GUI tests for jEdit application (http://www.jedit.org)
+using Abbot Java GUI Test Framework (http://abbot.sourceforge.net) on specified VM
+
+Usage:
+
+  ant [help]
+    Displays this help
+
+  ant setup
+    Builds jEdit tests
+
+  ant launch
+    Runs jEdit launch test
+
+  ant functional
+    Runs jEdit functional test
+
+  ant stress
+    Runs jEdit stress test
+
+  ant clean.report
+    Cleans jEdit test(s) report(s)
+
+  ant clean.partial
+    Cleans all except dowloads
+
+  ant clean
+    Cleans test(s) report(s) and all the stuff except downloads
+
+Use 'build.properties' file to configure build/test-run process.
+All configurable parameters are at the beginning of the file.
+
+Build/test run preconditions:
+ - Internet connection (only once during build for external dependencies downloads);
+ - Ant 1.6.5 or higher from http://ant.apache.org (ant binaries are in your PATH);
+ - J2SE 1.5 JDK ('java' and 'javac' must be in your PATH);
+ - Patch utility (must be in your PATH);
+ - Junit framework 3.8.1 or higher from http://junit.org ('junit.jar' in your CLASSPATH).</echo>
+    </target>
+
+    <target name="setup" depends="-install-depends, -compile.harmony.patch">
+        <mkdir dir="${tests.classes.dir}"/>
+        <javac srcdir="${tests.src.dir}" destdir="${tests.classes.dir}"
+            excludes="**/patches/**">
+            <classpath refid="tests-compile-classpath" />
+        </javac>
+    </target>
+
+    <target name="launch" depends="setup, -run-launch, -generate-report">
+        <fail if="test.not.passed" />
+    </target>
+
+    <target name="functional" depends="setup, -run-functional, -generate-report">
+        <fail if="test.not.passed" />
+    </target>
+
+    <target name="stress" depends="setup, -run-stress, -generate-report">
+        <fail if="test.not.passed" />
+    </target>
+
+    <target name="-compile.harmony.patch" if="need.compile.harmony.patch">
+        <mkdir dir="${harmony.patched.classes.dir}"/>
+        <javac srcdir="${patches.dir}/harmony" destdir="${harmony.patched.classes.dir}">
+            <bootclasspath refid="patched-harmony-compile-classpath" />
+        </javac>
+    </target>
+
+    <target name="clean.report">
+        <delete dir="${tests.report.dir}" />
+    </target>
+
+    <target name="clean.partial" depends="clean.report">
+  <!-- CAREFULL !!! -->      
+        <delete dir="abbot-1.0.0.rc5"/>
+        <delete dir="${jedit.install.dir}"/>
+        <delete dir="${tests.working.dir}" />
+        <delete dir="${classes.dir}" />
+    </target>
+
+    <target name="clean" depends="clean.partial">
+        <!--CAREFULL!!! delete  dir="${download.dir}" /-->
+    </target>
+
+    <!-- "Private" targets -->
+
+    <target name="-install-depends"
+        depends="-fetch-depends,
+                 -install-jedit,
+                 -install-jedit-plugins,
+                 -install-abbot">
+    </target>
+
+    <target name="-install-jedit" unless="already-installed-jedit">
+        <delete dir="${jedit.install.dir}"/>
+        <java jar="${jedit.dist}" fork="true" failonerror="true">
+            <arg line="auto ${jedit.install.dir}" />
+        </java>
+    </target>
+
+    <target name="-install-jedit-plugins"
+        depends="-install-jedit" unless="already-installed-plugins">
+        <unzip src="${javastyle.pl.dist}" dest="${jedit.pl.install.dir}" />
+        <unzip src="${jcompiler.pl.dist}" dest="${jedit.pl.install.dir}" />
+        <unzip src="${console.pl.dist}" dest="${jedit.pl.install.dir}" />
+        <unzip src="${errlist.pl.dist}" dest="${jedit.pl.install.dir}" />
+        <unzip src="${jcore.pl.dist}" dest="${jedit.pl.install.dir}" />
+        <unzip src="${jaccomms.pl.dist}" dest="${jedit.pl.install.dir}" />
+        <unzip src="${pviewer.pl.dist}" dest="${jedit.pl.install.dir}" />
+        <unzip src="${commcntl.pl.dist}" dest="${jedit.pl.install.dir}" />
+    </target>
+
+    <target name="-install-abbot" depends="-jar-patched-abbot">
+    </target>
+
+    <target name="-install-original-abbot"
+        unless="already-installed-orig-abbot">
+        <delete dir="${abbot.root}"/>
+        <unzip src="${abbot.dist}" dest="${abbot.install.dir}"/>
+    </target>
+
+    <target name="-patch-original-abbot" depends="-install-original-abbot"
+        unless="already-patched-orig-abbot">
+        <mkdir dir="${patched.src.dir}" />
+        <unzip src="${abbot.root}/src.jar"
+            dest="${patched.src.dir}">
+            <patternset>
+                <include name="src/**" />
+                <include name="test/abbot/util/NamedTimerTest.java" />
+            </patternset>
+        </unzip>
+        <unzip src="${abbot.root}/lib/abbot.jar"
+            dest="${patched.src.dir}/src">
+            <patternset>
+                <include name="abbot/script/init.bsh" />
+            </patternset>
+        </unzip>
+        <patch patchfile="${patches.dir}/patch.txt" dir="${patched.src.dir}" strip="5" />
+    </target>
+
+    <target name="-compile-patched-abbot" depends="-patch-original-abbot" >
+        <javac srcdir="${patched.src.dir}/src"
+            destdir="${patched.src.dir}/src"
+            nowarn="true"
+            deprecation="on"
+            debug="true">
+            <classpath refid="abbot-build-classpath" />
+        </javac>
+    </target>
+
+    <target name="-jar-patched-abbot" depends="-compile-patched-abbot" >
+        <jar destfile="${abbot.root}/lib/${patched.jar}"
+            basedir="${patched.src.dir}/src" >
+            <exclude name="**/*.java" />
+            <manifest>
+                <attribute name="Class-Path"
+                    value="gnu-regexp.jar junit.jar jdom.jar xerces.jar xml-apis.jar MRJToolkitStubs.zip bsh.jar"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="-fetch-depends" depends="-set-proxy" unless="already-fetched">
+        <mkdir dir="${download.dir}" />
+        <property name="plugin.url"
+            value="${sf.download.url}/${jedit.plugin.url}/" />
+        <!-- Download jEdit 4.2 final -->
+        <get src="${sf.download.url}/${jedit.url}/${jedit.distr}"
+            dest="${jedit.dist}"
+            usetimestamp="true" verbose="true" />
+        <!-- Download jEdit plugins needed -->
+        <get src="${plugin.url}${jedit.plugin.javastyle.distr}"
+            dest="${javastyle.pl.dist}"
+            usetimestamp="true" verbose="true" />
+        <get src="${plugin.url}${jedit.plugin.jcompiler.distr}"
+            dest="${jcompiler.pl.dist}"
+            usetimestamp="true" verbose="true" />
+        <get src="${plugin.url}${jedit.plugin.console.distr}"
+            dest="${console.pl.dist}"
+            usetimestamp="true" verbose="true" />
+        <get src="${plugin.url}${jedit.plugin.errlist.distr}"
+            dest="${errlist.pl.dist}"
+            usetimestamp="true" verbose="true" />
+        <get src="${plugin.url}${jedit.plugin.jcore.distr}"
+            dest="${jcore.pl.dist}"
+            usetimestamp="true" verbose="true" />
+        <get src="${plugin.url}${jedit.plugin.jaccomms.distr}"
+            dest="${jaccomms.pl.dist}"
+            usetimestamp="true" verbose="true" />
+        <get src="${plugin.url}${jedit.plugin.pviewer.distr}"
+            dest="${pviewer.pl.dist}"
+            usetimestamp="true" verbose="true" />
+        <get src="${plugin.url}${jedit.plugin.commcntl.distr}"
+            dest="${commcntl.pl.dist}"
+            usetimestamp="true" verbose="true" />
+        <!-- Download Abbot framework 1.0.0.rc5 -->
+        <get src="${sf.download.url}/${abbot.url}/${abbot.distr}"
+            dest="${abbot.dist}"
+            usetimestamp="true" verbose="true" />
+    </target>
+
+    <target name="-set-proxy" if="use-proxy" unless="already-fetched">
+        <echo>Proxy: ${http.proxy.host}:${http.proxy.port}</echo>
+        <setproxy proxyhost="${http.proxy.host}" proxyport="${http.proxy.port}" />
+    </target>
+
+    <target name="-prepare-each-run" depends="
+        -install-jedit-properties,
+        clean.report">
+        <delete dir="${tests.working.dir}" />
+        <mkdir dir="${tests.working.dir}" />
+        <mkdir dir="${tests.report.dir}" />
+    </target>
+
+    <target name="-install-jedit-properties" depends="-save-jedit-settings">
+        <delete dir="${user.home}/.jedit"/>
+        <mkdir dir="${user.home}/.jedit"/>
+        <echo file="${user.home}/.jedit/properties" append="false">#Autogenerated jEdit properties
+mode.java.commando.compile=javac
+firstTime=false
+</echo>
+    </target>
+
+    <target name="-save-jedit-settings" if="jedit-settings-available"
+        unless="already-jedit-settings-saved">
+        <move todir="${user.home}/${jedit.settings.backup.dir}">
+            <fileset dir="${user.home}/.jedit" />
+        </move>
+        <echo>Your personal jEdit settings have been backed up in
+            ${user.home}/${jedit.settings.backup.dir}</echo>
+    </target>
+
+    <target name="-run-launch" depends="setup, -prepare-each-run">
+        <junit-task test-files="launch-test-files" />
+    </target>
+
+    <target name="-run-functional" depends="setup, -prepare-each-run"  >
+        <junit-task test-files="functional-test-files" />
+    </target>
+
+    <target name="-run-stress" depends="setup, -prepare-each-run"  >
+        <junit-task test-files="stress-test-files" />
+    </target>
+
+    <target name="-generate-report">
+        <mkdir dir="${tests.report.dir}" />
+        <junitreport todir="${tests.report.dir}">
+            <fileset dir="${tests.report.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${tests.report.dir}/html"/>
+        </junitreport>
+    </target>
+
+    <!-- Various paths, filesets etc -->
+
+    <path id="tests-compile-classpath">
+        <pathelement
+            location="${abbot.root}/lib/${patched.jar}" />
+        <pathelement
+            location="${abbot.root}/lib/junit.jar" />
+    </path>   
+
+    <path id="patched-harmony-compile-classpath">
+        <pathelement
+            location="${harmony.boot.dir}/luni-kernel-stubs.jar" />
+        <pathelement
+            location="${harmony.boot.dir}/security-kernel-stubs.jar" />
+        <pathelement
+            location="${harmony.boot.dir}/security.jar" />
+        <pathelement
+            location="${harmony.boot.dir}/luni.jar" />
+        <pathelement
+            location="${harmony.boot.dir}/beans.jar" />
+        <pathelement
+            location="${harmony.boot.dir}/annotation.jar" />
+        <pathelement
+            location="${harmony.boot.dir}/awt.jar" />
+        <pathelement
+            location="${harmony.boot.dir}/text.jar" />
+    </path>   
+
+    <path id="abbot-build-classpath">
+        <pathelement location="${abbot.root}/lib/junit.jar"/>   
+        <pathelement location="${abbot.root}/lib/jdom.jar"/>   
+        <pathelement location="${abbot.root}/lib/xerces.jar"/>  
+        <pathelement location="${abbot.root}/lib/xml-apis.jar"/>
+        <pathelement location="${abbot.root}/lib/gnu-regexp.jar"/>  
+        <pathelement location="${abbot.root}/lib/MRJToolkitStubs.zip"/>  
+        <pathelement location="${abbot.root}/lib/bsh.jar"/>
+        <pathelement location="${abbot.root}/lib/jgraph.jar"/>   
+        <pathelement location="${abbot.root}/lib/ant4eclipse/ant4eclipse.jar"/>
+    </path>
+   
+    <path id="run-classpath">
+        <pathelement location="${tests.classes.dir}" />     
+        <pathelement location="${jedit.install.dir}/jedit.jar" />
+        <pathelement location="${abbot.root}/lib/${patched.jar}" />
+    </path>
+
+    <fileset id="launch-test-files" dir="${tests.src.dir}">
+        <include name="**/JEditLaunchTest.java"/>
+    </fileset>
+
+    <fileset id="functional-test-files" dir="${tests.src.dir}">
+        <include name="**/JEditFunctionalTest.java"/>
+    </fileset>
+
+    <fileset id="stress-test-files" dir="${tests.src.dir}">
+        <include name="**/JEditStressTest.java"/>
+    </fileset>
+
+    <!-- Various build conditions -->
+
+    <condition property="already-fetched">
+        <and>
+            <available file="${jedit.dist}" />
+            <available file="${javastyle.pl.dist}" />
+            <available file="${jcompiler.pl.dist}" />
+            <available file="${console.pl.dist}" />
+            <available file="${errlist.pl.dist}" />
+            <available file="${jcore.pl.dist}" />
+            <available file="${jaccomms.pl.dist}" />
+            <available file="${pviewer.pl.dist}" />
+            <available file="${commcntl.pl.dist}" />
+            <available file="${abbot.dist}" />
+        </and>
+    </condition>
+
+    <condition property="already-installed-jedit">
+        <and>
+            <istrue value="${already-fetched}" />
+            <available file="${jedit.install.dir}/jedit.jar" />
+            <available file="${jedit.install.dir}/doc" />
+            <available file="${jedit.install.dir}/jars" />
+            <available file="${jedit.install.dir}/macros" />
+            <available file="${jedit.install.dir}/modes" />
+            <available file="${jedit.install.dir}/properties" />
+            <available file="${jedit.install.dir}/startup" />
+        </and>
+    </condition>
+
+    <condition property="already-installed-plugins">
+        <and>
+            <istrue value="${already-fetched}" />
+            <available file="${jedit.install.dir}/jars/bcel.jar" />
+            <available file="${jedit.install.dir}/jars/CommonControls.jar" />
+            <available file="${jedit.install.dir}/jars/commons-codec-1.3.jar" />
+            <available file="${jedit.install.dir}/jars/commons-collections.jar" />
+            <available file="${jedit.install.dir}/jars/commons-httpclient-2.0.1.jar" />
+            <available file="${jedit.install.dir}/jars/commons-lang-2.0.jar" />
+            <available file="${jedit.install.dir}/jars/commons-logging.jar" />
+            <available file="${jedit.install.dir}/jars/Console.jar" />
+            <available file="${jedit.install.dir}/jars/ErrorList.jar" />
+            <available file="${jedit.install.dir}/jars/JakartaCommons.jar" />
+            <available file="${jedit.install.dir}/jars/JavaCore.jar" />
+            <available file="${jedit.install.dir}/jars/JavaParser.jar" />
+            <available file="${jedit.install.dir}/jars/JavaStyle.jar" />
+            <available file="${jedit.install.dir}/jars/JCompiler.jar" />
+            <available file="${jedit.install.dir}/jars/jrefactory.jar" />
+            <available file="${jedit.install.dir}/jars/kappalayout.jar" />
+            <available file="${jedit.install.dir}/jars/log4j.jar" />
+            <available file="${jedit.install.dir}/jars/ProjectViewer.jar" />
+            <available file="${jedit.install.dir}/jars/xmlrpc-2.0.1.jar" />
+        </and>
+    </condition>
+
+    <condition property="already-installed-orig-abbot">
+        <and>
+            <istrue value="${already-fetched}" />
+            <available file="${abbot.root}/lib/abbot.jar" />
+        </and>
+    </condition>
+
+    <condition property="already-patched-orig-abbot">
+        <and>
+            <istrue value="${already-installed-orig-abbot}" />
+            <available file="${patched.src.dir}/src/abbot/util/ExtendedTimerTask.java" />
+        </and>
+    </condition>
+
+    <condition property="use-proxy-host">
+        <isset property="http.proxy.host"/>
+    </condition>
+
+    <condition property="use-proxy-port">
+        <isset property="http.proxy.port"/>
+    </condition>
+
+    <condition property="use-proxy">
+        <and>
+            <istrue value="${use-proxy-host}" />
+            <istrue value="${use-proxy-port}" />
+        </and>
+    </condition>
+
+    <condition property="already-jedit-settings-saved">
+        <available file="${user.home}/${jedit.settings.backup.dir}" />
+    </condition>
+
+    <condition property="jedit-settings-available">
+        <available file="${user.home}/.jedit" />
+    </condition>
+
+     <!-- Various macrodefs -->
+
+    <macrodef name="junit-task">
+        <attribute name="test-files"/>
+        <sequential>
+            <junit fork="yes"
+                printsummary="withOutAndErr"
+                errorproperty="test.not.passed"
+                failureproperty="test.not.passed"
+                showoutput="on"
+                dir="${tests.working.dir}"
+                jvm="${test.java.home}/bin/java">
+
+                <jvmarg line="${tested.vm.options}" />
+
+                <jvmarg value="-Djedit.home=${jedit.install.dir}" />
+                <jvmarg value="${test.vmarg.ush_prefix}" />
+                <jvmarg value="${test.vmarg.do_not_install_handler}" />
+                <jvmarg value="-DJEditStressTest.it_num=${test.stress.iterations}" />
+                <jvmarg value="${test.vmarg.bootclasspath}" />
+                <jvmarg value="-Dtest.scripts.dir=${basedir}/scripts" />
+
+                <jvmarg value="-Dabbot.robot.popup_delay=${abbot.robot.popup_delay}" />
+                <jvmarg value="-Dabbot.robot.component_delay=${abbot.robot.component_delay}" />
+                <jvmarg value="-Dabbot.robot.drag_delay=${abbot.robot.drag_delay}" />
+                <jvmarg value="-Dabbot.robot.drop_delay=${abbot.robot.drop_delay}" />
+                <jvmarg value="-Dabbot.annotation.min_delay=${abbot.annotation.min_delay}" />
+                <jvmarg value="-Dabbot.annotation.delay_unit=${abbot.annotation.delay_unit}" />
+                <jvmarg value="-Dabbot.runner.launch_delay=${abbot.runner.launch_delay}" />
+                <jvmarg value="-Dabbot.runner.terminate_delay=${abbot.runner.terminate_delay}" />
+                <jvmarg value="-Dabbot.window_ready_delay=${abbot.window_ready_delay}" />
+
+                <classpath refid="run-classpath" />
+
+                <formatter type="xml" />
+
+                <batchtest todir="${tests.report.dir}">
+                    <fileset refid="@{test-files}" />
+                </batchtest>
+            </junit>
+        </sequential>
+    </macrodef>
+
+</project>

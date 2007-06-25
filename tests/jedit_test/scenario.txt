@@ -1,0 +1,217 @@
+This file describes original ("manual") test scenario after which automated
+test scenarios were developed. Main purpose of automated tests is to make sure
+that implementation under test (Harmony's DRLVM for example, see
+http://harmony.apache.org) is able to run jEdit application and an user is able
+to perform some work in jEdit.
+------------------------------------------------------------
+
+
+jEdit test scenario
+
+Software requirements:
+jEdit 4.2final
+J2SE 1.5 SDK
+
+
+1. Installation jEdit & plugins
+
+1.1 Download jEdit 4.2final from here:
+
+	 http://www.jEdit.org/index.php?page=download.
+
+1.2 Install it (see installation instructions on this page as well).
+
+1.3 Change to directory where jEdit is installed (<jEdit_HOME>).
+	Run jEdit with the command “java –jar jEdit.jar”
+	(JAVA_HOME should point to java 5.0).
+	Read and close “Tips of the Day” window.
+
+1.4 Install the following plugins:
+
+	* JavaStyle: Java code beautifier and template Javadoc comment generator 
+	* JCompiler: in-process compiler for Java files in the edit buffer 
+	* ProjectViewer: tree-structured view of related project files
+ In fact more plugins will be installed because of plugin dependencies.
+
+
+1.4.1 For that perform the following steps:
+
+ Go to menu "Utilities" -> "Global Options…" -> "Proxy Servers",
+ check "Use HTTP proxy server", 
+ set "HTTP proxy host" to proper value, 
+ set "HTTP proxy port" to proper value,
+ click "Apply", and "OK"
+
+1.4.2 Go to menu "Plugins" -> "Plugin Manager", select tab "Install",
+ click on “Name” title to sort plugins in alphabet order.
+ Check the plugins listed above and press "Install" button.
+ Select "Manage" tab to make sure that all the plugins were
+ installed without errors (their status should be "Loaded").
+ Close Plugin Manager.
+ 
+1.4.3 If you experience any difficulties try to change mirror settings.
+ Open "Plugin Manager" -> "Download options..." and press
+ "Update mirror list" button.
+ Then choose "North America: University of Minnesota (Minneapolis, MN)"
+ as preferred download mirror, press "Apply", and "OK" and repeat plugins
+ installation.
+ 
+1.4.4 You can also install plugins manually.
+ For that use the following link and instructions
+      
+      http://plugins.jEdit.org/list.php
+      
+ Download and save plugins to "jar" subdirectory of your <jEdit_HOME>
+ directory, unzip them and link them up in the Plugins Manager.
+
+1.5 This item is a workaround for a bug in JCompile plugin,
+ described here: http://community.jEdit.org/?q=node/view/2729. 
+
+1.5.1 Download the plugin “Console” 4.1.2 (not 4.2.6.4) from here:
+
+      http://plugins.jEdit.org/list.php
+      
+ to <jEdit_HOME>\jars directory, unzip it.
+ 
+1.5.2 Go to “Plugins” -> “Plugin Manager”, choose “Manage” tab.
+
+1.5.3 Remove the latest version of Console plugin
+ (click on “Console 4.2.6.4” plugin and press “Remove”.
+  You will be asked for confirmation, answer “Yes”.
+  
+1.5.4 Then check “Console.jar” plugin. Now you installed Console 4.1.2. 
+
+1.6 Close jEdit (“File” -> “Exit” or “Ctrl-q”).
+
+
+
+2. Data preparation
+
+2.1 Make directory “<jEdit_HOME>\project”. Cd to it.
+
+
+
+3. Running jEdit and tune its settings
+
+3.1 Download one of the JRE to be tested.
+
+3.2 Run the following commands:
+
+	$TESTED_JAVA –jar jedit.jar
+
+ Where $TESTED_JAVApoints to runtime under test
+
+ jEdit should open. Read and close “Tip of the Day” window.
+
+3.3 Configure editor panes. 
+
+3.3.1 Open menu "Utilities" -> "Global Options" -> "Docking".
+
+3.3.2 Set Docking position for "File System Browser" window to "left" value.
+
+3.3.3 Set Docking position for "Console" window to "bottom" value.
+
+3.3.4 You can resize docked windows by dragging the splitters.
+
+
+
+4. Compile and run a simple java class
+
+4.1 Open File System Browser pane. The file tree will be shown.
+
+4.2 Expand <jEdit_HOME> -> “project”.
+
+4.3 Right click on “project” and choose “New File” from pop-up menu.
+
+4.4 Rename new file to “Hello.java” (“File” -> “Save As…”),
+ enter file name “Hello.java”. Make sure that the title of
+ the main pane is changed to "Hello.java".
+ 
+4.5 Paste the following code to the edior:
+   ------ Hello.java ------
+
+           public class Hello {
+           	public static void main(String[] args) {
+           		System.out.println("Hello, World!");
+           	}
+           }
+      ------ end of Hello.java ------
+
+4.6 Save the changes.
+ ("File" -> "Save" or press the appropriate icon on
+  the main pane tool bar or just press "Ctrl-s”).
+
+4.7 Compile java file:
+ Open "Plugins" -> "Console" -> "Compile Current Buffer..." menu.
+ Set "Source file(s)" to <jEdit_HOME>\project\Hello.java.
+ Set "Output directory" to <jEdit_HOME>\project. Press "OK". 
+
+4.8 Click "Refresh" icon in File System Browser pane.
+ Make sure that Hello.class file appeared under "project" directory.
+
+4.9 Open menu "Plugins" -> "Java Browser" -> "Open Java Browser".
+ The window with class outline should appear. Close this window.
+
+4.10 Run Hello class. Open "Plugins" -> "Console" -> "Run Current Buffer..."
+ Set “Class path” to "<jEdit_HOME>\project" and press "OK" button.
+ Open Console pane and make sure that the output is "Hello, world!
+ Process java exited with code 0".
+
+4.11 Go to “Search” -> “Find…” menu or press “Ctrl-f.
+ Set “Search for” to < ”Hello, World!” > (don’t forget commas).
+  Set “Replace with” to < System.getProperty(“java.home”) >.
+  Press “Replace All”.
+  
+4.12 Go to "Plugins" -> "JavaStyle" -> "JavaStyle Preformat Buffer" menu.
+
+4.13 Save changes (“Ctrl-s”).
+
+4.14 Repeat class compilation and running
+ (“Console” -> “Compile Current Buffer” and “Console” -> “Run Current Buffer”).
+
+
+
+5. Using miscellaneous functions
+
+5.1 Open “Utilities” -> “Global Options…”.
+ A new popup window “Options: jEdit” will appear.
+ Click “Text Area” field on the left of the window.
+ Click on the rectangle titles “Background color”.
+ Make sure that a new popup window “Pick Color” appears and
+ its tab “Swatches” is selected. Choose some background color
+ and press “OK” to close “Pick Color” window.
+ Press “Apply” and “OK” buttons in the “Option jEdit” window.
+ Make sure that the background color changed.
+ 
+5.2 Open “File” -> “Print” or “Ctrl-P”.
+ Make sure that popup window titled “Print” appeared.
+ Press “Print”. Make sure that the file Hello.java is printed.
+ 
+5.3 Open “Help” -> “About jEdit”. A new popup window “About jEdit” will appear.
+ Wait till some text will be loaded (the text should appear not very slow)
+ and close the window.
+ 
+5.4 Open “Help” -> “jEdit Help” or “F1”.
+ A new popup window “jEdit Help” will appear.
+ Make sure that the window has 2 frames.
+ A left one should contain 2 tabs – “Contents” and “Search”.
+ “Contents” tab is selected by default and represents the content tree.
+ Switch to “Search” tab and type “font” in the text area. Press “Enter”.
+ Make sure that search gives some entries.
+ Double-click one of the entries and make sure that the appropriate
+ content appears in the right frame.
+ 
+5.5 Move the mouse over the icons on toolbar and make sure
+ that the appropriate tooltips pop up.
+ 
+5.6 Close “jEdit Help” window.
+
+
+
+6. Cleanup
+
+6.1 Close all the files in the main pane buffer.
+ Press "Close" icon on the main pane tool bar or press "Ctrl-w"
+ on each open file.
+
+6.2 Close jEdit.

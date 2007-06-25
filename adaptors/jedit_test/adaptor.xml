@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                  BT 2.0 Adaptor for jEdit4.2 test
+     ====================================================================== -->
+<project name="jedit_test" default="run" basedir=".">
+
+    <!-- ================================= 
+          setup common conditions
+         ================================= -->
+    <condition property="is_Harmony">
+        <and>
+            <available file="${jedit_test.tested.runtime}/readme.txt"/>
+            <isfileselected file="${jedit_test.tested.runtime}/readme.txt">
+                <contains text="Apache Harmony JRE"/>
+            </isfileselected>
+        </and>
+    </condition>
+
+    <condition property="boot.dir"
+               value="${jedit_test.tested.runtime}/lib/boot"
+               else="">
+        <isset property="is_Harmony"/>
+    </condition>
+
+    <condition property="use.bootclasspath"
+               value="-Xbootclasspath/p:${checkouts.dir}/${suite.name}/classes/harmony"
+               else="">
+        <isset property="is_Harmony"/>
+    </condition>
+
+    <condition property="ush.prefix"
+               value="-Dabbot.util.url_stream_handler_prefix=org.apache.harmony.luni.internal.net.www.protocol"
+               else="">
+        <isset property="is_Harmony"/>
+    </condition>
+
+    <condition property="install.handler"
+               value="-Dabbot.util.do_not_install_handler=true"
+               else="">
+        <isset property="is_Harmony"/>
+    </condition>
+
+    <!-- ================================= 
+          target: setup
+         ================================= -->
+    <target name="setup">
+        <condition property="tested.vm.exist">
+            <or>
+                <available file="${jedit_test.tested.runtime}/bin/java"/>
+                <available file="${jedit_test.tested.runtime}/bin/java.exe"/>
+            </or>
+        </condition>
+        <fail message="Can't find java executable in: ${jedit_test.tested.runtime}/bin" unless="tested.vm.exist"/>
+
+        <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
+
+        <external-ant-build target="setup"
+                            failonerror="false"
+                            failproperty="jedit.setup.failed"/>
+
+        <fail message="Failed to setup JEdit tests." if="jedit.setup.failed"/>
+    </target>
+
+    <!-- ================================= 
+          target: run
+         ================================= -->
+    <target name="run">
+        <tstamp>
+            <format property="time.stamp" pattern="yyyy-MM-dd_HHmm" />
+        </tstamp>
+
+        <external-ant-build target="launch"
+                            failonerror="false"
+                            failproperty="jedit.launch.failed"/>
+        <copy todir="${results.dir}/${suite.name}/${time.stamp}">
+            <fileset dir="${checkouts.dir}/${suite.name}/report" includes="**/TEST-*.xml"/>
+        </copy>
+
+        <external-ant-build target="functional"
+                            failonerror="false"
+                            failproperty="jedit.functional.failed"/>
+        <copy todir="${results.dir}/${suite.name}/${time.stamp}">
+            <fileset dir="${checkouts.dir}/${suite.name}/report" includes="**/TEST-*.xml"/>
+        </copy>
+
+        <external-ant-build target="stress"
+                            failonerror="false"
+                            failproperty="jedit.stress.failed"/>
+        <copy todir="${results.dir}/${suite.name}/${time.stamp}">
+            <fileset dir="${checkouts.dir}/${suite.name}/report" includes="**/TEST-*.xml"/>
+        </copy>
+
+        <delete dir="${results.dir}/${suite.name}/last" failonerror="false"/>
+        <copy todir="${results.dir}/${suite.name}/last" failonerror="false">
+            <fileset dir="${results.dir}/${suite.name}/${time.stamp}"/>
+        </copy>
+
+        <condition property="jedit.failed">
+            <or>
+                <isset property="jedit.launch.failed"/>
+                <isset property="jedit.functional.failed"/>
+                <isset property="jedit.stress.failed"/>
+            </or>
+        </condition>
+
+        <fail message="Some of JEdit tests failed." if="jedit.failed"/>
+    </target>
+
+    <!-- =================================
+          target: clean
+         ================================= -->
+    <target name="clean">
+        <echo level="info" message="Removing all from working directory"/>
+        <delete dir="${checkouts.dir}/${suite.name}"/>
+        <echo level="info" message="Removing all from results directory"/>
+        <delete dir="${results.dir}/${suite.name}"/>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          macrodefs etc.                      
+         - - - - - - - - - - - - - - - - - -->
+    <macrodef name="external-ant-build">
+        <attribute name="target"/>
+        <attribute name="failonerror" default="true"/>
+        <attribute name="failproperty" default="external-ant-build.fail.property"/>
+        <sequential>
+            <exec-ant targets="@{target}"
+                      dir="${test.sources.dir}/${suite.name}"
+                      failonerror="@{failonerror}"
+                      failproperty="@{failproperty}">
+                <sysproperty key="target.dir"                        value="${checkouts.dir}/${suite.name}"/>
+                <sysproperty key="test.java.home"                    value="${jedit_test.tested.runtime}"/>
+                <sysproperty key="tested.vm.options"                 value="${jedit_test.parameters.optional.tested.vm.options}"/>
+                <sysproperty key="test.stress.iterations"            value="${jedit_test.parameters.optional.stress.test.iterations}"/>
+                <sysproperty key="harmony.boot.dir"                  value="${boot.dir}"/>
+                <sysproperty key="test.vmarg.bootclasspath"          value="${use.bootclasspath}"/>
+                <sysproperty key="test.vmarg.ush_prefix"             value="${ush.prefix}"/>
+                <sysproperty key="test.vmarg.do_not_install_handler" value="${install.handler}"/>
+            </exec-ant>
+        </sequential>
+    </macrodef>
+    
+</project>
