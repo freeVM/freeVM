@@ -1,0 +1,51 @@
+<parameters depends="classlib,drlvm">
+    <!-- required parameters -->
+    <required>
+        <!-- path to runtime to be tested, use drlvm jvm by default -->
+        <tested.runtime 
+            description="Path to Tested Runtime" 
+            value="${drlvm.parameters.shared.jvm.location}"/>
+        <!-- path to JDK 1.5, use current Java Home as a default -->
+        <jdk.1.5
+            description="Path to JDK 1.5" 
+            value="${java.home}/.."/>
+    </required>
+
+    <optional>
+    	 <usemail
+            description="Send email notifications" 
+            value="${framework.parameters.usemail}"/>
+         <usemail.to
+            description="Send to" 
+            value="${framework.parameters.usemail.to}"/>
+         <usemail.from
+            description="Send from" 
+            value="${framework.parameters.usemail.from}"/>
+    </optional>
+
+    <!-- used external libraries -->
+    <external>
+        <jasmin
+            jar="jasmin.jar"
+            url="http://heanet.dl.sourceforge.net/sourceforge/jasmin/jasmin-2.2.zip"
+            md5="c2f4a1df004983850046e1d9eaf724f3"
+        />
+        <xerces.impl
+            jar="xercesImpl.jar"
+            url="http://mirrors.ibiblio.org/pub/mirrors/maven2/xerces/xercesImpl/2.8.0/xercesImpl-2.8.0.jar"
+            md5="7eb2db331a62e74744ab79aab5b454bd"
+        />
+        <xml.apis
+            jar="xml-apis.jar"
+            url="http://mirrors.ibiblio.org/pub/mirrors/maven2/xml-apis/xml-apis/1.3.03/xml-apis-1.3.03.jar"
+            md5="6dee9238dd2900171197104951940778"
+        />
+        <cpptasks
+            jar="cpptasks.jar"
+            url="http://heanet.dl.sourceforge.net/sourceforge/ant-contrib/cpptasks-1.0b4.zip"
+            md5="118e601b58a48519208efa9893c7c5c0"
+        />
+    </external>
+
+    <cc results="${results.dir}/${suite.name}"/>
+</parameters>

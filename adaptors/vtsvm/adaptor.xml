@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                        BT Adaptor for VTSVM Test Suite
+     ====================================================================== -->
+<project name="vtsvm" default="run" basedir=".">
+
+    <property name="vtsvm.make.dir" location="${test.sources.dir}/vts/vm/build"/>
+    <property name="vtsvm.dest.dir" location="${test.sources.dir}/vts/dest"/>
+
+    <!-- the file containing the summary of test execution -->
+    <property name="vtsvm.results.dir" 
+              location="${results.dir}/vtsvm"/>
+    <property name="vtsvm.results.summary.dir" 
+              location="${vtsvm.results.dir}/summary"/>
+    <property name="vtsvm.results.summary.location" 
+              location="${vtsvm.results.summary.dir}/vtsvm_results.txt"/>
+
+    <!-- do setup of VTSVM suite -->
+    <target name="setup">
+        <svn-update-bt path="${test.sources.dir}/tools"/>
+        <svn-update-bt path="${test.sources.dir}/vts"/>
+        <call-vtsvm target="setup"/>
+        <call-vtsvm target="build-vts"/>
+    </target>
+
+    <!-- do test execution -->
+    <target name="run">
+
+        <!-- remove old results (they were archived after creation) -->
+        <delete quiet="true" verbose="false">
+            <fileset dir="${vtsvm.results.dir}" includes="**/*"/>
+        </delete>
+
+        <!-- define the place where to store results -->
+        <tstamp>
+            <format property="test.run.time" pattern="yyyyMMdd_HHmm"/>
+        </tstamp>
+        <echo message="VTSVM Execution timestamp: ${test.run.time}"/>
+        <!-- prefix of the directory where th will store results -->
+        <property name="vtsvm.th.results.dir" value="vts_${test.run.time}"/>
+
+        <!-- Patch configuration of Test Harness -->
+        <!-- use XML Junit reporter -->
+        <replaceregexp 
+            file="${vtsvm.dest.dir}/VTS-built/config/cfg_env.xml"
+            match='harness\.plugins\.StoreRes"'
+            replace='harness.ReportTool.StoreResAsJU"'/>
+
+        <!-- tested.runtime is a required parameter for this adaptor -->
+        <call-vtsvm target="run-tests" 
+                    jvm="${tested.runtime}" 
+                    results="${vtsvm.th.results.dir}"/>
+
+        <mkdir dir="${vtsvm.results.dir}"/>
+        <mkdir dir="${vtsvm.results.summary.dir}"/>
+
+        <!-- convert the test results into property file -->
+        <process-results
+            results="${vtsvm.dest.dir}/${vtsvm.th.results.dir}_results/result.Other/report.xml"
+            transformer="${suite.adaptor.dir}/process.xsl"
+            output="${vtsvm.results.summary.location}"
+        />
+
+        <!-- copy JUnit XML result files to the results dir -->
+        <copy todir="${vtsvm.results.dir}">
+            <fileset dir="${vtsvm.dest.dir}/${vtsvm.th.results.dir}_results/result.Other"
+                     includes="TEST-*.xml"/>
+        </copy>
+
+        <!-- store the results in an artchive -->
+        <zip destfile="${results.dir}/vts_${test.run.time}.zip" basedir="${vtsvm.results.dir}"/>
+
+        <fail>
+            <condition>
+                <not><available file="${vtsvm.results.summary.location}"/></not>
+            </condition>...
+------
+ERROR while executing of '${suite.name}' test suite: 
+------ Could not get the test results summary file:
+       ${vtsvm.results.summary.location}
+        </fail>
+
+        <!-- process resulting property file and log the summary -->
+        <property file="${vtsvm.results.summary.location}"/>
+        <echo>
+# ${tests.date}
+
+VTSVM Run Summary:
+------------------
+Total   :  ${tests.Total}
+Passed  :  ${tests.passed}
+Failed  :  ${tests.failed}
+Error   :  ${tests.error}
+Unknown :  ${tests.unknown}
+Skipped :  ${tests.skipped}
+        </echo>
+
+        <!-- check the test results and fail if there are unexpected failures -->
+        <fail>
+            <condition>
+                <or>
+                    <not><contains string="@@${tests.failed}@@" substring="@@0@@"/></not>
+                    <not><contains string="@@${tests.error}@@" substring="@@0@@"/></not>
+                    <not><contains string="@@${tests.unknown}" substring="@@0 "/></not>
+                </or>
+            </condition>...
+--------
+FAILURE: There were VTSVM tests failures...
+--------
+        </fail>
+    </target>
+
+    <!-- cleanup the VTSVM workspace -->
+    <target name="clean">
+        <call-vtsvm target="clean"/>
+    </target>
+
+    <condition property="exe" value=".exe" else="">
+        <os family="windows"/>
+    </condition>
+
+    <!-- calls vtsvm's main build file -->
+    <macrodef name="call-vtsvm">
+        <attribute name="target"/>
+        <!-- vtsvm checks for tested jvm presence on setup and build stages,
+             so it must be already built before call to vtsvm setup and build.
+             Here, for these checks we use jvm we are working on -->
+        <attribute name="jvm" default="${java.home}/bin/java${exe}"/>
+        <!-- Prefix for directory to store results -->
+        <attribute name="results" default="vts"/>
+        <sequential>
+            <exec-ant targets="@{target}"
+                 file="${vtsvm.make.dir}/build.xml"
+                 dir="${vtsvm.make.dir}/..">
+                <jvmarg line='-XX:MaxPermSize=512m'/>
+                <arg line='-lib "${ext.xerces.impl.location}"'/>
+                <arg line='-lib "${ext.xml.apis.location}"'/>
+                <sysproperty key="tested.runtime" value="@{jvm}"/>
+                <sysproperty key="java.home.1.5" value="${jdk.1.5}"/>
+                <sysproperty key="vts.zip.prefix" value="@{results}"/>
+                <sysproperty key="jasmin.jar" value="${ext.jasmin.location}"/>
+                <sysproperty key="xerces.impl.jar" value="${ext.xerces.impl.location}"/>
+                <sysproperty key="xml.apis.jar" value="${ext.xml.apis.location}"/>
+                <sysproperty key="jasmin.jar" value="${ext.jasmin.location}"/>
+                <sysproperty key="ant-contrib.jar" value="${ext.ant-contrib.location}"/>
+                <sysproperty key="cpptasks.jar" value="${ext.cpptasks.location}"/>
+            </exec-ant>
+        </sequential>
+    </macrodef>
+
+    <!-- 
+        ========================= Support ==================================
+    -->
+
+    <!-- process the vtsvm results -->
+    <macrodef name="process-results">
+        <attribute name="results"/>
+        <attribute name="transformer"/>
+        <attribute name="output"/>
+        <sequential>
+            <xslt basedir="${suite.adaptor.dir}" 
+                  destdir="${suite.adaptor.dir}"
+                  in="@{results}" 
+                  out="@{output}" 
+                  style="@{transformer}">
+                <!-- properties can be used to specify to xslt the format 
+                     of the output -->
+                <outputproperty name="method" value="text"/>
+                <outputproperty name="encoding" value="iso8859_1"/>
+                <outputproperty name="indent" value="no"/>
+            </xslt>
+        </sequential>
+    </macrodef>
+
+</project>
+
