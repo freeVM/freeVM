@@ -106,6 +106,7 @@ Please, do buildtest install first.
             </classpath>
             <sysproperty key="javax.management.builder.initial" value="mx4j.server.MX4JMBeanServerBuilder"/>
             <arg line="-configfile ${cc.config.file} -webapppath ${ext.cc.location}/webapps/cruisecontrol -jmxport ${framework.parameters.cc.jmxport} -webport ${framework.parameters.cc.webport}"/>
+            <jvmarg line="-Xmx700M" />
         </java>
     </target>
 
