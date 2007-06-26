@@ -136,6 +136,15 @@
         </concat>
     </target>
 
+    <target name="publish-func">
+        <delete dir="${snapshot.results.dir}/func" />
+        <mkdir dir="${snapshot.results.dir}/func" />
+        <junitreport todir="${snapshot.results.dir}/func">
+            <fileset dir="${results.dir}/func" includes="TEST*-*.xml" />
+            <report format="frames" todir="${snapshot.results.dir}/func" />
+        </junitreport>
+    </target>
+
     <target name="publish-JettyScenario">
         <mkdir dir="${snapshot.results.dir}/JettyScenario" />
         <copy todir="${snapshot.results.dir}/JettyScenario">
