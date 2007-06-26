@@ -73,16 +73,16 @@
     <!-- Compile_core target -->
     <target name="Compile_core">
         <mkdir dir="${th.dest}"/>
-        <javac destdir="${th.dest}" srcdir="${share}" includes="**/*.java" nowarn="yes">
+        <javac destdir="${th.dest}" srcdir="${share}" includes="**/*.java" nowarn="yes" debug="on">
         </javac>
-        <javac destdir="${th.dest}" srcdir="${th}" includes="**/*.java" excludes="org/apache/harmony/harness/plugins/*/**/*.java" nowarn="yes">
+        <javac destdir="${th.dest}" srcdir="${th}" includes="**/*.java" excludes="org/apache/harmony/harness/plugins/*/**/*.java" nowarn="yes" debug="on">
         </javac>
     </target>
 
 
     <!-- Compile_plugins target -->
     <target name="Compile_plugins" depends="Compile_core" unless="no_plugins">
-        <javac destdir="${th.dest}" srcdir="${th}/org/apache/harmony/harness/plugins" includes="**/*.java" nowarn="yes">
+        <javac destdir="${th.dest}" srcdir="${th}/org/apache/harmony/harness/plugins" includes="**/*.java" nowarn="yes" debug="on">
         </javac>
     </target>
 

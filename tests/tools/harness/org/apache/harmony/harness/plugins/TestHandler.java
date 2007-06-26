@@ -374,7 +374,7 @@ public class TestHandler extends DefaultHandler {
                                 .getModifications().get(i)).get(0)).trim() == "")
                             emptyDate = true;
                         if (((ArrayList)theTestIR.getModifications().get(i))
-                            .get(0) == null
+                            .get(1) == null
                             || ((String)((ArrayList)theTestIR
                                 .getModifications().get(i)).get(1)).trim() == "")
                             emptyAuthor = true;
