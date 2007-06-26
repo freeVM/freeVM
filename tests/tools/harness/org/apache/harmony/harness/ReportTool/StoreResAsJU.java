@@ -227,9 +227,11 @@ public class StoreResAsJU extends StoreRes {
                 + "\t<property name='platform' value='"
                 + test.getTestedPlatform() + "'/>\n"
                 + "\t<property name='runtime' value='" + test.getTestedVM()
-                + "'/>\n" + "\t<property name='date' value='" + test.getDate()
-                + "'/>\n" + "\t<property name='status' value='"
-                + test.getExecStat() + resultMsg + "'/>\n" + "</properties>\n"
+                + "'/>\n" + "\t<property name='command'><![CDATA["
+                + test.getExecCmdAsString(" ") + "]]></property>\n"
+                + "\t<property name='date' value='" + test.getDate() + "'/>\n"
+                + "\t<property name='status' value='" + test.getExecStat()
+                + resultMsg + "'/>\n" + "</properties>\n"
                 + "<testcase classname='"
                 + test.getTestID().replace(Constants.INTERNAL_FILE_SEP_C, '.')
                 + "' name='test' time='" + totalTime + "'>\n" + resMsg
