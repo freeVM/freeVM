@@ -19,15 +19,15 @@
                         Status Publisher Implementation
      ====================================================================== -->
 <project name="publisher" default="publish" basedir=".">
-
+    
     <!-- check whether we should send notification or not -->
     <condition property="do.mail">
         <and>
             <!-- if framework was configured to send notifications -->
-            <isset property="framework.parameters.usemail"/>
+            <isset property="mail"/>
             <or>
                 <!-- and it was configured to always notify about run status -->
-                <istrue value="${framework.parameters.usemail.always}"/>
+                <istrue value="${mail.always}"/>
                 <!-- or, in case of run-status change -->
                 <not>
                     <equals arg1="${thisbuildsuccessful}"
@@ -37,7 +37,7 @@
         </and>
     </condition>
     <condition property="do.mail">
-        <isset property="framework.parameters.usemail.force"/>
+        <isset property="mail.force"/>
     </condition>
 
     <condition property="mail.execution.status"
@@ -46,45 +46,65 @@
         <istrue value="${thisbuildsuccessful}"/>
     </condition>
 
+    <!-- architecture name -->
+    <condition property="mail.os.arch" value="x86">
+        <or>
+            <os arch="x86"/>
+            <os arch="i386"/>
+        </or>
+    </condition>
+    <condition property="mail.os.arch" value="x86_64">
+        <or>
+            <os arch="x86_64"/>
+            <os arch="amd64"/>
+            <os arch="em64t"/>
+        </or>
+    </condition>
+    <property name="mail.os.arch" value="${os.arch}"/>
+
+    <!-- compose subject line -->
+    <property name="mail.subject.suffix" value=""/>
     <property name="mail.subject.line"
-              value="${framework.parameters.usemail.subject.prefix} ${mail.execution.status} ${os.name} ${os.arch}: ${suite.name}"/>
+              value="${mail.subject.prefix} ${mail.execution.status} ${os.name} ${mail.os.arch}: ${suite.name}${mail.subject.suffix}"/>
 
     <!-- implement publisher interface -->
     <target name="publish" if="do.mail">
         <log message=""/>
         <log message="    Sending mail notification:"/>
-        <log message="        smtp: '${framework.parameters.usemail}'"/>
-        <log message="        to: '${framework.parameters.usemail.to}'"/>
-        <log message="        from: '${framework.parameters.usemail.from}'"/>
-        <log message="    Files to attach: ${mail.attach.files}"/>
+        <log message="        smtp: '${mail}'"/>
+        <log message="        to: '${mail.to}'"/>
+        <log message="        from: '${mail.from}'"/>
+        <log message="    Files to attach: ${mail.attachs}"/>
+        <log message="    Execution logs file: ${mail.execution.log}"/>
         <log message=""/>
 
         <trycatch property="mail.sending.exception">
         <try>
             <if>
-                <available file="${mail.summary.file}"/>
+                <available file="${mail.summary}"/>
             <then>
                 <!-- 'if' suppresses 'nonexistence' warning -->
-                <loadfile property="mail.summary" 
-                          srcFile="${mail.summary.file}" 
+                <loadfile property="mail.summary.content"
+                          srcFile="${mail.summary}"
                           failonerror="false"/>
             </then>
             </if>
-            <!-- summary by default -->
-            <property name="mail.summary" value=""/>
-            <loadfile property="mail.message" 
-                      srcFile="${mail.message.file}" 
+            <property name="mail.summary.content" value=""/>
+            <loadfile property="mail.message.content"
+                      srcFile="${mail.message}"
                       failonerror="false"/>
             <!-- empty message by default -->
-            <property name="mail.message" value=""/>
+            <property name="mail.message.content" value=""/>
+            <!-- no execution logs to send by default -->
+            <property name="mail.execution.log" value=""/> 
             <!-- no attachments by default -->
-            <property name="mail.attach.files" value=""/>
-            <mail mailhost="${framework.parameters.usemail}"
-                  tolist="${framework.parameters.usemail.to}"
-                  from="${framework.parameters.usemail.from}"
+            <property name="mail.attachs" value=""/>
+            <mail mailhost="${mail}"
+                  tolist="${mail.to}"
+                  from="${mail.from}"
                   subject="${mail.subject.line}"
-                  files="${mail.attach.files}">
-                <message>${mail.summary}${mail.message}</message>
+                  files="${mail.attachs},${mail.execution.log}">
+                <message>${mail.summary.content}${mail.message.content}</message>
             </mail>
         </try>
         <catch>
@@ -108,9 +128,9 @@ Test Suite '${suite.name}' execution status: ${mail.execution.status}
     <macrodef name="error-notify">
         <text name="text"/>
         <sequential>
-            <mail mailhost="${framework.parameters.usemail}"
-                  tolist="${framework.parameters.usemail.to}"
-                  from="${framework.parameters.usemail.from}"
+            <mail mailhost="${mail}"
+                  tolist="${mail.to}"
+                  from="${mail.from}"
                   subject="${mail.subject.line}">
                 <message>
 @{text}

@@ -137,16 +137,22 @@ ERROR: Could not find ${selected.suites.configuration}. Please, do 'setup' first
         />
         <ant antfile="${scripts.dir}/cc-exec-adaptor.xml">
             <property name="suite.name" value="test-mail"/>
-            <property name="test-mail.parameters.cc.from" value="Test-Mail@Test.Com"/>
-            <property name="test-mail.parameters.cc.summary" 
+            <property name="test-mail.parameters.mail.from" value="Test-Mail@Test.Com"/>
+            <property name="test-mail.parameters.cc.from" value="Test@Test.Com"/>
+            <property name="test-mail.parameters.mail.summary" 
                       value="${root.dir}/.summary.txt"/>
             <property name="test-mail.parameters.cc.message" 
                       value="${root.dir}/README.txt"/>
             <property name="test-mail.parameters.cc.attachs" 
                       value="${root.dir}/README.txt,${root.dir}/build.xml"/>
+            <property name="test-mail.parameters.mail.subject.suffix" 
+                      value=" (ignore this message)"/>
+            <property name="test-mail.parameters.mail.suppress.exelogs"
+                      value="true"/>
 
             <property name="mail.execution.status" value="TEST MAIL"/>
             <property name="framework.parameters.usemail.force" value="true"/>
+            <property name="thisbuildsuccessful" value="false"/>
         </ant>
     </target>
 

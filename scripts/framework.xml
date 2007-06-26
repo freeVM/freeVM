@@ -171,7 +171,7 @@ Please, check the names specified by test.suites property:
 
     <target name="define-tasks" depends="define-ant-contrib"/>
 
-    <target name="define-ant-contrib">
+    <target name="define-ant-contrib" depends="load-depends">
         <!-- plug in the ANTCONTRIB -->
         <taskdef resource="net/sf/antcontrib/antlib.xml">
             <classpath>
