@@ -40,7 +40,7 @@
         </sequential>
     </target>
     
-    <target name="create-cc-configuration" depends="define-tasks, -prepare-cc, init-framework, init-suites">
+    <target name="create-cc-configuration" depends="init-framework, init-suites, -prepare-cc">
         <!-- Create Main CC Configuration File -->
         <delete file="${cc.config.file}"/>
         <copy file="${cc.config.template}" 
@@ -328,14 +328,15 @@
                             token="&lt;!-- @BT.VETO@ --&gt;" 
                             value="&lt;!-- veto on execution before superior with svn modifications --&gt;@NL@
            &lt;veto&gt;@NL@
-               &lt;triggers&gt;@NL@
-                   &lt;svn localWorkingCopy='${@{dependency}.parameters.cc.usesvn}'/&gt;@NL@
+               &lt;triggers&gt;@NL@&lt;!-- @BT.USESVN@ -->@NL@
                &lt;/triggers&gt;@NL@
                &lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@NL@
            &lt;/veto&gt;@NL@
            &lt;!-- @BT.VETO@ --&gt;"
                         />
                     </replace>
+                    <insert-usesvn suite="@{dependency}" ccfile="@{ccfile}" 
+                                   indent="                    "/>
                 </then>
                 </if>
                 <if>
@@ -367,6 +368,39 @@
         </sequential>
     </macrodef>
 
+    <!-- replaces @BT.USESVN@ tag with the list of pointer to local svn dirs -->
+    <macrodef name="insert-usesvn">
+        <attribute name="suite"/>
+        <attribute name="ccfile"/>
+        <attribute name="indent" default=""/>
+        <attribute name="task" default="svn"/>
+        <attribute name="property" default=""/>
+        <sequential>
+            <var name="tmp.usesvns.list" value=""/>
+            <propertyselector
+                property="tmp.usesvns.list"
+                override="true"
+                delimiter=","
+                match="^@{suite}\.parameters\.cc\.usesvn.*$"
+                distinct="true"
+            />
+            <for list="${tmp.usesvns.list}" param="svndir">
+            <sequential>
+                <replace file="@{ccfile}">
+                    <replacefilter 
+                        token="&lt;!-- @BT.USESVN@ -->" 
+                        value="@{indent}&lt;@{task} localWorkingCopy='${@{svndir}}' @{property}/>@NL@&lt;!-- @BT.USESVN@ -->"/>
+                </replace>
+            </sequential>
+            </for>
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="@NL@&lt;!-- @BT.USESVN@ -->" 
+                    value=""/>
+            </replace>
+        </sequential>
+    </macrodef>
+
     <!-- insert modification sets defined for test suite 
          see: test-insert-modification-sets for unit test -->
     <macrodef name="insert-modification-sets">
@@ -391,9 +425,11 @@
                 <replace file="@{ccfile}">
                     <replacefilter 
                         token="&lt;!-- @BT.BOOTSTRAPPER@ --&gt;" 
-                        value="&lt;svnbootstrapper localWorkingCopy='${@{suite}.parameters.cc.usesvn}'/&gt;"
+                        value="&lt;!-- @BT.USESVN@ -->"
                     />
                 </replace>
+                <insert-usesvn suite="@{suite}" ccfile="@{ccfile}" 
+                               task="svnbootstrapper" indent="            "/>
             </then>
             </if>
             <if>
@@ -460,20 +496,23 @@
                 <isset property="@{suite}.parameters.cc.usesvn"/>
             <then>
                 <!-- echo message=" -::: @{suite}-svn"/ -->
-                <property name="@{property}" value=""/>
-                <var name="@{property}" 
-                     value="${@{property}}@{indent}&lt;svn localWorkingCopy"/>
-                <var name="@{property}" 
-                     value="${@{property}}='${@{suite}.parameters.cc.usesvn}'"/>
+                <echo file="${temp.files.dir}/usesvn.tmp" 
+                      message="&lt;!-- @BT.USESVN@ -->"/>
+                <var name="tmp.change.property" value=""/>
                 <if>
                     <istrue value="@{top}"/>
                 <then>
-                    <var name="@{property}" 
-                         value="${@{property}} property='repository.updated'"/>
+                    <var name="tmp.change.property" 
+                         value="property='repository.updated'"/>
                 </then>
                 </if>
-                <var name="@{property}" 
-                     value="${@{property}}/&gt;@{nl}"/>
+                <insert-usesvn suite="@{suite}" 
+                               ccfile="${temp.files.dir}/usesvn.tmp"
+                               indent="@{indent}"
+                               property="${tmp.change.property}"/>
+                <var name="@{property}" unset="true"/>
+                <loadfile property="@{property}" srcFile="${temp.files.dir}/usesvn.tmp"/>
+                <var name="@{property}" value="${@{property}}@{nl}"/>
             </then>
             </if>
             <if>
@@ -504,8 +543,7 @@ value="${@{property}}@{indent}&lt;compound includeTriggerChanges='@{top}'&gt;@{n
 @{indent}&lt;triggers&gt;@{nl}
 @{indent}    &lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@{nl}
 @{indent}&lt;/triggers&gt;@{nl}
-@{indent}&lt;targets&gt;@{nl}
-${tmp.@{property}.@{dependency}}
+@{indent}&lt;targets&gt;@{nl}${tmp.@{property}.@{dependency}}
 @{indent}&lt;/targets&gt;@{nl}@{indent}&lt;/compound&gt;@{nl}"/>
                     </then>
                     <else>

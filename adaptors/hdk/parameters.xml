@@ -21,15 +21,21 @@
     <shared>
         <svn.url value="https://svn.apache.org/repos/asf/harmony/enhanced/trunk"/>
         <trunk.dir location="${checkouts.dir}/hdk" id="trunk.dir.id"/>
-        <classlib.trunk.dir location="${checkouts.dir}/hdk/working_classlib"/>
-        <drlvm.trunk.dir location="${checkouts.dir}/hdk/working_vm"/>
-        <jdktools.trunk.dir location="${checkouts.dir}/hdk/working_jdktools"/>
+        <classlib.trunk.dir location="${checkouts.dir}/hdk/working_classlib" 
+                            id="classlib.trunk.dir.id"/>
+        <drlvm.trunk.dir location="${checkouts.dir}/hdk/working_vm"
+                         id="drlvm.trunk.dir.id"/>
+        <jdktools.trunk.dir location="${checkouts.dir}/hdk/working_jdktools"
+                            id="jdktools.trunk.dir.id"/>
         <binaries.jre.dir location="${checkouts.dir}/hdk/target/hdk/jdk/jre"/> 
         <hy.cfg value="debug"/>
     </shared>
 
     <!-- CC specific configuration -->
-    <cc config="${cc.hdk.config.template}">
+    <cc>
         <usesvn refid="trunk.dir.id"/>
+        <usesvn.classlib refid="classlib.trunk.dir.id"/>
+        <usesvn.drlvm refid="drlvm.trunk.dir.id"/>
+        <usesvn.jdktools refid="jdktools.trunk.dir.id"/>
     </cc>
 </parameters>

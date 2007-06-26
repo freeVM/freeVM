@@ -29,20 +29,6 @@
 
         <echo message="Checkout HDK trunk into ${hdk.trunk.dir}"/>
         <svn-co url="${svn.url}" trunk="${hdk.trunk.dir}"/>
-        <!-- CC does not handle the modifications in 'switched' sub-trunks,
-             so manually add each of sub-trunks to modificationset -->
-        <copy file="${scripts.dir}/templates/cc-project-template.xml" 
-              tofile="${cc.hdk.config.template}"/>
-        <property name="nl" value="${line.separator}"/>
-        <replace file="${cc.hdk.config.template}">
-            <replacefilter 
-                token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;" 
-                value="${nl}
-           &lt;svn localWorkingCopy='${hdk.trunk.dir}' property='repository.updated'/&gt;${nl}
-           &lt;svn localWorkingCopy='${hdk.classlib.trunk.dir}' property='repository.updated'/&gt;${nl}
-           &lt;svn localWorkingCopy='${hdk.drlvm.trunk.dir}' property='repository.updated'/&gt;${nl}
-           &lt;svn localWorkingCopy='${hdk.jdktools.trunk.dir}' property='repository.updated'/&gt;${nl}"/>
-        </replace>
     </target>
 
     <target name="run">
