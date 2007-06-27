@@ -74,7 +74,7 @@
 
             <Runner ID="Runtime">                
                 <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot$PathSeparator"/>
-                   <Option name="-Djava.security.policy==$TestDirectory$FileSeparatorauxiliary$FileSeparatorSecureRandomTest.policy"/>
+                   <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorSecureRandomTest.policy"/>
                 <Param name="toRun" value="org.apache.harmony.test.func.api.java.security.F_SecureRandomTest_02.F_SecureRandomTest_02">
                 </Param>
             </Runner>
