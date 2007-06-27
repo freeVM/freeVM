@@ -381,12 +381,35 @@ limitations under the License.
                 
 
               <strong>
+                <code>
+                  -Xtrace:em.JIT_NAME=&lt;name&gt;
+                </code>
+              </strong>
+
+
+            
+        </td>
+                                <td class="OddRowCell" colspan="" rowspan="" >
+    
+                
+                Enables EM output only for a JIT with specified name.
+
+
+              
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+
+              <strong>
                 <code>-Xem:&lt;config&gt;</code>
               </strong>
 
             
         </td>
-                                <td class="OddRowCell" colspan="" rowspan="" >
+                                <td class="TableCell" colspan="" rowspan="" >
     
                 
               Specifies the Execution Manager configuration file to use; choose one of the predefined files
@@ -396,7 +419,7 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <td class="OddRowCell" colspan="" rowspan="" >
     
                 
 
@@ -407,7 +430,7 @@ limitations under the License.
 
             
         </td>
-                                <td class="TableCell" colspan="" rowspan="" >
+                                <td class="OddRowCell" colspan="" rowspan="" >
     
                 
               Sets the optimization sequence for client applications;
@@ -416,7 +439,7 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="OddRowCell" colspan="" rowspan="" >
+                        <td class="TableCell" colspan="" rowspan="" >
     
                 
 
@@ -428,7 +451,7 @@ limitations under the License.
 
             
         </td>
-                                <td class="OddRowCell" colspan="" rowspan="" >
+                                <td class="TableCell" colspan="" rowspan="" >
     
                 
 
@@ -441,7 +464,7 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <td class="OddRowCell" colspan="" rowspan="" >
     
                 
 
@@ -453,7 +476,7 @@ limitations under the License.
 
             
         </td>
-                                <td class="TableCell" colspan="" rowspan="" >
+                                <td class="OddRowCell" colspan="" rowspan="" >
     
                 
               Configures VM to use only the fast-compiling non-optimizing JIT Jitrino.JET
@@ -461,7 +484,7 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="OddRowCell" colspan="" rowspan="" >
+                        <td class="TableCell" colspan="" rowspan="" >
     
                 
 
@@ -472,10 +495,94 @@ limitations under the License.
 
             
         </td>
-                                <td class="OddRowCell" colspan="" rowspan="" >
+                                <td class="TableCell" colspan="" rowspan="" >
     
                 
               Configures VM to use only the aggressively optimizing JIT compiler Jitrino.OPT
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="OddRowCell" colspan="" rowspan="" >
+    
+                
+
+              <strong>
+
+                <code>
+                  -XX:em.dll=&lt;dll&gt;
+              </code>
+              </strong>
+
+            
+        </td>
+                                <td class="OddRowCell" colspan="" rowspan="" >
+    
+                
+              Use to specify DRLVM-execution manager (EM) dll to load at startup.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+
+              <strong>
+
+                <code>
+                  -XX:em.jitPath=&lt;path&gt;
+              </code>
+              </strong>
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Use to override the default path for all JIT dlls in <code>EM.conf</code> with path.
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="OddRowCell" colspan="" rowspan="" >
+    
+                
+
+            <strong>
+
+              <code>
+                -XX:em.JIT_NAME.jitPath=&lt;path&gt;
+              </code>
+            </strong>
+
+          
+        </td>
+                                <td class="OddRowCell" colspan="" rowspan="" >
+    
+                
+            Use to override the default path for <code>JIT_NAME</code> JIT dll in <code>EM.conf</code> with path.
+          
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="" >
+    
+                
+
+              <strong>
+
+                <code>
+                  -XX:em.properties=&lt;path&gt;
+              </code>
+              </strong>
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="" >
+    
+                
+              Sets up a path to em configuration file to use.
             
         </td>
             </tr>
@@ -657,43 +764,6 @@ limitations under the License.
     
                 
 
-
-              <strong>
-                <code>-XX:gc.ms=N</code>
-              </strong>
-
-            
-        </td>
-                                <td class="TableCell" colspan="" rowspan="" >
-    
-                
-              Same as <code>-Xms</code>
-            
-        </td>
-            </tr>
-                                <tr>
-                        <td class="OddRowCell" colspan="" rowspan="" >
-    
-                
-
-              <strong>
-                <code>-XX:gc.mx=N</code>
-              </strong>
-
-            
-        </td>
-                                <td class="OddRowCell" colspan="" rowspan="" >
-    
-                
-              Same as <code>-Xmx</code>
-            
-        </td>
-            </tr>
-                                <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
-    
-                
-
               <strong>
                 <code>-XX:gc.nos_size=N</code>
               </strong>
@@ -858,7 +928,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:gc.adaptive=0</code>
+                <code>-XX:-gc.adaptive=0</code>
               </strong>
 
 
@@ -899,7 +969,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:gc.heap_iteration=1</code>
+                <code>-XX:+gc.heap_iteration=1</code>
               </strong>
 
             
@@ -919,7 +989,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:gc.ignore_finalizers=1</code>
+                <code>-XX:+gc.ignore_finalizers=1</code>
               </strong>
 
 
@@ -938,7 +1008,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:gc.lp=1</code>
+                <code>-XX:+gc.lp=1</code>
               </strong>
 
             
@@ -982,7 +1052,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:gc.remember_root_set=1</code>
+                <code>-XX:+gc.remember_root_set=1</code>
               </strong>
 
             

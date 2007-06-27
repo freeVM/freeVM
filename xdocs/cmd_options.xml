@@ -177,22 +177,41 @@
 
             </td>
           </tr>
+
           <tr>
+
             <td class="OddRowCell">
+
+              <strong>
+                <code>
+                  -Xtrace:em.JIT_NAME=&lt;name&gt;
+                </code>
+              </strong>
+
+
+            </td>
+            <td class="OddRowCell">
+                Enables EM output only for a JIT with specified name.
+
+
+              </td>
+            </tr>
+          <tr>
+            <td >
 
               <strong>
                 <code>-Xem:&lt;config&gt;</code>
               </strong>
 
             </td>
-            <td class="OddRowCell">
+            <td>
               Specifies the Execution Manager configuration file to use; choose one of the predefined files
               (<a href="#EMClient">client</a>, <a href="#EMServer">server</a>, <a href="#EMOpt">opt</a>, <a href="#EMJet">jet</a>) or specify your own
 
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="OddRowCell">
 
               <strong>
                 <a name="EMClient"></a>
@@ -200,13 +219,13 @@
               </strong>
 
             </td>
-            <td>
+            <td class="OddRowCell">
               Sets the optimization sequence for client applications;
               <br/><i>The default EM configuration</i>
             </td>
           </tr>
           <tr>
-            <td class="OddRowCell">
+            <td>
 
               <strong>
                 <a name="EMServer"></a>
@@ -215,7 +234,7 @@
 
 
             </td>
-            <td class="OddRowCell">
+            <td >
 
               Sets the optimization sequence for server applications: the <code>server</code> mode execution
               analogous to <strong>
@@ -225,7 +244,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="OddRowCell">
 
               <strong>
                 <a name="EMJet"></a>
@@ -234,12 +253,12 @@
 
 
             </td>
-            <td>
+            <td class="OddRowCell">
               Configures VM to use only the fast-compiling non-optimizing JIT Jitrino.JET
             </td>
           </tr>
           <tr>
-            <td class="OddRowCell">
+            <td >
 
               <strong>
                 <a name="EMOpt"></a>
@@ -247,14 +266,77 @@
               </strong>
 
             </td>
-            <td class="OddRowCell">
+            <td >
               Configures VM to use only the aggressively optimizing JIT compiler Jitrino.OPT
             </td>
 
           </tr>
+
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+
+                <code>
+                  -XX:em.dll=&lt;dll&gt;
+              </code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Use to specify DRLVM-execution manager (EM) dll to load at startup.
+            </td>
+
+          </tr>
+          <tr>
+            <td >
+
+              <strong>
+
+                <code>
+                  -XX:em.jitPath=&lt;path&gt;
+              </code>
+              </strong>
+
+            </td>
+            <td >
+              Use to override the default path for all JIT dlls in <code>EM.conf</code> with path.
+          </td>
+
+        </tr>
+        <tr>
+          <td class="OddRowCell">
+
+            <strong>
+
+              <code>
+                -XX:em.JIT_NAME.jitPath=&lt;path&gt;
+              </code>
+            </strong>
+
+          </td>
+          <td class="OddRowCell">
+            Use to override the default path for <code>JIT_NAME</code> JIT dll in <code>EM.conf</code> with path.
+          </td>
+
+          </tr>
+          <tr>
+            <td >
+
+              <strong>
+
+                <code>
+                  -XX:em.properties=&lt;path&gt;
+              </code>
+              </strong>
+
+            </td>
+            <td >
+              Sets up a path to em configuration file to use.
+            </td>
+
+        </tr>
         </table>
-
-
         <h3>JIT Compiler (vm/jitrino)</h3>
 
 
@@ -383,32 +465,7 @@
               Comments
             </th>
           </tr>
-          <tr>
-            <td>
 
-
-              <strong>
-                <code>-XX:gc.ms=N</code>
-              </strong>
-
-            </td>
-            <td>
-              Same as <code>-Xms</code>
-            </td>
-          </tr>
-          <tr>
-            <td class="OddRowCell">
-
-              <strong>
-                <code>-XX:gc.mx=N</code>
-              </strong>
-
-            </td>
-            <td class="OddRowCell">
-              Same as <code>-Xmx</code>
-            </td>
-
-          </tr>
           <tr>
             <td>
 
@@ -529,7 +586,7 @@
             <td class="OddRowCell">
 
               <strong>
-                <code>-XX:gc.adaptive=0</code>
+                <code>-XX:-gc.adaptive=0</code>
               </strong>
 
 
@@ -558,7 +615,7 @@
             <td class="OddRowCell">
 
               <strong>
-                <code>-XX:gc.heap_iteration=1</code>
+                <code>-XX:+gc.heap_iteration=1</code>
               </strong>
 
             </td>
@@ -572,7 +629,7 @@
             <td>
 
               <strong>
-                <code>-XX:gc.ignore_finalizers=1</code>
+                <code>-XX:+gc.ignore_finalizers=1</code>
               </strong>
 
 
@@ -585,7 +642,7 @@
             <td class="OddRowCell">
 
               <strong>
-                <code>-XX:gc.lp=1</code>
+                <code>-XX:+gc.lp=1</code>
               </strong>
 
             </td>
@@ -617,7 +674,7 @@
             <td class="OddRowCell">
 
               <strong>
-                <code>-XX:gc.remember_root_set=1</code>
+                <code>-XX:+gc.remember_root_set=1</code>
               </strong>
 
             </td>
