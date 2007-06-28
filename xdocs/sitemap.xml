@@ -19,418 +19,377 @@ limitations under the License.
 
 <document>
 
-<properties>
-<title>Apache Harmony Site Map</title>
-<author email="dev@harmony.apache.org">Harmony Documentation Team</author>
-</properties>
+  <properties>
+    <title>Apache Harmony Site Map</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
 
-<body>
-  <section name="Site Map">
-    <p>The Apache Harmony site map helps the visitors to understand the site structure 
-    and layout and thus, quickly gain access to what the site has to offer. This map 
-    reflects links to all relevant Apache Harmony website pages. 
-    </p>
-  </section>
-
-  <section name="General Issues">
-    <p>
-      <a href="http://harmony.apache.org/">Home</a> - general
-      information about the project, its status, Harmony news and external news stories
-      about the Harmony project
-    </p>
-
-    <p>
-      <a href="license.html">Apache License</a> - terms and
-      conditions for use, reproduction, and distribution
-    </p>
-
-    <p>
-      <a href=" http://apache.org/">Apache Software Foundation</a> - home page of
-      the Apache Software Foundation providing general information about the project,
-      its status, news, etc.
-    </p>
-    <p>
-      <a href="contribution_policy.html">Contribution Policy</a> -
-      information on division of the repository, limitations on committer
-      contributions and policies for committers and contributors
-    </p>
-    <ul>
-      <li>
-        <a href="auth_cont_quest.html">
-          Authorized Contributor Questionnaire
-        </a> - an authorized contributor
-        questionnaire
-      </li>
-
-      <li>
-        <a href="bulk_contribution_checklist.html">
-          Bulk Contribution Checklist
-        </a> - a bulk contribution checklist
-      </li>
-    </ul>
-    <br />
-    <p>
-      <a href="guidelines.html">Project Guidelines </a> - definition of
-      the Apache Harmony Project guidelines and definitions of how conflict
-      is resolved by voting, who is able to vote, and the procedures to follow for
-      proposing and making changes to the Apache products
-    </p>
+  <body>
+    <section name="Site Map">
       <p>
-          <a href="presentations_papers.html">Presentations and Research Papers</a> -
-          presentations describing background, motivation, history,
-          status and future of the Apache Harmony project, and papers providing a deep
-          insight into the Apache Harmony research work
+        The Apache Harmony site map helps the visitors to understand the site structure
+        and layout and thus, quickly gain access to what the site has to offer. This map
+        reflects links to all relevant Apache Harmony website pages.
       </p>
-    <p>
-      <a href="newshistory.html">Harmony News Archive</a> - description of
-      the project develment
-    </p>
 
-    <subsection name="For Users">
-      <p>
-        <a href="quickhelp_users.html">
-          Getting
-          Started for Users
-        </a> - the getting started guide for those that
-        wish to use <a href="downloads.html"> pre-built snapshots</a> of
-        Apache Harmony
-      </p>
-      <p>
-        <a href="downloads.html">Project Downloads</a> -
-        you can find all project downloads here, such as snapshot builds and
-        Subversion
-        <br/><a href="snapshots_v5.html">Snapshots for 1.5.0</a> -
-        you can download stable pre-built snapshots of JRE, JDK, HDK for 
-        the specific platform using the source code revision and test results
-      </p>
-      <p>
-        <a href="faq.html">FAQ</a> - frequently asked questions
-      </p>
-    </subsection>
+      <table>
 
-  </section>
-    
-  <section name="Community">
-    <p>
-      <a href="get-involved.html">Get Involved</a> -
-      general information on how to contribute, give feedback, fix
-      bugs and so on
-    </p>
-    
-    <p>
-      <a href="contributors.html">Who We Are - Apache Harmony Committers</a> -
-      description of the Harmony community and its structure
-    </p>
-    <p>
-      <a href="subcomponents/classlibrary/agreements.html">
-        Harmony Developer Agreements and Recommendations
-      </a> - the summary of agreements
-      and recommendations that were discussed on the development mailing list
-      <i>dev@harmony.apache.org</i>
-    </p>
-    <p>
-      <a href="mailing.html">Mailing Lists</a> - the Apache
-      Harmony mailing lists where you can share all your ideas, ask
-      questions and discuss plans
-    </p>
-    <p>
-      <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a> - the
-      project to post bugs and other issues on
-    </p>
-    <p>
-      <a href="code_scan_tools.html">
-        Code Scanning Tools
-      </a> - tools to examine code in a more efficient way
-    </p>
- 
-    <p>
-      <a href="related.html">Related Projects</a> - the list of other projects
-      related to open source Java
-    </p>
-     </section>
+        <tr>
 
-  <section name="Development">
+          <td  width="50%" style="text-align: left">
+            <h2>General</h2>
+          </td>
 
-    <p>
-      <a href="quickhelp_contributors.html">
-        Getting Started for Contributors
-      </a> - the getting started guide for
-      those that wish to checkout and build the source of Apache Harmony
-    </p>
-    <p>
-      <a href="http://harmony.apache.org/svn.html">Apache Harmony Source Code</a> -
-      description of the, the repository and access to it</p>
-    
-    <p>
-      <a href="roadmap.html">Roadmap and TODO</a> -
-      an approximate roadmap for what the project hopes to achieve in the next
-      year and a collection of things that the project community has listed
-      as needing to be done
-    </p>
-    <p>
-      <a href="issue_resolution_guideline.html">
-        When an Issue Occurs
-      </a> - description of action item types, such as
-      long term plans, short term plans, a release plan, a release testing,
-      showstoppers, product changes; general rules for commiters, information
-      on reporting, resolving and closing issues
 
-    </p>
-    <p>
-      <a href="documentation/build_website.html">
-        Building and Deploying the Apache Harmony Website
-      </a> - tools required
-      for the Harmony website build, building and deploying instructions
-    </p>
-    
-    <p>
-      <a href="status.html">What Can We Do Now?</a> -
-      reflects the position of the project
-    </p>
-    <p>
-      <a href="documentation/dev_eclipse.html">
-        Getting Started with Eclipse
-      </a> - instructions on how to set up
-      Eclipse to develop Java code in Apache Harmony, with sections for
-      both DRLVM and class library development
-    </p>
-    <p>
-      <a href="documentation/dev_eclipse_movie.html">
-        Eclipse Movie
-      </a> - a brief webcast for those who want to see a step-by-step
-      guide to configuring Eclipse, and developing a patch to the classlibrary code
-    </p>
-    <p>
-      <a href="performance.html">
-        Performance Data
-      </a> - results obtained on different benchmarks and various hardware and 
-      software system configurations
-    </p>
-    
-  </section>
-    <section name="Documentation">
-    <p>
-      <a href="http://wiki.apache.org/harmony/">Harmony Wiki</a> -
-      the project for additional documentation and discussions
-    </p>  
-    <p>
-      <a href="hdk.html">
-        Harmony Development Kit</a> - description of the HDK layout and its contents
-    </p>
+          <td  width="50%">
+            <h2>Community</h2>
+          </td>
 
-    <subsection name="DRLVM">
-      <p>
-        <a href="subcomponents/drlvm/index.html">
-          DRLVM Navigator
-        </a> - documentation links specific to DRLVM effort
-        underway at Apache Harmony
-      </p>
-      <dl>
-        <dt>Developing and Building the Code Documentation</dt>
-      <dd>
-        <a href="subcomponents/drlvm/debugging_VM_and_JIT.html">
-          Debugging the DRL Virtual Machine and the JIT Compiler
-        </a> - practical instructions on how to debug the DRL virtual machine and its
-        baseline just-in-time compiler Jitrino.JET
-      </dd>
-      <dd><a href="subcomponents/drlvm/getting_started.html">
-          Getting Started with DRLVM
-        </a> - basic usage scenarios of VM: starting an
-        application, working in Eclipse
-      </dd>
-      <dd>
-        <a href="https://svn.apache.org/viewcvs.cgi/*checkout*/harmony/enhanced/drlvm/trunk/README.txt">
-          README
-        </a> - source package and building instructions for
-        the VM source code
-      </dd>
-      <dt>Architecture and Component Documentation</dt>
-     <dd>
-        <a href="subcomponents/drlvm/developers_guide.html">
-          DRLVM Developer's Guide
-        </a> - in-depth description of the DRLVM
-        internal architecture and components' interaction
-      </dd>
-      <ul>
-        <li>
-          
-            <a href="subcomponents\drlvm\encoder_library.html">
-              Encoder Library for
-              IA-32/Intel64
-            </a> - description of the encoder library for code generation; the document focuses
-            on the specifics of the current implementation
-            showing the encoder library structure and role inside the DRL virtual machine
-         
-        </li>
-        <li>
-        <a href="subcomponents/drlvm/EM.html">
-          Execution
-          Manager Component Description
-        </a> - detailed description of the Execution
-        Manager current implementation
-      </li>
-        <li>
-          
-            <a href="subcomponents/drlvm/JIT.html">
-              Jitrino Just-in-time Compiler
-            </a> - detailed description of the DRLVM Jitrino just-in-time
-            compiler implementation; gives details on the internal architecture of the
-            Jitrino.JET baseline compiler and Jitrino.OPT optimizing compiler, as
-            well as processes running inside them
-          
-          <ul>
-            <li>
-             
-                <a href="subcomponents/drlvm/internal_profiler.html">Jitrino Internal Profiler Description</a> -
-                description of the code generator's internal profiler tool (iprof) for Jitrino.OPT just-in-time
-                compiler, which defines the tool, illustrates its sample output and configuration mechanisms
-           
-            </li>
-            <li>
-            
-                <a href="subcomponents/drlvm/JIT_PMF.html">
-                  Jitrino
-                  Pipeline Management Framework
-                </a> - detailed description of the pipeline
-                management framework that provides complete control over just-in-time
-                compilation process through the Java property mechanism; the description
-                covers the PMF application to the command-line interface and to the
-                Jitrino logging system
-              
-            </li>
-          </ul>
-            
-        </li>
-        <li>
-          
-            <a href="subcomponents/drlvm/JVMTI-PopFrame.html">JVMTI Pop Frame</a> -
-            details on the PopFrame implementation as currently done in DRLVM, description of the functions
-            responsible for the operation and gives info on specifics of the current implementation
-          
-        </li>
-        <li>
-          
-            <a href="subcomponents/drlvm/kernel_classes.html">
-              Kernel Classes
-            </a> - detailed description of the kernel classes implementation
-            with focus on the native part of kernel classes and the internal kernel classes
-            interface
-          
-        </li>
-        <li>
-          
-            <a href="subcomponents/drlvm/TM.html">Thread Manager</a> -
-            detailed description of the Thread Manager current implementation
-         
-        </li>
-       </ul>
+        </tr>
+        <tr>
+          <td >
+            <P>
+              <a href="http://harmony.apache.org/">Apache Harmony Home</a>: status, news,
+              external stories
+            </P>
+            <p>
+              <a href="http://apache.org/"> Apache Software Foundation Home</a>:
+              general information about the project, status, news, etc.
+            </p>
+            <p>
+              <a href="presentations_papers.html">Presentations and Research Papers</a>:
+              background, motivation, status and future of Apache Harmony project
+            </p>
+            <p>
+              <a href="related.html">Other Projects</a> related to open-source Java*
+            </p>
+            <p>
+              <a href="newshistory.html">Harmony News Archive</a> relocated from the Home page
+            </p>
+            <p>
+              <a href="http://wiki.apache.org/harmony/">Harmony Wiki</a> discussions
+            </p>
+            <p>
+              <a href="license.html">Apache License</a>: terms and
+              conditions for use, reproduction, and distribution
+            </p>
+            <p>
+              <a href="contribution_policy.html">Contribution Policy</a>, limitations on
+              committer contributions and repository organization
+            </p>
+            <p>
+              <a href="auth_cont_quest.html">
+                Authorized Contributor Questionnaire
+              </a>
+            </p>
+            <p>
+              <a href="bulk_contribution_checklist.html">
+                Bulk Contribution Checklist
+              </a>
+            </p>
 
-      <dd>
-        <a href="subcomponents/drlvm/DoxygenStart.html">DRLVM Source Code Generated Documentation Index</a> -
-        a landing page with links to autogenerated Doxygen documentation for DRLVM interface headers
-      </dd>
-      
-      <dt>How-tos and Guides</dt>
-      <dd>
-        <a href="subcomponents/drlvm/emguide.html">
-          Configuring Execution Manager 
-        </a> - guide to Execution Manager (EM)
-        options and configuration file format
-      </dd>
+          </td>
+          <td >
+            <p>
+              <a href="get-involved.html">Get Involved</a>:
+              general information on how to contribute, give feedback, fix
+              bugs and so on
+            </p>
+            <p>
+              <a href="roadmap.html">Roadmap and TODO</a>: project's hopes
+              and required changes for the next year
+            </p>
+            <p>
+              <a href="status.html">What Can We Do Now?</a>: lower-level plans and tasks
+            </p>
 
-        <dd>
-          <a href="subcomponents/drlvm/gc-howto.html">
-            How to Write DRL GC
-          </a> - instructions on creating a custom garbage collector
-          implementation in C++ and configuring the DRL virtual machine to use it
-          with a real-life example of a copying GC implementation (source included)
-        </dd>
-</dl>
-      </subsection>
-      
-  <subsection name="Class Library">
-    <p>
-      <a href="subcomponents/classlibrary/index.html">
-        Class Library Navigator
-      </a> - documentation links specific to the
-      class library effort underway at Apache Harmony
-    </p>
-        <p>
-      <a href="subcomponents/classlibrary/status.html">
-        Class Library Component Status
-      </a> - comparisons of JDK 1.4 and JDK 1.5. against
-      the Harmony class library snapshots
-    </p>
-<dl>
-    <dt>Project Conventions</dt>
-    <dd>
-      <a href="subcomponents/classlibrary/pkgnaming.html">
-        Class Library Package Naming Conventions
-      </a> - the package naming conventions used in the Apache Harmony Class Library
-    </dd>
+            <p>
+              <a href="guidelines.html">Project Guidelines</a>: voting rights and conflicts
+              resolution, procedures for proposing and making changes to the product, etc
+            </p>
+            <p>
+              <a href="issue_resolution_guideline.html">
+                When an Issue Occurs
+              </a>: description of action item types, general rules for commiters, information
+              on reporting, resolving and closing issues
+            </p>
+            <p>
+              <a href="contributors.html">Who We Are</a>: defining roles of contributors,
+              committers, and PMC with the current Committers' List
+            </p>
+            <p>
+              <a href="subcomponents/classlibrary/agreements.html">
+                Developer Agreements and Recommendations
+              </a>summary from <i>dev@harmony.apache.org</i>
+            </p>
 
-    <dd>
-      <a href="subcomponents/classlibrary/testing.html">
-        Class Library Testing Conventions
-      </a> - description of the PROPOSED
-      placement and package naming conventions for different types of Harmony
-      class library tests; general guidlines and recomendations
-      that might be adapted/modified to reflect module specifics
-    </dd>
-    <dd>
-      <a href="subcomponents/classlibrary/compat.html">
-        Compatibility Guidelines</a> - compatibility goals in the Apache Harmony Class Library
-    </dd>
-       <dd>
-      <a href="subcomponents/classlibrary/ser_testing.html">
-        Framework for Testing Serialization
-      </a> - guidelines for creating tests and
-      conventions for resource files
-    </dd>
-    <dt>Architecture and Guides Documentation</dt>
-    <dd>
-      <a href="subcomponents/classlibrary/asn1_framework.html">
-        ASN.1 Framework
-      </a> - introduction to the ASN.1 (Abstract Syntax Notation) framework
-      with an overview of ASN.1 types and encoding rules focusing on the
-      characteristics of the current implementation
-    </dd>
-    <dd>
-      <a href="subcomponents/classlibrary/awt.html">
-        Abstract Window Toolkit Framework
-      </a> - description of the AWT (Abstract Window Toolkit) framework covering
-      major design features and internal implementation specifics, such as the
-      event handling mechanism, the focus dispatching flow, appearance handling
-      with custom visual themes and multi-threading support
-    </dd>
-    <dd>
-      <a href="subcomponents/classlibrary/dns_support.html">
-        DNS Service Provider
-      </a> - implementation description of the DNS service provider
-      for the Java Naming Directory Interface (JNDI) including a package overview, a
-      design description and a guide to using the provider
-    </dd>
-    <dd>
-      <a href="subcomponents/classlibrary/java2d.html">
-        Java 2D
-      </a> - introduction to the Java two-dimensional (2D) graphics
-      and image processing technology implementation focusing on the internal
-      specifics of implementation
-    </dd>
-    <dd>
-      <a href="subcomponents/classlibrary/regexp.html">
-        Regex Processing Framework
-      </a> - overview of the <code>java.util.regex</code>
-      package and implementation architecture focusing on the performance
-      improvement aspects
-    </dd>
-      <dd>
-     <a href="subcomponents/classlibrary/rmi_provider.html">
-     RMI Registry Service Provider</a> - description of the functionality of the
-          DRL RMI Registry Service Provider for the Java Naming Directory Interface (JNDI)
-          including details on the provider design</dd>
-    </dl>
-      </subsection>
-</section>
-</body>
+            <p>
+              <a href="mailing.html">Mailing Lists</a>: subscription and scope of the lists
+            </p>
+            <p>
+              <a href="http://issues.apache.org/jira/browse/HARMONY">JIRA</a> bug tracker
+            </p>
+            <p>
+              <a href="svn.html">Source Code</a> structure and access
+            </p>
+            <p>
+              <a href="code_scan_tools.html">
+                Code Scanning Tools
+              </a>
+            </p>
+
+          </td>
+        </tr>
+        <tr>
+          <td >
+            <h2>For Users</h2>
+          </td>
+          <td >
+            <h2>For Developers</h2>
+          </td>
+        </tr>
+        <tr>
+          <td >
+            <p>
+              <a href="quickhelp_users.html">
+                Getting
+                Started for Users
+              </a> gives a quick start with a pre-built snapshot of Harmony JRE
+            </p>
+            <p>
+              <a href="cmd_options.html">Command-line Options</a> reference with all
+              non-standard support options specified
+            </p>
+            <p>
+              <a href="downloads.html">Project Downloads</a>: subversioned source code
+              and pre-built snapshots
+            </p>
+            <p>
+              <a href="faq.html">FAQ</a>: Frequently asked questions
+            </p>
+          </td>
+          <td >
+            <p>
+              <a href="quickhelp_contributors.html">
+                Getting Started for Contributors
+              </a> instructs on how to check out and build the source code
+            </p>
+            <p>
+              <a href="snapshots_v5.html">Stable snapshots for 1.5.0</a> for
+              all supported platforms with revision and test results specified
+            </p>
+            <p>
+              <a href="hdk.html">
+                Harmony Development Kit
+              </a>: definition and layout
+            </p>
+
+            <p>
+              <a href="documentation/dev_eclipse.html">
+                Getting Started with Eclipse
+              </a> to develop Java code in Apache Harmony, featuring
+              <a href="documentation/dev_eclipse_movie.html">
+                a
+                movie
+              </a> with a step-by-step guide to configuring Eclipse
+            </p>
+            <p>
+              <a href="documentation/build_website.html">
+                How to build and deploy the website
+              </a>
+            </p>
+            <p>
+              <a href="performance.html">
+                Performance Data
+              </a>obtained on different benchmarks and various hardware and
+              software system configurations
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td >
+            <h2>Docs: DRLVM Navigator</h2>
+            <p>
+              <a href="subcomponents/drlvm/index.html">
+                Start here for DRLVM-specific docs
+              </a>
+            </p>
+          </td>
+          <td >
+            <h2>Docs: Class libraries Navigator</h2>
+            <p>
+              <a href="subcomponents/classlibrary/index.html">
+                Start here for JCL-specific docs
+              </a>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td >
+
+            <h3>Developing and Building the Code</h3>
+            <p>
+              <a href="subcomponents/drlvm/debugging_VM_and_JIT.html">
+                Debugging the DRL Virtual Machine and the Jitrino.JET Baseline Compiler
+              </a>
+            </p>
+            <p>
+              <a href="subcomponents/drlvm/getting_started.html">
+                Getting Started with DRLVM
+              </a>: basic usage scenarios
+            </p>
+            <h3>Architecture and Components</h3>
+            <p>
+              <a href="subcomponents/drlvm/developers_guide.html">
+                Developer's Guide
+              </a>describing DRLVM architecture, with the following components specifics:
+            </p>
+            <ul>
+              <li>
+                <a href="subcomponents\drlvm\encoder_library.html">
+                  Encoder Library for
+                  IA-32/Intel64
+                </a>
+              </li>
+              <li>
+                <a href="subcomponents/drlvm/EM.html">
+                  Execution
+                  Manager
+                </a>
+              </li>
+              <li>
+
+                <a href="subcomponents/drlvm/JIT.html">
+                  Just-in-time Compiler
+                </a>, including Jitrino.JET baseline compiler and Jitrino.OPT optimizing compiler
+
+                <ul>
+                  <li>
+
+                    <a href="subcomponents/drlvm/internal_profiler.html">Jitrino Internal Profiler Description</a>
+
+                  </li>
+                  <li>
+
+                    <a href="subcomponents/drlvm/JIT_PMF.html">
+                      Jitrino
+                      Pipeline Management Framework
+                    </a>
+                  </li>
+                </ul>
+
+              </li>
+              <li>
+
+                <a href="subcomponents/drlvm/JVMTI-PopFrame.html">JVMTI Pop Frame implementation</a>
+              </li>
+              <li>
+
+                <a href="subcomponents/drlvm/kernel_classes.html">
+                  Kernel Classes
+                </a>
+
+              </li>
+              <li>
+
+                <a href="subcomponents/drlvm/TM.html">Thread Manager</a>
+              </li>
+            </ul>
+
+            <p>
+              <a href="subcomponents/drlvm/DoxygenStart.html">Source Code Generated Documentation Index</a> -
+              a landing page with links to autogenerated Doxygen documentation for DRLVM interface headers
+            </p>
+
+            <h3>How-tos and Guides</h3>
+            <p>
+              <a href="subcomponents/drlvm/emguide.html">
+                Configuring Execution Manager
+              </a>: options and configuration file format
+            </p>
+
+            <p>
+              <a href="subcomponents/drlvm/gc-howto.html">
+                How to Write DRL GC
+              </a>: example-supported guide to creating a custom garbage collector
+              implementation in C++ and configuring DRLVM to use it (sample code included)
+            </p>
+
+          </td>
+          <td >
+
+            <p>
+              <a href="subcomponents/classlibrary/status.html">
+                Class Library Component Status
+              </a> - comparisons of JDK 1.4 and JDK 1.5. against
+              the Harmony class library snapshots
+            </p>
+
+            <h3>Project Conventions</h3>
+            <p>
+              <a href="subcomponents/classlibrary/pkgnaming.html">
+                Class Library Package Naming Conventions
+              </a>
+            </p>
+
+            <p>
+              <a href="subcomponents/classlibrary/testing.html">
+                Proposed Class Library Testing Conventions
+              </a>
+            </p>
+            <p>
+              <a href="subcomponents/classlibrary/compat.html">
+                Compatibility Goals for Harmony Class Library
+              </a>
+            </p>
+            <p>
+              <a href="subcomponents/classlibrary/ser_testing.html">
+                Framework for Testing Serialization
+              </a>: guidelines for creating tests and
+              conventions for resource files
+            </p>
+            <h3>Architecture and Guides Documentation</h3>
+            <p>
+              These docs describe implementation specifics of certain
+              class library modules:
+            </p>
+            <ul>
+              <li>
+                <a href="subcomponents/classlibrary/asn1_framework.html">
+                  ASN.1 Framework
+                </a>: overview, types and encoding rules of the Abstract Syntax Notation 1
+              </li>
+              <li>
+                <a href="subcomponents/classlibrary/awt.html">
+                  AWT Framework
+                </a>: Abstract Window Toolkit specifics
+              </li>
+              <li>
+                <a href="subcomponents/classlibrary/dns_support.html">
+                  JNDI DNS Service Provider
+                </a>: specifics and usage gudelines of the Domain Name System provider
+                for the Java Naming Directory Interface
+              </li>
+              <li>
+                <a href="subcomponents/classlibrary/java2d.html">
+                  Java 2D graphics
+                  and image processing
+                </a>: introduction to Java 2D (two-dimensional) image processing
+              </li>
+              <li>
+                <a href="subcomponents/classlibrary/regexp.html">
+                  Regex Processing Framework
+                </a>: overview of the <code>java.util.regex</code> package and implementation with focus on the performance improvement
+              </li>
+              <li>
+                <a href="subcomponents/classlibrary/rmi_provider.html">
+                  JNDI RMI Registry Service Provider
+                </a>: design of the Remote method invocation provider for the Java Naming Directory Interface
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </section>
+  </body>
 </document>
