@@ -1,221 +1,171 @@
-                           =========================
-                           Build Test Infrastructure
-                           =========================
+                    ========================================
+                    Harmony Build and Testing Infrastructure
+                    ========================================
 
----------------
-Archive Content
----------------
-
-This archive contains improved and restructured Build Test (BT) Infrastructure.
-New BT architecture brings the clear structure on the trunk as well as several
-useful means simplifying test suite execution and new test suite integration.
-
-  +/
-   |-+scripts/      - BT Framework Implementation
-   |
-   |-+adaptors/     - Adaptors connecting test suites to BT
-   |
-   |-+tests/        - Tests suites placed under BuildTest repository
-   |
-   |-build.xml      - Main Build File
-   |
-   |-buildtest.dtd  - DTD for Main Build File
-   |
-   |-README.txt     - Readme File
-   |
-   |-SPEC.txt       - BT Specification
+Harmony BTI is intended to organize overall project Build & Testing 
+activities in one place. This infrastructure provides the means to:
+    - configure and launch test runs on the base of integrated test suites,
+    - implement and integrate new test suites,
+    - organize automated builds and code integrity checking processes
 
 
--------------------------
-Pre-requisites for BT Use
--------------------------
+-------
+Prepare
+-------
 
-To use BT following tools are required to be preinstalled on your system:
+To get HY BTI working on your system, you should have the following tools
+installed:
 
-  1) JDK version 1.5.0
+  1) JDK version 1.5.0:
      http://java.sun.com
      http://www.jrockit.com/
 
-  2) Apache Ant, version 1.6 or higher 
+  2) Apache Ant, version 1.6.5
      http://ant.apache.org
-
-  3) C compiler, either gcc for Linux*, or one of the following for Windows*:
-         + Microsoft* 32-bit C/C++ Compiler v.7 or higher,
-         + Windows* platform SDK,
-         + Microsoft* Visual Studio .NET* 2003 or higher
-           http://www.microsoft.com/downloads/
-
-  4) Subversion tool (svn)
+  
+  3) Subversion tool (svn)
      http://subversion.tigris.org/
 
+Some of the test suites (involving CLASSLIB or DRLVM builds) 
+need C compiler. It can be either:
+    - gcc for Linux*, or 
+    - Microsoft* Visual Studio .NET* 2003 for Windows*
 
-=======================
-Using BT Infrastructure
-=======================
 
-Assumed BT usage (not actual, but after integration into repository, see next
-section for current use) is as follows:
+---------------
+Getting started
+---------------
 
-  ---------------------------------------
-* Test Execution (post integration vision)
-  ----------------------------------------
+To get started with HY BTI go through the points below. For quick start you
+can skip long explanations - just read the headers of the items and execute
+the commands started with #>
 
-  To launch some of the integrated test suites user should perform following 
-steps:
+
+1. Get the infrastructure from its SVN repository (located at @LINK): 
+
+    #> svn checkout -N -r HEAD @LINK
+
+Currently the link for HY BTI SVN repository is:
     
-  1. Getting BT Infra
+    https://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0
+
+It is important to use https protocol on this step: If you're running BTI on 
+your workstation for a first time, this command will initially download 
+SSL certificate from repository hosting site and ask for acceptance.
+To proceed you should accept the certificate permanently.
+
+
+2. Install the BTI: Tune environment variables in buildtest scripts 
+downloaded during the first step. And run the following command:
     
-      #> svn co -r HEAD -N http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk
-     
-     It will download ONLY Main Build file and README's from SVN repository
-     Such a trick is needed for traffic and checkout time economy.
+    #> buildtest install
 
-  2. Setting Up and getting needed Test Suites:
-  
-    #> buildtest -Dtest.suites="classlib,drlvm" setup
 
-    It will:
-      1. Download BT Framework implementation (./scripts dir from BT trunk) if
-         it has not been done yet.
-      2. Set Up the Framework
-      3. Download adaptors for classlib and drlvm test suites already 
-         integrated into BT (if it has not been done yet).
-      4. Launch Set Up for selected Test Suites. These Set Ups will download
-         (or update) needed test sources for selected Test Suites and prepare
-         them for execution.
-      5. Extract REQUIRED parameters needed to be specified by used and
-         request user to provide the values for them.
+3. Select test suites to execute and setup your test run configuration:
 
-  3. User provides REQUIRED values for the build configuration
+    #> buildtest -Dtest.suites="classlib,drlvm,scimark" setup
 
-  4. Execution of selected test suites:
+This sample configuration means: execute classlib building (test that it can
+be built), then on the base of built classlib do build of drlvm (test that it
+also can be built), and after that run the SciMark benchmark on the product of
+drlvm test suite (which is built JVM).
 
-    #> buildtest
-      or 
+Such a meaning is reached by the following information provided by test
+suites: information about dependencies between the suites, and information
+about the product provided by one suite to another. This information is
+described in parameters.xml file placed under 'adaptors' dir for each of test
+suites. This file is an Ant xml property file and having some semantics defined
+on each of the properties. 
+
+So the property 'depends' defined in parameters.xml file lists the test
+suites on which this test suite depends in default configuration. For example
+look in adaptors/scimark/parameters.xml file: by default the scimark test
+suite depends on drlvm: if drlvm and scimark are selected for test run
+together, then scimark is always executed after drlvm and it takes JVM
+provided by drlvm as JVM to test. If drlvm test suite was not selected for
+run, then scimark's 'tested.runtime' "required" parameter won't be resolved
+and BTI will ask to provide this value by means of
+required-parameters.properties file. 
+
+drlvm test suite provides information about built JVM to other test suites
+by means of "shared" 'jvm.location' parameter. 
+To get this value scimark test suite in its parameters.xml file
+makes assignment of its "required" parameter 'tested.runtime' to drlvm's
+"shared" parameter 'jvm.location'.
+
+That's the base means used to describe the execution order of the test suites
+and the values of required parameters needed for test suite execution.
+
+The command line above complies with default configuration expected by selected
+test suites. But what if it does not? What if we chose the following
+configuration to be executed: -Dtest.suites="hdk,scimark" (do build HDK and
+execute SciMark on top of it). In this case we need to change scimark's
+dependency information and the information from where to get the JVM to test.
+It is done by means of the following properties specified in
+framework.local.properties file before 'buildtest setup' execution:
+
+scimark.parameters.depends=hdk
+  - tells to BTI to execute scimark after hdk
+scimark.parameters.required.tested.runtime=${hdk.parameters.shared.binaries.jre.dir}/bin/java
+  - tells to BTI where to take JVM for scimark
+
+These properties redefines the parameters defined in scimark's 
+parameters.xml file.
+
+That's all about dependencies between the test suites.
+
+'buildtest setup' command generates required-parameters.properties file. 
+It contains all of the assignments of "required" parameters. 
+If some of the "required" parameters were not evaluated, 
+BTI will report an ERROR and demand to specify the values for
+unspecified parameters. You should whether provide them directly in 
+required-parameters.properties file (this way is better for some predefined 
+values, hardcoded path to tested JVM for example) and go to next step, 
+or provide "required" to "shared" correspondence (as above) in 
+framework.local.properties file and repeat 'buildtest setup'. 
+
+Note: the values provided in required-parameters.properties take precedence
+over the values provided in parameters.xml or framework.local.properties
+files. So, if you change the values of required parameters in parameters.xml,
+or in framework.local.properties file, you should delete corresponding
+required parameter from required-parameters.properties file.
+
+For example of usage of the required-parameters.properties file let's look at
+the configuration containing only scimark test suite:
+'buildtest -Dtest.suite=scimark setup' command will end with demand to specify 
+the value for 'scimark.tested.runtime' "required" parameter. We just write the
+following line in required-parameters.properties file:
+
+scimark.tested.runtime=/usr/bin/java
+
+and go to the next point of the usage guide.
+
+
+4. To launch the configured test run, type the following:
+
     #> buildtest run
 
-  5. Execution under Cruise Control system:
+It will execute selected test suites. BTI will execute each of the suites and
+report SUCCESS if there were no test failures and ERROR otherwise.
+To launch continuous test run, type the following:
+    
+    #> buildtest run-cc
 
-    #> buildtest cc-run
+It will launch CC controlled continuous test execution. There are two modes of
+continuous execution: SVN modifications triggered and scheduled runs. SVN
+modifications triggered runs are executed each time SVN modification occurs.
+The SVN repositories controlled by test suites are defined by cc.usesvn*
+properties defined in parameters.xml file. For example look in the parameters
+for classlib or hdk test suites. Scheduled runs are launched at the particular
+time specified by the following properties in framework.local.properties file:
 
-
-  ------------------------------------
-* Test Execution (pre-integration use)
-  ------------------------------------
-
-As it is not under SVN yet, to run the suites user should perform the following
-actions:
-
-  1. Setting Up and getting needed Test Suites:
-  
-    #> buildtest.bat -Dtest.suites="classlib,drlvm" setup
-
-  2. User provides REQUIRED values for the build configuration
-
-  3. Run the suites:
-
-    #> buildtest.bat -Dtest.suites="classlib,drlvm" run
- 
-     or under CC:
-
-    #> buildtest.bat -Dtest.suites="classlib,drlvm" run-cc
-
-
-==========================
-New Test Suite Integration
-==========================
-
-To Integrate your Test Suite (say, 'my-test-suite') into new BT Framework you
-should perform the following steps:
-
-   1. Implement Adaptor interface for your Test Suite:
-     : implement _setup_, _run_, _clean_ targets in 
-          ${root.dir}/my-test-suite/adaptor.xml
-     * More on _Adaptors_ see at "SPEC.txt/Test Suite Adaptors" section
-
-   2. Define the Parameters of the Test Suite in 
-          ${root.dir}/my-test-suite/parameters.xml 
-      file:
-       - <required> section - list all properties required to be set up by user
-       - <shared> section - list all the values to be shared by the test suite
-       - <external> section - list all external dependencies to be downloaded
-       - <optional> section - list optional parameters for low-level tuning (not
-         supported at this development stage)
-       - depends attribute - coma separated list of dependencies on other suites
-     * More on _Parameters_ see at "SPEC.txt/Test Suite Parameters" section
-
-   3. Place adaptor.xml and parameters.xml under adaptor/${suite.name}
-      directory
-
-   4. If there is a reason to place sources of new Test Suite under BT
-      SVN, place them under tests/${suite.name} directory of BT repository and
-      use this location as a pointer to the sources.
-      -----
-      Note: Assumed BT usage does not suppose that all of the BT trunk files
-      ----- will be checked out. So adaptor.xml should check out the sources
-            by itself.
-
-   5. To run your 'my-test-suite' suite alone:
-      1. Set up environment variables in buildtest.bat
-      2. If you're using proxy for internet connection, set it up at ANT_OPTS
-         variable.
-      3. Type:
-            #> buildtest.bat -Dtest.suites=my-test-suite setup
-         to setup BT Infra.
-      4. Specify all of the required parameters in generated
-            required-parameters.properties
-         file.
-      5. Type:
-            #> buildtest.bat -Dtest.suites=my-test-suite run
-         to execute your suite alone.
-      6. Type:
-            #> buildtest.bat -Dtest.suites=my-test-suite run-cc
-         to launch continuous execution of your test suite.
-
-   6. Do 5. without
-        -Dtest.suites=my-test-suite
-      parameter to setup and execute all of the installed test suites.
-
-
---------------------------
-Active Workspace Structure
---------------------------
-
-  +/
-   |-+build/
-   |  |
-   |  |-+cc/        - CC related stuff
-   |  |
-   |  |-+checkouts/ - externally checkouted test suites (not included in BUILDTEST)
-   |  |
-   |  |-+lib/       - external libraries needed for fwk and test suites
-   |  |
-   |  |-+tmp/       - temporary files
-   |
-   |
-   |-+scripts/      - Framework implementation
-   |
-   |-+adaptors/     - Test Suites adaptors implementations
-   |
-   |-+tests/        - Tests Suites placed under BUILDTEST and dowlnoaded on 'setup' stage
-   |
-   |-build.xml      - Main Build file
-   |
-   |-buildtest.dtd  - DTD for Main Build File
-   |
-   |-README.txt     - Readme file
-   |
-   |-SPEC.txt       - BT Specification
+framework.parameters.schedule.day=Tuesday
+ - Do launch test suites execution on particular day. 
+   If this property is not defined, the test run will be launched everyday.
+framework.parameters.schedule.time=1530
+ - Do launch test suites execution at this particular time.
+   Should be defined for scheduled execution mode.
 
 
 
-
-
-
-
-
-
-
-
-
-
+*) Other brands and names are the property of their respective owners
