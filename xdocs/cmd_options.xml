@@ -61,11 +61,11 @@
 
         <table>
           <tr>
-            <th class="TableHeading">
+            <th class="TableHeading" width="50%">
               Options
 
             </th>
-            <th  class="TableHeading">
+            <th  class="TableHeading" width="50%">
               Comments
             </th>
           </tr>
@@ -96,14 +96,14 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-XX:-vm.finalize</code>
 
               </strong>
             </td>
-            <td>
+            <td class="TableCell">
               Disables finalization subsystem, that is, prevents starting finalization threads and ignores finalization requests from the GC
             </td>
           </tr>
@@ -152,17 +152,17 @@
 
         <table>
           <tr>
-            <th class="TableHeading">
+            <th class="TableHeading" width="50%">
 
               Options
 
             </th>
-            <th  class="TableHeading">
+            <th class="TableHeading" width="50%">
               Comments
             </th>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-Xtrace:em</code>
@@ -170,7 +170,7 @@
 
 
             </td>
-            <td>
+            <td class="TableCell">
 
               Prints method compilation events to <code>stdout</code> to detect the method that failed to compile (not an EM option, but very informative for EM behavior);
               <br/><i>Available in the debug build only</i>
@@ -197,16 +197,17 @@
               </td>
             </tr>
           <tr>
-            <td >
+            <td class="TableCell">
 
               <strong>
                 <code>-Xem:&lt;config&gt;</code>
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
               Specifies the Execution Manager configuration file to use; choose one of the predefined files
-              (<a href="#EMClient">client</a>, <a href="#EMServer">server</a>, <a href="#EMOpt">opt</a>, <a href="#EMJet">jet</a>) or specify your own
+              (<a href="#EMClient">client</a>, <a href="#EMServer">server</a>, <a href="#EMOpt">opt</a>, <a href="#EMJet">jet</a>)
+              <br/>or specify your own
 
             </td>
           </tr>
@@ -225,7 +226,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <a name="EMServer"></a>
@@ -234,7 +235,7 @@
 
 
             </td>
-            <td >
+            <td class="TableCell">
 
               Sets the optimization sequence for server applications: the <code>server</code> mode execution
               analogous to <strong>
@@ -258,7 +259,7 @@
             </td>
           </tr>
           <tr>
-            <td >
+            <td class="TableCell">
 
               <strong>
                 <a name="EMOpt"></a>
@@ -266,7 +267,7 @@
               </strong>
 
             </td>
-            <td >
+            <td class="TableCell">
               Configures VM to use only the aggressively optimizing JIT compiler Jitrino.OPT
             </td>
 
@@ -289,7 +290,7 @@
 
           </tr>
           <tr>
-            <td >
+            <td class="TableCell">
 
               <strong>
 
@@ -299,7 +300,7 @@
               </strong>
 
             </td>
-            <td >
+            <td class="TableCell">
               Use to override the default path for all JIT dlls in <code>EM.conf</code> with path.
           </td>
 
@@ -321,7 +322,7 @@
 
           </tr>
           <tr>
-            <td >
+            <td class="TableCell">
 
               <strong>
 
@@ -331,7 +332,7 @@
               </strong>
 
             </td>
-            <td >
+            <td class="TableCell">
               Sets up a path to em configuration file to use.
             </td>
 
@@ -342,24 +343,24 @@
 
         <table>
           <tr>
-            <th class="TableHeading">
+            <th class="TableHeading" width="50%">
 
               Options
 
             </th>
-            <th  class="TableHeading">
+            <th class="TableHeading" width="50%">
               Comments
             </th>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-XX:jit.arg.log=&lt;log_type&gt;</code>
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
               Enables compilation logging for the Jitrino.OPT JIT compiler;
               <br/><code>&lt;log_type&gt;</code> is a comma-separated list of the logging types to enable (see below the examples)
 
@@ -378,7 +379,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
 
               <strong>
@@ -386,7 +387,7 @@
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
               Turns ON compile-time logging and debug information
             </td>
           </tr>
@@ -405,14 +406,14 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-XX:jit.p.filter=.main -XX:jit.p.arg.log=ct,irdump,dotdump</code>
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
 
               Turns ON compile-time logging for methods with names starting with <code>main</code>
 
@@ -432,7 +433,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
 
               <strong>
@@ -440,7 +441,7 @@
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
 
               Enables internal profiler dumps <code>iprof.stat</code> in Jitrino.OPT;
               <br/><i>
@@ -457,24 +458,24 @@
 
         <table>
           <tr>
-            <th  class="TableHeading">
+            <th class="TableHeading" width="50%">
 
               Options
             </th>
-            <th  class="TableHeading">
+            <th class="TableHeading" width="50%">
               Comments
             </th>
           </tr>
 
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-XX:gc.nos_size=N</code>
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
               Specifies a fixed size for NOS (nursery object space or young generation)
             </td>
           </tr>
@@ -492,14 +493,14 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-XX:+gc.use_large_page</code>
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
               Turns ON large page support of the platform
             </td>
           </tr>
@@ -517,14 +518,14 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-XX:+gc.force_major_collect</code>
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
               Forces every collection to be full heap collection (i.e., no minor collections)
             </td>
           </tr>
@@ -542,14 +543,14 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-XX:-gc.heap_iteration</code>
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
               Disables JVMTI functionality of heap iteration
 
             </td>
@@ -562,23 +563,22 @@
 
         <table>
           <tr>
-            <th  class="TableHeading">
-
+            <th class="TableHeading" width="50%">
               Options
             </th>
-            <th  class="TableHeading">
+            <th class="TableHeading" width="50%">
               Comments
             </th>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-verbose:gc</code>
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
               Enables init messages from GC and information about GC pauses
             </td>
           </tr>
@@ -596,14 +596,14 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-XX:gc.type=N</code>
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
 
               Specifies the number of the GC algorithm to use (use together with <code>-Dgc.adaptive=0</code>);
               <br/>Available algorithms: 1.copying + fallback to sliding compaction; 2.full collection using sliding compaction; 3.sliding compaction
@@ -626,7 +626,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-XX:+gc.ignore_finalizers=1</code>
@@ -634,8 +634,9 @@
 
 
             </td>
-            <td>
-              Ignores finalizable objects, that is, stops tracking reachability of finalizable object, does not revive them or pass revived objects to VM for finalization
+            <td class="TableCell">
+              Ignores finalizable objects, that is, stops tracking reachability of finalizable object, 
+              <br/>does not revive them or pass revived objects to VM for finalization
             </td>
           </tr>
           <tr>
@@ -655,14 +656,14 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="TableCell">
 
               <strong>
                 <code>-XX:gc.lp=/mnt/huge</code>
               </strong>
 
             </td>
-            <td>
+            <td class="TableCell">
 
               On Linux, enables (<code>1</code>) or disables (<code>0</code>) using large pages for more effective TLB utilization; huge pages are allocated with the <code>mmap</code> method.
               <br/>Specify the mount point where <code>hugetlbfs</code> is mounted. Use <code>-verbose:gc.lp</code> for more diagnostics

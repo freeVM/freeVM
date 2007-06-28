@@ -222,23 +222,23 @@ limitations under the License.
          </p>
                                 <table>
                         <tr>
-                        <th class="TableHeading" colspan="" rowspan="">
+                        <th class="TableHeading" colspan="" rowspan="" width="">
                 
                      Function Name 
         </th>
-                                <th class="TableHeading" colspan="" rowspan="">
+                                <th class="TableHeading" colspan="" rowspan="" width="">
                 
                      Role
         </th>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <td class="TableCell" colspan="" rowspan="">
     
                 
                      <code>jvmti_jit_prepare_pop_frame</code>
               
         </td>
-                                <td class="TableCell" colspan="" rowspan="" >
+                                <td class="TableCell" colspan="" rowspan="">
     
                 
                      Finds register context for the previous frame using the
@@ -246,13 +246,13 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <td class="TableCell" colspan="" rowspan="">
     
                 
                      <code>jvmti_jit_complete_pop_frame</code>
               
         </td>
-                                <td class="TableCell" colspan="" rowspan="" >
+                                <td class="TableCell" colspan="" rowspan="">
     
                 
                      Transfers control to the saved register context for the
@@ -261,13 +261,13 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <td class="TableCell" colspan="" rowspan="">
     
                 
                      <code>jvmti_ji_do_pop_frame</code>
               
         </td>
-                                <td class="TableCell" colspan="" rowspan="" >
+                                <td class="TableCell" colspan="" rowspan="">
     
                 
                      Transfers control to the previous frame. This function is
@@ -283,24 +283,24 @@ limitations under the License.
            field. This field can have the following values: </p>
                                 <table>
                         <tr>
-                        <th class="TableHeading" colspan="" rowspan="">
+                        <th class="TableHeading" colspan="" rowspan="" width="">
                 
                    Flag Name
                    
         </th>
-                                <th class="TableHeading" colspan="" rowspan="">
+                                <th class="TableHeading" colspan="" rowspan="" width="">
                 
                      Meaning
         </th>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <td class="TableCell" colspan="" rowspan="">
     
                 
                      <code>FRAME_UNPOPABLE</code>
               
         </td>
-                                <td class="TableCell" colspan="" rowspan="" >
+                                <td class="TableCell" colspan="" rowspan="">
     
                 
                      The frame cannot be popped.
@@ -308,13 +308,13 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <td class="TableCell" colspan="" rowspan="">
     
                 
                      <code>FRAME_POPABLE</code>
               
         </td>
-                                <td class="TableCell" colspan="" rowspan="" >
+                                <td class="TableCell" colspan="" rowspan="">
     
                 
                      The frame can be popped but is not.
@@ -322,13 +322,13 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <td class="TableCell" colspan="" rowspan="">
     
                 
                      <code>FRAME_POP_NOW</code>
               
         </td>
-                                <td class="TableCell" colspan="" rowspan="" >
+                                <td class="TableCell" colspan="" rowspan="">
     
                 
                      The frame is popped and the state of VM can be
@@ -339,14 +339,14 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="" >
+                        <td class="TableCell" colspan="" rowspan="">
     
                 
                      <code>FRAME_POP_DONE =
                      FRAME_POPABLE |FRAME_POP_NOW</code>
               
         </td>
-                                <td class="TableCell" colspan="" rowspan="" >
+                                <td class="TableCell" colspan="" rowspan="">
     
                 
                      The frame is popped now but VM state is OK and JVMTI can
