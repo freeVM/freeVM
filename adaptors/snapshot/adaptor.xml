@@ -227,6 +227,15 @@
         </concat>
     </target>
 
+    <target name="publish-stress">
+        <delete dir="${snapshot.results.dir}/stress" />
+        <mkdir dir="${snapshot.results.dir}/stress" />
+        <junitreport todir="${snapshot.results.dir}/stress">
+            <fileset dir="${results.dir}/stress" includes="TEST*-*.xml" />
+            <report format="frames" todir="${snapshot.results.dir}/stress" />
+        </junitreport>
+    </target>
+
     <target name="publish-struts_test">
         <mkdir dir="${snapshot.results.dir}/struts_test" />
         <copy todir="${snapshot.results.dir}/struts_test">
