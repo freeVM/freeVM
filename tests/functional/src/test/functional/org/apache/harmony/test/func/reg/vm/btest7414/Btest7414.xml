@@ -27,7 +27,7 @@
         <Source name="Btest7414.java"/>
         <Runner ID="Execute">
             <Param name="toRun" value="$TestedRuntime">
-                <Option name="-classpath" value="$TestSuiteRoot$FileSeparatorbin$FileSeparatorclasses"/>
+                <Option name="-classpath" value="$TestSuiteClassRoot"/>
                 <Option value="-agentlib:Btest7414"/>
                 <Option value="org.apache.harmony.test.func.reg.vm.btest7414.Btest7414"/>
             </Param>

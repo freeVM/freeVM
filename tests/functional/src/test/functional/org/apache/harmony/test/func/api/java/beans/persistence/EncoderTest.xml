@@ -39,7 +39,7 @@
         <Param name="toRun"
             value="org.apache.harmony.test.func.api.java.beans.persistence.EncoderTest">
             <Option
-                value="$ReferenceRuntime -cp $TestSuiteRoot$FileSeparatorbin$FileSeparatorclasses" />
+                value="$ReferenceRuntime -cp $TestSuiteClassRoot" />
         </Param>
     </Runner>
 </Test>
