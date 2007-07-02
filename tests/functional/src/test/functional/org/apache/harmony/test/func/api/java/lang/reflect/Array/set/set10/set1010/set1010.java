@@ -96,8 +96,8 @@ public class set1010 extends Test {
         try { Array.set(myObjects3, 1, null);
             results[i] = false;
             addLog("ERROR: testcase3: ");
-        } catch ( NullPointerException e ) {
-            addLog("correct NullPointerException");
+        } catch ( IllegalArgumentException e ) {
+            addLog("correct IllegalArgumentException");
         }
 //-3)
 //-4

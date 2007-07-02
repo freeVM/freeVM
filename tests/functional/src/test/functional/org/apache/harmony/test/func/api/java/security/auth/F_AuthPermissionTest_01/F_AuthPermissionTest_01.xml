@@ -47,8 +47,7 @@
             
                 
         <Runner ID="Runtime">
-                <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot"/>
-                <Option name="-Djava.security.policy==$TestDirectory$FileSeparatorauxiliary$FileSeparatorAuthPermissionTest.policy"/>
+                <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorAuthPermissionTest.policy"/>
                    <Option name="-Dqe.class=$TestSuiteClassRoot"/>
                    <Option name="-Dqe.src=$TestSuiteTestRoot"/>
                 <Param name="toRun" value="org.apache.harmony.test.func.api.java.security.auth.F_AuthPermissionTest_01.F_AuthPermissionTest_01"/>

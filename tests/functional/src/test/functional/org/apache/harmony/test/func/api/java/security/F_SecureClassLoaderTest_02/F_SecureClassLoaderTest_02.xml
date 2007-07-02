@@ -44,29 +44,10 @@
                 <Source name="F_SecureClassLoaderTest_02.java"/>
                 <Modification date="2004-11-30" />
                 
-        <!--Runner ID="Execute">
-            <Param name="toRun" value="$TestedCompile">
-                <Option name="-d" value="$TempStorage"/>
-                <Option name="-classpath" value="$TestSuiteClassRoot$PathSeparator$TestDirectory\auxiliary\HelloWorld.jar"/>
-                <Option name="$TestDirectory$FileSeparatorF_SecureClassLoaderTest_02.java"/>
-                
-            </Param>
-            <Param name="toRun" value="$TestedRuntime">
-                <Option name="-cp" value="$TestSuiteClassRoot$PathSeparator$TestDirectory\auxiliary\HelloWorld.jar"/>
-                <Option value="$BOOT_CLASS_PATH"/>
-                        <Option name="-Djava.security.manager"/>
-                        <Option name="-Djava.security.policy==$TestDirectory/auxiliary/SecureClassLoaderTest.policy"/>
-                <Option name="org.apache.harmony.test.func.api.java.security.F_SecureClassLoaderTest_02.F_SecureClassLoaderTest_02"/>
-                <Option value="file:/USER_DIR/src/test/org/apache/harmony/test/func/api/java/security/F_SecureClassLoaderTest_02/auxiliary/HelloWorld.jar"/>
-                <Option value="HelloWorld"/>
-                <Option value="MyPrivilegedAction"/>
-            </Param>
-        </Runner-->
         <Runner ID="Runtime">
-                <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot$PathSeparator"/>                
-                <Option name="-Djava.security.policy==$TestDirectory$FileSeparatorauxiliary$FileSeparatorSecureClassLoaderTest.policy"/>
+                <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorSecureClassLoaderTest.policy"/>
                 <Option name="-Dqe.class=$TestSuiteClassRoot"/>
-                   <Option name="-Dqe.src=$TestSuiteTestRoot"/>
+                <Option name="-Dqe.src=$TestSuiteTestRoot"/>
                 <Param name="toRun" value="org.apache.harmony.test.func.api.java.security.F_SecureClassLoaderTest_02.F_SecureClassLoaderTest_02">
                     <Option value="file:/$TestDirectory$FileSeparatorauxiliary$FileSeparator"/>
                     <Option value="HelloWorld"/>

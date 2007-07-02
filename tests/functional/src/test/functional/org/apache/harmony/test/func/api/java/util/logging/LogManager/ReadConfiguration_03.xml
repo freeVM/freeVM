@@ -49,7 +49,7 @@
 
     <Runner ID="Runtime">
         <Param name="toRun" value="org.apache.harmony.test.func.api.java.util.logging.LogManager.ReadConfiguration_03">
-            <Option name="vmParam" value="-Dorg.apache.harmony.test.func.api.java.logging.LogManager.readConfiguration.path=$TestDirectory/auxiliary/sc.cfg" />
+            <Option name="vmParam" value="-Dorg.apache.harmony.test.func.api.java.logging.LogManager.readConfiguration.path=$TestDirectory$FileSeparatorauxiliary$FileSeparatorsc.cfg" />
             <Option name="vmParam" value="-Djava.util.logging.config.class=org.apache.harmony.test.func.api.java.util.logging.LogManager.LogManagerConfigurator" />
         </Param>
     </Runner>

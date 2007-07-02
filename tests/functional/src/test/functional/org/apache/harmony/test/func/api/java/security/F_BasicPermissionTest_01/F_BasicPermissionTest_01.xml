@@ -48,24 +48,9 @@
                 <Source name="F_BasicPermissionTest_01.java"/>
                 <Modification date="2004-12-09" />
                 
-        <!--Runner ID="Execute">
-            <Param name="toRun" value="$TestedCompile">
-                <Option name="-d" value="$TempStorage"/>
-                <Option name="-classpath" value="$TestSuiteClassRoot$PathSeparator$TestDirectory\auxiliary\TestAction.jar"/>
-                <Option name="$TestDirectory$FileSeparatorF_BasicPermissionTest_01.java" value="$TestDirectory$FileSeparatorauxiliary$FileSeparatorQEPermission.java"/>
-            </Param>
-            <Param name="toRun" value="$TestedRuntime">
-                <Option name="-cp" value="$TestSuiteClassRoot$PathSeparator$TestDirectory\auxiliary\TestAction.jar"/>
-                <Option value="$BOOT_CLASS_PATH"/>
-                        <Option name="-Djava.security.manager"/>
-                        <Option name="-Djava.security.auth.login.config=$TestDirectory/auxiliary/jaas.config"/>
-                        <Option name="-Djava.security.policy==$TestDirectory/auxiliary/BasicPermissionTest.policy"/>
-                <Option name="org.apache.harmony.test.func.api.java.security.F_BasicPermissionTest_01.F_BasicPermissionTest_01"/>
-            </Param>
-        </Runner-->
         <Runner ID="Runtime">
                 <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot$PathSeparator$TestDirectory$FileSeparatorauxiliary$FileSeparatorTestAction.jar"/>
-                   <Option name="-Djava.security.policy==$TestDirectory$FileSeparatorauxiliary$FileSeparatorBasicPermissionTest.policy"/>
+                   <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorBasicPermissionTest.policy"/>
                    <Option name="-Dqe.class=$TestSuiteClassRoot"/>
                    <Option name="-Dqe.src=$TestSuiteTestRoot"/>
                 <Param name="toRun" value="org.apache.harmony.test.func.api.java.security.F_BasicPermissionTest_01.F_BasicPermissionTest_01"/>

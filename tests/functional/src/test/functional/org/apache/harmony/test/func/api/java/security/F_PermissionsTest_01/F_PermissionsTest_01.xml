@@ -48,26 +48,9 @@
                 <Source name="F_PermissionsTest_01.java"/>
                 <Modification date="2004-12-02" />
                 
-        <!--Runner ID="Execute">
-            <Param name="toRun" value="$TestedCompile">
-                <Option name="-d" value="$TempStorage"/>
-                <Option name="-classpath" value="$TestSuiteClassRoot$PathSeparator"/>
-                <Option name="$TestDirectory$FileSeparatorF_PermissionsTest_01.java"/>
-                
-            </Param>
-            <Param name="toRun" value="$TestedRuntime">
-                <Option name="-cp" value="$TestSuiteClassRoot$PathSeparator"/>
-                <Option value="$BOOT_CLASS_PATH"/>
-                   <Option name="-Djava.security.manager"/>
-                   <Option name="-Djava.security.policy==$TestDirectory/auxiliary/Permissions.policy"/>
-                <Option name="org.apache.harmony.test.func.api.java.security.F_PermissionsTest_01.F_PermissionsTest_01"/>
-            </Param>
-        </Runner-->
         <Runner ID="Runtime">
-                <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot$PathSeparator"/>
-                   <!--Option name="-Djava.security.manager"/-->
                    <Option name="-Dqe.class=$TestSuiteClassRoot"/>
-                   <Option name="-Djava.security.policy==$TestDirectory$FileSeparatorauxiliary$FileSeparatorpermissions.policy"/>
+                   <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorpermissions.policy"/>
                 <Param name="toRun" value="org.apache.harmony.test.func.api.java.security.F_PermissionsTest_01.F_PermissionsTest_01"/>
         </Runner>
         <Restriction name="OtherVMOnly"/>

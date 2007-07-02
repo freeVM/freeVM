@@ -46,24 +46,10 @@
                         <Modification date="2004-11-17" />
 
                         
-            <!--Runner ID="Execute">
-            <Param name="toRun" value="$TestedCompile">
-                <Option name="-d" value="$TempStorage"/>
-                <Option name="-classpath" value="$TestSuiteClassRoot$PathSeparator$TestDirectory/auxiliary/auxiliary.jar"/>
-                <Option name="$TestDirectory$FileSeparatorF_PolicyTest_01.java"/>
-            </Param>
-            <Param name="toRun" value="$TestedRuntime">
-                <Option name="-cp" value="$TempStorage$PathSeparator$TestSuiteClassRoot$PathSeparator$TestDirectory/auxiliary/auxiliary.jar"/>
-                <Option value="$BOOT_CLASS_PATH"/>
-                        <Option name="-Djava.security.manager"/>
-                        <Option name="-Djava.security.policy==$TestDirectory/auxiliary/java.policy"/>                            <Option name="org.apache.harmony.test.func.api.java.security.F_PolicyTest_01.F_PolicyTest_01"/>
-                <Option name="$TestDirectory/auxiliary/"/>
-            </Param>
-        </Runner-->
         <Runner ID="Runtime">
                 <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot$PathSeparator$TestDirectory$FileSeparatorauxiliary$FileSeparatorauxiliary.jar"/>
                 <Option name="-Djava.security.manager"/>
-                <Option name="-Djava.security.policy==$TestDirectory$FileSeparatorauxiliary$FileSeparatorjava.policy"/>                            
+                <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorjava.policy"/>                            
                 <Param name="toRun" value="org.apache.harmony.test.func.api.java.security.F_PolicyTest_01.F_PolicyTest_01">
                     <Option name="$TestDirectory$FileSeparatorauxiliary/"/>
                 </Param>

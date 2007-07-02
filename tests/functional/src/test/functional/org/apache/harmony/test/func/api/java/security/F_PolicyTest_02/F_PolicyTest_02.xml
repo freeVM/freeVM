@@ -36,8 +36,8 @@
                         
             <Runner ID="Runtime">
                 <Option name="-cp" value="$CP$PathSeparator$TestDirectory$FileSeparatorauxiliary$FileSeparatorauxiliary.jar$PathSeparator$TestDirectory$FileSeparatorauxiliary$FileSeparatorcopypolicy.jar"/>
-                        <Option name="-Djava.security.manager"/>
-                           <Option name="-Djava.security.policy==$TestDirectory$FileSeparatorauxiliary$FileSeparatorjava.policy"/>
+                <Option name="-Djava.security.manager"/>
+                <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorjava.policy"/>
                 <Option name="-Dqe.test.path=$TestDirectory"/>
                 <Param name="toRun" value="CopyPolicy">
                     <Option name="$TestDirectory$FileSeparatorauxiliary$FileSeparatorjava.policy"/>

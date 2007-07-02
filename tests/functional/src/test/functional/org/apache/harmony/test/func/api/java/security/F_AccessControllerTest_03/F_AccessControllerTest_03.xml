@@ -52,7 +52,7 @@
                 
         <Runner ID="Runtime">
                 <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot$PathSeparator$TestDirectory$FileSeparatorauxiliary$FileSeparatorAccessTestClass.jar"/>
-                   <Option name="-Djava.security.policy==$TestDirectory$FileSeparatorauxiliary$FileSeparatorAccessControllerTest3.policy"/>
+                   <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorAccessControllerTest3.policy"/>
                 <Param name="toRun" value="org.apache.harmony.test.func.api.java.security.F_AccessControllerTest_03.F_AccessControllerTest_03">
                 <Option value="user.name"/>
             </Param>

@@ -62,8 +62,7 @@
                 <Modification date="2004-12-06" />                
 
         <Runner ID="Runtime">
-                <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot$PathSeparator"/>
-                   <Option name="-Djava.security.policy==$TestDirectory$FileSeparatorauxiliary$FileSeparatorAccessControlContext01.policy"/>
+                   <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorAccessControlContext01.policy"/>
                    <Option name="-Dqe.suite=$TestSuiteRoot"/>
                    <Option name="-Dqe.class=$TestSuiteClassRoot"/>
                    <Option name="-Dqe.src=$TestSuiteTestRoot"/>

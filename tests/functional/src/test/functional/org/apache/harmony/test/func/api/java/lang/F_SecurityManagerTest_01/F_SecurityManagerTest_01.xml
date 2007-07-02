@@ -51,7 +51,7 @@
 
         <Runner ID="Runtime">
             <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot$PathSeparator$TestDirectory$FileSeparatorauxiliary$FileSeparatortrusted.jar$PathSeparator$TestDirectory$FileSeparatorauxiliary$FileSeparatordenied.jar$PathSeparator$TestDirectory$FileSeparatorauxiliary$FileSeparatorgranted.jar"/>
-                   <Option name="-Djava.security.policy==$TestDirectory$FileSeparatorauxiliary$FileSeparatorfile.policy"/>
+                   <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorfile.policy"/>
                    <Option name="-Dqe.class=$TestSuiteClassRoot"/>
                    <Option name="-Dqe.src=$TestSuiteTestRoot"/>
                    <Option name="-Dqe.test.dir=$TestDirectory"/>

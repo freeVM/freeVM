@@ -55,26 +55,8 @@
                 <Source name="F_SecureRandomTest_02.java"/>
                 <Modification date="2004-12-28" />
                 
-        <!--Runner ID="Execute">
-            <Param name="toRun" value="$TestedCompile">
-                <Option name="-d" value="$TempStorage"/>
-                <Option name="-classpath" value="$TestSuiteClassRoot$PathSeparator"/>
-                <Option name="$TestDirectory$FileSeparatorF_SecureRandomTest_02.java" value =""/>
-                <Option name="$TestDirectory$FileSeparatorauxiliary/SecureRandomProvider.java"/>
-                <Option name="$TestDirectory$FileSeparatorauxiliary/SecureRandomSPImplementation.java"/>
-                
-            </Param>
-            <Param name="toRun" value="$TestedRuntime">
-                <Option name="-cp" value="$TestSuiteClassRoot$PathSeparator"/>
-                <Option value="$BOOT_CLASS_PATH"/>
-                <Option name="-Djava.security.policy==$TestDirectory/auxiliary/SecureRandomTest.policy"/>
-                <Option name="org.apache.harmony.test.func.api.java.security.F_SecureRandomTest_02.F_SecureRandomTest_02"/>
-            </Param>
-        </Runner-->
-
             <Runner ID="Runtime">                
-                <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot$PathSeparator"/>
-                   <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorSecureRandomTest.policy"/>
+                <Option name="-Djava.security.policy=$TestDirectory$FileSeparatorauxiliary$FileSeparatorSecureRandomTest.policy"/>
                 <Param name="toRun" value="org.apache.harmony.test.func.api.java.security.F_SecureRandomTest_02.F_SecureRandomTest_02">
                 </Param>
             </Runner>

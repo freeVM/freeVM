@@ -53,7 +53,7 @@
                 <Modification date="2005-02-02" />
                 
         <Runner ID="Runtime">
-            <Option name="-cp" value="$CP$PathSeparator$TestSuiteRoot$FileSeparatorsrc$FileSeparatortest$PathSeparator$TestDirectory$FileSeparatorauxiliary"/>                
+            <Option name="-cp" value="$CP$PathSeparator$TestSuiteTestRoot$FileSeparatorfunctional$PathSeparator$TestDirectory$FileSeparatorauxiliary"/>
             <Param name="toRun" value="org.apache.harmony.test.func.api.java.lang.F_ClassLoaderTest_03.F_ClassLoaderTest_03">
             </Param>
         </Runner>
