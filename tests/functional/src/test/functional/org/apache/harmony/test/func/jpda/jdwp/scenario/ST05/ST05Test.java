@@ -83,7 +83,7 @@ public class ST05Test extends JDWPQATestCase {
         debuggeeWrapper.vmMirror.clearEvent(JDWPConstants.EventKind.SINGLE_STEP, reply.getNextValueAsInt());
         
         logWriter.print("Checking whether an application returned from the method '" + method + "'");
-        int checkedLine = 40;
+        int checkedLine = 53;
         String checkedMethod = "run";
         events = ParsedEvent.parseEventPacket(event);
         location = ((ParsedEvent.Event_SINGLE_STEP)events[0]).getLocation();        

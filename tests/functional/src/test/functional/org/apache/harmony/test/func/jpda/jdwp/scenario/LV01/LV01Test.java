@@ -53,7 +53,7 @@ public class LV01Test extends JDWPQATestCase {
         long debuggeeClassId = debuggeeWrapper.vmMirror.getClassID(DEBUGGEE_CLASS_SIG);
         long methodId = debuggeeWrapper.vmMirror.getMethodID(debuggeeClassId, method);
         
-        int breakpointLine = 42; // after all local vars are printed
+        int breakpointLine = 55; // after all local vars are printed
         long lineCodeIndex = debuggeeWrapper.vmMirror.getLineCodeIndex(debuggeeClassId, methodId, breakpointLine);
         
         Breakpoint breakpoint = new Breakpoint(DEBUGGEE_CLASS_SIG, method, (int)lineCodeIndex);        

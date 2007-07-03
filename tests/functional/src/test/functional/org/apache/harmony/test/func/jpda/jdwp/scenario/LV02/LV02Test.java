@@ -74,7 +74,7 @@ public class LV02Test extends JDWPQATestCase {
         long start = reply.getNextValueAsLong();
         int firstLineNumber = debuggeeWrapper.vmMirror.getLineNumber(debuggeeClassId, methodId, start);
         
-        int breakpointLine = 48; // after worker tread was started
+        int breakpointLine = 61; // after worker tread was started
         long lineCodeIndex = debuggeeWrapper.vmMirror.getLineCodeIndex(debuggeeClassId, methodId, breakpointLine);
         
         Breakpoint breakpoint = new Breakpoint(DEBUGGEE_CLASS_SIG, method, (int)lineCodeIndex);        
@@ -198,6 +198,9 @@ public class LV02Test extends JDWPQATestCase {
                         if (frameVarsNames != null) {
                             return failed("Couldn't get variables of frame '" + frameNames[j] + "'");
                         }
+                        continue;
+                    } else if (frameVarsNames == null) {
+                    	// ignore unknown variables
                         continue;
                     }
           

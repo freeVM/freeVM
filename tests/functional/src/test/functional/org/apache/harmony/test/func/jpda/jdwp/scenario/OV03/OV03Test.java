@@ -52,7 +52,7 @@ public class OV03Test extends JDWPQATestCase {
         long debuggeeClassId = debuggeeWrapper.vmMirror.getClassID(DEBUGGEE_CLASS_SIG);
         long methodId = debuggeeWrapper.vmMirror.getMethodID(debuggeeClassId, method);
         
-        int breakpointLine = 47; // before running a new thread
+        int breakpointLine = 60; // before running a new thread
         long lineCodeIndex = debuggeeWrapper.vmMirror.getLineCodeIndex(debuggeeClassId, methodId, breakpointLine);
         
         Breakpoint breakpoint = new Breakpoint(DEBUGGEE_CLASS_SIG, method, (int)lineCodeIndex);        

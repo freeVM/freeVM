@@ -113,7 +113,7 @@ public class ST03Test extends JDWPQATestCase {
         int checkedLine = debuggeeWrapper.vmMirror.getLineNumber(debuggeeClassId, methodId, startLineIndex);
         
         int previousLine = stoppedLine;
-        int lineAfterMethodInvocation = 40; // line after 'stepMethod' call
+        int lineAfterMethodInvocation = 53; // line after 'stepMethod' call
         String threadName = debuggeeWrapper.vmMirror.getThreadName(threadID);        
         logWriter.print("Set several steps by a bytecode instruction and check method '" + method + "' invocation");
         while (stoppedLine != lineAfterMethodInvocation) {

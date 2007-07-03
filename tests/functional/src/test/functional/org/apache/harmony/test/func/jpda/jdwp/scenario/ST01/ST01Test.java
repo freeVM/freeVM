@@ -51,7 +51,7 @@ public class ST01Test extends JDWPQATestCase {
         reply = debuggeeWrapper.vmMirror.getLineTable(debuggeeClassId, methodId);
         long start = reply.getNextValueAsLong();
         
-        int runBreakpointLine = 31;
+        int runBreakpointLine = 44;
         
         Breakpoint breakpoint = new Breakpoint(DEBUGGEE_CLASS_SIG, method, (int)debuggeeWrapper.vmMirror.getLineCodeIndex(debuggeeClassId, methodId, runBreakpointLine));
         
@@ -84,7 +84,7 @@ public class ST01Test extends JDWPQATestCase {
             return failed("Couldn't obtain line table information of the method '" + method + "'");
         }
         long startLineIndex = reply.getNextValueAsLong();
-        int checkedMethodBreakpointLine = 40;
+        int checkedMethodBreakpointLine = 53;
         int breakpointLine = debuggeeWrapper.vmMirror.getLineNumber(debuggeeClassId, methodId, startLineIndex);
         
         int stepsToEnterMethod = 10;

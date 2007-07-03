@@ -37,6 +37,7 @@ public class ST07Test extends JDWPQATestCase {
         "org.apache.harmony.share.*",
         "jrockit.*",
         "org.apache.harmony.nio.*",
+        "org.apache.harmony.niochar.*",
         "org.apache.harmony.misc.*",
         "org.apache.harmony.net.*",
         "org.apache.harmony.vmaccess.*",
@@ -53,8 +54,8 @@ public class ST07Test extends JDWPQATestCase {
     private final static String BREAKPOINT_CLASS_SIG = "L" + BREAKPOINT_CLASS_NAME.replace('.', '/') + ";";
     
     private String breakpointMethod = "testMethod";
-    private int breakpointLine = 37;
-    private int breakpointLineInRunMethod = 21;
+    private int breakpointLine = 50;
+    private int breakpointLineInRunMethod = 34;
     
 
 
@@ -553,7 +554,7 @@ public class ST07Test extends JDWPQATestCase {
         logWriter.println("Breakpoint is set at the class '" + BREAKPOINT_CLASS_NAME + "', method '" + breakpointMethod + "', line " + breakpointLine);
         
         logWriter.println("Set second breakpoint inside " + breakpointMethod);
-        breakpointLine = 39;
+        breakpointLine = 52;
         
         breakpointClassID = debuggeeWrapper.vmMirror.getClassID(BREAKPOINT_CLASS_SIG);
         breakpointMethodID = debuggeeWrapper.vmMirror.getMethodID(breakpointClassID, breakpointMethod);

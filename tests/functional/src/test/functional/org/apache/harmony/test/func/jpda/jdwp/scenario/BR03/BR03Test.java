@@ -85,7 +85,7 @@ public class BR03Test extends JDWPQATestCase {
         logWriter.println("Setting a breakpoint at a line with a first call to 'println' in a run method.");
         method = "run";        
         methodId = debuggeeWrapper.vmMirror.getMethodID(debuggeeClassId, method);
-        breakpointLine = 39; //
+        breakpointLine = 52; //
         
         breakpoint = new Breakpoint(DEBUGGEE_CLASS_SIG, method, (int)debuggeeWrapper.vmMirror.getLineCodeIndex(debuggeeClassId, methodId, breakpointLine));
         reply = debuggeeWrapper.vmMirror.setBreakpoint(JDWPConstants.TypeTag.CLASS, breakpoint);

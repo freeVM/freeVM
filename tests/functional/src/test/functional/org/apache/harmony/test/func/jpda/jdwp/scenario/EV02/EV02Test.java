@@ -49,7 +49,7 @@ public class EV02Test extends JDWPQATestCase {
         long debuggeeClassId = debuggeeWrapper.vmMirror.getClassID(DEBUGGEE_CLASS_SIG);
         long methodId = debuggeeWrapper.vmMirror.getMethodID(debuggeeClassId, method);
         
-        int breakpointLine = 39; // a line with first call to 'ptintln'
+        int breakpointLine = 52; // a line with first call to 'ptintln'
         long lineCodeIndex = debuggeeWrapper.vmMirror.getLineCodeIndex(debuggeeClassId, methodId, breakpointLine);
         
         Breakpoint breakpoint = new Breakpoint(DEBUGGEE_CLASS_SIG, method, (int)lineCodeIndex);        

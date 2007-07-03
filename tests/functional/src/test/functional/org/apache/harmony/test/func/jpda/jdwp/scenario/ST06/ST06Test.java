@@ -38,6 +38,7 @@ public class ST06Test extends JDWPQATestCase {
         "java.*",
         "sun.*",
         "org.apache.harmony.nio.*",
+        "org.apache.harmony.niochar.*",
         "org.apache.harmony.misc.*",
         "org.apache.harmony.net.*",
         "org.apache.harmony.vmaccess.*",

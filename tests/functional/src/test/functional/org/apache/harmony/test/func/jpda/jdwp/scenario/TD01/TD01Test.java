@@ -45,7 +45,7 @@ public class TD01Test extends JDWPQATestCase {
         EventPacket event = debuggeeWrapper.vmMirror.receiveCertainEvent(JDWPConstants.EventKind.CLASS_PREPARE);
 
         String method = "run";
-        int breakpointLine = 39; // 
+        int breakpointLine = 52; // 
         
         long debuggeeClassId = debuggeeWrapper.vmMirror.getClassID(DEBUGGEE_CLASS_SIG);
         long methodId = debuggeeWrapper.vmMirror.getMethodID(debuggeeClassId, method);

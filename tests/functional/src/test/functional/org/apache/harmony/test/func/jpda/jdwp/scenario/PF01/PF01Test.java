@@ -52,7 +52,7 @@ public class PF01Test extends JDWPQATestCase {
         long debuggeeClassID = debuggeeWrapper.vmMirror.getClassID(DEBUGGEE_CLASS_SIG);
         long methodID = debuggeeWrapper.vmMirror.getMethodID(debuggeeClassID, method);
    
-        int breakpointLine = 40;
+        int breakpointLine = 53;
         Breakpoint breakpoint = new Breakpoint(DEBUGGEE_CLASS_SIG, method, (int)debuggeeWrapper.vmMirror.getLineCodeIndex(debuggeeClassID, methodID, breakpointLine));
         reply = debuggeeWrapper.vmMirror.setBreakpoint(JDWPConstants.TypeTag.CLASS, breakpoint);
         if (reply.getErrorCode() != JDWPConstants.Error.NONE) {
