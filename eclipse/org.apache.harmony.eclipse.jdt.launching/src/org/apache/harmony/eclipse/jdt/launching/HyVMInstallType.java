@@ -93,10 +93,7 @@ public class HyVMInstallType extends AbstractVMInstallType {
 	 * @see org.eclipse.jdt.launching.IVMInstallType#detectInstallLocation()
 	 */
 	public File detectInstallLocation() {
-		// Try to detect wether the current VM is a Harmony installation.
-		if (!"clear".equals(System.getProperty("com.ibm.oti.configuration", "missing"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			return null;
-
+		// Try to detect whether the current VM is a Harmony installation.
 		File home = new File(System.getProperty("java.home")); //$NON-NLS-1$
 		IStatus status = validateInstallLocation(home);
 		if (status.isOK()) {
