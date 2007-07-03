@@ -29,27 +29,28 @@
     <import file="${basedir}/build/properties.xml" />
 
     <target name="check" description="Check whether dependencies are available"
-            depends="-check,-check-win,-check-unix" />
+            depends="-check,-check-win,-check-unix,-extract" />
 
     <target name="-check">
         <check-one-file src="${yoko.url}" dest="${yoko.jar}" />
-        <check-one-file src="${yoko-rmi.url}" dest="${yoko-rmi.jar}" />
+        <check-one-file src="${yoko-core.url}" dest="${yoko-core.jar}" />
+        <check-one-file src="${yoko-rmi-impl.url}" dest="${yoko-rmi-impl.jar}" />
+        <check-one-file src="${yoko-rmi-spec.url}" dest="${yoko-rmi-spec.jar}" />
         <check-one-file src="${bcel.url}" dest="${bcel.jar}" />
         <check-one-file src="${xalan.url}" dest="${xalan.jar}" />
-        <check-one-file src="${resolver.url}" dest="${resolver.jar}" />
-        <check-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}" />
-        <check-one-file src="${xml.apis.url}" dest="${xml.apis.jar}" />
+        <check-one-file src="${xerces.url}" dest="${xerces.zip}" />
         <check-one-file src="${junit.url}" dest="${junit.jar}" />
         <check-one-file src="${bcprov.url}" dest="${bcprov.jar}" />
         <check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
-        <check-one-file src="${mx4j.url}" dest="${mx4j.jar}" />
-        <check-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}" />
+        <check-one-file src="${mx4j.url}" dest="${mx4j.zip}" />
         <check-one-file src="${ecj.url}" dest="${ecj.jar}" />
         <check-one-file src="${jetty.url}" dest="${jetty.jar}" />
         <check-one-file src="${jetty-util.url}" dest="${jetty-util.jar}" />
         <check-one-file src="${servlet-api.url}" dest="${servlet-api.jar}" />
         <check-one-file src="${cpptasks.url}" dest="${cpptasks.jar}" />
     </target>
+
+    <target name="-check-win" if="is.windows" depends="-really-check-win" />
 
     <target name="-select-win-deps-x86" if="is.x86">
         <property name="people.apache.base" value="${people.apache.base.x86}"/>
@@ -64,7 +65,8 @@
         <property name="msvcr.dll" value="${msvcr.dll.x86}"/>
         <property name="msvcr.url" value="${msvcr.url.x86}"/>
         <property name="msvcr.dll.file" value="${msvcr.dll.file.x86}"/>
-        <property name="msvcr.md5" value="${msvcr.md5.x86}"/>
+        <property name="msvcr.md5" value="${msvcr_VS2003SP1.md5.x86}"/>
+        <property name="msvcr.md5.deprecated" value="${msvcr_VS2003.md5.x86}"/>
     </target>
 
     <target name="-select-win-deps-x86_64" if="is.x86_64">
@@ -83,16 +85,44 @@
         <property name="msvcr.md5" value="${msvcr.md5.x86_64}"/>
     </target>
 
-    <target name="-check-win" if="is.windows" depends="-really-check-win" />
-
-    <target name="-really-check-win" if="is.windows">
+    <target name="-really-check-win" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
         <property environment="hyenv" />
+
         <check-one-file src="${msvcr.url}" dest="${msvcr.dll}" />
         <check-one-file src="${awtdeps.url}" dest="${awtdeps.tar}" />
         <uptodate property="awtdeps.uptodate"
                   srcfile="${awtdeps.tar}"
                   targetfile="${awtdeps.testfile}" />
         <antcall target="-awt-tar-extract" />
+    </target>
+
+    <target name="-extract" depends="-extract-props,-really-extract-mx4j" />
+    <target name="-extract-props">
+        <uptodate property="mx4j.uptodate"
+                  srcfile="${mx4j.zip}"
+                  targetfile="${mx4j.jar}" />
+    </target>
+    <target name="-really-extract-mx4j" unless="mx4j.uptodate">
+        <!-- This doesn't work for me since my ant doesn't support
+             mapper in unzip.
+
+        <unzip src="${mx4j.zip}" dest="${mx4j.dir}">
+            <patternset>
+                <include name="**/mx4j.jar"/>
+                <include name="**/mx4j-remote.jar"/>
+            </patternset>
+            <mapper type="flatten" />
+        </unzip>
+          -->
+
+        <unzip src="${mx4j.zip}" dest="${mx4j.dir}.tmp" />
+        <copy todir="${mx4j.dir}" flatten="yes">
+            <fileset dir="${mx4j.dir}.tmp/mx4j-3.0.2/lib">
+                <include name="mx4j.jar"/>
+                <include name="mx4j-remote.jar"/>
+            </fileset>
+        </copy>
+        <delete dir="${mx4j.dir}.tmp" />
     </target>
 
     <!-- 
@@ -176,8 +206,22 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                         message="${jpeg.msg}" />
     </target>
 
-    <target name="-check-unix" if="is.unix" depends="-check-unix-x86, -check-unix-x86_64">
-        
+    <target name="-check-unix-ia64" if="is.ia64" unless="is.windows" depends="-check-unix-common">
+        <check-one-link src="${lcms.home}/lib/liblcms.a"
+                        dest="depends/libs/build/lcms/liblcms.${hy.platform}"
+                        message="${lcms.msg}" />
+
+        <check-one-link src="${png.home}/lib/libpng.a"
+                        dest="depends/libs/build/png/libpng.${hy.platform}"
+                        message="${png.msg}" />
+
+        <check-one-link src="${jpeg.home}/lib/libjpeg.a"
+                        dest="depends/libs/build/jpeg/libjpeg.${hy.platform}"
+                        message="${jpeg.msg}" />
+    </target>
+
+    <target name="-check-unix" if="is.unix" depends="-check-unix-x86, -check-unix-x86_64, -check-unix-ia64">
+ 
 <!--        <property name="lcms.msg"
                   value="liblcms development package not installed
 ${line.separator}See depends/libs/build/README.txt for further details.
@@ -246,9 +290,17 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
     <download-one-file src="${yoko.url}" dest="${yoko.jar}"
                            md5="${yoko.md5}" />
 
-    <mkdir dir="${yoko-rmi.dir}" />
-    <download-one-file src="${yoko-rmi.url}" dest="${yoko-rmi.jar}"
-                           md5="${yoko-rmi.md5}" />
+    <mkdir dir="${yoko-core.dir}" />
+    <download-one-file src="${yoko-core.url}" dest="${yoko-core.jar}"
+                           md5="${yoko-core.md5}" />
+
+    <mkdir dir="${yoko-rmi-impl.dir}" />
+    <download-one-file src="${yoko-rmi-impl.url}" dest="${yoko-rmi-impl.jar}"
+                           md5="${yoko-rmi-impl.md5}" />
+
+    <mkdir dir="${yoko-rmi-spec.dir}" />
+    <download-one-file src="${yoko-rmi-spec.url}" dest="${yoko-rmi-spec.jar}"
+                           md5="${yoko-rmi-spec.md5}" />
 
     <mkdir dir="${bcel.dir}" />
     <download-one-file src="${bcel.url}" dest="${bcel.jar}"
@@ -259,14 +311,8 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            md5="${xalan.md5}" />
 
     <mkdir dir="${xerces.dir}" />
-    <download-one-file src="${resolver.url}" dest="${resolver.jar}"
-                           md5="${resolver.md5}" />
-
-    <download-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}"
-                           md5="${xerces.impl.md5}" />
-
-    <download-one-file src="${xml.apis.url}" dest="${xml.apis.jar}"
-                           md5="${xml.apis.md5}" />
+    <download-one-file src="${xerces.url}" dest="${xerces.zip}"
+                           md5="${xerces.md5}" />
 
     <mkdir dir="${junit.dir}" />
     <download-one-file src="${junit.url}" dest="${junit.jar}"
@@ -281,17 +327,14 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
                            md5="${icu4j.md5}" />
 
     <mkdir dir="${mx4j.dir}" />
-    <download-one-file src="${mx4j.url}" dest="${mx4j.jar}"
+    <download-one-file src="${mx4j.url}" dest="${mx4j.zip}"
                            md5="${mx4j.md5}" />
-
-    <download-one-file src="${mx4j.remote.url}" dest="${mx4j.remote.jar}"
-                           md5="${mx4j.remote.md5}" />
 
     <mkdir dir="${ecj.dir}" />
     <download-one-file src="${ecj.url}" dest="${ecj.jar}"
                            md5="${ecj.md5}" />
-        
-        <mkdir dir="${jetty.dir}" />
+
+    <mkdir dir="${jetty.dir}" />
     <download-one-file src="${jetty.url}" dest="${jetty.jar}"
                            md5="${jetty.md5}" />
  
@@ -313,27 +356,31 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
 
     </target>
 
-    <target name="-download-win" if="is.windows" depends="-select-win-deps-x86,-select-win-deps-x86_64">
-    
-    <property environment="hyenv" />        
-    
+    <target name="-download-win" if="is.windows" depends="-select-win-deps-x86_64,-select-win-deps-x86">
+
+    <property environment="hyenv" />
+
     <mkdir dir="${msvcr.dir}" />
-    <download-one-file src="${msvcr.url}" dest="${msvcr.dll}"
-                           md5="${msvcr.md5}" />
+    <download-one-file src="${msvcr.url}"
+                       dest="${msvcr.dll}"
+                       md5="${msvcr.md5}"
+                       md5-deprecated="${msvcr.md5.deprecated}" />
 
     <mkdir dir="${awtdeps.dir}" />
-    <download-one-file src="${awtdeps.url}" dest="${awtdeps.tar}"
-                           md5="${awtdeps.md5}" />
-            
+    <download-one-file src="${awtdeps.url}"
+                       dest="${awtdeps.tar}"
+                       md5="${awtdeps.md5}" />
+
     </target>
 
     <macrodef name="download-one-file">
         <attribute name="src" />
         <attribute name="dest" />
         <attribute name="md5" />
+        <attribute name="md5-deprecated" default="" />
         <sequential>
             <echo>Checking @{dest}</echo>
-        <available file="@{dest}" type="file"
+            <available file="@{dest}" type="file"
                        property="@{dest}.exists" />
             <antcall target="-really-download">
                 <param name="src" value="@{src}" />
@@ -341,7 +388,10 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
             </antcall>
             <checksum file="@{dest}" property="@{dest}.md5" />
             <condition property="@{dest}.md5.verified" value="true">
-                <equals arg1="${@{dest}.md5}" arg2="@{md5}" />
+                <or>
+                    <equals arg1="${@{dest}.md5}" arg2="@{md5}" />
+                    <equals arg1="${@{dest}.md5}" arg2="@{md5-deprecated}" />
+                </or>
             </condition>
             <antcall target="-remove-file-if-bad">
                 <param name="jar" value="@{dest}" />
@@ -349,10 +399,9 @@ ${line.separator}For Fedora try: yum install libjpeg-devel" />
         <fail unless="@{dest}.md5.verified">
 ...
 
-File @{dest} has incorrect md5 checksum.  Expected:
-  @{md5}
-found:
-  ${@{dest}.md5}
+File @{dest} has incorrect md5 checksum.
+    Expected: @{md5} (or @{md5-deprecated})
+    Found:    ${@{dest}.md5}
 
             </fail>
             <echo>Checksum verified (${@{dest}.md5.verified})</echo>
@@ -400,7 +449,7 @@ than the Apache License v2.
 
     <target name="-awt-tar-extract" unless="awtdeps.uptodate">
         <echo>Extracting awt dependencies</echo>
-    <untar src="${awtdeps.tar}" dest="${awtdeps.extract.dir}"
+        <untar src="${awtdeps.tar}" dest="${awtdeps.extract.dir}"
                compression="gzip" />
         <echo file="${awtdeps.testfile}"
               message="${awtdeps.tar} extracted${line.separator}" />
