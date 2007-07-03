@@ -23,15 +23,51 @@
     <condition property="is.windows">
         <os family="Windows" />
     </condition>
+    <condition property="is.x86_64">
+        <or>
+            <equals arg1="x86_64" arg2="${os.arch}" />
+            <equals arg1="amd64" arg2="${os.arch}" />
+        </or>
+    </condition>
 
     <condition property="exe" value=".exe" else="">
         <isset property="is.windows" />
     </condition>
+
+    <!--                                 -->
+    <!-- which snapshot file to download -->
+    <!--                                 -->
+
+    <!-- Windows x86_64 -->
     <condition property="snapshot.file"
-               value="latest-harmony-hdk-windows-x86.zip"
-               else="latest-harmony-hdk-linux-x86.tar.gz">
-        <isset property="is.windows" />
+               value="latest-harmony-hdk-windows-x86_64.zip">
+        <and>
+            <isset property="is.windows" />
+            <isset property="is.x86_64" />
+        </and>
     </condition>
+    <!-- Windows x86 -->
+    <condition property="snapshot.file"
+               value="latest-harmony-hdk-windows-x86.zip">
+        <and>
+            <isset property="is.windows" />
+            <not>
+                <isset property="is.x86_64" />
+            </not>
+        </and>
+    </condition>
+    <!-- Linux x86_64 -->
+    <condition property="snapshot.file"
+               value="latest-harmony-hdk-linux-x86_64.tar.gz">
+        <and>
+            <not>
+                <isset property="is.windows" />
+            </not>
+            <isset property="is.x86_64" />
+        </and>
+    </condition>
+    <!-- Linux x86 by default -->
+    <property name="snapshot.file" value="latest-harmony-hdk-linux-x86.tar.gz" />
 
     <target name="setup" depends="download.snapshot" />
 
