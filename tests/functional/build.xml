@@ -21,13 +21,18 @@
         Functional test suite build
     </description>
 
+    <condition property="exe" value=".exe" else="">
+        <os family="windows"/>
+    </condition>
+
 	<property name="src.test" location="src/test" />
 	<property name="depends" location="depends" />
 	<property name="bin"           location="bin" />
 	<property name="bin.classes"   location="${bin}/classes" />
 	<property name="bin.lib"       location="${bin}/lib" />
         <property name="tests.reports" location="${bin}/report" />
-        <property name="test.java.cmd" location="${java.home}/bin/java" />
+        <property name="test.java.cmd" location="${java.home}/bin/java${exe}" />
+        <property name="debug_info"    value="on"/>
 
 	<property name="harness.jar" location="${depends}/th.jar" />
 	<property name="harness.main" value="org.apache.harmony.harness.Main" />
@@ -263,13 +268,14 @@
                      includesfile="build.del_classes.list" />
         </delete>
 
+        <!-- ignore failures because rebuild is failed on these moves -->
         <mkdir dir="${bin.classes}/org/apache/harmony/test/func/reg/vm/btest3349/tmp" />
         <move file="${bin.classes}/org/apache/harmony/test/func/reg/vm/btest3349/Test3349.class" 
-             todir="${bin.classes}/org/apache/harmony/test/func/reg/vm/btest3349/tmp"/>
+             todir="${bin.classes}/org/apache/harmony/test/func/reg/vm/btest3349/tmp" failonerror="false"/>
 
         <mkdir dir="${bin.classes}/org/apache/harmony/test/func/reg/vm/btest4253/aaa" />
         <move file="${bin.classes}/org/apache/harmony/test/func/reg/vm/btest4253/test.class" 
-             todir="${bin.classes}/org/apache/harmony/test/func/reg/vm/btest4253/aaa"/>
+             todir="${bin.classes}/org/apache/harmony/test/func/reg/vm/btest4253/aaa" failonerror="false"/>
 
 		<javac destdir="${bin.classes}"
 		       srcdir="${src.test}/functional/org/apache/harmony/test/func/reg"
@@ -322,7 +328,7 @@
         <property name="qa.exclude" value="-exclude ${basedir}/config/func_exclude.file" />
         <property name="qa.non-int" value="-execopt Selector:exclude:Keyword interactive" />
         <property name="qa.select" value="${qa.non-int} ${qa.exclude}" />
-        <property name="qa.subs" value="-subs functional/org/apache/harmony/test/func/reg/vm" />
+        <property name="qa.subs" value="-subs functional" />
 
         <echo message="Running tests" />
         <java fork="yes" classname="${harness.main}" dir="${tests.reports}"
@@ -336,8 +342,7 @@
                 <pathelement location="${harness.jar}" />
             </classpath>
 
-            <arg line="-version -logl 6 -failonerror ${qa.run} ${qa.suite} ${qa.select}" />
-            <!--  ${qa.subs} -->
+            <arg line="-version -logl 6 -failonerror ${qa.run} ${qa.suite} ${qa.select} ${qa.subs}" />
         </java>
     </target>
 
