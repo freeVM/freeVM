@@ -9,6 +9,7 @@ stress/org/apache/harmony/test/stress/jpda/jdwp/scenario/EVENT011/EventTest011.x
 # H-2039 class unloading, not M2
 stress/org/apache/harmony/test/stress/classloader/unloading/BigMemory1.xml
 stress/org/apache/harmony/test/stress/classloader/unloading/LowMemory2.xml
+stress/org/apache/harmony/test/stress/classloader/classunloading/ManyThreads.xml
 
 # 4114 - intermittent failure -> test issues 17
 stress/org/apache/harmony/test/stress/gc/frag/FragmentationThreadBadFinalizeTest1/FragmentationThreadBadFinalizeTest1.xml
@@ -61,8 +62,11 @@ stress/org/apache/harmony/test/stress/classloader/SynchThreads/WrongClasses/test
 stress/org/apache/harmony/test/stress/exceptions/catcher/StackUnwindingTests/StackUnwindingTest3.xml
 stress/org/apache/harmony/test/stress/exceptions/catcher/StackUnwindingTests/StackUnwindingTest9.xml
 stress/org/apache/harmony/test/stress/exceptions/catcher/StackUnwindingTests/StackUnwindingTest10.xml 
+stress/org/apache/harmony/test/stress/exceptions/catcher/StackUnwindingInsideInintTests/StackUnwindingInsideInintTest5.xml 
+stress/org/apache/harmony/test/stress/gc/frag/FragmentationBadFinalizeTest1/FragmentationBadFinalizeTest1.xml 
+stress/org/apache/harmony/test/stress/exceptions/catcher/StackUnwindingManyObjectsTests/StackUnwindingManyObjectsTest6.xml
 
-# on RI: Tests with error: 91 tests 
+# on RI: Tests with error: 90 tests 
 stress/org/apache/harmony/test/stress/api/java/io/stress/readers/FileReader/FileReaderWriterStressTest.xml 
 stress/org/apache/harmony/test/stress/classloader/classunloading/OneThread.xml 
 stress/org/apache/harmony/test/stress/classloader/MixThreads/SubClasses/testManySubClasses1.xml 
@@ -153,7 +157,6 @@ stress/org/apache/harmony/test/stress/jni/strings/StringsTest10.xml
 stress/org/apache/harmony/test/stress/jni/strings/StringsTest12.xml 
 stress/org/apache/harmony/test/stress/jni/strings/StringsTest9.xml 
 stress/org/apache/harmony/test/stress/misc/FieldsTest.xml 
-stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest13.xml 
 
 # on RI: Failed tests: 24 tests
 stress/org/apache/harmony/test/stress/api/java/net/sockets/ConnectTest.xml 
@@ -184,7 +187,37 @@ stress/org/apache/harmony/test/stress/eclipse/emulation/java/lang/System/S_array
 stress/org/apache/harmony/test/stress/eclipse/emulation/java/lang/System/S_arraycopy/S_arraycopyST.xml 
 stress/org/apache/harmony/test/stress/gc/padder/MediumObjectHalfPadderTest1.xml 
 
-# more RI failures from alexei fedotov: 118 tests with Vera petrashkova comments
+# from original x-list: 28
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest01.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest02.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest03.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest04.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest05.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest06.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest07.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest08.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest09.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest10.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest11.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest12.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest13.xml 
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest14.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest15.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest16.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest17.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest18.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest19.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest20.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest21.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest22.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest23.xml
+stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest24.xml
+stress/org/apache/harmony/test/stress/jni/stack/StackTest10.xml 
+stress/org/apache/harmony/test/stress/jni/stack/StackTest2.xml 
+stress/org/apache/harmony/test/stress/jni/stack/StackTest8.xml 
+stress/org/apache/harmony/test/stress/misc/SyncRecursionSectionTest.xml
+
+# more RI failures from alexei fedotov: 117 tests with Vera petrashkova comments
  
 # passed with timeout 10 min
 # these tests passed on Windows RI and on Harmony
@@ -305,9 +338,6 @@ stress/org/apache/harmony/test/stress/jpda/jdwp/scenario/FRAME004/FrameTest004.x
 # these tests pass on Windows on RI and Harmony
 stress/org/apache/harmony/test/stress/misc/GCChainTest.xml
 stress/org/apache/harmony/test/stress/misc/MatrixCalcTest.xml
-
-# fail
-stress/org/apache/harmony/test/stress/misc/stressloads/tests/StressLoadsRunnerTest19.xml
 
 # these tests passed on Windows on RI and Harmony
 stress/org/apache/harmony/test/stress/threads/StressInterruptTest/withOOME/noSOE/StressInterruptTest03.xml

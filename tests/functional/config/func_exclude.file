@@ -1,56 +1,6 @@
-# Tests with error - to investigate
-functional/org/apache/harmony/test/func/api/javax/management/MBeanServerDelegateTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/MBeanServerFactorySecurityTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/MBeanServerFactoryTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/MBeanServerPermissionTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/MbeanServerSecurityTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/modelmbean/InvocationTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/modelmbean/NotificationLoggingTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/modelmbean/RequiredModelMBeanTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/NotificationBroadcasterSupportTest.xml 
-functional/org/apache/harmony/test/func/api/javax/swing/text/DefaultCaret/DefaultCaretTest.xml 
-functional/org/apache/harmony/test/func/reg/vm/btest6158/Btest6158.xml   # Ilya
-
 # Failed tests - to investigate
-functional/org/apache/harmony/test/func/api/javax/management/MBeanPermissionImpliesTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/MbeanServerSecurityPFTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/monitor/countermonitor/GetterSetterTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/BoundaryTestByte.xml 
-functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/BoundaryTestFloat.xml 
-functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/BoundaryTestInteger.xml 
-functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/BoundaryTestLong.xml 
-functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/BoundaryTestShort.xml 
-functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/DifferenceTestByte.xml 
-functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/GetterSetterTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/GranularityTest.xml
-functional/org/apache/harmony/test/func/api/javax/management/monitor/stringmonitor/GetterSetterTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/ObjectNameTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/remote/RMIConnectorTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/remote/ServiceURLTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/timer/BaseTimerTest.xml 
-functional/org/apache/harmony/test/func/api/javax/swing/JTextArea/JTextAreaTest.xml 
-functional/org/apache/harmony/test/func/api/javax/swing/JTextField/JTextFieldTest.xml 
-functional/org/apache/harmony/test/func/api/javax/swing/text/AbstractDocument/AbstractDocumentTest.xml 
-functional/org/apache/harmony/test/func/api/javax/swing/text/AbstractDocument/BranchElementTest.xml 
-functional/org/apache/harmony/test/func/api/javax/swing/text/AbstractDocument/DefaultDocumentEventTest.xml 
-functional/org/apache/harmony/test/func/api/javax/swing/text/DefaultEditorKit/DefaultEditorKitTest.xml 
-functional/org/apache/harmony/test/func/api/javax/swing/text/DefaultHighlighter/DefaultHighlightPainterTest.xml 
-functional/org/apache/harmony/test/func/api/javax/swing/text/GapContent/GapContentTest.xml 
-functional/org/apache/harmony/test/func/reg/vm/btest4468/Btest4468.xml 
-functional/org/apache/harmony/test/func/reg/vm/btest4492/Btest4492.xml 
-functional/org/apache/harmony/test/func/reg/vm/btest4925/Btest4925.xml 
-functional/org/apache/harmony/test/func/reg/vm/btest5542/Btest5542.xml    # Ilya
-functional/org/apache/harmony/test/func/reg/vm/btest7414/Btest7414.xml    # Ilya
 functional/org/apache/harmony/test/func/jpda/jdwp/scenario/ST03/ST03Test.xml   # Elena
 functional/org/apache/harmony/test/func/jpda/jdwp/scenario/ST06/ST06Test.xml   # Elena
-functional/org/apache/harmony/test/func/api/javax/swing/JComponent/JComponentAncestorListenerTest.xml    # Roman
-functional/org/apache/harmony/test/func/api/java/io/PipedInputStream/PipedInputStreamTest.xml   # Roman
-
-# Tests completed with exit code which is not recognized by harness as known test execution code - to investigate
-#functional/org/apache/harmony/test/func/api/java/beans/beans/BeansTest.xml 
-#functional/org/apache/harmony/test/func/api/java/beans/introspector/useallmethods/ReturnTheSameAsInRealBeanInfoTest.xml 
-functional/org/apache/harmony/test/func/api/javax/management/remote/JMXRemoteProfilesTest.xml 
-functional/org/apache/harmony/test/func/api/javax/swing/ImageIcon/ImageIconTest.xml 
 
 # misconfiguration: 9 tests
 functional/org/apache/harmony/test/func/api/javax/naming/directory/JNDI_DNS_SP.xml 
@@ -63,13 +13,24 @@ functional/org/apache/harmony/test/func/api/javax/naming/provider/dns/DnsTest1.x
 functional/org/apache/harmony/test/func/api/javax/naming/provider/dns/UnsupportedMethodsTest.xml 
 functional/org/apache/harmony/test/func/api/javax/naming/provider/rmi/functional.xml 
 
-# Bugs in tests: 8 tests
+# Bugs in tests: 22 tests
 functional/org/apache/harmony/test/func/api/java/security/cert/F_CertPathTest_04/F_CertPathTest_04.xml
 functional/org/apache/harmony/test/func/api/java/lang/F_StringTest_09/F_StringTest_09.xml
 functional/org/apache/harmony/test/func/api/java/net/URI/URITest.xml
 functional/org/apache/harmony/test/func/api/java/security/F_SignatureTest_01/F_SignatureTest_01.xml
 functional/org/apache/harmony/test/func/api/java/text/DecimalFormat/DecimalFormatTest.xml 
 functional/org/apache/harmony/test/func/reg/vm/btest1968/Btest1968.xml 
+functional/org/apache/harmony/test/func/api/javax/swing/JTextArea/JTextAreaTest.xml 
+functional/org/apache/harmony/test/func/api/javax/swing/JTextField/JTextFieldTest.xml 
+functional/org/apache/harmony/test/func/api/javax/swing/text/AbstractDocument/AbstractDocumentTest.xml 
+functional/org/apache/harmony/test/func/api/javax/swing/text/AbstractDocument/BranchElementTest.xml 
+functional/org/apache/harmony/test/func/api/javax/swing/text/AbstractDocument/DefaultDocumentEventTest.xml 
+functional/org/apache/harmony/test/func/api/javax/swing/text/DefaultEditorKit/DefaultEditorKitTest.xml 
+functional/org/apache/harmony/test/func/api/javax/swing/text/DefaultHighlighter/DefaultHighlightPainterTest.xml 
+functional/org/apache/harmony/test/func/api/javax/swing/text/GapContent/GapContentTest.xml 
+functional/org/apache/harmony/test/func/api/javax/swing/text/DefaultCaret/DefaultCaretTest.xml 
+functional/org/apache/harmony/test/func/api/javax/swing/JComponent/JComponentAncestorListenerTest.xml    # Roman
+functional/org/apache/harmony/test/func/api/javax/swing/ImageIcon/ImageIconTest.xml 
 # Bug in the test. 
 # The testcase testFileDescriptor() relies on buffering in FileReader.read() method 
 # and supposes that method will return chars some time after corresponding 
@@ -78,6 +39,23 @@ functional/org/apache/harmony/test/func/reg/vm/btest1968/Btest1968.xml
 functional/org/apache/harmony/test/func/api/java/io/FileReader/FileReaderTest.xml 
 # Test issue: ~crashString=5704.java:30 should be changed to ~crashString=5704.java:32
 functional/org/apache/harmony/test/func/reg/jit/btest5704/Btest5704.xml
+# test issue HARMONY-2461 (?)
+functional/org/apache/harmony/test/func/reg/vm/btest4468/Btest4468.xml 
+# Test issue, bug in test config file Btest4492.xml: path to tmp.class is incorrect
+functional/org/apache/harmony/test/func/reg/vm/btest4492/Btest4492.xml 
+# Bug in the test. The testcase testAvailable() assumes that 
+# the connected PipedOutputStream.write(byte[], int,int) method writes data 
+# by entire chunks, and a value returned by available() method may change 
+# by length of the buffer passed to  PipedOutputStream.write() method. 
+# But the spec doesn't have that requirement. 
+functional/org/apache/harmony/test/func/api/java/io/PipedInputStream/PipedInputStreamTest.xml   # Roman
+
+# H-4294
+functional/org/apache/harmony/test/func/api/java/lang/F_StringTest_04/F_StringTest_04.xml
+
+# HARMONY-2741
+functional/org/apache/harmony/test/func/reg/vm/btest4925/Btest4925.xml 
+
 
 # Bugs in tests: invalid command-line options  44
 functional/org/apache/harmony/test/func/vm/cli/help/help_03/help_03.xml
@@ -180,7 +158,7 @@ functional/org/apache/harmony/test/func/api/java/awt/Window/WindowInteractiveTes
 functional/org/apache/harmony/test/func/api/javax/swing/AbstractButton/AbstractButtonInteractiveTest.xml
 functional/org/apache/harmony/test/func/api/javax/swing/text/JTextComponent/JTextComponentInteractiveTest.xml
 
-# H-4005 (actually, mx4j issue) etc.  - tird party implementation, excluded from pass rate: 12 tests
+# H-4005 (actually, mx4j issue) etc.  - tird party implementation, excluded from pass rate: 38 tests
 functional/org/apache/harmony/test/func/api/javax/management/monitor/countermonitor/DifferenceDontMonotonousTest.xml
 functional/org/apache/harmony/test/func/api/javax/management/monitor/countermonitor/DifferenceDontMonotonousVaryTest.xml
 functional/org/apache/harmony/test/func/api/javax/management/monitor/countermonitor/DifferenceMonotonousDontVaryTest.xml
@@ -193,6 +171,32 @@ functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonito
 functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/DifferenceTestShort.xml
 functional/org/apache/harmony/test/func/api/javax/management/monitor/countermonitor/GranularityTest.xml
 functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/DifferenceTestLong.xml
+functional/org/apache/harmony/test/func/api/javax/management/MBeanServerDelegateTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/MBeanServerFactorySecurityTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/MBeanServerFactoryTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/MBeanServerPermissionTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/MbeanServerSecurityTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/modelmbean/InvocationTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/modelmbean/NotificationLoggingTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/modelmbean/RequiredModelMBeanTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/NotificationBroadcasterSupportTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/MBeanPermissionImpliesTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/MbeanServerSecurityPFTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/monitor/countermonitor/GetterSetterTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/BoundaryTestByte.xml 
+functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/BoundaryTestFloat.xml 
+functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/BoundaryTestInteger.xml 
+functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/BoundaryTestLong.xml 
+functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/BoundaryTestShort.xml 
+functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/DifferenceTestByte.xml 
+functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/GetterSetterTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/monitor/gaugemonitor/GranularityTest.xml
+functional/org/apache/harmony/test/func/api/javax/management/monitor/stringmonitor/GetterSetterTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/ObjectNameTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/remote/RMIConnectorTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/remote/ServiceURLTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/timer/BaseTimerTest.xml 
+functional/org/apache/harmony/test/func/api/javax/management/remote/JMXRemoteProfilesTest.xml 
 
 # FAILED on RI: 59 tests
 functional/org/apache/harmony/test/func/api/java/beans/eventhandler/InvocationExceptionFalse.xml

@@ -1,6 +1,7 @@
 #Crashes & Hangs
 
 org.eclipse.jdt.ui.tests.LeakTestSuite                                                              # JVMPI is unsupported - deprecated functionality, see Bug-2590
+org.eclipse.team.tests.ccvs.core.AllTests                                                           # HARMONY-4298
 
 #Failures and errors
 
@@ -11,6 +12,7 @@ org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0800 - 1.5   
 org.eclipse.jdt.core.tests.compiler.regression.VarargsTest.test030 - 1.5                            # To be investigated
 
 #Harmony issues
+
 
 # gc_gen warning in the output: tests fail because they compare the actual output with the expected ones. http://www.mail-archive.com/dev@harmony.apache.org/msg07849.html
 org.eclipse.jdt.core.tests.compiler.regression.LookupTest.test043 - 1.3
@@ -168,4 +170,8 @@ org.eclipse.core.tests.internal.runtime.PlatformURLSessionTest.test2Resolution  
 org.eclipse.core.tests.runtime.jobs.JobTest.testGetResult                                           # Invalid: intermittently fails on RI
 org.eclipse.jdt.debug.tests.core.MethodBreakpointTests.testInnerClassesHit                          # Incorrect test, timeout is not enough for Harmony
 
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_copy                        # Invalid: intermittently fails on RI
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_paste                        # Invalid: intermittently fails on RI
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_copy                             # Invalid: intermittently fails on RI
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_paste                            # Invalid: intermittently fails on RI
 
