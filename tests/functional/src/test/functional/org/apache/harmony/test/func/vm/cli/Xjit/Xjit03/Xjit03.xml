@@ -30,7 +30,7 @@
         <Runner ID="Execute">       
             <Param name="toRun" value="$TestedRuntime">
                 <Option name="-cp" value="$CP"/>
-                <Option name="-Xjit fromfile=$TestSuiteRoot/src/test/share/xjit.opts"/>
+                <Option name="-Xjit fromfile=$TestSuiteTestRoot/share/xjit.opts"/>
                 <Option name="CommonTest"/>
             </Param>        
         </Runner>                               

@@ -30,7 +30,7 @@
         <Runner ID="Execute">       
             <Param name="toRun" value="$TestedRuntime">
                 <Option name="-Xtrace:native"/>
-                <Option value="-Djava.library.path=$TestSuiteRoot$FileSeparatorbin$FileSeparatorlib"/>
+                <Option value="-Djava.library.path=$TestSuiteLibRoot"/>
                 <Option name="-cp" value="$CP"/>
                 <Option name="TestJNI"/>
             </Param>        

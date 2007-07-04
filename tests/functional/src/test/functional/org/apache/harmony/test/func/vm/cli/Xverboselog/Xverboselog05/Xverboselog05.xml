@@ -31,7 +31,7 @@
         <Runner ID="Execute">       
             <Param name="toRun" value="$TestedRuntime">
                 <Option name="-Xverbose:jni -Xverboselog:$TempStorage/Xverboselog05.log"/>
-                <Option value="-Djava.library.path=$TestSuiteRoot$FileSeparatorbin$FileSeparatorlib"/>
+                <Option value="-Djava.library.path=$TestSuiteLibRoot"/>
                 <Option name="-cp" value="$CP"/>
                 <Option name="CommonTest"/>
             </Param>        

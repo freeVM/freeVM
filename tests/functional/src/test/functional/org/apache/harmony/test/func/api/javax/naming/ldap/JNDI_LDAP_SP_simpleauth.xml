@@ -185,13 +185,10 @@
 
     <Source name="JNDITest.java" />
     <Runner ID="Runtime">
+        <Option name="-cp" value="$TestSuiteClassRoot$PathSeparator$TestSuiteLibRoot$FileSeparatorjndi$FileSeparatorproviders.jar" />
+
         <Param name="toRun"
             value="org.apache.harmony.test.func.api.javax.naming.directory.JNDITest">
-
-            <Option name="vmParam" value="-cp" />
-
-            <Option name="vmParam"
-                value="$TestSuiteRoot$FileSeparatorbin$FileSeparatorclasses$PathSeparator$TestSuiteRoot$FileSeparatorbin$FileSeparatorlib$FileSeparatorjndi$FileSeparatorproviders.jar" />
 
             <Option name="xmlPath"
                 value="org/apache/harmony/test/func/api/javax/naming/share/jndiLDAPTest.xml" />
