@@ -73,8 +73,12 @@ Following tools must be additionally installed for the scenario run:
 NOTE:
 
 1) On Windows* AutoIt3 home should be added to the PATH before the EHWA scenario run 
-   To install the tool on Windows 2003 installer should be used. Otherwise
-   (in case of zipped version) the tool may not be launched.
+    Notes:
+  - To install the tool on Windows 2003 installer should be used. Otherwise
+    (in case of zipped version) the tool may not be launched.
+  - The tool should be install to directory without spaces in its name
+    (for example, C:\Program Files\AutoIt3 shouldn't be used).
+    Otherwise the tool may not be found by the ant script.
 
 2) The problems may exist with X11 GUITest installation on Linux/em64t.
    It is recommended to use X11 GUITest-0.20 version.
