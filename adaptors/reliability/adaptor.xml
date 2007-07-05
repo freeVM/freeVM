@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ======================================================================
+                     BT Adaptor for Reliability Test Suite
+     ====================================================================== -->
+<project name="reliability" default="run" basedir=".">
+
+    <property name="tests.dir"  location="${test.sources.dir}/${suite.name}"/>
+    <property name="work.dir"   location="${checkouts.dir}/${suite.name}"/>
+    <property name="report.dir" location="${results.dir}/${suite.name}"/>
+
+    <!-- Set up the test suite:
+         - updates source code,
+         - sets up required parameters,
+         - does everything needed to start the suite.
+    -->
+    <target name="setup">
+        <log message="============= Adaptor for ${suite.name}: Set Up .."/>
+
+        <!-- update suite sources -->
+        <svn-update-bt path="${tests.dir}"/>
+
+        <condition property="serialize.jar.not.exist">
+            <not>
+                <available file="${ext.cc.location}/lib/serializer-2.7.0.jar"/>
+            </not>
+        </condition>
+
+        <fail message="Required serialize.jar does not exists in ${ext.cc.location}/lib"
+              if="serialize.jar.not.exist"/>
+
+        <exec-ant dir="${tests.dir}"
+                  targets="build">
+            <sysproperty key="target.dir" value="${work.dir}"/>
+        </exec-ant>
+    </target>
+
+    <!-- Run test suite -->
+    <target name="run">
+        <log message="============= Adaptor for ${suite.name}: Run .."/>
+
+        <!-- remember start time -->
+        <tstamp>
+            <format property="time.stamp" pattern="yyyy-MM-dd_hhmm" />
+        </tstamp>
+
+        <!-- running tests -->
+        <exec-ant dir="${tests.dir}/run"
+                  file="run.xml"
+                  lib="${ext.ant-contrib.location}"
+                  targets="run">
+            <sysproperty key="jvm.under.test"   value="${jvm.under.test}"/>
+            <sysproperty key="jvm.args"         value="${reliability.parameters.optional.tested.vm.options}"/>
+            <sysproperty key="work.dir"         value="${work.dir}/temp"/>
+            <sysproperty key="report.dir"       value="${report.dir}/${time.stamp}"/>
+            <sysproperty key="test.classes.dir" value="${work.dir}/classes"/>
+        </exec-ant>
+
+        <!-- copy results to results/reliability/last directory -->
+        <mkdir dir="${report.dir}/last"/>
+        <delete>
+            <fileset dir="${report.dir}/last" includes="*.*"/>
+        </delete>
+        <copy todir="${report.dir}/last">
+            <fileset dir="${report.dir}/${time.stamp}" includes="*.*"/>
+        </copy>
+
+        <!-- checking and reporting about failed tests -->
+        <fileset id="failed.tests.reports"
+                 dir="${report.dir}/${time.stamp}"
+                 includes="*.txt">
+            <not>
+                <contains text="Test PASSED"/>
+            </not>
+        </fileset>
+
+        <pathconvert refid="failed.tests.reports"
+                     property="tests.failed"
+                     setonempty="false">
+        </pathconvert>
+
+        <fail message="Some reliability tests failed on ${jvm.under.test}" if="tests.failed"/>
+    </target>
+
+    <!-- Clean test suite -->
+    <target name="clean">
+        <delete dir="${work.dir}" />
+        <delete dir="${report.dir}" />
+    </target>
+
+</project>
