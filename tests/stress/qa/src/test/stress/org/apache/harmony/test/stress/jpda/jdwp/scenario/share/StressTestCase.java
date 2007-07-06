@@ -2212,12 +2212,10 @@ public abstract class StressTestCase extends JDWPQARawTestCase {
             long typeID = reply.getNextValueAsReferenceTypeID();
             for (int j = 0; j < refTypesArray.getLength(); j++) {
                 if (typeID == refTypesArray.getRefType(j)) {
-                    success = false;
                     logWriter
                             .println("#WARNING: refTypeID = " + typeID + " of new class "
                                     + checkedNewClassName
                                     + " already exists among classes loaded before ");
-                    break;
                 }
             }
             String sourceFile = getSource(typeID);

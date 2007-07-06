@@ -92,8 +92,6 @@ public class RefTypeDebuggee003 extends StressDebuggee {
         RefType003_TestClass04 testClass04 = new RefType003_TestClass04();
         RefType003_TestClass05 testClass05 = new RefType003_TestClass05();
        
-        
-
         freeMemory = currentRuntime.freeMemory();
         logWriter.println("--> RefTypeDebuggee003: freeMemory (bytes) after loading some classes = " + freeMemory);
         
@@ -102,10 +100,18 @@ public class RefTypeDebuggee003 extends StressDebuggee {
         printlnForDebug("RefTypeDebuggee003: After sendSignalAndWait(SIGNAL_READY_03)");
         
         logWriter.println("--> RefTypeDebuggee003: load some another classes...");
-        NewTestClass1 testCls1 = new NewTestClass1();
-        NewTestClass2 testCls2 = new NewTestClass2();
-        NewTestClass3 testCls3 = new NewTestClass3();
         
+        Class loadedClasses[] = new Class[4];
+        try {
+            for (int i = 1; i < 4; i++) {
+                String name = "org.apache.harmony.test.stress.jpda.jdwp.scenario.REFTYPE003.NewTestClass" + i;
+                printlnForDebug("RefTypeDebuggee003: loading class: " + name);
+                loadedClasses[i] = Class.forName(name);
+            }
+        } catch (ClassNotFoundException exp) {
+            logWriter.print("Exception during loading classes: " + exp);
+        }
+
         freeMemory = currentRuntime.freeMemory();
         logWriter.println("--> RefTypeDebuggee003: freeMemory (bytes) after loading some another classes = " + freeMemory);
         
