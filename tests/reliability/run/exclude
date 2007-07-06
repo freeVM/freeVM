@@ -1,0 +1,51 @@
+## the list of excluded tests ##
+## 25 tests excluded ##
+
+## HARMONY-2039, no class unloading
+api.kernel.pckg.PackageGetTest
+vm.stack.StackFramesRestoreTest
+vm.classloading.MultiThreadedLoading
+vm.classloading.ClassUnloadingTest
+
+## HARMONY-4215, mostly reproduced on release build
+api.kernel.thread.Calculation.CalcTest
+api.kernel.thread.ExcptHandlerTest.ExcptHandlerTest
+api.kernel.thread.LifeSimulationTest.Life
+api.kernel.thread.ThreadLocalTest.ThreadLocalTest
+api.text.DecimalFormat_Locales
+api.text.getSentenceInstance
+api.zip.ZlibTest
+
+## HARMONY-3627, hang
+api.kernel.thread.StackTraceTest.StackTraceTest
+
+## HARMONY-4232, HARMONY-4220, the eissue could be in the test
+api.kernel.thread.ThreadKill.ThreadKillTest
+
+## HARMONY-2742, HARMONY-3224, hang
+api.text.getAvailableLocals_RBC
+
+## HARMONY-2752, hang  
+api.text.CollationElementIteratorTest 
+api.text.CollationKeyTest_ArrHash
+api.text.CollationKeyTest
+
+## HARMONY-3680, reproduced on release build only  
+vm.classloading.ClassAttributesTest
+vm.classloading.ClassReflectionTest
+
+##  could not reproduce - hanged 1 time of 5 runs
+vm.finalization.ArrayElemFinalizationTest
+ 
+## HARMONY-4081, failed 2 times from 5 runs
+api.nio.channels.filechannel.ChannelWriteTest
+api.nio.channels.filechannel.FileChannelThrSafetyTest
+ 
+## HARMONY-62 
+api.nio.charset.CharsetSyncCacheTest
+api.text.getSentenceInstance_check
+
+## TBD
+api.nio.charset.ContainsTest
+ 
+ 
