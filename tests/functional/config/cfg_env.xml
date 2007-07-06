@@ -49,18 +49,11 @@
 		<exec-mode name="ClientSwitch">-Xem:client</exec-mode>
 		<exec-mode name="IntSwitch">-Xint</exec-mode>
 
-		<!--exec-mode name="OptSwitch"></exec-mode>
-		<exec-mode name="JetSwitch"></exec-mode>
-		<exec-mode name="ServerSwitch"></exec-mode>
-		<exec-mode name="ServerStaticSwitch"></exec-mode>
-		<exec-mode name="ClientSwitch"></exec-mode>
-		<exec-mode name="IntSwitch"></exec-mode-->
-
 		<!-- Assert dialog enabling/disabling switch. Please, make it empty if 
 			 you want to run the tests with reference implementation -->
 		<exec-mode name="AssertSwitch">-XX:vm.assert_dialog=false</exec-mode>
-		<!--exec-mode name="AssertSwitch"></exec-mode-->
 
+		<exec-mode name="paintTimeout">4000</exec-mode>
 
 		<exec-mode name="Test_StabilityPoint">5</exec-mode>
 		<exec-mode name="Test_MaxIteration">100</exec-mode>
@@ -86,7 +79,12 @@
 	<plugin-list>
 		<plugin name="ExecUnit" class-name="org.apache.harmony.harness.ExecUnit">
 			<parameter name="Runtime">
-				<value name="host">localhost</value>
+				<value name="run">run</value>
+				<value name="compile">compile</value>
+				<value name="performance.tests.atomic">1000</value>
+				<value name="performance.tests.sets">5</value>
+				<value name="performance.tests.mode">speed</value>
+				<value name="qa.threads">5</value>
 			</parameter>
 			<parameter name="DistributedRunner">
 				<value name="mode">client</value>
