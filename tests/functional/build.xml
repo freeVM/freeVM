@@ -45,17 +45,6 @@
 	<property name="jpda-fr-package" value="org/apache/harmony/jpda/tests/framework" />
 	<property name="svn-URL" value="https://svn.apache.org/repos/asf/harmony/enhanced" />
 
-	<property name="debug_info" value="off" />
-	<condition property="path_sep" value=";">
-	    <os family="windows" />
-	</condition>
-	<property name="path_sep" value=":" />
-
-	<condition property="exe_ext" value=".exe">
-	    <os family="windows" />
-	</condition>
-	<property name="exe_ext" value="" />
-	
 	<target name="build-n-run" depends="build,run-tests" />
 
 	<target name="build" depends="compile_jpda,compile_java,compile_ccode,build.native,post_compile">
@@ -99,7 +88,7 @@
 		       failonerror="true"
 		       skipemptyfilesets="true">
 			<arg value="-cp" />
-			<arg value="${bin.classes}${path_sep}${vmtt.jar}" />
+			<arg value="${bin.classes}${path.separator}${vmtt.jar}" />
 			<arg value="org.apache.harmony.test.share.VMTTwrapper" />
 			<arg value="-C" />
 			<arg value="-d." />
@@ -312,10 +301,10 @@
 
 
     <!-- execute tests -->
-    <target name="run-tests" depends="check-test-java">
+    <target name="run-tests" depends="check-test-java,test-jre-vm-info,set-vm-specific">
         <mkdir dir="${tests.reports}" />
 
-        <property name="qa.ref-java" value="-property ReferenceRuntime ${java.home}/bin/java${exe_ext}" />
+        <property name="qa.ref-java" value="-property ReferenceRuntime ${java.home}/bin/java${exe}" />
         <property name="qa.java" value="-property TestedRuntime ${test.java.cmd}" />
         <property name="qa.user.cfg" value="-cfp ${basedir}/config" />
         <property name="qa.reports" value="-property TestResultRoot ${tests.reports}" />
@@ -327,10 +316,12 @@
         <property name="qa.suite" value="-property TestSuiteRoot ${basedir} ${qa.class} ${qa.lib}" />
         <property name="qa.exclude" value="-exclude ${basedir}/config/func_exclude.file" />
         <property name="qa.non-int" value="-execopt Selector:exclude:Keyword interactive" />
+        <property name="qa.jit-opts" value="" />
         <property name="qa.select" value="${qa.non-int} ${qa.exclude}" />
         <property name="qa.subs" value="-subs functional" />
 
         <echo message="Running tests" />
+        <echo message="run options are: -version -logl 6 -failonerror ${qa.run} ${qa.suite} ${qa.select} ${qa.subs} ${qa.jit-opts}" />
         <java fork="yes" classname="${harness.main}" dir="${tests.reports}"
                output="${tests.reports}/th.log" 
                error="${tests.reports}/th.error"
@@ -342,8 +333,49 @@
                 <pathelement location="${harness.jar}" />
             </classpath>
 
-            <arg line="-version -logl 6 -failonerror ${qa.run} ${qa.suite} ${qa.select} ${qa.subs}" />
+            <arg line="-version -logl 6 -failonerror ${qa.run} ${qa.suite} ${qa.select} ${qa.subs} ${qa.jit-opts}" />
         </java>
+    </target>
+
+    <target name="test-jre-vm-info" depends="-get-test-vm-output">
+        <!-- Add other runtime names here -->
+        <condition property="test.vm.name" value="ri" >
+            <contains string="${test.vm.info.tmp}" substring="HotSpot"/>
+        </condition>
+        <condition property="test.vm.name" value="jr" >
+            <contains string="${test.vm.info.tmp}" substring="JRockit"/>
+        </condition>
+        <!-- FIXME current behavior relies on the fact that J9 VM doesn't
+             support -version parameter -->
+        <condition property="test.vm.name" value="drl" else="ibm" >
+            <contains string="${test.vm.info.tmp}" substring="harmony" />
+        </condition>
+        <echo message="test.vm.name = ${test.vm.name}" />
+    </target>
+
+    <target name="-get-test-vm-output" if="test.java.cmd">
+        <exec executable="${test.java.cmd}" failifexecutionfails="false">
+            <arg value="-version" />
+            <redirector outputproperty="test.vm.info.tmp"/>
+        </exec>
+    </target>
+
+    <target name="set-vm-specific" depends="-get-test-vm-output">
+        <!-- Add params for other runtimes  here -->
+        <condition property="qa.non-int" 
+            value="-execopt Selector:exclude:Keyword interactive -execopt Selector:exclude:Keyword drlvmOnly -execopt Selector:exclude:Keyword harmonyOnly" >
+            <or>
+                <contains string="${test.vm.name}" substring="ri"/>
+                <contains string="${test.vm.name}" substring="jr"/>
+            </or>
+        </condition>
+        <condition property="qa.jit-opts" 
+            value="-execopt OptSwitch -server -execopt JetSwitch -server -execopt ServerSwitch -server -execopt ServerStaticSwitch -server -execopt ClientSwitch -client -execopt AssertSwitch -Dnon=non" >
+            <or>
+                <contains string="${test.vm.name}" substring="ri"/>
+                <contains string="${test.vm.name}" substring="jr"/>
+            </or>
+        </condition>
     </target>
 
     <target name="chk-cp">
