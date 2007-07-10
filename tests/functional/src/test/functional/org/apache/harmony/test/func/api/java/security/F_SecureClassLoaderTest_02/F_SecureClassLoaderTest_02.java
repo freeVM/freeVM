@@ -43,13 +43,13 @@ public class F_SecureClassLoaderTest_02 extends ScenarioTest
         testArgs[0] = testArgs[0].replace('\\', '/');
         int index = testArgs[0].indexOf(".");
         if (index != -1) {
-            testArgs[0] = testArgs[0].substring(0, index) + testArgs[0].substring(index + 2);
+//            testArgs[0] = testArgs[0].substring(0, index) + testArgs[0].substring(index + 2);
         }
         
         testArgs[3] = testArgs[3].replace('\\', '/');
         index = testArgs[3].indexOf(".");
         if (index != -1) {
-            testArgs[3] = testArgs[3].substring(0, index) + testArgs[3].substring(index + 2);
+//            testArgs[3] = testArgs[3].substring(0, index) + testArgs[3].substring(index + 2);
         }
         
         URL url;
