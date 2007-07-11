@@ -36,6 +36,7 @@ import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import org.apache.harmony.test.func.share.ScenarioTest;
 
@@ -107,6 +108,7 @@ public class F_CertPathTest_03 extends ScenarioTest {
             PKIXBuilderParameters pkixBuilderParams = new PKIXBuilderParameters(keyStore, certSelector);
             pkixBuilderParams.addCertStore(certStore);
             pkixBuilderParams.setRevocationEnabled(false);
+            pkixBuilderParams.setDate(new Date((2006 - 1900), 9, 1));
             
             log.info("Acquire an instance of CertPathBuilder object");
             CertPathBuilder certpathBuilder = CertPathBuilder.getInstance(CertPathBuilder.getDefaultType());

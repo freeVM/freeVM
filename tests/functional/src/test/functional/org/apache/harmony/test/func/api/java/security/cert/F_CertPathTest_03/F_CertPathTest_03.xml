@@ -71,9 +71,6 @@
             
                 
         <Runner ID="Runtime">
-                <Option name="-cp" value="$CP$PathSeparator$TestSuiteClassRoot$PathSeparator"/>
-                   <Option name="-Dqe.class=$TestSuiteClassRoot"/>
-                   <Option name="-Dqe.src=$TestSuiteTestRoot"/>
                 <Param name="toRun" value="org.apache.harmony.test.func.api.java.security.cert.F_CertPathTest_03.F_CertPathTest_03">
                     <Option value="$TestDirectory$FileSeparatorauxiliary$FileSeparatorcert_test.cert"/>
                     <Option value="$TestDirectory$FileSeparatorauxiliary$FileSeparatoracme_ca.cert"/>
