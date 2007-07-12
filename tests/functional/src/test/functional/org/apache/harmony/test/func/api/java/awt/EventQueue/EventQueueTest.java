@@ -277,6 +277,9 @@ public class EventQueueTest extends AutonomousTest {
         /* We must get ceHidden event */
         ComponentEvent ceReceived = (ComponentEvent) myeq.peekEvent();
 
+        if (ceReceived == null) {
+            return failed("\n No event has been peeked up from the queue");
+        }
         if (ceReceived.getSource().getClass().getName().indexOf("MyButton") < 0
                 || ceReceived.getID() != ComponentEvent.COMPONENT_HIDDEN) {
             return failed("\n Wrong event has been peeked up from the queue");
