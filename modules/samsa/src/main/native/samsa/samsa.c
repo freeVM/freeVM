@@ -33,6 +33,7 @@
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR      "/"
 #define EXE_POSTFIX         "/jre/bin/java"
+#define WEXE_POSTFIX        "/jre/bin/javaw"
 #define LIB_POSTFIX         "/lib/"
 #define CLASSPATH_SEP       ":"
 #endif
@@ -41,6 +42,7 @@
 #define PATH_SEPARATOR_CHAR '\\'
 #define PATH_SEPARATOR      "\\"
 #define EXE_POSTFIX         "\\jre\\bin\\java.exe"
+#define WEXE_POSTFIX        "\\jre\\bin\\javaw.exe"
 #define LIB_POSTFIX         "\\lib\\"
 #define CLASSPATH_SEP       ";"
 #endif
@@ -90,6 +92,8 @@ int main (int argc, char **argv, char **envp)
     char *jdkRoot = NULL;
     char *fullExePath = NULL;
     TOOLDATA *pToolData = (TOOLDATA *) malloc(sizeof(TOOLDATA));
+    
+    int isJavaw = 0;
 
     /*
      *  get the jdkroot and the construct invocation path for exe
@@ -116,6 +120,8 @@ int main (int argc, char **argv, char **envp)
         fprintf(stderr, "Uknown tool name %s\n", argv[0]);
         return 1;
     }
+    
+    isJavaw = strcmp(toolName, "javaw") == 0;
 
     /*
      *  get the 'tool data' - right now, this is just the jars
@@ -131,7 +137,15 @@ int main (int argc, char **argv, char **envp)
     fullExePath = (char *) malloc(strlen(jdkRoot) + strlen(EXE_POSTFIX) + 1);
     
     strcpy(fullExePath, jdkRoot);
-    strcat(fullExePath, EXE_POSTFIX);
+    
+    /* 
+     * If we're javaw then we need to javaw to command line
+     */
+    if (isJavaw) {
+        strcat(fullExePath, WEXE_POSTFIX);
+    } else {
+        strcat(fullExePath, EXE_POSTFIX);
+    }
     
     /*
      *  we're invoking java with the following 
@@ -140,9 +154,9 @@ int main (int argc, char **argv, char **envp)
     myArgv[newIndex++] = fullExePath;
     
     /*
-     *  if we're not java, put the tools on cp, figure out the tool class to invoke...
+     *  if we're not java or javaw, put the tools on cp, figure out the tool class to invoke...
      */
-    if (strcmp(toolName, "java")) {
+    if (strcmp(toolName, "java") && !isJavaw) {
         char *classpath;
         char *buffer;
 
@@ -279,7 +293,7 @@ int main (int argc, char **argv, char **envp)
     free(cmd_line);
 
     // wait for child process to finish
-    if (WAIT_FAILED == WaitForSingleObject(procInfo.hProcess, INFINITE)) {
+    if (!isJavaw && WAIT_FAILED == WaitForSingleObject(procInfo.hProcess, INFINITE)) {
 
         fprintf(stderr, "Error waiting for process : %d\n", GetLastError());
 

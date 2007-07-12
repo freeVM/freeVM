@@ -69,6 +69,9 @@
         <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/java${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/java${exe.suffix}" perm="ugo+x" />
 
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/javaw${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/java${exe.suffix}" perm="ugo+x" />
+
         <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/keytool${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/keytool${exe.suffix}" perm="ugo+x" />
 
