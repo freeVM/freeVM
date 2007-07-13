@@ -19,7 +19,7 @@ api.zip.ZlibTest
 ## HARMONY-3627, hang
 api.kernel.thread.StackTraceTest.StackTraceTest
 
-## HARMONY-4232, HARMONY-4220, the eissue could be in the test
+## HARMONY-4220, HARMONY-4232, the issue could be in the test
 api.kernel.thread.ThreadKill.ThreadKillTest
 
 ## HARMONY-2742, HARMONY-3224, hang
@@ -34,7 +34,7 @@ api.text.CollationKeyTest
 vm.classloading.ClassAttributesTest
 vm.classloading.ClassReflectionTest
 
-##  could not reproduce - hanged 1 time of 5 runs
+## HARMONY-4413   - test issue
 vm.finalization.ArrayElemFinalizationTest
  
 ## HARMONY-4081, failed 2 times from 5 runs
@@ -45,7 +45,7 @@ api.nio.channels.filechannel.FileChannelThrSafetyTest
 api.nio.charset.CharsetSyncCacheTest
 api.text.getSentenceInstance_check
 
-## TBD
+## HARMONY-4393
 api.nio.charset.ContainsTest
  
  
