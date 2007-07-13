@@ -17,26 +17,11 @@
 ## ======================================================================================
 ##
 
-#Uncomment and set to appropriate values when using outside Build & Test infrastructure
-#test.jre.home=
-#vm.options=
-#tests=
+#Where to fetch from EUT & Eclipse. Specify remote location (using protocol
+#prefix http://, ftp://) or local machine location (using absolute path and
+#file: prefix).
 
-#Time to wait before killing testsuite by timeout, milliseconds. Default is 7200000.
-timeout=7200000
-
-#Eclipse SDK and Eclipse Unit Tests versions and filenames
 #Eclipse filename prefix should be of the form: eclipse-SDK-<version>
 eclipse.filename.prefix=eclipse-SDK-3.2
-eut.filename=eclipse-Automated-Tests-3.2.zip
-eclipse.buildid=3.2
-
-#where to fetch from
 eut.location=http://mirrors.nsa.co.il/eclipse/eclipse/downloads/drops/R-3.2-200606291905/
 eclipse.location=http://mirrors.nsa.co.il/eclipse/eclipse/downloads/drops/R-3.2-200606291905/
-
-# Specify CVS settings if you want to run Team CVS tests
-#cvs_user=
-#cvs_password=
-#cvs_host=
-#cvs_root=

@@ -33,14 +33,20 @@
             inheritAll="false">
             <property name="eut.location"
                 value="${eut.parameters.optional.eut.location}" />
+            <property name="eut.filename"
+                value="${eut.parameters.optional.eut.filename}" />
             <property name="eclipse.location"
                 value="${eut.parameters.optional.eclipse.location}" />
             <property name="eclipse.filename.prefix"
                 value="${eut.parameters.optional.eclipse.filename.prefix}" />
+            <property name="eclipse.buildid"
+                value="${eut.parameters.optional.eclipse.buildid}" />
             <property name="work.dir"
                 value="${checkouts.dir}/${suite.name}"/>
             <property name="result.dir"
                 value="${results.dir}/${suite.name}"/>
+            <property name="test.jre.home"
+                value="${eut.parameters.required.tested.runtime}"/>
         </ant>
     </target>
 
@@ -52,7 +58,7 @@
             inheritAll="false">
             <property name="eut.location"
                 value="${eut.parameters.optional.eut.location}" />
-            <property name="eut.filenae"
+            <property name="eut.filename"
                 value="${eut.parameters.optional.eut.filename}" />
             <property name="eclipse.location"
                 value="${eut.parameters.optional.eclipse.location}" />
@@ -90,7 +96,6 @@
                 <propertyref name="eut.parameters.optional.cvs_root"/>
                 <mapper type="glob" from="eut.parameters.optional.cvs_root" to="cvs_root"/>
             </propertyset>
-
             <property name="vm.options"
                 value="${eut.parameters.optional.tested.vm.options}"/>
             <property name="test.jre.home"

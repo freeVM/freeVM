@@ -15,14 +15,14 @@
      See the License for the specific language governing permissions and
      limitations under the License. -->
 
-<parameters depends="drlvm">
+<parameters depends="hdk">
 
     <!-- required -->
     <required>
         <!-- path to JRE under test -->
         <tested.runtime
             description="Path to JRE under test"
-            value="${drlvm.parameters.shared.jre.dir}"/>
+            value="${hdk.parameters.shared.binaries.jre.dir}"/>
     </required>
 
     <!-- shared values -->

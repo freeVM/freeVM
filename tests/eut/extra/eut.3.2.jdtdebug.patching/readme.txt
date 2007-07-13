@@ -3,19 +3,23 @@
         pass on Apache Harmony
         =====================================================================
 
-This document describes how to apply patches to Eclipse Unit Tests 'jdtcorecompiler'
+This document describes how to apply patches to Eclipse Unit Tests 'jdtdebug'
 suite in order to pass on Apache Harmony and how to use the Apache Ant script in
 this archive to apply the patches.
 
 ---------------
-Directory Content
+Archive Content
 ---------------
 
-This directory contains script for patching Eclipse Unit Tests 'jdtcorecompiler'
+This archive contains script for patching Eclipse Unit Tests 'jdtcorecompiler'
 suite. The archive content is as follows:
 
-+<eut.3.2.jdtcorecompiler.patching>/
++<eut.3.2.jdtdebug.patching>/
 |-+patch/                           - directory containing patches to apply
+|   |
+|   |--testprograms                 - patches for simple classes used as the code to debug
+|   |
+|   |--tests                        - jdtdebug tests patches
 |
 |--build.xml                        - Apache Ant scrip that applies given patches
 |
@@ -24,22 +28,20 @@ suite. The archive content is as follows:
 |--readme.txt                       - This README file
 
 ------------------------------------------------------------
-Known issues preventing 'jdtcorecompiler' suite from passing
+Known issues preventing 'jdtdebug' suite from passing
 on Harmony that need to be workarounded
 ------------------------------------------------------------
 
-1. https://bugs.eclipse.org/bugs/show_bug.cgi?id=172820:
-Several classes from org/eclipse/jdt/core/tests/compiler, org/eclipse/jdt/core/tests/runtime,
-org/eclipse/jdt/core/tests/util use hard-coded class library path that doesn't
-work for Apache Harmony. The patch contains workaround for this issue for EUT 3.2,
-because its fix is committed to Eclipse 3.3 only.
-2. https://bugs.eclipse.org/bugs/show_bug.cgi?id=188127:
-Some tests from org.eclipse.jdt.core.tests.eval suite fail because the timeout
-for VM launch is not enough for DRLVM. The patch consists in increasing the
-timeout to 30 seconds.
+1. https://bugs.eclipse.org/bugs/show_bug.cgi?id=162366
+Several jdtdebug tests depend on VM behavior
+2. https://bugs.eclipse.org/bugs/show_bug.cgi?id=193488
+org.eclipse.jdt.debug.test.stepping.StepIntoSelectionTests depend on VM behavior.
+One of these tests leaves open error dialog window 'Execution did not enter
+"step" before the current method returned.', which requires user
+interaction to finish tests execution.
 
 ------------------------------------
-How to patch 'jdtcorecompiler' suite
+How to patch 'jdtdebug' suite
 ------------------------------------
 
 Prerequisites: Eclipse SDK 3.2, EUT 3.2 archives, ecj_3.2.jar (Eclipse batch compiler)
@@ -48,16 +50,17 @@ Prerequisites: Eclipse SDK 3.2, EUT 3.2 archives, ecj_3.2.jar (Eclipse batch com
 2. Unpack Eclipse 3.2 archive
 3. Unzip EUT 3.2 archive; in the 'eclipse-testing' directory that is
    created after EUT unpacking unzip eclipse-junit-tests-*.zip, then unzip
-   eclipse-testing/eclipse/plugins/org.eclipse.sdk.tests.source_3.2.0.v20060329/src/org.eclipse.jdt.core.tests.compiler_3.2.0/jdtcoretestscompilersrc.zip
-4. Apply patches from patch directory to the unpacked jdtcoretestscompiler sources
-5. Compile source files using ECJ 3.2 compiler (add jar-s from eclipse plugins
+   eclipse-testing/eclipse/plugins/org.eclipse.sdk.tests.source_3.2.0.v20060329/src/org.eclipse.jdt.debug.tests_3.1.0/javadebugtestssrc.zip
+4. Apply patches from 'patch/tests' directory to the unpacked jdtdebug sources
+5. Apply patches from 'patch/testprograms' directory to eclipse-testing/eclipse/plugins/org.eclipse.jdt.debug.tests_3.1.0/testprograms
+6. Compile source files using ECJ 3.2 compiler (add jar-s from eclipse plugins
    directory and eclipse-testing/eclipse/plugins directory to the classpath)
-6. Put compiled classes to the corresponding locations in
-   eclipse-testing/eclipse/plugins/org.eclipse.jdt.core.tests.compiler_3.2.0/jdtcoretestscompiler.jar
-7. Pack everything back preserving the archives structure
+7. Put compiled classes to the corresponding locations in
+   eclipse-testing/eclipse/plugins/org.eclipse.jdt.debug.tests_3.1.0/javadebugtests.jar
+8. Pack everything back preserving the archives structure
 
 -----------------------------------------------------
-How to patch 'jdtcorecompiler' suite using the script
+How to patch 'jdtdebug' suite using the script
 -----------------------------------------------------
 
 1. Unpack this archive, review properties file and modify it if necessary
@@ -68,7 +71,7 @@ How to patch 'jdtcorecompiler' suite using the script
 4. Make sure that PATH environment variable contains JRE 1.5 (use RI) and Apache
    Ant (version >=1.6.5), and that JAVA_HOME and ANT_HOME are properly set up.
    Make sure that 'unzip' tool can also be found in your PATH
-4. Change directory to the unpacked 'eut.jdtcorecompiler.patching' directory and run:
+4. Change directory to the unpacked 'eut.3.2.jdtdebug.patching' directory and run:
    ant
    Patching may take several minutes because it deals with heavy-weight archives
 5. Find the patched EUT archive in 'patched' directory

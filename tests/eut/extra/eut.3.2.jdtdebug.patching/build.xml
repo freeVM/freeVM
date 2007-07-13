@@ -16,7 +16,7 @@
 -->
 
 <project name="eut.jdtcorecompiler.patch" default="default" basedir=".">
-<description>Apply patches to Eclipse Unit Tests jdtcorecompiler suite in order to pass on Apache Harmony</description>
+<description>Apply patches to Eclipse Unit Tests jdtdebug suite in order to pass on Apache Harmony</description>
 
     <!-- Global settings -->
     <property file="${basedir}/properties"/>
@@ -26,24 +26,22 @@
 
     <!-- Patches specific settings -->
     <property name="patch.location" location="${basedir}/patch"/>
-
     <patternset id="to.patch.patterns">
-        <patternset id="to.patch.patterns.188127">
-            <include name="**/org/eclipse/jdt/core/tests/eval/DebugEvaluationSetup*"/>
-            <include name="**/org/eclipse/jdt/core/tests/eval/SimpleTest*"/>
-            <include name="**/org/eclipse/jdt/core/tests/eval/EvaluationSetup*"/>
+        <patternset id="to.patch.patterns.162366">
+            <include name="**/org/eclipse/jdt/debug/tests/core/StepFilterTests*"/>
+            <include name="**/testprograms/StepFilterOne*"/>
+            <include name="**/testprograms/StepFilterTwo*"/>
+            <include name="**/testprograms/StepFilterThree*"/>
         </patternset>
-         <patternset id="to.patch.patterns.172820">
-            <include name="**/org/eclipse/jdt/core/tests/runtime/LocalVMLauncher*"/>
-            <include name="**/org/eclipse/jdt/core/tests/util/Util*"/>
-            <include name="**/org/eclipse/jdt/core/tests/runtime/DRLVMLauncher*"/>
-            <include name="**/org/eclipse/jdt/core/tests/compiler/regression/BatchCompilerTest*"/>
+        <patternset id="to.patch.patterns.193488">
+            <include name="**/org/eclipse/debug/tests/targets/StepIntoSelectionClass*"/>
         </patternset>
    </patternset>
 
-    <property name="plugin.sources.to.patch" value="eclipse/plugins/org.eclipse.sdk.tests.source_3.2.0.v20060329/src/org.eclipse.jdt.core.tests.compiler_3.2.0/jdtcoretestscompilersrc.zip"/>
+    <property name="plugin.sources.to.patch" value="eclipse/plugins/org.eclipse.sdk.tests.source_3.2.0.v20060329/src/org.eclipse.jdt.debug.tests_3.1.0/javadebugtestssrc.zip"/>
 
-    <property name="plugin.to.patch" value="eclipse/plugins/org.eclipse.jdt.core.tests.compiler_3.2.0/jdtcoretestscompiler.jar"/>
+    <property name="plugin.to.patch.dir" value="eclipse/plugins/org.eclipse.jdt.debug.tests_3.1.0"/>
+    <property name="plugin.to.patch" value="${plugin.to.patch.dir}/javadebugtests.jar"/>
 
     <!-- Define architecture/platform -->
     <condition property="arch" value="x86">
@@ -177,7 +175,7 @@
 
     <target name="concat.patches">
         <concat destfile="${work.dir}/all.patches" append="false">
-            <fileset dir="${patch.location}"/>
+            <fileset dir="${patch.location}/tests"/>
         </concat>
     </target>
 
@@ -188,7 +186,7 @@
         <patch
             dir="${work.dir}/sources_to_patch"
             patchfile="${work.dir}/all.patches"
-            strip="1"
+            strip="2"
             destfile="${work.dir}/patched.tmp"
         />
         <fail message="Patch wasn't applied successfully (see output for details)! Check that you use valid original EUT archive and the patches from ${work.dir}/patch don't interfere.">
@@ -207,9 +205,43 @@
         <patch
             dir="${work.dir}/sources_patched"
             patchfile="${work.dir}/all.patches"
+            strip="2"
+        />
+    </target>
+
+    <!-- testprograms sources - specific for jdtdebug suite -->
+    <target name="concat.testprograms.patches">
+        <concat destfile="${work.dir}/all.testprograms.patches" append="false">
+            <fileset dir="${patch.location}/testprograms"/>
+        </concat>
+    </target>
+
+    <target name="try.patch.testprograms.sources" depends="concat.testprograms.patches">
+        <delete failonerror="false">
+            <fileset dir="${work.dir}" includes="testprograms.patched.tmp,testprograms.patched.tmp.rej"/>
+        </delete>
+        <patch
+            dir="${eut.dir}/${plugin.to.patch.dir}"
+            patchfile="${work.dir}/all.testprograms.patches"
+            strip="1"
+            destfile="${work.dir}/testprograms.patched.tmp"
+        />
+        <fail message="Patch wasn't applied successfully (see output for details)! Check that you use valid original EUT archive and the patches from ${work.dir}/patch don't interfere.">
+            <condition>
+                <available file="${work.dir}/testprograms.patched.tmp.rej"/>
+            </condition>
+        </fail>
+        <delete file="${work.dir}/testprograms.patched.tmp"/>
+    </target>
+
+    <target name="patch.testprograms.sources" depends="concat.testprograms.patches,try.patch.testprograms.sources">
+        <patch
+            dir="${eut.dir}/${plugin.to.patch.dir}"
+            patchfile="${work.dir}/all.testprograms.patches"
             strip="1"
         />
     </target>
+    <!-- end od jdtdebug suite specific stuff -->
 
 <!-- ======== Compile patched sources ======== -->
 
@@ -262,6 +294,17 @@
         </zip>
     </target>
 
+    <target name="pack.patched.testprograms.sources">
+        <zip
+            update="true"
+            basedir="${work.dir}/testprograms_sources_patched"
+            keepcompression="true"
+            destfile="${eut.dir}/${plugin.to.patch}">
+            <patternset refid="to.patch.patterns"/>
+        </zip>
+    </target>
+
+
     <target name="pack.eut">
         <zip
             destfile="${eut.dir}/${eut.tests.archive.filename}"
@@ -287,10 +330,12 @@
     <target name="-clean">
         <delete failonerror="false" includeemptydirs="true">
             <fileset dir="${work.dir}/sources_to_patch"/>
+            <fileset dir="${work.dir}/testprograms_sources_to_patch"/>
             <fileset dir="${work.dir}/sources_patched"/>
+            <fileset dir="${work.dir}/testprograms_sources_patched"/>
             <fileset dir="${work.dir}/classes_patched"/>
             <fileset dir="${work.dir}" includes="patched.tmp,patched.tmp.rej"/>
-            <fileset dir="${work.dir}" includes="all.patches"/>
+            <fileset dir="${work.dir}" includes="all.patches,all.testprograms.patches"/>
             <fileset dir="${eut.dir}"/>
         </delete>
     </target>
@@ -303,7 +348,7 @@
         </delete>
     </target>
 
-    <target name="default" depends="setup,extract.sources.to.patch,patch.sources,compile.patched.sources,pack.patched.sources,pack.patched.classes,pack.eut,-clean">
+    <target name="default" depends="setup,extract.sources.to.patch,patch.sources,patch.testprograms.sources,compile.patched.sources,pack.patched.sources,pack.patched.classes,pack.eut,-clean">
     </target>
 
 </project>

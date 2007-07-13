@@ -18,14 +18,24 @@ eut/                                       - EUT scripts directory
   |-+extra/                                - extra scripts and patches that might be useful for EUT runs
   |  |
   |  |-+eut.3.2.jdtcorecompiler.patching/  - patches for EUT 3.2 'jdtcorecompiler' suite in order to pass on Apache Harmony
-  |    |
-  |    |-+patch/                           - directory containing patches to be applied
-  |    |
-  |    |--build.xml                        - script that applies the patches
-  |    |
-  |    |--properties                       - patching pre-requisites settings (EUT and Eclipse 3.2 location)
-  |    |
-  |    |--readme.txt                       - readme file describing the patches
+  |  | |
+  |  | |-+patch/                           - directory containing patches to be applied
+  |  | |
+  |  | |--build.xml                        - script that applies the patches
+  |  | |
+  |  | |--properties                       - patching pre-requisites settings (EUT and Eclipse 3.2 location)
+  |  | |
+  |  | |--readme.txt                       - readme file describing the patches
+  |  |
+  |  |-+eut.3.2.jdtdebug.patching/         - patches for EUT 3.2 'jdtdebug' suite in order to pass on Apache Harmony
+  |  | |
+  |  | |-+patch/                           - directory containing patches to be applied
+  |  | |
+  |  | |--build.xml                        - script that applies the patches
+  |  | |
+  |  | |--properties                       - patching pre-requisites settings (EUT and Eclipse 3.2 location)
+  |  | |
+  |  | |--readme.txt                       - readme file describing the patches
   |
   |--build.xml                             - main EUT suite launching script
   |
@@ -40,7 +50,8 @@ Configuration:
 --------------
 * Make sure that PATH environment variable contains JRE 1.5 (use RI) and Apache
 Ant (version >=1.6.5), and that JAVA_HOME and ANT_HOME are properly set up. Make
-sure that 'unzip' tool can also be found in your PATH.
+sure that 'unzip' tool can also be found in your PATH (use Info-ZIP UnZip version
+5.41 or later http://www.info-zip.org/pub/infozip/UnZip.html).
 
 * If you use proxy server,
 specify proxy settings by setting ANT_OPTS environment variable:
@@ -111,5 +122,14 @@ Known Issues:
    Some tests from org.eclipse.jdt.core.tests.eval suite fail because the timeout
    for VM launch is not enough for DRLVM. The patch consists in increasing the
    timeout to 30 seconds.
-3. As a temporary workaround for http://issues.apache.org/jira/browse/HARMONY-2914
+3. https://bugs.eclipse.org/bugs/show_bug.cgi?id=162366:
+   Several jdtdebug tests depend on VM behavior. See 'extra/eut.3.2.jdtdebug.patching/readme.txt'
+   for details on how to apply the patch.
+4. https://bugs.eclipse.org/bugs/show_bug.cgi?id=193488:
+   org.eclipse.jdt.debug.test.stepping.StepIntoSelectionTests depend on VM behavior.
+   One of these tests leaves open error dialog window 'Execution did not enter
+   "step" before the current method returned.', which requires user
+   interaction to finish tests execution. See 'extra/eut.3.2.jdtdebug.patching/readme.txt'
+   for details on how to apply the patch.
+5. As a temporary workaround for http://issues.apache.org/jira/browse/HARMONY-2914
    set open files limit to 64000 when running on Linux.
