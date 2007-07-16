@@ -1058,13 +1058,15 @@ to skip it from being updated.">
         <attribute name="targets" default=""/>
         <attribute name="failonerror" default="true"/>
         <attribute name="failproperty" default="tmp.ant.exec.fail.property"/>
+        <attribute name="javaVM" default="java"/>
         <element name="ant-params" implicit="yes" optional="yes"/>
         <sequential>
             <java jar="${ant.home}/lib/ant-launcher.jar"
                   fork="true"
                   dir="@{dir}" 
                   failonerror="@{failonerror}"
-                  resultproperty="tmp.@{failproperty}">
+                  resultproperty="tmp.@{failproperty}"
+                  jvm="@{javaVM}" >
                 <sysproperty key="ant.home" value="${ant.home}"/>
                 <!-- caller's specific libraries to be used with ant -->
                 <arg line='-lib "@{lib}"'/>
