@@ -14,27 +14,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+/**
+ * @author Pavel Afremov
+ * @version $Revision: 1.1.2.1.2.2 $
+ */
 
-/** 
- * @file thread_helpers_ipf.c
- * Missing definition to ipf compile
- */  
+// This describes the core VM interface to exception manipulation, throwing, and catching
 
-#include <open/hythread_ext.h>
-#include <open/thread_helpers.h>
-#include "thread_private.h"
-#include "open/thread_externals.h"
-#include "open/jthread.h"
+#ifndef _INTERFACE_EXCEPTIONS_TYPE_H_
+#define _INTERFACE_EXCEPTIONS_TYPE_H_
 
-#include <assert.h>
+//#include "jni.h"
+#include "open/types.h"
 
-void *dummy_tls_func() {
-    assert(0);
-    abort();
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+struct Exception {
+    struct ManagedObject* exc_object;
+    struct Class* exc_class;
+    const char* exc_message;
+    struct ManagedObject* exc_cause;
+};
+
+#ifdef __cplusplus
 }
-
-
-fast_tls_func* get_tls_helper(hythread_tls_key_t key) {
-    return dummy_tls_func;
-}
-
+#endif
+#endif // !_INTERFACE_EXCEPTIONS_TYPE_H_
