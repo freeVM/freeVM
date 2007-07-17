@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-    
+
 /**
  * @author Aleksey Ignatenko
  * @version $Revision: 1.0 $
  */
 
 /**
- *  GOAL: the test checks that for each loaded class (from "java.home") invocation of java.lang.Class methods 
+ *  GOAL: the test checks that for each loaded class (from "java.home") invocation of java.lang.Class methods
  *             in multiple threads running in parallel does not cause unexpected errors (crashes, hangs, exceptions).
  *
  *  NOTE: see additional description in ClassMultiBase class.
@@ -42,14 +42,22 @@ package org.apache.harmony.test.reliability.vm.classloading;
 
 import java.lang.reflect.GenericSignatureFormatError;
 import java.lang.reflect.MalformedParameterizedTypeException;
+import org.apache.harmony.test.reliability.share.ClassMultiTestBase;
 
 public class ClassAttributesTest extends ClassMultiTestBase{
 
     public static void main(String[] args){
         System.exit(new ClassAttributesTest().test(args));
     }
+
+    public void initCycle() {
+        // do nothing
+    }
+    public void releaseCycle() {
+        // do nothing
+    }
     
-    void testContent(Class cls) {
+    public void testContent(Class cls) {
         cls.getName();        
         cls.getAnnotations();
         try{

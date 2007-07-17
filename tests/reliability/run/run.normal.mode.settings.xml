@@ -471,6 +471,28 @@
 	    <!-- number of files to work with  -->
 	    <property name="api.io.IOTest.n_files" value="50" />
 
+
+<!-- api.net.MultiConnectTest -->
+
+	    <!-- number of simultaneously executed clients  -->
+	    <property name="api.net.MultiConnectTest.n_threads" value="10" />
+
+	    <!-- port to use  -->
+	    <property name="api.net.MultiConnectTest.n_ports" value="1000" />
+
+<!-- api.net.SingleConnectTest -->
+
+	    <!-- number of simultaneously executed clients  -->
+	    <property name="api.net.SingleConnectTest.n_threads" value="400" />
+
+<!-- api.serialization.SerializableClassesTest -->
+
+	    <!-- number of simultaneously executed serialize threads -->
+	    <property name="api.serialization.SerializableClassesTest.n_threads" value="3" />
+
+	    <!-- number of simultaneously executed deserialize threads -->
+	    <property name="api.serialization.SerializableClassesTest.n_subthreads" value="10" />
+
 <!-- api.net.NetClient -->
 
 	    <!-- number of simultaneously executed clients  -->
@@ -481,6 +503,21 @@
 
 	    <!-- number of threads to run  -->
 	    <property name="api.net.NetClient.n_threads" value="5" />
+
+<!-- api.net.DatagramTest -->
+
+	    <!-- number of sender threads  -->
+	    <property name="api.net.DatagramTest.n_sender_threads" value="30" />
+
+<!-- api.net.JarUrlConnectionTest -->
+
+	    <!-- Number of threads to start  -->
+	    <property name="api.net.JarUrlConnectionTest.n_threads" value="100" />
+
+<!-- api.net.HttpConnectionTest -->
+
+	    <!-- URLs to scan  -->
+	    <property name="api.net.HttpConnectionTest.URLs" value="http://harmony.apache.org/;http://issues.apache.org/jira/browse/HARMONY;http://harmony.apache.org/quickhelp_contributors.html" />
 
 <!-- vm.classloading.ClassUnloadingTest -->
 
@@ -532,6 +569,12 @@
 
 	    <!-- number of running in parallel threads  -->
 	    <property name="vm.gc.GCTest.n_threads" value="32" />
+
+<!-- vm.gc.WeakRefsTest -->
+
+	    <!-- number of running in parallel threads  -->
+	    <property name="vm.gc.WeakRefsTest.n_threads" value="32" />
+
 
 <!-- vm.stack.StackFramesRestoreTest -->
 

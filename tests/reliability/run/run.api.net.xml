@@ -22,6 +22,22 @@
 
     <target name="run.api.net">
 
+        <run-pjava-test test="api.net.JarUrlConnectionTest" 
+                        args="${api.net.JarUrlConnectionTest.n_threads}"/>
+
+        <run-pjava-test test="api.net.HttpConnectionTest" 
+                        args="${api.net.HttpConnectionTest.URLs}"/>
+
+        <run-pjava-test test="api.net.DatagramTest" 
+                        args="${api.net.DatagramTest.n_sender_threads} "/>
+
+        <run-pjava-test test="api.net.MultiConnectTest" 
+                        args="${api.net.MultiConnectTest.n_threads} 
+                              ${api.net.MultiConnectTest.n_ports}"/>
+
+        <run-pjava-test test="api.net.SingleConnectTest" 
+                        args="${api.net.SingleConnectTest.n_threads}"/>
+
         <run-pjava-test test="api.net.NetClient" 
                         args="${api.net.NetClient.n_clients} 
                               ${test.source.dir}/org/apache/harmony/test/reliability/api/net/auxiliary

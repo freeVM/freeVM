@@ -45,14 +45,22 @@ import java.lang.reflect.Field;
 import java.lang.reflect.GenericSignatureFormatError;
 import java.lang.reflect.MalformedParameterizedTypeException;
 import java.lang.reflect.Method;
+import org.apache.harmony.test.reliability.share.ClassMultiTestBase;
 
 public class ClassReflectionTest extends ClassMultiTestBase{
 
     public static void main(String[] args){
         System.exit(new ClassReflectionTest().test(args));
     }
-    
-    void testContent(Class cls) {
+
+    public void initCycle() {
+        // do nothing
+    }
+    public void releaseCycle() {
+        // do nothing
+    }
+
+    public void testContent(Class cls) {
         Constructor[] ctrs = null;
         try{
             ctrs = cls.getConstructors();

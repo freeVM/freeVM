@@ -40,6 +40,9 @@
         <run-pjava-test test="vm.classloading.ClassReflectionTest" 
                         args="${vm.classloading.ClassReflectionTest.n_threads}"/>
 
+        <run-pjava-test test="vm.classloading.ClassCastTest" args=""/>
+
+
 	</target>
 
     <target name="run.vm.finalization">
@@ -54,6 +57,9 @@
 	</target>
 
     <target name="run.vm.gc">
+
+        <run-pjava-test test="vm.gc.WeakRefsTest" 
+                        args="${vm.gc.WeakRefsTest.n_threads}"/>
 
         <run-pjava-test test="vm.gc.GCTest" 
                         args="${vm.gc.GCTest.n_threads}"/>

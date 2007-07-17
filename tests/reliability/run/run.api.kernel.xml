@@ -24,7 +24,7 @@
    <target name="run.api.kernel" depends="run.api.kernel.args, run.api.kernel.exec, run.api.kernel.hooks,
     							run.api.kernel.object, run.api.kernel.pckg, run.api.kernel.string, 
 								run.api.kernel.thread, run.api.kernel.throwable, 
-                                                                        run.api.kernel.management" />
+                                                                        run.api.kernel.management, run.api.kernel.compiler" />
 
 
    <target name="run.api.kernel.args">
@@ -72,6 +72,12 @@
 
    </target>
 
+
+   <target name="run.api.kernel.compiler">
+
+        <run-pjava-test test="api.kernel.compiler.JitCompilerTest" args="" />
+
+   </target>
 
    <target name="run.api.kernel.pckg">
 

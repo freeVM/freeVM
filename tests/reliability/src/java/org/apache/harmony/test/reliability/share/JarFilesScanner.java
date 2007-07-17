@@ -41,7 +41,7 @@ public class JarFilesScanner{
     static ArrayList<String> classFiles = new ArrayList<String>(); // contains names of found class files
     static Boolean cache = false;
 
-    public ArrayList<String> getJarFilesInJRE(){
+    public static ArrayList<String> getJarFilesInJRE(){
         if (cache == false) {
             String rootDir = getDirToScanForJarFiles();
             scanDirForJarFiles(rootDir);
@@ -50,7 +50,7 @@ public class JarFilesScanner{
         return jarFiles;
     }
 
-    public ArrayList<String> getClassFilesInJRE(){
+    public static ArrayList<String> getClassFilesInJRE(){
         if (cache == false)
         {
             getJarFilesInJRE();
@@ -74,11 +74,11 @@ public class JarFilesScanner{
         return classFiles;
     }
 
-    String getDirToScanForJarFiles() {
+    static String getDirToScanForJarFiles() {
         return System.getProperty("java.home");
     }
 
-    void scanDirForJarFiles(String rootDir) {
+    static void scanDirForJarFiles(String rootDir) {
 
         try {
 

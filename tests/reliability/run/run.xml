@@ -233,11 +233,12 @@ See ${report.dir}/@{test}.txt file for details.
 	<import file="run.api.net.xml"/>
 	<import file="run.vm.xml"/>
 	<import file="run.api.util.xml"/>
-
+	<import file="run.api.security.xml"/>
+	<import file="run.api.serialization.xml"/>
 
     <target name="run" depends="run.api.zip, run.api.kernel, 
     				run.api.text, run.api.nio, 
-    				run.api.io, run.api.net, run.vm, run.api.util"/>
+    				run.api.io, run.api.net, run.vm, run.api.util, run.api.security, run.api.serialization"/>
 
     <fail message="There were test failures" if="failed"/>
     <target name="clean">
