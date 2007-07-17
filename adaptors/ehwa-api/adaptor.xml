@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ======================================================================
+         BT Adaptor for Eclipse Hello World Application (EHWA) scenario
+     ====================================================================== -->
+
+<project name="ehwa" default="run" basedir=".">
+    
+    <property environment="env"/>
+
+    <!--
+        Define properties describing platform type
+    -->
+    <condition property="is.windows">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="is.linux">
+        <and>
+            <os family="unix"/>
+            <os name="linux"/>
+        </and>
+    </condition>
+
+    <condition property="is.64bit">
+        <or>
+            <contains string="${os.arch}" substring="86_64"/>
+            <contains string="${os.arch}" substring="amd64"/>
+        </or>
+    </condition>
+
+    <condition property="is.windows.x86">
+        <and>
+            <isset property="is.windows"/>
+            <not><isset property="is.64bit"/></not>
+        </and>
+    </condition>
+
+    <condition property="is.windows.x86_64">
+        <and>
+            <isset property="is.windows"/>
+            <isset property="is.64bit"/>
+        </and>
+    </condition>
+        
+    <condition property="is.linux.x86">
+        <and>
+            <isset property="is.linux"/>
+            <not><isset property="is.64bit"/></not>
+        </and>
+    </condition>
+
+    <condition property="is.linux.x86_64">
+        <and>
+            <isset property="is.linux"/>
+            <isset property="is.64bit"/>
+        </and>
+    </condition>
+
+    <!--
+        Properties for Eclipse installation
+    -->
+    <condition property="eclipse.archive" value="eclipse-SDK-3.2.1-win32.zip">
+        <isset property="is.windows.x86"/>
+    </condition>
+        
+    <condition property="eclipse.archive" value="eclipse-SDK-3.2.1-win32-x86_64.zip">
+        <isset property="is.windows.x86_64"/>
+    </condition>
+        
+    <condition property="eclipse.archive" value="eclipse-SDK-3.2.1-linux-gtk.tar.gz">
+        <isset property="is.linux.x86"/>
+    </condition>
+
+    <condition property="eclipse.archive" value="eclipse-SDK-3.2.1-linux-gtk-x86_64.tar.gz">
+        <isset property="is.linux.x86_64"/>
+    </condition>
+
+    <condition property="eclipse-3.2.1.homedir" value="${external.libs.dir}/eclipse-3.2.1-win-x86">
+        <isset property="is.windows.x86"/>
+    </condition>
+            
+    <condition property="eclipse-3.2.1.homedir" value="${external.libs.dir}/eclipse-3.2.1-win-x86_64">
+        <isset property="is.windows.x86_64"/>
+    </condition>
+            
+    <condition property="eclipse-3.2.1.homedir" value="${external.libs.dir}/eclipse-3.2.l-lnx-x86">
+        <isset property="is.linux.x86"/>
+    </condition>
+
+    <condition property="eclipse-3.2.1.homedir" value="${external.libs.dir}/eclipse-3.2.1-lnx-x86_64">
+        <isset property="is.linux.x86_64"/>
+    </condition>
+    
+    <condition property="eclipse.exists">
+        <available file="${eclipse-3.2.1.homedir}/eclipse/startup.jar"/>
+    </condition>
+
+    <condition property="eclipse.archive.exists">
+        <available file="${external.arch.dir}/${eclipse.archive}"/>
+    </condition>
+
+    <!-- Setup of the EHWA scenario -->
+    <target name="setup" description="Setup configuration for EHWA scenario run">
+        <log message="============= Adaptor for ${suite.name}: Set Up ..."/>
+
+        <log message="Installing Eclipse..."/>
+        <antcall target="-install-eclipse"/>
+    </target>
+    
+    <!-- Run of the EHWA scenario -->
+    <target name="run">
+        <log message="============= Adaptor for ${suite.name}: Run ..."/>
+
+        <exec-ant dir="${built.drlvm.trunk}/build"
+                  file="make/build.xml"
+                  targets="ehwa.test"
+                  lib="${built.drlvm.trunk}/build/make/tmp"
+                  failonerror="true"
+                  failproperty="drlvm-ehwa-test.run.failed">
+            <sysproperty key="build.cfg" value="${drlvm.config}"/>
+            <sysproperty key="external.dep.CLASSLIB.loc"
+                         value='${built.classlib.trunk}'/>
+            <sysproperty key="machine.arch" value="${os.arch}"/>
+            <sysproperty key="eclipse.home" value="${eclipse-3.2.1.homedir}/eclipse"/>
+        </exec-ant>
+    </target>
+    
+    <!-- Clean of the EHWA scenario results -->
+    <target name="clean">
+        <log message="============= Adaptor for ${suite.name}: Clean .."/>
+        <delete dir="${results.dir}/${suite.name}"/>
+        <delete dir="${test.sources.dir}/${suite.name}/workspace"/>
+    </target>
+
+    <!-- Targets for Eclipse downloading and installing -->
+
+    <target name="-install-eclipse"
+            description="download and install Eclipse SDK 3.2.1 if it doesn't exist already"
+            depends="-install-eclipse-win,-install-eclipse-lnx"/>
+
+    <target name="-install-eclipse-win" if="is.windows" unless="eclipse.exists" depends="-download-eclipse">
+        <unzip src="${external.arch.dir}/${eclipse.archive}"
+               dest="${eclipse-3.2.1.homedir}"/>
+    </target>
+        
+    <target name="-install-eclipse-lnx" if="is.linux" unless="eclipse.exists" depends="-download-eclipse">
+        <gunzip src="${external.arch.dir}/${eclipse.archive}"
+                dest="${temp.files.dir}/ehwa_eclipse_tmp.tar"/>
+
+        <untar src="${temp.files.dir}/ehwa_eclipse_tmp.tar"
+               dest="${eclipse-3.2.1.homedir}"/>
+
+        <delete file="${temp.files.dir}/ehwa_eclipse_tmp.tar"/>
+    </target>
+
+    <target name="-download-eclipse" unless="eclipse.archive.exists">
+        <get src="${ehwa-api.parameters.optional.eclipse.download.address}/${eclipse.archive}"
+             dest="${external.arch.dir}/${eclipse.archive}"
+             usetimestamp="false"
+             verbose="true"/>
+    </target>
+
+</project>
+
