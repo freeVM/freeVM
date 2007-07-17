@@ -139,7 +139,7 @@ public class TLSClientAuthenticationTest extends MultiCase {
         log.info("Create mbean server");
         MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
 
-        JMXServiceURL url = new JMXServiceURL("service:jmx:jmxmp://");
+        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://");
         log.info("Create JMX Service URL - " + url);
         log.info("Create enviroment");
         HashMap enviroment = new HashMap();
@@ -167,7 +167,7 @@ public class TLSClientAuthenticationTest extends MultiCase {
         log.info("Create mbean server");
         MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
 
-        JMXServiceURL url = new JMXServiceURL("service:jmx:jmxmp://");
+        JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://");
         log.info("Create JMX Service URL - " + url);
         log.info("Create enviroment");
         HashMap enviroment = new HashMap();
@@ -196,7 +196,7 @@ public class TLSClientAuthenticationTest extends MultiCase {
             log.info("Create mbean server");
             MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
 
-            JMXServiceURL url = new JMXServiceURL("service:jmx:jmxmp://");
+            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://");
             log.info("Create JMX Service URL - " + url);
             log.info("Create enviroment");
             HashMap enviroment = new HashMap();
@@ -224,7 +224,7 @@ public class TLSClientAuthenticationTest extends MultiCase {
             log.info("Create mbean server");
             MBeanServer mbeanServer = MBeanServerFactory.createMBeanServer();
 
-            JMXServiceURL url = new JMXServiceURL("service:jmx:jmxmp://");
+            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://");
             log.info("Create JMX Service URL - " + url);
             log.info("Create enviroment");
             HashMap enviroment = new HashMap();
