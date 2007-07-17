@@ -36,10 +36,10 @@
     invokespecial org/apache/harmony/vts/test/vm/jvms/threads/share/InterruptibleTest/<init>()V
     aload_0
     iconst_1
-    putfield org/apache/harmony/vts/test/vm/jvms/threads/threads189/threads18901/threads18901p/c I
+    putfield org/apache/harmony/vts/test/vm/jvms/threads/threads189/threads18901/threads18901p/a I
     aload_0
     iconst_2
-    putfield org/apache/harmony/vts/test/vm/jvms/threads/threads189/threads18901/threads18901p/d I
+    putfield org/apache/harmony/vts/test/vm/jvms/threads/threads189/threads18901/threads18901p/b I
     return
 .end method
 
