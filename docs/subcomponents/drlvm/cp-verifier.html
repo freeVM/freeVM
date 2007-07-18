@@ -1,0 +1,1675 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Verifier</title>
+
+                        
+                        
+        <link rel="stylesheet" type="text/css" href="../../site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../../screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../print.css" media="print" />
+        </head>
+
+        <body>
+            <div id="pageHeader">
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="../../images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement -->
+            <a href="http://www.apachecon.com/2007/EU/index.html">
+                <img id="advertisement"
+                     src="http://www.apache.org/ads/ApacheCon/2007-usa-234x60.png"
+                     width="234" height="60"
+                     alt="ApacheCon US 2007" /></a>
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../license.html">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../downloads.html">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../sitemap.html">Sitemap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../hdk.html">HDK</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+                </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                
+                                                    <div>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+    <title>Java Class File Verification based on Constraint Propagation</title>
+    <link rel="stylesheet" type="text/css" media="all" href="site.css" />
+</head>
+<body>
+    <h1>
+        <a id="Top" name="Top">Java Class File Verification based on Constraint Propagation</a>
+    </h1>
+    <p class="TOCHeading">
+        <a href="#Revision_History">Revision History</a>
+    </p>
+    <p class="TOCHeading">
+        <a href="#Abstract">Abstract</a>
+    </p>
+    <p class="TOCHeading">
+        <a href="#Introduction">Introduction</a>
+    </p>
+    <p class="TOCHeading">
+        <a href="#Introduction_to_CP">Introduction to Constraint Propagation</a>
+    </p>
+    <p class="TOCHeading">
+        <a href="#Approaches_to_Byte_Code_Verification">Approaches to Byte Code Verification</a>
+    </p>
+    <p class="TOC">
+        <a href="#J2SE">J2SE</a>
+    </p>
+    <p class="TOC">
+        <a href="#J2ME_CLDC">J2ME CLDC</a>
+    </p>
+    <p class="TOC">
+        <a href="#Introduction_to_CP_Verifier">Introduction to CP Verifier</a>
+    </p>
+    <p class="TOCHeading">
+        <a href="#CP_verification">CP Verification</a>
+    </p>
+    <p class="TOC">
+        <a href="#Definitions">Definitions</a>
+    </p>
+    <p class="TOC">
+        <a href="#Algorithm">Algorithm</a>
+    </p>
+    <p class="TOC">
+        <a href="#Implementation_Details">Some Implementation Details</a>
+    </p>
+    <p class="TOCHeading">
+        <a href="#Verify_an_example">Verify an example</a>
+    </p>
+    <p class="TOC">
+        <a href="#J2SE2">J2SE</a>
+    </p>
+    <p class="TOC">
+        <a href="#J2ME_CLDC2">J2ME CLDC</a>
+    </p>
+    <p class="TOC">
+        <a href="#CP">CP</a>
+    </p>
+    <p class="TOCHeading">
+        <a href="#Results_and_Discussion">Results and Discussion</a>
+    </p>
+    <p class="TOCHeading">
+        <a href="#Conclusions">Conclusions</a>
+    </p>
+    <p class="TOCHeading">
+        <a href="#References">References</a>
+    </p>
+    <h1>
+        <a id="Revision_History" name="Revision_History"></a>Revision History
+    </h1>
+    <table width="90%">
+        <tr>
+            <th class="TableHeading" width="25%">
+                Version
+            </th>
+            <th class="TableHeading" width="50%">
+                Version Information
+            </th>
+            <th class="TableHeading">
+                Date
+            </th>
+        </tr>
+        <tr>
+            <td class="TableCell" width="25%">
+                Initial version
+            </td>
+            <td class="TableCell" width="25%">
+                Mikhail Loenko: document created
+            </td>
+            <td class="TableCell">
+                March 20, 2007
+            </td>
+        </tr>
+    </table>
+    <h1>
+        <a id="Abstract" name="Abstract"></a>Abstract
+    </h1>
+    <p>
+        Java<a href="#*">*</a> Class File Verification ensures that byte code is safe to avoid various attacks and 
+        runtime errors, 
+        but its classic implementation requires complex time and memory consuming dataflow analysis that generates 
+        a proof of type safety. There are alternative approaches; for example CLDC* verifier takes the class
+        files annotated with the proof of type safety. To make sure the byte code is valid, verifier just validates 
+        the proof. The validation is simple, fast, and does not require much memory.
+
+        This document presents a new verification approach implemented in Harmony 
+        <a href="#Harmony">[1]</a> JIRA 3363 <a href="#JIRA3363">[4]</a>. 
+
+        The approach is based on Constraint Propagation, it neither generates a direct 
+        proof of class file validness nor validates any existing proof. Instead it takes original 
+        Java class file containing no additional information and generates <b><i> a proof that a proof 
+        of validness does exist</i></b>.
+
+        The new approach results in significant performance and memory footprint advantage over J2SE*-style 
+        verification.
+
+    </p>
+    <h1>
+        <a id="Introduction" name="Introduction"></a>Introduction
+    </h1>
+    <p>
+        Java Class File Verification is an important part of Java Security Model. Verification ensures that binary 
+        representation of a class is structurally correct, e.g. that every instruction and every branch obeys 
+        the type discipline. 
+    </p>
+    <p>
+        Verification is a complicated time and memory consuming procedure that is absolutely necessary: If 
+        the classes were not verified then a pure java malicious application could get unrestricted access 
+        to the memory <a href="#memaccess">[6]</a>.
+    </p>
+    <p>
+        Verification result depends on the other classes linked to the given class. So, even if the class is 
+        developed by a trusted developer and digitally signed, it anyway must be validated in the user environment: 
+        Consider class <VAR>A</VAR> that stores an object of class <VAR>B</VAR> in the field of type <VAR>C</VAR>.
+        If in the developer's environment the <VAR>B</VAR> is a subclass of the <VAR>C</VAR>, then this store 
+        operation is valid. In a user environment that might not be the case. If <VAR>B</VAR> is replaced 
+        with some other valid and digitally signed <VAR>B</VAR> that is not a subclass of the <VAR>C</VAR>, 
+        then that class <VAR>A</VAR> is a source of runtime errors and a hole for attacks.
+
+        The verification can not be avoided, but it can be reduced. In the J2ME* world, which is about small 
+        limited-resource devices, a simplified verification approach is implemented. The "proof" is already 
+        generated by an off-device pre-verifier and stored within the class file. In-device simplified verifier has 
+        just to validate the proof. Proof validation is significantly simpler comparing to proof generation, so 
+        entire in-device verification consumes reasonable amount of resources.
+    </p>
+    <p>
+        In-device part of J2ME CLDC verification is fast but it cannot deal with the legacy code. In the best case 
+        an existing application must be passed into the pre-verifier. In the worst case it is unusable. For example, 
+        if an application contains a digitally signed jar file, passing that file through the pre-verifier invalidates 
+        its digital signature.
+    </p>
+    <p>
+        That is why research in the verification area is necessary. A verifier operating original J2SE class files 
+        without any additional information would be desired by the micro device holders, if it consumed acceptable 
+        time and memory.
+    </p>
+    <p>
+        This document presents verification approach based on the Constraint Propagation technique. The next section 
+        makes some introduction into the Constraints world. Then we will go deep into J2SE and J2ME CLDC verification 
+        approaches. After that a new verification approach is presented. Finally, comparison tables presenting 
+        approach differences is given.
+    </p>
+    <h1>
+        <a id="Introduction_to_CP" name="Introduction_to_CP"></a>Introduction to Constraint Propagation
+    </h1>
+    <p>
+        Constraint Programming is a programming paradigm where a set of constraints that the solution must meet 
+        is specified, rather than the steps to obtain the solution. The solution to be found is a set of variables; 
+        each of them has a set of its possible values known as domains <a href="#0002">[7]</a>. Those domains might be 
+        represented by either explicit enumeration of all possible values or, for example, by numeric intervals 
+        containing all the possible values <a href="#ICP1">[2]</a>.
+    </p>
+    <p>
+        As far as exact variable values are unknown, the techniques used to find a solution normally work with 
+        various domain representations rather than with certain values. 
+    </p>
+    <p>
+        Constraint Propagation is one of such techniques 
+        [<a href="#CP1">3</a>, <a href="#CP2">5</a>, <a href="#CP3">8</a>];
+        it uses constraints to remove those 
+        values from the domains that knowingly do not belong to any solution.
+    </p>
+    <p>
+        For example, if there is a sub-definite variable <VAR>x</VAR>, whose domain is represented by an interval of 
+        <VAR>[-20, 30]</VAR>, then the result of propagating the constraint <VAR>x&ge;0</VAR>, would be a narrowing the domain to 
+        <VAR>[0, 30]</VAR>. 
+    </p>
+    <p>
+        Constraint Propagation can also be used to identify whether a set of constrains is self-contradictory: 
+        Let's consider the previous example with two constraints: <VAR>x &ge; 0</VAR> and <VAR>x &le; -10</VAR>. 
+        The propagation will cause narrowing the domain of the <VAR>x</VAR> variable first to <VAR>[0, 30]</VAR> 
+        and next to an empty interval. As soon as the set of possible values of the <VAR>x</VAR> variable does not 
+        contain any value then no solution that meets all the constraints exists. 
+    </p>
+    <p>
+        The power of Constraint Propagation is in its ability to validate constraints over unknown substances or 
+        variables, whose values are un- or sub-defined.
+    </p>
+
+
+
+
+    <h1>
+        <a id="Approaches_to_Byte_Code_Verification" name="Approaches_to_Byte_Code_Verification"></a>Approaches to Byte Code Verification
+    </h1>
+    <h2>
+        <a id="J2SE" name="J2SE"></a>J2SE
+    </h2>
+    <p>
+        Traditional J2SE classfile verification requires a complex dataflow analysis algorithm implementing 
+        effectively a theorem prover for type safety. This dataflow analysis algorithm is computation intensive. 
+    </p>
+    <p>
+        At the beginning of the dataflow pass for every instruction of the java method the contents of operand 
+        stack and local variable array is recorded <a href="#J2SE">[10]</a>. Also every instruction has a "changed" bit associated 
+        with it. Originally this bit is cleared for every instruction.
+    </p>
+    <p>
+        Then for the first instruction of the method that contents is initialized with method's arguments and 
+        its "changed" bit is set. After that the following loop is run:
+    </p>
+    <ul>
+        <li>an instruction with "changed" bit set is somehow selected</li>
+        <li>the bit is cleared</li>
+        <li>verifier models how instruction modifies stack and local variables and generates instruction's out 
+        types</li>
+        <li>successor instructions are identified</li>
+        <li>out types are merged to successors' recorded types; if while merging some type is changed successor's 
+        "changed" bit is set</li>
+    </ul>
+    <p>
+        The verification ends when no instruction with a "changed" bit set exists. The outcome of this approach is:
+    </p>
+    <ul>
+        <li>Memory consumption: for every instruction of the method the type array is stored</li>
+        <li>Time consumption: single instruction behavior might be modeled multiple times. Number of times 
+        depends on the rule used for selecting the next instruction to be looked at.</li>
+    </ul>
+    <p>
+        One of optimizations of the algorithm above: the types are stored for some key points only, e.g. branch 
+        targets, rather than for every instruction of the method. The types for the remaining instructions are 
+        recalculated on the fly. This optimization significantly reduces memory footprint but increases number of 
+        "modeling" passes through a single instruction. 
+    </p>
+    <p>
+        This specific of the J2SE verifier made it unusable for limited-resource devices. The next section 
+        briefly describes one of verification approaches for the limited devices, a J2ME CLDC verification approach.
+    </p>
+    <h2>
+        <a id="J2ME_CLDC" name="J2ME_CLDC"></a>J2ME CLDC
+    </h2>
+    <p>
+        In the J2ME world due to the space and performance constraints, the classfile verification has been broken 
+        up to two parts:
+    </p>
+    <ol>
+        <li>Pre-verification that annotates the classfile with stackmap information. </li>
+        <li>The JVM on the J2ME CLDC device performs a simplified version of theorem prover for type safety, 
+        using the annotation produced by the pre-verifier. </li>
+    </ol>
+    <p>
+        Stackmap information is contents of operand stack and local variable array (similar to what was generated 
+        in J2SE verification) recorded for all instructions that can be jumped to, i.e. jump targets and exception 
+        handlers.  
+    </p>
+    <p>
+        J2ME verification looks like the following <a href="#J2ME">[9]</a>:
+    </p>
+    <p>
+        At the beginning of the dataflow pass an array for the contents of operand stack and local variables for 
+        a single instruction, is created. This array is used to store derived types as verifier goes through 
+        the instructions. The derived types initialized with method's arguments. Then the following loop iterating 
+        one-by-one from the first till the last instruction of the method is run:
+    </p>
+    <ul>
+        <li>If the instruction has a stackmap recorded for it then the recorded types are copied into array of 
+        derived types.</li>
+        <li>verifier models instruction's behavior to modify derived types</li>
+        <li>successor instructions are identified; all of them except the instruction next to the current one must 
+        have stackmap recorded for it (if they don't, verification fails)</li>
+        <li>for every successor instruction that has a stackmap recorded for it the modified derived types are 
+        matched against successors' recorded types</li>
+    </ul>
+    <p>
+        Finally, if the loop passed through all the instructions without any matching failure (i.e. derived types 
+        are assignable to the recorded types or acceptable by instructions), the class is valid. The outcome of 
+        this approach is:
+    </p>
+    <ul>
+        <li>Memory consumption: just a single array of the types needs to be in the RAM</li>
+        <li>Time consumption: a single pass through the instruction set.</li>
+        <li>Special Java compiler or pre-verifier must be used to annotate class file.</li>
+    </ul>
+
+
+
+
+    <h1>
+        <a id="Introduction_to_CP_Verifier" name="Introduction_to_CP_Verifier"></a>Introduction to CP verifier
+    </h1>
+    <p>
+        In J2ME verification approach described above if a different pre-verifier generates a different proof 
+        for the same class and in-device verifier successfully validates it then the class is valid. So 
+        the important fact affecting class validity is that the valid proof does exist; the proof itself does 
+        not matter. The valid proof is the proof that meets all the constraints derived from the byte code. 
+        So the verification task can be reformulated as follows: identify whether the set of constraints implied 
+        by the byte code is self-contradictory. The Constraint Propagation is among the best techniques for 
+        dealing with such kind of the tasks. 
+    </p>
+    <p>
+        This verification consists of two passes. The first one is parsing pass makes sure that all instructions 
+        have valid opcode, no instructions jump to a middle of another instruction or outside the method code. 
+        In this step all jump targets are found. Normally this step takes 4-6% of overall verification.
+    </p>
+    <p>
+        After the first pass for instructions that are jump targets or starts of exception handlers, structures
+        similar to the J2ME stackmap arrays are created. Elements of those stackmap arrays are sub-definite
+        values. 
+    </p>
+    <p>
+        The second pass is J2ME-like dataflow analysis pass. It performs all checks described in the CLDC specification 
+        with the only exception. To make matching of or against a sub-definite value, special dataflow 
+        constraint is created and recorded. During the dataflow pass Constraint Satisfaction Problem is created from 
+        sub-definite variables and dataflow constraints. This problem is solved using Constraint Propagation technique. 
+        If at the end of the pass the problem is consistent, verification passed, otherwise it failed.
+    </p>
+    <p>
+        So the key idea of the approach proposed is:
+    </p>
+    <ul>
+        <li>Identify instructions that in J2ME approach would require stackmap recorded </li>
+        <li>For those instructions, set up stackmap vectors, whose elements are sub-definite variables, whose values 
+        are originally unknown. </li>
+        <li>Start J2ME-like verification. When, according to J2ME verifier specification, some type <VAR>A</VAR> must be 
+        matched against type <VAR>B</VAR>, in CP verifier: </li>
+
+        <ul>
+            <li>if <VAR>A</VAR> or <VAR>B</VAR> is sub-definite a new constraint <VAR>A &le; B</VAR> is created;</li>
+            <li>otherwise the types are simply matched.</li>
+        </ul>
+
+        <li>Finally, if the set of constraints is not self-contradictory, the class is valid.</li>
+    </ul>
+    <p>
+        The proposed approach requires one pass through the instruction set to identify "stackmap points" and one 
+        pass modeling instruction's behavior. Unlike the J2SE verifier, the CP verifier does not have to hold 
+        types for each instruction, but it has to store the constraints and operate with sub-definite variables 
+        whose size is twice bigger than the size of a regular verification type.
+    </p>
+
+
+
+
+
+
+
+    <h1>
+        <a id="CP_verification" name="CP_verification"></a>
+        CP Verification
+    </h1>
+    <h2>
+        <a id="Definitions" name="Definitions"></a>Definitions
+    </h2>
+    <p>
+        If <VAR>I[n]</VAR> -- instruction set of the given method, then 
+    </p>
+    <ul>
+        <li><VAR>I[i]</VAR> is the <I>previous</I> instruction for <VAR>I[i+1]</VAR>. <VAR>I[i+1]</VAR> is 
+        the <I>next</I> instruction for <VAR>I[i]</VAR> </li>
+
+        <li><VAR>I[i]</VAR> is a <I>predecessor</I> for <VAR>I[j]</VAR> and <VAR>I[j]</VAR> is a <I>successor</I>
+        for <VAR>I[i]</VAR> if there is a direct control flow from <VAR>I[i]</VAR> to <VAR>I[j]</VAR>, that might 
+        happen for example if <VAR>j=i+1</VAR>, or <VAR>I[j]</VAR> is a target of jump from <VAR>I[i]</VAR>, etc. </li>  
+    </ul>
+    <p>
+        On the set of Java verification types extended by some artificial types let's set up a partial order. 
+        If <VAR>A</VAR> and <VAR>B</VAR> are Java types, then <VAR>A&le; B</VAR> if and only if <VAR>A</VAR> is 
+        assignable to <VAR>B</VAR> without explicit cast. Examples of artificial types are: <VAR>MIN</VAR> that is 
+        the minimal element in the set, <VAR>MAX</VAR> that is a maximal element, <VAR>ONE_WORD</VAR> is such 
+        that any type except <VAR>long</VAR> and <VAR>double</VAR> is assignable to it, etc.
+    </p>
+    <p>
+        The verifier operates with two kinds of vectors: WorkMap and StackMap. Both kinds of vectors have size of 
+        the sum of java method's maximum number of local variables and method's maximal stack depth. 
+    </p>
+    <p>
+        Each element of a WorkMap vector is either a constant of some verification type or a reference to a variable. 
+        WorkMap vector corresponds to "derived types" in terms of J2ME verification approach.
+    </p>
+    <p>
+        Each element of a StackMap is a variable. Each variable is a structure containing two fields, "lower bound" 
+        and "upper bound". The fields represent sub-definite value of the variable. StackMap vector corresponds to 
+        "recorded types" in terms of J2ME verification approach.
+    </p>
+    <p>
+        Also each variable has a set of "targets" associated with it. If <VAR>V</VAR> is the given variable, its 
+        set of "targets" contains all variables <VAR>V'</VAR> such that constraint <VAR>V &le; V'</VAR> exists in 
+        the system. 
+    </p>
+    <p>
+        Both StackMaps and WorkMaps have attributes like "stack depth" that have similar 
+        purpose as corresponding CLDC attributes and will not be described here.
+    </p>
+    <p>
+        Now let's see how the terminology used in the CP verifier relates to that one used in the Java world.
+    </p>
+    <p>
+        As far as <VAR>A&le; B</VAR> means that <VAR>A</VAR> is assignable to <VAR>B</VAR>, more general types 
+        are greater than less general ones, e.g. <VAR>java.lang.String&le; java.lang.Object</VAR>.
+    </p>
+    <p>
+        If <VAR>A</VAR> and <VAR>B</VAR> are types, then <VAR>max {A, B}</VAR> in terms of Java means the 
+        least general type <VAR>T</VAR> such that both <VAR>A</VAR> and <VAR>B</VAR> are assignable to <VAR>T</VAR>. 
+    </p>
+    <p class="exampletext">
+        For example, 
+    </p>
+        <pre>
+max {java.lang.Exception, java.io.IOException} = java.lang.Exception
+max {java.lang.Exception, java.lang.Error} = java.lang.Throwable
+max {int, float} = ONE_WORD
+</pre>
+    <p>
+        If <VAR>A</VAR> and <VAR>B</VAR> are types, then <VAR>min {A, B}</VAR> in terms of Java means the most 
+        general type assignable to both <VAR>A</VAR> and <VAR>B</VAR>. 
+    </p>
+    <p class="exampletext">
+        For example, 
+    </p>
+        <pre>
+min {java.lang.Exception, java.io.IOException} = java.io.IOException
+min {java.lang.Exception, java.lang.Error} = NULL
+min {int, float} = MIN
+</pre>
+
+
+
+
+    <h2>
+        <a id="Algorithm" name="Algorithm"></a>Algorithm
+    </h2>
+    <p>
+        Verification starts with the parsing pass. The main goal of this pass is to identify the instructions of 
+        the following types:
+    </p>
+    <ul>
+        <li>instructions having multiple predecessors</li>
+        <li>instructions having a single predecessor that is a jump, rather than the previous instruction,
+        and that jump is an <code>if*</code> or a switch</li>
+        <li>instructions having a single predecessor that is a <code>goto</code></li>
+    </ul>
+    <p>
+       Implementation of the parsing pass is straightforward and will not be described here. 
+    </p>
+    <p>
+        After the first pass for every instruction having multiple predecessors a StackMap vector is created. 
+        StackMap vector elements are initialized. At this point their sets of targets are empty. Their lower 
+        bounds are initialized with value <VAR>MIN</VAR>, their upper bounds are initialized with value <VAR>MAX</VAR>. 
+    </p>
+    <p>
+        Then StackMap vectors corresponding to starts of exception handlers are initialized with stack depth equal 
+        to <VAR>1</VAR> and constant value on stack that corresponds to the type of exception of that handler.
+    </p>
+    <p>
+        Then verifier creates a single WorkMap vector, whose elements are initialized with constant values 
+        representing method arguments. Remaining WorkMap elements (if any) are initialized with <VAR>MAX</VAR>.
+    </p>
+    <p>
+        A dataflow stack is created. The first instruction of the method is pushed onto the stack. 
+        The dataflow pass consists of a series of loops. Each loop begins with instruction popped from the 
+        dataflow stack and iterates until it is explicitly said that the loop breaks. At every loop iteration 
+        the following steps are made:
+    </p>
+    <ul>
+        <li> If the instruction has a StackMap associated with it then: </li>
+
+        <ul>
+            <li> if the instruction was earlier passed with a loop, the given loop breaks</li>
+            <li> otherwise, the WorkMap is reinitialized by pointers to corresponding StackMap elements</li>
+        </ul>
+
+        <li> Otherwise if the instruction has a WorkMap copy associated with it (see below) then the WorkMap is 
+	reinitialized by the given copy </li>
+
+        <li> Verifier modifies WorkMap modeling instruction's behavior: </li>
+        <ul>
+            <li> If the instruction reads some local variable or pops element from the stack and a WorkMap element 
+		corresponding to that local or the top of the stack is a constant value (i.e. some verification type), 
+		then this type is matched against what does the given instruction expect to read there</li>
+
+            <li> Otherwise if that element is a variable, <VAR>U</VAR> is the value of its upper bound, <VAR>E</VAR> is the type expected 
+		by the instruction, then the upper bound of that variable is set to <VAR>min {U, E}</VAR></li>
+
+            <li> If the instruction writes some local variable or pushes onto the operand stack, then a constant or 
+		a link to a variable corresponding to the instruction's output is assigned to WorkMap element to be 
+		written to. </li>
+        </ul>
+
+
+        <li> Successor instructions are identified</li>
+
+        <li> Every successor instruction except the instruction next to the current one is pushed onto the dataflow 
+            stack, unless it is already on the stack or it was already passed with a dataflow loop</li>
+
+        <li> If the given instruction is not a goto, then for every successor having the only predecessor a copy of 
+            the current state of the WorkMap is recorded.</li>
+
+
+        <li>         <a id="matched" name="matched"></a>
+            For every successor instruction that has a StackMap associated with it, each element of the WorkMap 
+            is "matched" against the corresponding element of successors' StackMap. As far as StackMap elements are 
+	    variables, let variable <VAR>V</VAR> be the given element, and <VAR>V.L</VAR> its lower bound then: </li>
+
+        <ul>
+             <li> If WorkMap element is a constant <VAR>C</VAR>, then the lower bound <VAR>V.L</VAR> is set to 
+                 <VAR>max{V.L, C}</VAR></li>
+             <li> If WorkMap element is a variable <VAR>V<sub>1</sub></VAR>, <VAR>V<sub>1</sub>.L</VAR> is its lower bound, then the 
+                 lower bound <VAR>V.L</VAR> is set to the <VAR>max {V.L, V<sub>1</sub>.L}</VAR>. Then the variable <VAR>V</VAR> 
+                 is added to the set of targets associated with <VAR>V<sub>1</sub></VAR>. </li>
+        </ul>
+
+        <li> Every time the lower bound <VAR>V.L</VAR> of any variable <VAR>V</VAR> is changed, it is propagated to 
+            the targets associated with the variable <VAR>V</VAR> that means that for every target variable 
+            <VAR>V<sub>t</sub></VAR>, its lower bound <VAR>V<sub>t</sub>.L</VAR> is set to <VAR>max {V.L, V<sub>t</sub>.L}</VAR>. 
+            <VAR>V<sub>t</sub>.L</VAR> in its turn is further propagated if changed.</li>
+
+        <li> Every time a new target variable <VAR>V<sub>t</sub></VAR> is added to the set of targets associated with a variable <VAR>V</VAR>, <VAR>V</VAR>'s 
+            lower bound is propagated to the target <VAR>V<sub>t</sub></VAR>.</li>
+
+        <li> Every time lower or upper bound of a variable is changed, the bounds are compared. If the lower bound 
+            <VAR>L</VAR> is not assignable to the upper one <VAR>U</VAR>, i.e. <VAR>L&le; U</VAR> is not met, 
+            verification fails.</li>
+
+        <li> If the current instruction is a return or throw the loop breaks. If it's a goto, loop continues from 
+            the jump target; otherwise it continues from the next instruction</li>
+    </ul>
+    <p>
+        Finally if the loop passed through all the instructions and for each variable its lower bound is assignable 
+        to its upper bound, the class is successfully verified. The outcome of this approach is:
+    </p>
+    <ul>
+        <li> NO special Java compiler or pre-verifier must be used.</li>
+        <li> Memory consumption: arrays of the types for the "StackMap" instructions only need to be in 
+           the memory, some memory is necessary to store constraints (sets of targets)</li>
+        <li> Time consumption: linear pass through the instruction set.</li>
+    </ul>
+    <p>
+        In reality it is not necessary to have StackMap for all instructions required by the CLDC specification. 
+        Only those instructions that have multiple predecessors require StackMaps. For example, if an instruction 
+        follows an unconditional jump such as goto or switch and just a single other instruction has a jump to 
+        the given instruction then the given instruction has exactly one predecessor and thus it does not need 
+        a stackmap in the CP approach.
+    </p>
+
+
+
+
+
+
+    <h2>
+        <a id="Implementation_Details" name="Implementation_Details"></a>
+        Some Implementation Details
+    </h2>
+    <p>
+        Special type of constraints is designed to process <code>aaload</code> instructions: <VAR>aaload(V<sub>1</sub>, 
+        V<sub>2</sub>)</VAR> means that <VAR>V<sub>1</sub></VAR> is an array, whose element is assignable 
+        to <VAR>V<sub>2</sub></VAR>. 
+    </p>
+    <p>
+        If dataflow pass hits <code>jsr</code> instruction then the dataflow pass is suspended.
+        Special mark (followed by the <code>jsr</code> target) is pushed onto the dataflow stack and until that mark is popped from the stack we are 
+        verifying the subroutine. Once we are done with the subroutine the dataflow pass is resumed:
+        we now know how this specific subroutine modifies the WorkMap, so each call to this subroutine 
+        is processed as a regular instruction. 
+    </p>
+    <p>
+        As it was discussed in the previous section the bounds of variables are calculated as <VAR>min</VAR> or 
+        <VAR>max</VAR> of some types (most likely Java verification types). For example (see 
+        above) <VAR>max {java.lang.Exception, java.lang.Error} = java.lang.Throwable</VAR>. 
+        Representation for variable bounds might be implementation-specific.
+        An implementation that targets memory footprint reduction will likely calculate exact bounds and represent it
+        as a single Java verification type (<VAR>java.lang.Throwable</VAR> in our case).
+    </p>
+    <p>
+        Implementation HARMONY-3363 implements it in a slightly different way: in some cases the referred classes 
+        might be not loaded at the moment of verification, so the lower bound in our case is represented as
+        a list <VAR>{java.lang.Exception, java.lang.Error}</VAR>. This is a performance oriented implementation. 
+    </p>
+    <p>
+        Minimal element (<VAR>MIN</VAR>) on the set of verification types corresponds to <code>SM_TOP</code> in the
+        HARMONY-3363 implementation (it's used in <code>assert()</code> calls basically). Maximal element <VAR>MAX</VAR> corresponds to
+        the <code>SM_BOGUS</code> constant.
+    </p>
+
+
+
+
+
+
+
+
+    <h1>
+        <a id="Verify_an_example" name="Verify_an_example"></a> Verify an example
+    </h1>
+    <p>
+    Let's look how different approaches verify the following example method:
+    </p>
+        <pre>
+static void test() {
+    for (Element e = new MyElement(); e != null; e = e.next()) {
+        ... // linear code not modifying e
+    }
+}
+</pre>
+    <p>
+        Where <code>MyElement</code> extends <code>Element</code>, <code>e.next()</code> returns <code>Element</code>. 
+        This method compiles into the bytecode that logically can be splitted into the following blocks (see also 
+        disassembled code below):
+    </p>
+    <ol>
+        <li> Creating a new object for <code>MyElement</code> and invoking its constructor. Reference to 
+           <code>MyElement</code> is stored in local variable #0. </li>
+
+        <li> If local variable #0 is null, go to the beginning of the sixth block. Basically the block consists 
+           of two instructions: <code>aload_0</code>, loading local variable #0 onto the stack, and <code>ifnull</code> 
+           jumping to the end of the method in case of null </li>
+
+        <li> Linear block of code inside the loop </li>
+
+        <li> Invoke <code>Element.next()</code> method for the object in local #0. The block consists of three 
+          instructions: <code>aload_0</code>, loading a reference, <code>invokevirtual</code> that is invokation 
+          of <code>next()</code>, and <code>astore_0</code> that stores method's result at local #0. Note, that 
+          <code>invokevirtual</code> instruction expects <code>Element</code> to be on top of the stack. </li>
+
+        <li> <code>goto</code> instruction jumping to the beginning of the second block. </li>
+
+        <li> <code>return</code> instruction </li>
+    </ol>
+        <pre>
+------ block 1 -------
+   new	#2; //class MyElement
+   dup
+   invokespecial MyElement."<init>":()V
+   astore_0
+
+------ block 2 -------
+L2:
+   aload_0
+   ifnull L6
+
+------ block 3 -------
+   // code inside loop
+
+------ block 4 -------
+   aload_0
+   invokevirtual Method Element.next:()LElement;
+   astore_0
+
+
+------ block 5 -------
+   goto L2
+
+------ block 6 -------
+L6:
+   return
+</pre>
+    <p>
+        The method has one local variable and maximal stack depth of <VAR>2</VAR>. Now let's look how different 
+        verifiers handle this method.
+    </p>
+
+
+
+
+    <h2>
+        <a id="J2SE2" name="J2SE2"></a> J2SE
+    </h2>
+    <p>
+        Verification starts with the first instruction of the method. Then it goes through the
+        first block. The first block does not have any branching so instructions passed consequently one-by-one, 
+        every instruction sets the "changed" bit of the next instruction. After the last instruction of the first 
+        block local variable #0 contains <code>MyElement</code> type, the first instruction of the second block has 
+        the "changed" bit set.
+    </p>
+    <p>
+        Then the second block is processed. To compare local #0 to <code>null</code>, instructions <code>aload_0</code> 
+        and <code>ifnull</code> are used. <code>aload_0</code> loads a reference from local #0 onto the stack, it 
+        expects a reference to be there. At this point we have <code>MyElement</code> there, so it goes OK so far. 
+    </p>
+    <p>
+        After the <code>aload_0</code> instruction <code>MyElement</code> is on the top of the operand stack. 
+        The <code>ifnull</code> instruction pops a reference from the stack and either makes or does not make a jump. 
+        It expects a reference on top of the stack, so far it is <code>MyElement</code> there that is OK. 
+        <code>ifnull</code> is the last instruction of the second block; it sets the "changed" bit for the first 
+        instructions of both the third and the sixth blocks.
+    </p>
+    <p>
+        Verifier may chose any of them. Let's first go to the third block, which is linear. Verifier goes through it;  
+        it does not modify local #0 as far as the original Java code does not modify the <code>e</code> variable. 
+        At the end of this block local #0 still holds <code>MyElement</code>.
+    </p>
+    <p>
+        Then the verifier goes to the block number four, where <code>e.next()</code> is invoked: First <code>aload_0</code>
+        instruction loads a reference from local #0 onto the stack and then <code>invokevirtual</code> instruction 
+        calls the <code>next()</code> method expecting that a reference on the top of the stack is of the 
+        <code>Element</code> type. As far as <code>MyElement</code> is a sub class of <code>Element</code> it is OK.
+        Return type of the <code>next()</code> method is <code>Element</code>; it's stored in the <code>e</code> variable 
+        that is local #0. 
+    </p>
+    <p>
+        Now local #0 holds <code>Element</code> and verifier goes to the block 5, consisting of a goto to the block 2.
+        States of all the type recorded for various instructions are shown below.
+    </p>
+    <pre>
+------ block 2 -------
+L2:
+    <i>locals: [MyElement]; stack: []</i>
+    aload_0
+
+    <i>locals: [MyElement]; stack: [MyElement]</i>
+    ifnull L6
+
+
+------ block 3 -------
+    <i>locals: [MyElement]; stack: []</i>
+    // Some linear code
+
+
+------ block 4 -------
+    <i>locals: [MyElement]; stack: []</i>
+    aload_0
+
+    <i>locals: [MyElement]; stack: [MyElement]</i>
+    invokevirtual Element.next:()LElement;
+
+    <i>locals: [MyElement]; stack: [Element]</i>
+    astore_0
+
+
+------ block 5 -------
+    <i>locals: [Element]; stack: []</i>
+    <B>goto L2       <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< we are here</B>
+
+
+------ block 6 -------
+L6:
+    <i>locals: [MyElement]; stack: []</i>
+    return
+</pre>
+
+    <p>
+        Current types are merged to the types recorded for the first instruction of the second block. Current 
+        local #0 that is <code>Element</code> is merged to the recorded local #0 that is <code>MyElement</code>. 
+        The result is <code>Element</code>. It is more general type, so local #0 is changed and the "changed" bit is 
+        set for the first instruction of the second block
+    </p>
+    <pre>
+------ block 2 -------
+L2:
+    <i>locals: [Element]; stack: []</i>
+    aload_0
+</pre>
+    <p>
+        Verifier comes back to block number two and passes blocks 2, 3, and 4 once again: for each instruction 
+        <code>MyElement</code> recorded in the local #0 is changed to more general <code>Element</code>. 
+    </p>
+    <p>
+        Then it comes to <code>astore_0</code>, the last instruction in the fourth block. It stores <code>Element</code> 
+        from the top of the stack to local #0. Thus the stack is now empty, local #0 contains <code>Element</code>. 
+        This type state is identical to that one from the previous pass. The "changed" bit for the next instruction
+        (which is <code>goto</code> from block 5) remains cleared.
+    </p>
+    <p>
+        The only remaining instruction with "changed" bit set is the first instruction of the last block, 
+        <code>return</code>, which does not have successor instructions. Verification is successfully finished.
+    </p>
+    <p>
+        J2SE verifier passed through the instruction blocks 2, 3 and part of 4 two times. In general case it may 
+        pass through a single instruction multiple times. Note that block 3 is the body of the loop in the original 
+        Java method that might be very long.
+    </p>
+    <p>
+        Now let's see how CLDC handles it.
+    </p>
+
+
+
+
+
+
+
+    <h2>
+        <a id="J2ME_CLDC2" name="J2ME_CLDC2"></a>J2ME CLDC
+    </h2>
+    <p>
+        The bytecode first goes to a pre-verifier. After the pre-verification step StackMaps are recorded for 
+        the first instructions of both the second and sixth blocks. Those instructions have the same StackMaps 
+        recorded for them:
+    </p>
+    <pre>
+    <i>locals: [Element]; stack: []</i>
+</pre>
+    </p>
+    <p>
+        In-device verifier allocates an array of length <VAR>3</VAR> for storing the derived types.
+    </p>
+    <p>
+        Verifier starts with the first instruction of the first block. Originally the stack is empty, local #0 
+        contains <VAR>UNUSABLE</VAR> type. Then verifier consequently passes instruction in the first block, 
+        modeling instructions' behavior to modify derived vector appropriately. At the end of the first block is 
+        has an empty stack and <code>MyElement</code> in the local #0. The successor instruction for the last 
+        instruction in the first block is the first instruction in the second block. It has stackmap recorded for it, 
+        so verifier does matching: It makes sure that <code>MyElement</code> that is in the local #0 of the derived
+        types is assignable to <code>Element</code> that is in the local #0 of the recorded stackmap.
+    </p>
+    <pre>
+    <b><i>derived: locals: [MyElement]; stack: [] <<<<<<<<<<<<<<<<<<<<<<<<<< </i></b>
+
+------ block 2 -------
+L2:
+    <i>recorded: locals: [Element]; stack: [] </i>
+    aload_0
+    ifnull L6
+</pre>
+
+    <p>
+        Then it goes to the first instruction of the second block.  As far as it has a stackmap recorded for it, the 
+        stackmap is copied into the derived types. So derived types now have <code>Element</code> as local #0 and an 
+        empty stack. 
+    </p>
+    <pre>
+------ block 2 -------
+L2:
+    <i>recorded: locals: [Element]; stack: []</i>
+
+    <b><i>derived: locals: [Element]; stack: []  <<<<<<<<<<<<<<<<<<<<<<< </i></b>
+
+    aload_0
+    ifnull L6
+</pre>
+
+    <p>
+        Verifier goes through the second block. Once it reaches <code>ifnull</code> the derived types are matched 
+        against the types recorded for the first instruction of the block 6.
+    </p>
+    <p>
+        Then verifier goes through block 3. In the fourth block the <code>invokevirtual</code> instruction returns 
+        <code>Element</code> that is then stored in the local #0.
+    </p>
+    <p>
+        Derived types now have <code>Element</code> in the local #0 and an empty stack. In the block 5 the derived 
+        types are matched against the recorded ones for the first instruction of the second block; the matching 
+        goes OK.
+    </p>
+    <p>
+        Finally verifier goes to block 6, copies the recorded stackmap into the derived types and validates
+        <code>return</code> instruction. Verification is done. 
+    </p>
+    <p>
+        Verifier used two stackmaps preliminary stored in the class file and allocated memory for storing array 
+        of length three for the derived types. Each instruction is passed only once. 
+    </p>
+    <p>
+        Now let's look how CP verifier does it.
+    </p>
+
+
+
+
+
+
+
+
+    <h2>
+        <a id="CP" name="CP"></a>CP
+    </h2>
+    <p>
+        The first pass (parsing) of the CP verifier identifies that the first instruction of the second block 
+        has multiple predecessors. The first instruction of the sixth block has a single predecessor that is 
+        <code>ifnull</code>.
+    </p>
+    <p>
+        The first instruction of the method is pushed onto the dataflow stack. WorkMap vector of the length of 
+        three is allocated and initialized. Originally the stack is empty, local #0 contains <VAR>MAX</VAR> 
+        (<code>SM_BOGUS</code> constant in HARMONY-3363).
+    </p>
+    <p>
+        The second pass starts.
+    </p>
+    <p>
+        The first dataflow loop pops from the dataflow stack and starts from the first instruction of the method. 
+        It passes through the first block the same way CLDC verifier did. At the end of the block WorkMap holds 
+        <code>MyElement</code> in the local #0 position and an empty stack.
+    </p>
+    <p>
+        The successor instruction that is the first instruction of the second block must have a StackMap. 
+        A space for StackMap is allocated at the first use. As far as the stack in the current WorkMap is empty, 
+        we allocate a space just for a single element of StackMap.
+        Let this element be <VAR>Var<sub>1</sub></VAR>, it corresponds to local #0. 
+        <VAR>Var<sub>1</sub></VAR> is a structure consisting of lower and upper bounds that are originally set 
+        to <VAR>MIN</VAR> and <VAR>MAX</VAR> correspondingly. 
+    </p>
+    <pre>
+    <i><b>WorkMap: locals: [MyElement]; stack: []  <<<<<<<<<<<<<<<<<<<<<<< </b></i>
+
+------ block 2 -------
+L2:
+    <i>StackMap: locals: [Var<sub>1</sub>:(MIN, MAX)]; stack: [] </i>
+    aload_0
+    ifnull L6
+</pre>
+    <p>
+        Now WorkMap is "<a href="#matched">matched</a>" against the StackMap. As a result lower bound of <VAR>Var<sub>1</sub></VAR> is set 
+        to <code>MyElement</code>.
+    </p>
+    <p>
+        Then verifier goes to the second block. As far as its first instruction has a StackMap, the WorkMap is 
+        reinitialized. Now its stack is still empty, but local #0 is a pointer to <VAR>Var<sub>1</sub></VAR>.
+    </p>
+    <pre>
+------ block 2 -------
+L2:
+    <i>StackMap: locals: [Var<sub>1</sub>:(MyElement, MAX)]; stack: [] </i>
+
+    <b><i>WorkMap: locals: [@Var<sub>1</sub>]; stack: [] <<<<<<<<<<<<<<<<<<<<<<<<<<< </i></b>
+
+    aload_0
+    ifnull L6
+</pre>
+
+    <p>
+        The second block starts with instruction <code>aload_0</code>. It expects a reference (i.e. at least 
+        <code>java.lang.Object</code>) in the local #0. As far as WorkMap's local #0 points to 
+        <VAR>Var<sub>1</sub></VAR>, the upper bound of <VAR>Var<sub>1</sub></VAR> is set to <code>Object</code> now. 
+        The lower bound, <code>MyElement</code> is assignable to the upper one that is <code>Object</code>, 
+        so everything is OK for now. 
+    </p>
+    <p>
+        The <code>aload_0</code> instruction pushes contents of the local variable #0 onto the operand stack. 
+        Verifier now models instruction's behavior. So the WorkMap now has a pointer to <VAR>Var<sub>1</sub></VAR> 
+        in the local #0 position and it has a stack of depth <VAR>1</VAR>, containing another pointer to the same 
+        <VAR>Var<sub>1</sub></VAR>.
+    </p>
+    <pre>
+------ block 2 -------
+L2:
+    <i>StackMap: locals: [Var<sub>1</sub>:(MyElement, Object)]; stack: [] </i>
+
+    aload_0
+    <b><i>WorkMap: locals: [@Var<sub>1</sub>]; stack: [@Var<sub>1</sub>]    <<<<<<<<<<<<<<< </i></b>
+
+    ifnull L6
+</pre>
+
+    <p>
+        Then <code>ifnull</code> instruction expects a reference to be on the top of the stack. Top of the stack 
+        contains a pointer to <VAR>Var<sub>1</sub></VAR>, whose upper bound is already <code>Object</code>. Nothing 
+        changes. Verifier pops element from the operand stack and determines successor instructions. They are: 
+        the next instruction (that is the first instruction of the third block) and the first instruction of the 
+        sixth block.
+    </p>
+    <p>
+        The first instruction of the sixth block is pushed onto the dataflow stack, a copy of the current WorkMap 
+        is recorded for that instruction. 
+    </p>
+    <pre>
+------ block 3 -------
+    <b><i>WorkMap: locals: [@Var<sub>1</sub>]; stack: [] <<<<<<<<<<<<<<<<<<<<<<<<<<< </i></b>
+
+    // Some linear code
+
+    < skipped >
+
+------ block 6 -------
+L6:
+    <i>WorkMap copy: locals: [@Var<sub>1</sub>]; stack: [] </i>
+    return
+</pre>
+
+
+
+    <p>
+        The loop continues with the first instruction of the third block, and so on. 
+    </p>
+    <p>
+        Verifier passes block 3; in the fourth block after <code>aload_0</code> it reaches <code>invokevirtual</code> 
+        instruction. Before <code>invokevirtual</code> the WorkMap has pointers to <VAR>Var<sub>1</sub></VAR> in 
+        the local #0 position and on the top of the operand stack.
+    </p>
+    <p>
+        <code>invokevirtual</code> calls <code>next()</code> method from the <code>Element</code> class, so it expects 
+        <code>Element</code> type to be on the top of the operand stack. The top of the operand stack points to 
+        <VAR>Var<sub>1</sub></VAR>, so upper bound of <VAR>Var<sub>1</sub></VAR> is set to 
+        <VAR>min {Object, Element}</VAR> that is <code>Element</code>.
+    </p>
+    <p>
+        Verifier makes sure that the lower bound that is <code>MyElement</code> is assignable to the upper one 
+        that is <code>Element</code>. Everything is OK for now. 
+    </p>
+    <p>
+        The method invoked returns a reference to <code>Element</code>.
+    </p>
+
+
+    <pre>
+    <i>StackMap: locals: [Var<sub>1</sub>:(MyElement, Element)]; stack: [] </i>
+
+    < skipped >
+
+
+------ block 4 -------
+    aload_0
+
+    invokevirtual Element.next:()LElement;
+    <b><i>WorkMap: locals: [@Var<sub>1</sub>]; stack: [Element]  <<<<<<<<<<<<<<<<<< </i></b>
+</pre>
+
+
+
+    <p>
+       Reference to <code>Element</code> is stored at local #0. WorkMap now contains <code>Element</code>
+       in the local #0 position and has an empty stack.
+    </p>
+    <pre>
+    astore_0
+    <b><i>WorkMap: locals: [Element]; stack: [] <<<<<<<<<<<<<<<<<<< </i></b>
+</pre>
+
+
+
+
+
+    <p>
+        The loop proceeds with block 5 consisting of a goto instruction. The successor instruction is identified; 
+        it is the first instruction of the second block. It has a StackMap. 
+    </p>
+    <p>
+        The WorkMap is matched against the StackMap: the lower bound of <VAR>Var<sub>1</sub></VAR> is set to 
+        <VAR>max {MyElement, Element}</VAR> that is <code>Element</code>. 
+    </p>
+    <pre>
+------ block 2 -------
+L2:
+    <i>StackMap: locals: [Var<sub>1</sub>:(Element, Element)]; stack: []   </i>
+
+    < skipped >
+
+------ block 5 -------
+    goto L2
+    <b><i>WorkMap: locals: [Element]; stack: [] <<<<<<<<<<<<<<<<< </i></b>
+</pre>
+
+
+
+
+    <p>
+       Verifier makes sure the new lower bound is assignable to the upper bound. It's OK.
+    </p>
+    <p>
+        The loop proceeds from the goto target that is the first instruction of the second loop. But this 
+        instruction was already passed, so the loop breaks.
+    </p>
+    <p>
+        The next loop starts from the first instruction of the sixth method that was pushed onto the dataflow 
+        stack by the first loop. The method ends, so the verification is successful.
+    </p>
+    <p>
+        Verifier allocated memory for one WorkMap vector of three elements, one structure of two elements for 
+        a sub-definite variable, and one copy of WorkMap of one element. Each instruction's behavior was modeled 
+        only once. 
+    </p>
+
+
+
+
+    <h2>
+        <a id="Results_and_Discussion" name="Results_and_Discussion"></a>Results and Discussion
+    </h2>
+    <p>
+        This section includes comparison of CP verification approach to J2SE and J2ME CLDC verification approaches 
+        on the test classes. 
+    </p>
+    <p>
+        To measure J2SE performance, the following implementations were used: BEA 1.5, Harmony r517188,
+        and modified Harmony r517188 where regular verifier was substituted with the CP one taken from HARMONY-3363.
+    </p>
+    <p>
+        Since no CLDC implementation supporting -noverify option is available to the author, 
+        performance comparisons to CLDC were not performed.
+    </p>
+    <p>
+        To compare the performance, ~7500 Harmony classes were verified. Each new class was loaded by a custom 
+        classloader (because of that all the implementations failed to load some of the classes: those classes were
+        removed them from the list).  The code used to load the classes is given below.
+    </p>
+
+    <pre>
+   long total = System.currentTimeMillis();
+   for (int i = 0; i &lt; cnt; i++) {
+      cl = kl.defineKlass(clsNames[i], clsBytes[i]);
+      cl.getConstructors();
+   }
+   total = System.currentTimeMillis() - total;
+</pre>
+    <p>
+        The time of verification of the remaining classes with different implementations is presented in the Table below.
+    </p>
+
+
+    <table align="center" width="80%">
+        <tr>
+            <th class="TableHeading">
+                Measurement
+            </th>
+            <th class="TableHeading">
+                BEA 1.5
+            </th>
+            <th class="TableHeading">
+                Harmony r517188
+            </th>
+            <th class="TableHeading">
+                CP (Harmony r517188 & H-3363 patch)
+            </th>
+        </tr>
+        <tr>
+            <td class="TableCell">
+                <code>-Xverify</code>
+            </td>
+            <td class="TableCell">
+                2734
+            </td>
+            <td class="TableCell">
+                2344
+            </td>
+            <td class="TableCell">
+                1734
+            </td>
+        </tr>
+        <tr>
+            <td class="TableCell">
+                <code>-noverify</code>
+            </td>
+            <td class="TableCell">
+                813
+            </td>
+            <td class="TableCell">
+                1297
+            </td>
+            <td class="TableCell">
+                1297
+            </td>
+        </tr>
+        <tr>
+            <td class="TableCell">
+                verification time
+            </td>
+            <td class="TableCell">
+                1921
+            </td>
+            <td class="TableCell">
+                1047
+            </td>
+            <td class="TableCell">
+                437
+            </td>
+        </tr>
+    </table>
+
+
+    <p>
+        To compare memory consumption the same classes were used as for the performance comparison.
+        Memory consumption as well as performance depends on the actual implementation, not only on the approach 
+        behind that. 
+        To roughly estimate how specific approach affects memory consumption the following measurements were made.
+    </p>
+    <p>
+        For the J2SE approach number of types according to maximal local variables count and actual stack depth 
+        at each instruction was calculated according to the J2SE specification.
+    </p>
+    <p>
+        For the CLDC approach number of all recorded and derived types was calculated. That includes all the types 
+        recorded in stackmap attribute for the java method and maximum possible number of derived types that is the 
+        sum of max_locals  and max_stack. CLDC specification does not count the recoded types when talking about 
+        memory consumption, but it is not quite fair: If a class file is loaded and recorded types is a part of the 
+        class file then all the recorded types must be somehow stored in the memory (One can say that recorded types
+        might be placed in the read-only memory though). 
+    </p>
+    <p>
+        For the CP approach number of upper and lower bounds of all variables as well as WorkMap elements and 
+        the number of constraints were calculated. Memory footprint was estimated for memory-optimized implementation
+        of the CP approach.
+    </p>
+    <p>
+        Table below contains also estimation of average memory consumption in bytes for java methods of various sizes. 
+        To make the estimation, the size of a verification type for each approach and the size of a constraint for 
+        the CP approach were taken as four bytes. In reality verification type might be from one to three bytes. 
+        Depending on the method code length, a constraint might be from two up to eight bytes in theory.
+    </p>
+
+    <table align="center" width="80%">
+        <tr>
+            <th class="TableHeading">
+                Method length
+            </th>
+            <th class="TableHeading">
+                J2SE classic
+            </th>
+            <th class="TableHeading">
+                CLDC
+            </th>
+            <th class="TableHeading">
+                CP memory optimized
+            </th>
+        </tr>
+        <tr>
+            <td class="TableCell">
+                1-10 instructions
+            </td>
+            <td class="TableCell">
+                51 bytes
+            </td>
+            <td class="TableCell">
+                15 bytes
+            </td>
+            <td class="TableCell">
+                16 bytes
+            </td>
+        </tr>
+        <tr>
+            <td class="TableCell">
+                11-100 instructions
+            </td>
+            <td class="TableCell">
+                684 bytes
+            </td>
+            <td class="TableCell">
+                76 bytes
+            </td>
+            <td class="TableCell">
+                121 bytes
+            </td>
+        </tr>
+        <tr>
+            <td class="TableCell">
+                101-1000 instructions
+            </td>
+            <td class="TableCell">
+                9K
+            </td>
+            <td class="TableCell">
+                0.7K
+            </td>
+            <td class="TableCell">
+                1.5K
+            </td>
+        </tr>
+        <tr>
+            <td class="TableCell">
+                1001-10000 instructions
+            </td>
+            <td class="TableCell">
+                46K
+            </td>
+            <td class="TableCell">
+                462 bytes
+            </td>
+            <td class="TableCell">
+                586 bytes
+            </td>
+        </tr>
+    </table>
+
+
+
+
+
+    <p>
+        By a chance large methods require less memory in CP and CLDC approaches. The reason is that 
+        the large methods in the tested classes had less branching and more linear code. Actual memory consumption 
+        of a verifier is defined by the amount of space required to verify the heaviest method, so the Table below shows 
+        per-approach maximal memory consumption on the tested methods. Note that different approaches have reached 
+        their maximum consumption on different methods.
+    </p>
+
+
+
+    <table align="center" width="80%">
+        <tr>
+            <th class="TableHeading">
+                J2SE unoptimized
+            </th>
+            <th class="TableHeading">
+                CLDC
+            </th>
+            <th class="TableHeading">
+                CP
+            </th>
+        </tr>
+        <tr>
+            <td class="TableCell">
+                721K
+            </td>
+            <td class="TableCell">
+                17K
+            </td>
+            <td class="TableCell">
+                28K
+            </td>
+        </tr>
+    </table>
+
+    <p>
+        It is worth noting that both J2SE and CP verifiers need that memory at the moment of method's verification only, 
+        while in the CLDC case the recorded types are stored in the class file. So if a CLDC device loads 
+        an application that contains for example 3 java methods, then memory amount required to perform 
+        verification would be multiplied by ~3.
+    </p>
+    <p>
+        One more thing to note: if a method consists of a short <code>try</code> block, several <code>catch</code>
+        statements, and a long <code>finally</code> code,
+        then CLDC pre-verifier inlines subroutines thus multiplying code length. CLDC in-device verifier will
+        go thru each entrance of the subroutine code. Unlike that, CP verifier will go thru the subroutine only once.
+    </p>
+
+
+
+
+
+
+
+
+    <h1>
+        <a id="Conclusions" name="Conclusions"></a>Conclusions
+    </h1>
+
+    <p>
+        This document presents Java class file verification approach based on the Constraint Propagation technique. 
+        The approach does not need any special Java Compiler or any other preliminary work on the class file; instead 
+        it verifies just regular Java applications.
+    </p>
+    <p>
+        Performance comparisons demonstrated that the CP verifier outperforms its 1.5 counterpart in times. 
+        Implementation of CP verifier as well as a lot of other software has a performance/memory consumption tradeoff. 
+        The performance targeted implementation would be useful in various Java Application Servers while memory 
+        targeted one would be beneficial for the CLDC devices.
+    </p>
+    <p>
+        Memory footprint estimation demonstrated that CP-based verification approach requires memory amount comparable 
+        to CLDC approach.
+    </p>
+    <p>
+        Implementation of the CP verifier is available in Harmony JIRA-3363
+    </p>
+
+
+
+
+
+
+
+
+
+    <h1>
+        <a id="References" name="References"></a>References
+    </h1>
+
+    <p>
+        [<a id="Harmony" name="Harmony"></a>1] 
+
+Apache Harmony. http://harmony.apache.org
+
+    </p>
+    <p>
+        [<a id="ICP1" name="ICP1"></a>2] 
+
+Benhamou F. Interval constraint logic programming // Constraint Programming: Basic and Trends / Ed. by A. Podelski. 
+-- Berlin a.o.: Springer Verlag, 1995. -- P. 1--21. -- (Lect. Notes Comput. Sci.; Vol 910).
+
+    </p>
+    <p>
+        [<a id="CP1" name="CP1"></a>3]
+Cleary. J. Logical Arithmetic // Future Comput. Syst. -- 1987. -- Vol. 2, N. 2. P. 125--149.
+
+    </p>
+
+
+    <p>
+        [<a id="JIRA3363" name="JIRA3363"></a>4] 
+
+Contribution of alternative bytecode verifier. http://issues.apache.org/jira/browse/HARMONY-3363
+    </p>
+
+    <p>
+        [<a id="CP2" name="CP2"></a>5]
+Davis E. Constraint propagation with interval labels // Artificial Intelligence. -- 1987 -- Vol. 32, N. 3. -- 
+P. 281--331.
+
+
+    </p>
+    <p>
+        [<a id="memaccess" name="memaccess"></a>6]
+Govindavajhala. S., Appel. A. W. Using Memory Errors to Attack a Virtual Machine // 
+Proc. of the 2003 IEEE Symposium on Security and Privacy. -- 2003. -- P. 154--165.
+
+
+    </p>
+    <p>
+        [<a id="0002" name="0002"></a>7]
+Huffman D.A. Impossible objects as nonsence sentences // Machine Intelligence. -- 1971. -- Vol. 6. -- P. 295--323.
+
+
+    </p>
+    <p>
+        [<a id="CP3" name="CP3"></a>8]
+Kumar V. Algorithms for constraint-satisfaction problems: a survey // AI. --  1992. -- Vol. 13, N. 1. -- P. 32--44.
+
+
+    </p>
+    <p>
+        [<a id="J2ME" name="J2ME"></a>9]
+Sun Microsystems. Connected Limited Device Configuration // Available at http://www.jcp.org/en/jsr/detail?id=139
+
+    </p>
+    <p>
+        [<a id="J2SE" name="J2SE"></a>10]
+Sun Microsystems. The Java Virtual Machine Specification // Available at http://java.sun.com/j2se/1.5.0/docs/guide/vm/index.html
+
+
+    </p>
+
+
+
+    <p>
+        [<a id="*" name="*"></a>*]
+Other brands and names are the property of their respective owners.
+    </p>
+</body>
+</html>
+
+
+
+</div>
+                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special"><em>
+                Copyright &#169; 2003-2007, The Apache Software Foundation
+            </em></div>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
