@@ -26,6 +26,7 @@
 package org.apache.harmony.jpda.tests.framework;
 
 import java.io.File;
+import java.util.HashMap;
 
 /**
  * This class provides access to options for running JPDA tests.
@@ -88,13 +89,19 @@ public class TestOptions {
     public static final String DEFAULT_TRANSPORT_WRAPPER 
         = "org.apache.harmony.jpda.tests.framework.jdwp.SocketTransportWrapper";
 
+    /** Default aclass name for debuggee application. */
+    public static final String DEFAULT_DEBUGGEE_CLASS_NAME
+        = "org.apache.harmony.jpda.tests.jdwp.share.debuggee.HelloWorld";
+
     // current waiting time value (negative means using default value)
     private long waitingTime = -1;
 
     // current timeout value (negative means using default value)
     private long timeout = -1;
 
-    
+    // internally set property values
+    private HashMap internalProperties = new HashMap();
+
     /**
      * Constructs an instance of this class.
      */
@@ -109,8 +116,7 @@ public class TestOptions {
      *         "java.home" by default.
      */
     public String getDebuggeeJavaHome() {
-        return System.getProperty("jpda.settings.debuggeeJavaHome", System
-                .getProperty("java.home"));
+        return getProperty("jpda.settings.debuggeeJavaHome", getProperty("java.home", null));
     }
 
     /**
@@ -119,7 +125,7 @@ public class TestOptions {
      * @return option "jpda.settings.debuggeeJavaExec" or "java" by default.
      */
     public String getDebuggeeJavaExec() {
-        return System.getProperty("jpda.settings.debuggeeJavaExec", "java");
+        return getProperty("jpda.settings.debuggeeJavaExec", "java");
     }
 
     /**
@@ -129,7 +135,7 @@ public class TestOptions {
      *         getDebuggeeJavaHome() and getDebuggeeJavaExec() by default.
      */
     public String getDebuggeeJavaPath() {
-        return System.getProperty("jpda.settings.debuggeeJavaPath",
+        return getProperty("jpda.settings.debuggeeJavaPath",
                 getDebuggeeJavaHome() + "/bin/" + getDebuggeeJavaExec());
     }
 
@@ -140,7 +146,7 @@ public class TestOptions {
      *         DEFAULT_TRANSPORT_WRAPPER by default.
      */
     public String getTransportWrapperClassName() {
-        return System.getProperty("jpda.settings.transportWrapperClass",
+        return getProperty("jpda.settings.transportWrapperClass",
                 DEFAULT_TRANSPORT_WRAPPER);
     }
 
@@ -150,7 +156,7 @@ public class TestOptions {
      * @return option "jpda.settings.transportAddress" or null by default.
      */
     public String getTransportAddress() {
-        return System.getProperty("jpda.settings.transportAddress", null);
+        return getProperty("jpda.settings.transportAddress", null);
     }
     
     /**
@@ -159,7 +165,7 @@ public class TestOptions {
      * @param address to attach
      */
     public void setTransportAddress(String address) {
-        System.setProperty("jpda.settings.transportAddress", address);
+        setProperty("jpda.settings.transportAddress", address);
     }
 
     /**
@@ -168,7 +174,7 @@ public class TestOptions {
      * @return option "jpda.settings.debuggeeAgentName" or "jdwp" by default
      */
     public String getDebuggeeAgentName() {
-        return System.getProperty("jpda.settings.debuggeeAgentName", "jdwp");
+        return getProperty("jpda.settings.debuggeeAgentName", "jdwp");
     }
 
     /**
@@ -177,8 +183,7 @@ public class TestOptions {
      * @return option "jpda.settings.debuggeeAgentExtraOptions" or "" by default
      */
     public String getDebuggeeAgentExtraOptions() {
-        return System
-                .getProperty("jpda.settings.debuggeeAgentExtraOptions", "");
+        return getProperty("jpda.settings.debuggeeAgentExtraOptions", "");
     }
 
     /**
@@ -198,9 +203,15 @@ public class TestOptions {
             serv = "y";
         }
 
-        return System.getProperty("jpda.settings.debuggeeAgentOptions",
+        // add ',' to agent extra options if required 
+        String agentExtraOptions = getDebuggeeAgentExtraOptions();
+        if (agentExtraOptions.length() > 0 && agentExtraOptions.charAt(0) != ',') {
+            agentExtraOptions = "," + agentExtraOptions;
+        }
+
+        return getProperty("jpda.settings.debuggeeAgentOptions",
                 "transport=dt_socket,address=" + address + ",server=" + serv
-                        + getDebuggeeAgentExtraOptions());
+                        + agentExtraOptions);
     }
 
     /**
@@ -226,7 +237,7 @@ public class TestOptions {
      * @return system property "java.class.path" by default.
      */
     public String getDebuggeeClassPath() {
-        return System.getProperty("java.class.path");
+        return getProperty("java.class.path", null);
     }
 
     /**
@@ -236,8 +247,7 @@ public class TestOptions {
      *         "org.apache.harmony.jpda.tests.jdwp.share.debuggee.HelloWorld" by default
      */
     public String getDebuggeeClassName() {
-        return System.getProperty("jpda.settings.debuggeeClassName",
-                "org.apache.harmony.jpda.tests.jdwp.share.debuggee.HelloWorld");
+        return getProperty("jpda.settings.debuggeeClassName", DEFAULT_DEBUGGEE_CLASS_NAME);
     }
 
     /**
@@ -247,7 +257,7 @@ public class TestOptions {
      *            full class name
      */
     public void setDebuggeeClassName(String className) {
-        System.setProperty("jpda.settings.debuggeeClassName", className);
+        setProperty("jpda.settings.debuggeeClassName", className);
     }
 
     /**
@@ -256,7 +266,7 @@ public class TestOptions {
      * @return option "jpda.settings.debuggeeVMExtraOptions" or "" by default
      */
     public String getDebuggeeVMExtraOptions() {
-        String extOpts = System.getProperty("jpda.settings.debuggeeVMExtraOptions", "");
+        String extOpts = getProperty("jpda.settings.debuggeeVMExtraOptions", "");
         extOpts = extOpts + " -Djpda.settings.verbose=" + isVerbose();
         return extOpts;
     }
@@ -267,7 +277,7 @@ public class TestOptions {
      * @return string with port number or null
      */
     public String getSyncPortString() {
-        return System.getProperty("jpda.settings.syncPort");
+        return getProperty("jpda.settings.syncPort", null);
     }
 
     /**
@@ -276,7 +286,7 @@ public class TestOptions {
      * @return system property "jpda.settings.connectorKind" or "listen" by default.
      */
     public String getConnectorKind() {
-        return System.getProperty("jpda.settings.connectorKind", "listen");
+        return getProperty("jpda.settings.connectorKind", "listen");
     }
 
     /**
@@ -316,7 +326,7 @@ public class TestOptions {
      * Sets kind of connector (attach or listen).
      */
     public void setConnectorKind(String kind) {
-        System.setProperty("jpda.settings.connectorKind", kind);
+        setProperty("jpda.settings.connectorKind", kind);
     }
 
     /**
@@ -325,7 +335,7 @@ public class TestOptions {
      * @return option "jpda.settings.debuggeeLaunchKind" or "auto" by default.
      */
     public String getDebuggeeLaunchKind() {
-        return System.getProperty("jpda.settings.debuggeeLaunchKind", "auto");
+        return getProperty("jpda.settings.debuggeeLaunchKind", "auto");
     }
 
     /**
@@ -354,7 +364,7 @@ public class TestOptions {
     public long getTimeout() {
         if (timeout < 0) {
             timeout = DEFAULT_TIMEOUT;
-            String buf = System.getProperty("jpda.settings.timeout");
+            String buf = getProperty("jpda.settings.timeout", null);
             if (buf != null) {
                 try {
                     timeout = Long.parseLong(buf);
@@ -388,7 +398,7 @@ public class TestOptions {
     public long getWaitingTime() {
         if (waitingTime < 0) {
             waitingTime = DEFAULT_WAITING_TIME;
-            String buf = System.getProperty("jpda.settings.waitingTime");
+            String buf = getProperty("jpda.settings.waitingTime", null);
             if (buf != null) {
                 try {
                     waitingTime = Long.parseLong(buf);
@@ -416,7 +426,7 @@ public class TestOptions {
      * @return false (default) if log is disabled or true otherwise.
      */
     public boolean isVerbose() {
-        return isTrue(System.getProperty("jpda.settings.verbose", "true"));
+        return isTrue(getProperty("jpda.settings.verbose", "true"));
     }
 
     /**
@@ -432,4 +442,34 @@ public class TestOptions {
             str.equalsIgnoreCase("on") ||
             str.equals("1"));
     }
+
+    /**
+     * Returns value of given property if it was set internally or specified in system properties.
+     *
+     * @param name
+     *           property name
+     * @param defaultValue
+     *           default value for given property
+     * @return string value of given property or default value if no such property found 
+     */
+    protected String getProperty(String name, String defaultValue) {
+        String value = (String)internalProperties.get(name);
+        if (value != null) {
+            return value;
+        }
+        return System.getProperty(name, defaultValue);
+    }
+
+    /**
+     * Sets internal value of given property to override corresponding system property.
+     *
+     * @param name
+     *           proparty name
+     * @param value
+     *           value for given property
+     */
+    protected void setProperty(String name, String value) {
+        internalProperties.put(name, value);
+    }
+
 }
