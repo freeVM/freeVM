@@ -27,7 +27,7 @@
     <property name="my.path" value="${tested.jdk}/bin${path.separator}${env.PATH}"/>
 
     <target name="run">
-        <exec-ant dir="${trunk.dir}" javaVM="${tested.jdk}/bin/java>
+        <exec-ant dir="${trunk.dir}" javaVM="${tested.jdk}/bin/java">
             <jvmarg line="-Xmx800M -Dtarget.dir=${target.dir}"/>
             <env key="JAVA_HOME" value="${tested.jdk}"/>
             <env key="PATH" value="${my.path}"/>
