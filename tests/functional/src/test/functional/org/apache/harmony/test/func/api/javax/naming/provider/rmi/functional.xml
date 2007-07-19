@@ -66,12 +66,12 @@
     <Source name="../../NamingTest.java" />
 
     <Runner ID="Runtime">
-        <Option name="-cp" value="$TestSuiteClassRoot$PathSeparator$TestSuiteLibRoot$FileSeparatorjndi$FileSeparatorproviders.jar" />
+	    <Option name="-cp" value="${CP}${PathSeparator}${TestDirectory}/../../share" />
         <Param name="toRun"
             value="org.apache.harmony.test.func.api.javax.naming.NamingTest">
             <Option name="xmlPath"
-                value="org/apache/harmony/test/func/api/javax/naming/share/jndiRMITest.xml" />
-            <Option name="testName" value="own_SP" />
+                value="jndiRMITest.xml" />
+            <Option name="testName" value="regular" />
         </Param>
     </Runner>
 
