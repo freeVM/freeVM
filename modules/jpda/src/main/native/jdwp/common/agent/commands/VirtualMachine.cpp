@@ -492,7 +492,14 @@ VirtualMachine::ClassPathsHandler::Execute(JNIEnv *jni) throw(AgentException)
     char *classPaths = clsMgr.GetProperty(jni, "java.class.path");
     AgentAutoFree dobj_classPaths(classPaths JDWP_FILE_LINE);
 
-    char *bootClassPaths = clsMgr.GetProperty(jni, "vm.boot.class.path");
+    // try several alternatives for boot.class.path
+    char *bootClassPaths = clsMgr.GetProperty(jni, "sun.boot.class.path");
+    if (bootClassPaths == 0) {
+        bootClassPaths = clsMgr.GetProperty(jni, "vm.boot.class.path");
+    }
+    if (bootClassPaths == 0) {
+        bootClassPaths = clsMgr.GetProperty(jni, "org.apache.harmony.boot.class.path");
+    }
     AgentAutoFree dobj_bootClassPaths(bootClassPaths JDWP_FILE_LINE);
 
     char *pathSeparatorString = clsMgr.GetProperty(jni, "path.separator");
