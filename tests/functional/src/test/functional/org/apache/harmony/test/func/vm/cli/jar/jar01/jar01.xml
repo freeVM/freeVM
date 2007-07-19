@@ -30,11 +30,8 @@
         <Modification date="2005-09-23" />
         <Runner ID="Execute">       
             <Param name="toRun" value="$TestedRuntime">
-                
-                <Option name="-jar"/>
-                <Option name="$CP/Test.jar"/>
-                <Option name="CommonTest"/>
+                <Option name="-Xbootclasspath/a:${CP}"/>
+                <Option name="-jar" value="${TestDirectory}/../Test.jar"/>
             </Param>        
-        </Runner>                               
-
+        </Runner>
 </Test>

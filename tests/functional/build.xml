@@ -179,6 +179,11 @@
     <!-- Build specific files and make post-compile actions -->
 
     <target name="post_compile" depends="gen_beans_ser,gen_rmi_support,modify_classes">
+        <jar destfile="${src.test}/functional/org/apache/harmony/test/func/vm/cli/jar/Test.jar" basedir="${bin.classes}" includes="CommonTest.class">
+            <manifest>
+                <attribute name="Main-Class" value="CommonTest"/>
+            </manifest>
+        </jar>
     </target>
 
     <target name="-chk_post_compile" depends="compile_java">
