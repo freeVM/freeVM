@@ -243,13 +243,17 @@ ThreadManager::ClearExecList(JNIEnv* jni) throw()
 jthread
 ThreadManager::RunAgentThread(JNIEnv *jni, jvmtiStartFunction proc,
                                 const void *arg, jint priority,
-                                const char *name) throw(AgentException)
+                                const char *name, jthread thread) 
+                                throw(AgentException)
 {
     JDWP_TRACE_ENTRY("RunAgentThread(" << jni << ',' << proc 
             << ',' << arg << ',' << priority 
                         << ',' << JDWP_CHECK_NULL(name) << ')');
 
-    jthread thread = CreateAgentThread(jni, name);
+    if (thread == 0) {
+        thread = CreateAgentThread(jni, name);
+    }
+
     jvmtiError err;
     JVMTI_TRACE(err, GetJvmtiEnv()->RunAgentThread(thread, proc, arg, priority));
 

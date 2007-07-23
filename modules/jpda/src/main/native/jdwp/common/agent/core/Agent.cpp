@@ -41,6 +41,7 @@
 #include "TransportManager.h"
 #include "PacketDispatcher.h"
 #include "EventDispatcher.h"
+#include "AgentManager.h"
 
 using namespace jdwp;
 
@@ -103,50 +104,6 @@ static void Usage()
     );
 }
 
-static void InitAgent(jvmtiEnv *jvmti, JNIEnv *jni)
-{
-    JDWP_TRACE_ENTRY("InitAgent(" << jvmti << "," << jni << ")");
-
-    JDWP_TRACE_PROG("InitAgent: init and start all modules");
-
-    //currentSessionID = 0;
-
-    try {
-        AgentBase::SetIsDead(false);
-        AgentBase::GetClassManager().Init(jni);
-        AgentBase::GetObjectManager().Init(jni);
-        AgentBase::GetThreadManager().Init(jni);
-        AgentBase::GetRequestManager().Init(jni);
-        AgentBase::GetEventDispatcher().Init(jni);
-        AgentBase::GetPacketDispatcher().Init(jni);
-
-        char* javaLibraryPath = 0;
-        jvmtiError err;
-        JVMTI_TRACE(err,
-            jvmti->GetSystemProperty("java.library.path", &javaLibraryPath));
-        if (err != JVMTI_ERROR_NONE) {
-            JDWP_INFO("Unable to get system property: java.library.path")
-        }
-        JvmtiAutoFree afv(javaLibraryPath);
-        AgentBase::GetTransportManager().Init(
-            AgentBase::GetOptionParser().GetTransport(),
-            javaLibraryPath);
-
-        AgentBase::GetTransportManager().PrepareConnection(
-            AgentBase::GetOptionParser().GetAddress(),
-            AgentBase::GetOptionParser().GetServer(),
-            AgentBase::GetOptionParser().GetTimeout(),
-            AgentBase::GetOptionParser().GetTimeout()
-        );
-
-        AgentBase::GetEventDispatcher().Start(jni);
-        AgentBase::GetPacketDispatcher().Start(jni);
-    } catch (AgentException& e) {
-        JDWP_INFO("JDWP error: " << e.what() << " [" << e.ErrCode() << "]");
-        jni->FatalError("Unable to initialize agent");
-    }
-}
-
 //-----------------------------------------------------------------------------
 // event callbacks
 //-----------------------------------------------------------------------------
@@ -159,10 +116,20 @@ VMInit(jvmtiEnv *jvmti, JNIEnv *jni, jthread thread)
         jint ver = jni->GetVersion();
         JDWP_LOG("JNI version: 0x" << hex << ver);
 
-        InitAgent(jvmti, jni);
-        RequestManager::HandleVMInit(jvmti, jni, thread);
+        // initialize agent
+        AgentBase::GetAgentManager().Init(jvmti, jni);
+ 
+        // if options onthrow or onuncaught are set, defer starting agent and enable notification of EXCEPTION event
+        if (AgentBase::GetOptionParser().GetOnthrow() || AgentBase::GetOptionParser().GetOnuncaught()) {
+            AgentBase::GetAgentManager().EnableInitialExceptionCatch(jvmti, jni);
+        } else {
+            AgentBase::GetAgentManager().Start(jvmti, jni);
+            RequestManager::HandleVMInit(jvmti, jni, thread);
+        }
+    } catch (TransportException& e) {
+        JDWP_DIE("JDWP transport error in VM_INIT: " << e.TransportErrorMessage() << " [" << e.ErrCode() << "]");
     } catch (AgentException& e) {
-        JDWP_INFO("JDWP error in VM_INIT: " << e.what() << " [" << e.ErrCode() << "]");
+        JDWP_DIE("JDWP error in VM_INIT: " << e.what() << " [" << e.ErrCode() << "]");
     }
 }
 
@@ -170,13 +137,16 @@ static void JNICALL
 VMDeath(jvmtiEnv *jvmti, JNIEnv *jni)
 {
     try {
-        // don't print entry trace message after shutdown
-        {
+        if (AgentBase::GetAgentManager().IsStarted()) {
+            // don't print entry trace message after cleaning agent
             JDWP_TRACE_ENTRY("VMDeath(" << jvmti << ',' << jni << ')');
+
             RequestManager::HandleVMDeath(jvmti, jni);
+            AgentBase::SetIsDead(true);
+
+            AgentBase::GetAgentManager().Stop(jni);
         }
-        AgentBase::SetIsDead(true);
-        AgentBase::GetPacketDispatcher().ShutdownAll(jni);
+        AgentBase::GetAgentManager().Clean(jni);
     } catch (AgentException& e) {
         JDWP_INFO("JDWP error in VM_DEATH: " << e.what() << " [" << e.ErrCode() << "]");
     }
@@ -324,6 +294,7 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         env.transportManager = new TransportManager();
         env.packetDispatcher = new PacketDispatcher();
         env.eventDispatcher = new EventDispatcher();
+        env.agentManager = new AgentManager();
     } catch (IllegalArgumentException&) {
         JDWP_INFO("JDWP error: Bad agent options: " << options);
         delete env.optionParser;
@@ -488,5 +459,6 @@ Agent_OnUnload(JavaVM *vm)
         delete &AgentBase::GetObjectManager();
         delete &AgentBase::GetClassManager();
         delete &AgentBase::GetOptionParser();
+        delete &AgentBase::GetAgentManager();
     }
 }

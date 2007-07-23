@@ -46,6 +46,7 @@ namespace jdwp {
     class PacketDispatcher;
     class EventDispatcher;
     class RequestManager;
+    class AgentManager;
 
     /**
      * Agent-environment structure containing all objects participating in
@@ -53,6 +54,7 @@ namespace jdwp {
      */
     struct AgentEnv {
 
+        AgentManager *agentManager;
         MemoryManager *memoryManager;
         LogManager *logManager;
         OptionParser *optionParser;

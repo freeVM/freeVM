@@ -46,7 +46,7 @@ public abstract class JDWPTestCase extends JDWPRawTestCase {
     /**
      * EventPacket instance with received VM_START event.
      */
-    protected EventPacket vmStartEvent;
+    protected EventPacket initialEvent = null;
 
     /**
      * Overrides inherited method to launch one debuggee VM, establish JDWP
@@ -55,24 +55,47 @@ public abstract class JDWPTestCase extends JDWPRawTestCase {
     protected void internalSetUp() throws Exception {
         super.internalSetUp();
 
-        if (settings.getDebuggeeLaunchKind().equals("manual")) {
-            debuggeeWrapper = new JDWPManualDebuggeeWrapper(settings, logWriter);
-        } else {
-            debuggeeWrapper = new JDWPUnitDebuggeeWrapper(settings, logWriter);
-        }
-
+        // launch debuggee process
+        debuggeeWrapper = createDebuggeeWrapper();
         beforeDebuggeeStart(debuggeeWrapper);
-        logWriter.println("TEST NAME: " + getName());
-        debuggeeWrapper.start();
+        startDebuggeeWrapper();
 
-        logWriter
-                .println("Launched debuggee VM process and established connection");
-        vmStartEvent = debuggeeWrapper.vmMirror
-                .receiveCertainEvent(JDWPConstants.EventKind.VM_INIT);
-        logWriter.println("Received VM_START event");
+        // receive and handle initial event
+        receiveInitialEvent();
 
+        // adjust JDWP types length
         debuggeeWrapper.vmMirror.adjustTypeLength();
         logWriter.println("Adjusted VM-dependent type lengths");
+    }
+
+    /**
+     * Creates wrapper for debuggee process.
+     */
+    protected JDWPUnitDebuggeeWrapper createDebuggeeWrapper() {
+        if (settings.getDebuggeeLaunchKind().equals("manual")) {
+            return new JDWPManualDebuggeeWrapper(settings, logWriter);
+        } else {
+            return new JDWPUnitDebuggeeWrapper(settings, logWriter);
+        }
+    }
+
+    /**
+     * Starts wrapper for debuggee process.
+     */
+    protected void startDebuggeeWrapper() {
+    	debuggeeWrapper.start();
+        logWriter.println("Established JDWP connection with debuggee VM");
+    }
+    	
+    /**
+     * Receives initial VM_INIT event if debuggee is suspended on event.
+     */
+    protected void receiveInitialEvent() {
+        if (settings.isDebuggeeSuspend()) {
+            initialEvent = 
+                debuggeeWrapper.vmMirror.receiveCertainEvent(JDWPConstants.EventKind.VM_INIT);
+            logWriter.println("Received inital VM_INIT event");
+        }
     }
 
     /**
@@ -82,8 +105,7 @@ public abstract class JDWPTestCase extends JDWPRawTestCase {
     protected void internalTearDown() {
         if (debuggeeWrapper != null) {
             debuggeeWrapper.stop();
-            logWriter
-                    .println("Finished debuggee VM process and closed connection");
+            logWriter.println("Closed JDWP connection with debuggee VM");
         }
         super.internalTearDown();
     }
@@ -101,9 +123,9 @@ public abstract class JDWPTestCase extends JDWPRawTestCase {
      */
     public void openConnection() {
         debuggeeWrapper.openConnection();
+        logWriter.println("Opened transport connection");
         debuggeeWrapper.vmMirror.adjustTypeLength();
         logWriter.println("Adjusted VM-dependent type lengths");
-        logWriter.println("Opened connection");
     }
 
     /**
@@ -118,7 +140,7 @@ public abstract class JDWPTestCase extends JDWPRawTestCase {
             } catch (Exception e) {
                 throw new TestErrorException(e);
             }
-            logWriter.println("Closed connection");
+            logWriter.println("Closed transport connection");
         }
     }
 
@@ -809,5 +831,4 @@ public abstract class JDWPTestCase extends JDWPRawTestCase {
         checkReplyPacket(reply, "EventRequest::Clear command");
         assertAllDataRead(reply);
     }
-
 }

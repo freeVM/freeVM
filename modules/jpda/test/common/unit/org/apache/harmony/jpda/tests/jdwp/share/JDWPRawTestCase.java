@@ -81,7 +81,7 @@ public abstract class JDWPRawTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        settings = new JPDATestOptions();
+        settings = createTestOptions();
         settings.setDebuggeeClassName(getDebuggeeClassName());
 
         logWriter = new JPDALogWriter(System.out, null, settings.isVerbose());
@@ -101,6 +101,13 @@ public abstract class JDWPRawTestCase extends TestCase {
         }
     }
 
+    /**
+     * Creates wrapper object for accessing test options;
+     */
+    protected JPDATestOptions createTestOptions() {
+        return new JPDATestOptions();
+    }
+    
     /**
      * Overrides inherited JUnit method to provide cleanup and invocation of
      * internalTearDown() method.

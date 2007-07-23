@@ -44,6 +44,7 @@ typedef void (JNICALL *jdwpTransport_UnLoad_Type)(jdwpTransportEnv** env);
 
 TransportManager::TransportManager() : AgentBase()
 {
+    m_transportName = 0;
     m_connectTimeout = 0;
     m_handshakeTimeout = 0;
     m_ConnectionPrepared = false;
@@ -52,6 +53,7 @@ TransportManager::TransportManager() : AgentBase()
     m_env = 0;
     m_isServer = true;
     m_lastErrorMessage = 0;
+    m_isConnected = false;
 } //TransportManager::TransportManager()
 
 TransportManager::~TransportManager()
@@ -75,11 +77,13 @@ TransportManager::Init(const char* transportName,
 {
     JDWP_TRACE_ENTRY("Init(" << JDWP_CHECK_NULL(transportName) << ',' << JDWP_CHECK_NULL(libPath) << ')');
 
-    JDWP_TRACE_PROG("Init: transport name=" << JDWP_CHECK_NULL(transportName )
-        << " libPath=" << JDWP_CHECK_NULL(libPath));
+    JDWP_TRACE_PROG("Init: transport=" << JDWP_CHECK_NULL(transportName )
+        << ", libPath=" << JDWP_CHECK_NULL(libPath));
 
     JDWP_ASSERT(m_loadedLib == 0);
+    m_isConnected = false;
 
+    m_transportName = transportName;
     const char* begin = libPath;
     do {
         const char* end = strchr(begin, pathSeparator);
@@ -112,7 +116,7 @@ TransportManager::Init(const char* transportName,
         m_lastErrorMessage = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
         sprintf(m_lastErrorMessage, "Loading of %s failed", transportName);
         JDWP_ERROR("Loading of " << transportName << " failed");
-        throw TransportException(JDWP_ERROR_TRANSPORT_LOAD);
+        throw TransportException(JDWP_ERROR_TRANSPORT_LOAD, JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
     }
 
     jdwpTransport_OnLoad_t transportOnLoad = reinterpret_cast<jdwpTransport_OnLoad_t>
@@ -126,14 +130,14 @@ TransportManager::Init(const char* transportName,
         m_lastErrorMessage = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
         sprintf(m_lastErrorMessage, "%s function not found in %s", onLoadDecFuncName, transportName);
         JDWP_ERROR(onLoadDecFuncName << " function not found in " << transportName);
-        throw TransportException();
+        throw TransportException(JDWP_ERROR_TRANSPORT_INIT, JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
     }
     jint res = (*transportOnLoad)(GetJavaVM(), &callback, JDWPTRANSPORT_VERSION_1_0, &m_env);
     if (res == JNI_ENOMEM) {
         if (m_lastErrorMessage != 0) {
             GetMemoryManager().Free(m_lastErrorMessage JDWP_FILE_LINE);
         }
-        size_t length = strlen("Out of memeory");
+        size_t length = strlen("Out of memory");
         m_lastErrorMessage = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
         sprintf(m_lastErrorMessage, "Out of memeory");
         throw TransportException(JDWP_ERROR_OUT_OF_MEMORY);
@@ -145,7 +149,7 @@ TransportManager::Init(const char* transportName,
         m_lastErrorMessage = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
         sprintf(m_lastErrorMessage, "Invoking of %s failed", onLoadDecFuncName);
         JDWP_ERROR("Invoking of " << onLoadDecFuncName << " failed");
-        throw TransportException();
+        throw TransportException(JDWP_ERROR_TRANSPORT_INIT, JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
     }
     if (m_env == 0) {
         if (m_lastErrorMessage != 0) {
@@ -155,7 +159,7 @@ TransportManager::Init(const char* transportName,
         m_lastErrorMessage = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
         sprintf(m_lastErrorMessage, "Transport provided invalid environment");
         JDWP_ERROR("Transport provided invalid environment");
-        throw TransportException();
+        throw TransportException(JDWP_ERROR_TRANSPORT_INIT, JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
     }
 
 } // TransportManager::Init()
@@ -194,12 +198,10 @@ TransportManager::PrepareConnection(const char* address, bool isServer,
     }
 
     if (isServer) {
-        char* actualAddress;
-        err = m_env->StartListening(address, &actualAddress); 
+        err = m_env->StartListening(address, &m_address); 
         CheckReturnStatus(err);
-        JDWP_INFO("transport is listening on " << actualAddress);
-        JDWP_TRACE_PROG("PrepareConnection: listening on " << actualAddress);
-        AgentBase::GetMemoryManager().Free(actualAddress JDWP_FILE_LINE);
+        JDWP_INFO("transport is listening on " << m_address);
+        JDWP_TRACE_PROG("PrepareConnection: listening on " << m_address);
     } else {
         m_address = static_cast<char *>(GetMemoryManager().Allocate(strlen(address) + 1 JDWP_FILE_LINE));
         strcpy(m_address, address);
@@ -212,6 +214,10 @@ TransportManager::PrepareConnection(const char* address, bool isServer,
 void 
 TransportManager::Connect() throw(TransportException)
 {
+    if (m_isConnected) {
+        return;
+    }
+
     JDWP_TRACE_PROG("Connect: isServer=" << m_isServer);
     JDWP_ASSERT(m_ConnectionPrepared);
     jdwpTransportError err;
@@ -222,15 +228,19 @@ TransportManager::Connect() throw(TransportException)
         err = m_env->Attach(m_address, m_connectTimeout, m_handshakeTimeout);
         CheckReturnStatus(err);
     }
+    m_isConnected = true;
     JDWP_TRACE_PROG("Connect: connection established");
 } // TransportManager::Connect()
 
 void 
-TransportManager::Launch(const char* command) throw(TransportException)
+TransportManager::Launch(const char* command) throw(AgentException)
 {
     JDWP_TRACE_PROG("Launch: " << JDWP_CHECK_NULL(command));
     JDWP_ASSERT(m_ConnectionPrepared);
-    StartDebugger(command);
+    const char* extra_argv[2];
+    extra_argv[0] = m_transportName;
+    extra_argv[1] = m_address;
+    StartDebugger(command, 2, extra_argv);
     Connect();
 } // TransportManager::Launch()
 
@@ -263,6 +273,7 @@ TransportManager::Reset() throw(TransportException)
         jdwpTransportError err = m_env->Close();
         CheckReturnStatus(err);
     }
+    m_isConnected = false;
     JDWP_TRACE_PROG("Reset: connection closed");
 } // TransportManager::Reset()
 
@@ -317,8 +328,8 @@ TransportManager::CheckReturnStatus(jdwpTransportError err) throw(TransportExcep
         throw TransportException(JDWP_ERROR_OUT_OF_MEMORY, JDWPTRANSPORT_ERROR_OUT_OF_MEMORY);
     }
     char* lastErrorMessage = GetLastTransportError();
-    AgentBase::GetMemoryManager().Free(lastErrorMessage JDWP_FILE_LINE);
-    throw TransportException(JDWP_ERROR_TRANSPORT_INIT, err);
+    // AgentBase::GetMemoryManager().Free(lastErrorMessage JDWP_FILE_LINE);
+    throw TransportException(JDWP_ERROR_TRANSPORT_INIT, err, lastErrorMessage);
 } // TransportManager::CheckReturnStatus()
 
 inline void 
@@ -328,7 +339,7 @@ TransportManager::TracePacket(const char* message, const jdwpPacket* packet)
         JDWP_TRACE_PACKET(message 
                 <<" length=" << packet->type.cmd.len 
                 << " Id=" << packet->type.cmd.id 
-                << " flag=REPLY " 
+                << " flag=REPLY" 
                 << " errorCode=" << (short)(packet->type.reply.errorCode));
     } else { 
         JDWP_TRACE_PACKET(message 

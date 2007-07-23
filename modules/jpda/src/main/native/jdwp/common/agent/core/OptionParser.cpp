@@ -47,6 +47,9 @@ OptionParser::OptionParser() throw()
     m_log = 0;
     m_kindFilter = 0;
     m_srcFilter = 0;
+    m_onuncaught = false;
+    m_onthrow = 0;
+    m_launch = 0;
 }
 
 bool OptionParser::AsciiToBool(const char *str) throw(IllegalArgumentException)
@@ -75,12 +78,13 @@ void OptionParser::Parse(const char* str) throw(AgentException)
     for (i = 0; i < len; i++) {
         if (str[i] == ',') {
             m_optionCount++;
-        } else if (str[i] == '"') {
+        } else if (str[i] == '"' || str[i] == '\'') {
+            char quote = str[i];
             if (i > 0 && str[i-1] != '=') {
                 throw IllegalArgumentException();
             }
             i++;
-            while (i < len && str[i] != '"') {
+            while (i < len && str[i] != quote) {
                 i++;
             }
             if (i+1 < len && str[i+1] != ',') {
@@ -100,20 +104,24 @@ void OptionParser::Parse(const char* str) throw(AgentException)
     m_options[0].name = m_optionString;
     m_options[0].value = "";
     k = 0;
+    bool waitEndOfOption = false;
     for (i = 0; i < len && k < m_optionCount; i++) {
-        if (m_optionString[i] == '=') {
+        if ((m_optionString[i] == '=') && (!waitEndOfOption)) {
+            waitEndOfOption = true; 
             m_optionString[i] = '\0';
             m_options[k].value = &m_optionString[i+1];
         } else if (m_optionString[i] == ',') {
+            waitEndOfOption = false;
             m_optionString[i] = '\0';
             k++;
             m_options[k].name = &m_optionString[i+1];
             m_options[k].value = "";
-        } else if (m_optionString[i] == '"') {
+        } else if (m_optionString[i] == '"' || m_optionString[i] == '\'') {
+            char quote = m_optionString[i];
             m_optionString[i] = '\0';
             m_options[k].value = &m_optionString[i+1];
             i++;
-            while (i < len && m_optionString[i] != '"') {
+            while (i < len && m_optionString[i] != quote) {
                 i++;
             }
             if (i < len) {
@@ -133,6 +141,12 @@ void OptionParser::Parse(const char* str) throw(AgentException)
             m_suspend = AsciiToBool(m_options[k].value);
         } else if (strcmp("server", m_options[k].name) == 0) {
             m_server = AsciiToBool(m_options[k].value);
+        } else if (strcmp("launch", m_options[k].name) == 0) {
+            m_launch = m_options[k].value;
+        } else if (strcmp("onuncaught", m_options[k].name) == 0) {
+            m_onuncaught = AsciiToBool(m_options[k].value);
+        } else if (strcmp("onthrow", m_options[k].name) == 0) {
+            m_onthrow = m_options[k].value;
         } else if (strcmp("help", m_options[k].name) == 0) {
             m_help = true;
 #ifndef NDEBUG
@@ -143,6 +157,12 @@ void OptionParser::Parse(const char* str) throw(AgentException)
         } else if (strcmp("src", m_options[k].name) == 0) {
             m_srcFilter = m_options[k].value;
 #endif // NDEBUG
+        }
+    }
+    if ((m_onthrow != 0) || (m_onuncaught != 0)) {
+        if (m_launch == 0) {
+            JDWP_ERROR("Specify launch=<command line> when using onthrow or onuncaught option");
+            throw IllegalArgumentException();
         }
     }
 }

@@ -109,8 +109,10 @@ namespace jdwp {
          * @param priority - the priority of the started thread
          * @param name     - the default parameter; if defined, then the created
          *                   thread has a specified name
+         * @param name     - the default parameter; if defined, then the created
+         *                   thread is associated with this object
          *
-         * @return Returns the <code>jthread</code> object that holds executed 
+         * @return Returns the <code>jthread</code> object associated with started 
          * thread.
          *
          * @exception OutOfMemoryException is thrown if the system 
@@ -123,7 +125,8 @@ namespace jdwp {
          */
         jthread RunAgentThread(JNIEnv *jni, jvmtiStartFunction proc,
                                 const void *arg, jint priority,
-                                const char *name = 0) throw(AgentException);
+                                const char *name = 0,
+                                jthread thread = 0) throw(AgentException);
 
         /**
          * Adds an information about the thread parameter into

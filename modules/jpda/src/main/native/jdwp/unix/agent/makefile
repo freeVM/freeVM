@@ -28,7 +28,7 @@ CXXFLAGS += -fpic
 INCLUDES += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
             -I$(COMMON)generic -Icore
 
-HYLDFLAGS += -lstdc++ -lgcc_s
+LDFLAGS += -lstdc++ -lgcc_s
 
 BUILDFILES = \
     $(CMNAGENT)commands/ArrayReference.o \
@@ -50,7 +50,7 @@ BUILDFILES = \
     $(CMNAGENT)core/EventDispatcher.o $(CMNAGENT)core/LogManager.o $(CMNAGENT)core/MemoryManager.o \
     $(CMNAGENT)core/ObjectManager.o $(CMNAGENT)core/OptionParser.o $(CMNAGENT)core/PacketDispatcher.o \
     $(CMNAGENT)core/PacketParser.o $(CMNAGENT)core/RequestManager.o $(CMNAGENT)core/RequestModifier.o \
-    $(CMNAGENT)core/ThreadManager.o $(CMNAGENT)core/TransportManager.o \
+    $(CMNAGENT)core/ThreadManager.o $(CMNAGENT)core/TransportManager.o $(CMNAGENT)core/AgentManager.o \
     core/TransportManager_pd.o
 
 MDLLIBFILES = 

@@ -128,7 +128,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void ShutdownAll(JNIEnv *jni) throw(AgentException);
+//        void ShutdownAll(JNIEnv *jni) throw(AgentException);
 
         /**
          * Determines if the <code>PacketDispatcher</code> object is already

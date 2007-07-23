@@ -228,6 +228,13 @@ PacketDispatcher::Stop(JNIEnv *jni) throw(AgentException)
     // cause thread loop to break
     m_isProcessed = false;
     
+    // close transport first, but not while executing current command
+    JDWP_TRACE_PROG("Stop: close agent connection");
+    if (m_executionMonitor != 0) {
+        MonitorAutoLock lock(m_executionMonitor JDWP_FILE_LINE);
+        GetTransportManager().Clean();
+    }
+
     // wait for loop finished and EventDispatcher is also stopped
     {
         MonitorAutoLock lock(m_completionMonitor JDWP_FILE_LINE);
@@ -289,39 +296,6 @@ PacketDispatcher::ResetAll(JNIEnv *jni) throw(AgentException)
         GetObjectManager().Reset(jni);
     }
 }
-
-void 
-PacketDispatcher::ShutdownAll(JNIEnv *jni) throw(AgentException)
-{
-    // trace entry before cleaning LogManager
-    {
-        JDWP_TRACE_ENTRY("ShutdownAll(" << jni << ")");
-
-        // close transport first, but not while executing current command
-        JDWP_TRACE_PROG("ShutdownAll: close agent connection");
-        if (m_executionMonitor != 0) {
-            MonitorAutoLock lock(m_executionMonitor JDWP_FILE_LINE);
-            GetTransportManager().Clean();
-        }
-
-        // stop PacketDispatcher and EventDispatcher threads, and reset all modules
-        JDWP_TRACE_PROG("ShutdownAll: stop agent threads");
-        GetPacketDispatcher().Stop(jni);
-
-        // clean all modules
-        JDWP_TRACE_PROG("ShutdownAll: clean agent modules");
-        GetPacketDispatcher().Clean(jni);
-        GetThreadManager().Clean(jni);
-        GetRequestManager().Clean(jni);
-        GetEventDispatcher().Clean(jni);
-        GetObjectManager().Clean(jni);
-        GetClassManager().Clean(jni);
-    }
-
-    // clean LogManager and close log
-    GetLogManager().Clean();
-}
-
 
 //-----------------------------------------------------------------------------
 

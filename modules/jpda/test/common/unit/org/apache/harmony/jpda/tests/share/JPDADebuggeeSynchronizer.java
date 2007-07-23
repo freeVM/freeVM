@@ -47,17 +47,17 @@ public class JPDADebuggeeSynchronizer implements DebuggeeSynchronizer {
 
     public final static String SGNL_CONTINUE = "continue";
 
-    private Socket clientSocket = null;
+    protected Socket clientSocket = null;
 
-    private ServerSocket serverSocket = null;
+    protected ServerSocket serverSocket = null;
 
-    private DataOutputStream out;
+    protected DataOutputStream out;
 
-    private DataInputStream in;
+    protected DataInputStream in;
 
-    private TestOptions settings;
+    protected TestOptions settings;
 
-    private LogWriter logWriter;
+    protected LogWriter logWriter;
 
     /**
      * A constructor that initializes an instance of the class with specified
@@ -123,9 +123,9 @@ public class JPDADebuggeeSynchronizer implements DebuggeeSynchronizer {
     public synchronized String receiveMessage() {
         String msg;
         try {
-            logWriter.println("[SYNC] Waiting...");
+            logWriter.println("[SYNC] Waiting for any messsage");
             msg = in.readUTF();
-            logWriter.println("[SYNC] received message: " + msg);
+            logWriter.println("[SYNC] Received message: " + msg);
         } catch (EOFException e) {
             return null;
         } catch (IOException e) {
@@ -142,13 +142,12 @@ public class JPDADebuggeeSynchronizer implements DebuggeeSynchronizer {
     public synchronized String receiveMessageWithoutException(String invoker) {
         String msg;
         try {
-            logWriter.println("[SYNC] Waiting...");
+            logWriter.println("[SYNC] Waiting for any message");
             msg = in.readUTF();
             logWriter.println("[SYNC] Received message: " + msg);
         } catch (Throwable thrown) {
             if (invoker != null) {
-                logWriter
-                        .println("#### receiveMessageWithoutException: Exception occurred:");
+                logWriter.println("#### receiveMessageWithoutException: Exception occurred:");
                 logWriter.println("#### " + thrown);
                 logWriter.println("#### Invoker = " + invoker);
             }
@@ -158,12 +157,21 @@ public class JPDADebuggeeSynchronizer implements DebuggeeSynchronizer {
     }
 
     /**
+     * Returns socket port to be used for connection.
+     * 
+     * @return port number
+     */
+    public int getSyncPortNumber() {
+        return settings.getSyncPortNumber();
+    }
+
+    /**
      * Binds server to listen socket port.
      * 
      * @return port number
      */
     public synchronized int bindServer() {
-        int port = settings.getSyncPortNumber();
+        int port = getSyncPortNumber();
         try {
             logWriter.println("[SYNC] Binding socket on port: " + port);
             serverSocket = new ServerSocket(port);
@@ -202,10 +210,9 @@ public class JPDADebuggeeSynchronizer implements DebuggeeSynchronizer {
     public synchronized void startClient() {
         long timeout = settings.getTimeout();
         String host = "localhost";
-        int port = settings.getSyncPortNumber();
+        int port = getSyncPortNumber();
         try {
-            logWriter.println("[SYNC] Attaching socket to: " + host + ":"
-                    + port);
+            logWriter.println("[SYNC] Attaching socket to: " + host + ":" + port);
             clientSocket = new Socket(host, port);
             logWriter.println("[SYNC] Attached socket");
 
@@ -214,8 +221,7 @@ public class JPDADebuggeeSynchronizer implements DebuggeeSynchronizer {
             in = new DataInputStream(clientSocket.getInputStream());
         } catch (IOException e) {
             throw new TestErrorException(
-                    "[SYNC] Exception in attaching for socket sync connection",
-                    e);
+                    "[SYNC] Exception in attaching for socket sync connection", e);
         }
     }
 
@@ -234,9 +240,8 @@ public class JPDADebuggeeSynchronizer implements DebuggeeSynchronizer {
             if (serverSocket != null)
                 serverSocket.close();
         } catch (IOException e) {
-            logWriter
-                    .println("[SYNC] Ignoring exception in closing socket sync connection: "
-                            + e);
+            logWriter.println
+                    ("[SYNC] Ignoring exception in closing socket sync connection: " + e);
         }
         logWriter.println("[SYNC] Closed socket");
     }

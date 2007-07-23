@@ -31,6 +31,7 @@
 #define _AGENT_EXCEPTION_H_
 
 #include <exception>
+#include <sstream>
 
 #include "jdwp.h"
 #include "jvmti.h"
@@ -202,30 +203,40 @@ namespace jdwp {
          * @param transportError - transport error code
          */
         TransportException(jdwpError err = JDWP_ERROR_TRANSPORT_INIT, 
-                jdwpTransportError transportError = JDWPTRANSPORT_ERROR_NONE) 
+                jdwpTransportError transportError = JDWPTRANSPORT_ERROR_NONE,
+                const char* message = 0) 
                 throw() : AgentException(err) 
         {
             this->m_transportError = transportError;
+            this->m_message = message;
         }
 
         /**
-         * Returns transport-error code.
+         * Returns transport error code.
          */
         jdwpTransportError TransportErrorCode() const throw() {
             return m_transportError;
         }
 
         /**
-         * Returns the given exception name.
+         * Returns transport error message.
+         */
+        const char* TransportErrorMessage() const throw() {
+            return m_message;
+        }
+
+        /**
+         * Returns the given exception info.
          */
         const char* what() const throw() {
-            return "TransportException";
+            return (m_message == 0 ? "TransportException" : m_message);
         }
 
     private:
         jdwpTransportError m_transportError;
+        const char* m_message;
     };
 
-}
+};
 
 #endif // _AGENT_EXCEPTION_H_

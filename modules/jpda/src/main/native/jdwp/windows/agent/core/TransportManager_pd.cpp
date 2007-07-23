@@ -45,13 +45,63 @@ using namespace jdwp;
 
 const char TransportManager::pathSeparator = ';';
 
-void TransportManager::StartDebugger(const char* command) throw(AgentException)
+void TransportManager::StartDebugger(const char* command, int extra_argc, const char* extra_argv[]) throw(AgentException)
 {
-    throw NotImplementedException();
+    JDWP_TRACE_ENTRY("StartDebugger(" << JDWP_CHECK_NULL(command) << ',' << extra_argc << ',' << extra_argv << ')');
+
+JDWP_TRACE_PROG("StartDebugger: transport=" << JDWP_CHECK_NULL(extra_argv[0]));
+JDWP_TRACE_PROG("StartDebugger: address=" << JDWP_CHECK_NULL(extra_argv[1]));
+
+    // append extra arguments to command line
+
+    int cmd_len = strlen(command);
+    int extra_len = 0;
+    int i;
+
+    for (i = 0; i < extra_argc; i++) {
+         if (extra_argv[i] != 0) {
+             extra_len += strlen(extra_argv[i]) + 1;
+         }
+    }
+
+    char* cmd = static_cast<char*>(GetMemoryManager().Allocate((cmd_len + extra_len + 1) JDWP_FILE_LINE));
+    AgentAutoFree afv(cmd JDWP_FILE_LINE);
+    strcpy(cmd, command);
+
+    for (i = 0; i < extra_argc; i++) {
+         if (extra_argv[i] != 0) {
+             strcat(cmd, " ");
+             strcat(cmd, extra_argv[i]);
+         }
+    }
+
+    // launch debugger process
+
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
+    JDWP_TRACE_PROG("StartDebugger: launch: cmd=" << JDWP_CHECK_NULL(cmd));
+
+    if(!CreateProcess(NULL, const_cast<LPSTR>(cmd), NULL, NULL, 
+            TRUE, NULL, NULL, NULL, &si, &pi)) {
+        JDWP_ERROR("Failed to launch debugger process: error=" << GetLastError());
+        throw AgentException(JDWP_ERROR_INTERNAL);
+    }
+
+    JDWP_TRACE_PROG("StartDebugger: launched: pid=" << pi.dwProcessId);
+
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
 }
 
 LoadedLibraryHandler TransportManager::LoadTransport(const char* dirName, const char* transportName)
 {
+    JDWP_TRACE_ENTRY("LoadTransport(" << JDWP_CHECK_NULL(dirName) << ',' << JDWP_CHECK_NULL(transportName) << ')');
+
     JDWP_ASSERT(transportName != 0);
     char* transportFullName = 0;
     if (dirName == 0) {
@@ -66,9 +116,9 @@ LoadedLibraryHandler TransportManager::LoadTransport(const char* dirName, const 
     AgentAutoFree afv(transportFullName JDWP_FILE_LINE);
     LoadedLibraryHandler res = LoadLibrary(transportFullName);
     if (res == 0) {
-        JDWP_TRACE_PROG("loading of " << transportFullName << " failed (error code: " << GetLastError() << ")");
+        JDWP_TRACE_PROG("LoadTransport: loading library " << transportFullName << " failed (error code: " << GetLastError() << ")");
     } else {
-        JDWP_TRACE_PROG("transport " << transportFullName << " loaded");
+        JDWP_TRACE_PROG("LoadTransport: transport library " << transportFullName << " loaded");
     }
     return res;
 }

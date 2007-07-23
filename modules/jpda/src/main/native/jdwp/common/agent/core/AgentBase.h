@@ -224,6 +224,14 @@ namespace jdwp {
         }
 
         /**
+         * Gets the agent-manager reference from the agent base.
+         */
+        static AgentManager& GetAgentManager() throw() {
+            CHECK_ENV_PTR(m_agentEnv, agentManager);
+            return *m_agentEnv->agentManager;
+        }
+
+        /**
          * Gets the pointer to JVMTI environment from the agent base.
          */
         static jvmtiEnv* GetJvmtiEnv() throw() {

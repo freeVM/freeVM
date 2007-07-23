@@ -120,6 +120,15 @@ namespace jdwp {
         }
 
         /**
+         * Returns a value for the agent's <code>onuncaught</code> option.
+         *
+         * @return Boolean.
+         */
+        bool GetOnuncaught() const throw() {
+            return m_onuncaught;
+        }
+
+        /**
          * Returns a time-out value for transport operations.
          *
          * @return Java long value.
@@ -173,6 +182,24 @@ namespace jdwp {
             return m_srcFilter;
         }
 
+        /**
+         * Returns a value for the agent's <code>onthrow</code> option.
+         *
+         * @return Zero-terminated string.
+         */
+        const char *GetOnthrow() const throw() {
+            return m_onthrow;
+        }
+
+        /**
+         * Returns a value for the agent's <code>launch</code> option.
+         *
+         * @return Zero-terminated string.
+         */
+        const char *GetLaunch() const throw() {
+            return m_launch;
+        }
+
     private:
 
         /**
@@ -199,12 +226,15 @@ namespace jdwp {
         bool m_help;
         bool m_suspend;
         bool m_server;
+        bool m_onuncaught;
         jlong m_timeout;
         const char *m_transport;
         const char *m_address;
         const char *m_log;
         const char *m_kindFilter;
         const char *m_srcFilter;
+        const char *m_launch;
+        const char *m_onthrow;
     };
 
 } // namespace jdwp

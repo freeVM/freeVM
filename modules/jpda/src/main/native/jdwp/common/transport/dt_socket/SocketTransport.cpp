@@ -496,7 +496,7 @@ TCPIPSocketTran_StartListening(jdwpTransportEnv* env, const char* address,
 
     err = bind(serverSocket, (struct sockaddr *)&serverSockAddr, sizeof(serverSockAddr));
     if (err == SOCKET_ERROR) {
-        SetLastTranError(env, "connection failed", GetLastErrorStatus());
+        SetLastTranError(env, "binding to port failed", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
     }
 
@@ -520,6 +520,9 @@ TCPIPSocketTran_StartListening(jdwpTransportEnv* env, const char* address,
     }
 
     char* retAddress = 0;
+
+    // RI always returns only port number in listening mode
+/*
     char portName[6];
     sprintf(portName, "%d", ntohs(serverSockAddr.sin_port)); //instead of itoa()
 
@@ -530,7 +533,6 @@ TCPIPSocketTran_StartListening(jdwpTransportEnv* env, const char* address,
     if (strcmp(hostName, "0.0.0.0") == 0) {
         gethostname(hostName, sizeof(hostName));
     }
-
     retAddress = (char*)(((internalEnv*)env->functions->reserved1)
         ->alloc)((jint)(strlen(hostName) + strlen(portName) + 2)); 
     if (retAddress == 0) {
@@ -538,6 +540,14 @@ TCPIPSocketTran_StartListening(jdwpTransportEnv* env, const char* address,
         return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
     }
     sprintf(retAddress, "%s:%s", hostName, portName);
+*/
+    retAddress = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(6 + 1); 
+    if (retAddress == 0) {
+        SetLastTranError(env, "out of memory", 0);
+        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
+    }
+    sprintf(retAddress, "%d", ntohs(serverSockAddr.sin_port));
+
     *actualAddress = retAddress;
 
     return JDWPTRANSPORT_ERROR_NONE;

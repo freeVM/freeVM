@@ -100,9 +100,9 @@ namespace jdwp {
          *
          * @param command - a command line to start the debugger
          *
-         * @exception TransportException() - transport error happens.
+         * @exception AgentException() - any error happens.
          */
-        void Launch(const char* command) throw(TransportException);
+        void Launch(const char* command) throw(AgentException);
         
         /**
          * The given function does a blocking read on an open connection.
@@ -153,14 +153,16 @@ namespace jdwp {
         jlong m_connectTimeout;                  // attachTimeout or acceptTimeout timeout
         jlong m_handshakeTimeout;                // handshakeTimeout
         bool m_ConnectionPrepared;               // if true PrepareConnection done
+        bool m_isConnected;                      // true if connection is established
         bool m_isServer;                         // is jdwp agent server or not
+        const char* m_transportName;             // transport name
         char* m_address;                         // transport address
         jdwpTransportEnv* m_env;                 // jdwpTransport environment
         LoadedLibraryHandler m_loadedLib;        // transport library handler
         char* m_lastErrorMessage;                // last error message
 
         void CheckReturnStatus(jdwpTransportError err) throw(TransportException);
-        void StartDebugger(const char* command) throw(AgentException);
+        void StartDebugger(const char* command, int extra_argc, const char* extra_argv[]) throw(AgentException);
         void TracePacket(const char* message, const jdwpPacket* packet);
         LoadedLibraryHandler LoadTransport(const char* dirName, const char* transportName);
 

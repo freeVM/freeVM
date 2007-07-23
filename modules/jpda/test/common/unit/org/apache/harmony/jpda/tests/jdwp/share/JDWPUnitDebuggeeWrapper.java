@@ -28,9 +28,7 @@ package org.apache.harmony.jpda.tests.jdwp.share;
 import java.io.IOException;
 
 import org.apache.harmony.jpda.tests.framework.LogWriter;
-import org.apache.harmony.jpda.tests.framework.StreamRedirector;
 import org.apache.harmony.jpda.tests.framework.TestErrorException;
-import org.apache.harmony.jpda.tests.framework.jdwp.JDWPDebuggeeWrapper;
 import org.apache.harmony.jpda.tests.framework.jdwp.TransportWrapper;
 import org.apache.harmony.jpda.tests.share.JPDATestOptions;
 
@@ -38,23 +36,14 @@ import org.apache.harmony.jpda.tests.share.JPDATestOptions;
  * This class provides DebuggeeWrapper implementation based on JUnit framework.
  * Debuggee is always launched on local machine and attaches to debugger.
  */
-public class JDWPUnitDebuggeeWrapper extends JDWPDebuggeeWrapper {
-
-    /**
-     * Target VM debuggee process.
-     */
-    public Process process;
+public class JDWPUnitDebuggeeWrapper extends JDWPUnitDebuggeeProcessWrapper {
 
     /**
      * Auxiliary options passed to the target VM on its launch.
      */
     public String savedVMOptions = null;
 
-    StreamRedirector errRedir;
-
-    StreamRedirector outRedir;
-
-    TransportWrapper transport;
+    protected TransportWrapper transport;
 
     /**
      * Creates new instance with given data.
@@ -78,6 +67,7 @@ public class JDWPUnitDebuggeeWrapper extends JDWPDebuggeeWrapper {
         String address = settings.getTransportAddress();
 
         if (isListenConnection) {
+            logWriter.println("Start listening on: " + address);
             try {
                 address = transport.startListening(address);
             } catch (IOException e) {
@@ -99,20 +89,10 @@ public class JDWPUnitDebuggeeWrapper extends JDWPDebuggeeWrapper {
         logWriter.println("Launch: " + cmdLine);
 
         try {
-            process = launchProcess(cmdLine);
-            if (process != null) {
-                logWriter.println("Start redirectors");
-                errRedir = new StreamRedirector(process.getErrorStream(),
-                        logWriter, "STDERR");
-                errRedir.start();
-                outRedir = new StreamRedirector(process.getInputStream(),
-                        logWriter, "STDOUT");
-                outRedir.start();
-            }
+            launchProcessAndRedirectors(cmdLine);
+            logWriter.println("Launched debuggee process");
             openConnection();
-
-            logWriter.println("Established connection");
-
+            logWriter.println("Established transport connection");
         } catch (Exception e) {
             throw new TestErrorException(e);
         }
@@ -125,95 +105,16 @@ public class JDWPUnitDebuggeeWrapper extends JDWPDebuggeeWrapper {
     public void stop() {
         disposeConnection();
 
-        if (process != null) {
-            logWriter.println("Waiting for debuggee exit");
-            try {
-                WaitForProcessExit(process);
-            } catch (IOException e) {
-                logWriter.println("IOException in stopping process: " + e);
-            }
-
-            logWriter.println("Waiting for redirectors");
-            if (outRedir != null) {
-                outRedir.exit();
-                try {
-                    outRedir.join(settings.getTimeout());
-                } catch (InterruptedException e) {
-                    logWriter
-                            .println("InterruptedException in stopping outRedirector: "
-                                    + e);
-                }
-            }
-            if (errRedir != null) {
-                errRedir.exit();
-                try {
-                    errRedir.join(settings.getTimeout());
-                } catch (InterruptedException e) {
-                    logWriter
-                            .println("InterruptedException in stopping errRedirector: "
-                                    + e);
-                }
-            }
-        }
+        finishProcessAndRedirectors();
 
         closeConnection();
         if (settings.isListenConnectorKind()) {
             try {
                 transport.stopListening();
             } catch (IOException e) {
-                logWriter
-                        .println("IOException in stopping transport listening: "
-                                + e);
+                logWriter.println("IOException in stopping transport listening: " + e);
             }
         }
-    }
-
-    /**
-     * Launches process with given command line.
-     * 
-     * @param cmdLine
-     *            command line
-     * @return associated Process object or null if not available
-     * @throws IOException
-     *             if error occurred in launching process
-     */
-    protected Process launchProcess(String cmdLine) throws IOException {
-        process = Runtime.getRuntime().exec(cmdLine);
-        return process;
-    }
-
-    /**
-     * Waits for launched process to exit.
-     * 
-     * @param process
-     *            associated Process object or null if not available
-     * @throws IOException
-     *             if any exception occurs in waiting
-     */
-    protected void WaitForProcessExit(Process process) throws IOException {
-        ProcessWaiter thrd = new ProcessWaiter();
-        thrd.start();
-        try {
-            thrd.join(settings.getTimeout());
-        } catch (InterruptedException e) {
-            throw new TestErrorException(e);
-        }
-
-        if (thrd.isAlive()) {
-            thrd.interrupt();
-        }
-
-        try {
-            int exitCode = process.exitValue();
-            logWriter.println("Finished debuggee with exit code: " + exitCode);
-        } catch (IllegalThreadStateException e) {
-            logWriter.printError("Enforced debuggee termination");
-            process.destroy();
-            throw new TestErrorException("Debuggee process did not finish during timeout", e);
-        }
-
-        // dispose any resources of the process
-        process.destroy();
     }
 
     /**
@@ -227,8 +128,7 @@ public class JDWPUnitDebuggeeWrapper extends JDWPDebuggeeWrapper {
             } else {
                 String address = settings.getTransportAddress();
                 logWriter.println("Attaching for JDWP connection");
-                transport.attach(address, settings.getTimeout(), settings
-                        .getTimeout());
+                transport.attach(address, settings.getTimeout(), settings.getTimeout());
             }
             setConnection(transport);
         } catch (IOException e) {
@@ -245,9 +145,7 @@ public class JDWPUnitDebuggeeWrapper extends JDWPDebuggeeWrapper {
             try {
                 vmMirror.dispose();
             } catch (Exception e) {
-                logWriter
-                        .println("Ignoring exception in disposing debuggee VM: "
-                                + e);
+                logWriter.println("Ignoring exception in disposing debuggee VM: " + e);
             }
         }
     }
@@ -260,23 +158,7 @@ public class JDWPUnitDebuggeeWrapper extends JDWPDebuggeeWrapper {
             try {
                 vmMirror.closeConnection();
             } catch (IOException e) {
-                logWriter.println("Ignoring exception in closing connection: "
-                        + e);
-            }
-        }
-    }
-
-    /**
-     * Separate thread for waiting for process exit for specified timeout.
-     */
-    class ProcessWaiter extends Thread {
-        public void run() {
-            try {
-                process.waitFor();
-            } catch (InterruptedException e) {
-                logWriter
-                        .println("Ignoring exception in ProcessWaiter thread interrupted: "
-                                + e);
+                logWriter.println("Ignoring exception in closing connection: " + e);
             }
         }
     }

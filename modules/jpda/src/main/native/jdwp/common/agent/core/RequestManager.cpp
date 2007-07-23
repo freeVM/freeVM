@@ -28,6 +28,7 @@
 #include "ClassManager.h"
 #include "OptionParser.h"
 #include "Log.h"
+#include "AgentManager.h"
 
 using namespace jdwp;
 
@@ -925,13 +926,84 @@ void JNICALL RequestManager::HandleException(jvmtiEnv* jvmti, JNIEnv* jni,
         << ',' << method << ',' << location
         << ',' << exception << ',' << catch_method << ',' << catch_location << ')');
 
-    // must be non-agent thread
-    if (GetThreadManager().IsAgentThread(jni, thread)) {
-        return;
-    }
-
     try {
         jvmtiError err;
+        jclass exceptionClass = 0;
+        AgentEventRequest* exceptionRequest = 0;
+
+        // if agent was not initialized and this exception is expected, initialize agent
+        if (!GetAgentManager().IsStarted()) {
+            JDWP_TRACE_PROG("HandleException: initial exception cought");
+
+            // if invocation option onuncaught=y is set, check that exception is uncaught, otherwise return
+            if (GetOptionParser().GetOnuncaught() != 0) {
+                if (catch_location != 0) {
+                    JDWP_TRACE_PROG("HandleException: ignore cougth exception");
+                    return;
+                }
+            }
+
+            // if invocation option onthrow=y is set, check that exception class is expected, otherwise return
+            if (GetOptionParser().GetOnthrow() != 0) {
+
+                char* expectedExceptionName = const_cast<char*>(GetOptionParser().GetOnthrow());
+                if (expectedExceptionName != 0) {
+
+                    char* exceptionSignature = 0;
+                    exceptionClass = jni->GetObjectClass(exception);
+
+                    JVMTI_TRACE(err, jvmti->GetClassSignature(exceptionClass, &exceptionSignature, 0)); 
+                    if (err != JVMTI_ERROR_NONE) {
+                        throw AgentException(err);
+                    }
+                    JvmtiAutoFree jafSignature(exceptionSignature);
+
+                    char* exceptionName = GetClassManager().GetClassName(exceptionSignature);
+                    JvmtiAutoFree jafName(exceptionName);
+
+                    JDWP_TRACE_PROG("HandleException: exception: class=" << exceptionName 
+                         << ", signature=" << exceptionSignature);
+
+                    // compare exception class taking into account similar '/' and '.' delimiters
+                    int i;
+                    for (i = 0; ; i++) {
+                        if (expectedExceptionName[i] != exceptionName[i]) {
+                            if ((expectedExceptionName[i] == '.' && exceptionName[i] == '/')
+                                    || (expectedExceptionName[i] == '/' && exceptionName[i] == '.')) {
+                                 continue;
+                            }
+                            // ignore not matched exception
+                            return;
+                        }
+                        if (expectedExceptionName[i] == '\0') {
+                            // matched exception found
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // disable catching initial exception and start agent
+            JDWP_TRACE_PROG("HandleException: start agent");
+            GetAgentManager().DisableInitialExceptionCatch(jvmti, jni);
+            GetAgentManager().Start(jvmti, jni);
+
+            // check if VM should be suspended on initial EXCEPTION event
+            bool needSuspend = GetOptionParser().GetSuspend();
+            if (needSuspend) {
+                // add internal EXCEPTION request
+                exceptionRequest = new AgentEventRequest(JDWP_EVENT_EXCEPTION, JDWP_SUSPEND_ALL);
+                GetRequestManager().AddInternalRequest(jni, exceptionRequest);
+            } else {
+                return;
+            }
+        }
+
+        // must be non-agent thread
+        if (GetThreadManager().IsAgentThread(jni, thread)) {
+            return;
+        }
+
         EventInfo eInfo;
         memset(&eInfo, 0, sizeof(eInfo));
         eInfo.kind = JDWP_EVENT_EXCEPTION;
@@ -952,7 +1024,11 @@ void JNICALL RequestManager::HandleException(jvmtiEnv* jvmti, JNIEnv* jni,
             throw AgentException(err);
         }
 
-        eInfo.auxClass = jni->GetObjectClass(exception);
+        if (exceptionClass != 0) {
+            eInfo.auxClass = exceptionClass;
+        } else {
+            eInfo.auxClass = jni->GetObjectClass(exception);
+        }
         JDWP_ASSERT(eInfo.auxClass != 0);
 
         if (catch_method != 0) {
@@ -1011,6 +1087,12 @@ void JNICALL RequestManager::HandleException(jvmtiEnv* jvmti, JNIEnv* jni,
             JDWP_TRACE_EVENT("Exception: post set of " << eventCount << " events");
             GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_EXCEPTION);
         }
+        // delete internal EXCEPTION request
+        if (exceptionRequest != 0) {
+            GetRequestManager().DeleteRequest(jni, exceptionRequest);
+        }
+      /*  JVMTI_TRACE(err, jvmti->SetEventNotificationMode(
+             JVMTI_ENABLE , JVMTI_EVENT_BREAKPOINT, thread));*/
     } catch (AgentException& e) {
         JDWP_INFO("JDWP error in EXCEPTION: " << e.what() << " [" << e.ErrCode() << "]");
     }

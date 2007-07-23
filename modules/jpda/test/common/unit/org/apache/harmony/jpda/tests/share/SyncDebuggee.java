@@ -41,8 +41,15 @@ public abstract class SyncDebuggee extends Debuggee {
      */
     public void onStart() {
         super.onStart();
-        synchronizer = new JPDADebuggeeSynchronizer(logWriter, settings);
+        synchronizer = createSynchronizer();
         synchronizer.startClient();
+    }
+
+    /**
+     * Creates wrapper for synchronization channel.
+     */
+    protected JPDADebuggeeSynchronizer createSynchronizer() {
+        return new JPDADebuggeeSynchronizer(logWriter, settings);
     }
 
     /**

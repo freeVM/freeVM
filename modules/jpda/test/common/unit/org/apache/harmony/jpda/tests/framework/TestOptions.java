@@ -25,7 +25,6 @@
  */
 package org.apache.harmony.jpda.tests.framework;
 
-import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -52,6 +51,8 @@ import java.util.HashMap;
  *   - full name of class to run debuggee with
  * <li><code>jpda.settings.debuggeeVMExtraOptions</code>
  *   - extra options to run debuggee with
+ * <li><code>jpda.settings.debuggeeSuspend</code>
+ *   - debuggee suspend mode ("y"|"n")
  * <li><code>jpda.settings.transportWrapperClass</code>
  *   - class name of TransportWrapper implementation
  * <li><code>jpda.settings.transportAddress</code>
@@ -81,6 +82,9 @@ public class TestOptions {
     
     /** Default static address for transport connection. */
     public static final String DEFAULT_ATTACHING_ADDRESS = "127.0.0.1:9898";
+
+    /** Default port number for sync connection. */
+    public static final String DEFAULT_STATIC_SYNC_PORT = "9797";
 
     /** Default port number for sync connection. */
     public static final int DEFAULT_SYNC_PORT = 0;
@@ -211,7 +215,7 @@ public class TestOptions {
 
         return getProperty("jpda.settings.debuggeeAgentOptions",
                 "transport=dt_socket,address=" + address + ",server=" + serv
-                        + agentExtraOptions);
+                + ",suspend=" + getDebuggeeSuspend() + agentExtraOptions);
     }
 
     /**
@@ -269,6 +273,34 @@ public class TestOptions {
         String extOpts = getProperty("jpda.settings.debuggeeVMExtraOptions", "");
         extOpts = extOpts + " -Djpda.settings.verbose=" + isVerbose();
         return extOpts;
+    }
+
+    /**
+     * Returns debuggee suspend mode ("y"|"n").
+     * 
+     * @return option "jpda.settings.debuggeeSuspend" or "y" by default
+     */
+    public String getDebuggeeSuspend() {
+        return getProperty("jpda.settings.debuggeeSuspend", "y");
+    }
+
+    /**
+     * Returns debuggee suspend mode ("y"|"n").
+     * 
+     * @param mode
+     *            suspend mode
+     */
+    public void setDebuggeeSuspend(String mode) {
+        setProperty("jpda.settings.debuggeeSuspend", mode);
+    }
+
+    /**
+     * Checks if debuggee is launched in suspend mode.
+     * 
+     * @return true if debuggee is launched in suspend mode
+     */
+    public boolean isDebuggeeSuspend() {
+        return getDebuggeeSuspend().equals("y");
     }
 
     /**

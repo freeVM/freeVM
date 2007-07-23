@@ -41,10 +41,17 @@ public abstract class JDWPSyncTestCase extends JDWPTestCase {
      * This method is invoked right before starting debuggee VM.
      */
     protected void beforeDebuggeeStart(JDWPUnitDebuggeeWrapper debuggeeWrapper) {
-        synchronizer = new JPDADebuggeeSynchronizer(logWriter, settings);
+        synchronizer = createSynchronizer();
         int port = synchronizer.bindServer();
         debuggeeWrapper.savedVMOptions = "-Djpda.settings.syncPort=" + port;
         super.beforeDebuggeeStart(debuggeeWrapper);
+    }
+
+    /**
+     * Creates wrapper for synchronization channel.
+     */
+    protected JPDADebuggeeSynchronizer createSynchronizer() {
+        return new JPDADebuggeeSynchronizer(logWriter, settings);
     }
 
     /**
