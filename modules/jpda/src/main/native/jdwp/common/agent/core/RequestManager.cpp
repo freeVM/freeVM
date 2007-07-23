@@ -205,6 +205,7 @@ void RequestManager::ControlEvent(JNIEnv* jni,
     JDWP_TRACE_ENTRY("ControlEvent(" << jni << ',' << request << ',' << enable << ")");
 
     jvmtiEvent eventType;
+    bool nullThreadForSetEventNotificationMode = false;
     switch (request->GetEventKind()) {
     case JDWP_EVENT_SINGLE_STEP:
         // manually controlled inside StepRequest
@@ -246,9 +247,11 @@ void RequestManager::ControlEvent(JNIEnv* jni,
         break;
     case JDWP_EVENT_THREAD_START:
         eventType = JVMTI_EVENT_THREAD_START;
+        nullThreadForSetEventNotificationMode = true;
         break;
     case JDWP_EVENT_THREAD_END:
         eventType = JVMTI_EVENT_THREAD_END;
+        nullThreadForSetEventNotificationMode = true;
         break;
     default:
         return;
@@ -257,6 +260,16 @@ void RequestManager::ControlEvent(JNIEnv* jni,
     jthread thread = request->GetThread();
     RequestList& rl = GetRequestList(request->GetEventKind());
     for (RequestListIterator i = rl.begin(); i != rl.end(); i++) {
+        if (nullThreadForSetEventNotificationMode) {
+            //
+            // SetEventNotificationMode() for some events must be called with
+            // jthread = 0, even if we need request only for specified thread.
+            // Thus, if there is already any request for such events 
+            // it is for all threads and SetEventNotificationMode() should not 
+            // be called. 
+            //
+            return;
+        }
         AgentEventRequest* req = *i;
         if (JNI_TRUE == jni->IsSameObject(thread, req->GetThread())) {
             // there is similar request, so do nothing
@@ -268,6 +281,16 @@ void RequestManager::ControlEvent(JNIEnv* jni,
         << "[" << request->GetEventKind() << "] "
         << (enable ? "on" : "off") << ", thread=" << thread);
     jvmtiError err;
+    if (nullThreadForSetEventNotificationMode) {
+        //
+        // SetEventNotificationMode() for some events must be called with
+        // jthread = 0, even if we need request only for specified thread.
+        // Thus, if request is for such event, SetEventNotificationMode() 
+        // should be called with jthread = 0 and generated events will be
+        // filtered later 
+        //
+        thread = 0;
+    }
     JVMTI_TRACE(err, GetJvmtiEnv()->SetEventNotificationMode(
         (enable) ? JVMTI_ENABLE : JVMTI_DISABLE, eventType, thread));
     if (err != JVMTI_ERROR_NONE &&
@@ -664,7 +687,16 @@ void JNICALL RequestManager::HandleClassPrepare(jvmtiEnv* jvmti, JNIEnv* jni,
             throw AgentException(err);
         }
 
-        JDWP_TRACE_EVENT("CLASS_PREPARE event: class=" << JDWP_CHECK_NULL(eInfo.signature));
+#ifndef NDEBUG
+        if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("CLASS_PREPARE event:"
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature)
+                << " thread=" << JDWP_CHECK_NULL(info.name));
+        }
+#endif // NDEBUG
 
         jint eventCount = 0;
         RequestID *eventList = 0;
@@ -845,8 +877,15 @@ void JNICALL RequestManager::HandleBreakpoint(jvmtiEnv* jvmti, JNIEnv* jni,
         if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
             char* name = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
-            JDWP_TRACE_EVENT("BREAKPOINT event: class=" << JDWP_CHECK_NULL(eInfo.signature) 
-                << " method=" << JDWP_CHECK_NULL(name) << " location=" << eInfo.location);
+
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("BREAKPOINT event:"
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
+                << " method=" << JDWP_CHECK_NULL(name) 
+                << " location=" << eInfo.location
+                << " thread=" << JDWP_CHECK_NULL(info.name));
         }
 #endif // NDEBUG
 
@@ -924,9 +963,16 @@ void JNICALL RequestManager::HandleException(jvmtiEnv* jvmti, JNIEnv* jni,
         if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
             char* name = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
-            JDWP_TRACE_EVENT("EXCEPTION event: class=" << JDWP_CHECK_NULL(eInfo.signature) 
-                << " method=" << JDWP_CHECK_NULL(name) << " location=" << eInfo.location
-                << " caught=" << (int)eInfo.caught);
+
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("EXCEPTION event:"
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
+                << " method=" << JDWP_CHECK_NULL(name) 
+                << " location=" << eInfo.location
+                << " caught=" << (int)eInfo.caught
+                << " thread=" << JDWP_CHECK_NULL(info.name));
         }
 #endif // NDEBUG
 
@@ -1017,7 +1063,10 @@ void JNICALL RequestManager::HandleMethodEntry(jvmtiEnv* jvmti, JNIEnv* jni,
         if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
             char* name = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
-            JDWP_TRACE_EVENT("METHOD_ENTRY event: class=" << JDWP_CHECK_NULL(eInfo.signature) 
+
+            // don't invoke GetThreadInfo(), it may issue another METHOD_ENTRY event
+            JDWP_TRACE_EVENT("METHOD_ENTRY event:"
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
                 << " method=" << JDWP_CHECK_NULL(name));
         }
 #endif // NDEBUG
@@ -1092,7 +1141,10 @@ void JNICALL RequestManager::HandleMethodExit(jvmtiEnv* jvmti, JNIEnv* jni,
         if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
             char* name = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
-            JDWP_TRACE_EVENT("METHOD_EXIT event: class=" << JDWP_CHECK_NULL(eInfo.signature) 
+
+            // don't invoke GetThreadInfo(), it may issue another METHOD_EXIT event
+            JDWP_TRACE_EVENT("METHOD_EXIT event:"
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
                 << " method=" << JDWP_CHECK_NULL(name));
         }
 #endif // NDEBUG
@@ -1164,13 +1216,20 @@ void JNICALL RequestManager::HandleFieldAccess(jvmtiEnv* jvmti, JNIEnv* jni,
 
 #ifndef NDEBUG
         if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
-            char* methodName = 0;
             char* fieldName = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &fieldName, 0, 0));
+
+            char* methodName = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetFieldName(field_class, field, &fieldName, 0, 0));
-            JDWP_TRACE_EVENT("FIELD_ACCESS event: class=" << JDWP_CHECK_NULL(eInfo.signature) 
+
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("FIELD_ACCESS event:"
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
                 << " method=" << JDWP_CHECK_NULL(methodName) 
-                << " field=" << JDWP_CHECK_NULL(fieldName));
+                << " field=" << JDWP_CHECK_NULL(fieldName)
+                << " thread=" << JDWP_CHECK_NULL(info.name));
         }
 #endif // NDEBUG
 
@@ -1248,13 +1307,20 @@ void JNICALL RequestManager::HandleFieldModification(jvmtiEnv* jvmti,
 
 #ifndef NDEBUG
         if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
-            char* methodName = 0;
             char* fieldName = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &fieldName, 0, 0));
+
+            char* methodName = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetFieldName(field_class, field, &fieldName, 0, 0));
-            JDWP_TRACE_EVENT("FIELD_MODIFICATION event: class=" << JDWP_CHECK_NULL(eInfo.signature) 
+
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("FIELD_MODIFICATION event:"
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
                 << " method=" << JDWP_CHECK_NULL(methodName) 
-                << " field=" << JDWP_CHECK_NULL(fieldName));
+                << " field=" << JDWP_CHECK_NULL(fieldName)
+                << " thread=" << JDWP_CHECK_NULL(info.name));
         }
 #endif // NDEBUG
 
@@ -1340,8 +1406,12 @@ void JNICALL RequestManager::HandleSingleStep(jvmtiEnv* jvmti, JNIEnv* jni,
         if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
             char* name = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
-            JDWP_TRACE_EVENT("STEP event: class=" << JDWP_CHECK_NULL(eInfo.signature) 
-                << " method=" << JDWP_CHECK_NULL(name) << " location=" << eInfo.location);
+
+            // don't invoke GetThreadInfo(), it may issue another SINGLE_STEP event
+            JDWP_TRACE_EVENT("SINGLE_STEP event:" 
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
+                << " method=" << JDWP_CHECK_NULL(name) 
+                << " location=" << eInfo.location);
         }
 #endif // NDEBUG
 

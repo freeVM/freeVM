@@ -833,9 +833,10 @@ void ThreadManager::HandleInternalSingleStep(JNIEnv* jni, jthread thread,
         jvmtiError err;
         JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(method, &methodName, 0, 0));
         
-        jvmtiThreadInfo threadInfo;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
-        threadName = threadInfo.name;
+        // don't invoke GetThreadInfo() because it may issue extra STEP events
+        // jvmtiThreadInfo threadInfo;
+        // JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
+        // threadName = threadInfo.name;
     }
 #endif // NDEBUG
     JvmtiAutoFree threadNameAutoFree(threadName);
@@ -849,8 +850,9 @@ void ThreadManager::HandleInternalSingleStep(JNIEnv* jni, jthread thread,
             m_popFramesMonitorReleased = true;
             m_popFramesMonitor->NotifyAll();
 
-            JDWP_TRACE_THREAD("HandleInternalSingleStep: thread on suspention point: thread=" 
-                << JDWP_CHECK_NULL(threadName) 
+            JDWP_TRACE_THREAD("HandleInternalSingleStep: thread on suspention point:"
+                // << " thread=" << JDWP_CHECK_NULL(threadName) 
+                << " thread=" << thread 
                 << ",method=" << JDWP_CHECK_NULL(methodName) 
                 << ",location=" << location);    
         }
@@ -859,8 +861,9 @@ void ThreadManager::HandleInternalSingleStep(JNIEnv* jni, jthread thread,
         while (!m_stepMonitorReleased) {
             m_stepMonitor->Wait();
         }
-        JDWP_TRACE_THREAD("HandleInternalSingleStep: thread resumed: thread=" 
-            << JDWP_CHECK_NULL(threadName) 
+        JDWP_TRACE_THREAD("HandleInternalSingleStep: thread resumed:"
+            // << " thread=" << JDWP_CHECK_NULL(threadName) 
+            << " thread=" << thread 
             << ",method=" << JDWP_CHECK_NULL(methodName) 
             << ",location=" << location);    
     }
