@@ -95,14 +95,21 @@ namespace jdwp {
             virtual void Execute(JNIEnv *jni) throw(AgentException);
 
             /**
-             * Writes class-type tag, reference ID, signature and status
-             * to the reply packet.
+             * If the passed class (klass parameter) has status
+             * JVMTI_CLASS_STATUS_PREPARED then writes class type tag,
+             * reference id, signature and status
+             * to the reply packet and reutrn 0 - success sign.
+             * Otherwise (class not prepared) doesn't write class info
+             * to the reply packet and reutrn 1 - unsuccess sign.
              *
              * @param jni   - the JNI interface pointer
              * @param jvmti - the JVMTI interface pointer
              * @param klass - the Java class
+             *
+             * @return 0 on success,
+             *         1 otherwise.
              */
-            virtual void Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti, jclass klass)
+            virtual int Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti, jclass klass)
                                             throw (AgentException);
 
         };//AllClassesHandler
@@ -391,14 +398,21 @@ namespace jdwp {
         protected:
 
             /**
-             * Writes a class-type tag, reference ID, signature, generic signature and status
-             * to the reply packet.
+             * If the passed class (klass parameter) has status
+             * JVMTI_CLASS_STATUS_PREPARED then writes class type tag,
+             * reference id, signature, generic signature and status
+             * to the reply packet and reutrn 0 - success sign.
+             * Otherwise (class not prepared) doesn't write class info
+             * to the reply packet and reutrn 1 - unsuccess sign.
              *
              * @param jni   - the JNI interface pointer
              * @param jvmti - the JVMTI interface pointer
              * @param klass - Java class
+             *
+             * @return 0 on success,
+             *         1 otherwise.
              */
-            virtual void Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti, jclass klass)
+            virtual int Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti, jclass klass)
                                             throw (AgentException);
 
         };//AllClassesWithGenericHandler

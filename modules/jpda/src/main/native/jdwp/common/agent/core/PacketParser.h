@@ -642,6 +642,52 @@ namespace jdwp {
 
     public:
 
+        /** 
+         * Gets current position in reply packet,
+         * to which next data will be written.
+         * 
+         * @return the current position in reply packet.
+         */
+        size_t GetPosition();
+
+        /** 
+         * Sets current position in reply packet
+         * to the newPosition, passed as parameter.
+         * Next data will be written in reply packet
+         * starting with the newPosition.
+         * This function is intended to rewrite some written
+         * data with new value and should be used carefully.
+         * Exemplary scenario is the following:
+         * - currentPosition = GetPosition();
+         * - currentLength = GetLength();
+         * - SetPosition(newPosition);
+         * - Rewriting data to the newPosition;
+         * - SetPosition(currentPosition);
+         * - SetLength(currentLength);
+         * 
+         * @param newPosition - new position in reply packet.
+         */
+        void SetPosition(size_t newPosition);
+
+        /** 
+         * Sets current length of jdwp packet
+         * to the new value, passed as parameter.
+         * This function can be used to restore length 
+         * of reply packet to the right value after
+         * rewriting some data in packet and,
+         * in this case, it should be used carefully.
+         * Exemplary scenario is the following:
+         * - currentPosition = GetPosition();
+         * - currentLength = GetLength();
+         * - SetPosition(newPosition);
+         * - Rewriting data to the newPosition;
+         * - SetPosition(currentPosition);
+         * - SetLength(currentLength);
+         * 
+         * @param newLength - new length of reply packet.
+         */
+        void SetLength(jint newLength) { m_packet.type.cmd.len = newLength; }
+
         /**
          * Creates an empty instance of OutputPacketComposer .
          */
@@ -938,7 +984,6 @@ namespace jdwp {
         void MoveData(JNIEnv *jni, OutputPacketComposer* to);
 
     protected:
-        void SetLength(jint length) { m_packet.type.cmd.len = length; }
         void SetId(jint id) { m_packet.type.cmd.id = id; }
         void SetFlags(jbyte flags) { m_packet.type.cmd.flags = flags; }
         void SetCommandSet(jdwpCommandSet cmdSet) { m_packet.type.cmd.cmdSet = cmdSet; }

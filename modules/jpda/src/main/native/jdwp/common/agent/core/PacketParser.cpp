@@ -500,6 +500,13 @@ void OutputPacketComposer::AllocateMemoryForData(int length) throw (OutOfMemoryE
     }
 }
 
+size_t OutputPacketComposer::GetPosition() {
+    return m_position;
+}
+
+void OutputPacketComposer::SetPosition(size_t newPosition) {
+    m_position = newPosition;
+}
 
 void OutputPacketComposer::WriteRawData(const void* data, int length) throw (OutOfMemoryException) {
     AllocateMemoryForData(length);

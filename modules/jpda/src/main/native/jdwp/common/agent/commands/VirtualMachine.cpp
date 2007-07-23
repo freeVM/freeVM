@@ -117,15 +117,14 @@ VirtualMachine::ClassesBySignatureHandler::Execute(JNIEnv *jni) throw(AgentExcep
             count++;
         }
     }
+    size_t classCountPos = m_cmdParser->reply.GetPosition();
     m_cmdParser->reply.WriteInt(count);
     JDWP_TRACE_DATA("ClassesBySignature: classes=" << count);
     
+    int notIncludedClasses = 0;
     for (i = 0; i < count; i++)
     {
         jdwpTypeTag refTypeTag = GetClassManager().GetJdwpTypeTag(classes[i]);
-        m_cmdParser->reply.WriteByte(refTypeTag);
-
-        m_cmdParser->reply.WriteReferenceTypeID(jni, classes[i]);
 
         jint status;
         JVMTI_TRACE(err, jvmti->GetClassStatus(classes[i], &status));
@@ -137,8 +136,16 @@ VirtualMachine::ClassesBySignatureHandler::Execute(JNIEnv *jni) throw(AgentExcep
         } else {
             if ( status == JVMTI_CLASS_STATUS_PRIMITIVE ) {
                 status = 0;
+            } else {
+                if ( (status & JVMTI_CLASS_STATUS_PREPARED) == 0 ) {
+                    // Given class is not prepared - don't return such class
+                    notIncludedClasses++;
+                    continue;
+                }
             }
         }
+        m_cmdParser->reply.WriteByte(refTypeTag);
+        m_cmdParser->reply.WriteReferenceTypeID(jni, classes[i]);
         m_cmdParser->reply.WriteInt(status);
 #ifndef NDEBUG
         if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {    
@@ -152,6 +159,15 @@ VirtualMachine::ClassesBySignatureHandler::Execute(JNIEnv *jni) throw(AgentExcep
                 << ", signature=" << JDWP_CHECK_NULL(signature));
         }
 #endif
+    }
+
+    if ( notIncludedClasses != 0 ) {
+        size_t currentPos = m_cmdParser->reply.GetPosition();
+        jint currentLength = m_cmdParser->reply.GetLength();
+        m_cmdParser->reply.SetPosition(classCountPos);
+        m_cmdParser->reply.WriteInt(count - notIncludedClasses);
+        m_cmdParser->reply.SetPosition(currentPos);
+        m_cmdParser->reply.SetLength(currentLength);
     }
 }
 
@@ -191,24 +207,32 @@ VirtualMachine::AllClassesHandler::Execute(JNIEnv *jni) throw(AgentException)
         throw AgentException(err);
 
     JDWP_TRACE_DATA("AllClasses: classes=" << classCount);
+    size_t classCountPos = m_cmdParser->reply.GetPosition();
     m_cmdParser->reply.WriteInt(classCount);
 
     // don't trace signatures of all classes
+    int notIncludedClasses = 0;
     for (int i = 0; i < classCount; i++) {
-        Compose41Class(jni, jvmti, classes[i]);
+        notIncludedClasses += Compose41Class(jni, jvmti, classes[i]);
+    }
+
+    if (notIncludedClasses > 0) {
+        size_t currentPos = m_cmdParser->reply.GetPosition();
+        jint currentLength = m_cmdParser->reply.GetLength();
+        m_cmdParser->reply.SetPosition(classCountPos);
+        m_cmdParser->reply.WriteInt(classCount - notIncludedClasses);
+        m_cmdParser->reply.SetPosition(currentPos);
+        m_cmdParser->reply.SetLength(currentLength);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void
+int
 VirtualMachine::AllClassesHandler::Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti,
         jclass klass) throw (AgentException)
 {
     jdwpTypeTag refTypeTag = GetClassManager().GetJdwpTypeTag(klass);
-
-    m_cmdParser->reply.WriteByte(refTypeTag);
-    m_cmdParser->reply.WriteReferenceTypeID(jni, klass);
 
     char* signature = 0;
 
@@ -220,25 +244,25 @@ VirtualMachine::AllClassesHandler::Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti,
     if (err != JVMTI_ERROR_NONE)
         throw AgentException(err);
 
-    m_cmdParser->reply.WriteString(signature);
-
     jint status;
     JVMTI_TRACE(err, jvmti->GetClassStatus(klass, &status));
     if (err != JVMTI_ERROR_NONE)
         throw AgentException(err);
 
     // According to JVMTI spec ClassStatus flag for arrays and primitive classes must be zero
-    if (status == JVMTI_CLASS_STATUS_ARRAY) {
+    if (status == JVMTI_CLASS_STATUS_ARRAY || status == JVMTI_CLASS_STATUS_PRIMITIVE) {
         status = 0;
-    } else {
-        if (status == JVMTI_CLASS_STATUS_PRIMITIVE) {
-            JDWP_INFO("WARNING: GetLoadedClasses() returned primitive type with signature: " 
-                << JDWP_CHECK_NULL(signature));
-            status = 0;
-        }
+    } else if ( (status & JVMTI_CLASS_STATUS_PREPARED) == 0 ) {
+        // Given class is not prepared - don't return such class
+        return 1;
     }
 
+    m_cmdParser->reply.WriteByte(refTypeTag);
+    m_cmdParser->reply.WriteReferenceTypeID(jni, klass);
+    m_cmdParser->reply.WriteString(signature);
     m_cmdParser->reply.WriteInt(status);
+
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -687,14 +711,11 @@ VirtualMachine::SetDefaultStratumHandler::Execute(JNIEnv *jni) throw(AgentExcept
 //-----------------------------------------------------------------------------
 //AllClassesWithGenericHandler-------------------------------------------------
 
-void
+int
 VirtualMachine::AllClassesWithGenericHandler::Compose41Class(JNIEnv *jni_env,
             jvmtiEnv* jvmti, jclass klass) throw (AgentException)
 {
     jdwpTypeTag refTypeTag = GetClassManager().GetJdwpTypeTag(klass);
-
-    m_cmdParser->reply.WriteByte(refTypeTag);
-    m_cmdParser->reply.WriteReferenceTypeID(jni_env, klass);
 
     char* signature = 0;
     char* generic = 0;
@@ -708,6 +729,21 @@ VirtualMachine::AllClassesWithGenericHandler::Compose41Class(JNIEnv *jni_env,
     if (err != JVMTI_ERROR_NONE)
         throw AgentException(err);
 
+    jint status;
+    JVMTI_TRACE(err, jvmti->GetClassStatus(klass, &status));
+    if (err != JVMTI_ERROR_NONE)
+        throw AgentException(err);
+
+    // According to JVMTI spec ClassStatus flag for arrays and primitive classes must be zero
+    if (status == JVMTI_CLASS_STATUS_ARRAY || status == JVMTI_CLASS_STATUS_PRIMITIVE) {
+        status = 0;
+    } else if ( (status & JVMTI_CLASS_STATUS_PREPARED) == 0 ) {
+        // Given class is not prepared - don't return such class
+        return 1;
+    }
+
+    m_cmdParser->reply.WriteByte(refTypeTag);
+    m_cmdParser->reply.WriteReferenceTypeID(jni_env, klass);
     m_cmdParser->reply.WriteString(signature);
 
     if (generic != 0)
@@ -715,24 +751,12 @@ VirtualMachine::AllClassesWithGenericHandler::Compose41Class(JNIEnv *jni_env,
     else
         m_cmdParser->reply.WriteString("");
 
-    jint status;
-    JVMTI_TRACE(err, jvmti->GetClassStatus(klass, &status));
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
-
-    // According to JVMTI spec ClassStatus flag for arrays and primitive classes must be zero
-    if (status == JVMTI_CLASS_STATUS_ARRAY) {
-        status = 0;
-    } else {
-        if ( status == JVMTI_CLASS_STATUS_PRIMITIVE ) {
-            status = 0;
-        }
-    }
-
     m_cmdParser->reply.WriteInt(status);
     JDWP_TRACE_DATA("AllClassesWithGeneric: typeTag=" << refTypeTag << ", refTypeID="
          << klass << ", signature=" << JDWP_CHECK_NULL(signature) << ", generic=" 
          << JDWP_CHECK_NULL(generic) << ", status=" << status);
+
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
