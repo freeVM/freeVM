@@ -14,18 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package java.beans;
 
-import java.awt.ScrollPane;
 
-class AwtScrollPanePersistenceDelegate extends
-		DefaultPersistenceDelegate {
-	@Override
-    @SuppressWarnings("boxing")
-    protected Expression instantiate(Object oldInstance, Encoder enc) {
-		return new Expression(oldInstance, oldInstance.getClass(),
-				Statement.CONSTRUCTOR_NAME,
-				new Object[] { ((ScrollPane) oldInstance)
-						.getScrollbarDisplayPolicy() });
-	}
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+/**
+ * Test suite that includes all tests for the java.beans package
+ */
+public class AllTests {
+
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Tests for org.apache.harmony.beans");
+        // $JUnit-BEGIN$
+        suite.addTestSuite(ArrayPersistenceDelegateTest.class);
+        suite.addTestSuite(ClassPersistenceDelegateTest.class);
+        suite.addTestSuite(StringPersistenceDelegateTest.class);
+        // $JUnit-END$
+        return suite;
+    }
 }

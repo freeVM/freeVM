@@ -15,20 +15,11 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.beans;
+package java.beans;
 
-import java.beans.Encoder;
-import java.beans.Expression;
-import java.beans.PersistenceDelegate;
+public class ParameterDescriptor extends FeatureDescriptor {
 
-public class java_lang_DoublePersistenceDelegate extends PersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder out) {
-        Double value = (Double) oldInstance;
-        return new Expression(oldInstance, Double.class, "new", new Object[] { value.toString() }); //$NON-NLS-1$
-    }
-
-    @Override
-    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+    public ParameterDescriptor() {
+        // do nothing
     }
 }
