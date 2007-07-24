@@ -926,20 +926,24 @@ public class VmMirror {
     }
 
     /**
-     * Sets ClassUnload event request for given class signature.
+     * Sets ClassUnload event request for given class name pattern.
      * 
      * @param classSignature
      *            class signature
      * @return ReplyPacket for setting request
      */
-    public ReplyPacket setClassUnload(String classSignature) {
-        long typeID;
+    public ReplyPacket setClassUnload(String classRegexp) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.CLASS_UNLOAD;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        // EventMod[] mods = new EventMod[1];
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].classPattern = classRegexp;
+        mods[0].modKind = EventMod.ModKind.ClassMatch;
+        Event event = new Event(eventKind, suspendPolicy, mods);
 
-        // Request referenceTypeID for class
-        typeID = getClassID(classSignature);
-
-        // Set corresponding event
-        return setClassUnload(typeID);
+        // Set event
+        return setEvent(event);
     }
 
     /**

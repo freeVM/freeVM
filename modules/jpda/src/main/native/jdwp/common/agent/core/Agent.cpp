@@ -50,6 +50,14 @@ AgentEnv *AgentBase::m_agentEnv = 0;
 static const char* const AGENT_OPTIONS_ENVNAME = "JDWP_AGENT_OPTIONS";
 static const char* const AGENT_OPTIONS_PROPERTY = "jdwp.agent.options";
 
+/**
+ * Name for JVMTI extension IDs to be used for CLASS_UNLOAD support.
+ */
+static const char* JVMTI_EXTENSION_EVENT_ID_CLASS_UNLOAD 
+                        = "com.sun.hotspot.events.ClassUnload";
+static const char* JVMTI_EXTENSION_FUNC_ID_IS_CLASS_UNLOAD_ENABLED 
+                        = "com.sun.hotspot.functions.IsClassUnloadingEnabled";
+
 //-----------------------------------------------------------------------------
 // static internal functions
 //-----------------------------------------------------------------------------
@@ -165,10 +173,12 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
     static STDLogManager slm;
     static AgentEnv env;
 
+    memset(&env, 0, sizeof(env));
     env.memoryManager = &mm;
     env.logManager = &slm;
     env.jvm = vm;
     env.jvmti = 0;
+    env.extensionEventClassUnload = 0;
     env.isDead = false;
     AgentBase::SetAgentEnv(&env);
 
@@ -442,6 +452,49 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         }
     }
 
+    // find JVMTI extension event for CLASS_UNLOAD
+    {
+        jint extensionEventsCount = 0;
+        jvmtiExtensionEventInfo* extensionEvents = 0;
+
+        jvmtiError err;
+        JVMTI_TRACE(err, jvmti->GetExtensionEvents(&extensionEventsCount, &extensionEvents));
+        JvmtiAutoFree afv(extensionEvents);
+        if (err != JVMTI_ERROR_NONE) {
+            JDWP_INFO("Unable to get JVMTI extension events: " << err);
+            return JNI_ERR;
+        }
+
+        if (extensionEvents != 0 && extensionEventsCount > 0) {
+            for (int i = 0; i < extensionEventsCount; i++) {
+                if (strcmp(extensionEvents[i].id, JVMTI_EXTENSION_EVENT_ID_CLASS_UNLOAD) == 0) {
+                    JDWP_LOG("CLASS_UNLOAD extension event: " 
+                            << " index=" << extensionEvents[i].extension_event_index
+                            << " id=" << extensionEvents[i].id
+                            << " param_count=" << extensionEvents[i].param_count
+                            << " descr=" << extensionEvents[i].short_description);
+                    // store info about found extension event 
+                    env.extensionEventClassUnload = static_cast<jvmtiExtensionEventInfo*>
+                        (AgentBase::GetMemoryManager().Allocate(sizeof(jvmtiExtensionEventInfo) JDWP_FILE_LINE));
+                    *(env.extensionEventClassUnload) = extensionEvents[i];
+                } else {
+                    // free allocated memory for not used extension events
+                    JVMTI_TRACE(err, jvmti->Deallocate(
+                        reinterpret_cast<unsigned char*>(extensionEvents[i].id)));
+                    JVMTI_TRACE(err, jvmti->Deallocate(
+                        reinterpret_cast<unsigned char*>(extensionEvents[i].short_description)));
+                    if (extensionEvents[i].params != 0) {
+                        for (int j = 0; j < extensionEvents[i].param_count; j++) {
+                            JVMTI_TRACE(err, jvmti->Deallocate(
+                                reinterpret_cast<unsigned char*>(extensionEvents[i].params[j].name)));
+                        }
+                        JVMTI_TRACE(err, jvmti->Deallocate(
+                            reinterpret_cast<unsigned char*>(extensionEvents[i].params)));
+                    }
+                }
+            }
+        }
+    }
     return JNI_OK;
 }
 

@@ -114,6 +114,25 @@ AgentManager::Clean(JNIEnv *jni) throw(AgentException)
         GetEventDispatcher().Clean(jni);
         GetObjectManager().Clean(jni);
         GetClassManager().Clean(jni);
+
+        // delete extensionEventClassUnload if any
+        jvmtiExtensionEventInfo* ext = GetAgentEnv()->extensionEventClassUnload;
+        if (ext != 0) {
+            jvmtiError err;
+            JVMTI_TRACE(err, GetJvmtiEnv()->Deallocate(
+                reinterpret_cast<unsigned char*>(ext->id)));
+            JVMTI_TRACE(err, GetJvmtiEnv()->Deallocate(
+                reinterpret_cast<unsigned char*>(ext->short_description)));
+            if (ext->params != 0) {
+                for (int j = 0; j < ext->param_count; j++) {
+                    JVMTI_TRACE(err, GetJvmtiEnv()->Deallocate(
+                        reinterpret_cast<unsigned char*>(ext->params[j].name)));
+                }
+                JVMTI_TRACE(err, GetJvmtiEnv()->Deallocate(
+                    reinterpret_cast<unsigned char*>(ext->params)));
+            }
+            GetMemoryManager().Free(ext JDWP_FILE_LINE);
+        }
     }
 
     // clean LogManager and close log

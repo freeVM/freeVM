@@ -32,16 +32,31 @@
 
 using namespace jdwp;
 
-void RequestManager::Init(JNIEnv* jni)
-    throw(AgentException)
+/**
+ * Enables combining METHOD_EXIT events with other collocated events (METHOD_ENTRY, BREAKPOINT, SINGLE_STEP);
+ * Disabled by default to preserve compatibility with RI behavior.
+ */
+static bool ENABLE_COMBINED_METHOD_EXIT_EVENT = false;
+
+RequestManager::RequestManager() throw()
+    : m_requestIdCount(0)
+    , m_requestMonitor(0) 
+    , m_combinedEventsMonitor(0) 
+{}
+
+RequestManager::~RequestManager() throw() 
+{}
+
+void RequestManager::Init(JNIEnv* jni) throw(AgentException)
 {
     JDWP_TRACE_ENTRY("Init(" << jni << ")");
 
-    m_requestMonitor = new AgentMonitor("_jdwp_RequestManager_monitor");
+    m_requestMonitor = new AgentMonitor("_jdwp_RequestManager_requestMonitor");
+    m_combinedEventsMonitor = new AgentMonitor("_jdwp_RequestManager_combinedEventsMonitor");;
     m_requestIdCount = 1;
 }
 
-void RequestManager::Clean(JNIEnv* jni) throw()
+void RequestManager::Clean(JNIEnv* jni) throw(AgentException)
 {
     JDWP_TRACE_ENTRY("Clean(" << jni << ")");
 
@@ -53,9 +68,17 @@ void RequestManager::Clean(JNIEnv* jni) throw()
         m_requestMonitor = 0;
     }
     m_requestIdCount = 0;
+
+    if (m_combinedEventsMonitor != 0){
+        {
+            MonitorAutoLock lock(m_combinedEventsMonitor JDWP_FILE_LINE);
+        }
+        delete m_combinedEventsMonitor;
+        m_combinedEventsMonitor = 0;
+    }
 }
 
-void RequestManager::Reset(JNIEnv* jni) throw()
+void RequestManager::Reset(JNIEnv* jni) throw(AgentException)
 {
     JDWP_TRACE_ENTRY("Reset(" << jni << ")");
 
@@ -83,6 +106,14 @@ void RequestManager::Reset(JNIEnv* jni) throw()
         {
             MonitorAutoLock lock(m_requestMonitor JDWP_FILE_LINE);
             m_requestIdCount = 1;
+        }
+    }
+
+    if (m_combinedEventsMonitor != 0) {
+        try {
+            DeleteAllCombinedEventsInfo(jni);
+        } catch (AgentException& e) {
+            JDWP_INFO("JDWP error: " << e.what() << " [" << e.ErrCode() << "]");
         }
     }
 }
@@ -199,6 +230,27 @@ void RequestManager::ControlWatchpoint(JNIEnv* jni,
     }
 }
 
+jint RequestManager::ControlClassUnload(JNIEnv* jni, AgentEventRequest* request, bool enable) 
+    throw(AgentException)
+{
+    JDWP_TRACE_ENTRY("ControlClassUnload");
+
+    if (GetAgentEnv()->extensionEventClassUnload != 0) {
+        jvmtiError err;
+        JDWP_TRACE_EVENT("ControlClassUnload: class unload callback "
+            << "[" << request->GetEventKind() << "] "
+            << (enable ? "set" : "clear"));
+        JVMTI_TRACE(err, GetJvmtiEnv()->SetExtensionEventCallback(
+                GetAgentEnv()->extensionEventClassUnload->extension_event_index, 
+                (enable ? reinterpret_cast<jvmtiExtensionEvent>(HandleClassUnload) : 0)));
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+        return GetAgentEnv()->extensionEventClassUnload->extension_event_index;
+    }
+    return 0;
+}
+
 void RequestManager::ControlEvent(JNIEnv* jni,
         AgentEventRequest* request, bool enable)
     throw(AgentException)
@@ -229,6 +281,11 @@ void RequestManager::ControlEvent(JNIEnv* jni,
     case JDWP_EVENT_CLASS_LOAD:
         eventType = JVMTI_EVENT_CLASS_LOAD;
         break;
+    case JDWP_EVENT_CLASS_UNLOAD:
+        eventType = static_cast<jvmtiEvent>(
+            ControlClassUnload(jni, request, enable));
+        // avoid standard event enable/disable technique
+        return;
     case JDWP_EVENT_FIELD_ACCESS:
         eventType = JVMTI_EVENT_FIELD_ACCESS;
         ControlWatchpoint(jni, request, enable);
@@ -603,6 +660,298 @@ void RequestManager::GenerateEvents(JNIEnv* jni, EventInfo &eInfo,
     }
 }
 
+// --------------------- begin of combined events support ---------------------
+
+CombinedEventsInfo::CombinedEventsInfo() throw ()
+{
+    JDWP_TRACE_ENTRY("CombinedEventsInfo::CombinedEventsInfo()");
+
+    // initialize empty event lists
+    for (int i = 0; i < COMBINED_EVENT_COUNT; i++) {
+        m_combinedEventsLists[i].list = 0;
+        m_combinedEventsLists[i].count = 0;
+        m_combinedEventsLists[i].ignored = 0;
+    }
+}
+
+CombinedEventsInfo::~CombinedEventsInfo() throw () 
+{
+    JDWP_TRACE_ENTRY("CombinedEventsInfo::~CombinedEventsInfo()");
+
+    // destroy event lists
+    for (int i = 0; i < COMBINED_EVENT_COUNT; i++) {
+        if (m_combinedEventsLists[i].list != 0) {
+            GetMemoryManager().Free(m_combinedEventsLists[i].list JDWP_FILE_LINE);
+        };
+    }
+}
+
+void CombinedEventsInfo::Init(JNIEnv *jni, EventInfo &eInfo) 
+        throw (OutOfMemoryException) 
+{
+    JDWP_TRACE_ENTRY("CombinedEventsInfo::SetEventInfo(" << jni << ',' << &eInfo << ')');
+
+    // store info about initial event
+    m_eInfo = eInfo;
+    // create global references to be used during grouping events
+    if (m_eInfo.thread != 0) {
+        m_eInfo.thread = jni->NewGlobalRef(eInfo.thread); 
+        if (m_eInfo.thread == 0) throw OutOfMemoryException(); 
+    }
+    if (m_eInfo.cls != 0) {
+        m_eInfo.cls = jni->NewGlobalRef(eInfo.cls); 
+        if (m_eInfo.cls == 0) throw OutOfMemoryException(); 
+    }
+}
+
+void CombinedEventsInfo::Clean(JNIEnv *jni) throw () 
+{
+    JDWP_TRACE_ENTRY("CombinedEventsInfo::Clean(" << jni << ')');
+    if (m_eInfo.cls != 0) {
+        jni->DeleteGlobalRef(m_eInfo.cls);
+        m_eInfo.cls = 0;
+    }
+    if (m_eInfo.thread != 0) {
+        jni->DeleteGlobalRef(m_eInfo.thread);
+        m_eInfo.thread = 0;
+    }
+}
+
+jint CombinedEventsInfo::GetEventsCount() const throw () 
+{
+    jint count = 0;   
+    for (int i = 0; i < COMBINED_EVENT_COUNT; i++) {
+        count += m_combinedEventsLists[i].count;
+    }
+    return count;
+}
+
+int CombinedEventsInfo::GetIgnoredCallbacksCount() const throw () 
+{
+    jint count = 0;   
+    for (int i = 0; i < COMBINED_EVENT_COUNT; i++) {
+        count += m_combinedEventsLists[i].ignored;
+    }
+    return count;
+}
+
+void CombinedEventsInfo::CountOccuredCallback(CombinedEventsKind combinedKind) throw ()
+{
+    if (m_combinedEventsLists[combinedKind].ignored > 0) {
+        m_combinedEventsLists[combinedKind].ignored--;
+    }
+}
+
+static bool isSameLocation(JNIEnv *jni, EventInfo& eInfo1, EventInfo eInfo2) {
+    return (eInfo1.location == eInfo2.location) && (eInfo1.method == eInfo2.method);
+}
+
+CombinedEventsInfoList::iterator RequestManager::FindCombinedEventsInfo(JNIEnv *jni, jthread thread) 
+    throw(AgentException)
+{
+    JDWP_TRACE_ENTRY("FindCombinedEventsInfo(" << jni << ')');
+    MonitorAutoLock lock(m_combinedEventsMonitor JDWP_FILE_LINE);
+    CombinedEventsInfoList::iterator p;
+    for (p = m_combinedEventsInfoList.begin(); p != m_combinedEventsInfoList.end(); p++) {
+        if (*p != 0 && jni->IsSameObject((*p)->m_eInfo.thread, thread)) {
+            break;
+        }
+    }
+    return p;
+}
+
+void RequestManager::AddCombinedEventsInfo(JNIEnv *jni, CombinedEventsInfo* info) 
+    throw(AgentException)
+{
+    JDWP_TRACE_ENTRY("FindCombinedEventsInfo(" << jni << ')');
+    MonitorAutoLock lock(m_combinedEventsMonitor JDWP_FILE_LINE);
+    for (CombinedEventsInfoList::iterator p = m_combinedEventsInfoList.begin(); 
+                                    p != m_combinedEventsInfoList.end(); p++) {
+        if (*p == 0) {
+            *p = info;
+            return;
+        }
+    }
+    m_combinedEventsInfoList.push_back(info);
+}
+
+void RequestManager::DeleteCombinedEventsInfo(JNIEnv *jni, CombinedEventsInfoList::iterator p) 
+    throw(AgentException)
+{
+    JDWP_TRACE_ENTRY("DeleteCombinedEventsInfo(" << jni << ')');
+    MonitorAutoLock lock(m_combinedEventsMonitor JDWP_FILE_LINE);
+    if (*p != 0) {
+        (*p)->Clean(jni);
+        delete *p;
+        *p = 0;
+    }
+}
+
+void RequestManager::DeleteAllCombinedEventsInfo(JNIEnv *jni) 
+    throw(AgentException)
+{
+    JDWP_TRACE_ENTRY("FindCombinedEventsInfo(" << jni << ')');
+    MonitorAutoLock lock(m_combinedEventsMonitor JDWP_FILE_LINE);
+    for (CombinedEventsInfoList::iterator p = m_combinedEventsInfoList.begin(); 
+                                        p != m_combinedEventsInfoList.end(); p++) {
+        if (*p != 0) {
+            (*p)->Clean(jni);
+            delete *p;
+            *p = 0;
+            return;
+        }
+    }
+}
+
+bool RequestManager::IsPredictedCombinedEvent(JNIEnv *jni, EventInfo& eInfo, 
+        CombinedEventsInfo::CombinedEventsKind combinedKind)
+    throw(AgentException)
+{
+            CombinedEventsInfoList::iterator p = 
+                    GetRequestManager().FindCombinedEventsInfo(jni, eInfo.thread);
+
+            // check if no combined events info stored for this thread 
+            //   -> not ignore this event
+            if (p == GetRequestManager().m_combinedEventsInfoList.end()) {
+                JDWP_TRACE_EVENT("CheckCombinedEvent: no stored combined events for same location:"
+                        << " kind=" << combinedKind
+                        << " method=" << eInfo.method
+                        << " loc=" << eInfo.location);
+                return false;
+            }
+
+            // check if stored combined events info is for different location 
+            //  -> delete info and not ignore this event
+            if (!isSameLocation(jni, eInfo, (*p)->m_eInfo)) 
+            {
+                JDWP_TRACE_EVENT("CheckCombinedEvent: delete old combined events for different location:"
+                        << " kind=" << combinedKind
+                        << " method=" << (*p)->m_eInfo.method
+                        << " loc=" << (*p)->m_eInfo.location);
+                GetRequestManager().DeleteCombinedEventsInfo(jni, p);
+                JDWP_TRACE_EVENT("CheckCombinedEvent: handle combined events for new location:"
+                        << " kind=" << combinedKind
+                        << " method=" << eInfo.method
+                        << " loc=" << eInfo.location);
+                return false;
+            }
+
+            // found conbined events info for this location
+            //   -> ignore this event, decrease number of ignored callbacks, and delete info if necessary
+            {
+                JDWP_TRACE_EVENT("CheckCombinedEvent: ignore predicted combined event for same location:"
+                        << " kind=" << combinedKind
+                        << " method=" << eInfo.method
+                        << " loc=" << eInfo.location);
+                (*p)->CountOccuredCallback(combinedKind);
+
+                // delete combined event info if no more callbacks to ignore
+                if ((*p)->GetIgnoredCallbacksCount() <= 0) {
+                    JDWP_TRACE_EVENT("CheckCombinedEvent: delete handled combined events for same location:"
+                        << " kind=" << combinedKind
+                        << " method=" << eInfo.method
+                        << " loc=" << eInfo.location);
+                }
+                return true;
+            } 
+}
+
+EventComposer* RequestManager::CombineEvents(JNIEnv* jni, 
+        CombinedEventsInfo* combEventsInfo, jdwpSuspendPolicy sp) 
+    throw(AgentException)
+{
+    JDWP_TRACE_ENTRY("CombineEvents(" << jni << ',' << combEventsInfo << ')');
+
+    jdwpTypeTag typeTag = GetClassManager().GetJdwpTypeTag(combEventsInfo->m_eInfo.cls);
+    EventComposer *ec = new EventComposer(GetEventDispatcher().NewId(),
+            JDWP_COMMAND_SET_EVENT, JDWP_COMMAND_E_COMPOSITE, sp);
+
+    int combinedEventsCount = combEventsInfo->GetEventsCount();
+    JDWP_TRACE_EVENT("CombineEvents:"
+            << " events=" << combinedEventsCount
+            << " METHOD_ENTRY=" << combEventsInfo->m_combinedEventsLists[CombinedEventsInfo::COMBINED_EVENT_METHOD_ENTRY].count
+            << " SINGLE_STEP=" << combEventsInfo->m_combinedEventsLists[CombinedEventsInfo::COMBINED_EVENT_SINGLE_STEP].count
+            << " BREAKPOINT=" << combEventsInfo->m_combinedEventsLists[CombinedEventsInfo::COMBINED_EVENT_BREAKPOINT].count
+            << " METHOD_EXIT=" << combEventsInfo->m_combinedEventsLists[CombinedEventsInfo::COMBINED_EVENT_METHOD_EXIT].count
+            << " ignored=" << combEventsInfo->GetIgnoredCallbacksCount());
+    ec->event.WriteInt(combinedEventsCount);
+    
+    CombinedEventsInfo::CombinedEventsKind combinedKind = CombinedEventsInfo::COMBINED_EVENT_METHOD_ENTRY;
+    for (jint i = 0; i < combEventsInfo->m_combinedEventsLists[combinedKind].count; i++) {
+        ec->event.WriteByte(JDWP_EVENT_METHOD_ENTRY);
+        ec->event.WriteInt(combEventsInfo->m_combinedEventsLists[combinedKind].list[i]);
+        ec->WriteThread(jni, combEventsInfo->m_eInfo.thread);
+        ec->event.WriteLocation(jni,
+            typeTag, combEventsInfo->m_eInfo.cls, combEventsInfo->m_eInfo.method, combEventsInfo->m_eInfo.location);
+    }
+    
+    combinedKind = CombinedEventsInfo::COMBINED_EVENT_SINGLE_STEP;
+    for (jint i = 0; i < combEventsInfo->m_combinedEventsLists[combinedKind].count; i++) {
+        ec->event.WriteByte(JDWP_EVENT_SINGLE_STEP);
+        ec->event.WriteInt(combEventsInfo->m_combinedEventsLists[combinedKind].list[i]);
+        ec->WriteThread(jni, combEventsInfo->m_eInfo.thread);
+        ec->event.WriteLocation(jni,
+            typeTag, combEventsInfo->m_eInfo.cls, combEventsInfo->m_eInfo.method, combEventsInfo->m_eInfo.location);
+    }
+
+    combinedKind = CombinedEventsInfo::COMBINED_EVENT_BREAKPOINT;
+    for (jint i = 0; i < combEventsInfo->m_combinedEventsLists[combinedKind].count; i++) {
+        ec->event.WriteByte(JDWP_EVENT_BREAKPOINT);
+        ec->event.WriteInt(combEventsInfo->m_combinedEventsLists[combinedKind].list[i]);
+        ec->WriteThread(jni, combEventsInfo->m_eInfo.thread);
+        ec->event.WriteLocation(jni,
+            typeTag, combEventsInfo->m_eInfo.cls, combEventsInfo->m_eInfo.method, combEventsInfo->m_eInfo.location);
+    }
+
+    combinedKind = CombinedEventsInfo::COMBINED_EVENT_METHOD_EXIT;
+    for (jint i = 0; i < combEventsInfo->m_combinedEventsLists[combinedKind].count; i++) {
+        ec->event.WriteByte(JDWP_EVENT_METHOD_EXIT);
+        ec->event.WriteInt(combEventsInfo->m_combinedEventsLists[combinedKind].list[i]);
+        ec->WriteThread(jni, combEventsInfo->m_eInfo.thread);
+        ec->event.WriteLocation(jni,
+            typeTag, combEventsInfo->m_eInfo.cls, combEventsInfo->m_eInfo.method, combEventsInfo->m_eInfo.location);
+    } 
+    return ec;
+}
+
+bool RequestManager::IsMethodEntryLocation(JNIEnv* jni, EventInfo& eInfo) 
+    throw(AgentException)
+{
+    jvmtiError err;
+    jlocation start_location;
+    jlocation end_location;
+    JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodLocation(eInfo.method, &start_location, &end_location));
+    if (err != JVMTI_ERROR_NONE) {
+        throw AgentException(err);
+    }    
+    bool isEntry = (start_location == eInfo.location);
+    JDWP_TRACE_EVENT("IsMethodEntryLocation: isEntry=" << isEntry 
+            << ", location=" << eInfo.location
+            << ", start=" << start_location
+            << ", end=" << end_location);
+    return isEntry;
+}
+
+bool RequestManager::IsMethodExitLocation(JNIEnv* jni, EventInfo& eInfo) 
+    throw(AgentException)
+{
+    jvmtiError err;
+    jlocation start_location;
+    jlocation end_location;
+    JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodLocation(eInfo.method, &start_location, &end_location));
+    if (err != JVMTI_ERROR_NONE) {
+        throw AgentException(err);
+    }    
+    bool isExit = (end_location == eInfo.location);
+    JDWP_TRACE_EVENT("IsMethodExitLocation: isExit=" << isExit 
+            << ",location=" << eInfo.location
+            << ", start=" << start_location
+            << ", end=" << end_location);
+    return isExit;
+}
+
+// --------------------- end of combined events support -----------------------
+
 //-----------------------------------------------------------------------------
 // event callbacks
 //-----------------------------------------------------------------------------
@@ -736,14 +1085,82 @@ void JNICALL RequestManager::HandleClassPrepare(jvmtiEnv* jvmti, JNIEnv* jni,
     }
 }
 
+//void JNICALL RequestManager::HandleClassUnload(jvmtiEnv* jvmti, ...)
+void JNICALL RequestManager::HandleClassUnload(jvmtiEnv* jvmti, JNIEnv* jni,
+        jthread thread, jclass cls)
+{
+    JDWP_TRACE_ENTRY("HandleClassUnload(" << jvmti << ',' << jni << ',' << thread << ',' << cls << ')');
+    
+    try {
+        jvmtiError err;
+        EventInfo eInfo;
+        memset(&eInfo, 0, sizeof(eInfo));
+        eInfo.kind = JDWP_EVENT_CLASS_UNLOAD;
+        eInfo.thread = thread;
+        eInfo.cls = cls;
+
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
+            &eInfo.signature, 0));
+        JvmtiAutoFree jafSignature(eInfo.signature);
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+#ifndef NDEBUG
+        if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("CLASS_UNLOAD event:"
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature)
+                << " thread=" << JDWP_CHECK_NULL(info.name));
+        }
+#endif // NDEBUG
+
+        jint eventCount = 0;
+        RequestID *eventList = 0;
+        jdwpSuspendPolicy sp = JDWP_SUSPEND_NONE;
+        GetRequestManager().GenerateEvents(jni, eInfo, eventCount, eventList, sp);
+        AgentAutoFree aafEL(eventList JDWP_FILE_LINE);
+
+        bool isAgent = GetThreadManager().IsAgentThread(jni, thread);
+        if (isAgent) {
+            eInfo.thread = 0;
+            sp = JDWP_SUSPEND_NONE;
+        }
+
+        // post generated events
+        if (eventCount > 0) {
+            jdwpTypeTag typeTag = GetClassManager().GetJdwpTypeTag(cls);
+            jint status = 0;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetClassStatus(cls, &status));
+            if (err != JVMTI_ERROR_NONE) {
+                throw AgentException(err);
+            }
+            EventComposer *ec = new EventComposer(GetEventDispatcher().NewId(),
+                JDWP_COMMAND_SET_EVENT, JDWP_COMMAND_E_COMPOSITE, sp);
+            ec->event.WriteInt(eventCount);
+            for (jint i = 0; i < eventCount; i++) {
+                ec->event.WriteByte(JDWP_EVENT_CLASS_UNLOAD);
+                ec->event.WriteInt(eventList[i]);
+                ec->WriteThread(jni, thread);
+                ec->event.WriteByte(typeTag);
+                ec->event.WriteReferenceTypeID(jni, cls);
+                ec->event.WriteString(eInfo.signature);
+                ec->event.WriteInt(status);
+            }
+            JDWP_TRACE_EVENT("HandleClassUnload: post set of " << eventCount << " events");
+            GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_CLASS_UNLOAD);
+        }
+    } catch (AgentException& e) {
+        JDWP_INFO("JDWP error in CLASS_UNLOAD: " << e.what() << " [" << e.ErrCode() << "]");
+    }
+}
+
 void JNICALL RequestManager::HandleThreadEnd(jvmtiEnv* jvmti, JNIEnv* jni,
         jthread thread)
 {
     JDWP_TRACE_ENTRY("HandleThreadEnd(" << jvmti << ',' << jni << ',' << thread << ')');
-
-//    if (m_requestIdCount == 0) {
-//        return;
-//    }
 
     if (GetThreadManager().IsAgentThread(jni, thread)) {
         return;
@@ -761,7 +1178,9 @@ void JNICALL RequestManager::HandleThreadEnd(jvmtiEnv* jvmti, JNIEnv* jni,
             jvmtiError err;
             jvmtiThreadInfo info;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
-            JDWP_TRACE_EVENT("THREAD_END event: thread=" << JDWP_CHECK_NULL(info.name));
+
+            JDWP_TRACE_EVENT("THREAD_END event:"
+                << " thread=" << JDWP_CHECK_NULL(info.name));
         }
 #endif // NDEBUG
 
@@ -809,7 +1228,8 @@ void JNICALL RequestManager::HandleThreadStart(jvmtiEnv* jvmti, JNIEnv* jni,
             jvmtiError err;
             jvmtiThreadInfo info;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
-            JDWP_TRACE_EVENT("THREAD_START event: thread=" << JDWP_CHECK_NULL(info.name));
+            JDWP_TRACE_EVENT("THREAD_START event:"
+                << " thread=" << JDWP_CHECK_NULL(info.name));
         }
 #endif // NDEBUG
 
@@ -843,11 +1263,12 @@ void JNICALL RequestManager::HandleBreakpoint(jvmtiEnv* jvmti, JNIEnv* jni,
     JDWP_TRACE_ENTRY("HandleBreakpoint(" << jvmti << ',' << jni << ',' << thread
         << ',' << method << ',' << location << ')');
     
-    // if popFrames process, ignore event
+    // if is popFrames process, ignore event
     if (GetThreadManager().IsPopFramesProcess(jni, thread)) {
         return;
     }
 
+    // if occured in agent thread, ignore event
     if (GetThreadManager().IsAgentThread(jni, thread)) {
         return;
     }
@@ -860,15 +1281,19 @@ void JNICALL RequestManager::HandleBreakpoint(jvmtiEnv* jvmti, JNIEnv* jni,
         eInfo.thread = thread;
         eInfo.method = method;
         eInfo.location = location;
+        CombinedEventsInfo::CombinedEventsKind combinedKind = CombinedEventsInfo::COMBINED_EVENT_BREAKPOINT;
 
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodDeclaringClass(method,
-            &eInfo.cls));
+        // if this combined event was already prediced, ignore event
+        if (GetRequestManager().IsPredictedCombinedEvent(jni, eInfo, combinedKind)) {
+            return;
+        }
+
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodDeclaringClass(method, &eInfo.cls));
         if (err != JVMTI_ERROR_NONE) {
             throw AgentException(err);
         }
 
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
-            &eInfo.signature, 0));
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(eInfo.cls, &eInfo.signature, 0));
         JvmtiAutoFree jafSignature(eInfo.signature);
         if (err != JVMTI_ERROR_NONE) {
             throw AgentException(err);
@@ -890,28 +1315,65 @@ void JNICALL RequestManager::HandleBreakpoint(jvmtiEnv* jvmti, JNIEnv* jni,
         }
 #endif // NDEBUG
 
-        jint eventCount = 0;
-        RequestID *eventList = 0;
+        // create new info about combined events for this location
+        CombinedEventsInfo* combinedEvents = new CombinedEventsInfo();
+        combinedEvents->Init(jni, eInfo);
+        
+        // generate BREAKPOINT events according to existing requests
         jdwpSuspendPolicy sp = JDWP_SUSPEND_NONE;
-        GetRequestManager().GenerateEvents(jni, eInfo, eventCount, eventList, sp);
-        AgentAutoFree aafEL(eventList JDWP_FILE_LINE);
+        CombinedEventsInfo::CombinedEventsList* events = 
+            &combinedEvents->m_combinedEventsLists[combinedKind];
+        GetRequestManager().GenerateEvents(jni, eInfo, events->count, events->list, sp);
+        JDWP_TRACE_EVENT("HandleBreakpoint: BREAKPOINT events:"
+                << " count=" << events->count
+                << ", suspendPolicy=" << sp 
+                << ", location=" << combinedEvents->m_eInfo.location);
 
-        // post generated events
-        if (eventCount > 0) {
-            jdwpTypeTag typeTag = GetClassManager().GetJdwpTypeTag(eInfo.cls);
-            EventComposer *ec = new EventComposer(GetEventDispatcher().NewId(),
-                JDWP_COMMAND_SET_EVENT, JDWP_COMMAND_E_COMPOSITE, sp);
-            ec->event.WriteInt(eventCount);
-            for (jint i = 0; i < eventCount; i++) {
-                ec->event.WriteByte(JDWP_EVENT_BREAKPOINT);
-                ec->event.WriteInt(eventList[i]);
-                ec->WriteThread(jni, thread);
-                ec->event.WriteLocation(jni,
-                    typeTag, eInfo.cls, method, location);
+        // if no BREAKPOINT events then return from callback
+        if (events->count <= 0) {
+            combinedEvents->Clean(jni);
+            delete combinedEvents;
+            combinedEvents = 0;
+            return;
+        }
+
+        // check if extra combined events should be generated later: METHOD_EXIT
+        {
+            // check for METHOD_EXIT events
+            if (ENABLE_COMBINED_METHOD_EXIT_EVENT) {
+                if (GetRequestManager().IsMethodExitLocation(jni, eInfo)) {
+                    combinedKind = CombinedEventsInfo::COMBINED_EVENT_METHOD_EXIT;
+                    events = &combinedEvents->m_combinedEventsLists[combinedKind];
+                    eInfo.kind = JDWP_EVENT_METHOD_EXIT;
+                    // generate extra events
+                    GetRequestManager().GenerateEvents(jni, eInfo, events->count, events->list, sp);
+                    JDWP_TRACE_EVENT("HandleBreakpoint: METHOD_EXIT events:" 
+                        << " count=" << events->count
+                        << ", suspendPolicy=" << sp 
+                        << ", location=" << combinedEvents->m_eInfo.location);
+                    // check if corresponding callback should be ignored
+                    if (events->count > 0) {
+                        events->ignored = 1;
+                    }
+                }
             }
+        }
 
-            JDWP_TRACE_EVENT("Breakpoint: post set of " << eventCount << " events");
-            GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_BREAKPOINT);
+        // post all generated events
+        EventComposer *ec = GetRequestManager().CombineEvents(jni, combinedEvents, sp);
+        JDWP_TRACE_EVENT("HandleBreakpoint: post set of " << combinedEvents->GetEventsCount() << " events");
+        GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_BREAKPOINT);
+
+        // store info about combined events if other callbacks should be ignored
+        if (combinedEvents->GetIgnoredCallbacksCount() > 0) {
+            JDWP_TRACE_EVENT("HandleBreakpoint: store combined events for new location:"
+                        << " method=" << eInfo.method
+                        << " loc=" << eInfo.location);
+            GetRequestManager().AddCombinedEventsInfo(jni, combinedEvents);
+        } else {
+            combinedEvents->Clean(jni);
+            delete combinedEvents;
+            combinedEvents = 0;
         }
     } catch (AgentException& e) {
         JDWP_INFO("JDWP error in BREAKPOINT: " << e.what() << " [" << e.ErrCode() << "]");
@@ -1104,12 +1566,12 @@ void JNICALL RequestManager::HandleMethodEntry(jvmtiEnv* jvmti, JNIEnv* jni,
     JDWP_TRACE_ENTRY("HandleMethodEntry(" << jvmti << ',' << jni << ',' << thread
         << ',' << method << ')');
     
-    // if popFrames process, ignore event
+    // if is popFrames process, ignore event
     if (GetThreadManager().IsPopFramesProcess(jni, thread)) {
         return;
     }
 
-    // must be non-agent thread
+    // if occured in agent thread, ignore event
     if (GetThreadManager().IsAgentThread(jni, thread)) {
         return;
     }
@@ -1120,6 +1582,12 @@ void JNICALL RequestManager::HandleMethodEntry(jvmtiEnv* jvmti, JNIEnv* jni,
         memset(&eInfo, 0, sizeof(eInfo));
         eInfo.kind = JDWP_EVENT_METHOD_ENTRY;
         eInfo.thread = thread;
+        CombinedEventsInfo::CombinedEventsKind combinedKind = CombinedEventsInfo::COMBINED_EVENT_METHOD_ENTRY;
+
+        // if this combined event was already prediced, ignore event
+        if (GetRequestManager().IsPredictedCombinedEvent(jni, eInfo, combinedKind)) {
+            return;
+        }
 
         JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodDeclaringClass(method,
             &eInfo.cls));
@@ -1146,34 +1614,110 @@ void JNICALL RequestManager::HandleMethodEntry(jvmtiEnv* jvmti, JNIEnv* jni,
             char* name = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
 
-            // don't invoke GetThreadInfo(), it may issue another METHOD_ENTRY event
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
             JDWP_TRACE_EVENT("METHOD_ENTRY event:"
                 << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
-                << " method=" << JDWP_CHECK_NULL(name));
+                << " method=" << JDWP_CHECK_NULL(name)
+                << " loc=" << eInfo.location
+                << " thread=" << JDWP_CHECK_NULL(info.name));
         }
 #endif // NDEBUG
 
-        jint eventCount = 0;
-        RequestID *eventList = 0;
+        // create new info about combined events for this location
+        CombinedEventsInfo* combinedEvents = new CombinedEventsInfo();
+        combinedEvents->Init(jni, eInfo);
+        
+        // generate METHOD_ENTRY events according to existing requests
         jdwpSuspendPolicy sp = JDWP_SUSPEND_NONE;
-        GetRequestManager().GenerateEvents(jni, eInfo, eventCount, eventList, sp);
-        AgentAutoFree aafEL(eventList JDWP_FILE_LINE);
+        CombinedEventsInfo::CombinedEventsList* events = 
+            &combinedEvents->m_combinedEventsLists[combinedKind];
+        GetRequestManager().GenerateEvents(jni, eInfo, events->count, events->list, sp);
+        JDWP_TRACE_EVENT("HandleMethodEntry: METHOD_ENTRY events:"
+                << " count=" << events->count
+                << ", suspendPolicy=" << sp 
+                << ", location=" << combinedEvents->m_eInfo.location);
 
-        // post generated events
-        if (eventCount > 0) {
-            jdwpTypeTag typeTag = GetClassManager().GetJdwpTypeTag(eInfo.cls);
-            EventComposer *ec = new EventComposer(GetEventDispatcher().NewId(),
-                JDWP_COMMAND_SET_EVENT, JDWP_COMMAND_E_COMPOSITE, sp);
-            ec->event.WriteInt(eventCount);
-            for (jint i = 0; i < eventCount; i++) {
-                ec->event.WriteByte(JDWP_EVENT_METHOD_ENTRY);
-                ec->event.WriteInt(eventList[i]);
-                ec->WriteThread(jni, thread);
-                ec->event.WriteLocation(jni,
-                    typeTag, eInfo.cls, method, eInfo.location);
+        // if no METHOD_ENTRY events then return from callback
+        if (events->count <= 0) {
+            combinedEvents->Clean(jni);
+            delete combinedEvents;
+            combinedEvents = 0;
+            return;
+        }
+
+        // check if extra combined events should be generated: SINGLE_STEP, BREAKPOINT, NETHOD_EXIT
+        {
+            // check for SINGLE_STEP events
+            {
+                combinedKind = CombinedEventsInfo::COMBINED_EVENT_SINGLE_STEP;
+                events = &combinedEvents->m_combinedEventsLists[combinedKind];
+                eInfo.kind = JDWP_EVENT_SINGLE_STEP;
+                // generate extra events
+                GetRequestManager().GenerateEvents(jni, eInfo, events->count, events->list, sp);
+                JDWP_TRACE_EVENT("HandleMethodEntry: SINGLE_STEP events:" 
+                    << " count=" << events->count
+                    << ", suspendPolicy=" << sp 
+                    << ", location=" << combinedEvents->m_eInfo.location);
+                // check if corresponding callback should be ignored
+                if (events->count > 0) {
+                    events->ignored = 1;
+                }
             }
-            JDWP_TRACE_EVENT("MethodEntry: post set of " << eventCount << " events");
-            GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_METHOD_ENTRY);
+
+            // check for BREAKPOINT events
+            {
+                combinedKind = CombinedEventsInfo::COMBINED_EVENT_BREAKPOINT;
+                events = &combinedEvents->m_combinedEventsLists[combinedKind];
+                eInfo.kind = JDWP_EVENT_BREAKPOINT;
+                // generate extra events
+                GetRequestManager().GenerateEvents(jni, eInfo, events->count, events->list, sp);
+                JDWP_TRACE_EVENT("HandleMethodEntry: BREAKPOINT events:" 
+                    << " count=" << events->count
+                    << ", suspendPolicy=" << sp 
+                    << ", location=" << combinedEvents->m_eInfo.location);
+                // check if corresponding callback should be ignored
+                if (events->count > 0) {
+                    events->ignored = 1;
+                }
+            }
+
+            // check for METHOD_EXIT events
+            if (ENABLE_COMBINED_METHOD_EXIT_EVENT) {
+                if (GetRequestManager().IsMethodExitLocation(jni, eInfo)) {
+                    combinedKind = CombinedEventsInfo::COMBINED_EVENT_METHOD_EXIT;
+                    events = &combinedEvents->m_combinedEventsLists[combinedKind];
+                    eInfo.kind = JDWP_EVENT_METHOD_EXIT;
+                    // generate extra events
+                    GetRequestManager().GenerateEvents(jni, eInfo, events->count, events->list, sp);
+                    JDWP_TRACE_EVENT("HandleMethodEntry: METHOD_EXIT events:" 
+                        << " count=" << events->count
+                        << ", suspendPolicy=" << sp 
+                        << ", location=" << combinedEvents->m_eInfo.location);
+                    // check if corresponding callback should be ignored
+                    if (events->count > 0) {
+                        events->ignored = 1;
+                    }
+                }
+            }
+        }
+
+        // post all generated events
+        EventComposer *ec = GetRequestManager().CombineEvents(jni, combinedEvents, sp);
+        JDWP_TRACE_EVENT("HandleBreakpoint: post set of " << combinedEvents->GetEventsCount() << " events");
+        GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_METHOD_ENTRY);
+
+        // store info about combined events if other callbacks should be ignored
+        if (combinedEvents->GetIgnoredCallbacksCount() > 0) {
+            JDWP_TRACE_EVENT("HandleMethodEntry: store combined events for new location:"
+                        << " method=" << eInfo.method
+                        << " loc=" << eInfo.location);
+            GetRequestManager().AddCombinedEventsInfo(jni, combinedEvents);
+        } else {
+            combinedEvents->Clean(jni);
+            delete combinedEvents;
+            combinedEvents = 0;
         }
     } catch (AgentException& e) {
         JDWP_INFO("JDWP error in METHOD_ENTRY: " << e.what() << " [" << e.ErrCode() << "]");
@@ -1198,6 +1742,14 @@ void JNICALL RequestManager::HandleMethodExit(jvmtiEnv* jvmti, JNIEnv* jni,
         memset(&eInfo, 0, sizeof(eInfo));
         eInfo.kind = JDWP_EVENT_METHOD_EXIT;
         eInfo.thread = thread;
+        CombinedEventsInfo::CombinedEventsKind combinedKind = CombinedEventsInfo::COMBINED_EVENT_METHOD_EXIT;
+
+        if (ENABLE_COMBINED_METHOD_EXIT_EVENT) {
+            // if this combined event was already prediced, ignore event
+            if (GetRequestManager().IsPredictedCombinedEvent(jni, eInfo, combinedKind)) {
+                return;
+            }
+        }
 
         JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodDeclaringClass(method,
             &eInfo.cls));
@@ -1224,12 +1776,18 @@ void JNICALL RequestManager::HandleMethodExit(jvmtiEnv* jvmti, JNIEnv* jni,
             char* name = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
 
-            // don't invoke GetThreadInfo(), it may issue another METHOD_EXIT event
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
             JDWP_TRACE_EVENT("METHOD_EXIT event:"
                 << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
-                << " method=" << JDWP_CHECK_NULL(name));
+                << " method=" << JDWP_CHECK_NULL(name)
+                << " loc=" << eInfo.location
+                << " thread=" << JDWP_CHECK_NULL(info.name));
         }
 #endif // NDEBUG
+
+        // there are no combined events to be generated after METHOD_EXIT event
 
         jint eventCount = 0;
         RequestID *eventList = 0;
@@ -1310,6 +1868,7 @@ void JNICALL RequestManager::HandleFieldAccess(jvmtiEnv* jvmti, JNIEnv* jni,
             JDWP_TRACE_EVENT("FIELD_ACCESS event:"
                 << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
                 << " method=" << JDWP_CHECK_NULL(methodName) 
+                << " loc=" << eInfo.location 
                 << " field=" << JDWP_CHECK_NULL(fieldName)
                 << " thread=" << JDWP_CHECK_NULL(info.name));
         }
@@ -1401,6 +1960,7 @@ void JNICALL RequestManager::HandleFieldModification(jvmtiEnv* jvmti,
             JDWP_TRACE_EVENT("FIELD_MODIFICATION event:"
                 << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
                 << " method=" << JDWP_CHECK_NULL(methodName) 
+                << " loc=" << eInfo.location 
                 << " field=" << JDWP_CHECK_NULL(fieldName)
                 << " thread=" << JDWP_CHECK_NULL(info.name));
         }
@@ -1451,13 +2011,13 @@ void JNICALL RequestManager::HandleSingleStep(jvmtiEnv* jvmti, JNIEnv* jni,
     JDWP_TRACE_ENTRY("HandleSingleStep(" << jvmti << ',' << jni << ',' << thread
         << ',' << method << ',' << location << ')');
 
-    // if popFrames process, invoke internal handler of step event
+    // if is popFrames process, invoke internal handler of step event
     if (GetThreadManager().IsPopFramesProcess(jni, thread)) {
         GetThreadManager().HandleInternalSingleStep(jni, thread, method, location);
         return;
     }
 
-    // must be non-agent thread
+    // if in agent thread, ignore event
     if (GetThreadManager().IsAgentThread(jni, thread)) {
         return;
     }
@@ -1470,6 +2030,12 @@ void JNICALL RequestManager::HandleSingleStep(jvmtiEnv* jvmti, JNIEnv* jni,
         eInfo.thread = thread;
         eInfo.method = method;
         eInfo.location = location;
+        CombinedEventsInfo::CombinedEventsKind combinedKind = CombinedEventsInfo::COMBINED_EVENT_SINGLE_STEP;
+
+        // if this combined event was already prediced, ignore event
+        if (GetRequestManager().IsPredictedCombinedEvent(jni, eInfo, combinedKind)) {
+            return;
+        }
 
         JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodDeclaringClass(method,
             &eInfo.cls));
@@ -1489,36 +2055,95 @@ void JNICALL RequestManager::HandleSingleStep(jvmtiEnv* jvmti, JNIEnv* jni,
             char* name = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
 
-            // don't invoke GetThreadInfo(), it may issue another SINGLE_STEP event
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
             JDWP_TRACE_EVENT("SINGLE_STEP event:" 
                 << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
                 << " method=" << JDWP_CHECK_NULL(name) 
-                << " location=" << eInfo.location);
+                << " loc=" << eInfo.location
+                << " thread=" << JDWP_CHECK_NULL(info.name));
         }
 #endif // NDEBUG
 
-        jint eventCount = 0;
-        RequestID *eventList = 0;
+        // create new info about combined events for this location
+        CombinedEventsInfo* combinedEvents = new CombinedEventsInfo();
+        combinedEvents->Init(jni, eInfo);
+        
+        // generate SINGLE_STEP events according to existing requests
         jdwpSuspendPolicy sp = JDWP_SUSPEND_NONE;
-        GetRequestManager().GenerateEvents(jni, eInfo, eventCount, eventList, sp);
-        AgentAutoFree aafEL(eventList JDWP_FILE_LINE);
+        CombinedEventsInfo::CombinedEventsList* events = 
+            &combinedEvents->m_combinedEventsLists[combinedKind];
+        GetRequestManager().GenerateEvents(jni, eInfo, events->count, events->list, sp);
+        JDWP_TRACE_EVENT("HandleSingleStep: SINGLE_STEP events:"
+                << " count=" << events->count
+                << ", suspendPolicy=" << sp 
+                << ", location=" << combinedEvents->m_eInfo.location);
 
-        // post generated events
-        if (eventCount > 0) {
-            jdwpTypeTag typeTag = GetClassManager().GetJdwpTypeTag(eInfo.cls);
-            EventComposer *ec = new EventComposer(GetEventDispatcher().NewId(),
-                JDWP_COMMAND_SET_EVENT, JDWP_COMMAND_E_COMPOSITE, sp);
-            ec->event.WriteInt(eventCount);
-            for (jint i = 0; i < eventCount; i++) {
-                ec->event.WriteByte(JDWP_EVENT_SINGLE_STEP);
-                ec->event.WriteInt(eventList[i]);
-                ec->WriteThread(jni, thread);
-                ec->event.WriteLocation(jni,
-                    typeTag, eInfo.cls, method, location);
-            }
-            JDWP_TRACE_EVENT("SingleStep: post set of " << eventCount << " events");
-            GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_SINGLE_STEP);
+        // if no SINGLE_STEP events then return from callback
+        if (events->count <= 0) {
+            combinedEvents->Clean(jni);
+            delete combinedEvents;
+            combinedEvents = 0;
+            return;
         }
+
+        // check if extra combined events should be generated: BREAKPOINT, METHOD_EXIT
+        {
+            // check for BREAKPOINT events
+            {
+                combinedKind = CombinedEventsInfo::COMBINED_EVENT_BREAKPOINT;
+                events = &combinedEvents->m_combinedEventsLists[combinedKind];
+                eInfo.kind = JDWP_EVENT_BREAKPOINT;
+                // generate extra events
+                GetRequestManager().GenerateEvents(jni, eInfo, events->count, events->list, sp);
+                JDWP_TRACE_EVENT("HandleSingleStep: BREAKPOINT events:" 
+                    << " count=" << events->count
+                    << ", suspendPolicy=" << sp 
+                    << ", location=" << combinedEvents->m_eInfo.location);
+                // check if corresponding callback should be ignored
+                if (events->count > 0) {
+                    events->ignored = 1;
+                }
+            }
+
+            // check for METHOD_EXIT events
+            if (ENABLE_COMBINED_METHOD_EXIT_EVENT) {
+                if (GetRequestManager().IsMethodExitLocation(jni, eInfo)) {
+                    combinedKind = CombinedEventsInfo::COMBINED_EVENT_METHOD_EXIT;
+                    events = &combinedEvents->m_combinedEventsLists[combinedKind];
+                    eInfo.kind = JDWP_EVENT_METHOD_EXIT;
+                    // generate extra events
+                    GetRequestManager().GenerateEvents(jni, eInfo, events->count, events->list, sp);
+                    JDWP_TRACE_EVENT("HandleSingleStep: METHOD_EXIT events:" 
+                        << " count=" << events->count
+                        << ", suspendPolicy=" << sp 
+                        << ", location=" << combinedEvents->m_eInfo.location);
+                    // check if corresponding callback should be ignored
+                    if (events->count > 0) {
+                        events->ignored = 1;
+                    }
+                }
+            }
+        }
+
+        // post all generated events
+        EventComposer *ec = GetRequestManager().CombineEvents(jni, combinedEvents, sp);
+        JDWP_TRACE_EVENT("HandleSingleStep: post set of " << combinedEvents->GetEventsCount() << " events");
+        GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_SINGLE_STEP);
+
+        // store info about combined events if other callbacks should be ignored
+        if (combinedEvents->GetIgnoredCallbacksCount() > 0) {
+            JDWP_TRACE_EVENT("HandleSingleStep: store combined events for new location:"
+                        << " method=" << eInfo.method
+                        << " loc=" << eInfo.location);
+            GetRequestManager().AddCombinedEventsInfo(jni, combinedEvents);
+        } else {
+            combinedEvents->Clean(jni);
+            delete combinedEvents;
+            combinedEvents = 0;
+        }
+
     } catch (AgentException& e) {
         JDWP_INFO("JDWP error in SINGLE_STEP: " << e.what() << " [" << e.ErrCode() << "]");
     }
@@ -1560,13 +2185,17 @@ void JNICALL RequestManager::HandleFramePop(jvmtiEnv* jvmti, JNIEnv* jni,
             }
             JDWP_ASSERT(method == eInfo.method);
 
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
             char* name = 0;
             JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
             JDWP_TRACE_EVENT("FRAME_POP event:"
                 << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
                 << " method=" << JDWP_CHECK_NULL(name)
                 << " loc=" << eInfo.location
-                << " by_exception=" << was_popped_by_exception);
+                << " by_exception=" << was_popped_by_exception
+                << " thread=" << JDWP_CHECK_NULL(info.name));
         }
 #endif // NDEBUG
 

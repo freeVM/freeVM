@@ -70,6 +70,8 @@ namespace jdwp {
         JavaVM *jvm;
 
         jdwpCapabilities caps;
+        jvmtiExtensionEventInfo* extensionEventClassUnload;
+
         bool volatile isDead;
     };
 }
