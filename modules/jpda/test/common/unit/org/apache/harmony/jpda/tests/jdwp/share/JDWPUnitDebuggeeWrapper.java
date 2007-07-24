@@ -78,8 +78,8 @@ public class JDWPUnitDebuggeeWrapper extends JDWPUnitDebuggeeProcessWrapper {
             logWriter.println("Attach to: " + address);
         }
 
-        String cmdLine = settings.getDebuggeeJavaPath() + " -cp "
-                + settings.getDebuggeeClassPath() + " -agentlib:"
+        String cmdLine = settings.getDebuggeeJavaPath() + " -cp \""
+                + settings.getDebuggeeClassPath() + "\" -agentlib:"
                 + settings.getDebuggeeAgentName() + "="
                 + settings.getDebuggeeAgentOptions(address, isListenConnection)
                 + " " + settings.getDebuggeeVMExtraOptions() + " "
