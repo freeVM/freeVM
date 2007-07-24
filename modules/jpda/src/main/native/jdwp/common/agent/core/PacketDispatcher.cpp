@@ -113,6 +113,9 @@ PacketDispatcher::Run(JNIEnv *jni)
                 // start session and execute commands
                 try
                 {
+                    // inform that new session started
+                    GetEventDispatcher().NewSession();
+        
                     // add internal request for automatic VMDeath event with no modifiers
                     GetRequestManager().AddInternalRequest(jni,
                         new AgentEventRequest(JDWP_EVENT_VM_DEATH, JDWP_SUSPEND_NONE));
@@ -202,7 +205,8 @@ PacketDispatcher::Run(JNIEnv *jni)
         }
         catch (const AgentException& e)
         {
-            JDWP_TRACE_PROG("Run: Exception in stopping EventDispatcher: "
+            // just report an error, cannot do anything else
+            JDWP_ERROR("Exception in stopping EventDispatcher: "
                             << e.what() << " [" << e.ErrCode() << "]");
         }
 

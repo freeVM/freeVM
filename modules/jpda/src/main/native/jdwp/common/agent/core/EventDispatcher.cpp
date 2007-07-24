@@ -151,8 +151,6 @@ void EventDispatcher::Reset(JNIEnv *jni) throw(AgentException) {
         MonitorAutoLock lock(m_invokeMonitor JDWP_FILE_LINE);
         m_invokeMonitor->NotifyAll();
     }
-
-//    m_resetFlag = false;
 }
 
 void EventDispatcher::Stop(JNIEnv *jni) throw(AgentException) {
@@ -238,6 +236,13 @@ void EventDispatcher::ReleaseEvents() throw(AgentException) {
     MonitorAutoLock lock(m_queueMonitor JDWP_FILE_LINE);
     m_holdFlag = false;
     m_queueMonitor->NotifyAll();
+}
+
+void EventDispatcher::NewSession() throw(AgentException) {
+    JDWP_TRACE_ENTRY("NewSession()");
+
+    m_resetFlag = false;
+    m_holdFlag = true;
 }
 
 void EventDispatcher::PostInvokeSuspend(JNIEnv *jni, SpecialAsyncCommandHandler* handler) 

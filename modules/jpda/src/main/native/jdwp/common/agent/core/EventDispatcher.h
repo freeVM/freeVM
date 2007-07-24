@@ -129,6 +129,13 @@ namespace jdwp {
         void ReleaseEvents() throw(AgentException);
 
         /**
+         * Informs that new session started.
+         *
+         * @exception If any error occurs, <code>AgentException</code> is thrown.
+         */
+        void NewSession() throw(AgentException);
+
+        /**
          * Generates new ID for the event packet.
          */
         jint NewId() throw() { return m_idCount++; }
