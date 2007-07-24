@@ -60,24 +60,27 @@
         <property name="hy.samsa.exe"
                   location="${hy.samsa.src.main.native}/samsa/${hy.os.family}/samsa${exe.suffix}" />
 
-        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/javac${exe.suffix}" />
-        <chmod file="${hy.jdk}/bin/javac${exe.suffix}" perm="ugo+x" />
-
-        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/javah${exe.suffix}" />
-        <chmod file="${hy.jdk}/bin/javah${exe.suffix}" perm="ugo+x" />
-
         <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/java${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/java${exe.suffix}" perm="ugo+x" />
 
         <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/javaw${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/java${exe.suffix}" perm="ugo+x" />
 
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/javac${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/javac${exe.suffix}" perm="ugo+x" />
+
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/javah${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/javah${exe.suffix}" perm="ugo+x" />
+
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/javadoc${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/javadoc${exe.suffix}" perm="ugo+x" />
+
         <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/keytool${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/keytool${exe.suffix}" perm="ugo+x" />
 
         <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/jarsigner${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/jarsigner${exe.suffix}" perm="ugo+x" />
-        
+
     </target>
 
     <!-- copy samsa symbol info for different tools -->
@@ -86,9 +89,11 @@
         <property name="hy.samsa.progdb"
                   location="${hy.samsa.src.main.native}/samsa/${hy.os.family}/samsa${progdb.suffix}" />
 
+        <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/java${progdb.suffix}" />
+        <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/javaw${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/javac${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/javah${progdb.suffix}" />
-        <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/java${progdb.suffix}" />
+        <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/javadoc${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/keytool${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/jarsigner${progdb.suffix}" />
 
@@ -135,6 +140,13 @@
         <echo message="Run jdk/bin/javah in ${hy.tests.reports}"/>
         <exec failonerror="false"
 	        executable="${test.jre.home}/../bin/javah${exe.suffix}"
+	        dir="${hy.tests.reports}">
+	    <arg line="" />
+        </exec>
+
+        <echo message="Run jdk/bin/javadoc in ${hy.tests.reports}"/>
+        <exec failonerror="false"
+	        executable="${test.jre.home}/../bin/javadoc${exe.suffix}"
 	        dir="${hy.tests.reports}">
 	    <arg line="" />
         </exec>
