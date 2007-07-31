@@ -14,19 +14,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package java.util.concurrent.locks;
 
-/**
- * @author Xiao-Feng Li, 2006/10/05
- */
+public class LockSupport {
 
-#ifndef INTERIOR_POINTER_H
-#define INTERIOR_POINTER_H 
+    public static native void unpark(Thread thread);    
+    
+    public static native void park();    
+    
+    public static native void parkNanos(long nanos);    
+    
+    public static native void parkUntil(long deadline);
+}
 
-#include "gc_common.h"
-
-void add_root_set_entry_interior_pointer(void **slot, int offset, Boolean is_pinned);
-void gc_copy_interior_pointer_table_to_rootset();
-void update_rootset_interior_pointer();
-void gc_reset_interior_pointer_table();
-
-#endif //INTERIOR_POINTER_H
