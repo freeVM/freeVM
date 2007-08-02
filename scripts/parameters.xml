@@ -46,11 +46,16 @@
             description="Do always notify Run Status or only when status is changed"
             value="true"/>
         <to description="E-Mail address to send notifications to"/>
+        <bcc description="list of recipients to receive blind copies of notifications"
+             value=""/>
         <suppress.exelogs description="Define this property to suppress the execution logs publishing."/>
         <from description="E-Mail address to send notifications from"/>
         <subject.prefix 
             description="Subject prefix of E-Mail Notifications"
             value="[build-test alert]"/>
+        <subject.suffix
+            description="Subject suffix of E-Mail Notifications"
+            value=""/>
     </usemail>
 
     <external>

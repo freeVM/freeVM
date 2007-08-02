@@ -41,8 +41,8 @@
     </condition>
 
     <condition property="mail.execution.status"
-               value="BUILD PASSED"
-               else="BUILD FAILED">
+               value="PASSED"
+               else="FAILED">
         <istrue value="${thisbuildsuccessful}"/>
     </condition>
 
@@ -65,7 +65,7 @@
     <!-- compose subject line -->
     <property name="mail.subject.suffix" value=""/>
     <property name="mail.subject.line"
-              value="${mail.subject.prefix} ${mail.execution.status} ${os.name} ${mail.os.arch}: ${suite.name}${mail.subject.suffix}"/>
+              value="${mail.subject.prefix} ${mail.execution.status} ${os.name} ${mail.os.arch}: ${suite.name} ${mail.subject.suffix}"/>
 
     <!-- implement publisher interface -->
     <target name="publish" if="do.mail">
@@ -73,6 +73,7 @@
         <log message="    Sending mail notification:"/>
         <log message="        smtp: '${mail}'"/>
         <log message="        to: '${mail.to}'"/>
+        <log message="        bcc: '${mail.bcc}'"/>
         <log message="        from: '${mail.from}'"/>
         <log message="    Files to attach: ${mail.attachs}"/>
         <log message="    Execution logs file: ${mail.execution.log}"/>
@@ -102,6 +103,7 @@
             <mail mailhost="${mail}"
                   tolist="${mail.to}"
                   from="${mail.from}"
+                  bcclist="${mail.bcc}"
                   subject="${mail.subject.line}"
                   files="${mail.attachs},${mail.execution.log}">
                 <message>${mail.summary.content}${mail.message.content}</message>
@@ -130,6 +132,7 @@ Test Suite '${suite.name}' execution status: ${mail.execution.status}
         <sequential>
             <mail mailhost="${mail}"
                   tolist="${mail.to}"
+                  bcclist="${mail.bcc}"
                   from="${mail.from}"
                   subject="${mail.subject.line}">
                 <message>
