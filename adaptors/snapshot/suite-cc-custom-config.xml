@@ -63,6 +63,7 @@
                  target='publish-${project.name}'>
                 <property name='results.dir' value='${results.dir}'/>
                 <property name='checkouts.dir' value='${checkouts.dir}'/>
+                <property name='cc.log.dir' value='${cc.log.dir}'/>
             </antpublisher>
         </publishers>
 

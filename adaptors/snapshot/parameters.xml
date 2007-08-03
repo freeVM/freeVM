@@ -1,9 +1,5 @@
 <parameters>
 
-    <required>
-        <file value="${snapshot.file}" />
-    </required>
-
     <shared>
         <results.dir value="${checkouts.dir}/snapshot/results"/>
         <jre value="${checkouts.dir}/snapshot/hdk/jdk/jre"/>
@@ -12,5 +8,9 @@
         <svn.revision.file location="${checkouts.dir}/snapshot/svn.revision"/>
     </shared>
 
-    <cc config="${adaptors.dir}/${suite.name}/snapshots-cc-config.xml"/>
+    <mail summary="${svn.revision.file}"/>
+
+    <cc trigger="${snapshot}/${snapshot.file}"
+        bootstrapper="${suite.adaptor.dir}/adaptor.xml"
+    />
 </parameters>
