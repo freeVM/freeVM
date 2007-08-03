@@ -1,0 +1,355 @@
+#!/usr/bin/perl -w
+
+=head1 NAME
+
+check-junit-code - suggest best practice for Junit test code
+
+=head1 SYNOPSIS
+
+  # print usage
+  check-junit-code -h
+
+  # check Test.java
+  check-junit-code Test.java
+
+  # check all files under the directory src/test but only report on
+  # issues involving assertEquals
+  check-junit-code -p assertEquals src/test
+
+  # check all files under the directory modules and only print the
+  # summary of findings to stderr
+  check-junit-code modules >/dev/null
+
+=head1 DESCRIPTION
+
+This tool attempts to highlight possible areas for improvement in
+Junit usage in existing test code.  It prints the findings to stdout
+and prints a summary of the issues found to stderr.
+
+Typical issues highlighted are:
+
+=over 4
+
+=item actual may be a constant
+
+The order of assertEquals arguments should be the I<expected> value
+followed by the I<actual> value being tested.  This type of issue
+means that the I<actual> value argument looks like it might be a
+constant which means that it is likely that the arguments are in the
+wrong order.  Having arguments in the wrong order leads to very confusing
+Junit failure messages.  For example:
+
+  assertEquals(buf.position(), 0);
+
+should be:
+
+  assertEquals(0, buf.position());
+
+=item should possibly use assertEquals
+
+The failure messages from Junit give more information if assertEquals is
+used in place of, for instance, "assertTrue(A == B)".  For example:
+
+  assertTrue(buf.hashCode() == readonly.hashCode());
+
+could be more helpfully written as:
+
+  assertEquals(buf.hashCode(), readonly.hashCode());
+
+=item consider using separate asserts for each '&&' component
+
+An assert written as:
+
+  assertTrue("A or B failed", A && B);
+
+could be more helpfully written as:
+
+  assertTrue("A failed", A);
+  assertTrue("B failed", B);
+
+=item exception may be left to junit
+
+It is possible that failure messages about 'unexpected exceptions' are
+better removed and left to be caught by Junit's execption handling
+functions which typically give more useful error messages.
+
+=item expected is true - should use assertTrue
+
+Often assertEquals is used to test for true when it would be better to
+use assertTrue.  Similar warnings are issued about the false and null.
+
+=item should be fail (always true/false)
+
+Constant asserts such as:
+
+  assertFalse(true);
+  assertTrue(false);
+
+should probably be written using:
+
+  fail();
+
+=back
+
+=head1 BUGS
+
+Almost certainly. It's not a full parser so it will be inaccurate.
+Patches welcome.
+
+=head1 AUTHOR
+
+Mark Hindess, C<mark dot hindess at gmail dot com>
+
+=cut
+
+use strict;
+use FileHandle;
+use File::Find;
+use Text::Balanced qw/extract_delimited/;
+use Getopt::Std;
+my %o;
+getopts('hp:', \%o);
+
+if (!@ARGV or exists $o{'h'}) {
+  die <<EOM;
+Usage: $0 [options] <list of Junit test files or directories>
+where valid options are:
+  -p pattern  - only report on issues matching pattern - useful if you
+                get too many results to deal with at once
+
+The verbose list of issues is printed to stdout and a summary is printed
+on stderr so you can just see the summary with:
+  $0 src/test >/dev/null
+
+EOM
+}
+
+my $pattern = $o{'p'};
+my %types =
+  (
+   assertEquals => \&check_assertEquals,
+   assertTrue => \&check_assertTrue,
+   assertFalse => \&check_assertFalse,
+   fail => \&check_fail,
+  );
+my %stats = ();
+
+sub check;
+
+foreach (@ARGV) {
+  if (-f $_) {
+    check_junit($_, \%stats);
+  } else {
+    File::Find::find({ wanted => \&find_check }, $_);
+  }
+}
+
+my @types = keys %{$stats{type}};
+unless (@types) {
+  print STDERR "No issues identified\n";
+  exit;
+}
+
+print STDERR "Types of issue identified\n\n";
+foreach (sort { $stats{type}->{$b} <=> $stats{type}->{$a} } @types) {
+  printf STDERR "%8d %s\n", $stats{type}->{$_}, $_;
+}
+print STDERR "\n\n";
+
+my @modules = keys %{$stats{module}};
+if (scalar @modules > 1) {
+  print STDERR "Number of Issues by module\n\n";
+  foreach (sort { $stats{module}->{$b} <=> $stats{module}->{$a} } @modules) {
+    printf STDERR "%8d %s\n", $stats{module}->{$_}, $_;
+  }
+} else {
+  print STDERR "Number of Issues by file\n\n";
+  foreach (sort { $stats{file}->{$a} <=> $stats{file}->{$b}
+                } keys %{$stats{file}}) {
+    printf STDERR "%8d %s\n", $stats{file}->{$_}, $_;
+  }
+}
+
+sub find_check {
+  # ignore .svn directories (and files if there were any)
+  if (/^\.svn$/) {
+    $File::Find::prune = 1;
+    return;
+  }
+
+  # harmony specific - to short cut searching non-test directories
+  if ($File::Find::name =~ m!src/! && $File::Find::name !~ m!src/test!) {
+    $File::Find::prune = 1;
+    return;
+  }
+
+  # ignore if it's not a file
+  return unless (-f $_);
+
+  # ignore if it's not .java
+  return unless (/\.java$/);
+
+  # call the junit checker and pass basename as third argument since
+  # File::Find has changed directory to where the file is
+  check_junit($File::Find::name, \%stats, $_);
+}
+
+sub check_junit {
+  my $file = shift;
+  my $stats = shift;
+  my $local_name = shift || $file;
+  my $fh = FileHandle->new($local_name) or
+    do { warn "Failed to open $file: $!\n"; return };
+
+  # want to read the whole file here, but rather than slurp the whole
+  # file, we read it line by line and create a map so that we can get
+  # the line numbers back after doing the multiline matches below.
+  my $pos = 0;
+  my $c = "";
+  my %pos_to_line_map = ();
+  while (<$fh>) {
+    $c .= $_;
+    $pos_to_line_map{$pos} = $fh->input_line_number();
+    $pos += length;
+  }
+  while ($c =~ /\n(\s*(?:fail|assert\w+)\s*\([^;]+\);)/g) {
+    my $assert = $1;
+    my $pos = pos($c) - length($assert);
+    my $line = $pos_to_line_map{$pos} || "?";
+    compress_white_space($assert);
+    my ($type, $args) = ($assert =~ /^(fail|assert\w+)\s*\(([^;]+)\);$/);
+    my $msg = trim_message_argument($args);
+    my $fn = $types{$type};
+    if ($fn) {
+      my $res = $fn->($type, $msg, $args);
+      if ($res && (!$pattern or $res =~ /$pattern/o)) {
+        print $file,' line ',$line,":\n  ",$assert,"\n  ",$res,"\n\n";
+        $stats->{type}->{$res}++;
+        $stats->{file}->{$file}++;
+        if ($file =~ m!modules/([^/]+)/!) {
+          $stats->{module}->{$1}++;
+        }
+      }
+    }
+  }
+}
+
+sub compress_white_space {
+  $_[0] =~ s/[\r\n\s]+/ /g;
+  $_[0] =~ s/^\s+//g;
+  $_[0] =~ s/\s+$//;
+  $_[0] =~ s/\s+\./\./;
+}
+
+sub trim_message_argument {
+  my $message;
+  while ($_[0]) {
+    my $part;
+    ($part, $_[0]) = extract_delimited($_[0], q{"});
+    last unless ($part);
+    $message .= $part;
+    $_[0] =~ s/^\s*,\s*// and last;
+    $_[0] =~ s/^(\s*\+\s*[^\,\+]+\s*\+?\s*)// and $message .= $1;
+    $_[0] =~ s/^\s*,\s*//;
+  }
+  return $message;
+}
+
+sub check_fail {
+  my $type = shift;
+  my $message = shift;
+  my $args = shift;
+  if ($message and
+      ( $message =~ /(got|unexpected|wrong).*exception/i or
+        $message =~ /^exception during/i ) ) {
+    return "exception may be left to junit";
+  }
+}
+
+sub check_assertEquals {
+  my $type = shift;
+  my $message = shift;
+  my $args = shift;
+  my @args = split(/,/, $args); # takes no account of nested commas in arguments
+  my $num_args = scalar @args;
+  my $simple = $num_args == 2;
+  foreach (@args) {
+    s/^\s+//;
+    s/\s+$//;
+  }
+  my $first = $args[0];
+  my $last = $args[$#args];
+  if ($last eq 'null') {
+    return "actual is null which is constant but should use assertNull";
+  } elsif ($last eq 'false') {
+    return "actual is false which is constant but should use assertFalse";
+  } elsif ($last eq 'true') {
+    return "actual is true which is constant but should use assertTrue";
+  } elsif ($first eq 'null') {
+    return "expected is null - should use assertNull";
+  } elsif ($first eq 'false') {
+    return "expected is false - should use assertFalse";
+  } elsif ($first eq 'true') {
+    return "expected is true - should use assertTrue";
+  } elsif ($simple and
+           ( $last =~ /^"[^"]*"$/ or
+             $last =~ /^'[^']+'$/ or
+             $last =~ /^[-0-9]+L?$/ )
+          ) {
+    return "actual may be a constant";
+  } elsif (( $last =~ /^"[^"]*"$/ or
+             $last =~ /^'[^']+'$/ or
+             $last =~ /^[-0-9]+L?$/ ) and
+           not ( $first =~ /^"[^"]*"$/ or
+                 $first =~ /^'[^']+'$/ or
+                 $first =~ /^[-0-9\.]+f?$/ ) and
+           $args !~ /(float|double)/i
+          ) {
+    return "actual *may* be a constant";
+  }
+}
+
+sub check_assertTrue {
+  my $type = shift;
+  my $message = shift;
+  my $args = shift;
+  if ($args eq "false") {
+    return "should be fail (always true)";
+  } elsif ($args =~ /\&\&/) {
+    return "consider using separate asserts for each '&&' component";
+  } elsif ($args =~ /^[^|&]+==\s*null$/ or
+           $args =~ /^\s*null\s*==[^|&]+$/) {
+    return "should use assertNull";
+  } elsif ($args =~ /^[^|&]+==\s*true$/ or
+           $args =~ /^\s*true\s*==[^|&]+$/) {
+    return "should use assertTrue";
+  } elsif ($args =~ /^[^|&]+==\s*false$/ or
+           $args =~ /^\s*false\s*==[^|&]+$/) {
+    return "should use assertFalse";
+  } elsif ($args =~ /Arrays\.equals/) {
+    return;
+  } elsif ($args =~ /^[^!|&]+\.equals[^|&]+$/ or
+           $args =~ /^[^|&]+==[^|&]+$/) {
+    return "should possibly use assertEquals";
+  }
+}
+
+sub check_assertFalse {
+  my $type = shift;
+  my $message = shift;
+  my $args = shift;
+  if ($args eq "true") {
+    return "should be fail (always false)";
+  } elsif ($args =~ /^[^|&]+!=\s*null$/ or
+           $args =~ /^\s*null\s*!=[^|&]+$/) {
+    return "should use assertNotNull";
+  } elsif ($args =~ /^[^|&]+!=\s*true$/ or
+           $args =~ /^\s*true\s*!=[^|&]+$/) {
+    return "should use assertFalse";
+  } elsif ($args =~ /^[^|&]+!=\s*false$/ or
+           $args =~ /^\s*false\s*!=[^|&]+$/) {
+    return "should use assertTrue";
+  } elsif ($args =~ /\|\|/) {
+    return "consider using separate asserts for each '||' component";
+  }
+}
