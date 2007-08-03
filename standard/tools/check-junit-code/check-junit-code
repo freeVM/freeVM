@@ -129,6 +129,7 @@ my %types =
   (
    assertEquals => \&check_assertEquals,
    assertTrue => \&check_assertTrue,
+   assertNotNull => \&check_assertNotNull,
    assertFalse => \&check_assertFalse,
    fail => \&check_fail,
   );
@@ -313,8 +314,13 @@ sub check_assertTrue {
   my $type = shift;
   my $message = shift;
   my $args = shift;
+  if ($args =~ /,\s*"[^"]+"\s*$/) {
+    return "final string argument?";
+  }
   if ($args eq "false") {
     return "should be fail (always true)";
+  } elsif ($args eq "true") {
+    return "never fails (always true)";
   } elsif ($args =~ /\&\&/) {
     return "consider using separate asserts for each '&&' component";
   } elsif ($args =~ /^[^|&]+==\s*null$/ or
@@ -338,8 +344,13 @@ sub check_assertFalse {
   my $type = shift;
   my $message = shift;
   my $args = shift;
+  if ($args =~ /,\s*"[^"]+"\s*$/) {
+    return "final string argument?";
+  }
   if ($args eq "true") {
     return "should be fail (always false)";
+  } elsif ($args eq "false") {
+    return "never fails (always false)";
   } elsif ($args =~ /^[^|&]+!=\s*null$/ or
            $args =~ /^\s*null\s*!=[^|&]+$/) {
     return "should use assertNotNull";
@@ -351,5 +362,16 @@ sub check_assertFalse {
     return "should use assertTrue";
   } elsif ($args =~ /\|\|/) {
     return "consider using separate asserts for each '||' component";
+  }
+}
+
+sub check_assertNotNull {
+  my $type = shift;
+  my $message = shift;
+  my $args = shift;
+  if ($args =~ /,\s*"[^"]+"\s*$/) {
+    return "final string argument?";
+  } elsif ($args eq 'null') {
+    return "should be fail (always null)";
   }
 }
