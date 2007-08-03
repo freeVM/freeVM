@@ -106,7 +106,7 @@
                   bcclist="${mail.bcc}"
                   subject="${mail.subject.line}"
                   files="${mail.attachs},${mail.execution.log}">
-                <message>${mail.summary.content}${mail.message.content}</message>
+                <message>${mail.summary.content}${line.separator}${mail.message.content}</message>
             </mail>
         </try>
         <catch>

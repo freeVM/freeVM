@@ -116,6 +116,18 @@ ${exception}
              inheritAll="true"/>
     </target>
     
+    <!-- Called from CC to execute custom bootstrapper -->
+    <target name="cc-bootstrap" 
+            depends="define-ant-contrib"
+            unless="${suite.name}.parameters.run.skipped">
+        <dirname property="bootstrapper.dir" file="${bootstrapper.location}"/>
+        <log message="Calling Custom Bootstrapper ${publisher.location} at ${publisher.dir} for ${suite.name}"/>
+        <ant dir="${bootstrapper.dir}" 
+             antfile="${bootstrapper.location}" 
+             target="bootstrap"
+             inheritAll="true"/>
+    </target>
+    
     <!-- Called from CC to launch the default ant publisher for test suite -->
     <target name="cc-publish" 
             depends="define-ant-contrib"

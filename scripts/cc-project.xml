@@ -164,6 +164,19 @@
                     ccfile="${@{suite.name}.parameters.cc.file.location}"
                 />
                 
+                <!-- insert custom bootstrapper -->
+                <if>
+                    <isset property="@{suite.name}.parameters.cc.bootstrapper"/>
+                <then>
+                    <insert-custom-bootstrapper
+                        suite="@{suite.name}"
+                        ccfile="${@{suite.name}.parameters.cc.file.location}"
+                        bootstrapper="${@{suite.name}.parameters.cc.bootstrapper}"
+                        antpropsfile="${tmp.ant-props-file}"
+                    />
+                </then>
+                </if>
+
                 <insert-modification-sets
                     suite="@{suite.name}"
                     ccfile="${@{suite.name}.parameters.cc.file.location}"
@@ -401,6 +414,33 @@
         </sequential>
     </macrodef>
 
+    <!-- insert custom bootstrapper -->
+    <macrodef name="insert-custom-bootstrapper">
+        <attribute name="suite"/>
+        <attribute name="ccfile"/>
+        <attribute name="bootstrapper"/>
+        <attribute name="antpropsfile"/>
+        <sequential>
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="&lt;!-- @BT.BOOTSTRAPPER@ --&gt;"
+                    value="
+           &lt;antbootstrapper@NL@
+                anthome='${ant.home}'@NL@
+                timeout='${framework.parameters.cc.timeout}'@NL@
+                antWorkingDir='${root.dir}'@NL@
+                buildfile='${root.dir}/scripts/cc-exec-adaptor.xml'@NL@
+                target='cc-bootstrap'&gt;@NL@
+               &lt;property name='suite.name' value='@{suite}'/&gt;@NL@
+               &lt;property name='bootstrapper.location' value='@{bootstrapper}'/&gt;@NL@
+               &lt;property name='properties.dump.file'@NL@
+                         value='@{antpropsfile}'/&gt;@NL@
+           &lt;/antbootstrapper&gt;@NL@
+           &lt;!-- @BT.BOOTSTRAPPER@ --&gt;"/>
+            </replace>
+        </sequential>
+    </macrodef>
+
     <!-- insert modification sets defined for test suite 
          see: test-insert-modification-sets for unit test -->
     <macrodef name="insert-modification-sets">
@@ -470,7 +510,7 @@
             <replace file="@{ccfile}">
                 <replacefilter 
                     token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;" 
-                    value="&lt;filesystem folder='@{triggerfile}'/&gt;@NL@
+                    value="&lt;filesystem folder='@{triggerfile}' username=''/&gt;@NL@
            &lt;!-- @BT.MODIFICATIONSET@ --&gt;"
                 />
             </replace>
