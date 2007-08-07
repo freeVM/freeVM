@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<parameters depends="hdk">
+
+    <!-- required -->
+    <required>
+        <!-- path to JRE under test -->
+        <tested.runtime
+            description="Path to JRE under test"
+            value="${hdk.parameters.shared.binaries.jre.dir}"/>
+    </required>
+
+    <!-- shared values -->
+    <shared>
+    </shared>
+
+    <!-- optional values -->
+    <optional>
+        <tested.vm.options
+            description="Options to pass to JVM under test"
+            value="-showversion -Xmx1024m -XX:vm.assert_dialog=false"/>
+        <eut.location
+            description="URL to fetch Eclipse Unit Tests archive"
+            value="http://download.eclipse.org/eclipse/downloads/drops/R-3.3-200706251500/"/>
+        <eut.filename
+            description="Eclipse Unit Tests archive filename"
+            value="eclipse-Automated-Tests-3.3.zip"/>
+        <eclipse.location
+            description="URL to fetch Eclipse"
+            value="http://download.eclipse.org/eclipse/downloads/drops/R-3.3-200706251500/"/>
+        <eclipse.filename.prefix
+            description="OS and architecture independent Eclipse archive filename prefix"
+            value="eclipse-SDK-3.3"/>
+        <eclipse.buildid
+            description="Eclipse SDK build Id"
+            value="3.3"/>
+        <timeout
+            description="Time to wait before killing testsuite run by timeout, milliseconds"
+            value="7200000"/>
+        <ws
+            description="Windowing system (should be specified on Linux when it differs from the default GTK ws)"/>
+        <tests
+            description="Comma-separated list of test suites to run"/>
+        <cvs_user
+            description="CVS user, specify to run Team CVS tests"/>
+        <cvs_password
+            description="CVS password, specify to run Team CVS tests"/>
+        <cvs_host
+            description="CVS host, specify to run Team CVS tests"/>
+        <cvs_root
+            description="CVS repository path, specify to run Team CVS tests"/>
+    </optional>
+
+    <!-- CC specific configuration -->
+    <cc summary="${checkouts.dir}/eut/report.txt"/>
+</parameters>

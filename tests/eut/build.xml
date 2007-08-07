@@ -37,15 +37,11 @@
     <!-- Test suite specific properties -->
     <property name="tests" value=""/>
 
-    <property name="eut.filename" value="eclipse-Automated-Tests-3.2.zip"/>
-
     <!-- Properties that can be optionally set outside this build.xml file -->
     <property name="result.dir" value="${basedir}/results"/>
     <property name="res.dir" value="${result.dir}/${timestamp}"/>
 
     <property name="vm.options" value=""/>
-    <!-- Deafult value -->
-    <property name="timeout" value="7200000"/>
 
     <condition property="cvs.settings.specified">
         <and>
@@ -53,6 +49,13 @@
             <isset property="cvs_password"/>
             <isset property="cvs_host"/>
             <isset property="cvs_root"/>
+        </and>
+    </condition>
+
+    <!-- Define Eclipse Automated Test version specific properties -->
+    <condition property="is.eut32">
+        <and>
+            <equals arg1="${eclipse.buildid}" arg2="3.2"/>
         </and>
     </condition>
 
@@ -212,8 +215,8 @@
 
     <target name="patch.linux.x86_64" if="is.linux.x86_64">
         <replace file="${eut.work.dir}/runtests"
-            token="$vm -jar eclipse/startup.jar -Dosgi.ws=$ws"
-            value="$vm -jar eclipse/startup.jar -DsetupTarget=setup-tar.gz -DruntimeArchive=${eclipse.filename} -Dosgi.ws=$ws"/>
+            token="$vm -jar eclipse/${startup.jar} -Dosgi.ws=$ws"
+            value="$vm -jar eclipse/${startup.jar} -DsetupTarget=setup-tar.gz -DruntimeArchive=${eclipse.filename} -Dosgi.ws=$ws"/>
     </target>
 
     <target name="patch.runtests.display" if="is.linux">
@@ -229,7 +232,8 @@
         </echo>
    </target>
 
-    <target name="patch.test.xml"
+   <!-- EUT32 specific replacement... -->
+   <target name="patch.test.xml" if="is.eut32"
         description="Modify EUT test.xml configuration file to always use J2SE-5.0">
         <replace file="${eut.work.dir}/test.xml">
             <replacetoken><![CDATA[<param name="testPlugin"]]></replacetoken>
@@ -264,7 +268,7 @@
 
      <target name="delete.properties.file"
         description="Delete old eclipse-testing/properties.file">
-        <delete file="${eut.work.dir}/properties.file"  failonerror="false"/>
+        <delete file="${eut.work.dir}/properties.file" failonerror="false"/>
     </target>
 
     <target name="configure.properties.file.teamcvs"
@@ -280,7 +284,7 @@
 
     <target name="configure.properties.file.common"
         description="Specify the path to JRE under test and other properties">
-        <delete file="${eut.work.dir}/properties.file"  failonerror="false"/>
+        <delete file="${eut.work.dir}/properties.file" failonerror="false"/>
         <echo file="${eut.work.dir}/properties.file" append="true">
             J2SE-5.0=${test.jre.home.path}/bin/java
             extraVMargs=${vm.options}
@@ -375,46 +379,29 @@
 
     <!-- Process run results and compose report taking into account efl -->
     <target name="compose.report"
-        depends="configure.efl,setup.efl,compose.report.header,compose.report.print.unexpected,compose.report.fatal.failure.message"
+        depends="setup.efl,compose.report.header,compose.report.print.unexpected,compose.report.fatal.failure.message"
         description="Process run results and compose report taking into account efl">
     </target>
 
-    <!-- Look for os specific efl or use the empty one if necessary -->
-    <target name="configure.efl">
-        <condition property="os.specific.efl.exists">
-            <available file="${basedir}/efl.${os}.${arch}"/>
+    <!-- Concats EFL files for specific platform -->
+     <target name="setup.efl"
+        description="Combine a platform specific EFL file or create an empty one">
+        <condition property="efl.pref" value="eut32" else="eut33">
+            <isset property="is.eut32"/>
         </condition>
-        <condition property="efl" value="efl.${os}.${arch}"
-            else="efl.empty">
-            <isset property="os.specific.efl.exists"/>
-        </condition>
-    </target>
-
-    <target name="setup.efl"
-        depends="setup.empty.efl,setup.non-empty.efl"
-        description="Process efl if there is one or create the empty efl">
-    </target>
-
-    <target name="setup.empty.efl" unless="os.specific.efl.exists">
-        <!-- Create empty expected failures list in order to use if
-        no expected failures lists for the platform are specified -->
-        <delete file="${tmp.dir}/${efl}"/>
-        <touch file="${tmp.dir}/${efl}"/>
-        <copy file="${tmp.dir}/${efl}" tofile="${tmp.dir}/efl.work" overwrite="true"/>
-    </target>
-
-    <target name="setup.non-empty.efl" if="os.specific.efl.exists">
-        <!-- Copy efl and remove comments -->
-        <copy file="${basedir}/${efl}"
-            tofile="${tmp.dir}/efl.work"
-            overwrite="true"
-            failonerror="false">
+        <delete file="${tmp.dir}/work.efl"/>
+        <touch file="${tmp.dir}/work.efl"/>
+        <concat destfile="${tmp.dir}/work.efl">
+            <filelist dir="${basedir}"
+                    files="${efl.pref}.efl ${efl.pref}.${os}.efl
+                    ${efl.pref}.${os}.${arch}.efl" />
             <filterchain>
                 <tokenfilter>
+                    <!-- EUT32/EUT33 universal pattern -->
                     <replaceregex pattern="(.*?)#.*" replace="\1" flags="m"/>
                 </tokenfilter>
             </filterchain>
-        </copy>
+        </concat>
     </target>
 
     <!-- Print arch, os and JRE under test info to report file -->
@@ -567,7 +554,13 @@
         <echo message="EUT passed!"/>
    </target>
 
-   <!-- Auxiliary results post-process tasks -->
+    <!-- Auxiliary results post-process tasks -->
+    <condition property="running.pattern" 
+      value=".*(org.eclipse[\.|\w]+).*"
+      else=".*(org.eclipse[\.|\w]+)\.\ Result.*">
+      <isset property="is.eut32"/>
+    </condition>
+
     <target name="compose.report.crashes"
         description="Compose the list of unexpected crashes and its number"
         if="all.output.available">
@@ -580,7 +573,7 @@
                     <contains value="Running org.eclipse." />
                 </linecontains>
                 <tokenfilter>
-                    <containsregex pattern=".*(org.eclipse[\.|\w]+).*"
+                    <containsregex pattern="${running.pattern}"
                         replace="\1"
                         flags=""/>
                 </tokenfilter>
@@ -592,6 +585,7 @@
             <fileset dir="${eut.work.dir}/results/xml" includes="*.xml"/>
                <filterchain>
                 <tokenfilter>
+                    <!-- EUT32/EUT33 universal pattern -->
                     <containsregex pattern=".*?testsuite.*name=&quot;(.*?)&quot;.*package=&quot;(.*?)&quot;.*"
                         replace="\2.\1"
                         flags="mg"/>
@@ -613,7 +607,7 @@
             tofile="${tmp.dir}/tmpfile.unexpected.crash"
             overwrite="true"/>
         <replace file="${tmp.dir}/tmpfile.unexpected.crash"
-            replacefilterfile="${tmp.dir}/efl.work"
+            replacefilterfile="${tmp.dir}/work.efl"
             token="fake_token"
             value="fake_token">
         </replace>
@@ -635,6 +629,7 @@
             overwrite="true">
             <filterchain>
                 <tokenfilter>
+                    <!-- EUT32/EUT33 universal pattern -->
                     <replaceregex pattern="^.*$" replace="+" flags="mg"/>
                 </tokenfilter>
             </filterchain>
@@ -648,6 +643,24 @@
         </copy>
     </target>
 
+    <condition property="testcase.pattern" 
+      value="\s*&lt;testcase.*?&gt;\s*&lt;\/testcase&gt;\s*"
+      else="\s*&lt;testcase.*?\/&gt;\s*">
+      <isset property="is.eut32"/>
+    </condition>
+
+    <condition property="property.pattern" 
+      value="\s*&lt;property.*?&gt;\s*&lt;\/property&gt;\s*"
+      else="\s*&lt;property.*?\/&gt;\s*">
+      <isset property="is.eut32"/>
+    </condition>
+
+    <condition property="expected.pattern" 
+      value="\s*EXPECTED&lt;testcase.*?&lt;\/testcase&gt;"
+       else="\s*EXPECTED&lt;testcase.*?\/&gt;">
+      <isset property="is.eut32"/>
+    </condition>
+
     <target name="compose.report.pre-process.failures.and.errors"
         description="Pre-processing results to compose the list of unexpected failures and errors and its number"
         if="all.output.available">
@@ -660,12 +673,12 @@
             <fileset dir="${eut.work.dir}/results/xml" includes="*.xml"/>
              <filterchain>
                 <tokenfilter>
-                    <replaceregex pattern='\s*&lt;testcase.*?&gt;\s*&lt;\/testcase&gt;\s*'
+                    <replaceregex pattern='${testcase.pattern}'
                         replace=""
                         flags="mg"/>
                 </tokenfilter>
                 <tokenfilter>
-                    <replaceregex pattern='\s*&lt;property.*?&gt;\s*&lt;\/property&gt;\s*'
+                    <replaceregex pattern='${property.pattern}'
                         replace=""
                         flags="mg"/>
                 </tokenfilter>
@@ -678,11 +691,12 @@
             eol="unix"
             includes="tmpfile.failures.errors.testcases"
         />
-        <!-- Make copy of efl.work with replace pattern in order to match expected failures -->
-        <copy file="${tmp.dir}/efl.work" tofile="${tmp.dir}/tmpfile.efl.work.pattern">
+        <!-- Make copy of work.efl with replace pattern in order to match expected failures -->
+        <copy file="${tmp.dir}/work.efl" tofile="${tmp.dir}/tmpfile.work.efl.pattern">
             <filterchain>
                 <tokenfilter>
-                    <replaceregex pattern='(.*)\.([a-z].*)'
+                   <!-- EUT32/EUT33 universal pattern -->
+                   <replaceregex pattern='(.*)\.([a-z].*)'
                         replace='&lt;testcase\\\\\\\ classname\\\\\\\=\\\\\\\"\1\\\\\\\"\\\\\\\ name\\\\\\\=\\\\\\\"\2\\\\\\\"=EXPECTED&lt;testcase classname="\1" name="\2"'
                         flags="mg"/>
                 </tokenfilter>
@@ -690,12 +704,13 @@
         </copy>
         <!-- Mark all expected failures and errors -->
         <replace file="${tmp.dir}/tmpfile.failures.errors.testcases"
-            replacefilterfile="${tmp.dir}/tmpfile.efl.work.pattern"
+            replacefilterfile="${tmp.dir}/tmpfile.work.efl.pattern"
             token="fake_token"
             value="fake_token"/>
         <!-- Remove all expected failures and errors -->
         <copy file="${tmp.dir}/tmpfile.failures.errors.testcases"
             tofile="${tmp.dir}/tmpfile.unexpected.failures.errors.testcases"/>
+            <!-- EUT32/EUT33 universal pattern -->
         <replaceregexp file="${tmp.dir}/tmpfile.unexpected.failures.errors.testcases"
             match='\s*EXPECTED&lt;testcase.*?&lt;\/testcase&gt;'
             replace=''
@@ -716,6 +731,7 @@
         </fail>
         <copy file="${tmp.dir}/tmpfile.unexpected.failures.errors.testcases" tofile="${tmp.dir}/tmpfile.unexpected.${type}"/>
         <!-- Mark testcases -->
+        <!-- EUT32/EUT33 universal pattern -->
         <replaceregexp
             file="${tmp.dir}/tmpfile.unexpected.${type}"
             match='\s*&lt;testcase\s*classname="(\S*?)"\s*name="([\S ]*?)"[\S ]*?&gt;\s*&lt;${type}.*?&gt;(.*?)&lt;\/${type}&gt;.*?&lt;\/testcase&gt;\s*'

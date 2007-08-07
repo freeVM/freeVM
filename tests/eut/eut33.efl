@@ -1,0 +1,144 @@
+#
+# This file contains the Expected Failure List (EFL) of EUT3.3 tests 
+# for the run on Harmony DRLVM on any platform.
+#
+# This file is used for generating results/<date>/report.txt file
+# by ./build.xml using information from 
+# results/<date>/results/xml/*.xml and results/<date>/output.txt
+#
+# The following rules are used to create this file:
+#
+# - specify test suite name to expect failure for all tests in suite, like
+#   "org.eclipse.team.tests.ccvs.core.AllTests"
+# - specify particular test name to expect its failure, the test name 
+#   is to be taken from results/<date>/results/xml/*.xml, like
+#   "org.eclipse.jdt.core.tests.compiler.regression.LookupTest.test044 - 1.4"
+
+###############################################################################
+#
+# Failure analysis is required
+#
+
+# passes on RI, fails on Harmony due to "timeout is not enough"
+org.eclipse.jdt.debug.tests.core.MethodBreakpointTests.testInnerClassesHit
+
+###############################################################################
+#
+# Failure is caused by Harmony bug
+#
+
+# GC_GEN warning in the output: tests fail because they compare the actual
+# output with the expected ones. 
+# See http://www.mail-archive.com/dev@harmony.apache.org/msg07849.html
+# Note: tests are passed on the Harmony with this warning removed
+org.eclipse.jdt.core.tests.compiler.regression.LookupTest.test043 - 1.3
+org.eclipse.jdt.core.tests.compiler.regression.RuntimeTests.test0500_synchronization - 1.3
+org.eclipse.jdt.core.tests.compiler.regression.LookupTest.test044 - 1.4
+org.eclipse.jdt.core.tests.compiler.regression.FlowAnalysisTest.test009 - 1.4
+org.eclipse.jdt.core.tests.compiler.regression.LookupTest.test031 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.NonFatalErrorTest.test005 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.FlowAnalysisTest.test025 - 1.4
+
+# HARMONY-3850 ([classlib] 2 EUT tests from core.runtime suite fail)
+org.eclipse.core.tests.runtime.content.IContentTypeManagerTest.testRootElementAndDTDDescriber
+
+# HARMONY-3361 ([drlvm][EUT] 9 tests fail in org.eclipse.jdt.text.tests suit)
+org.eclipse.jdt.text.tests.PluginsNotLoadedTest.testSearchPluginNotLoaded
+
+# HARMONY-3359 ([drlvm][jit][jet][EUT] "testClass" test fails 12 times in
+# org.eclipse.ui.tests suit)
+org.eclipse.ui.tests.dynamicplugins.BrowserTests.testClass 
+org.eclipse.ui.tests.dynamicplugins.PreferencePageTests.testClass
+org.eclipse.ui.tests.dynamicplugins.PropertyPageTests.testClass
+org.eclipse.ui.tests.dynamicplugins.HelpSupportTests.testClass
+org.eclipse.ui.tests.dynamicplugins.DecoratorTests.testClass
+org.eclipse.ui.tests.dynamicplugins.StartupTests.testClass
+org.eclipse.ui.tests.dynamicplugins.EditorTests.testClass
+org.eclipse.ui.tests.dynamicplugins.IntroTests.testClass
+org.eclipse.ui.tests.dynamicplugins.PerspectiveTests.testClass
+org.eclipse.ui.tests.dynamicplugins.ViewTests.testClass
+org.eclipse.ui.tests.dynamicplugins.NewWizardTests.testClass
+org.eclipse.ui.tests.dynamicplugins.ObjectContributionTests.testClass
+
+# HARMONY-3362 ([classlib][EUT] 3 tests fail in 
+# org.eclipse.jface.tests.databinding suit)
+org.eclipse.jface.tests.databinding.ObservableTest.testAddChangeListener
+org.eclipse.jface.tests.databinding.DatabindingContextTest.testBindValueModel
+org.eclipse.jface.tests.databinding.DatabindingContextTest.testBindValueTarget
+
+# HARMONY-4189 ([classlib][launcher][eut] Harmony JRE java launcher strips
+# quotes for JVM properties)
+org.eclipse.jdt.debug.tests.core.ArgumentTests.testVMArgStandardEmbeddedQuotes
+org.eclipse.jdt.debug.tests.core.ArgumentTests.testVMArgEmbeddedQuotes
+
+# HARMONY-4191 ([drlvm][jvmti][eut] Setting breakpoint to current location
+# fires BREAKPOINT event)
+org.eclipse.jdt.debug.tests.core.HitCountBreakpointsTests.testResetHitCountBreakpoint
+
+###############################################################################
+#
+# Failure is caused by Eclipse bug
+#
+# TODO - need to double check the issue is not reproducible on EUT 3.3 because
+# the fix might be integrated to special Eclipse branch (not R-3.3 one).
+
+# There is an issue in RI & ECJ & Harmony (see HARMONY-3862 for technical
+# details). Related Eclipse issue is:
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=194398 
+# (target=3.4 status=INVALID)
+org.eclipse.team.tests.ccvs.core.subscriber.CVSMergeSubscriberTest.testIncomingChanges
+org.eclipse.team.tests.ccvs.core.subscriber.CVSMergeSubscriberTest.testUnmergableConflicts
+org.eclipse.team.tests.ccvs.core.subscriber.CVSMergeSubscriberTest.testLocalScrub
+org.eclipse.team.tests.ccvs.core.subscriber.CVSWorkspaceSubscriberTest.testOverideAndUpdateSimple
+org.eclipse.team.tests.ccvs.core.subscriber.CVSWorkspaceSubscriberTest.testAdditionConflicts
+org.eclipse.team.tests.ccvs.core.subscriber.CVSWorkspaceSubscriberTest.testDeletionConflicts
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=195509 (status=FIXED for R3.3.1)
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0641 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0800 - 1.5
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=195526 (status=FIXED for R3.3.1)
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0744 - 1.5 
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=181026 (target=3.4)
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testArchiveSourceContainerMemento
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testAutoDetectRootSourceLookupPositive
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testAutoDetectRootSourceLookupNegative
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testSourceLookupPositive
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testSourceLookupNegative
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testPartiallyQualifiedSourceLookupPositive
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testAutoDetectUnqualifiedSourceLookupPositive
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=176157 (but status=FIXED for 3.3)
+org.eclipse.ant.tests.ui.editor.CodeCompletionTest.testAttributeProposals
+
+
+##############################################################################
+#
+# Invalid tests 
+# (no tests failure evaluation is required)
+#
+
+# Invalid: JVMPI is unsupported - deprecated functionality
+org.eclipse.jdt.ui.tests.LeakTestSuite
+
+# Invalid: intermittently fails on RI (see technical details in HARMONY-3851)
+org.eclipse.core.tests.internal.runtime.PlatformURLSessionTest.test1OutputOnReadOnly
+
+# Invalid: intermittently fails on RI (see technical details in HARMONY-3851)
+org.eclipse.core.tests.internal.runtime.PlatformURLSessionTest.test2Resolution
+
+# Invalid: intermittently fails on RI
+org.eclipse.core.tests.runtime.jobs.JobTest.testGetResult
+
+# Invalid: intermittently fails on RI
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_copy
+
+# Invalid: intermittently fails on RI
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_paste
+
+# Invalid: intermittently fails on RI
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_copy
+
+# Invalid: intermittently fails on RI
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_pasteIndex: efl.linux.x86
