@@ -33,7 +33,7 @@
     <optional>
         <tested.vm.options
             description="Options to pass to JVM under test"
-            value="-showversion -Xmx1024m -XX:vm.assert_dialog=false"/>
+            value="-showversion -Xmx1024m"/>
         <eut.location
             description="URL to fetch Eclipse Unit Tests archive"
             value="http://download.eclipse.org/eclipse/downloads/drops/R-3.3-200706251500/"/>
@@ -67,5 +67,5 @@
     </optional>
 
     <!-- CC specific configuration -->
-    <cc summary="${checkouts.dir}/eut/report.txt"/>
+    <cc summary="${checkouts.dir}/eut33/report.txt"/>
 </parameters>
