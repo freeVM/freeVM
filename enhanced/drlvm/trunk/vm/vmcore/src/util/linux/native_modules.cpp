@@ -28,6 +28,97 @@
 #include "port_malloc.h"
 #include "native_modules.h"
 
+
+void clear_native_modules(native_module_t** list_ptr)
+{
+    native_module_t* cur = *list_ptr;
+
+    while (cur)
+    {
+        native_module_t* next = cur->next;
+
+        if (cur->filename)
+            STD_FREE(cur->filename);
+
+        STD_FREE(cur);
+        cur = next;
+    }
+
+    *list_ptr = NULL;
+}
+
+void native_clear_raw_list(raw_module* list)
+{
+    if (list->name)
+        STD_FREE(list->name);
+
+    raw_module* cur = list->next;
+
+    while (cur)
+    {
+        raw_module* next = cur->next;
+        STD_FREE(cur);
+        cur = next;
+    }
+}
+
+raw_module* native_add_raw_segment(raw_module* last,
+                                    void* start, void* end,
+                                    char acc_r, char acc_x)
+{
+    if (last->next == NULL)
+    {
+        last->next = (raw_module*)STD_MALLOC(sizeof(raw_module));
+        if (last->next == NULL)
+            return NULL;
+
+        last->next->name = NULL;
+        last->next->next = NULL;
+    }
+
+    last = last->next;
+
+    last->start = start;
+    last->end = end;
+    last->acc_r = (acc_r == 'r');
+    last->acc_x = (acc_x == 'x');
+
+    return last;
+}
+
+native_module_t* native_fill_module(raw_module* rawModule, size_t count)
+{
+    native_module_t* module =
+        (native_module_t*)STD_MALLOC(sizeof(native_module_t) + sizeof(native_segment_t)*(count - 1));
+
+    if (module == NULL)
+        return NULL;
+
+    module->seg_count = count;
+    module->filename = rawModule->name;
+    rawModule->name = NULL;
+    module->next = NULL;
+
+    for (size_t i = 0; i < count; i++)
+    {
+        if (rawModule->acc_x)
+            module->segments[i].type = SEGMENT_TYPE_CODE;
+        else if (rawModule->acc_r)
+            module->segments[i].type = SEGMENT_TYPE_DATA;
+        else
+            module->segments[i].type = SEGMENT_TYPE_UNKNOWN;
+
+        module->segments[i].base = rawModule->start;
+        module->segments[i].size =
+            (size_t)((POINTER_SIZE_INT)rawModule->end -
+                        (POINTER_SIZE_INT)rawModule->start);
+
+        rawModule = rawModule->next;
+    }
+
+    return module;
+}
+
 bool get_all_native_modules(native_module_t** list_ptr, int* count_ptr)
 {
     char buf[_MAX_PATH];
@@ -56,7 +147,7 @@ bool get_all_native_modules(native_module_t** list_ptr, int* count_ptr)
 
     while (!feof(file) && (fgets(buf, sizeof(buf), file)))
     {
-        int res = sscanf(buf, "%08x-%08x %c%*c%c%*c %*08x %*02x:%*02x %*u %s",
+        int res = sscanf(buf, "%" PI_FMT "x-%" PI_FMT "x %c%*c%c%*c %*" PI_FMT "x %*02x:%*02x %*u %s",
             &start, &end, &acc_r, &acc_x, filename);
 
         if (res < 5)
