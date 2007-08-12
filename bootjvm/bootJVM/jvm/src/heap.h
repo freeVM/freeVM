@@ -78,6 +78,7 @@ ARCH_HEADER_COPYRIGHT_APACHE(heap, h,
 
 #endif
 
+
 #ifdef CONFIG_HEAP_TYPE_SIMPLE
 /*!
  * @name Simple heap model definitions
