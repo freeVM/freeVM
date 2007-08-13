@@ -68,9 +68,9 @@ include $(CFGDIR)/config_roster_jni_h.mak
 # Roster of Java source files
 include $(CFGDIR)/config_roster_jni_java.mak
 
-# Linkage flags to pick up JVM library, Posix thread library, and
-# math library.
-LLFLAGS:=-ljvm -lpthread -lm
+# Linkage flags to pick up JVM library, Posix thread library,
+# math library, and compression library.
+LLFLAGS:=-ljvm -lpthread -lm -lz
 
 
 # Targets to build
