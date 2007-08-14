@@ -67,7 +67,7 @@ JNIEXPORT jint JNICALL Agent_OnLoad(prms_AGENT_ONLOAD)
 
 void JNICALL callbackMethodExit(prms_METHOD_EXIT)
 {
-    check_METHOD_EXIT;
+//    check_METHOD_EXIT;
 
     char* name = NULL;
     char* signature = NULL;
