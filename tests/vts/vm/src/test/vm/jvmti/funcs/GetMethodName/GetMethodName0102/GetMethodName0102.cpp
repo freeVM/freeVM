@@ -68,9 +68,9 @@ void JNICALL callbackException(prms_EXCPT)
 
     result = jvmti_env->GetMethodName((jmethodID)jvmti_env, &name, &signature, &generic);
     fprintf(stderr, "\tnative: GetMethodName result = %d (must be JVMTI_ERROR_INVALID_METHODID (23)) \n", result);
-    fprintf(stderr, "\tnative: method name is %s \n", name);
-    fprintf(stderr, "\tnative: signature name is %s \n", signature);
-    fprintf(stderr, "\tnative: generic name is %s \n", generic);
+//    fprintf(stderr, "\tnative: method name is %s \n", name);
+//    fprintf(stderr, "\tnative: signature name is %s \n", signature);
+//    fprintf(stderr, "\tnative: generic name is %s \n", generic);
     fflush(stderr);
 
     if (result != JVMTI_ERROR_INVALID_METHODID) return;
