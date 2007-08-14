@@ -34,9 +34,12 @@
 .method public test([Ljava/lang/String;)I
    .limit stack 2
    .limit locals 2
+  .catch java/lang/OutOfMemoryError from L1 to L2 using L3
+L1:                                                
 
    ldc 50555555 ; push 50555555 into the stack
    newarray boolean 
+L2:
 
    arraylength
    ldc 50555555
@@ -49,6 +52,10 @@ Fail:
    ; test failed
    sipush 105
    ireturn
+L3: 
+   sipush 104
+   ireturn
+
 .end method
 
 ;

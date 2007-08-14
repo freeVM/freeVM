@@ -64,11 +64,18 @@ J1:
   .limit stack 2
   .limit locals 1
 
+  .catch java/lang/StackOverflowError from L1 to L2 using L2
+L1:                                                
   new org/apache/harmony/vts/test/vm/jvms/instructions/loadStore/dstore/dstore12/dstore1201/dstore1201p
   dup
   invokespecial org/apache/harmony/vts/test/vm/jvms/instructions/loadStore/dstore/dstore12/dstore1201/dstore1201p/<init>()V
   aload_0
   invokevirtual org/apache/harmony/vts/test/vm/jvms/instructions/loadStore/dstore/dstore12/dstore1201/dstore1201p/test([Ljava/lang/String;)I
+  goto L3
+L2:
+  pop
+  sipush 104
+L3:
   invokestatic java/lang/System/exit(I)V
 
   return

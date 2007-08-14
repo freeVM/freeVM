@@ -64,12 +64,19 @@ sipush 104
   .limit stack 2
   .limit locals 2
 
+  .catch java/lang/StackOverflowError from L1 to L2 using L2
+L1:                                                
   new org/apache/harmony/vts/test/vm/jvms/instructions/arithm/iinc/iinc06/iinc0601/iinc0601p
   dup
   invokespecial org/apache/harmony/vts/test/vm/jvms/instructions/arithm/iinc/iinc06/iinc0601/iinc0601p/<init>()V
   aload_0
- invokevirtual org/apache/harmony/vts/test/vm/jvms/instructions/arithm/iinc/iinc06/iinc0601/iinc0601p/test([Ljava/lang/String;)I
+  invokevirtual org/apache/harmony/vts/test/vm/jvms/instructions/arithm/iinc/iinc06/iinc0601/iinc0601p/test([Ljava/lang/String;)I
+  goto L3
 
+L2:
+  pop
+  sipush 104
+L3:
   invokestatic java/lang/System/exit(I)V
 
   return

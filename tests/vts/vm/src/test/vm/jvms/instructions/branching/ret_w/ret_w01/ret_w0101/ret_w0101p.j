@@ -48,14 +48,20 @@ L1:
 ; standard main function
 .method public static main([Ljava/lang/String;)V
    .limit stack 3
-  .limit locals 2
+   .limit locals 2
 
+  .catch java/lang/StackOverflowError from L1 to L2 using L2
+L1:                                                
   new org/apache/harmony/vts/test/vm/jvms/instructions/branching/ret_w/ret_w01/ret_w0101/ret_w0101p
   dup
   invokespecial org/apache/harmony/vts/test/vm/jvms/instructions/branching/ret_w/ret_w01/ret_w0101/ret_w0101p/<init>()V
   aload_0
   invokevirtual org/apache/harmony/vts/test/vm/jvms/instructions/branching/ret_w/ret_w01/ret_w0101/ret_w0101p/test([Ljava/lang/String;)I
-
+  goto L3
+L2:
+  pop
+  sipush 104
+L3:  
   invokestatic java/lang/System/exit(I)V
 
   return

@@ -65,7 +65,6 @@ vm/jvmti/funcs/GetObjectMonitorUsage/GetObjectMonitorUsage0101/GetObjectMonitorU
 vm/jvms/threads/threads201/threads20101/threads20101.xml       # test issue 9914 intermittent failure
 vm/jvms/threads/threads209/threads20901/threads20901.xml       # test issue 9914 intermittent failure
 vm/jvms/threads/threads189/threads18901/threads18901.xml       # test issue 9914 intermittent failure
-vm/jvms/instructions/reftypes/newarray/newarray08/newarray0801/newarray0801.xml		# test creates very large array but does not expect that VM can throw SOME
 vm/jvms/classFile/finally/finally09/finally0901/finally0901.xml  (former # H-3755)				
 vm/jvms/classFile/constraints/structural/constraint23/subroutine01/subroutine01.xml (former # H-3755)
 # test issue, see comments H-3866
@@ -116,20 +115,6 @@ vm/jvmti/funcs/GetMethodLocation/GetMethodLocation0103/GetMethodLocation0103.xml
 vm/jvmti/funcs/GetMethodModifiers/GetMethodModifiers0102/GetMethodModifiers0102.xml 		# Harmony limitations
 vm/jvmti/funcs/IsMethodNative/IsMethodNative0102/IsMethodNative0102.xml 			# Harmony limitations
 vm/jvmti/funcs/IsMethodSynthetic/IsMethodSynthetic0103/IsMethodSynthetic0103.xml 		# Harmony limitations
-vm/jvms/classFile/limitations/variables/variables01/variables01.xml 
-vm/jvms/instructions/arithm/iinc/iinc06/iinc0601/iinc0601.xml 
-vm/jvms/instructions/branching/ret_w/ret_w01/ret_w0101/ret_w0101.xml 
 vm/jvms/instructions/invokeReturn/invokedynamic/invokedynamic01/invokedynamic0101/invokedynamic0101.xml 
-vm/jvms/instructions/loadStore/aload/aload12/aload1201/aload1201.xml 
-vm/jvms/instructions/loadStore/astore/astore03/astore0301/astore0301.xml 
-vm/jvms/instructions/loadStore/astore/astore12/astore1201/astore1201.xml 
-vm/jvms/instructions/loadStore/dload/dload12/dload1201/dload1201.xml 
-vm/jvms/instructions/loadStore/dstore/dstore12/dstore1201/dstore1201.xml 
-vm/jvms/instructions/loadStore/fload/fload12/fload1201/fload1201.xml 
-vm/jvms/instructions/loadStore/fstore/fstore12/fstore1201/fstore1201.xml 
-vm/jvms/instructions/loadStore/iload/iload12/iload1201/iload1201.xml 
-vm/jvms/instructions/loadStore/istore/istore12/istore1201/istore1201.xml 
-vm/jvms/instructions/loadStore/lload/lload12/lload1201/lload1201.xml 
-vm/jvms/instructions/loadStore/lstore/lstore12/lstore1201/lstore1201.xml 
 
 

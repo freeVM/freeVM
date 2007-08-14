@@ -37,15 +37,21 @@ Label1:
 .method public static main([Ljava/lang/String;)V
 .limit stack 2
 .limit locals 1
-.var 0 is arg0 [Ljava/lang/String; from Label0 to Label1
+.var 0 is arg0 [Ljava/lang/String; from L1 to L4
+.catch java/lang/StackOverflowError from L1 to L2 using L2
 
-Label0:
+L1:
 	new org/apache/harmony/vts/test/vm/jvms/classFile/limitations/variables/variables01/Variables01
 	dup
 	invokespecial org/apache/harmony/vts/test/vm/jvms/classFile/limitations/variables/variables01/Variables01/<init>()V
 	invokevirtual org/apache/harmony/vts/test/vm/jvms/classFile/limitations/variables/variables01/Variables01/test()I
+        goto L3
+L2:
+        pop
+        sipush 104
+L3:
 	invokestatic java/lang/System/exit(I)V
-Label1:
+L4:
 	return
 
 .end method

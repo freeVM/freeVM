@@ -60,11 +60,18 @@ Fail:
   .limit stack 2
   .limit locals 1
 
+  .catch java/lang/StackOverflowError from L1 to L2 using L2
+L1:                                                
   new org/apache/harmony/vts/test/vm/jvms/instructions/loadStore/astore/astore03/astore0301/astore0301p
   dup
   invokespecial org/apache/harmony/vts/test/vm/jvms/instructions/loadStore/astore/astore03/astore0301/astore0301p/<init>()V
   aload_0
   invokevirtual org/apache/harmony/vts/test/vm/jvms/instructions/loadStore/astore/astore03/astore0301/astore0301p/test([Ljava/lang/String;)I
+  goto L3
+L2:
+  pop
+  sipush 104
+L3:
   invokestatic java/lang/System/exit(I)V
 
   return
