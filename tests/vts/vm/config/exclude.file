@@ -53,8 +53,8 @@ vm/jvmti/funcs/StopThread/StopThread0101/StopThread0101.xml
 vm/jvmti/funcs/StopThread/StopThread0105/StopThread0105.xml 
 
 Incorrect tests: 15 tests
+vm/jvms/classFile/attributes/innerClasses/innerClasses12/innerClasses12.xml # HARMONY-4359: non-bug diff with JRockit
 vm/jvms/classFile/structure/accessFlags/accessFlags08/accessFlags08.xml 			# test issue 8234  - 1.4 specific test
-vm/jvms/instructions/invokeReturn/return/return02/return0201/return0201.xml 			# test issue 8819
 vm/jvms/instructions/invokeReturn/invokestatic/invokestatic11/invokestatic1102/invokestatic1102.xml 	# test issue 6890
 vm/jvms/classLLI/loading/loading08/loading08.xml 						# test issue 9867
 vm/jvmti/events/MethodExit/MethodExit0101/MethodExit0101.xml 				# test issue 10144
