@@ -15,23 +15,26 @@
  *  limitations under the License.
  */
 /**
- * @author Michael Danilov
+ * @author Pavel Dolgov
  * @version $Revision$
  */
-package org.apache.harmony.awt.wtk.linux;
+package org.apache.harmony.awt.wtk.windows;
 
 import java.awt.GraphicsDevice;
-import java.util.HashMap;
 
-import org.apache.harmony.awt.gl.linux.XGraphicsDevice;
 import org.apache.harmony.awt.wtk.*;
 
 
-public final class LinuxWTK extends WTK {
+public class WinWTK extends WTK {
+
+    static {
+        System.loadLibrary("gl"); //$NON-NLS-1$
+    }
 
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getGraphicsFactory()
      */
+    @Override
     public GraphicsFactory getGraphicsFactory() {
         return graphicsFactory;
     }
@@ -39,6 +42,7 @@ public final class LinuxWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getNativeEventQueue()
      */
+    @Override
     public NativeEventQueue getNativeEventQueue() {
         return eventQueue;
     }
@@ -46,13 +50,15 @@ public final class LinuxWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getWindowFactory()
      */
+    @Override
     public WindowFactory getWindowFactory() {
-        return windowFactory;
+        return eventQueue.factory;
     }
 
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getCursorFactory()
      */
+    @Override
     public CursorFactory getCursorFactory() {
         return cursorFactory;
     }
@@ -60,6 +66,7 @@ public final class LinuxWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getNativeMouseInfo()
      */
+    @Override
     public NativeMouseInfo getNativeMouseInfo() {
         return mouseInfo;
     }
@@ -67,42 +74,43 @@ public final class LinuxWTK extends WTK {
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getSystemProperties()
      */
+    @Override
     public SystemProperties getSystemProperties() {
         return systemProperties;
+    }
+
+    WinEventQueue getWinEventQueue() {
+        return eventQueue;
     }
 
     /**
      * @see org.apache.harmony.awt.wtk.WTK#getNativeRobot(java.awt.GraphicsDevice)
      */
+    @Override
     public NativeRobot getNativeRobot(GraphicsDevice screen) {
-        XTestRobot robot = (XTestRobot) robots.get(screen);
         if (robot == null) {
-            robot = new XTestRobot(windowFactory.getDisplay(),
-                                   (XGraphicsDevice) screen);
-            robots.put(screen, robot);
+            robot = new WinRobot();
         }
         return robot;
     }
-    
+
+    @Override
     public NativeIM getNativeIM() {
-        // TODO implement
-        return null;
+        if (im == null) {
+            im = new WinIM();
+        }
+        return im;
     }
 
-    public boolean getLockingState(int keyCode) {
-        // TODO implement
-        return false;
-    }
+    public native boolean getLockingState(int keyCode);
 
-    public void setLockingState(int keyCode, boolean on) {
-        // TODO implement
-    }
+    public native void setLockingState(int keyCode, boolean on);
 
-    private final LinuxWindowFactory windowFactory = new LinuxWindowFactory();
-    private final LinuxEventQueue eventQueue = new LinuxEventQueue(windowFactory);
-    private final GraphicsFactory graphicsFactory = new org.apache.harmony.awt.gl.linux.LinuxGraphics2DFactory();
-    private final LinuxCursorFactory cursorFactory = new LinuxCursorFactory(windowFactory);
-    private final NativeMouseInfo mouseInfo = new LinuxMouseInfo(windowFactory);
-    private final LinuxSystemProperties systemProperties = new LinuxSystemProperties(windowFactory);
-    private HashMap robots = new HashMap(); //HashMap<GraphicsDevice, XTestRobot>
+    private final WinSystemProperties systemProperties = new WinSystemProperties();
+    private final WinEventQueue eventQueue = new WinEventQueue(systemProperties);
+    private final GraphicsFactory graphicsFactory = new org.apache.harmony.awt.gl.windows.WinGraphics2DFactory();
+    private final CursorFactory cursorFactory = new WinCursorFactory(eventQueue);
+    private final NativeMouseInfo mouseInfo = new WinMouseInfo();
+    private WinRobot robot;
+    private WinIM im;
 }
