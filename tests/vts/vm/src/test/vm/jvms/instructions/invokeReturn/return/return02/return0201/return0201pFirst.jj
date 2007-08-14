@@ -53,7 +53,10 @@
 ; get a lock to locker object
    aload_1
    monitorenter
+   aload_1
+   monitorexit
 
 ; return must unlock locker object
    return
+
 .end method
