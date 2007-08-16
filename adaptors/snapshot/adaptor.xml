@@ -177,6 +177,16 @@
         <archive-result/>
     </target>
 
+    <target name="publish-classlib-test">
+        <mkdir dir="${snapshot.results.dir}/classlib-test" />
+        <copy todir="${snapshot.results.dir}/classlib-test">
+            <fileset dir="${checkouts.dir}/classlib/build/test_report/html">
+                <include name="**" />
+            </fileset>
+        </copy>
+        <archive-result/>
+    </target>
+
     <target name="publish-func">
         <delete dir="${snapshot.results.dir}/func" />
         <mkdir dir="${snapshot.results.dir}/func" />

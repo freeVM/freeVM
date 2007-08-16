@@ -23,12 +23,31 @@
     <property name="classlib-test.results.dir"
               value="${results.dir}/${suite.name}"/>
 
+    <!-- if the suite is run against snapshot -->
+    <condition property="is.snapshot">
+        <equals arg1="${classlib-test.parameters.depends}"
+                arg2="snapshot"
+                trim="yes" />
+    </condition>
+
     <!-- the default value for JRE options -->
     <property name="jre.options" value="-showversion"/>
 
     <!-- do setup -->
-    <target name="setup">
+    <target name="setup" depends="-setup-classlib-ws">
         <mkdir dir="${classlib-test.results.dir}"/>
+    </target>
+
+    <target name="-setup-classlib-ws" if="is.snapshot">
+        <mkdir dir="${classlib-test.parameters.required.trunk.dir}" />
+        <svn-co url="${classlib-test.parameters.required.trunk.url}"
+                trunk="${classlib-test.parameters.required.trunk.dir}" />
+
+        <ant target="fetch-depends"
+             dir="${classlib-test.parameters.required.trunk.dir}"
+             inheritAll="false" />
+        <ant dir="${classlib-test.parameters.required.trunk.dir}"
+             inheritAll="false" />
     </target>
 
     <!-- do run -->
@@ -78,6 +97,15 @@
 
         <fail message="There were CLASSLIB Unit Test failures."
               if="classlib-test.run.failed"/>
+    </target>
+
+    <target name="-update-classlib-ws" if="is.snapshot">
+        <!-- adjust classlib-tests to snapshots revision -->
+        <loadproperties srcFile="${snapshot.svn.revision.file}"/>
+        <exec executable="svn" dir="${classlib-test.trunk.dir}" failonerror="true">
+            <arg line="-r${svn.revision}"/>
+            <arg line="update" />
+        </exec>
     </target>
 
 </project>
