@@ -262,6 +262,13 @@
         <archive-result/>
     </target>
 
+    <target name="publish-hdk_by_hdk">
+        <mkdir dir="${snapshot.results.dir}/hdk_by_hdk" />
+        <copy file="${cc.execution.log.file}"
+              tofile="${snapshot.results.dir}/hdk_by_hdk/index.html" />
+        <archive-result />
+    </target>
+
     <target name="publish-scimark">
         <mkdir dir="${snapshot.results.dir}/scimark" />
 
@@ -317,7 +324,7 @@ NO OUTPUT
 
     <macrodef name="archive-result">
         <sequential>
-        <property file="${snapshot}/svn.revision" prefix="snapshot"/>
+            <property file="${snapshot}/svn.revision" prefix="snapshot"/>
             <zip destfile="${cc.log.dir}/snapshot-r${snapshot.svn.revision}.status.zip"
                  basedir="${snapshot.results.dir}"
                  update="true"/>

@@ -17,14 +17,38 @@
 
 <project name="hdk_by_hdk" default="run" basedir=".">
 
-    <target name="setup"/>
     <property environment="env"/>
-    
+
     <!-- workaround: properties are case sensitive -->
     <!-- even the env. vars on OS are not          -->
     <property name="env.PATH" value="${env.Path}" />
-    
+
     <property name="my.path" value="${tested.jdk}/bin${path.separator}${env.PATH}"/>
+
+    <!-- if the suite is run against snapshot -->
+    <condition property="is.snapshot">
+        <equals arg1="${hdk_by_hdk.parameters.depends}"
+                arg2="snapshot"
+                trim="yes" />
+    </condition>
+
+    <condition property="is.checkout_ws">
+        <and>
+            <isset property="is.snapshot" />
+            <not>
+                <available file="${hdk_by_hdk.parameters.required.trunk.dir}/build.xml" />
+            </not>
+        </and>
+    </condition>
+
+    <target name="setup" depends="-setup-hdk-ws" />
+
+    <target name="-setup-hdk-ws" if="is.checkout_ws">
+        <mkdir dir="${hdk_by_hdk.parameters.required.trunk.dir}" />
+
+        <svn-co url="${hdk_by_hdk.parameters.required.trunk.url}"
+                trunk="${hdk_by_hdk.parameters.required.trunk.dir}" />
+    </target>
 
     <target name="run">
         <exec-ant dir="${trunk.dir}" javaVM="${tested.jdk}/bin/java">
