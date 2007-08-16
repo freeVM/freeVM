@@ -51,7 +51,7 @@
     </target>
 
     <!-- do run -->
-    <target name="run">
+    <target name="run" depends="-update-classlib-ws">
         <!-- remove old results (they have been archived after the run) -->
         <delete quiet="true" verbose="false">
             <fileset dir="${classlib-test.results.dir}" includes="**/*"/>
