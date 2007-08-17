@@ -197,6 +197,15 @@
         <archive-result/>
     </target>
 
+    <target name="publish-jdktools-test">
+        <mkdir dir="${snapshot.results.dir}/jdktools-test" />
+        <copy todir="${snapshot.results.dir}/jdktools-test">
+            <fileset dir="${checkouts.dir}/hdk/working_jdktools/build/test_report/html">
+                <include name="**" />
+            </fileset>
+        </copy>
+    </target>
+
     <target name="publish-JettyScenario">
         <mkdir dir="${snapshot.results.dir}/JettyScenario" />
         <copy todir="${snapshot.results.dir}/JettyScenario">

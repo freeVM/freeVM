@@ -27,13 +27,54 @@
 
     <property name="tests.results.dir" value="${built.trunk.dir}/build/test_report"/>
 
-    <target name="run">
+    <target name="run" depends="-setup-jdktools-ws,-update-jdktools-ws">
         <exec-ant targets="test" dir="${built.trunk.dir}">
             <jvmarg line="${is.x86_64}"/>
             <sysproperty key="exclude.interm" value="true"/>
             <sysproperty key="test.jre.home" value="${tested.jre}"/>
             <sysproperty key="hy.test.timeout" value="6000000"/>
         </exec-ant>
+    </target>
+
+    <!--                                                    -->
+    <!-- Targets and properties related to snapshot testing -->
+    <!--                                                    -->
+    <condition property="is.snapshot">
+        <equals arg1="${jdktools-test.parameters.depends}"
+                arg2="snapshot"
+                trim="yes" />
+    </condition>
+
+    <condition property="is.checkout_ws">
+        <and>
+            <isset property="is.snapshot" />
+            <not>
+                <available file="${jdktools-test.parameters.required.hdk.trunk.dir}/build.xml" />
+            </not>
+        </and>
+    </condition>
+
+    <target name="-setup-jdktools-ws" if="is.checkout_ws">
+        <mkdir dir="${jdktools-test.parameters.required.hdk.trunk.dir}" />
+
+        <svn-co url="${jdktools-test.parameters.required.hdk.trunk.url}"
+                trunk="${jdktools-test.parameters.required.hdk.trunk.dir}" />
+        <exec-ant dir="${jdktools-test.parameters.required.hdk.trunk.dir}">
+            <jvmarg line="-Xmx1000M"/>
+            <sysproperty key="keep.working" value="true"/>
+            <sysproperty key="auto.fetch" value="true"/>
+            <sysproperty key="hy.cfg" value="release"/>
+        </exec-ant>
+    </target>
+
+    <target name="-update-jdktools-ws"
+            if="is.snapshot"
+            description="adjusts jdktools-tests to snapshots revision">
+        <loadproperties srcFile="${snapshot.svn.revision.file}" />
+        <exec executable="svn" dir="${built.trunk.dir}" failonerror="true">
+            <arg line="-r${svn.revision}" />
+            <arg line="update" />
+        </exec>
     </target>
 
 </project>
