@@ -11,18 +11,6 @@
             value="${java.home}/.."/>
     </required>
 
-    <optional>
-    	 <usemail
-            description="Send email notifications" 
-            value="${framework.parameters.usemail}"/>
-         <usemail.to
-            description="Send to" 
-            value="${framework.parameters.usemail.to}"/>
-         <usemail.from
-            description="Send from" 
-            value="${framework.parameters.usemail.from}"/>
-    </optional>
-
     <!-- used external libraries -->
     <external>
         <jasmin

@@ -36,6 +36,12 @@
         <svn-update-bt path="${test.sources.dir}/tools"/>
         <svn-update-bt path="${test.sources.dir}/vts"/>
         <call-vtsvm target="setup"/>
+        <call-vtsvm target="check-config"/>
+        <available property="skip.build" file="${vtsvm.dest.dir}/VTS-built"/>
+        <antcall target="-do-build"/>
+    </target>
+
+    <target name="-do-build" unless="skip.build">
         <call-vtsvm target="build-vts"/>
     </target>
 
