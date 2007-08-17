@@ -17,10 +17,19 @@
 
 <project name="jdktools-test" default="run" basedir=".">
 
+    <!-- On 64-bit platform tests should be run in interpreter mode only -->
+    <condition property="is.x86_64" value="-Dhy.test.vmargs=-Xint" else="">
+        <or>
+            <equals arg1="x86_64" arg2="${os.arch}" />
+            <equals arg1="amd64" arg2="${os.arch}" />
+        </or>
+    </condition>
+
     <property name="tests.results.dir" value="${built.trunk.dir}/build/test_report"/>
 
     <target name="run">
         <exec-ant targets="test" dir="${built.trunk.dir}">
+            <jvmarg line="${is.x86_64}"/>
             <sysproperty key="exclude.interm" value="true"/>
             <sysproperty key="test.jre.home" value="${tested.jre}"/>
             <sysproperty key="hy.test.timeout" value="6000000"/>
