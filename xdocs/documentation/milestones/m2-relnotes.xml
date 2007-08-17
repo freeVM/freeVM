@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>Apache Harmony DRL Virtual Machine</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
+
+  <body>
+    <section name="Apache Harmony Runtime Environment 5.0 M2 Milestone">
+      
+      <subsection name="Contents">
+        <ul>
+          <li>
+            <A
+            href="#Overview">Overview</A>
+            <ul>
+              <li>
+                <a
+                href="#SystemReq"> System Requirements</a>
+              </li>
+              <li>
+                <a href="#SupportedApps">Supported Apps </a>
+              </li>
+              <li>
+                <a
+                href="#Install">Installation Notes</a>
+              </li>
+              <li>
+                <a
+                href="#Documentation">Documentation</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#WhatNew">What's New</a>
+            <ul>
+              <li>
+                <A
+                href="#Limitations">
+                  Known
+                  Limitations
+                </A>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <A
+            href="#TechSupport">
+              Technical
+              Support
+            </A>
+          </li>
+          <li>
+            <A
+            href="#Legal">
+              Disclaimer
+              and Legal Information
+            </A>
+          </li>
+        </ul>
+      </subsection>
+      <subsection name="Overview"><A name="Overview"></A>
+        <P>
+          Apache Harmony Runtime Environment M2 Milestone is targeted at providing stable builds
+          that have best-achieved stability, performance, compatibility, and completeness.
+        </P>
+        <p>
+          This is not an official release of the Apache Software Foundation, nor it is complete
+          or compatible with the Java* specification. Instead, it is a snapshot provided
+          to make testing and experimentation easier. Results of automated testing are available
+          online.
+        </p>
+        <h3>
+          <a name="SystemReq"></a>System Requirements
+        </h3>
+        <p>
+          Apache Harmony JRE has been validated against the Windows<a href="#*">*</a> and
+          Linux* operating systems for IA-32 architecture.
+        </p>
+        <h3>
+          <a name="SupportedApps"></a>Supported Applications
+        </h3>
+        <p>
+          Currently, Harmony supports the following list of applications:
+        </p>
+        <ul>
+          <li>
+            <a href="http://struts.apache.org/" target="_blank">Apache Struts</a>, checked by scenario
+          </li>
+          <li>
+            <a href="http://projects.apache.org/projects/synapse.html" target="_blank">
+              Apache
+              Axis2
+            </a>, checked by scenario
+          </li>
+          <li>
+            <a href="http://jetty.mortbay.org/">Jetty</a>, checked by scenario
+          </li>
+          <li> SciMark, checked by scenario </li>
+          <li>
+            <a href="http://tomcat.apache.org/" target="_blank">Tomcat</a>, checked by scenario
+          </li>
+          <li>
+            <a href="http://www.dacapo-bench.org/" target="_blank">DaCapo</a>, checked by scenario
+          </li>
+          <li>
+            <a href="http://ant.apache.org/" target="_blank"> Apache Ant</a>, checked by Harmony self-hosting scenario
+          </li>
+          <li>
+            <a href="http://www.eclipse.org/" target="_blank">Eclipse 3.2</a>, checked by typical Eclipse usage scenario running for 48 hours
+            and Eclipse 3.2 Unit Tests (pass rate is &gt;99%, with bugs in tests workarounded). <br/>
+            Scenarios are available from <a href="http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0">http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0</a> <br/>
+            Run-time validation has been focused primarily on Windows* x86 platform, the
+            default run-time configuration.
+          </li>
+        </ul>
+        <h3>
+          <A name="Install"></A>Installation Notes
+        </h3>
+        <P>
+          For a start, consult the README distributed with the build. For up-to-date instructions
+          on using Apache Harmony for running Java<a href="#*">*</a> programs,
+          please refer to <a href="http://harmony.apache.org/quickhelp_users.html">
+            Getting
+            Started for Users
+          </a>.
+        </P>
+        <h3>
+          <A name="Documentation"></A>Documentation
+        </h3>
+        <P>
+          For a full list of documentation, please see the <a href="http://harmony.apache.org/index.html">
+            Apache
+            Harmony home page
+          </a>.
+        </P>
+      </subsection>
+      <subsection name="What's New"><a name="WhatNew"></a>
+        <h3>New Features</h3>
+        <ul>
+          <li>
+            Overall stability improvement, e.g. the majority of known crash
+            bugs have been fixed
+          </li>
+          <li>
+            Default garbage collector is now GCv5, the sophisticated parallel and generational
+            collector (<code>vm/gc_gen</code>); GCv4.1 can still be selected with command-line
+            option
+          </li>
+          <li> Functionally complete bytecode verifier</li>
+          <li> Stack overflow handling in VM</li>
+          <li>
+            Partially redesigned threading subsystem to improve
+            its stability
+          </li>
+          <li>
+            Improved memory consumption (VM/JIT parts redesigned,
+            fixed memory leaks in threading)
+          </li>
+          <li>
+            Implemented/improved JIT optimizations:
+            <ul>
+              <li>
+                Array bounds check
+                elimination
+              </li>
+              <li>
+                Value p rofile-guided devirtualization of abstract and virtual calls for
+                Jitrino.OPT; devirtualization of abstract calls
+                is now enabled by default is the server optimization mode.
+              </li>
+              <li>
+                Graph-coloring
+                register allocator for
+                Jitrino.OPT
+              </li>
+              <li>Support for non-SSE2 platforms in DRLVM </li>
+            </ul>
+          </li>
+          <li>
+            API completeness came to 99.06% (without endorsed specs), incomplete API
+            is in swing mostly
+          </li>
+          <li>
+            Resolved over 400 bugs since previous milestone M1; for details, please consult
+            our JIRA bug tracker
+          </li>
+        </ul>
+        <h3>
+          <A name="Limitations"></A>Known Limitations
+        </h3>
+        <ul>
+          <li>
+            Reliability tests: 7 tests that heavily load the threading subsystem fail due
+            to <a href="https://issues.apache.org/jira/browse/HARMONY-4215,">https://issues.apache.org/jira/browse/HARMONY-4215</a>;
+            Eclipse Unit Tests "teamcvs" suite can fail or crash due to <a href="https://issues.apache.org/jira/browse/HARMONY-4298">https://issues.apache.org/jira/browse/HARMONY-4298</a>.
+          </li>
+          <li>
+            Other limitations listed at <a href="http://wiki.apache.org/harmony/KnownNonBugIssuesAndLimitations">http://wiki.apache.org/harmony/KnownNonBugIssuesAndLimitations</a> and <a href="http://wiki.apache.org/harmony/CoreVmDevelopmentItems">http://wiki.apache.org/harmony/CoreVmDevelopmentItems</a>
+          </li>
+        </ul>
+      </subsection>
+      <subsection name="Technical Support"><A name="TechSupport"></A>
+        <P>
+          You can submit your questions and report bugs to the mailing list <B>dev@harmony.apache.org</B>,
+          or create an entry in the <a href="http://issues.apache.org/jira/browse/HARMONY">JIRA</a> bug tracker.
+          Your feedback is very important for us.
+        </P>
+      </subsection>
+      <subsection name="Disclaimer and Legal Information"><A name="Legal"></A>
+        <P>
+          Licensed to the Apache Software Foundation (ASF) under one or more
+          contributor license agreements. See the NOTICE file distributed with
+          this work for additional information regarding copyright ownership.
+          The ASF licenses this file to You under the Apache License, Version 2.0
+          (the "License"); you may not use this file except in compliance with
+          the License. You may obtain a copy of the License at
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
+        </P>
+        <P>
+          Unless required by applicable law or agreed to in writing, software
+          distributed under the License is distributed on an "AS IS" BASIS,
+          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+          See the License for the specific language governing permissions and
+          limitations under the License.
+        </P>
+        <p>
+          <a id="*" name="*">*</a> Other brands and names are the property of
+          their respective owners.
+        </p>
+      </subsection>
+    </section>
+  </body>
+
+</document>

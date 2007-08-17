@@ -1,0 +1,455 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Apache Harmony DRL Virtual Machine</title>
+
+                        
+                        
+        <link rel="stylesheet" type="text/css" href="../../site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../../screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../print.css" media="print" />
+        </head>
+
+        <body>
+            <div id="pageHeader">
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="../../images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement -->
+            <a href="http://www.apachecon.com/2007/EU/index.html">
+                <img id="advertisement"
+                     src="http://www.apache.org/ads/ApacheCon/2007-usa-234x60.png"
+                     width="234" height="60"
+                     alt="ApacheCon US 2007" /></a>
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../license.html">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../downloads.html">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../sitemap.html">Sitemap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../hdk.html">HDK</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+                </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                                        <h1>
+      <a name="Apache Harmony Runtime Environment 5.0 M2 Milestone">Apache Harmony Runtime Environment 5.0 M2 Milestone</a>
+    </h1>
+                            
+    <h2>
+        <a name="Contents">Contents</a>
+    </h2>
+      
+                        <ul>
+          <li>
+            <A href="#Overview">Overview</A>
+            <ul>
+              <li>
+                <a href="#SystemReq"> System Requirements</a>
+              </li>
+              <li>
+                <a href="#SupportedApps">Supported Apps </a>
+              </li>
+              <li>
+                <a href="#Install">Installation Notes</a>
+              </li>
+              <li>
+                <a href="#Documentation">Documentation</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#WhatNew">What's New</a>
+            <ul>
+              <li>
+                <A href="#Limitations">
+                  Known
+                  Limitations
+                </A>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <A href="#TechSupport">
+              Technical
+              Support
+            </A>
+          </li>
+          <li>
+            <A href="#Legal">
+              Disclaimer
+              and Legal Information
+            </A>
+          </li>
+        </ul>
+                   
+                                    
+    <h2>
+        <a name="Overview">Overview</a>
+    </h2>
+      
+                        <A name="Overview" />
+                                <P>
+          Apache Harmony Runtime Environment M2 Milestone is targeted at providing stable builds
+          that have best-achieved stability, performance, compatibility, and completeness.
+        </P>
+                                <p>
+          This is not an official release of the Apache Software Foundation, nor it is complete
+          or compatible with the Java* specification. Instead, it is a snapshot provided
+          to make testing and experimentation easier. Results of automated testing are available
+          online.
+        </p>
+                                <h3>
+          <a name="SystemReq" />System Requirements
+        </h3>
+                                <p>
+          Apache Harmony JRE has been validated against the Windows<a href="#*">*</a> and
+          Linux* operating systems for IA-32 architecture.
+        </p>
+                                <h3>
+          <a name="SupportedApps" />Supported Applications
+        </h3>
+                                <p>
+          Currently, Harmony supports the following list of applications:
+        </p>
+                                <ul>
+          <li>
+            <a href="http://struts.apache.org/" target="_blank">Apache Struts</a>, checked by scenario
+          </li>
+          <li>
+            <a href="http://projects.apache.org/projects/synapse.html" target="_blank">
+              Apache
+              Axis2
+            </a>, checked by scenario
+          </li>
+          <li>
+            <a href="http://jetty.mortbay.org/">Jetty</a>, checked by scenario
+          </li>
+          <li> SciMark, checked by scenario </li>
+          <li>
+            <a href="http://tomcat.apache.org/" target="_blank">Tomcat</a>, checked by scenario
+          </li>
+          <li>
+            <a href="http://www.dacapo-bench.org/" target="_blank">DaCapo</a>, checked by scenario
+          </li>
+          <li>
+            <a href="http://ant.apache.org/" target="_blank"> Apache Ant</a>, checked by Harmony self-hosting scenario
+          </li>
+          <li>
+            <a href="http://www.eclipse.org/" target="_blank">Eclipse 3.2</a>, checked by typical Eclipse usage scenario running for 48 hours
+            and Eclipse 3.2 Unit Tests (pass rate is &gt;99%, with bugs in tests workarounded). <br />
+            Scenarios are available from <a href="http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0">http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0</a> <br />
+            Run-time validation has been focused primarily on Windows* x86 platform, the
+            default run-time configuration.
+          </li>
+        </ul>
+                                <h3>
+          <A name="Install" />Installation Notes
+        </h3>
+                                <P>
+          For a start, consult the README distributed with the build. For up-to-date instructions
+          on using Apache Harmony for running Java<a href="#*">*</a> programs,
+          please refer to <a href="http://harmony.apache.org/quickhelp_users.html">
+            Getting
+            Started for Users
+          </a>.
+        </P>
+                                <h3>
+          <A name="Documentation" />Documentation
+        </h3>
+                                <P>
+          For a full list of documentation, please see the <a href="http://harmony.apache.org/index.html">
+            Apache
+            Harmony home page
+          </a>.
+        </P>
+                   
+                                    
+    <h2>
+        <a name="What's New">What's New</a>
+    </h2>
+      
+                        <a name="WhatNew" />
+                                <h3>New Features</h3>
+                                <ul>
+          <li>
+            Overall stability improvement, e.g. the majority of known crash
+            bugs have been fixed
+          </li>
+          <li>
+            Default garbage collector is now GCv5, the sophisticated parallel and generational
+            collector (<code>vm/gc_gen</code>); GCv4.1 can still be selected with command-line
+            option
+          </li>
+          <li> Functionally complete bytecode verifier</li>
+          <li> Stack overflow handling in VM</li>
+          <li>
+            Partially redesigned threading subsystem to improve
+            its stability
+          </li>
+          <li>
+            Improved memory consumption (VM/JIT parts redesigned,
+            fixed memory leaks in threading)
+          </li>
+          <li>
+            Implemented/improved JIT optimizations:
+            <ul>
+              <li>
+                Array bounds check
+                elimination
+              </li>
+              <li>
+                Value p rofile-guided devirtualization of abstract and virtual calls for
+                Jitrino.OPT; devirtualization of abstract calls
+                is now enabled by default is the server optimization mode.
+              </li>
+              <li>
+                Graph-coloring
+                register allocator for
+                Jitrino.OPT
+              </li>
+              <li>Support for non-SSE2 platforms in DRLVM </li>
+            </ul>
+          </li>
+          <li>
+            API completeness came to 99.06% (without endorsed specs), incomplete API
+            is in swing mostly
+          </li>
+          <li>
+            Resolved over 400 bugs since previous milestone M1; for details, please consult
+            our JIRA bug tracker
+          </li>
+        </ul>
+                                <h3>
+          <A name="Limitations" />Known Limitations
+        </h3>
+                                <ul>
+          <li>
+            Reliability tests: 7 tests that heavily load the threading subsystem fail due
+            to <a href="https://issues.apache.org/jira/browse/HARMONY-4215,">https://issues.apache.org/jira/browse/HARMONY-4215</a>;
+            Eclipse Unit Tests "teamcvs" suite can fail or crash due to <a href="https://issues.apache.org/jira/browse/HARMONY-4298">https://issues.apache.org/jira/browse/HARMONY-4298</a>.
+          </li>
+          <li>
+            Other limitations listed at <a href="http://wiki.apache.org/harmony/KnownNonBugIssuesAndLimitations">http://wiki.apache.org/harmony/KnownNonBugIssuesAndLimitations</a> and <a href="http://wiki.apache.org/harmony/CoreVmDevelopmentItems">http://wiki.apache.org/harmony/CoreVmDevelopmentItems</a>
+          </li>
+        </ul>
+                   
+                                    
+    <h2>
+        <a name="Technical Support">Technical Support</a>
+    </h2>
+      
+                        <A name="TechSupport" />
+                                <P>
+          You can submit your questions and report bugs to the mailing list <B>dev@harmony.apache.org</B>,
+          or create an entry in the <a href="http://issues.apache.org/jira/browse/HARMONY">JIRA</a> bug tracker.
+          Your feedback is very important for us.
+        </P>
+                   
+                                    
+    <h2>
+        <a name="Disclaimer and Legal Information">Disclaimer and Legal Information</a>
+    </h2>
+      
+                        <A name="Legal" />
+                                <P>
+          Licensed to the Apache Software Foundation (ASF) under one or more
+          contributor license agreements. See the NOTICE file distributed with
+          this work for additional information regarding copyright ownership.
+          The ASF licenses this file to You under the Apache License, Version 2.0
+          (the "License"); you may not use this file except in compliance with
+          the License. You may obtain a copy of the License at
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
+        </P>
+                                <P>
+          Unless required by applicable law or agreed to in writing, software
+          distributed under the License is distributed on an "AS IS" BASIS,
+          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+          See the License for the specific language governing permissions and
+          limitations under the License.
+        </P>
+                                <p>
+          <a id="*" name="*">*</a> Other brands and names are the property of
+          their respective owners.
+        </p>
+                   
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                
+                                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special"><em>
+                Copyright &#169; 2003-2007, The Apache Software Foundation
+            </em></div>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
