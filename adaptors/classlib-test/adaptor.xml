@@ -23,35 +23,16 @@
     <property name="classlib-test.results.dir"
               value="${results.dir}/${suite.name}"/>
 
-    <!-- if the suite is run against snapshot -->
-    <condition property="is.snapshot">
-        <equals arg1="${classlib-test.parameters.depends}"
-                arg2="snapshot"
-                trim="yes" />
-    </condition>
-
     <!-- the default value for JRE options -->
     <property name="jre.options" value="-showversion"/>
 
     <!-- do setup -->
-    <target name="setup" depends="-setup-classlib-ws">
+    <target name="setup">
         <mkdir dir="${classlib-test.results.dir}"/>
     </target>
 
-    <target name="-setup-classlib-ws" if="is.snapshot">
-        <mkdir dir="${classlib-test.parameters.required.trunk.dir}" />
-        <svn-co url="${classlib-test.parameters.required.trunk.url}"
-                trunk="${classlib-test.parameters.required.trunk.dir}" />
-
-        <ant target="fetch-depends"
-             dir="${classlib-test.parameters.required.trunk.dir}"
-             inheritAll="false" />
-        <ant dir="${classlib-test.parameters.required.trunk.dir}"
-             inheritAll="false" />
-    </target>
-
     <!-- do run -->
-    <target name="run" depends="-update-classlib-ws">
+    <target name="run" depends="-setup-classlib-ws,-update-classlib-ws">
         <!-- remove old results (they have been archived after the run) -->
         <delete quiet="true" verbose="false">
             <fileset dir="${classlib-test.results.dir}" includes="**/*"/>
@@ -99,11 +80,44 @@
               if="classlib-test.run.failed"/>
     </target>
 
-    <target name="-update-classlib-ws" if="is.snapshot">
-        <!-- adjust classlib-tests to snapshots revision -->
-        <loadproperties srcFile="${snapshot.svn.revision.file}"/>
-        <exec executable="svn" dir="${classlib-test.trunk.dir}" failonerror="true">
-            <arg line="-r${svn.revision}"/>
+    <!--                                                    -->
+    <!-- Targets and properties related to snapshot testing -->
+    <!--                                                    -->
+    <condition property="is.snapshot">
+        <equals arg1="${classlib-test.parameters.depends}"
+                arg2="snapshot"
+                trim="yes" />
+    </condition>
+
+    <condition property="is.checkout_ws">
+        <and>
+            <isset property="is.snapshot" />
+            <not>
+                <available file="${classlib-test.trunk.dir}/build.xml" />
+            </not>
+        </and>
+    </condition>
+
+    <target name="-setup-classlib-ws" if="is.checkout_ws">
+        <mkdir dir="${classlib-test.parameters.required.trunk.dir}" />
+        <svn-co url="${classlib-test.parameters.required.trunk.url}"
+                trunk="${classlib-test.parameters.required.trunk.dir}" />
+
+        <ant target="fetch-depends"
+             dir="${classlib-test.parameters.required.trunk.dir}"
+             inheritAll="false" />
+        <ant dir="${classlib-test.parameters.required.trunk.dir}"
+             inheritAll="false" />
+    </target>
+
+    <target name="-update-classlib-ws"
+            if="is.snapshot"
+            description="adjusts classlib-tests to snapshots revision">
+        <loadproperties srcFile="${snapshot.svn.revision.file}" />
+        <exec executable="svn"
+              dir="${classlib-test.trunk.dir}"
+              failonerror="true">
+            <arg line="-r${svn.revision}" />
             <arg line="update" />
         </exec>
     </target>
