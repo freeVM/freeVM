@@ -250,6 +250,11 @@ limitations under the License.
         <link rel="stylesheet" type="text/css" href="${csspath}site.css" media="all" />
         <link rel="stylesheet" type="text/css" href="${csspath}screen.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="${csspath}print.css" media="print" />
+
+            #if ($root.getChild("properties").getChild("style"))
+                $root.getChild("properties").getChild("style")
+            #end
+            
         </head>
 
         <body>
@@ -290,6 +295,7 @@ limitations under the License.
         </body>
     </html>
 #end
+
 
 
 

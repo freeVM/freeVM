@@ -22,6 +22,21 @@ limitations under the License.
   <properties>
     <title>Apache Harmony Site Map</title>
     <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    <style type="text/css">
+         #navigationmenu {
+             display: none;
+         }
+
+         #top { /* Main Content */
+             margin-left: 0;
+             width: 100%;
+             clear: both;
+         }
+
+         td {
+            vertical-align: top;
+         }
+    </style>
   </properties>
 
   <body>
@@ -33,25 +48,13 @@ limitations under the License.
       </p>
 
       <table>
-
         <tr>
-
-          <td  width="50%" style="text-align: left">
+          <td width="50%">
             <h2>General</h2>
-          </td>
-
-
-          <td  width="50%">
-            <h2>Community</h2>
-          </td>
-
-        </tr>
-        <tr>
-          <td >
-            <P>
+            <p>
               <a href="http://harmony.apache.org/">Apache Harmony Home</a>: status, news,
               external stories
-            </P>
+            </p>
             <p>
               <a href="http://apache.org/"> Apache Software Foundation Home</a>:
               general information about the project, status, news, etc.
@@ -89,7 +92,9 @@ limitations under the License.
             </p>
 
           </td>
-          <td >
+          <td width="50%">
+            <h2>Community</h2>
+
             <p>
               <a href="get-involved.html">Get Involved</a>:
               general information on how to contribute, give feedback, fix
@@ -109,8 +114,8 @@ limitations under the License.
             </p>
             <p>
               <a href="issue_resolution_guideline.html">
-                When an Issue Occurs
-              </a>: description of action item types, general rules for commiters, information
+                When an Issue Occurs</a>:
+              description of action item types, general rules for commiters, information
               on reporting, resolving and closing issues
             </p>
             <p>
@@ -141,20 +146,13 @@ limitations under the License.
           </td>
         </tr>
         <tr>
-          <td >
+          <td>
             <h2>For Users</h2>
-          </td>
-          <td >
-            <h2>For Developers</h2>
-          </td>
-        </tr>
-        <tr>
-          <td >
             <p>
               <a href="quickhelp_users.html">
                 Getting
-                Started for Users
-              </a> gives a quick start with a pre-built snapshot of Harmony JRE
+                Started for Users</a>
+              gives a quick start with a pre-built snapshot of Harmony JRE
             </p>
             <p>
               <a href="cmd_options.html">Command-line Options</a> reference with all
@@ -171,11 +169,13 @@ limitations under the License.
               <a href="faq.html">FAQ</a>: Frequently asked questions
             </p>
           </td>
-          <td >
+
+          <td>
+            <h2>For Developers</h2>
             <p>
               <a href="quickhelp_contributors.html">
-                Getting Started for Contributors
-              </a> instructs on how to check out and build the source code
+                Getting Started for Contributors</a>
+              instructs on how to check out and build the source code
             </p>
             <p>
               <a href="http://people.apache.org/~mloenko/snapshot_testing/script/snapshots_summary.html">Snapshots for 1.5.0</a> for
@@ -183,18 +183,17 @@ limitations under the License.
             </p>
             <p>
               <a href="hdk.html">
-                Harmony Development Kit
-              </a>: definition and layout
+                Harmony Development Kit</a>: definition and layout
             </p>
 
             <p>
               <a href="documentation/dev_eclipse.html">
-                Getting Started with Eclipse
-              </a> to develop Java code in Apache Harmony, featuring
+                Getting Started with Eclipse</a>
+              to develop Java code in Apache Harmony, featuring
               <a href="documentation/dev_eclipse_movie.html">
                 a
-                movie
-              </a> with a step-by-step guide to configuring Eclipse
+                movie</a>
+              with a step-by-step guide to configuring Eclipse
             </p>
             <p>
               <a href="documentation/build_website.html">
@@ -210,7 +209,7 @@ limitations under the License.
           </td>
         </tr>
         <tr>
-          <td >
+          <td>
             <h2>Docs: DRLVM Navigator</h2>
             <p>
               <a href="subcomponents/drlvm/index.html">
@@ -218,7 +217,7 @@ limitations under the License.
               </a>
             </p>
           </td>
-          <td >
+          <td>
             <h2>Docs: Class libraries Navigator</h2>
             <p>
               <a href="subcomponents/classlibrary/index.html">
@@ -228,7 +227,7 @@ limitations under the License.
           </td>
         </tr>
         <tr>
-          <td >
+          <td>
 
             <h3>Developing and Building the Code</h3>
             <p>
@@ -238,8 +237,7 @@ limitations under the License.
             </p>
             <p>
               <a href="subcomponents/drlvm/getting_started.html">
-                Getting Started with DRLVM
-              </a>: basic usage scenarios
+                Getting Started with DRLVM</a>: basic usage scenarios
             </p>
             <h3>Architecture and Components</h3>
             <p>
@@ -307,24 +305,22 @@ limitations under the License.
             <h3>How-tos and Guides</h3>
             <p>
               <a href="subcomponents/drlvm/emguide.html">
-                Configuring Execution Manager
-              </a>: options and configuration file format
+                Configuring Execution Manager</a>: options and configuration file format
             </p>
 
             <p>
               <a href="subcomponents/drlvm/gc-howto.html">
-                How to Write DRL GC
-              </a>: example-supported guide to creating a custom garbage collector
+                How to Write DRL GC</a>:
+              example-supported guide to creating a custom garbage collector
               implementation in C++ and configuring DRLVM to use it (sample code included)
             </p>
 
           </td>
-          <td >
 
+          <td>
             <p>
               <a href="subcomponents/classlibrary/status.html">
-                Class Library Component Status
-              </a> - comparisons of JDK 1.4 and JDK 1.5. against
+                Class Library Component Status</a> - comparisons of JDK 1.4 and JDK 1.5. against
               the Harmony class library snapshots
             </p>
 
@@ -347,8 +343,8 @@ limitations under the License.
             </p>
             <p>
               <a href="subcomponents/classlibrary/ser_testing.html">
-                Framework for Testing Serialization
-              </a>: guidelines for creating tests and
+                Framework for Testing Serialization</a>:
+              guidelines for creating tests and
               conventions for resource files
             </p>
             <h3>Architecture and Guides Documentation</h3>
@@ -359,35 +355,34 @@ limitations under the License.
             <ul>
               <li>
                 <a href="subcomponents/classlibrary/asn1_framework.html">
-                  ASN.1 Framework
-                </a>: overview, types and encoding rules of the Abstract Syntax Notation 1
+                  ASN.1 Framework</a>: overview, types and encoding rules of
+                  the Abstract Syntax Notation 1
               </li>
               <li>
                 <a href="subcomponents/classlibrary/awt.html">
-                  AWT Framework
-                </a>: Abstract Window Toolkit specifics
+                  AWT Framework</a>: Abstract Window Toolkit specifics
               </li>
               <li>
                 <a href="subcomponents/classlibrary/dns_support.html">
-                  JNDI DNS Service Provider
-                </a>: specifics and usage gudelines of the Domain Name System provider
+                  JNDI DNS Service Provider</a>:
+                specifics and usage gudelines of the Domain Name System provider
                 for the Java Naming Directory Interface
               </li>
               <li>
                 <a href="subcomponents/classlibrary/java2d.html">
                   Java 2D graphics
-                  and image processing
-                </a>: introduction to Java 2D (two-dimensional) image processing
+                  and image processing</a>:
+                introduction to Java 2D (two-dimensional) image processing
               </li>
               <li>
                 <a href="subcomponents/classlibrary/regexp.html">
-                  Regex Processing Framework
-                </a>: overview of the <code>java.util.regex</code> package and implementation with focus on the performance improvement
+                  Regex Processing Framework</a>:
+                overview of the <code>java.util.regex</code> package and implementation with focus on the performance improvement
               </li>
               <li>
                 <a href="subcomponents/classlibrary/rmi_provider.html">
-                  JNDI RMI Registry Service Provider
-                </a>: design of the Remote method invocation provider for the Java Naming Directory Interface
+                  JNDI RMI Registry Service Provider</a>:
+                design of the Remote method invocation provider for the Java Naming Directory Interface
               </li>
             </ul>
           </td>
