@@ -1,18 +1,17 @@
-/*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 #include <jni.h>
@@ -21,8 +20,7 @@
 #ifndef _Included_org_apache_harmony_luni_platform_OSMemory
 #define _Included_org_apache_harmony_luni_platform_OSMemory
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 /* Inaccessible static: POINTER_SIZE */
 /* Inaccessible static: NATIVE_ORDER */
@@ -193,22 +191,6 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_setCharArr
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSMemory
- * Method:    mmapImpl
- * Signature: (JJJI)J
- */
-JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
-  (JNIEnv *, jobject, jlong, jlong, jlong, jint);
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSMemory
- * Method:    unmapImpl
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
-  (JNIEnv *, jobject, jlong, jlong);
-
-/*
- * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    loadImpl
  * Signature: (JJ)I
  */
@@ -218,7 +200,7 @@ JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_loadImpl
 /*
  * Class:     org_apache_harmony_luni_platform_OSMemory
  * Method:    isLoadedImpl
- * Signature: (JJ)Z
+ * Signature: (Lorg/apache/harmony/luni/platform/struct/PlatformAddress;J)Z
  */
 JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoadedImpl
   (JNIEnv *, jobject, jlong, jlong);
@@ -229,6 +211,22 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoad
  * Signature: (JJ)I
  */
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
+  (JNIEnv *, jobject, jlong, jlong);
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSMemory
+ * Method:    mmapImpl
+ * Signature: (JJJII)J
+ */
+JNIEXPORT jlong JNICALL Java_org_apache_harmony_luni_platform_OSMemory_mmapImpl
+  (JNIEnv *, jobject, jlong, jlong, jlong, jint);
+
+/*
+ * Class:     org_apache_harmony_luni_platform_OSMemory
+ * Method:    unmapImpl
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_apache_harmony_luni_platform_OSMemory_unmapImpl
   (JNIEnv *, jobject, jlong, jlong);
 
 #ifdef __cplusplus
