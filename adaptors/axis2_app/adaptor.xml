@@ -54,6 +54,7 @@
     <!-- setup AXIS2 server -->
     <target name="setup" unless="app.OK">
         <log message="AXIS2_HOME: ${AXIS2_HOME}" />
+        <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
         <call-axis2_app target="setup_axis2server" />
     </target>
 
