@@ -125,7 +125,7 @@
           target: -create-build-dirs                      
          - - - - - - - - - - - - - - - - - -->
     <target name="-create-build-dirs">
-        <mkdir dir="${suite.dir}"/>
+        <svn-update-bt path="${suite.dir}"/>
         <mkdir dir="${tests.classes.dir}"/>
     </target>
 
