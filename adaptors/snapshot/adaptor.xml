@@ -151,6 +151,10 @@
     <!-- custom bootstrapper implementation -->
     <target name="bootstrap" depends="download.snapshot"/>
 
+    <condition property="build.status" value="passed" else="failed">
+        <!-- the property is passed by CC -->
+        <equals arg1="${thisbuildsuccessful}" arg2="true" />
+    </condition>
 
     <!--                     -->
     <!-- snapshot publishers -->
@@ -174,6 +178,7 @@
                 &lt;/html&gt;
             </footer>
         </concat>
+        <touch-status-file suite-dir="${snapshot.results.dir}/axis2_app" />
         <archive-result/>
     </target>
 
@@ -237,6 +242,7 @@
                 &lt;/html&gt;
             </footer>
         </concat>
+        <touch-status-file suite-dir="${snapshot.results.dir}/dacapo" />
         <archive-result/>
     </target>
 
@@ -258,6 +264,7 @@
                 &lt;/html&gt;
             </footer>
         </concat>
+        <touch-status-file suite-dir="${snapshot.results.dir}/ehwa" />
         <archive-result/>
     </target>
 
@@ -275,6 +282,7 @@
         <mkdir dir="${snapshot.results.dir}/hdk_by_hdk" />
         <copy file="${cc.execution.log.file}"
               tofile="${snapshot.results.dir}/hdk_by_hdk/index.html" />
+        <touch-status-file suite-dir="${snapshot.results.dir}/hdk_by_hdk" />
         <archive-result />
     </target>
 
@@ -297,6 +305,7 @@
                 &lt;/html&gt;
             </footer>
         </concat>
+        <touch-status-file suite-dir="${snapshot.results.dir}/scimark" />
         <archive-result/>
     </target>
 
@@ -327,6 +336,7 @@
 NO OUTPUT
 &lt;/html&gt;
         </echo>
+        <touch-status-file suite-dir="${snapshot.results.dir}/tomcat-scenario" />
         <archive-result/>
     </target>
 
@@ -337,6 +347,13 @@ NO OUTPUT
             <zip destfile="${cc.log.dir}/snapshot-r${snapshot.svn.revision}.status.zip"
                  basedir="${snapshot.results.dir}"
                  update="true"/>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="touch-status-file">
+        <attribute name="suite-dir" />
+        <sequential>
+            <echo file="@{suite-dir}/status.txt" message="${build.status}" />
         </sequential>
     </macrodef>
 
