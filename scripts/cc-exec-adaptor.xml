@@ -133,8 +133,12 @@ ${exception}
             depends="define-ant-contrib"
             if="framework.parameters.usemail"
             unless="${suite.name}.parameters.run.skipped">
+        
+        <available file="${cc.execution.log.file}" property="cc.execution.log.file.available"/>
+        <runtarget target="-store-cc-logs"/>
         <!-- attach execution log file in case of failure -->
-        <if>
+        <condition property="mail.execution.log" 
+            value="${temp.files.dir}/execution_log.zip">
             <and>
                 <isfalse value="${thisbuildsuccessful}"/>
                 <not><isset 
@@ -145,32 +149,20 @@ ${exception}
                 </not>
                 <available file="${cc.execution.log.file}"/>
             </and>
-        <then>
-            <delete file="${temp.files.dir}/execution_log.zip" 
-                    failonerror="false"/>
-            <zip destfile="${temp.files.dir}/execution_log.zip">
-                <fileset file="${cc.execution.log.file}"/>
-            </zip>
-            <property name="mail.execution.log" 
-                 value="${temp.files.dir}/execution_log.zip"/>
-        </then>
-        </if>
+        </condition>
 
         <!-- compose message from CC logs (it there is no message file
              provided by test suite) -->
-        <if>
+        <condition property="mail.message" value="${cc.message.file}">
             <not>
             <or>
                 <isset property="${suite.name}.parameters.cc.message"/>
                 <isset property="${suite.name}.parameters.mail.message"/>
             </or>
             </not>
-        <then>
-            <runtarget target="-compose-message-file"/>
-        </then>
-        </if>
+        </condition>
 
-        <!-- do mail notifiaction -->
+        <!-- do mail notification -->
         <ant dir="${scripts.dir}" 
              antfile="${scripts.dir}/publisher.xml" 
              target="publish"
@@ -204,17 +196,32 @@ ${exception}
         
     </target>
 
+    <target name="-store-cc-logs" if="cc.execution.log.file.available">
+        <property name="suite.results.dir" location="${results.dir}/${suite.name}"/>
+        <mkdir dir="${suite.results.dir}"/>
+        <delete file="${temp.files.dir}/execution_log.zip" 
+                    failonerror="false"/>
+        <copy file="${cc.execution.log.file}" todir="${suite.results.dir}"/>
+        <zip destfile="${temp.files.dir}/execution_log.zip">
+            <fileset file="${cc.execution.log.file}"/>
+        </zip>
+
+        <!-- compose summary from CC logs -->
+        <runtarget target="-compose-message-file"/>
+        <copy file="${cc.message.file}" todir="${suite.results.dir}" failonerror="false"/>
+    </target>
+
     <!-- compose message from CC logs -->
     <target name="-compose-message-file"
             unless="mail.message">
         <property name="cc.xsl.files.dir"
                   value="${ext.cc.location}/webapps/cruisecontrol/xsl"/>
-        <property name="mail.message"
+        <property name="cc.message.file"
                   value="${temp.files.dir}/${suite.name}-email-message.txt"/>
         <xslt basedir="${scripts.dir}/xslt"
               in="${logdir}/${logfile}"
               style="${scripts.dir}/xslt/br.xsl"
-              out="${mail.message}"
+              out="${cc.message.file}"
               classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar"/>
     </target>
 
