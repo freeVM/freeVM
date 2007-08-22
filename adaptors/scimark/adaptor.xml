@@ -37,7 +37,7 @@
         <delete file="${scimark.output.file}" quiet="true" verbose="false"/>
         <!-- run the test on ${tested.runtime} set up as a required parameter -->
         <echo message="Tested Runtime: ${tested.runtime} ${scimark.tested.runtime}"/>
-        <java jvm="${tested.runtime}/bin/java"
+        <java jvm="${tested.runtime}"
               classpath="${ext.scimark.location}" 
               classname="jnt.scimark2.commandline"
               output="${scimark.output.file}"
