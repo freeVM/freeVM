@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                        BT Adaptor for JUnit Test
+     ====================================================================== -->
+<project name="junit_test" default="run" basedir=".">
+
+    <property name="junit.location" location="${ext.junit4.location}"/>
+    <property name="junit.results.dir" location="${results.dir}/${suite.name}"/>
+    <property name="current.results.dir" location="${junit.results.dir}/results"/>
+
+    <target name="setup">
+        <echo level="info" message="============= Adaptor for ${suite.name}: Set Up ..."/>
+        <echo level="info" message=""/>
+        <echo level="info" message="Tested JVM: ${junit_test.parameters.required.tested.jvm}"/>
+        <echo level="info" message="JUnit 4 location: ${junit.location}"/>
+        <echo level="info" message=""/>
+
+        <mkdir dir="${current.results.dir}"/> 
+    </target>
+
+    <target name="run">
+        <condition property="jvm.not.exist">
+            <not>
+                <available file="${tested.jvm}"/>
+            </not>
+        </condition>
+        <fail message="Path to JVM does not exist: ${tested.jvm}" if="jvm.not.exist"/>
+    
+        <run-test classname="junit.tests.AllTests"/>
+        <run-test classname="junit.samples.AllTests"/>
+        
+        <!--Backup test result -->
+        <tstamp>
+            <format property="test.run.time" pattern="yyyyMMdd_HHmm"/>
+        </tstamp>
+        <mkdir dir="${current.results.dir}_${test.run.time}" />
+        <copy todir="${current.results.dir}_${test.run.time}" >
+            <fileset dir="${current.results.dir}"/>
+        </copy>
+    </target>
+
+    <target name="clean">
+        <delete dir="${junit.results.dir}" quiet="true"/>
+    </target>
+
+    <macrodef name="run-test">
+        <attribute name="classname"/>
+        <sequential>
+            <echo level="info" message="=================================================="/>
+            <junit printsummary="on"
+                   fork="yes"
+                   forkmode="perTest"
+                   jvm="${tested.jvm}"
+                   showoutput="yes" 
+                   dir="${current.results.dir}">
+                <formatter type="xml" />
+                <test name="@{classname}" todir="${current.results.dir}" />
+                <classpath>
+                    <pathelement path="${junit.location}/"/>
+                    <pathelement location="${junit.location}/junit-4.3.1.jar"/>
+                </classpath>
+            </junit>
+            <echo level="info" message=""/>
+        </sequential>
+    </macrodef>
+
+</project>
+
