@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-    <title>Apache Tomcat/6.0.10</title>
+    <title>Apache Tomcat/6.0.14</title>
     <style type="text/css">
     /*<![CDATA[*/
       body {
@@ -79,7 +79,7 @@
 	  <img src="tomcat.gif" height="92" width="130" alt="The Mighty Tomcat - MEOW!"/>
 	</a>
       </td>
-      <td align="left" valign="top"><b>Apache Tomcat/6.0.10</b></td>
+      <td align="left" valign="top"><b>Apache Tomcat/6.0.14</b></td>
       <td align="right">
         <a href="http://jakarta.apache.org/">
 	  <img src="asf-logo-wide.gif" height="51" width="537" alt="The Apache Software Foundation"/>
@@ -180,7 +180,7 @@
           <p>As you may have guessed by now, this is the default Tomcat home page. It can be found on the local filesystem at:</p>
           <p class="code">$CATALINA_HOME/webapps/ROOT/index.jsp</p>
 	  
-          <p>where "$CATALINA_HOME" is the root of the Tomcat installation directory. If you're seeing this page, and you don't think you should be, then either you're either a user who has arrived at new installation of Tomcat, or you're an administrator who hasn't got his/her setup quite right. Providing the latter is the case, please refer to the <a href="tomcat-docs">Tomcat Documentation</a> for more detailed setup and administration information than is found in the INSTALL file.</p>
+          <p>where "$CATALINA_HOME" is the root of the Tomcat installation directory. If you're seeing this page, and you don't think you should be, then either you're either a user who has arrived at new installation of Tomcat, or you're an administrator who hasn't got his/her setup quite right. Providing the latter is the case, please refer to the <a href="docs">Tomcat Documentation</a> for more detailed setup and administration information than is found in the INSTALL file.</p>
 
             <p><b>NOTE: For security reasons, using the administration webapp
             is restricted to users with role "admin". The manager webapp
