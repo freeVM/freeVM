@@ -41,7 +41,14 @@
     </target>
 
     <target name="upload" if="do.upload">
-        <copy todir="${make-snapshot.parameters.optional.upload.dir}">
+        <property file="${trunk.dir}/release.properties" prefix="upload"/>
+        <condition property="upload.dir" value="${make-snapshot.parameters.optional.upload.dir}/r${upload.svn.revision}" 
+            else="${make-snapshot.parameters.optional.upload.dir}">
+            <isset property="upload.svn.revision"/>
+        </condition>
+        <mkdir dir="${upload.dir}"/>
+        <chmod file="${target.dir}" perm="ugo+rw"/>
+        <copy todir="${upload.dir}">
             <fileset dir="${target.dir}" includes="*">
                 <type type="file"/>
             </fileset>
