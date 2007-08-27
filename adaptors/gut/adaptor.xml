@@ -21,7 +21,14 @@
 <project name="gut" default="run" basedir=".">
 
     <!-- Setup Geronimo and its pre-requisites -->
-    <target name="setup">
+    <target name="setup" depends="check-install,install"/>
+        
+    <property name="install.marker" location="${test.sources.dir}/${suite.name}/install.complete"/>
+    <target name="check-install">
+        <available property="skip.install" file="${install.marker}"/>
+    </target>
+        
+    <target name="install" unless="skip.install">
         <description>
             setup: Install, configure and build Geronimo and its pre-requisites
         </description>
@@ -46,6 +53,7 @@
         </exec-ant>
 
         <fail message="Geronimo unit tests setup failed" if="gut.setup.failed"/>
+        <touch file="${install.marker}"/>
     </target>
 
     <!-- Run Geronimo unit tests -->
