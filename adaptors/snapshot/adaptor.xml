@@ -79,10 +79,18 @@
         <contains string="${snapshot.file}" substring=".zip" />
     </condition>
 
-    <property name="snapshot.results.dir" location="${snapshot}/results" />
+    <!-- result dir -->
+    <condition property="platform.prefix" value="Windows" else="Linux">
+        <isset property="is.windows" />
+    </condition>
+    <condition property="platform.sufix" value="x86_64" else="x86">
+        <isset property="is.x86_64" />
+    </condition>
+    <property file="${snapshot.svn.revision.file}" />
+    <property name="snapshot.results.dir"
+              location="${snapshot}/results/r${svn.revision}/${platform.prefix}_${platform.sufix}" />
 
     <target name="run" depends="-unzip,-gunzip,-svn.revision">
-        <delete dir="${snapshot.results.dir}" />
         <mkdir dir="${snapshot.results.dir}" />
     </target>
 
@@ -343,10 +351,11 @@ NO OUTPUT
 
     <macrodef name="archive-result">
         <sequential>
-            <property file="${snapshot}/svn.revision" prefix="snapshot"/>
-            <zip destfile="${cc.log.dir}/snapshot-r${snapshot.svn.revision}.status.zip"
-                 basedir="${snapshot.results.dir}"
-                 update="true"/>
+            <mkdir dir="${snapshot.arch.dir}/r${svn.revision}" />
+            <zip destfile="${snapshot.arch.dir}/r${svn.revision}/snapshot-r${svn.revision}.${platform.prefix}_${platform.sufix}.${projectname}-status.zip"
+                 basedir="${snapshot}/results"
+                 includes="r${svn.revision}/${platform.prefix}_${platform.sufix}/${projectname}/**"
+                 update="true" />
         </sequential>
     </macrodef>
 
