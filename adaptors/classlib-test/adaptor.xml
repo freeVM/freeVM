@@ -89,16 +89,16 @@
                 trim="yes" />
     </condition>
 
-    <condition property="is.checkout_ws">
+    <condition property="need.setup.ws">
         <and>
             <isset property="is.snapshot" />
             <not>
-                <available file="${classlib-test.trunk.dir}/build.xml" />
+                <available file="${classlib-test.trunk.dir}/deploy/jdk/jre/lib/boot"/>
             </not>
         </and>
     </condition>
 
-    <target name="-setup-classlib-ws" if="is.checkout_ws">
+    <target name="-setup-classlib-ws" if="need.setup.ws">
         <mkdir dir="${classlib-test.parameters.required.trunk.dir}" />
         <svn-co url="${classlib-test.parameters.required.trunk.url}"
                 trunk="${classlib-test.parameters.required.trunk.dir}" />
