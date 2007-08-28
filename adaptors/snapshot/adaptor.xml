@@ -348,6 +348,15 @@ NO OUTPUT
         <archive-result/>
     </target>
 
+    <target name="publish-vtsvm">
+        <mkdir dir="${snapshot.results.dir}/vtsvm" />
+        <junitreport todir="${snapshot.results.dir}/vtsvm">
+            <fileset dir="${results.dir}/vtsvm" includes="TEST*-*.xml" />
+            <report format="frames" todir="${snapshot.results.dir}/vtsvm" />
+        </junitreport>
+        <archive-result/>
+    </target>
+
 
     <macrodef name="archive-result">
         <sequential>
