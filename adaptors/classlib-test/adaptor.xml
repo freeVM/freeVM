@@ -44,7 +44,7 @@
         </tstamp>
 
         <exec-ant dir="${classlib-test.trunk.dir}"
-                  targets="test"
+                  targets="fetch-depends test"
                   failonerror="false"
                   failproperty="classlib-test.run.failed">
             <jvmarg line="-Xmx800M"/>
