@@ -47,25 +47,12 @@
     </condition>
 
     <!-- architecture name -->
-    <condition property="mail.os.arch" value="x86">
-        <or>
-            <os arch="x86"/>
-            <os arch="i386"/>
-        </or>
-    </condition>
-    <condition property="mail.os.arch" value="x86_64">
-        <or>
-            <os arch="x86_64"/>
-            <os arch="amd64"/>
-            <os arch="em64t"/>
-        </or>
-    </condition>
-    <property name="mail.os.arch" value="${os.arch}"/>
+    <import file="properties.xml"/>
 
     <!-- compose subject line -->
     <property name="mail.subject.suffix" value=""/>
     <property name="mail.subject.line"
-              value="${mail.subject.prefix} ${mail.execution.status} ${os.name} ${mail.os.arch}: ${suite.name} ${mail.subject.suffix}"/>
+              value="${mail.subject.prefix} ${mail.execution.status} ${os.name} ${hy.arch}: ${suite.name} ${mail.subject.suffix}"/>
 
     <!-- implement publisher interface -->
     <target name="publish" if="do.mail">

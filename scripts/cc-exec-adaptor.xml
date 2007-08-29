@@ -20,6 +20,8 @@
      ====================================================================== -->
 <project name="cc-ant" default="cc-publish" basedir=".">
 
+    <import file="properties.xml"/>
+
     <property file="${properties.dump.file}"/>
     <property file="${framework.properties.file}"/>
     <import file="${framework.implementation.file}"/>
@@ -194,6 +196,11 @@ ${exception}
             </propertyset>
         </ant>
         
+        <condition property="upload.dir" value="${framework.parameters.optional.upload.dir}">
+            <isset property="framework.parameters.optional.upload.dir"/>
+        </condition>
+        <runtarget target="upload-status-report"/>
+        
     </target>
 
     <target name="-store-cc-logs" if="cc.execution.log.file.available">
@@ -223,6 +230,39 @@ ${exception}
               style="${scripts.dir}/xslt/br.xsl"
               out="${cc.message.file}"
               classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar"/>
+    </target>
+    
+    <target name="upload-status-report" if="upload.dir">
+        <property name="cc.xsl.files.dir"
+                  value="${ext.cc.location}/webapps/cruisecontrol/xsl"/>
+        <property name="status.report.dir"
+                  value="${results.dir}/${hy.platform}/${suite.name}"/>
+        <property name="status.report.index"
+                  value="${status.report.dir}/index.html"/>
+        
+        <delete dir="${status.report.dir}" quiet="true"/>
+        <mkdir dir="${status.report.dir}"/>
+        
+        <copy file="${scripts.dir}/xslt/status.xsl" todir="${cc.xsl.files.dir}"/>
+        <xslt in="${logdir}/${logfile}"
+              style="${cc.xsl.files.dir}/status.xsl"
+              out="${status.report.index}"
+              classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar">
+              <param name="title" expression="Status of ${suite.name} on ${hy.platform}"/>
+        </xslt>
+        
+        <copy file="${cc.execution.log.file}" todir="${status.report.dir}"/>
+            
+        <condition property="build.status" value="passed" else="failed">
+            <!-- the property is passed by CC -->
+            <equals arg1="${thisbuildsuccessful}" arg2="true" />
+        </condition>
+        <echo file="${status.report.dir}/status.txt" message="${build.status}" />
+
+        <zip destfile="${upload.dir}/${hy.platform}.${suite.name}.status.zip"
+             basedir="${results.dir}"
+             includes="${hy.platform}/${suite.name}/**"
+             update="true" />
     </target>
 
 </project>
