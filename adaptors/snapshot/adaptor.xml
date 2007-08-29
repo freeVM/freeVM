@@ -186,7 +186,7 @@
                 &lt;/html&gt;
             </footer>
         </concat>
-        <touch-status-file suite-dir="${snapshot.results.dir}/axis2_app" />
+        <touch-status-file />
         <archive-result/>
     </target>
 
@@ -251,7 +251,7 @@
                 &lt;/html&gt;
             </footer>
         </concat>
-        <touch-status-file suite-dir="${snapshot.results.dir}/dacapo" />
+        <touch-status-file />
         <archive-result/>
     </target>
 
@@ -259,7 +259,7 @@
         <mkdir dir="${snapshot.results.dir}/ehwa" />
         <copy file="${cc.execution.log.file}"
               tofile="${snapshot.results.dir}/ehwa/index.html" />
-        <touch-status-file suite-dir="${snapshot.results.dir}/ehwa" />
+        <touch-status-file />
         <archive-result/>
     </target>
 
@@ -283,7 +283,7 @@ ${eut.html.files};
                        match="([^;]*);"
                        replace="&lt;a href=\1&gt;\1&lt;/a&gt;&lt;br/&gt;" />
 
-        <touch-status-file suite-dir="${snapshot.results.dir}/eut" />
+        <touch-status-file />
         <archive-result />
     </target>
 
@@ -307,7 +307,7 @@ ${eut.html.files};
                        match="([^;]*);"
                        replace="&lt;a href=\1&gt;\1&lt;/a&gt;&lt;br/&gt;" />
 
-        <touch-status-file suite-dir="${snapshot.results.dir}/eut33" />
+        <touch-status-file />
         <archive-result />
     </target>
 
@@ -325,7 +325,7 @@ ${eut.html.files};
         <mkdir dir="${snapshot.results.dir}/hdk_by_hdk" />
         <copy file="${cc.execution.log.file}"
               tofile="${snapshot.results.dir}/hdk_by_hdk/index.html" />
-        <touch-status-file suite-dir="${snapshot.results.dir}/hdk_by_hdk" />
+        <touch-status-file />
         <archive-result />
     </target>
 
@@ -348,7 +348,7 @@ ${eut.html.files};
                 &lt;/html&gt;
             </footer>
         </concat>
-        <touch-status-file suite-dir="${snapshot.results.dir}/scimark" />
+        <touch-status-file />
         <archive-result/>
     </target>
 
@@ -379,7 +379,7 @@ ${eut.html.files};
 NO OUTPUT
 &lt;/html&gt;
         </echo>
-        <touch-status-file suite-dir="${snapshot.results.dir}/tomcat-scenario" />
+        <touch-status-file />
         <archive-result/>
     </target>
 
@@ -404,9 +404,9 @@ NO OUTPUT
     </macrodef>
 
     <macrodef name="touch-status-file">
-        <attribute name="suite-dir" />
         <sequential>
-            <echo file="@{suite-dir}/status.txt" message="${build.status}" />
+            <echo file="${snapshot.results.dir}/${projectname}/status.txt"
+                  message="${build.status}" />
         </sequential>
     </macrodef>
 
