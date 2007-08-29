@@ -257,22 +257,8 @@
 
     <target name="publish-ehwa">
         <mkdir dir="${snapshot.results.dir}/ehwa" />
-        <concat destfile="${snapshot.results.dir}/ehwa/index.html">
-            <header trimleading="yes" filtering="no">
-                &lt;html&gt;
-            </header>
-
-            <fileset file="${results.dir}/ehwa/EHWA-message.txt" />
-            <filterchain>
-                <tokenfilter>
-                    <replaceregex pattern="(.*)" replace="\1&lt;br/&gt;" />
-                </tokenfilter>
-            </filterchain>
-
-            <footer trimleading="yes" filtering="no">
-                &lt;/html&gt;
-            </footer>
-        </concat>
+        <copy file="${cc.execution.log.file}"
+              tofile="${snapshot.results.dir}/ehwa/index.html" />
         <touch-status-file suite-dir="${snapshot.results.dir}/ehwa" />
         <archive-result/>
     </target>
