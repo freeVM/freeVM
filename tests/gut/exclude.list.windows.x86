@@ -13,10 +13,10 @@ org/apache/geronimo/timer/jdbc/DerbyJDBCWorkerPersistenceTest # 3 errors out of 
 # GERONIMO-2860: https://issues.apache.org/jira/browse/GERONIMO-2860?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel 
 org/apache/geronimo/common/propertyeditor/PropertyEditorsTest # 2 test cases 
 
-# TODO: investigate
+# Test issue: https://issues.apache.org/jira/browse/GERONIMO-3323
 org/apache/geronimo/gjndi/binding/GBeanBindingTest # 1 fail out of 1 test case
 
-# TODO: investigate
+# TODO: invesigate. Fails on RI + https://issues.apache.org/jira/browse/GERONIMO-2055
 org/apache/geronimo/directory/RunningTest # 1 error out of 1 test case
 
 # Tests issue, extend unstable AbstractThreadPooledTimerTest test, see line 37
