@@ -301,6 +301,30 @@ ${eut.html.files};
         <archive-result />
     </target>
 
+    <target name="publish-eut33">
+        <mkdir dir="${snapshot.results.dir}/eut33" />
+
+        <!-- get all EUT html report files into index.html -->
+        <copy todir="${snapshot.results.dir}/eut33">
+            <fileset dir="${results.dir}/eut33/latest"/>
+        </copy>
+
+        <dirset id="eut.dir.id" dir="${snapshot.results.dir}/eut33" includes="*" />
+        <property name="eut.html.files" refid="eut.dir.id" />
+        <echo file="${snapshot.results.dir}/eut33/index.html">
+&lt;html&gt;
+${eut.html.files};
+&lt;/html&gt;
+        </echo>
+        <replaceregexp file="${snapshot.results.dir}/eut33/index.html"
+                       flags="g"
+                       match="([^;]*);"
+                       replace="&lt;a href=\1&gt;\1&lt;/a&gt;&lt;br/&gt;" />
+
+        <touch-status-file suite-dir="${snapshot.results.dir}/eut33" />
+        <archive-result />
+    </target>
+
     <target name="publish-gut">
         <mkdir dir="${snapshot.results.dir}/gut" />
         <junitreport todir="${checkouts.dir}/gut/logs">
