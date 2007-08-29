@@ -161,6 +161,17 @@
 		<echo>Removing Eclipse workspace ...</echo>
 		<delete dir="${basedir}/workspace"/>
 
+		<echo>Clean up ehwa test dir ...</echo>
+		<delete includeemptydirs="true">
+			<fileset dir="${basedir}" casesensitive="yes">
+				<exclude name="ehwa_eclipse_3.2.1.au3"/>
+				<exclude name="ehwa_eclipse_3.2.1.pl"/>
+				<exclude name="ehwa_run.xml"/>
+				<exclude name="EHWA.txt"/>
+				<exclude name="README.txt"/>
+		    </fileset>
+		</delete>
+
 		<echo>Creating results directory ...</echo>
 		<mkdir dir="${res.dir}"/> 
 		
