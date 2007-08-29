@@ -478,6 +478,11 @@
             <fileset dir="${eut.work.dir}/results"/>
         </copy>
 
+        <delete dir="${result.dir}/latest"/>
+        <mkdir dir="${result.dir}/latest"/>
+        <copy todir="${result.dir}/latest">
+            <fileset dir="${res.dir}/results/html"/>
+        </copy>
     </target>
 
     <!-- Check whether there are fatal failure messages in report file or
