@@ -54,13 +54,6 @@
     <property name="patched.src.dir" location="${abbot.root}/psrc"/>
     <property name="jedit.pl.install.dir" location="${jedit.install.dir}/jars"/>
 
-    <!-- Check if we need to compile patch for Harmony -->
-    <condition property="need.compile.harmony.patch">
-        <not>
-            <equals arg1="${harmony.boot.dir}" arg2=""/>
-        </not>
-    </condition>
-
     <!-- ================================= 
           target: public targets              
          ================================= -->
@@ -106,7 +99,7 @@ Build/test run preconditions:
  - Junit framework 3.8.1 or higher from http://junit.org ('junit.jar' in your CLASSPATH).</echo>
     </target>
 
-    <target name="setup" depends="-install-depends, -compile.harmony.patch">
+    <target name="setup" depends="-install-depends">
         <mkdir dir="${tests.classes.dir}"/>
         <javac srcdir="${tests.src.dir}" destdir="${tests.classes.dir}"
             excludes="**/patches/**">
@@ -124,13 +117,6 @@ Build/test run preconditions:
 
     <target name="stress" depends="setup, -run-stress, -generate-report">
         <fail if="test.not.passed" />
-    </target>
-
-    <target name="-compile.harmony.patch" if="need.compile.harmony.patch">
-        <mkdir dir="${harmony.patched.classes.dir}"/>
-        <javac srcdir="${patches.dir}/harmony" destdir="${harmony.patched.classes.dir}">
-            <bootclasspath refid="patched-harmony-compile-classpath" />
-        </javac>
     </target>
 
     <target name="clean.report">
@@ -327,25 +313,6 @@ firstTime=false
             location="${abbot.root}/lib/junit.jar" />
     </path>   
 
-    <path id="patched-harmony-compile-classpath">
-        <pathelement
-            location="${harmony.boot.dir}/luni-kernel-stubs.jar" />
-        <pathelement
-            location="${harmony.boot.dir}/security-kernel-stubs.jar" />
-        <pathelement
-            location="${harmony.boot.dir}/security.jar" />
-        <pathelement
-            location="${harmony.boot.dir}/luni.jar" />
-        <pathelement
-            location="${harmony.boot.dir}/beans.jar" />
-        <pathelement
-            location="${harmony.boot.dir}/annotation.jar" />
-        <pathelement
-            location="${harmony.boot.dir}/awt.jar" />
-        <pathelement
-            location="${harmony.boot.dir}/text.jar" />
-    </path>   
-
     <path id="abbot-build-classpath">
         <pathelement location="${abbot.root}/lib/junit.jar"/>   
         <pathelement location="${abbot.root}/lib/jdom.jar"/>   
@@ -481,13 +448,12 @@ firstTime=false
                 dir="${tests.working.dir}"
                 jvm="${test.java.home}/bin/java">
 
-                <jvmarg line="${tested.vm.options}" />
+                <jvmarg line="${tested.vm.options} ${test.vmarg.bootclasspath}" />
 
                 <jvmarg value="-Djedit.home=${jedit.install.dir}" />
                 <jvmarg value="${test.vmarg.ush_prefix}" />
                 <jvmarg value="${test.vmarg.do_not_install_handler}" />
                 <jvmarg value="-DJEditStressTest.it_num=${test.stress.iterations}" />
-                <jvmarg value="${test.vmarg.bootclasspath}" />
                 <jvmarg value="-Dtest.scripts.dir=${basedir}/scripts" />
 
                 <jvmarg value="-Dabbot.robot.popup_delay=${abbot.robot.popup_delay}" />

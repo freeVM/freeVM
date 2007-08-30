@@ -68,7 +68,6 @@ After extracting the archive, the following files and directories appear under
        |         |                            framework on Harmony's runtime*
        |         |
        |         +-- patch.txt                       - Patch for Abbot classes
-       |         +-- harmony/java/awt/Toolkit.java   - Patch for Harmony
        |
        +-- scripts/                         - Test scripts
             |
@@ -82,9 +81,6 @@ After extracting the archive, the following files and directories appear under
 *) These small patches are temporary.
   Corresponding Abbot patch is on the project's web-page already:
   http://sourceforge.net/tracker/index.php?func=detail&aid=1618017&group_id=50939&atid=461492
-  Harmony's patch contains stub for nonimplemented method
-  java.awt.Toolkit.getLockingKeyState and will be eliminated after
-  the method implementation.
 
 
 2. TOOLS REQUIRED FOR THE BUILD
@@ -113,16 +109,13 @@ configure the following tools in the user environment:
    through proxy uncomment and update with actual info two related lines in
    the beginning of 'build.properties' file
 
-2) Set in 'build.properties' file directory where Harmony's jars located
-   by modifying 'harmony.boot.dir' property
-
-3) Set/verify the values for the following environment variables:
+2) Set/verify the values for the following environment variables:
 
     - PATH (Path on Windows) must contain the path to
       patch utility executable, ant bin/ and J2SDK bin/ directories;
     - junit.jar must be in CLASSPATH
 
-4) Build tests by executing the following commands:
+3) Build tests by executing the following commands:
 
     cd <INSTALL_DIR>/jedit4.2_test
     ant setup
@@ -141,7 +134,6 @@ tree structure (not fully expanded here):
        +-- target/
             +-- classes/
             |       |
-            |       +-- harmony  - Compiled Harmony patch
             |       +-- tests    - Compiled test classes
             +-- downloads/       - Downloaded external dependencies
             +-- abbot-1.0.0.rc5/      - Abbot framework (patched)
@@ -242,20 +234,16 @@ Any test run produces the following set of additional directories
    system. It must be replaced with "functional" one as soon as Harmony's
    AWT/Swing implementation improved.
 
-3. There are patches for both Harmony's classes and Abbot framework in the
-   archive. However they are temporary. Corresponding Abbot patch is on
-   the project's web-page already:
+3. There are patches for Abbot framework in the archive. However they are
+   temporary. Corresponding Abbot patch is on the project's web-page already:
 
     http://sourceforge.net/tracker/index.php?func=detail&aid=1618017&group_id=50939&atid=461492
-
-   Harmony's patch contains stub for nonimplemented method in class
-   java.awt.Toolkit and will be eliminated after the method implementation.
 
 
 6. TODO
 -------
 
-1. Eliminate Abbot/Harmony patches (see 3 in chapter 5 above).
+1. Eliminate Abbot patch (see 3 in chapter 5 above).
 
 
 7. DISCLAIMER AND LEGAL INFORMATION
