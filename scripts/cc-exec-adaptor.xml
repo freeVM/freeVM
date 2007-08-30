@@ -199,6 +199,7 @@ ${exception}
         <condition property="upload.dir" value="${framework.parameters.optional.upload.dir}">
             <isset property="framework.parameters.optional.upload.dir"/>
         </condition>
+        <propertycopy property="skip.upload" from="${suite.name}.parameters.cc.skip.upload" silent="true"/>
         <runtarget target="upload-status-report"/>
         
     </target>
@@ -232,7 +233,7 @@ ${exception}
               classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar"/>
     </target>
     
-    <target name="upload-status-report" if="upload.dir">
+    <target name="upload-status-report" if="upload.dir" unless="skip.upload">
         <property name="cc.xsl.files.dir"
                   value="${ext.cc.location}/webapps/cruisecontrol/xsl"/>
         <property name="status.report.dir"
