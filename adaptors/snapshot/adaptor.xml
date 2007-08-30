@@ -257,8 +257,8 @@
 
     <target name="publish-ehwa">
         <mkdir dir="${snapshot.results.dir}/ehwa" />
-        <copy file="${cc.execution.log.file}"
-              tofile="${snapshot.results.dir}/ehwa/index.html" />
+
+        <copy-execution-log />
         <touch-status-file />
         <archive-result/>
     </target>
@@ -323,8 +323,8 @@ ${eut.html.files};
 
     <target name="publish-hdk_by_hdk">
         <mkdir dir="${snapshot.results.dir}/hdk_by_hdk" />
-        <copy file="${cc.execution.log.file}"
-              tofile="${snapshot.results.dir}/hdk_by_hdk/index.html" />
+
+        <copy-execution-log />
         <touch-status-file />
         <archive-result />
     </target>
@@ -332,22 +332,7 @@ ${eut.html.files};
     <target name="publish-scimark">
         <mkdir dir="${snapshot.results.dir}/scimark" />
 
-        <concat destfile="${snapshot.results.dir}/scimark/index.html">
-            <header trimleading="yes" filtering="no">
-                &lt;html&gt;
-            </header>
-
-            <fileset file="${results.dir}/scimark/score.txt" />
-            <filterchain>
-                <tokenfilter>
-                    <replaceregex pattern="(.*)" replace="\1&lt;br/&gt;" />
-                </tokenfilter>
-            </filterchain>
-
-            <footer trimleading="yes" filtering="no">
-                &lt;/html&gt;
-            </footer>
-        </concat>
+        <copy-execution-log />
         <touch-status-file />
         <archive-result/>
     </target>
@@ -374,11 +359,8 @@ ${eut.html.files};
 
     <target name="publish-tomcat-scenario">
         <mkdir dir="${snapshot.results.dir}/tomcat-scenario" />
-        <echo file="${snapshot.results.dir}/tomcat-scenario/index.html">
-&lt;html&gt;
-NO OUTPUT
-&lt;/html&gt;
-        </echo>
+
+        <copy-execution-log />
         <touch-status-file />
         <archive-result/>
     </target>
@@ -407,6 +389,13 @@ NO OUTPUT
         <sequential>
             <echo file="${snapshot.results.dir}/${projectname}/status.txt"
                   message="${build.status}" />
+        </sequential>
+    </macrodef>
+
+    <macrodef name="copy-execution-log">
+        <sequential>
+            <copy file="${cc.execution.log.file}"
+                  tofile="${snapshot.results.dir}/${projectname}/index.html" />
         </sequential>
     </macrodef>
 
