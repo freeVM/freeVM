@@ -280,7 +280,7 @@ ${eut.html.files};
         </echo>
         <replaceregexp file="${snapshot.results.dir}/eut/index.html"
                        flags="g"
-                       match="([^;]*);"
+                       match="([^;>]*);"
                        replace="&lt;a href=\1&gt;\1&lt;/a&gt;&lt;br/&gt;" />
 
         <touch-status-file />
@@ -304,7 +304,7 @@ ${eut.html.files};
         </echo>
         <replaceregexp file="${snapshot.results.dir}/eut33/index.html"
                        flags="g"
-                       match="([^;]*);"
+                       match="([^;>]*);"
                        replace="&lt;a href=\1&gt;\1&lt;/a&gt;&lt;br/&gt;" />
 
         <touch-status-file />
