@@ -365,6 +365,30 @@ ${eut.html.files};
         <archive-result/>
     </target>
 
+    <target name="publish-tptp">
+        <mkdir dir="${snapshot.results.dir}/tptp" />
+
+        <concat destfile="${snapshot.results.dir}/tptp/index.html">
+            <header trimleading="yes" filtering="no">
+                &lt;html&gt;
+            </header>
+
+            <fileset file="${results.dir}/tptp/tptp_report/AllTests.txt" />
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="(.*)" replace="\1&lt;br/&gt;" />
+                </tokenfilter>
+            </filterchain>
+
+            <footer trimleading="yes" filtering="no">
+                &lt;/html&gt;
+            </footer>
+        </concat>
+        
+        <touch-status-file />
+        <archive-result/>
+    </target>
+
     <target name="publish-vtsvm">
         <mkdir dir="${snapshot.results.dir}/vtsvm" />
         <junitreport todir="${snapshot.results.dir}/vtsvm">
