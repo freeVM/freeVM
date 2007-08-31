@@ -86,7 +86,8 @@ public class SystemResourceOrientedTest extends Test {
             long l3 = cmb.getUnloadedClassCount();
             if ((l2 + l3) > l1){
                 failed = true;
-                log.add("Number of currently loaded and unloaded classes more than number of totally loaded classes since JVM started.");
+                log.add("Number of currently loaded (" + l2 + ") and unloaded (" + l3 +
+		    ") classes more than number of totally loaded (" + l1 + ") classes since JVM started.");
                 break;
             }
             
