@@ -81,9 +81,9 @@ public class SystemResourceOrientedTest extends Test {
             // class loading
             ClassLoadingMXBean cmb = ManagementFactory.getClassLoadingMXBean();
             cmb.isVerbose();
-            long l1 = cmb.getTotalLoadedClassCount();
             long l2 = cmb.getLoadedClassCount();
             long l3 = cmb.getUnloadedClassCount();
+            long l1 = cmb.getTotalLoadedClassCount();
             if ((l2 + l3) > l1){
                 failed = true;
                 log.add("Number of currently loaded (" + l2 + ") and unloaded (" + l3 +
