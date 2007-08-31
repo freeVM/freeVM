@@ -18,7 +18,7 @@
 <project name="jdktools-test" default="run" basedir=".">
 
     <!-- On 64-bit platform tests should be run in interpreter mode only -->
-    <condition property="is.x86_64" value="-Xint" else="">
+    <condition property="hy.test.vmargs.value" value="-Xint" else="">
         <or>
             <equals arg1="x86_64" arg2="${os.arch}" />
             <equals arg1="amd64" arg2="${os.arch}" />
@@ -29,7 +29,7 @@
 
     <target name="run" depends="-setup-jdktools-ws,-update-jdktools-ws">
         <ant target="test" dir="${built.trunk.dir}">
-            <property name="hy.test.vmargs" value="${is.x86_64}" />
+            <property name="hy.test.vmargs" value="${hy.test.vmargs.value}" />
             <property name="exclude.interm" value="true" />
             <property name="test.jre.home" value="${tested.jre}" />
             <property name="hy.test.timeout" value="6000000" />
