@@ -220,6 +220,17 @@
         <archive-result/>
     </target>
 
+    <target name="publish-jedit_test">
+        <mkdir dir="${snapshot.results.dir}/jedit_test" />
+        <junitreport todir="${snapshot.results.dir}/jedit_test">
+            <fileset dir="${results.dir}/jedit_test/last"
+                     includes="TEST*-*.xml" />
+            <report format="frames"
+                    todir="${snapshot.results.dir}/jedit_test" />
+        </junitreport>
+        <archive-result />
+    </target>
+
     <target name="publish-JettyScenario">
         <mkdir dir="${snapshot.results.dir}/JettyScenario" />
         <copy todir="${snapshot.results.dir}/JettyScenario">
@@ -384,7 +395,7 @@ ${eut.html.files};
                 &lt;/html&gt;
             </footer>
         </concat>
-        
+
         <touch-status-file />
         <archive-result/>
     </target>
