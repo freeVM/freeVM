@@ -595,7 +595,7 @@ ClassFile *classfile_load_classdata(u1       *pclassfile_image)
 
                 PTR_THIS_CP_Fieldref(pcpma)
                   ->LOCAL_Fieldref_binding.fluidxJVM =
-                                                    jvm_field_index_bad;
+                                             jvm_field_lookup_index_bad;
 
                 PTR_THIS_CP_Fieldref(pcpma)
                   ->LOCAL_Fieldref_binding.oiflagJVM =
@@ -1161,7 +1161,7 @@ ClassFile *classfile_load_classdata(u1       *pclassfile_image)
 
             /* Finally, Initialize the late binding extension */
             pcfs->fields[fldidx]->LOCAL_field_binding.fluidxJVM =
-                                                    jvm_field_index_bad;
+                                             jvm_field_lookup_index_bad;
 
         } /* for (fldidx) */
 
