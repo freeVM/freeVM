@@ -805,6 +805,14 @@ rboolean classutil_field_is_accessible_to(
      */
     ClassFile      *pcfs    = CLASS_OBJECT_LINKAGE(clsidx1)->pcfs;
 
+    /*
+     * @todo   HARMONY-6-jvm-classutil.c-7 What happens when this
+     *         field is set to @link #jvm_field_index_bad
+     *         jvm_field_index_bad@endlink ??  Right now it will
+     *         index out to the end without error unless no memory
+     *         is there.  Must this field be assumed @b COMPLETELY
+     *         filled in and valid before entering this function?
+     */
     jvm_field_lookup_index
                     fluidx1 = fldref1->LOCAL_Fieldref_binding.fluidxJVM;
 
