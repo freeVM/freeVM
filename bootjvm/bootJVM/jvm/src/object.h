@@ -409,6 +409,14 @@ extern jvm_object_hash object_instance_delete(jvm_object_hash objhash,
 
 /* Prototypes for functions in 'objectutil.c' */
 
+extern rboolean objectutil_is_lock_owner(jvm_object_hash  objhashthis,
+                                         jvm_thread_index thridx);
+extern rboolean objectutil_is_somehow_locked(jvm_object_hash
+                                                           objhashthis);
+
+extern jvm_thread_index objectutil_locked_by_thread(jvm_object_hash
+                                                           objhashthis);
+
 extern rboolean objectutil_synchronize(jvm_object_hash  objhashthis,
                                        jvm_thread_index thridx);
 
