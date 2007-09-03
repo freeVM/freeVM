@@ -216,6 +216,8 @@ case CONSTANT_Fieldref:
     if (jvm_class_index_null ==
         pcpma_Fieldref->LOCAL_Fieldref_binding.clsidxJVM)
     {
+        u2 super_classFIND;
+
         pcpma_Class =
             PTR_THIS_CP_Class(pcfs->constant_pool
                               [pcpma_Fieldref->class_index]);
@@ -306,15 +308,41 @@ case CONSTANT_Fieldref:
                                 break;
                             }
 
+                           /*
+                            * Look to next higher superclass
+                            */
+#warning Need to test this corrected logic with real class file data
+#if 1
+                            super_classFIND =
+                                CLASS_OBJECT_LINKAGE(clsidxFIND)
+                                    ->pcfs
+                                      ->super_class;
+
+                            if (jvm_constant_pool_index_null ==
+                                super_classFIND)
+                            {
+                                /* Give up if no more superclasses */
+                                break;
+                            }
+
                             /*
-                             * Look to next higher
-                             * superclass
+                             * Examine next superclass.  Should
+                             * always have valid 'clsidxFIND' because
+                             * its child class was found, namely, it
+                             * was already loaded.  Thus this parent
+                             * class should be also.
                              */
+                            clsidxFIND = class_find_by_cp_entry(
+                                             pcfs->constant_pool
+                                                   [super_classFIND]);
+
+#else
 #warning Confusing jvm_constant_pool_index_null and jvm_class_index_null
                             clsidxFIND =
                             CLASS_OBJECT_LINKAGE(clsidxFIND)
                                 ->pcfs
                                   ->super_class;
+#endif
 
                         } /* while clsidxFIND */
 
@@ -369,16 +397,47 @@ case CONSTANT_Fieldref:
                             break;
                         }
 
-                        /*
-                         * Otherwise search superclass
-                         * (which is java.lang.Object for arrays)
-                         */
+                       /*
+                        * Otherwise search superclass
+                        * (which is java.lang.Object for arrays)
+                        */
 
-                        /*!
-                         * @todo HARMONY-6-jvm-linkage.c-6
-                         *       The array test branch needs
-                         *       unit testing with real data
+                       /*!
+                        * @todo HARMONY-6-jvm-linkage.c-6
+                        *       The array test branch needs
+                        *       unit testing with real data
+                        */
+
+                       /*
+                        * Look to next higher superclass
+                        */
+#warning Need to test this corrected logic with real class file data
+#if 1
+                        super_classFIND =
+                            CLASS_OBJECT_LINKAGE(clsidxFIND)
+                                ->pcfs
+                                  ->super_class;
+
+                        if (jvm_constant_pool_index_null ==
+                            super_classFIND)
+                        {
+                            /* Give up if no more superclasses */
+                            break;
+                        }
+
+                        /*
+                         * Examine next superclass.  Should
+                         * always have valid 'clsidxFIND' because
+                         * its child class was found, namely, it
+                         * was already loaded.  Thus this parent
+                         * class should be also.
                          */
+                        clsidxFIND = class_find_by_cp_entry(
+                                         pcfs->constant_pool
+                                               [super_classFIND]);
+#else
+
+#warning Confusing jvm_constant_pool_index_null and jvm_class_index_null
                         clsidxFIND =
 #if 0 /* Explicitly allow resolution of lower-dimension array types */
                             (CLASS(clsidxFIND).status &
@@ -386,11 +445,10 @@ case CONSTANT_Fieldref:
                             ? pjvm->class_java_lang_Object
                             :
 #endif
-
-#warning Confusing jvm_constant_pool_index_null and jvm_class_index_null
                             CLASS_OBJECT_LINKAGE(clsidxFIND)
                                 ->pcfs
                                   ->super_class;
+#endif
 
                     } /* while clsidxFIND */
 
@@ -511,6 +569,8 @@ case CONSTANT_Methodref:
     if (jvm_class_index_null ==
         pcpma_Methodref->LOCAL_Methodref_binding.clsidxJVM)
     {
+        u2 super_classFIND;
+
         pcpma_Class =
             PTR_THIS_CP_Class(
                 pcfs->constant_pool[pcpma_Methodref->class_index]);
@@ -572,15 +632,45 @@ case CONSTANT_Methodref:
                     break;
                 }
 
+               /*
+                * Otherwise search superclass
+                * (which is java.lang.Object for arrays)
+                */
+
+               /*!
+                * @todo HARMONY-6-jvm-linkage.c-7 The array
+                *       test branch needs unit testing with
+                *       real data.
+                */
+
+               /*
+                * Look to next higher superclass
+                */
+#warning Need to test this corrected logic with real class file data
+#if 1
+                super_classFIND =
+                    CLASS_OBJECT_LINKAGE(clsidxFIND)
+                        ->pcfs
+                          ->super_class;
+
+                if (jvm_constant_pool_index_null == super_classFIND)
+                {
+                    /* Give up if no more superclasses */
+                    break;
+                }
+
                 /*
-                 * Otherwise search superclass
-                 * (which is java.lang.Object for arrays)
+                 * Examine next superclass.  Should
+                 * always have valid 'clsidxFIND' because
+                 * its child class was found, namely, it
+                 * was already loaded.  Thus this parent
+                 * class should be also.
                  */
-                /*!
-                 * @todo HARMONY-6-jvm-linkage.c-7 The array
-                 *       test branch needs unit testing with
-                 *       real data.
-                 */
+                clsidxFIND = class_find_by_cp_entry(
+                                 pcfs->constant_pool[super_classFIND]);
+
+#else
+#warning Confusing jvm_constant_pool_index_null and jvm_class_index_null
                 clsidxFIND =
 #if 0 /* Explicitly allow resolution of lower-dimension array types */
                     (CLASS(clsidxFIND).status &
@@ -588,9 +678,8 @@ case CONSTANT_Methodref:
                     ? pjvm->class_java_lang_Object
                     :
 #endif
-
-#warning Confusing jvm_constant_pool_index_null and jvm_class_index_null
                     CLASS_OBJECT_LINKAGE(clsidxFIND)->pcfs->super_class;
+#endif
 
             } /* while clsidxFIND */
 
@@ -654,15 +743,41 @@ case CONSTANT_Methodref:
                                 break;
                             }
 
+                           /*
+                            * Look to next higher superclass
+                            */
+#warning Need to test this corrected logic with real class file data
+#if 1
+                            super_classFIND =
+                                CLASS_OBJECT_LINKAGE(clsidxFIND)
+                                    ->pcfs
+                                      ->super_class;
+
+                            if (jvm_constant_pool_index_null ==
+                                super_classFIND)
+                            {
+                                /* Give up if no more superclasses */
+                                break;
+                            }
+
                             /*
-                             * Look to next higher superclass
+                             * Examine next superclass.  Should
+                             * always have valid 'clsidxFIND' because
+                             * its child class was found, namely, it
+                             * was already loaded.  Thus this parent
+                             * class should be also.
                              */
+                            clsidxFIND = class_find_by_cp_entry(
+                                             pcfs->constant_pool
+                                                   [super_classFIND]);
+
+#else
 #warning Confusing jvm_constant_pool_index_null and jvm_class_index_null
                             clsidxFIND =
-                            CLASS_OBJECT_LINKAGE(clsidxFIND)
-                                ->pcfs
-                                  ->super_class;
-
+                                CLASS_OBJECT_LINKAGE(clsidxFIND)
+                                    ->pcfs
+                                      ->super_class;
+#endif
                         } /* while clsidxFIND */
 
                         /*
@@ -680,8 +795,10 @@ case CONSTANT_Methodref:
                     {
                         break;
                     }
+
                 } /* for ifidx */
-            }
+
+            } /* if jvm_method_index_bad */
 
             if (jvm_method_index_bad == mthidxFIND)
             {
@@ -803,6 +920,8 @@ case CONSTANT_InterfaceMethodref:
           ->LOCAL_InterfaceMethodref_binding
             .clsidxJVM)
     {
+        u2 super_classFIND;
+
         pcpma_Class =
             PTR_THIS_CP_Class(pcfs->constant_pool
                    [pcpma_InterfaceMethodref->class_index]);
@@ -902,7 +1021,7 @@ case CONSTANT_InterfaceMethodref:
                      * Class found, locate method in it
                      * or in its superclasses
                      */
-                    while(jvm_class_index_null !=clsidxFIND)
+                    while(jvm_class_index_null != clsidxFIND)
                     {
                         mthidxFIND =
                             method_find_by_cp_entry(
@@ -932,13 +1051,41 @@ case CONSTANT_InterfaceMethodref:
                             break;
                         }
 
-                        /* Look to next higher superclass */
+                       /*
+                        * Look to next higher superclass
+                        */
+#warning Need to test this corrected logic with real class file data
+#if 1
+                        super_classFIND =
+                            CLASS_OBJECT_LINKAGE(clsidxFIND)
+                                ->pcfs
+                                  ->super_class;
+
+                        if (jvm_constant_pool_index_null ==
+                            super_classFIND)
+                        {
+                            /* Give up if no more superclasses */
+                            break;
+                        }
+
+                        /*
+                         * Examine next superclass.  Should
+                         * always have valid 'clsidxFIND' because
+                         * its child class was found, namely, it
+                         * was already loaded.  Thus this parent
+                         * class should be also.
+                         */
+                        clsidxFIND = class_find_by_cp_entry(
+                                         pcfs->constant_pool
+                                               [super_classFIND]);
+
+#else
 #warning Confusing jvm_constant_pool_index_null and jvm_class_index_null
                         clsidxFIND =
                             CLASS_OBJECT_LINKAGE(clsidxFIND)
                                 ->pcfs
                                   ->super_class;
-
+#endif
                     } /* while clsidxFIND */
 
                     /* Done if interface method located */
