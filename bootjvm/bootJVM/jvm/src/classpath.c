@@ -203,7 +203,7 @@ rvoid classpath_init()
     portable_strcat(moreclasspath, pjvm->java_home);
 
     i = portable_strlen(moreclasspath);
-    moreclasspath[i] = CLASSPATH_ITEM_DELIMITER_CHAR;
+    moreclasspath[i] = JVMCFG_PATHNAME_DELIMITER_CHAR;
     moreclasspath[i + 1] = '\0';
     portable_strcat(moreclasspath, CONFIG_HACKED_RTJARFILE);
 #endif
@@ -661,10 +661,6 @@ classpath_search *classpath_get_from_prchar(rchar *clsname)
 
     rchar *class_location = HEAP_GET_DATA(JVMCFG_PATH_MAX, rfalse);
 
-#if 0
-    rchar *jarscript = HEAP_GET_DATA(JVMCFG_SCRIPT_MAX, rfalse);
-#endif
-
     /*
      * Search through each entry in @b CLASSPATH for a file by
      * the proper name.
@@ -675,6 +671,15 @@ classpath_search *classpath_get_from_prchar(rchar *clsname)
         /* Test for JAR files in @b CLASSPATH */
         if (rtrue == classpath_isjar(classpath_list[i]))
         {
+            /* Skip this entry if buffer too small to build name */
+            if (JVMCFG_PATH_MAX <=
+                    portable_strlen(name) +  /* class name */
+                    sizeof(char) +           /* dlm + extension */
+                    portable_strlen(CLASSFILE_EXTENSION_DEFAULT))
+            {
+                continue;
+            }
+
             /* Convert input parm to internal form, append suffix */
             portable_strncpy(class_location, name, baselen);
             class_location[baselen] = '\0';
@@ -697,29 +702,68 @@ classpath_search *classpath_get_from_prchar(rchar *clsname)
              */
             if (rnull == pjs)
             {
+                /*
+                 * A similar message may be have already
+                 * been printed in jarutil_find_member()
+                 */
+                sysDbgMsg(DML2,
+                          arch_function_name,
+                          "%s: %s",
+                          pjs->jar_msg,
+                          class_location);
+
                 continue;
             }
 
             /* If match found, report to caller.  Else keep looking */
-            if (pjs->jar_code != JAR_OKAY)
+            if (pjs->jar_code == JAR_OKAY)
             {
-                if (JAR_MEMBER_IMPOSSIBLE_OPEN_FD != pjs->fd)
-                {
-                    portable_close(pjs->fd);
-                }
+                HEAP_FREE_DATA(class_location);
 
-                HEAP_FREE_DATA(pjs);
-                continue;
+                rc->jarfile_member_state = pjs;
+
+                return(rc);
             }
 
-            HEAP_FREE_DATA(class_location);
+            /* A similar message is printed in jarutil_find_member() */
+            sysDbgMsg(DML2,
+                      arch_function_name,
+                      "%s: %s",
+                      pjs->jar_msg,
+                      class_location);
 
-            rc->jarfile_member_state = pjs;
+            if (JAR_MEMBER_IMPOSSIBLE_OPEN_FD != pjs->fd)
+            {
+                portable_close(pjs->fd);
+            }
 
-            return(rc);
+            HEAP_FREE_DATA(pjs);
         }
         else
         {
+            /* Skip this entry if buffer too small to build name */
+            if (JVMCFG_PATH_MAX <=
+                    portable_strlen(classpath_list[i]) +
+                                             /* CLASSPATH entry */
+                    sizeof(char) +           /* dlm */
+                    portable_strlen(name) +  /* class name */
+                    sizeof(char) +           /* dlm + extension */
+                    portable_strlen(CLASSFILE_EXTENSION_DEFAULT))
+            {
+                sysDbgMsg(DML2,
+                          arch_function_name,
+                          "class file construction too long: %s%c\n"
+                       "%s:                when suffixed by: %s%c%s",
+                          classpath_list[i],
+                          JVMCFG_PATHNAME_DELIMITER_CHAR,
+                          arch_function_name,
+                          name,
+                          JVMCFG_EXTENSION_DELIMITER_CHAR,
+                          CLASSFILE_EXTENSION_DEFAULT);
+
+                continue;
+            }
+
             /*!
              * @todo  HARMONY-6-jvm-classpath.c-6 Make sure that this
              *        sprintf/stat works with both CONFIG_WINDOWS and
@@ -757,22 +801,23 @@ classpath_search *classpath_get_from_prchar(rchar *clsname)
             HEAP_FREE_DATA(statbfr);
 
             /* If match found, report to caller.  Else keep looking */
-            if (rnull == statbfr)
+            if (rnull != statbfr)
             {
-                HEAP_FREE_DATA(class_location);
+                rc->classfile_name = class_location;
+
+                return(rc);
             }
 
-            rc->classfile_name = class_location;
-
-            return(rc);
+            /* A similar message is printed in jarutil_find_member() */
+            sysDbgMsg(DML2,
+                      arch_function_name,
+                      "class file not found: %s",
+                      class_location);
         }
     } /* for i */
 
     /* Class not found in @b CLASSPATH */
     HEAP_FREE_DATA(class_location);
-#if JVMCFG_TMPAREA_IN_USE
-    HEAP_FREE_DATA(jarscript);
-#endif
 
     return((classpath_search *) rnull);
 
