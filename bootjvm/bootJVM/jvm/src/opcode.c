@@ -1035,8 +1035,8 @@ PORTABLE_LONGJMP(THREAD(thridx).pportable_nonlocal_ThrowableEvent, rc)
                 /* Retrieve next virtual opcode */
                 opcode = pcode[pc->offset++];
 
-/*
- * Due to the significant complexity of this @c @b switch
+/*!
+ * @internal Due to the significant complexity of this @c @b switch
  * statement, the indentation is being reset to permit wider lines
  * of code with out breaking up expressions with the intention of
  * creating better readability of the code.
@@ -3730,25 +3730,7 @@ case OPCODE_BF_ATHROW:
      * else throw java.lang.NullPointerException
      * instead of class of parameter from stack
      */
-    if (jvm_object_hash_null != jotmp1)
-    {
-        clsidxmisc = OBJECT_CLASS_LINKAGE(jotmp1)->clsidx;
-
-        pcfsmisc   = OBJECT_CLASS_LINKAGE(jotmp1)->pcfs;
-
-        /* Check if operand is a java.lang.Throwable or subclass */
-        clsidxmisc2 =
-            class_load_from_prchar(JVMCLASS_JAVA_LANG_THROWABLE,
-                                   rfalse,
-                                   (jint *) rnull);
-
-        if (rfalse == classutil_class_is_a(clsidxmisc, clsidxmisc2))
-        {
-            exit_throw_exception(EXIT_JVM_CLASS,
-                                 JVMCLASS_JAVA_LANG_VERIFYERROR);
-        }
-    }
-    else
+    if (jvm_object_hash_null == jotmp1)
     {
         /* Loading NPE will load java.lang.Throwable also */
         clsidxmisc = class_load_from_prchar(
@@ -3770,13 +3752,57 @@ case OPCODE_BF_ATHROW:
                                      thridx,
                                      (CONSTANT_Utf8_info *) rnull);
     }
+    else
+
+    /* If locked, but not by this thread, monitor error */
+    if (objectutil_is_somehow_locked(jotmp1) &&
+        (!objectutil_is_lock_owner(jotmp1, thridx)))
+    {
+        /* Loading IMSE will load java.lang.Throwable also */
+        clsidxmisc = class_load_from_prchar(
+                        JVMCLASS_JAVA_LANG_ILLEGALMONITORSTATEEXCEPTION,
+                                            rfalse,
+                                            (jint *) rnull);
+
+        pcfsmisc   = CLASS_OBJECT_LINKAGE(clsidxmisc)->pcfs;
+
+        /* Will not need to load, but still need to find */
+        clsidxmisc2 =class_find_by_prchar(JVMCLASS_JAVA_LANG_THROWABLE);
+
+        jotmp1 = object_instance_new(OBJECT_STATUS_EMPTY,
+                                     pcfsmisc,
+                                     clsidxmisc,
+                                     0,
+                                     (jint *) rnull,
+                                     rtrue,
+                                     thridx,
+                                     (CONSTANT_Utf8_info *) rnull);
+    }
+    else
+    {
+        clsidxmisc = OBJECT_CLASS_LINKAGE(jotmp1)->clsidx;
+
+        pcfsmisc   = OBJECT_CLASS_LINKAGE(jotmp1)->pcfs;
+
+        /* Check if operand is a java.lang.Throwable or subclass */
+        clsidxmisc2 =
+            class_load_from_prchar(JVMCLASS_JAVA_LANG_THROWABLE,
+                                   rfalse,
+                                   (jint *) rnull);
+
+        if (rfalse == classutil_class_is_a(clsidxmisc, clsidxmisc2))
+        {
+            exit_throw_exception(EXIT_JVM_CLASS,
+                                 JVMCLASS_JAVA_LANG_VERIFYERROR);
+        }
+    }
 
     /*
      * Examine the exception table for the current method,
      * looking for a handler that is of class 'clsidxmisc'.
      * If found, clear operand stack, push operand again (or
      * its substituted value), and transfer control to that
-     * address.  If not, work up the stack frame until one
+     * address.  If not, work through the stack frame until one
      * is found.  If not found, then call the default
      * ThreadGroup.uncaughtException() later in this function.
      */
@@ -3785,6 +3811,8 @@ case OPCODE_BF_ATHROW:
     pca = ATR_CODE_AI(pcfsmisc
                         ->methods[pc->mthidx]
                           ->attributes[pc->codeatridx]);
+
+    /* Load pointer to exception table here and at end of while() */
     pet = pca->exception_table;
 
 #define GET_FPTMP_PC_WORD(thridx, idx) \
@@ -3810,14 +3838,28 @@ case OPCODE_BF_ATHROW:
                  *
                  * The reason for this is that pc->offset by this time
                  * points to the NEXT INSTRUCTION, not the CURRENT one.
+                 *
+                 * Notice that the 'pc - 1' expression means the size
+                 * of the one-byte ATHROW opcode, which has no
+                 * parameter bytes to process after its opcode.
                  */
-                if (pet[etidx].start_pc > pc->offset - 1)
+
+                /*!
+                 * @todo: HARMONY-6-jvm-opcode.c-162  is the range
+                 *        logic correct for valid exception coverage?
+                 */
+
+                             /* Use of '>=' means exclusive range */
+                if (pet[etidx].start_pc >
+                    pc->offset - (1 * sizeof(jvm_virtual_opcode)))
                 {
                     /* PC is below coverage range of handler */
                     continue;
                 }
 
-                if (pet[etidx].end_pc < pc->offset - 1)
+                           /* Use of '<' means inclusive range */
+                if (pet[etidx].end_pc <=
+                    pc->offset - (1 * sizeof(jvm_virtual_opcode)))
                 {
                     /* PC is above coverage range of handler */
                     continue;
@@ -3846,9 +3888,19 @@ case OPCODE_BF_ATHROW:
                     }
                 }
 
-                /* This handler is the one to invoke.  Go run its code*/
+                /*
+                 * This handler is the one to invoke.
+                 */
+
+                /* Strip operand stack */
                 PUT_SP_STRIP_OPERAND_STACK(thridx);
 
+                /*
+                 * Push the original object hash (as possibly modified)
+                 */
+                PUSH(thridx, jotmp1);
+
+                /* Transfer control to handler, setting block flags */
                 pc->offset = pet[etidx].handler_pc;
 
                 handler_found = rtrue;
@@ -3856,6 +3908,7 @@ case OPCODE_BF_ATHROW:
                 break; /* Leave the for(etidx) loop */
 
             } /* for (etidx) */
+
 
             /* ALSO leave the while(rtrue) loop when handler located */
 
@@ -3865,6 +3918,17 @@ case OPCODE_BF_ATHROW:
             }
 
         } /* if (pet) */
+
+
+        /* If this was a synchronized method, remove synchronization */
+
+        if (ACC_SYNCHRONIZED &
+            METHOD(pc->clsidx, pc->mthidx)->access_flags)
+        {
+            (rvoid) objectutil_unsynchronize(
+                        CLASS(pc->clsidx).class_objhash,
+                        thridx);
+        }
 
         /* Strip operand stack */
         PUT_SP_STRIP_OPERAND_STACK(thridx);
@@ -3879,6 +3943,7 @@ case OPCODE_BF_ATHROW:
             /* Kill thread due to unhandled exception */
             PORTABLE_LONGJMP(&opcode_end_thread_nonlocal_return,
                              EXIT_JVM_THROWABLE);
+/*NOTREACHED*/
         }
 
         /* Set up pointers to look at next stack frame */
@@ -3889,6 +3954,8 @@ case OPCODE_BF_ATHROW:
         pca = ATR_CODE_AI(pcfsmisc
                             ->methods[GET_FPTMP_PC_WORD(thridx, MTHIDX)]
                    ->attributes[GET_FPTMP_PC_WORD(thridx, CODEATRIDX)]);
+
+        /* Load pointer to exception table here and before while() */
         pet = pca->exception_table;
 
     } /* while (rtrue) */
