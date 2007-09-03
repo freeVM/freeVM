@@ -1457,7 +1457,7 @@ ARCH_HEADER_COPYRIGHT_APACHE(opmacros, h,
     }                                                                  \
                                                                        \
     fluidxmisc = pcpma_Fieldref->LOCAL_Fieldref_binding.fluidxJVM;     \
-    if (jvm_field_index_bad == fluidxmisc)                             \
+    if (jvm_field_lookup_index_bad == fluidxmisc)                      \
     {                                                                  \
         thread_throw_exception(thridx,                                 \
                                THREAD_STATUS_THREW_ERROR,              \
