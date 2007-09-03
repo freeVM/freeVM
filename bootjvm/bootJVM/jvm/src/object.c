@@ -916,11 +916,10 @@ jvm_object_hash object_instance_new(rushort          special_obj,
                                                PTR_CP_ENTRY_CLASS(pcfs,
                                                       pcfs->super_class)
                                                   ->name_index),
-                                     rfalse,
-                                     arraylength);
+                                         rfalse,
+                                         arraylength);
 
-#warning Confusing jvm_object_hash and jvm_class_index
-        if (jvm_object_hash_null == clsidxsuper_class)
+        if (jvm_class_index_null == clsidxsuper_class)
         {
             /*!
              * @todo  HARMONY-6-jvm-object.c-6 Which is better, throw
