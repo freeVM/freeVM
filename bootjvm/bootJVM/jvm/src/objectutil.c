@@ -192,8 +192,8 @@ rboolean objectutil_synchronize(jvm_object_hash  objhashthis,
  * object's monitor lock on @e any thread (not any one in particular).
  *
  * Test does @e not consider which thread is the owner of
- * this object's monitor lock.  Use @link #objutil_is_lock_owner
-   objutil_is_lock_owner@endlink to determine if this thread
+ * this object's monitor lock.  Use @link #objectutil_is_lock_owner
+   objectutil_is_lock_owner@endlink to determine if this thread
  * is the owner of the object's monitor lock.
  *
  *
@@ -240,8 +240,8 @@ rboolean objectutil_is_somehow_locked(jvm_object_hash objhashthis)
  * an object's monitor lock on a certain thread.
  *
  * Result does @e not indicate whether or not this thread is the
- * one which owns this object.  @link #objutil_is_lock_owner
-   objutil_is_lock_owner@endlink must be called to determine
+ * one which owns this object.  @link #objectutil_is_lock_owner
+   objectutil_is_lock_owner@endlink must be called to determine
  * if this thread is the owner of this object's monitor lock.
  *
  *
@@ -301,7 +301,8 @@ rboolean objectutil_is_lock_owner(jvm_object_hash  objhashthis,
  * @brief Test which thread has locked an object's monitor lock.
  *
  * In order to query a particular thread, use
- * @link #objutil_is_lock_owner objutil_is_lock_owner@endlink instead.
+ * @link #objectutil_is_lock_owner objectutil_is_lock_owner@endlink
+ * instead.
  *
  *
  * @param  objhashthis  Object table hash of @c @b this object.
