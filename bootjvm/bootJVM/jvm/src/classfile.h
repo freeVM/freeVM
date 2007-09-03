@@ -297,7 +297,7 @@ typedef struct
      */
     struct LOCAL_field_binding
     {
-        jvm_field_index fluidxJVM; /**< JVM class table field
+        jvm_field_lookup_index fluidxJVM; /**< JVM class table field
                        * lookup index of this field.  If this is a
                        * class static field, use this value to index
                        * the @link #rclass.class_static_field_lookup
@@ -884,8 +884,7 @@ typedef struct
         jvm_class_index clsidxJVM;   /**< JVM class table index of
                                           this class */
 
-#warning Confusion between field index and field lookup index.
-        jvm_field_index fluidxJVM;   /**< JVM class table field lookup
+   jvm_field_lookup_index fluidxJVM; /**< JVM class table field lookup
                                         index of this field */
 
         rboolean        oiflagJVM;   /**< JVM class table flag: class
@@ -1824,8 +1823,25 @@ typedef struct
 
 #define         LOCAL_EXCEPTIONS_ATTRIBUTE_ENUM 3 /**< Not in spec */
 
-#define CODE_DEFAULT_CATCH_TYPE                 0 /**<  This handler is
-                                                   for all exceptions */
+
+/*                              jvm_class_index_null */
+/*                              JVMCFG_NULL_CLASS    */
+#define CODE_DEFAULT_CATCH_TYPE jvm_class_index_null \
+                          /**<  This handler is for all exceptions.
+                           *    Need to choose between using
+                           *    @link #JVMCFG_NULL_CLASS
+                                      JVMCFG_NULL_CLASS@endlink and
+                           *    @link #jvm_class_index_null
+                                      jvm_class_index_null@endlink for
+                           *    this macro.  The idea is to have a
+                           *    NULL definition of some sort.  If the
+                           *    macro is chosen, then surround the
+                           *    reference to
+                           *    @link jvm/src/jvmcfg.h jvmcfg.h@endlink
+                           *    with the selection mechanism
+                           *    @b I_AM_JVMCFG_C and so release the
+                           *    normally suppressed definition for use.
+                           */
 
 /*@} */ /* End of grouped definitions */
 
