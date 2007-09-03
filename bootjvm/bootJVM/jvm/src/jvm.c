@@ -1328,15 +1328,22 @@ static rvoid jvm_init(int argc, char **argv, char **envp)
        (jvm_class_index_null == pjvm->class_primative_boolean))
     {
         sysErrMsg(arch_function_name,
-                  "Cannot load primative classes for java.lang.Class");
+                  "Cannot load primative classes");
         exit_jvm(EXIT_JVM_CLASS);
 /*NOTREACHED*/
     }
 
 
-    /********** Load java.lang.Class *****************/
-
     /********** Load java.lang.String ****************/
+
+    clsidx = class_load_from_prchar(JVMCLASS_JAVA_LANG_STRING,
+                           /* The startup classes have local bindings */
+                                    rtrue,
+                                    (jint *) rnull);
+
+
+
+    /********** Load java.lang.Class *****************/
 
     /********** Load java.lang.Thread ****************/
 
@@ -1354,10 +1361,27 @@ static rvoid jvm_init(int argc, char **argv, char **envp)
                                   jvm_thread_index_null,
                                   rtrue,
                                   rtrue);
-#if 0
+#if 1
     /* Enable for diagnostics when desired */
     cfmsgs_show_constant_pool(CLASS_OBJECT_LINKAGE(clsidxOBJECT)->pcfs);
 #endif
+
+#if 1
+    /* Enable for diagnostics when desired */
+    cfmsgs_show_constant_pool(CLASS_OBJECT_LINKAGE(clsidxOBJECT)->pcfs);
+#endif
+
+#if 1
+    /* Enable for diagnostics when desired */
+#warning Remove block ASAP
+    cfmsgs_show_constant_pool(CLASS_OBJECT_LINKAGE(clsidx)->pcfs);
+#endif
+
+    jvm_class_index clsidxSTRING =
+        class_load_resolve_clinit(JVMCLASS_JAVA_LANG_STRING,
+                                  jvm_thread_index_null,
+                                  rtrue,
+                                  rtrue);
 
     jvm_class_index clsidxCLASS =
         class_load_resolve_clinit(JVMCLASS_JAVA_LANG_CLASS,
@@ -1367,16 +1391,6 @@ static rvoid jvm_init(int argc, char **argv, char **envp)
 #if 0
     /* Enable for diagnostics when desired */
     cfmsgs_show_constant_pool(CLASS_OBJECT_LINKAGE(clsidxCLASS)->pcfs);
-#endif
-
-    jvm_class_index clsidxSTRING =
-        class_load_resolve_clinit(JVMCLASS_JAVA_LANG_STRING,
-                                  jvm_thread_index_null,
-                                  rtrue,
-                                  rtrue);
-#if 0
-    /* Enable for diagnostics when desired */
-    cfmsgs_show_constant_pool(CLASS_OBJECT_LINKAGE(clsidxSTRING)->pcfs);
 #endif
 
     HEAP_REPORT(&jvm_heap_initialized);
@@ -1557,13 +1571,13 @@ static rvoid jvm_init(int argc, char **argv, char **envp)
 
             if (pjs->jar_msg)
             {
-            sysErrMsg(arch_function_name,
+                sysErrMsg(arch_function_name,
                      "Invalid or missing startup JAR manifest file: %s",
                       pjs->jar_msg);
             }
             else
             {
-            sysErrMsg(arch_function_name,
+                sysErrMsg(arch_function_name,
                       "Invalid or missing startup JAR manifest file");
             }
             HEAP_FREE_DATA(pjs);
