@@ -256,9 +256,7 @@ Build/test run preconditions:
         <setproxy proxyhost="${http.proxy.host}" proxyport="${http.proxy.port}" />
     </target>
 
-    <target name="-prepare-each-run" depends="
-        -install-jedit-properties,
-        clean.report">
+    <target name="-prepare-each-run" depends="-install-jedit-properties, clean.report">
         <delete dir="${tests.working.dir}" />
         <mkdir dir="${tests.working.dir}" />
         <mkdir dir="${tests.report.dir}" />
