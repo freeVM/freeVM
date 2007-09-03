@@ -54,6 +54,7 @@
         
         <echo file="${output.log}" message="Running of ${dacapo.parameters.optional.jar.name} on ${dacapo.jdk.to.test.home} runtime...${line.separator}"/>
         <echo file="${output.log}" message="Set of tests: ${dacapo.parameters.optional.benchmarks}${line.separator}" append="true"/>
+        <echo file="${results.dir}/${suite.name}/stdout.log" message=""/>
 
         <!-- get version info from runtime to attach it to report -->
         <echo file="${results.dir}/${suite.name}/version.log"></echo>
@@ -62,12 +63,12 @@
             <redirector alwaysLog="true" output="${results.dir}/${suite.name}/version.log"/>
         </exec>
 
-        <exec executable="${dacapo.jdk.to.test.home}/bin/java" dir="${results.dir}/${suite.name}" append="true" failonerror="false">
+        <exec executable="${dacapo.jdk.to.test.home}/bin/java" dir="${results.dir}/${suite.name}" append="true" failonerror="false" error="${output.log}">
             <arg line="-Xbootclasspath/p:${checkouts.dir}/${suite.name}/xalan.jar${path.separator}${checkouts.dir}/${suite.name}"/>
             <arg line="-jar ${checkouts.dir}/${suite.name}/${dacapo.parameters.optional.jar.name}"/>
             <arg line="-s ${dacapo.parameters.optional.size}"/>
             <arg line="${dacapo.parameters.optional.benchmarks}"/>
-            <redirector alwaysLog="true" output="${output.log}"/>
+            <redirector alwaysLog="true" output="${results.dir}/${suite.name}/stdout.log"/>
             <env key="JAVA_HOME" value="${dacapo.jdk.to.test.home}"/>
             <env key="PATH" value="${dacapo.jdk.to.test.home}/bin${path.separator}${env.PATH}"/>
         </exec>
