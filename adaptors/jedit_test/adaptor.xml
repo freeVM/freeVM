@@ -38,12 +38,6 @@
         <isset property="is_Harmony"/>
     </condition>
 
-    <condition property="use.bootclasspath"
-               value="-Xbootclasspath/p:${checkouts.dir}/${suite.name}/classes/harmony"
-               else="">
-        <isset property="is_Harmony"/>
-    </condition>
-
     <condition property="ush.prefix"
                value="-Dabbot.util.url_stream_handler_prefix=org.apache.harmony.luni.internal.net.www.protocol"
                else="">
@@ -149,7 +143,6 @@
                 <sysproperty key="tested.vm.options"                 value="${jedit_test.parameters.optional.tested.vm.options}"/>
                 <sysproperty key="test.stress.iterations"            value="${jedit_test.parameters.optional.stress.test.iterations}"/>
                 <sysproperty key="harmony.boot.dir"                  value="${boot.dir}"/>
-                <sysproperty key="test.vmarg.bootclasspath"          value="${use.bootclasspath}"/>
                 <sysproperty key="test.vmarg.ush_prefix"             value="${ush.prefix}"/>
                 <sysproperty key="test.vmarg.do_not_install_handler" value="${install.handler}"/>
             </exec-ant>
