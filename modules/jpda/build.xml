@@ -251,22 +251,31 @@
 
             <!-- short running tests-->
             <batchtest todir="${hy.tests.reports}" haltonfailure="off" unless="test.case">
+
                 <fileset dir="${hy.jpda.src.test}">
-                    <include name="**/*Test.java"/>
-                    <exclude name="**/org/apache/harmony/jpda/tests/jdwp/MultiSession/*Test.java" />
-                    <exclude name="**/org/apache/harmony/jpda/tests/jdwp/ThreadReference/StopTest.java" />
-                    <exclude name="**/org/apache/harmony/jpda/tests/jdwp/VirtualMachine/HoldEventsTest.java" />
-                    <excludesfile name="${jpda.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <exclude name="**/org/apache/harmony/jpda/tests/jdwp/MultiSession/*Test.java" unless="test.case" />
+                    <exclude name="**/org/apache/harmony/jpda/tests/jdwp/ThreadReference/StopTest.java" unless="test.case" />
+                    <exclude name="**/org/apache/harmony/jpda/tests/jdwp/VirtualMachine/HoldEventsTest.java" unless="test.case" />
+                    <excludesfile name="${jpda.exclude.file}" unless="test.case" />
                 </fileset>
             </batchtest>
 
             <!-- long running tests-->
             <batchtest todir="${hy.tests.reports}" haltonfailure="off" unless="test.case">
                 <fileset dir="${hy.jpda.src.test}">
-                    <include name="**/org/apache/harmony/jpda/tests/jdwp/MultiSession/*Test.java" />
-                    <include name="**/org/apache/harmony/jpda/tests/jdwp/ThreadReference/StopTest.java" />
-                    <include name="**/org/apache/harmony/jpda/tests/jdwp/VirtualMachine/HoldEventsTest.java" />
-                    <excludesfile name="${jpda.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+
+                    <!-- unless ${test.case} -->
+                    <include name="**/org/apache/harmony/jpda/tests/jdwp/MultiSession/*Test.java" unless="test.case" />
+                    <include name="**/org/apache/harmony/jpda/tests/jdwp/ThreadReference/StopTest.java" unless="test.case" />
+                    <include name="**/org/apache/harmony/jpda/tests/jdwp/VirtualMachine/HoldEventsTest.java" unless="test.case" />
+                    <excludesfile name="${jpda.exclude.file}" unless="test.case" />
                 </fileset>
             </batchtest>
         </junit>

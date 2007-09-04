@@ -216,8 +216,12 @@
                                    unless="test.case">
 
                 <fileset dir="${hy.tools.src.test.java}">
-                    <include name="**/*Test.java"/>
-                    <excludesfile name="${tools.exclude.file}" />
+                    <!-- if ${test.case}     -->
+                    <include name="${converted.tc}" if="test.case" />
+
+                    <!-- unless ${test.case} -->
+                    <include name="**/*Test.java" unless="test.case" />
+                    <excludesfile name="${tools.exclude.file}" unless="test.case" />
                 </fileset>
             </batchtest>
         </junit>
