@@ -258,7 +258,7 @@ ${exception}
             <!-- the property is passed by CC -->
             <equals arg1="${thisbuildsuccessful}" arg2="true" />
         </condition>
-        <echo file="${status.report.dir}/status.txt" message="${build.status}" />
+        <echo file="${status.report.dir}/status.txt" message="status=${build.status}${line.separator}timestamp=${builddate}" />
 
         <zip destfile="${upload.dir}/${hy.platform}.${suite.name}.status.zip"
              basedir="${results.dir}"

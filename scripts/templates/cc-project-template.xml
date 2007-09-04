@@ -9,6 +9,7 @@
     <project name="@BT.PROJECT@" 
              buildafterfailed="${framework.parameters.cc.buildafterfailed}" 
              requireModification="@BT.REQMODS@">
+        <dateformat format="yyyy-MM-dd HH:mm:ss Z"/>
         <listeners>
             <!-- Resolved to <currentbuildstatuslistener file="${logs.dir}/...">
                  Should be here if there are any suites depending
