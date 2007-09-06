@@ -26,49 +26,31 @@
     <!--
         Define properties describing platform type
     -->
-    <condition property="is.windows">
-        <os family="windows"/>
-    </condition>
-
-    <condition property="is.linux">
-        <and>
-            <os family="unix"/>
-            <os name="linux"/>
-        </and>
-    </condition>
-
-    <condition property="is.64bit">
-        <or>
-            <contains string="${os.arch}" substring="86_64"/>
-            <contains string="${os.arch}" substring="amd64"/>
-        </or>
-    </condition>
-
     <condition property="is.windows.x86">
         <and>
             <isset property="is.windows"/>
-            <not><isset property="is.64bit"/></not>
+            <isset property="is.x86" />
         </and>
     </condition>
 
     <condition property="is.windows.x86_64">
         <and>
             <isset property="is.windows"/>
-            <isset property="is.64bit"/>
+            <isset property="is.x86_64" />
         </and>
     </condition>
         
     <condition property="is.linux.x86">
         <and>
             <isset property="is.linux"/>
-            <not><isset property="is.64bit"/></not>
+            <isset property="is.x86" />
         </and>
     </condition>
 
     <condition property="is.linux.x86_64">
         <and>
             <isset property="is.linux"/>
-            <isset property="is.64bit"/>
+            <isset property="is.x86_64" />
         </and>
     </condition>
 

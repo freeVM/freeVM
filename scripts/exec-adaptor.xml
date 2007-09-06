@@ -20,6 +20,8 @@
      ====================================================================== -->
 <project name="exec-adaptor" default="call" basedir=".">
 
+    <import file="properties.xml"/>
+
     <import file="${framework.implementation.file}"/>
     <import file="${adaptors.dir}/${suite.name}/adaptor.xml"/>
 

@@ -20,16 +20,6 @@
      ====================================================================== -->
 <project name="snapshot" default="run" basedir=".">
 
-    <condition property="is.windows">
-        <os family="Windows" />
-    </condition>
-    <condition property="is.x86_64">
-        <or>
-            <equals arg1="x86_64" arg2="${os.arch}" />
-            <equals arg1="amd64" arg2="${os.arch}" />
-        </or>
-    </condition>
-
     <condition property="exe" value=".exe" else="">
         <isset property="is.windows" />
     </condition>
