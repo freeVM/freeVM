@@ -19,10 +19,7 @@
 
     <!-- On 64-bit platform tests should be run in interpreter mode only -->
     <condition property="hy.test.vmargs.value" value="-Xint" else="">
-        <or>
-            <equals arg1="x86_64" arg2="${os.arch}" />
-            <equals arg1="amd64" arg2="${os.arch}" />
-        </or>
+        <isset property="is.x86_64" />
     </condition>
 
     <property name="tests.results.dir" value="${built.trunk.dir}/build/test_report"/>
