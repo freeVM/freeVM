@@ -34,10 +34,6 @@
         <isset property="is.windows" />
     </condition>
 
-    <condition property="exe" value=".exe" else="">
-        <isset property="is.windows" />
-    </condition>
-
     <!--                                 -->
     <!-- which snapshot file to download -->
     <!--                                 -->
