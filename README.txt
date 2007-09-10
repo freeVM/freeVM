@@ -22,7 +22,7 @@ of Java and Ant installed.
 
 8) execute 
     
-    svn update
+    umask 02; svn update
 
    to update the just-committed docs out of SVN
 
