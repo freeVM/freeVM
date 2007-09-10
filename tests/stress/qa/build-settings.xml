@@ -48,13 +48,13 @@ Version: $Revision: 1.9 $
     <property name="qa.exclude.list" value="config/exclude.file" />
 
     <!-- Specify tool settings -->    
-    <property name="th.src" location="${root}/th.src" />
-    <property name="share.src" location="${root}/share.src" />
+    <property name="th.src" location="${root}/../tools/harness" />
+    <property name="share.src" location="${root}/../tools/share" />
     <property name="th.dest" location="${qa.bin.tools}/th.dest" />
     <property name="th.jar" location="${qa.bin.tools}/th.jar" />    
     <property name="th.main" value="org.apache.harmony.harness.Main" />
     
-    <property name="vmtt.src" location="${root}/vmtt.src" />
+    <property name="vmtt.src" location="${root}/../tools/vmtt" />
     <property name="vmtt.dest" location="${qa.bin.tools}/vmtt.dest" />
     <property name="vmtt.jar" location="${qa.bin.tools}/vmtt.jar" />
     <property name="vmtt.main.class" value="org.apache.harmony.vmtt.VMTT" />
