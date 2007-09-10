@@ -26,7 +26,7 @@
         <mkdir dir="${results.dir}/${suite.name}"/>
     </target>
     
-    <target name="run">
+    <target name="run" depends="-update">
         <!-- remove old results (they should be archived after the run) -->
         <delete quiet="true" verbose="false">
             <fileset dir="${drlvm-reg-test.results.dir}" includes="**/*"/>
@@ -37,7 +37,7 @@
             <format property="drlvm-reg-test.run.time" pattern="yyyyMMdd_HHmm"/>
         </tstamp>
 
-        <!-- launch the tests kernel.test -->
+        <!-- launch the tests -->
         <exec-ant dir="${built.drlvm.trunk}/build"
                   file="make/build.xml"
                   targets="reg.test"
@@ -49,6 +49,7 @@
                          value='${built.classlib.trunk}'/>
             <sysproperty key="machine.arch" value="${os.arch}"/>
             <sysproperty key="junit.jar" value="${ext.junit.location}"/>
+            <arg line="${tested.hdk.param}"/>
         </exec-ant>
 
         <!-- define the resulting files -->
@@ -72,5 +73,54 @@
         <fail message="There were drlvm-reg-test failures" 
               if="drlvm-reg-test.run.failed"/>
     </target>
+    
+    
+    <!--                                                    -->
+    <!-- Targets and properties related to snapshot testing -->
+    <!--                                                    -->
+    <condition property="is.snapshot">
+        <equals arg1="${drlvm-reg-test.parameters.depends}"
+                arg2="snapshot"
+                trim="yes" />
+    </condition>
+    
+    <condition property="tested.hdk.param" value="-Dtest.hdk.home=${snapshot.parameters.shared.hdk}">
+        <isset property="is.snapshot"/>
+    </condition>
+
+    <target name="-update" if="is.snapshot" 
+        description="adjusts tests to snapshot revision">
+        <mkdir dir="${built.drlvm.trunk}" />
+        <loadproperties srcFile="${snapshot.svn.revision.file}" />
+        <exec executable="svn"
+              dir="${built.drlvm.trunk}"
+              failonerror="true">
+            <arg line="co -r${svn.revision} ${drlvm.trunk.url} ." />
+        </exec>
+
+        <exec-ant dir="${built.drlvm.trunk}/build"
+                  file="make/build.xml"
+                  targets="clean"
+                  lib="${built.drlvm.trunk}/build/make/tmp"
+                  failonerror="true">
+            <sysproperty key="build.cfg" value="${drlvm.config}"/>
+            <sysproperty key="external.dep.CLASSLIB.loc"
+                         value='${built.classlib.trunk}'/>
+            <sysproperty key="machine.arch" value="${os.arch}"/>
+        </exec-ant>
+
+        <exec-ant dir="${built.drlvm.trunk}/build"
+                  file="make/build.xml"
+                  targets="update"
+                  lib="${built.drlvm.trunk}/build/make/tmp"
+                  failonerror="true">
+            <sysproperty key="build.cfg" value="${drlvm.config}"/>
+            <sysproperty key="external.dep.CLASSLIB.loc"
+                         value='${built.classlib.trunk}'/>
+            <sysproperty key="machine.arch" value="${os.arch}"/>
+        </exec-ant>
+                    
+    </target>
+
 </project>
 

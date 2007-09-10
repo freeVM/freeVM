@@ -200,6 +200,24 @@
         <archive-result/>
     </target>
 
+    <target name="publish-drlvm-reg-test">
+        <mkdir dir="${snapshot.results.dir}/drlvm-reg-test" />
+        <junitreport todir="${results.dir}/drlvm-reg-test">
+            <fileset dir="${results.dir}/drlvm-reg-test" includes="*TEST-*.xml" />
+            <report format="frames" todir="${snapshot.results.dir}/drlvm-reg-test" />
+        </junitreport>
+        <archive-result/>
+    </target>
+
+    <target name="publish-drlvm-test">
+        <mkdir dir="${snapshot.results.dir}/drlvm-test" />
+        <junitreport todir="${results.dir}/drlvm-test">
+            <fileset dir="${results.dir}/drlvm-test" includes="*TEST-*.xml" />
+            <report format="frames" todir="${snapshot.results.dir}/drlvm-test" />
+        </junitreport>
+        <archive-result/>
+    </target>
+
     <target name="publish-func">
         <delete dir="${snapshot.results.dir}/func" />
         <mkdir dir="${snapshot.results.dir}/func" />
