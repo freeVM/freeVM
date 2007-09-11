@@ -286,7 +286,13 @@
 
     <target name="publish-ehwa">
         <mkdir dir="${snapshot.results.dir}/ehwa" />
+        <copy-execution-log />
+        <touch-status-file />
+        <archive-result/>
+    </target>
 
+    <target name="publish-ega">
+        <mkdir dir="${snapshot.results.dir}/ega" />
         <copy-execution-log />
         <touch-status-file />
         <archive-result/>
@@ -357,6 +363,16 @@ ${eut.html.files};
         <touch-status-file />
         <archive-result />
     </target>
+    
+    <target name="publish-reliability">
+        <mkdir dir="${snapshot.results.dir}/reliability" />
+        <junitreport todir="${results.dir}/reliability/last">
+            <fileset dir="${results.dir}/reliability/last" includes="TEST-*.xml" />
+            <report format="frames" todir="${snapshot.results.dir}/reliability" />
+        </junitreport>
+        <archive-result/>
+    </target>
+
 
     <target name="publish-scimark">
         <mkdir dir="${snapshot.results.dir}/scimark" />
