@@ -238,6 +238,7 @@
         <archive-result/>
     </target>
 
+    <!-- Struts testing scenario -->
     <target name="publish-jedit_test">
         <mkdir dir="${snapshot.results.dir}/jedit_test" />
         <junitreport todir="${snapshot.results.dir}/jedit_test">
@@ -369,31 +370,9 @@
     </target>
 
     <!-- Struts testing scenario -->
-    <target name="publish-struts_test"
-            depends="-struts_test-copy-execution-log,-struts_test-copy-html-report">
-        <archive-result />
-    </target>
-    <target name="-struts_test-copy-html-report"
-            if="struts_test.has.html"
-            depends="-struts_test-init">
-        <copy todir="${snapshot.results.dir}/struts_test">
-            <fileset dir="${results.dir}/struts_test/test-results/html">
-                <include name="**" />
-            </fileset>
-        </copy>
-    </target>
-    <target name="-struts_test-copy-execution-log"
-            unless="struts_test.has.html"
-            depends="-struts_test-init">
-        <copy-execution-log />
-        <touch-status-file />
-    </target>
-    <target name="-struts_test-init">
-        <mkdir dir="${snapshot.results.dir}/struts_test" />
-        <available property="struts_test.has.html"
-                   file="${results.dir}/struts_test/test-results/html"
-                   type="dir" />
-    </target>
+    <property name="struts_test.report"
+              value="${results.dir}/struts_test/test-results/html" />
+    <target name="publish-struts_test" depends="-copy-report-files" />
 
     <!-- Tomcat testing scenario -->
     <target name="publish-tomcat-scenario">
@@ -441,6 +420,7 @@
     <macrodef name="archive-result">
         <sequential>
             <mkdir dir="${snapshot.arch.dir}/r${svn.revision}" />
+            <delete file="${snapshot.arch.dir}/r${svn.revision}/snapshot-r${svn.revision}.${platform.prefix}_${platform.sufix}.${projectname}-status.zip"/>
             <zip destfile="${snapshot.arch.dir}/r${svn.revision}/snapshot-r${svn.revision}.${platform.prefix}_${platform.sufix}.${projectname}-status.zip"
                  basedir="${snapshot}/results"
                  includes="r${svn.revision}/${platform.prefix}_${platform.sufix}/${projectname}/**"
@@ -462,5 +442,46 @@
         </sequential>
     </macrodef>
 
+    <!-- Targets and macro for copying junit report files          -->
+    <!-- The files are looking in ${<suitename>.report} dir        -->
+    <!-- if there are no report files then execution log is copied -->
+    <target name="-copy-report-files"
+            depends="-copy-junit-report-files,-copy-execution-log">
+        <archive-result />
+    </target>
+
+    <target name="-copy-junit-report-files"
+            if="report.dir"
+            depends="-init-publisher">
+
+        <copy todir="${snapshot.results.dir}/${projectname}">
+            <fileset dir="${report.dir}" />
+        </copy>
+    </target>
+
+    <target name="-copy-execution-log"
+            unless="report.dir"
+            depends="-init-publisher">
+
+        <copy-execution-log />
+        <touch-status-file />
+    </target>
+
+    <target name="-init-publisher">
+        <mkdir dir="${snapshot.results.dir}/${projectname}" />
+        <get-report-dir suitename="${projectname}" />
+    </target>
+
+    <macrodef name="get-report-dir">
+        <attribute name="suitename" />
+        <sequential>
+            <condition property="report.dir" value="${@{suitename}.report}">
+                <and>
+                    <isset property="${@{suitename}.report}" />
+                    <available file="${@{suitename}.report}" type="dir" />
+                </and>
+            </condition>
+        </sequential>
+    </macrodef>
 </project>
 
