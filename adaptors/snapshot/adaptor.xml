@@ -339,7 +339,7 @@
         <touch-status-file />
         <archive-result />
     </target>
-    
+
     <target name="publish-reliability">
         <mkdir dir="${snapshot.results.dir}/reliability" />
         <junitreport todir="${results.dir}/reliability/last">
@@ -368,16 +368,34 @@
         <archive-result/>
     </target>
 
-    <target name="publish-struts_test">
-        <mkdir dir="${snapshot.results.dir}/struts_test" />
+    <!-- Struts testing scenario -->
+    <target name="publish-struts_test"
+            depends="-struts_test-copy-execution-log,-struts_test-copy-html-report">
+        <archive-result />
+    </target>
+    <target name="-struts_test-copy-html-report"
+            if="struts_test.has.html"
+            depends="-struts_test-init">
         <copy todir="${snapshot.results.dir}/struts_test">
             <fileset dir="${results.dir}/struts_test/test-results/html">
                 <include name="**" />
             </fileset>
         </copy>
-        <archive-result/>
+    </target>
+    <target name="-struts_test-copy-execution-log"
+            unless="struts_test.has.html"
+            depends="-struts_test-init">
+        <copy-execution-log />
+        <touch-status-file />
+    </target>
+    <target name="-struts_test-init">
+        <mkdir dir="${snapshot.results.dir}/struts_test" />
+        <available property="struts_test.has.html"
+                   file="${results.dir}/struts_test/test-results/html"
+                   type="dir" />
     </target>
 
+    <!-- Tomcat testing scenario -->
     <target name="publish-tomcat-scenario">
         <mkdir dir="${snapshot.results.dir}/tomcat-scenario" />
 
