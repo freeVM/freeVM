@@ -481,7 +481,11 @@
         <delete dir="${result.dir}/latest"/>
         <mkdir dir="${result.dir}/latest"/>
         <copy todir="${result.dir}/latest">
-            <fileset dir="${res.dir}/results/html"/>
+            <fileset dir="${res.dir}">
+                <include name="results/html/*.html"/>
+                <include name="output.txt"/>
+                <include name="report.txt"/>
+            </fileset>
         </copy>
     </target>
 
