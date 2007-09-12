@@ -375,13 +375,7 @@
     <target name="publish-struts_test" depends="-copy-report-files" />
 
     <!-- Tomcat testing scenario -->
-    <target name="publish-tomcat-scenario">
-        <mkdir dir="${snapshot.results.dir}/tomcat-scenario" />
-
-        <copy-execution-log />
-        <touch-status-file />
-        <archive-result/>
-    </target>
+    <target name="publish-tomcat-scenario" depends="-copy-report-files" />
 
     <target name="publish-tptp">
         <mkdir dir="${snapshot.results.dir}/tptp" />
