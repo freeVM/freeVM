@@ -476,10 +476,7 @@
         <attribute name="suitename" />
         <sequential>
             <condition property="report.dir" value="${@{suitename}.report}">
-                <and>
-                    <isset property="${@{suitename}.report}" />
-                    <available file="${@{suitename}.report}" type="dir" />
-                </and>
+                <available file="${@{suitename}.report}" type="dir" />
             </condition>
         </sequential>
     </macrodef>
