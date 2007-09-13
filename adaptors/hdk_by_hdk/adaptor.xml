@@ -32,25 +32,23 @@
                 trim="yes" />
     </condition>
 
-    <condition property="is.checkout_ws">
-        <and>
-            <isset property="is.snapshot" />
-            <not>
-                <available file="${hdk_by_hdk.parameters.required.trunk.dir}/build.xml" />
-            </not>
-        </and>
-    </condition>
-
-    <target name="setup" depends="-setup-hdk-ws" />
-
-    <target name="-setup-hdk-ws" if="is.checkout_ws">
+    <target name="setup">
         <mkdir dir="${hdk_by_hdk.parameters.required.trunk.dir}" />
-
-        <svn-co url="${hdk_by_hdk.parameters.required.trunk.url}"
-                trunk="${hdk_by_hdk.parameters.required.trunk.dir}" />
     </target>
 
-    <target name="run">
+    <target name="-get-revision" if="is.snapshot">
+        <property file="${snapshot.svn.revision.file}"/>
+        <property name="co.target" value="-r${svn.revision}"/>
+    </target>
+
+    <target name="run" depends="-get-revision">
+        <echo message="Checkout HDK trunk ${co.target} into ${hdk_by_hdk.parameters.required.trunk.dir}"/>
+        <property name="co.target" value=""/>
+        <exec executable="svn" dir="${hdk_by_hdk.parameters.required.trunk.dir}" 
+            failonerror="true">
+            <arg line="co ${co.target} ${hdk_by_hdk.parameters.required.trunk.url} ." />
+        </exec>
+
         <exec-ant dir="${trunk.dir}" javaVM="${tested.jdk}/bin/java">
             <jvmarg line="-Xmx800M -Dtarget.dir=${target.dir}"/>
             <env key="JAVA_HOME" value="${tested.jdk}"/>

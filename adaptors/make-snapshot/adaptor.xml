@@ -20,13 +20,20 @@
     <!-- initial setup of the HDK workspace -->
     <target name="setup">
         <mkdir dir="${trunk.dir}"/>
-        <echo message="Checkout HDK trunk into ${trunk.dir}"/>
-        <svn-co url="${svn.url}" trunk="${trunk.dir}"/>
     </target>
 
     <target name="run" depends="do-build,upload"/>
 
     <target name="do-build">
+        <property file="${trunk.dir}/release.properties" prefix="make"/>
+        <condition property="co.target" value="-r${make.svn.revision}" else="">
+            <isset property="make.svn.revision"/>
+        </condition>
+        <echo message="Checkout HDK trunk ${co.target} into ${trunk.dir}"/>
+        <exec executable="svn" dir="${trunk.dir}" failonerror="true">
+            <arg line="co ${co.target} ${svn.url} ." />
+        </exec>
+
         <exec-ant dir="${trunk.dir}" targets="make-snapshot">
             <jvmarg line="-Xmx1000M"/> 
             <sysproperty key="target.dir" value="${target.dir}"/>
@@ -41,10 +48,9 @@
     </target>
 
     <target name="upload" if="do.upload">
-        <property file="${trunk.dir}/release.properties" prefix="upload"/>
-        <condition property="upload.dir" value="${make-snapshot.parameters.optional.upload.dir}/r${upload.svn.revision}" 
+        <condition property="upload.dir" value="${make-snapshot.parameters.optional.upload.dir}/r${make.svn.revision}" 
             else="${make-snapshot.parameters.optional.upload.dir}">
-            <isset property="upload.svn.revision"/>
+            <isset property="make.svn.revision"/>
         </condition>
         <mkdir dir="${upload.dir}"/>
         <chmod file="${target.dir}" perm="ugo+rw"/>
