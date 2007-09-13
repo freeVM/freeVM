@@ -85,7 +85,7 @@
                 trim="yes" />
     </condition>
     
-    <condition property="tested.hdk.param" value="-Dtest.hdk.home=${snapshot.parameters.shared.hdk}">
+    <condition property="tested.hdk.param" value="-Dtest.hdk.home=${snapshot.parameters.shared.hdk}" else="">
         <isset property="is.snapshot"/>
     </condition>
 
