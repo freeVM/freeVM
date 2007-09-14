@@ -64,9 +64,11 @@
             <redirector alwaysLog="true" output="${results.dir}/${suite.name}/version.log"/>
         </exec>
 
+        <!-- FIXME: timeout should be adaptor's parameter-->
         <exec executable="${dacapo.jdk.to.test.home}/bin/java"
               dir="${results.dir}/${suite.name}"
               append="true"
+              timeout="6000"
               failonerror="false"
               error="${output.log}">
             <arg line="-Xbootclasspath/p:${checkouts.dir}/${suite.name}/xalan.jar${path.separator}${checkouts.dir}/${suite.name}" />
