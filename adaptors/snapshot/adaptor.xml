@@ -260,30 +260,7 @@
         <archive-result/>
     </target>
 
-    <target name="publish-dacapo">
-        <mkdir dir="${snapshot.results.dir}/dacapo" />
-        <concat destfile="${snapshot.results.dir}/dacapo/index.html">
-            <header trimleading="yes" filtering="no">
-                &lt;html&gt;
-            </header>
-
-            <fileset file="${results.dir}/dacapo/dacapo_output.txt" />
-            <filterchain>
-                <linecontainsregexp>
-                    <regexp pattern="^===== DaCapo.*" />
-                </linecontainsregexp>
-                <tokenfilter>
-                    <replaceregex pattern="=$" replace="=&lt;br/&gt;" />
-                </tokenfilter>
-            </filterchain>
-
-            <footer trimleading="yes" filtering="no">
-                &lt;/html&gt;
-            </footer>
-        </concat>
-        <touch-status-file />
-        <archive-result/>
-    </target>
+    <target name="publish-dacapo" depends="-copy-report-files" />
 
     <target name="publish-ehwa">
         <mkdir dir="${snapshot.results.dir}/ehwa" />
