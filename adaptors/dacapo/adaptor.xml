@@ -68,7 +68,7 @@
         <exec executable="${dacapo.jdk.to.test.home}/bin/java"
               dir="${results.dir}/${suite.name}"
               append="true"
-              timeout="6000"
+              timeout="600000"
               failonerror="false"
               error="${output.log}">
             <arg line="-Xbootclasspath/p:${checkouts.dir}/${suite.name}/xalan.jar${path.separator}${checkouts.dir}/${suite.name}" />
