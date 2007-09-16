@@ -56,12 +56,6 @@
 
         <svn-co url="${jdktools-test.parameters.required.hdk.trunk.url}"
                 trunk="${jdktools-test.parameters.required.hdk.trunk.dir}" />
-        <exec-ant dir="${jdktools-test.parameters.required.hdk.trunk.dir}">
-            <jvmarg line="-Xmx1000M"/>
-            <sysproperty key="keep.working" value="true"/>
-            <sysproperty key="auto.fetch" value="true"/>
-            <sysproperty key="hy.cfg" value="release"/>
-        </exec-ant>
     </target>
 
     <target name="-update-jdktools-ws"
@@ -71,7 +65,19 @@
         <exec executable="svn" dir="${built.trunk.dir}" failonerror="true">
             <arg line="-r${svn.revision}" />
             <arg line="update" />
+            <!-- update only build.xml. ws update is done during rebuild -->
+            <arg line="build.xml" />
         </exec>
+
+        <!-- FIXME: need to rebuild hdk before testing      -->
+        <!-- it is shared with hdk_by_hdk and may be broken -->
+        <exec-ant dir="${jdktools-test.parameters.required.hdk.trunk.dir}">
+            <jvmarg line="-Xmx1000M" />
+            <sysproperty key="svn.revision" value="${svn.revision}" />
+            <sysproperty key="keep.working" value="true" />
+            <sysproperty key="auto.fetch" value="true" />
+            <sysproperty key="hy.cfg" value="release" />
+        </exec-ant>
     </target>
 
 </project>
