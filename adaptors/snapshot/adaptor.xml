@@ -190,15 +190,9 @@
         <archive-result/>
     </target>
 
-    <target name="publish-classlib-test">
-        <mkdir dir="${snapshot.results.dir}/classlib-test" />
-        <copy todir="${snapshot.results.dir}/classlib-test">
-            <fileset dir="${checkouts.dir}/classlib/build/test_report/html">
-                <include name="**" />
-            </fileset>
-        </copy>
-        <archive-result/>
-    </target>
+    <property name="classlib-test.report"
+              value="${checkouts.dir}/classlib/build/test_report/html" />
+    <target name="publish-classlib-test" depends="-copy-report-files" />
 
     <target name="publish-drlvm-reg-test">
         <mkdir dir="${snapshot.results.dir}/drlvm-reg-test" />
@@ -228,15 +222,9 @@
         <archive-result/>
     </target>
 
-    <target name="publish-jdktools-test">
-        <mkdir dir="${snapshot.results.dir}/jdktools-test" />
-        <copy todir="${snapshot.results.dir}/jdktools-test">
-            <fileset dir="${checkouts.dir}/hdk/working_jdktools/build/test_report/html">
-                <include name="**" />
-            </fileset>
-        </copy>
-        <archive-result/>
-    </target>
+    <property name="jdktools-test.report"
+              value="${checkouts.dir}/hdk/working_jdktools/build/test_report/html" />
+    <target name="publish-jdktools-test" depends="-copy-report-files" />
 
     <!-- Struts testing scenario -->
     <target name="publish-jedit_test">
