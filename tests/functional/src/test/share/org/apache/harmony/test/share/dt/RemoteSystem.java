@@ -87,7 +87,15 @@ public class RemoteSystem {
      */
     public RemoteSystem(final int port, final int soTimeout) throws IOException {
         serverSocket = new ServerSocket(port);
-        serverSocket.setSoTimeout(soTimeout);
+        if ( soTimeout==0 ) {
+            // FIXME: timeout should be passed by framework as parameter
+            // 
+            // Don't set intinite timeout - set 15min as default timeout
+            // Otherwise in case of tests failure the suite run may hang
+            serverSocket.setSoTimeout(900000);
+        } else {
+            serverSocket.setSoTimeout(soTimeout);
+        }
         serverSocket.setReuseAddress(true);
         system = this;
         instances = new Hashtable();
