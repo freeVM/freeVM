@@ -16,139 +16,109 @@
 */
 package org.apache.harmony.vts.test.vm.jvmti;
 
-/** 
- * @author Valentin Al. Sitnick
- * @version $Revision: 1.1 $
- *
- */ 
+/**
+ * Test for GetOwnedMonitorInfo JVMTI function.
+ * <p> Test scenario: </p>
+ * <ol>
+ *   <li> Main thread starts "Owner" thread and waits for notification. </li>
+ *   <li> Owner thread occupies 10 monitors, notifies main thread and waits.
+ *     </li>
+ *   <li> Main thread invokes agent's exception callback which checks owned
+ *     monitors for Owner thread. </li>
+ *   <li> Main thread notifies Owner thread. </li>
+ * </ol>
+ */
 public class GetOwnedMonitorInfo0101 {
-    public static boolean all_threads_can_start = false;
-    public final static Object sync0 = new Object();
-    public final static Object sync1 = new Object();
-    public final static Object sync2 = new Object();
-    public final static Object sync3 = new Object();
-    public final static Object sync4 = new Object();
-    public final static Object sync5 = new Object();
-    public final static Object sync6 = new Object();
+
+    static final int MONITORS_NUMBER = 10;
+    static Object[] monitors = new Object[MONITORS_NUMBER];
+    static Object lock = new Object();
 
     public static void main(String[] args) {
+        for (int i = 0; i < monitors.length; i++) {
+            monitors[i] = new Object();
+        }
 
-	TestThread_T_10 tr = new TestThread_T_10("Owner");
-        tr.start();        
-        
-        while (!all_threads_can_start) {
-	    try {
-	        Thread.sleep(500);
-            } catch (Throwable te) {
-                te.printStackTrace();
+        System.err.println("[JAVA] " + monitors.length +
+                " monitor objects created");
+
+        Thread ownerThread = new Thread("Owner") {
+            public void run() {
+                occupyAllMonitors();
+            }
+        };
+
+        synchronized (lock) {
+            System.err.println("[JAVA] Starting owner thread...");
+            ownerThread.start();
+
+            try {
+                System.err.println("[JAVA] Waiting for owner thread to " +
+                        "occupy monitors...");
+                lock.wait();
+
+                try {
+                    System.err.println("[JAVA] Invoking agent...");
+                    throw new InvokeAgentException(monitors, ownerThread);
+                } catch (InvokeAgentException exc) {
+                    System.err.println("[JAVA] Returned from agent callback.");
+                }
+
+                System.err.println("[JAVA] Notifying owner thread...");
+                lock.notify();
+
+            } catch (InterruptedException exc) {
+                exc.printStackTrace();
+            }
+        }
+    }
+
+    static void occupyAllMonitors() {
+        System.err.println("[JAVA] Owner: Occupying monitors...");
+
+        occupyMonitor(0);
+
+        System.err.println("[JAVA] Owner: All monitors released.");
+    }
+
+    static void occupyMonitor(int monitorNumber) {
+        if (monitorNumber < monitors.length) {
+            synchronized (monitors[monitorNumber]) {
+                occupyMonitor(monitorNumber + 1);
+            }
+        } else {
+            top();
+        }
+    }
+
+    static void top() {
+        System.err.println("[JAVA] Owner: " + monitors.length +
+                " monitors occupied.");
+
+        synchronized (lock) {
+            System.err.println("[JAVA] Owner: Notifying main thread...");
+            lock.notify();
+
+            System.err.println("[JAVA] Owner: Waiting for main thread to " +
+                    "check owned monitors...");
+            try {
+                lock.wait();
+            } catch (InterruptedException exc) {
+                exc.printStackTrace();
             }
         }
 
-        new Thread() { // 0
-            public void run() {
-                synchronized (sync0) {
-                    return;
-                }
-            }
-        }.start();
-
-        new Thread() { // 1
-            public void run() {
-                synchronized (sync1) {
-                    return;
-                }
-            }
-        }.start();
-
-        new Thread() { // 2
-            public void run() {
-                synchronized (sync2) {
-                    return;
-                }
-            }
-        }.start();
-
-        new Thread() { // 3
-            public void run() {
-                synchronized (sync3) {
-                    return;
-                }
-            }
-        }.start();
-
-        new Thread() { // 4
-            public void run() {
-                synchronized (sync4) {
-                    return;
-                }
-            }
-        }.start();
-
-        new Thread() { // 5
-            public void run() {
-                synchronized (sync5) {
-                    return;
-                }
-            }
-        }.start();
-
-        new Thread() { // 6
-            public void run() {
-                synchronized (sync6) {
-                    return;
-                }
-            }
-        }.start();
+        System.err.println("[JAVA] Owner: Releasing monitors...");
     }
 }
 
-class TestThread_T_10 extends Thread {
+class InvokeAgentException extends Exception {
 
-    TestThread_T_10(String name) {
-        super(name);
-    }
+    Object[] monitors;
+    Thread ownerThread;
 
-    public void special_method() {
-        new Thread("agent") {
-            public void run() {
-                return;
-            }
-        }.start();
-    }
-
-    public void run() {
-        synchronized (GetOwnedMonitorInfo0101.sync0) {
-            synchronized (GetOwnedMonitorInfo0101.sync1) {
-                synchronized (GetOwnedMonitorInfo0101.sync2) {
-                    synchronized (GetOwnedMonitorInfo0101.sync3) {
-                        synchronized (GetOwnedMonitorInfo0101.sync4) {
-                            synchronized (GetOwnedMonitorInfo0101.sync5) {
-                                synchronized (GetOwnedMonitorInfo0101.sync6) {
-
-                                    GetOwnedMonitorInfo0101.all_threads_can_start = true;
-
-                                    try {
-                                        Thread.sleep(5000);
-                                    } catch (Throwable te) {
-                                        te.printStackTrace();
-                                    }
-
-                                    special_method();
-
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (Throwable te) {
-                                        te.printStackTrace();
-                                    }
-                                    
-                                    return;
-                                }
-                            }
-                        }
-                    }
-		}
-	    }
-        }
+    InvokeAgentException(Object[] monitors, Thread thread) {
+        this.monitors = monitors;
+        this.ownerThread = thread;
     }
 }
-
