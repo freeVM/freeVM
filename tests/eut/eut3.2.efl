@@ -1,18 +1,19 @@
 #
 # This file contains the Expected Failure List (EFL) of EUT3.2 tests 
-# for the run on Harmony DRLVM on Windows/x86 platform.
+# for the run on Harmony DRLVM for all platforms.
 #
-# This file is used for generating results\<date>\report.txt file
-# by ./build.xml using information from 
-# results\<date>\results\xml\*.xml and results\<date>\output.txt
+# This file is used for generating results/<date>/report.txt and summary
+# index.htm files by ./build.xml using information from 
+# results/<date>/results/xml/*.xml and results/<date>/output.txt.
 #
-# The following rules are used to create this file:
+# The following rule is used to create this file:
 #
-# - specify test suite name to expect failure for all tests in suite, like
-#   "org.eclipse.team.tests.ccvs.core.AllTests"
 # - specify particular test name to expect its failure, the test name 
 #   is to be taken from results\<date>\results\xml\*.xml, like
 #   "org.eclipse.jdt.core.tests.compiler.regression.LookupTest.test044 - 1.4"
+#
+# - no expected crashes is possible - there shoould be no crashes
+#
 
 ###############################################################################
 #
@@ -26,10 +27,6 @@ org.eclipse.jdt.debug.tests.core.MethodBreakpointTests.testInnerClassesHit
 #
 # Failure is caused by Harmony bug
 #
-
-# HARMONY-4298 ([drlvm][thread]1 EUT testcase from teamcvs suite intermittently
-# crashes since r549864)
-org.eclipse.team.tests.ccvs.core.AllTests
 
 # HARMONY-4409 ([drlvm][verifier] Harmony throws VerifyError (Incompatible
 # argument for function) on generics/varargs specific bytecode while 

@@ -44,7 +44,7 @@
                 value="${eut33.parameters.optional.eclipse.buildid}" />
             <property name="work.dir"
                 value="${checkouts.dir}/${suite.name}"/>
-            <property name="result.dir"
+            <property name="results.root.dir"
                 value="${results.dir}/${suite.name}"/>
             <property name="test.jre.home"
                 value="${eut33.parameters.required.tested.runtime}"/>
@@ -71,7 +71,7 @@
                 value="${eut33.parameters.optional.timeout}" />
             <property name="work.dir"
                 value="${checkouts.dir}/${suite.name}"/>
-            <property name="result.dir"
+            <property name="results.root.dir"
                 value="${results.dir}/${suite.name}"/>
             <propertyset id="ws.id">
                 <propertyref name="eut33.parameters.optional.ws"/>
