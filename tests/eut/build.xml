@@ -240,10 +240,10 @@
 
     <target name="build.reporter"
         description="Build summary reporter classes">
-        <mkdir dir="${basedir}/summary-reporter/classes"/>
+        <mkdir dir="${work.dir}/summary-reporter/classes"/>
         <javac 
             srcdir="${basedir}/summary-reporter/src"
-            destdir="${basedir}/summary-reporter/classes"
+            destdir="${work.dir}/summary-reporter/classes"
             includes="**/*.java" />
     </target>
 
