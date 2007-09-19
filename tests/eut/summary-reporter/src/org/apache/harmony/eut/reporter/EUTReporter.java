@@ -27,6 +27,12 @@ import java.util.ArrayList;
  */
 public final class EUTReporter {
 
+    /* EUTReporter return codes. */
+    private static final int RETURN_EUT_PASSED = 0;
+    private static final int RETURN_EUT_FAILED = 1;
+    private static final int RETURN_USAGE_ERROR = 2;
+    private static final int RETURN_INTERNAL_ERROR = 3;
+
     /** Keeps the list of test suites being processed. */
     static ArrayList<EUTSuiteInfo> suiteList = new ArrayList<EUTSuiteInfo>();
 
@@ -54,7 +60,9 @@ public final class EUTReporter {
         System.err.println("    *  <eut_version>.suites.properties file");
         System.err.println("    *  tested.java.version file");
         System.err.println("    *  running.java.version file");
-        System.exit(1);
+        System.err.println("EUT SCRIPT: "
+                + "incorrect using of reporter or missed resources...");
+        System.exit(RETURN_USAGE_ERROR);
     }
 
     private static void checkFileExistance(File f) {
@@ -86,7 +94,25 @@ public final class EUTReporter {
         return String.valueOf(aliquot) + "." + fractionStr + "%";
     }
 
-    public static void main(String[] args) throws Exception {
+    /*
+     * The contruct for return code is:
+     * 0 - sucessfully generated report and EUT is PASSED
+     * 1 - sucessfully generated report and EUT is FAILED
+     * 2 - wrong usage (or input data is missed)
+     * 3 - unexpected parsing error (uncought throwable)
+     */
+    public static void main(String[] args) {
+        try {
+            main_unsafe(args);
+        } catch (Throwable e) {
+            System.err.println("EUT SCRIPT: "
+                    + "Unexpected Error during EUT results parsing:" + e);
+            e.printStackTrace();
+            System.exit(RETURN_INTERNAL_ERROR);
+        }
+    }
+
+    private static void main_unsafe(String[] args) throws Exception {
 
         // check the run arguments
         if (args.length != 6) {
@@ -196,6 +222,17 @@ public final class EUTReporter {
                 "report.txt");
         EUTTXTReportEmitter.emitTXTReport(out, esi);
         out.close();
-        System.out.println("EUT summary report was successfully generated");
+        System.out.println("EUT SCRIPT: "
+                + "EUT summary report was successfully generated");
+
+        if (esi.tests_run_total == esi.ss.tests_reported_passed) {
+            System.out.println("EUT SCRIPT: "
+                    + "No unexpected EUT issues detected");
+            System.exit(RETURN_EUT_PASSED);
+        } else {
+            System.err.println("EUT SCRIPT: "
+                    + "Unexpected EUT issues are detected");
+            System.exit(RETURN_EUT_FAILED);
+        }
     }
 } // end of class 'EUTReporter' definition

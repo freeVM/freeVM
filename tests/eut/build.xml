@@ -329,7 +329,8 @@
             collect.output.to.summarize,
             setup.efl,
             generate.reports,
-            duplicate.results.in.latest"
+            duplicate.results.in.latest,
+            exit.based.on.eut.status"
         description="Processes JUnit reports and creates a summary">
     </target>
 
@@ -373,6 +374,8 @@
             classpath="${work.dir}/summary-reporter/classes"
             classname="org.apache.harmony.eut.reporter.EUTReporter"
             fork="true"
+            failonerror="false"
+            resultproperty="reporter.exit.code"
             output="${work.dir}/r_output.txt"> 
             <arg value="${eclipse.buildid}"/>
             <arg value="${results.dir}"/>
@@ -403,6 +406,36 @@
                 <include name="index.htm"/>
             </fileset>
         </copy>
+    </target>
+
+    <!-- produce ant runner exit code based on EUT results -->
+    <target name="exit.based.on.eut.status" depends="generate.reports">
+        <fail message="EUT failed: There are unexpected failures">
+            <condition>
+                <equals arg1="${reporter.exit.code}" arg2="1"/>
+           </condition>
+        </fail>
+        
+        <fail message="EUT failed: Fatal Error: some reports are unavailable">
+            <condition>
+                <equals arg1="${reporter.exit.code}" arg2="2"/>
+           </condition>
+        </fail>
+
+        <fail message="EUT failed: Fatal Error: reporter internal error">
+            <condition>
+                <equals arg1="${reporter.exit.code}" arg2="3"/>
+           </condition>
+        </fail>
+
+        <fail message="EUT failed: Fatal Error: magic error (never happens)">
+            <condition>
+                <not>
+                    <equals arg1="${reporter.exit.code}" arg2="0"/>
+                </not>
+           </condition>
+        </fail>
+        <echo message="EUT passed!"/>
     </target>
 
     <target name="compose.report.get.java.version">
