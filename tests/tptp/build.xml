@@ -81,6 +81,11 @@ ${JAVA_HOME}/bin/java \
         <echo message="=====Used jvm args: ${jvm.args}"/>
         <echo message="=====Running class: ${tptp.test.class}"/>  
 
+        <!-- Delete config files and exclude list  file -->
+        <delete file="${config.file.new}"/>
+        <delete file="${results.dir}/${exclude.name}.txt"/>
+        <delete file="${results.dir}/${exclude.name}"/>
+
         <java classname="updateExclude"
               classpath="."
               fork="yes"
@@ -138,11 +143,6 @@ ${JAVA_HOME}/bin/java \
             <arg value="${os.name}_${os.version}_${os.arch}"/>
             <arg value="${failed.zip}"/>
         </java>         
-
-        <!-- Delete config files and exclude list  file -->
-        <delete file="${config.file.new}"/>
-        <delete file="${results.dir}/${exclude.name}.txt"/>
-        <delete file="${results.dir}/${exclude.name}"/>
 
         <condition property="tptp.tests.failed">
             <not>
