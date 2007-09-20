@@ -35,8 +35,14 @@
 
         <!-- update suite resources from SVN -->
         <svn-update-bt path="${tests.dir}"/>
+    </target>
+
+    <!-- Run the TPTP profiler test suite -->
+    <target name="run" description="Run TPTP profiler tests."> 
+        <log message="============= Adaptor for ${suite.name}. Run .."/>
 
         <!-- make the dir to store built tests -->
+        <delete dir="${work.dir}"/>
         <mkdir dir="${work.dir}/${tests.module}"/>
 
         <!-- Copy tests from build to build/checkouts/tptp -->
@@ -56,11 +62,6 @@
         <javac srcdir="${work.dir}"
                destdir="${work.dir}"
                includes="*.java"/>
-    </target>
-
-    <!-- Run the TPTP profiler test suite -->
-    <target name="run" description="Run TPTP profiler tests."> 
-        <log message="============= Adaptor for ${suite.name}. Run .."/>
 
         <!-- Copy exclude list file for updating suite's config -->
         <copy todir="${tptp.results}" file="${tests.dir}/${tptp.parameters.optional.exclude.list}"/>
