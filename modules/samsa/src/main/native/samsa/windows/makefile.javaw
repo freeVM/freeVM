@@ -14,13 +14,18 @@
 #  limitations under the License.
 
 #
-# Makefile for module samsa
+# Makefile for javaw
 #
 
-all: 
-	$(MAKE) /NOLOGO -f makefile.javae
-	$(MAKE) /NOLOGO -f makefile.javaw
+!include <$(HY_HDK)\build\make\defines.mak>
 
-clean:
-	$(MAKE) /NOLOGO -f makefile.javae clean
-	$(MAKE) /NOLOGO -f makefile.javaw clean
+EXENAME = javaw.exe
+BUILDFILES = javaw.obj ..\samsa.obj
+EXEFLAGS=$(conlflags) -subsystem:windows
+EXEDLLFILES=$(guilibsdll)
+
+VIRTFILES =
+SYSLIBFILES =
+MDLLIBFILES = 
+
+!include <$(HY_HDK)\build\make\rules.mak>

@@ -17,10 +17,15 @@
 # Makefile for module samsa
 #
 
-all: 
-	$(MAKE) /NOLOGO -f makefile.javae
-	$(MAKE) /NOLOGO -f makefile.javaw
+!include <$(HY_HDK)\build\make\defines.mak>
 
-clean:
-	$(MAKE) /NOLOGO -f makefile.javae clean
-	$(MAKE) /NOLOGO -f makefile.javaw clean
+EXENAME = samsa.exe
+BUILDFILES = ..\samsa.obj
+EXEFLAGS=$(conlflags) -subsystem:console
+EXEDLLFILES=$(conlibsdll)
+
+VIRTFILES =
+SYSLIBFILES =
+MDLLIBFILES =
+
+!include <$(HY_HDK)\build\make\rules.mak>
