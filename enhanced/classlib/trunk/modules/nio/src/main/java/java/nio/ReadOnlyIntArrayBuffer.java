@@ -18,10 +18,10 @@
 package java.nio;
 
 /**
- * CharArrayBuffer, ReadWriteCharArrayBuffer and ReadOnlyCharArrayBuffer compose
- * the implementation of array based char buffers.
+ * IntArrayBuffer, ReadWriteIntArrayBuffer and ReadOnlyIntArrayBuffer compose
+ * the implementation of array based int buffers.
  * <p>
- * ReadOnlyCharArrayBuffer extends CharArrayBuffer with all the write methods
+ * ReadOnlyIntArrayBuffer extends IntArrayBuffer with all the write methods
  * throwing read only exception.
  * </p>
  * <p>
@@ -29,10 +29,10 @@ package java.nio;
  * </p>
  * 
  */
-final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
+final class ReadOnlyIntArrayBuffer extends IntArrayBuffer {
 
-    static ReadOnlyCharArrayBuffer copy(CharArrayBuffer other, int markOfOther) {
-        ReadOnlyCharArrayBuffer buf = new ReadOnlyCharArrayBuffer(other
+    static ReadOnlyIntArrayBuffer copy(IntArrayBuffer other, int markOfOther) {
+        ReadOnlyIntArrayBuffer buf = new ReadOnlyIntArrayBuffer(other
                 .capacity(), other.backingArray, other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
@@ -40,22 +40,22 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
         return buf;
     }
 
-    ReadOnlyCharArrayBuffer(int capacity, char[] backingArray, int arrayOffset) {
+    ReadOnlyIntArrayBuffer(int capacity, int[] backingArray, int arrayOffset) {
         super(capacity, backingArray, arrayOffset);
     }
 
     @Override
-    public CharBuffer asReadOnlyBuffer() {
+    public IntBuffer asReadOnlyBuffer() {
         return duplicate();
     }
 
     @Override
-    public CharBuffer compact() {
+    public IntBuffer compact() {
         throw new ReadOnlyBufferException();
     }
 
     @Override
-    public CharBuffer duplicate() {
+    public IntBuffer duplicate() {
         return copy(this, mark);
     }
 
@@ -65,7 +65,7 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
     }
 
     @Override
-    protected char[] protectedArray() {
+    protected int[] protectedArray() {
         throw new ReadOnlyBufferException();
     }
 
@@ -80,37 +80,29 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
     }
 
     @Override
-    public CharBuffer put(char c) {
+    public IntBuffer put(int c) {
         throw new ReadOnlyBufferException();
     }
 
     @Override
-    public CharBuffer put(int index, char c) {
+    public IntBuffer put(int index, int c) {
         throw new ReadOnlyBufferException();
     }
 
     @Override
-    public final CharBuffer put(char[] src, int off, int len) {
+    public IntBuffer put(IntBuffer buf) {
         throw new ReadOnlyBufferException();
     }
 
     @Override
-    public final CharBuffer put(CharBuffer src) {
+    public final IntBuffer put(int[] src, int off, int len) {
         throw new ReadOnlyBufferException();
     }
 
     @Override
-    public CharBuffer put(String src, int start, int end) {
-        if ((start < 0) || (end < 0)
-                || (long) start + (long) end > src.length()) {
-            throw new IndexOutOfBoundsException();
-        }
-        throw new ReadOnlyBufferException();
-    }
-
-    @Override
-    public CharBuffer slice() {
-        return new ReadOnlyCharArrayBuffer(remaining(), backingArray, offset
+    public IntBuffer slice() {
+        return new ReadOnlyIntArrayBuffer(remaining(), backingArray, offset
                 + position);
     }
+
 }

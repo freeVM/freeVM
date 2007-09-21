@@ -21,18 +21,17 @@ package java.nio;
  * CharArrayBuffer, ReadWriteCharArrayBuffer and ReadOnlyCharArrayBuffer compose
  * the implementation of array based char buffers.
  * <p>
- * ReadOnlyCharArrayBuffer extends CharArrayBuffer with all the write methods
- * throwing read only exception.
+ * ReadWriteCharArrayBuffer extends CharArrayBuffer with all the write methods.
  * </p>
  * <p>
  * This class is marked final for runtime performance.
  * </p>
  * 
  */
-final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
+final class ReadWriteCharArrayBuffer extends CharArrayBuffer {
 
-    static ReadOnlyCharArrayBuffer copy(CharArrayBuffer other, int markOfOther) {
-        ReadOnlyCharArrayBuffer buf = new ReadOnlyCharArrayBuffer(other
+    static ReadWriteCharArrayBuffer copy(CharArrayBuffer other, int markOfOther) {
+        ReadWriteCharArrayBuffer buf = new ReadWriteCharArrayBuffer(other
                 .capacity(), other.backingArray, other.offset);
         buf.limit = other.limit();
         buf.position = other.position();
@@ -40,18 +39,31 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
         return buf;
     }
 
-    ReadOnlyCharArrayBuffer(int capacity, char[] backingArray, int arrayOffset) {
+    ReadWriteCharArrayBuffer(char[] array) {
+        super(array);
+    }
+
+    ReadWriteCharArrayBuffer(int capacity) {
+        super(capacity);
+    }
+
+    ReadWriteCharArrayBuffer(int capacity, char[] backingArray, int arrayOffset) {
         super(capacity, backingArray, arrayOffset);
     }
 
     @Override
     public CharBuffer asReadOnlyBuffer() {
-        return duplicate();
+        return ReadOnlyCharArrayBuffer.copy(this, mark);
     }
 
     @Override
     public CharBuffer compact() {
-        throw new ReadOnlyBufferException();
+        System.arraycopy(backingArray, position + offset, backingArray, offset,
+                remaining());
+        position = limit - position;
+        limit = capacity;
+        mark = UNSET_MARK;
+        return this;
     }
 
     @Override
@@ -61,56 +73,60 @@ final class ReadOnlyCharArrayBuffer extends CharArrayBuffer {
 
     @Override
     public boolean isReadOnly() {
-        return true;
-    }
-
-    @Override
-    protected char[] protectedArray() {
-        throw new ReadOnlyBufferException();
-    }
-
-    @Override
-    protected int protectedArrayOffset() {
-        throw new ReadOnlyBufferException();
-    }
-
-    @Override
-    protected boolean protectedHasArray() {
         return false;
     }
 
     @Override
+    protected char[] protectedArray() {
+        return backingArray;
+    }
+
+    @Override
+    protected int protectedArrayOffset() {
+        return offset;
+    }
+
+    @Override
+    protected boolean protectedHasArray() {
+        return true;
+    }
+
+    @Override
     public CharBuffer put(char c) {
-        throw new ReadOnlyBufferException();
+        if (position == limit) {
+            throw new BufferOverflowException();
+        }
+        backingArray[offset + position++] = c;
+        return this;
     }
 
     @Override
     public CharBuffer put(int index, char c) {
-        throw new ReadOnlyBufferException();
-    }
-
-    @Override
-    public final CharBuffer put(char[] src, int off, int len) {
-        throw new ReadOnlyBufferException();
-    }
-
-    @Override
-    public final CharBuffer put(CharBuffer src) {
-        throw new ReadOnlyBufferException();
-    }
-
-    @Override
-    public CharBuffer put(String src, int start, int end) {
-        if ((start < 0) || (end < 0)
-                || (long) start + (long) end > src.length()) {
+        if (index < 0 || index >= limit) {
             throw new IndexOutOfBoundsException();
         }
-        throw new ReadOnlyBufferException();
+        backingArray[offset + index] = c;
+        return this;
+    }
+
+    @Override
+    public CharBuffer put(char[] src, int off, int len) {
+        int length = src.length;
+        if (off < 0 || len < 0 || (long) len + (long) off > length) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (len > remaining()) {
+            throw new BufferOverflowException();
+        }
+        System.arraycopy(src, off, backingArray, offset + position, len);
+        position += len;
+        return this;
     }
 
     @Override
     public CharBuffer slice() {
-        return new ReadOnlyCharArrayBuffer(remaining(), backingArray, offset
+        return new ReadWriteCharArrayBuffer(remaining(), backingArray, offset
                 + position);
     }
+
 }

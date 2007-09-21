@@ -17,18 +17,18 @@
 package java.nio;
 
 /**
- * A <code>BufferOverflowException</code> is thrown when you try to write
- * elements to a buffer, but there is not enough remaining space in the buffer.
+ * A <code>ReadOnlyBufferException</code> is thrown when some write operation
+ * is called on a readonly buffer.
  * 
  */
-public class BufferOverflowException extends RuntimeException {
+public class ReadOnlyBufferException extends UnsupportedOperationException {
 
-    private static final long serialVersionUID = -5484897634319144535L;
+    private static final long serialVersionUID = -1210063976496234090L;
 
     /**
-     * Constructs a <code>BufferOverflowException</code>.
+     * Constructs a <code>ReadOnlyBufferException</code>.
      */
-    public BufferOverflowException() {
+    public ReadOnlyBufferException() {
         super();
     }
 }

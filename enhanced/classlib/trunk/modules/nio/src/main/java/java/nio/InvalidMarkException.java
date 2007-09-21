@@ -17,18 +17,18 @@
 package java.nio;
 
 /**
- * A <code>BufferOverflowException</code> is thrown when you try to write
- * elements to a buffer, but there is not enough remaining space in the buffer.
+ * A <code>InvalidMarkException</code> is thrown when <code>reset()</code>
+ * is called on a buffer, but there is no mark set previously.
  * 
  */
-public class BufferOverflowException extends RuntimeException {
+public class InvalidMarkException extends IllegalStateException {
 
-    private static final long serialVersionUID = -5484897634319144535L;
+    private static final long serialVersionUID = 1698329710438510774L;
 
     /**
-     * Constructs a <code>BufferOverflowException</code>.
+     * Constructs an <code>InvalidMarkException</code>.
      */
-    public BufferOverflowException() {
+    public InvalidMarkException() {
         super();
     }
 }
