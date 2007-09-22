@@ -205,7 +205,7 @@
     </target>
 
     <target name="setup.configuration"
-        depends="patch.linux.x86_64,patch.runtests.display,patch.label.properties,patch.test.xml"
+        depends="patch.linux.x86_64,patch.runtests.display,patch.label.properties"
         description="Configure EUT settings files">
     </target>
 
@@ -226,16 +226,6 @@
         <echo file="${eut.work.dir}/label.properties" append="false">
             buildId=${eclipse.buildid}
         </echo>
-    </target>
-
-    <!-- EUT32 specific replacement... -->
-    <target name="patch.test.xml" if="is.eut32"
-        description="Modify EUT test.xml configuration file to always use J2SE-5.0">
-        <replace file="${eut.work.dir}/test.xml">
-            <replacetoken><![CDATA[<param name="testPlugin"]]></replacetoken>
-            <replacevalue><![CDATA[<param name="jvm" value="${J2SE-5.0}" />
-            <param name="testPlugin"]]></replacevalue>
-        </replace>
     </target>
 
     <target name="build.reporter"
@@ -291,6 +281,7 @@
         <delete file="${eut.work.dir}/properties.file" failonerror="false"/>
         <echo file="${eut.work.dir}/properties.file" append="true">
             J2SE-5.0=${test.jre.home.path}/bin/java
+            jvm=${test.jre.home.path}/bin/java
             extraVMargs=${vm.options}
             timeout=${timeout}
         </echo>
