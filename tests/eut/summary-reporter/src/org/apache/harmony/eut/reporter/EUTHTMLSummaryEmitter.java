@@ -22,7 +22,7 @@ import java.io.PrintWriter;
  */
 final class EUTHTMLSummaryEmitter {
 
-    /** Keeps the output stream to write the index.htm data into. */
+    /** Keeps the output stream to write the index.html data into. */
     private static PrintWriter out;
 
     /** Emits JUnit like html report with EUT specific fields w/o frames. */
@@ -35,6 +35,7 @@ final class EUTHTMLSummaryEmitter {
         emitAbsoluteSummary(esi.ss, esi.tests_crashed_total);
         emitNoteOfErrorFailures();
         emitNoteOfSummary();
+        emitLinksToLogReports();
         emitSuitesStatictics();
         emitHTMLEnd();
     }
@@ -153,6 +154,21 @@ final class EUTHTMLSummaryEmitter {
         out.println("  </TD></TR></TBODY></TABLE>");
     }
 
+    private static void emitLinksToLogReports() {
+        out.println("<TABLE width=\"95%\" border=0>");
+        out.println("  <TBODY><TR>");
+        out.println("  <TD style=\"TEXT-ALIGN: justify\">");
+        out.println("  <u>For more details see also:</u>");
+
+        out.println("<li><a href=\"output.txt\"><EM>output.txt</EM></a> - "
+                + "contains EUT scripts run output (both standard and error).");
+        out.println("<li><a href=\"report.txt\"><EM>report.txt</EM></a> - "
+                + "contains unexpected failures/errors details (like stack "
+                + "traces) collected from correspondent xml reports.");
+
+        out.println("  </TD></TR></TBODY></TABLE>");
+    }
+
     private static void emitSuitesStatictics() {
         out.println("<H2>Suites Detailes</H2>");
         out.println("<TABLE class=details cellSpacing=2 cellPadding=5 "
@@ -174,7 +190,8 @@ final class EUTHTMLSummaryEmitter {
                 out.println("  <TR class=\"\" vAlign=top>");
                 out.println("    <TD>" + si.name + "</TD>");
                 out.println("    <TD>" + si.tests_total + "</TD>");
-                out.println("    <TD colspan=3 align=center><EM>not run</EM></TD>");
+                out.println("    <TD colspan=3 align=center><EM>not run"
+                        + "</EM></TD></TR>");
             }
         }
         out.println("  </TBODY></TABLE>");

@@ -25,7 +25,7 @@ import java.io.PrintWriter;
  */
 final class EUTTXTReportEmitter {
 
-    /** Keeps the output stream to write the index.htm data into. */
+    /** Keeps the output stream to write the report.txt data into. */
     private static PrintWriter out;
 
     /** Emits EUT issues information into specified output. */

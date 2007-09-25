@@ -222,9 +222,9 @@ public final class EUTReporter {
         esi.testedJavaVersionLog = testedJavaVersionLog;
         esi.runningJavaVersionLog = runningJavaVersionLog;
 
-        // print statistics into summary index.htm 
+        // print statistics into summary index.html 
         PrintWriter out = new PrintWriter(results_dir + File.separatorChar +
-                "index.htm");
+                "index.html");
         EUTHTMLSummaryEmitter.emitHTMLReport(out, esi);
         out.close();
 
