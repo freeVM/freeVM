@@ -50,7 +50,7 @@ final class EUTTXTReportEmitter {
         out.println("Total run tests     : " + esi.tests_run_total);
         out.println("Relative passrate   : " + EUTReporter.makePassrateString(
                     esi.ss.tests_reported_passed, esi.tests_run_total));
-        out.println("Unexpected crashes  : " + esi.suites_crashed_total);
+        out.println("Unexpected crashes  : " + esi.suites_unexpected_crashed.size());
         out.println("Unexpected errors   : "
                 + esi.ss.tests_unexpected_end_with_error);
         out.println("Unexpected failures : "
@@ -76,15 +76,16 @@ final class EUTTXTReportEmitter {
     }
 
     private static void emitCrashesResults(EUTSummaryInfo esi) {
-        if (esi.crashed_suites.size() == 0) {
+        if (esi.suites_unexpected_crashed.size() == 0) {
             return;
         }
         out.println();
         out.println("================================================");
-        out.println("Unexpected crashes  : " + esi.suites_crashed_total);
+        out.println("Unexpected crashes  : "
+                + esi.suites_unexpected_crashed.size());
 
-        for (int i = 0; i < esi.crashed_suites.size(); i++) {
-            EUTSuiteInfo si = esi.crashed_suites.get(i);
+        for (int i = 0; i < esi.suites_unexpected_crashed.size(); i++) {
+            EUTSuiteInfo si = esi.suites_unexpected_crashed.get(i);
             out.println(si.name + "(" + si.tests_total + ")");
         }
     }
@@ -117,7 +118,7 @@ final class EUTTXTReportEmitter {
                     continue;
                 }
                 out.println();
-                out.println(ti.testClass + ti.testName);
+                out.println(ti.testClass + '.' + ti.testName);
                 out.println(ti.testIssueMessage);
                 out.println(ti.testIssueContent.toString().trim());
             }

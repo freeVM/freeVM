@@ -6,14 +6,14 @@
 # index.htm files by ./build.xml using information from 
 # results/<date>/results/xml/*.xml and results/<date>/output.txt.
 #
-# The following rule is used to create this file:
+# The following rules are used to create this file:
+#
+# - specify test suite name to expect failure for all tests in suite, like
+#   "org.eclipse.jdt.ui.tests.LeakTestSuite"
 #
 # - specify particular test name to expect its failure, the test name 
 #   is to be taken from results\<date>\results\xml\*.xml, like
 #   "org.eclipse.jdt.core.tests.compiler.regression.LookupTest.test044 - 1.4"
-#
-# - no expected crashes is possible - there shoould be no crashes
-#
 
 ###############################################################################
 #

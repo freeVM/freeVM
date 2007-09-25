@@ -172,7 +172,7 @@ public final class EUTReporter {
         // caclulate summary statictics
         EUTSummaryInfo esi = new EUTSummaryInfo();
         esi.ss = new EUTSuiteInfo(); // Summary Suite
-        esi.crashed_suites = new ArrayList<EUTSuiteInfo>();
+        esi.suites_unexpected_crashed = new ArrayList<EUTSuiteInfo>();
 
         for (int i = 0; i < suiteList.size(); i++) {
             EUTSuiteInfo si = suiteList.get(i);
@@ -191,13 +191,24 @@ public final class EUTReporter {
                     si.tests_unexpected_end_with_failure;
 
             if (si.wasRun) {
+
+                // if suite was crashed then we remove 0 value
                 esi.tests_run_total += si.tests_total;
                 esi.tests_run_total -= si.tests_expected_failures_errors;
 
                 if (si.isCrashed) {
                     esi.tests_crashed_total += si.tests_total;
-                    esi.suites_crashed_total++;
-                    esi.crashed_suites.add(si);
+
+                    // the crash may be expected
+                    if (eflList.indexOf(si.name) != -1) {
+                        si.isCrashExpected = true;
+
+                        // must not count expected crashed suite tests number
+                        esi.tests_run_total -= si.tests_total;
+                    } else {
+                        esi.tests_unexpected_crashed_total += si.tests_total;
+                        esi.suites_unexpected_crashed.add(si);
+                    }
                 }
             }
         }
@@ -225,6 +236,7 @@ public final class EUTReporter {
         System.out.println("EUT SCRIPT: "
                 + "EUT summary report was successfully generated");
 
+        // produce an exit code based on EUT run results
         if (esi.tests_run_total == esi.ss.tests_reported_passed) {
             System.out.println("EUT SCRIPT: "
                     + "No unexpected EUT issues detected");

@@ -50,6 +50,11 @@ final class EUTSuiteInfo {
      */
     boolean isCrashed;
 
+    /**
+     * The crashed suite may be expected according to EFL.
+     */
+    boolean isCrashExpected;
+ 
     /** 
      * Shows if the suite is available for platform the program is run on.
      * Like org.eclipse.jdt.core.tests.eval.TestAll is available for Windows
@@ -165,10 +170,10 @@ final class EUTTestInfo {
  */
 final class EUTSummaryInfo {
     EUTSuiteInfo ss; // Summary Suite
-    int tests_run_total = 0; // need for Relative Summary
-    int tests_crashed_total = 0;
-    int suites_crashed_total = 0;
-    ArrayList<EUTSuiteInfo> crashed_suites;
+    int tests_run_total; // need for Relative Summary
+    int tests_crashed_total;
+    int tests_unexpected_crashed_total;
+    ArrayList<EUTSuiteInfo> suites_unexpected_crashed;
     String eut_version;
     String os, ws, arch;
     String tested_vm_ags;

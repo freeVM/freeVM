@@ -31,9 +31,8 @@ final class EUTHTMLSummaryEmitter {
 
         emitiHTMLheaderAndBodyStart(esi.eut_version);
         emitRelativeSummary(esi.ss, esi.tests_run_total,
-                esi.tests_crashed_total);
-        emitAbsoluteSummary(esi.ss, esi.tests_run_total,
-                esi.tests_crashed_total);
+                esi.tests_unexpected_crashed_total);
+        emitAbsoluteSummary(esi.ss, esi.tests_crashed_total);
         emitNoteOfErrorFailures();
         emitNoteOfSummary();
         emitSuitesStatictics();
@@ -116,16 +115,16 @@ final class EUTHTMLSummaryEmitter {
     }
 
     private static void emitRelativeSummary(EUTSuiteInfo ss,
-            int tests_run_total, int tests_crashed_total) {
+            int tests_run_total, int tests_unexpected_crashed_total) {
         emitSummary("Relative Summary", "Sudden",
                 tests_run_total, ss.tests_reported_passed, 
                 ss.tests_unexpected_end_with_failure, 
                 ss.tests_unexpected_end_with_error,
-                tests_crashed_total);
+                tests_unexpected_crashed_total);
     }
 
     private static void emitAbsoluteSummary(EUTSuiteInfo ss,
-            int tests_run_total, int tests_crashed_total) {
+            int tests_crashed_total) {
         emitSummary("Absolute Summary", "Total",
                 ss.tests_total, ss.tests_reported_passed, 
                 ss.tests_reported_end_with_failure, 
@@ -189,7 +188,7 @@ final class EUTHTMLSummaryEmitter {
         String strCrash = "&nbsp;";
 
         // detect report style based on issue type
-        if (si.isCrashed) {
+        if (si.isCrashed && !si.isCrashExpected) {
             tClass = "Error";
             strError = "&nbsp;";
             strFailure = "&nbsp;";
@@ -198,6 +197,10 @@ final class EUTHTMLSummaryEmitter {
             tClass = "Failure";
         }  else if (si.tests_unexpected_end_with_failure != 0) {
             tClass = "Failure";
+        }
+
+        if (si.isCrashed && si.isCrashExpected) {
+            strCrash = "expected crash";
         }
 
         // emit html code finally
