@@ -155,9 +155,9 @@ final class EUTStatusCollector extends DefaultHandler {
 
             // the passed test may be registered in EFL (configuration issue)
             if (eflIndex != -1) {
-            //    System.err.println("Warning: passed test is in EFL file: "
-            //            + processedTest.testClass + "."
-            //            + processedTest.testName);
+                System.err.println("Warning: passed test is in EFL file: "
+                        + processedTest.testClass + "."
+                        + processedTest.testName);
 
                 // remove passed test from EFL to calculate passrate correctly
                 EUTReporter.eflList.remove(eflIndex);
