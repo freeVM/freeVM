@@ -102,12 +102,6 @@
         <mkdir dir="${classlib-test.parameters.required.trunk.dir}" />
         <svn-co url="${classlib-test.parameters.required.trunk.url}"
                 trunk="${classlib-test.parameters.required.trunk.dir}" />
-
-        <ant target="fetch-depends"
-             dir="${classlib-test.parameters.required.trunk.dir}"
-             inheritAll="false" />
-        <ant dir="${classlib-test.parameters.required.trunk.dir}"
-             inheritAll="false" />
     </target>
 
     <target name="-update-classlib-ws"
@@ -120,6 +114,9 @@
             <arg line="-r${svn.revision}" />
             <arg line="update" />
         </exec>
+        <ant target="fetch-depends rebuild"
+             dir="${classlib-test.parameters.required.trunk.dir}"
+             inheritAll="false" />
     </target>
 
 </project>
