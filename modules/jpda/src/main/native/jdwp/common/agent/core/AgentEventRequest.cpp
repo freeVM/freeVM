@@ -317,13 +317,9 @@ bool StepRequest::ApplyModifiers(JNIEnv *jni, EventInfo &eInfo)
         }
     } else { // currentCount == m_frameCount
         // check against line
-        if (m_size == JDWP_STEP_LINE && currentLine == m_lineNumber) {
+        if (m_size == JDWP_STEP_LINE && currentLine == m_lineNumber && currentLine != -1) {
             return false;
         }
-    }
-
-    if (m_size == JDWP_STEP_LINE && currentLine == -1) {
-        return false;
     }
 
     m_frameCount = currentCount;
