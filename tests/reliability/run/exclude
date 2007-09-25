@@ -1,5 +1,5 @@
 ## the list of excluded tests ##
-## 25 tests excluded ##
+## 22 tests excluded ##
 
 ## HARMONY-2039, no class unloading
 api.kernel.pckg.PackageGetTest
@@ -8,16 +8,10 @@ vm.classloading.MultiThreadedLoading
 vm.classloading.ClassUnloadingTest
 
 ## HARMONY-4215, mostly reproduced on release build
-api.kernel.thread.Calculation.CalcTest
 api.kernel.thread.ExcptHandlerTest.ExcptHandlerTest
 api.kernel.thread.LifeSimulationTest.Life
 api.kernel.thread.ThreadLocalTest.ThreadLocalTest
-api.text.DecimalFormat_Locales
 api.text.getSentenceInstance
-api.zip.ZlibTest
-
-## HARMONY-3627, hang
-api.kernel.thread.StackTraceTest.StackTraceTest
 
 ## HARMONY-4220, HARMONY-4232, the issue could be in the test
 api.kernel.thread.ThreadKill.ThreadKillTest
@@ -45,9 +39,6 @@ api.nio.channels.filechannel.FileChannelThrSafetyTest
 api.nio.charset.CharsetSyncCacheTest
 api.text.getSentenceInstance_check
 
-## HARMONY-4393
-api.nio.charset.ContainsTest
- 
 ## HARMONY-4758, immediate hang - not a reliability issue
 api.nio.charset.DecodingModesTest
 
