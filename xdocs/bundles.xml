@@ -20,19 +20,17 @@
 <document>
 
   <properties>
-    <title>Harmony bundles with another projects</title>
+    <title>Harmony with Other Projects</title>
     <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
   </properties>
 
   <body>
 
-<section name="Harmony bundles with another projects">
+<section name="Harmony with Other Projects">
   <p>
-    We bundle Apache Harmony with another projects to create some nice out-of-the-box solutions
-    and to show that Harmony can work well with well-known applications.
+    We bundle Apache Harmony with other projects to create out-of-the-box solutions
+    and to show that Harmony can work successfully with well-known applications.
   </p>
-
-  <p>
     <ul>
       <li>
         <a href="#eclipse-harmony">In Harmony with Eclipse</a>
@@ -41,28 +39,29 @@
         <a href="#Tomcat">Apache Tomcat</a>
       </li>
     </ul>
-  </p>
 
-  <a name="eclipse-harmony" />
+  <a name="eclipse-harmony" /> 
   <subsection name="In Harmony with Eclipse">
     <p>
-        <a href="https://sourceforge.net/projects/eclipse-harmony/">In Harmony with Eclipse</a> project was 
+        <a href="https://sourceforge.net/projects/eclipse-harmony/"  target="_blank">In Harmony with Eclipse</a> project was 
         created in cooperation with Eclipse Foundation. The latest bundle includes Harmony M2 and Eclipse
         3.3 Europa.
     </p>
   </subsection>
 
-  <a name="Tomacat" />
+  <a name="Tomcat" />
   <subsection name="Apache Tomcat">
     <p>
-        This bundle includes Harmony M2 and Tomcat 6.0.13 server.
+        This bundle includes Harmony M2 and <a href="http://tomcat.apache.org/" target="_blank">Apache Tomcat</a> 6.0.13 server.
         <ul>
-            <li><a href="http://people.apache.org/builds/harmony/bundles/apache-tomcat-harmony-win32-20070711.zip">Windows/ia32 bundle</a></li>
+            <li><a href="http://people.apache.org/builds/harmony/bundles/apache-tomcat-harmony-win32-20070711.zip">Windows / IA-32 bundle</a></li>
         </ul>          
         <ul>
-            <li><a href="http://people.apache.org/builds/harmony/bundles/apache-tomcat-harmony-linux32-20070711.tar.gz">Linux/ia32 bundle</a></li>
+            <li><a href="http://people.apache.org/builds/harmony/bundles/apache-tomcat-harmony-linux32-20070711.tar.gz">Linux / IA-32 bundle</a></li>
         </ul>          
     </p>
+   
+    
   </subsection>
 
 </section>
