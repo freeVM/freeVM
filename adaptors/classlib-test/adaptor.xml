@@ -114,9 +114,15 @@
             <arg line="-r${svn.revision}" />
             <arg line="update" />
         </exec>
-        <ant target="fetch-depends rebuild"
+        <ant target="fetch-depends"
              dir="${classlib-test.parameters.required.trunk.dir}"
              inheritAll="false" />
+        <exec-ant dir="${classlib-test.parameters.required.trunk.dir}"
+                  targets="rebuild">
+            <sysproperty key="keep.working" value="true" />
+            <!-- workaround on classlib-build's InvocationTargetException -->
+            <jvmarg line="-Xmx1000M" />
+        </exec-ant>
     </target>
 
 </project>
