@@ -242,7 +242,7 @@ public final class EUTReporter {
                     + "No unexpected EUT issues detected");
             System.exit(RETURN_EUT_PASSED);
         } else {
-            System.err.println("EUT SCRIPT: "
+            System.out.println("EUT SCRIPT: "
                     + "Unexpected EUT issues are detected");
             System.exit(RETURN_EUT_FAILED);
         }

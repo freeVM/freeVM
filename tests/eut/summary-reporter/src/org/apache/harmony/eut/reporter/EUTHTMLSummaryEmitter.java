@@ -165,6 +165,8 @@ final class EUTHTMLSummaryEmitter {
         out.println("<li><a href=\"report.txt\"><EM>report.txt</EM></a> - "
                 + "contains unexpected failures/errors details (like stack "
                 + "traces) collected from correspondent xml reports.");
+        out.println("<li><a href=\"eut.efl\"><EM>eut.efl</EM></a> - contains "
+                + "expected failures/errors/crashes list with comments.");
 
         out.println("  </TD></TR></TBODY></TABLE>");
     }
