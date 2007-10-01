@@ -1,0 +1,18 @@
+#
+# This file contains the Expected Failure List (EFL) of EUT3.3 tests 
+# for the run on Harmony DRLVM for Windows / win32 / x86 platform.
+#
+# See shared EFL file comment for EFL file format rules
+#
+
+###############################################################################
+#
+# Failure analysis is required
+#
+org.eclipse.jface.tests.viewers.SimpleVirtualLazyTreeViewerTest.testCreation
+org.eclipse.jface.tests.viewers.VirtualLazyTreeViewerTest.testDeleteSibling
+org.eclipse.jface.tests.viewers.VirtualLazyTreeViewerTest.testInsertSibling
+org.eclipse.jface.tests.viewers.VirtualLazyTreeViewerTest.testInsertSiblings
+org.eclipse.jface.tests.viewers.VirtualLazyTreeViewerTest.testSomeChildrenChanged
+org.eclipse.jface.tests.viewers.VirtualLazyTreeViewerTest.testWorldChanged
+org.eclipse.jface.tests.viewers.VirtualTableViewerTest.testRenameWithSorter
