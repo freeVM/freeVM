@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-16"?>
 
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,21 +28,47 @@
 
   <section name="Getting Started For Contributors">
     <p>
-      This document explains how to get configured to build and
-      work with the Apache Harmony source code. The build is evolving.
-      If you come across a problem, double-check the
-      <a href="mailing.html">mailing list</a>:
-      your issue may have been already discovered and resolved.
+      Follow these instructions to get configured to build and
+      work with the Apache Harmony source code. To get the Harmony code
+      and build it, follow these steps:</p>
+    <ol>
+      <li>
+        <a href="#1. Prerequisites">Get all required prerequisites.</a>
+      </li>
+      <li>
+        <a href="#2. Checking out the Federated Build Tree">Check out the source code.</a>
+      </li>
+      <li>
+        <a href="#3. Starting the Federated Build">Build the source code.</a>
+      </li>
+    </ol>
+    <p>
+      After successfully building the source code, you will be able to
+      <a href="#Running Java Applications">run Java* applications</a> with Harmony.
     </p>
-    <subsection name="Prerequisites">
+    <p>
+      If you only need specific parts of the source code and not the whole HDK
+      (Harmony Java developer's kit), you can follow
+      <a href="#Detailed Building Instructions">component-wise instructions</a>.
+    </p>
+
+    <p class="note">Note:</p>
+    <p class="notetext">
+      The build is evolving. If you come across a problem, double-check the
+      <a href="mailing.html">mailing list</a>:
+      your issue may have been already discovered and resolved. Otherwise,
+      you can write a new mail to ask for help and support.
+    </p>
+    <subsection name="1. Prerequisites">
       <p>
         <strong>Basic Prerequisites</strong>
       </p>
-      <p>The tools you must have to be able to work with Harmony are:</p>
+      <p>The tools you must have to be able to work with Harmony are:
+      </p>
 
       <ul>
         <li>
-          <a href="http://ant.apache.org/">Apache Ant</a> version 1.6.5 or later
+          <a href="http://ant.apache.org/">Apache Ant</a> version 1.6.5
         </li>
         <li>
           <a href="http://subversion.tigris.org/">Subversion</a>
@@ -85,18 +111,25 @@
         <tr>
           <td class="TableCell">
             <ul>
-              <li>Microsoft 32-bit C/C++ Compiler, version 7 or higher</li>
-              <li>Windows platform SDK</li>
               <li>
-                <a href="http://www.intel.com/cd/software/products/asmo-na/eng/compilers/index.htm">
-                  Intel C++ Compiler
-                </a>, version 9.0
-              </li>
+            
+                  Windows Platform SDK
+                </li>
               <li>
                 <a href="http://www.microsoft.com/products">
                   Microsoft Visual Studio.NET
                   2003
                 </a>
+              </li>
+              <li>
+                <b>Compiler:</b>
+                <ul>
+                  <li>Microsoft 32-bit C/C++ Compiler, version 7 or higher</li>
+                  <li>
+                    <a href="http://www.intel.com/cd/software/products/asmo-na/eng/compilers/index.htm">
+                      Intel C++ Compiler</a>, version 9.0
+                  </li>
+                </ul>
               </li>
             </ul>
           </td>
@@ -139,23 +172,21 @@
         </li>
         <li>
           <a href="http://sourceforge.net/project/showfiles.php?group_id=36177">
-            Cpp Tasks
-          </a> collection, version 1.0 beta 3 or higher (downloaded)
+            Cpp Tasks</a> collection,
+            version 1.0 beta 3 or higher (downloaded)
         </li>
         <li>
           <a href="http://sourceforge.net/project/showfiles.php?group_id=36177">
-            Ant-Contrib
-          </a> collection of tasks, version 0.6 or higher (downloaded)
+            Ant-Contrib</a> collection of tasks,
+            version 0.6 or higher (downloaded)
         </li>
         <li>
           <a href="http://www.zlib.net">Zlib</a> library, binaries,
           version 1.2.1 or higher (downloaded)
         </li>
         <li>
-          <a href="http://apr.apache.org/download.cgi">
-            Apache Portable
-            Runtime Layer
-          </a>, version 1.2.6 (downloaded)
+          <a href="http://apr.apache.org/download.cgi">Apache Portable Runtime Layer</a>,
+          version 1.2.6 (downloaded)
         </li>
         <li>
           <a href="http://apr.apache.org/download.cgi">APR-util</a>,
@@ -184,58 +215,96 @@
         build do that for you.
       </p>
     </subsection>
-  </section>
-  <section name="Getting the Source Code">
-    <subsection name="Checking out the Federated Build Tree">
-        <p>
-          The Harmony codebase is divided into many separate parts. To create
-          a working JRE, you need a <i>class library</i> and a <i>virtual machine</i>. To
-          obtain these tools, use the <i>federated build</i> tree and then work
-          within the class library directory and the VM directory as you choose.
-          Currently, the federated build uses the DRLVM virtual machine.
-        </p>
+    <subsection name="2. Checking out the Federated Build Tree">
+      <p>
+        The Harmony codebase is divided into many separate parts. To create
+        a working JRE, you need a <i>class library</i> and a <i>virtual machine</i>. To
+        obtain these tools, use the <i>federated build</i> tree and then work
+        within the class library directory and the VM directory as you choose.
+        Currently, the federated build uses the DRLVM virtual machine.
+      </p>
 
-        <p>
-          To check out the federated build, use the following command:
-        </p>
+      <p>
+        To check out the federated build, use the following command:
+      </p>
 
-        <source>
-$ svn co https://svn.apache.org/repos/asf/harmony/enhanced/trunk</source>
+      <source>$ svn co https://svn.apache.org/repos/asf/harmony/enhanced/trunk </source>
 
-        <p>
-          The given command checks out a directory structure that
-          contains <code>working_classlib</code> and <code>working_vm</code>
-          directories. After you populate the source trees in the next step,
-          <code>working_classlib</code>
-          will be the checkout of the class library SVN tree
-          and <code>working_vm</code> will be the checkout
-          of the DRLVM SVN tree.
-        </p>
-        <p class="note">Note</p>
-        <p class="notetext">
-          If the root of the federated build is multiple levels deep in
-          your file system, the very long paths within class library might
-          result in a SVN checkout failure on Windows. The solution is to
-          move the tree upwards in your file system or switch operating systems.
-        </p>
-        <p>
-          If you type <code>ant</code> in the root directory of federated build,
-          you will checkout, build, and package snapshots of the JRE and HDK.
-          However, as this approach builds the full JDK, it can be inconvenient 
-          for a developer focused on a specific area, so please continue
-          with the next steps.
-        </p>
-
-        <p class="note">Note</p>
-        <p class="notetext">
-		If you do choose to build from the federated build root, you may need to 
-        increase the Java heap available to Ant.  We suggest setting the "ANT_OPTS" environment 
+      <p>
+        This command checks out a directory structure that
+        contains <code>working_classlib</code> and <code>working_vm</code>
+        directories. After you populate the source trees in the next step,
+        <code>working_classlib</code>
+        will be the checkout of the class library SVN tree
+        and <code>working_vm</code> will be the checkout
+        of the DRLVM SVN tree.
+      </p>
+      <p class="note">Note</p>
+      <p class="notetext">
+        If the root of the federated build is multiple levels deep in
+        your file system, the very long paths within class library might
+        result in a SVN checkout failure on Windows. The solution is to
+        move the tree upwards in your file system or switch operating systems.
+      </p>
+    </subsection>
+    <subsection name="3. Starting the Federated Build">
+      <p>
+        Now you should be ready to build the code. For the first time you build,
+        you might want to fetch all the dependencies.
+        If you do not, or if in the future a new dependency is added, the build will tell
+        you what to do, so that you can do this step periodically. To fetch the
+        dependencies and check out, build, and package snapshots of the JRE and HDK, type
+        the following command in the root directory of the federated build:
+      </p>
+      <source>$ ant -Dauto.fetch=true</source>
+      <p>
+        This variant of command downloads all the required third-party components that can be
+        distributed under licences different from the Apache license; see <code>THIRD_PARTY_NOTICES.txt</code>
+        in the root directory for details. This is only needed during your first build. For
+        subsequent builds, just type:
+      </p>
+      <source>$ ant</source>
+      <p class="note">Note</p>
+      <p class="notetext">
+        If you choose to build from the federated build root, you may need to
+        increase the Java heap available to Ant.  We suggest setting the "ANT_OPTS" environment
         variable as ANT_OPTS='-Xms256m -Xmx512m' in the manner appropriate for your
         operating system.
-        </p>
-         
-      </subsection>
-    <subsection name="Populating the VM and ClassLibrary Source Trees">
+      </p>
+      <p>
+        Because running Ant in the root directory builds the full JDK, it can be inconvenient
+        for a developer focused on a specific area. If you are not interested in building
+        the full HDK, follow the <a href="#Detailed Building Instructions">detailed instructions</a>
+        to build each JRE component separately.
+      </p>
+    </subsection>
+  </section>
+  <section name="Detailed Building Instructions">
+    <p>If you do not need to build the whole HDK and did not execute <code>ant</code>
+    in <a href="Running the Federated Build">step 3</a>, follow these instructions to
+    build each component in turn and assemble the JRE from them. The building
+    procedure consists of the following steps:</p>
+    <ol>
+      <li>
+        <a href="#1. Populating the Source Trees">
+          Populate the source trees.
+        </a>
+      </li>
+      <li>
+        <a href="#2. Updating the Source Trees">Update the source trees.</a>
+      </li>
+      <li>
+        <a href="#3. Building the Class Library">Build the class library source code.</a>
+      </li>
+      <li>
+        <a href="#4. Building DRLVM">Build the DRLVM source code.</a>
+      </li>
+      <li>
+        <a href="#5. Combining JRE from Built Components">Combine class libraries and VM into JRE.</a>
+      </li>
+    </ol>
+    
+    <subsection name="1. Populating the Source Trees">
         <p>
           To populate the source trees, use the target located
           in the federated build <code>build.xml</code> script.
@@ -254,7 +323,7 @@ $ svn co https://svn.apache.org/repos/asf/harmony/enhanced/trunk</source>
           therefore a checkout can take a very long time.
         </p>
       </subsection>
-    <subsection name="Updating the VM and ClassLibrary Source Trees">
+    <subsection name="2. Updating the Source Trees">
         <p>
           Any time going forward, you can bring any directory to current SVN
           revision simply by doing <code>svn update</code> in any directory.
@@ -279,15 +348,13 @@ $ svn update</source>
         <source>$ ant clean</source>
 
       </subsection>
-    </section>
-  <section name="Building the Code">
-        <p>
-          Now you should be ready to build the code. First build
-          the class library because DRLVM has a dependency on it and also
-          assembles a working JRE as part of its build.
-        </p>
-    <subsection name="Building the Class Library">
-        <p>
+    <subsection name="3. Building the Class Library">
+      <p>
+        Now you should be ready to build the code. First build
+        the class library because DRLVM has a dependency on it and also
+        assembles a working JRE as part of its build.
+      </p>  
+      <p>
           For the first time you build, you might want to fetch all the
           class library dependencies. If you do not, or if in the future a new
           dependency is added, the build will tell you what to do, so that you
@@ -310,7 +377,7 @@ $ ant</source>
           use DRLVM, proceed with the instruction to build it.
         </p>
       </subsection>
-    <subsection name="Building DRLVM">
+    <subsection name="4. Building DRLVM">
         <ol>
           <li>
             <b>Enter the build directory.</b><br />
@@ -475,7 +542,7 @@ pre-alpha : not complete or compatible
 svn = r479551, (Nov 27 2006), Windows/ia32/msvc 1310, debug build
 http://harmony.apache.org</pre>
       </subsection>
-    <subsection name="Combining JRE from Built Components">
+    <subsection name="5. Combining JRE from Built Components">
         <p>
           <b>Class library developers</b> can work with DRLVM or install
           another compatible VM. For example, you can use the
