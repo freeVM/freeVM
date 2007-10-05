@@ -332,27 +332,6 @@
             <for list="${@{suite}.parameters.depends}" param="dependency">
             <sequential>
                 <if>
-                    <isset property="@{dependency}.parameters.cc.usesvn"/>
-                <then>
-                    <!-- veto on execution before superior with svn 
-                         modifications -->
-                    <replace file="@{ccfile}">
-                        <replacefilter 
-                            token="&lt;!-- @BT.VETO@ --&gt;" 
-                            value="&lt;!-- veto on execution before superior with svn modifications --&gt;@NL@
-           &lt;veto&gt;@NL@
-               &lt;triggers&gt;@NL@&lt;!-- @BT.USESVN@ -->@NL@
-               &lt;/triggers&gt;@NL@
-               &lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@NL@
-           &lt;/veto&gt;@NL@
-           &lt;!-- @BT.VETO@ --&gt;"
-                        />
-                    </replace>
-                    <insert-usesvn suite="@{dependency}" ccfile="@{ccfile}" 
-                                   indent="                    "/>
-                </then>
-                </if>
-                <if>
                     <isset property="framework.parameters.schedule.time"/>
                 <then>
                     <!-- veto on scheduled execution before superior one -->
@@ -460,19 +439,6 @@
                 />
             </replace>
             <if>
-                <isset property="@{suite}.parameters.cc.usesvn"/>
-            <then>
-                <replace file="@{ccfile}">
-                    <replacefilter 
-                        token="&lt;!-- @BT.BOOTSTRAPPER@ --&gt;" 
-                        value="&lt;!-- @BT.USESVN@ -->"
-                    />
-                </replace>
-                <insert-usesvn suite="@{suite}" ccfile="@{ccfile}" 
-                               task="svnbootstrapper" indent="            "/>
-            </then>
-            </if>
-            <if>
                 <and>
                     <isset property="@{suite}.parameters.cc.trigger"/>
                     <!-- no need in triggers in scheduled execution mode -->
@@ -561,8 +527,10 @@
                 <for list="${@{suite}.parameters.depends}" param="dependency">
                 <sequential>
                     <if>
-                        <not><contains string="@{visited}" 
-                                       substring=",@{dependency},"/></not>
+                        <and>
+                            <istrue value="${framework.parameters.cc.get-mods-tree}"/>
+                            <not><contains string="@{visited}" substring=",@{dependency},"/></not>
+                        </and>
                     <then>
                         <build-modification-tree
                             suite="@{dependency}"

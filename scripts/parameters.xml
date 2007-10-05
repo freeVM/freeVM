@@ -20,10 +20,10 @@
             value="8000" 
             description="The port for CC's JMX console."/>
         <quietperiod 
-            value="30" 
+            value="0" 
             description="The number of seconds since last SVN modification to wait before Test Suites execution."/>
         <interval 
-            value="300" 
+            value="1800" 
             description="Interval period in seconds to check for necessity of Test Suite Execution."/>
         <doclean 
             value="false" 
@@ -34,6 +34,9 @@
         <buildafterfailed
             value="false"
             description="Do recurring execution after failure?"/>
+        <get-mods-tree
+            value="false"
+            description="Obtain SVN modifications from super-suite(s). Produces nicer reports but increases strain on SVN server."/>
     </cc>
 
     <schedule>

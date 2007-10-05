@@ -24,14 +24,27 @@
               value="${temp.files.dir}/cc-hdk-project.xml"/>
 
     <!-- do setup of the HDK workspace -->
-    <target name="setup">
+    <target name="setup" depends="-check-setup,-do-setup"/>
+    <target name="-check-setup">
+        <condition property="need.setup">
+            <not><available file="${hdk.trunk.dir}"/></not>
+        </condition>
+    </target>
+    <target name="-do-setup" if="need.setup">
         <mkdir dir="${hdk.trunk.dir}"/>
-
         <echo message="Checkout HDK trunk into ${hdk.trunk.dir}"/>
         <svn-co url="${svn.url}" trunk="${hdk.trunk.dir}"/>
     </target>
 
     <target name="run">
+        <!-- update SVN non-recursively, HDK build will do the rest -->
+        <!-- "svnrevision" is supplied by CC normally -->
+        <property name="svnrevision" value="HEAD"/>
+        <log message="Updating HDK workspace to revision: ${svnrevision}"/>
+        <exec executable="svn" dir="${hdk.trunk.dir}" failonerror="true">
+            <arg line="update -r ${svnrevision} -N"/>
+        </exec>
+        
         <exec-ant dir="${hdk.trunk.dir}">
             <jvmarg line="-Xmx1000M"/>
             <sysproperty key="keep.working" value="true"/>

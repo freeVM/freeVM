@@ -76,6 +76,7 @@ failed to run or have been skipped:
         <record name="${cc.execution.log.file}" append="yes" action="start"/>
         <trycatch property="exception" reference="execution.exception.ref">
         <try>
+            <runtarget target="update-svn"/>
             <ant dir="${root.dir}/adaptors/${suite.name}" 
                  antfile="adaptor.xml" 
                  target="run"
@@ -101,6 +102,17 @@ ${exception}
         <echo file="${cc.execution.log.file}" append="true" 
               message="&lt;/body>&lt;/html>"/>
         <fail message="${exception}" if="exception"/>
+    </target>
+    
+    <target name="update-svn" if="${suite.name}.parameters.cc.usesvn" 
+        unless="${suite.name}.parameters.cc.skip.svnupdate">
+        <!-- "svnrevision" property is set by CC since v2.7.1 -->
+        <property name="svnrevision" value="HEAD"/>
+        <propertycopy property="ws" from="${suite.name}.parameters.cc.usesvn"/>
+        <svn-cleanup trunk="${ws}"/>
+        <exec executable="svn" dir="${ws}" failonerror="true">
+            <arg line="update -r ${svnrevision}"/>
+        </exec>
     </target>
 
     <!-- Called from CC to launch the custom ant publisher for test suite -->
@@ -255,8 +267,7 @@ ${exception}
         <copy file="${cc.execution.log.file}" todir="${status.report.dir}"/>
             
         <condition property="build.status" value="passed" else="failed">
-            <!-- the property is passed by CC -->
-            <equals arg1="${thisbuildsuccessful}" arg2="true" />
+            <istrue value="${thisbuildsuccessful}"/>
         </condition>
         <echo file="${status.report.dir}/status.txt" message="status=${build.status}${line.separator}timestamp=${builddate}" />
 

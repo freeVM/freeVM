@@ -9,7 +9,10 @@
     <project name="@BT.PROJECT@" 
              buildafterfailed="${framework.parameters.cc.buildafterfailed}" 
              requireModification="@BT.REQMODS@">
+
+        <!-- Use ISO 8601 format for timestamps, to ease results parsing -->
         <dateformat format="yyyy-MM-dd HH:mm:ss Z"/>
+
         <listeners>
             <!-- Resolved to <currentbuildstatuslistener file="${logs.dir}/...">
                  Should be here if there are any suites depending
@@ -18,16 +21,13 @@
         </listeners>
 
         <bootstrappers>
-            <!-- Resolved to 
-                    <svnbootstrapper> 
-                 if we use SVN for sources, i.e. 
-                    ${suite.name}.parameters.cc.usesvn="${sources.location}"
-                 is set -->
-<!-- @BT.BOOTSTRAPPER@ -->
+            <!-- Keep it if you want to use custom ant bootstrappers
+                 specified for test suite by cc.bootstrapper parameter -->
+            <!-- @BT.BOOTSTRAPPER@ -->
         </bootstrappers>
 
         <modificationset quietperiod="${framework.parameters.cc.quietperiod}">
-            <!-- veto tag MUST be present as it controls the test suite 
+            <!-- veto tag may be present to help control the test suite 
                  execution order -->
             <!-- @BT.VETO@ -->
             <!-- tag is resolved to modification sets defined for test suite:
@@ -44,7 +44,7 @@
                 - in any case it is additionally resolved to
                     <forceonly/>
             -->
-<!-- @BT.MODIFICATIONSET@ -->
+            <!-- @BT.MODIFICATIONSET@ -->
         </modificationset>
 
         <schedule interval="${framework.parameters.cc.interval}">
