@@ -205,14 +205,8 @@
     </target>
 
     <target name="setup.configuration"
-        depends="patch.linux.x86_64,patch.runtests.display,patch.label.properties"
+        depends="patch.runtests.display,patch.label.properties"
         description="Configure EUT settings files">
-    </target>
-
-    <target name="patch.linux.x86_64" if="is.linux.x86_64">
-        <replace file="${eut.work.dir}/runtests"
-            token="$vm -jar eclipse/${startup.jar} -Dosgi.ws=$ws"
-            value="$vm -jar eclipse/${startup.jar} -DsetupTarget=setup-tar.gz -DruntimeArchive=${eclipse.filename} -Dosgi.ws=$ws"/>
     </target>
 
     <target name="patch.runtests.display" if="is.linux">
@@ -257,7 +251,7 @@
 
     <target name="configure.properties.file"
         description="Delete old properties file and specify the path to JRE under test and other properties"
-        depends="configure.properties.file.common,configure.properties.file.teamcvs">
+        depends="configure.properties.file.common,configure.properties.file.teamcvs,configure.properties.file.linux.x86_64">
     </target>
 
      <target name="delete.properties.file"
@@ -285,6 +279,14 @@
             jvm=${test.jre.home.path}/bin/java
             extraVMargs=${vm.options}
             timeout=${timeout}
+        </echo>
+    </target>
+
+    <target name="configure.properties.file.linux.x86_64" if="is.linux.x86_64"
+            depends="delete.properties.file" >
+        <echo file="${eut.work.dir}/properties.file" append="true">
+            setupTarget=setup-tar.gz
+            runtimeArchive=${eclipse.filename}
         </echo>
     </target>
 
