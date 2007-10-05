@@ -257,7 +257,7 @@
 
     <target name="configure.properties.file"
         description="Delete old properties file and specify the path to JRE under test and other properties"
-        depends="delete.properties.file,configure.properties.file.common,configure.properties.file.teamcvs">
+        depends="configure.properties.file.common,configure.properties.file.teamcvs">
     </target>
 
      <target name="delete.properties.file"
@@ -266,6 +266,7 @@
     </target>
 
     <target name="configure.properties.file.teamcvs"
+            depends="delete.properties.file"
         description="Specify CVS settings for Team CVS tests"
         if="cvs.settings.specified">
         <echo file="${eut.work.dir}/properties.file" append="true">
@@ -277,8 +278,8 @@
     </target>
 
     <target name="configure.properties.file.common"
+            depends="delete.properties.file"
         description="Specify the path to JRE under test and other properties">
-        <delete file="${eut.work.dir}/properties.file" failonerror="false"/>
         <echo file="${eut.work.dir}/properties.file" append="true">
             J2SE-5.0=${test.jre.home.path}/bin/java
             jvm=${test.jre.home.path}/bin/java
