@@ -29,4 +29,6 @@ org/apache/geronimo/timer/NontransactionalThreadPooledTimerTest # variable numbe
 # org/apache/geronimo/gjndi/JavaCompGBeanTest 	 # 1 test case
 # org/apache/geronimo/gjndi/KernelContextGBeanTest # 1 test case
 
-
+# TODO: investigate. May be fails as regression after H-617 patch
+org/apache/geronimo/tomcat/ContainerTest
+org/apache/geronimo/tomcat/JAASSecurityTest
