@@ -25,6 +25,13 @@
 
         <section name="Apache Harmony Source Code">
             <p>
+                We provide tarballs of the source code, you can just <a href="downloads.html">download</a> 
+                either stable build or nightly snapshot and 
+                <a href="http://people.apache.org/~mloenko/snapshot_testing/script/snapshots_summary.html">
+                ascertain</a> that it passed sanity testing.
+            </p>
+            <p>
+                And if you want to be on the bleeding-edge of the development effort, access repository.
                 The Harmony project uses the
                 <a href="http://subversion.tigris.org/">Subversion</a> version control
                 system.  If you're new to Subversion, you can check out the
@@ -45,16 +52,16 @@
 
             <subsection name="Normal Subversion Access">
                 <p>
-                    Anyone can check code out of Subversion. You only need to specify a
+                    Anyone can check code out of Subversion repository. You only need to specify a
                     username and password in order to update the Subversion repository, and only
                     Harmony committers have the permissions to do that. We run Subversion
-                    over standard HTTPS, so hopefully you won't have problems with intervening
+                    over standard HTTP/HTTPS, so hopefully you won't have problems with intervening
                     firewalls.
                 </p>
 
                 <h3>Check out from Subversion</h3>
                 <p>Again, anyone can do this. Use a command like:</p>
-                <pre>svn checkout https://svn.apache.org/repos/asf/harmony/enhanced/trunk</pre>
+                <pre>svn checkout http://svn.apache.org/repos/asf/harmony/enhanced/trunk</pre>
 
                 <h3>Commit Changes to Subversion</h3>
                 <p>
@@ -75,7 +82,9 @@
                     will remember it for you.</p>
                     <p class="note">Note</p>
                     <p class="notetext">This is the password you configured with
-                    <code>svnpasswd</code>, not your shell or other password.
+                    <code>svnpasswd</code>, not your shell or other password.</p>
+                    <p class="notetext">Write-access assumes HTTPS connection,
+                    so you may need to perform <code>svn switch</code> prior to committing.
                 </p>
             </subsection>
 
