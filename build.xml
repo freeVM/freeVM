@@ -108,6 +108,7 @@
       <copy file="${docs.src}/site.css" todir="${docs.dest}/"/>
       <copy file="${docs.src}/screen.css" todir="${docs.dest}/"/>
       <copy file="${docs.src}/print.css" todir="${docs.dest}/"/>
+      <copy file="${docs.src}/.htaccess" todir="${docs.dest}/"/>
 
   </target>
     
