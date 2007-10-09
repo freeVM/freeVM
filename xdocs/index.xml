@@ -79,6 +79,35 @@
     </section>
     <section name="Harmony News">
       <dl>
+        <dt>5.0 M3 stable build has been released</dt>
+        <dd>
+          The build is targeted primarily to improving overall stability and
+          performance. This build contains the following enhancements enabled:
+          an innovative fast byte code verifier, lazy resolution in all JIT
+          modes on IA32 platforms, support for Java6.0 classes in DRLVM.<p/>
+          The next areas were improved:
+          <ul>
+            <li>
+              Bytecode mapping in JIT - exception stack traces became more
+              comprehensive
+            </li>
+            <li>
+              Threading support was partially re-factored towards improvement
+              of reliability and maintainability
+            </li>
+            <li>
+              JIT-based JVMTI debug mode was speed up in 3 times
+            </li>
+            <li>
+              Stability of Swing and AWT code on Windows
+            </li>
+         </ul>
+         The build is available for
+         <a href="http://harmony.apache.org/downloads.html#M3-r580985">download</a>.
+         Please send your feedback to
+         <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+         (<i>2007-10-09</i>)
+        </dd>
         <dt>Harmony 5.0 M2 Available</dt>
         <dd>
           We are pleased to announce the second stable build "5.0 M2".
