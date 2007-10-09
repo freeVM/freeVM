@@ -101,6 +101,7 @@
       <copy todir="${docs.dest}/" filtering="no">
            <fileset dir="${docs.src}">
               <include name="**/*.txt"/>
+              <include name="**/*.cgi"/>
            </fileset>
       </copy>
 
