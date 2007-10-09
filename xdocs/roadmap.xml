@@ -121,10 +121,20 @@
           Feb 2007: Jave SE 5 JDK toolset complete
         </li>
         <li>
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
           Q2 2007: Apache Harmony starts providing stable SE 5 JDK and JRE build for major platforms
+          </strike>
         </li>
         <li>
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
           Q3 2007: Build and test infrastructure ensures code integrity and provides sufficient snapshot testing
+          </strike>
         </li>
         <li>
           Q4 2007: Apache Harmony starts providing stable SE 6 JDK and JRE build for major platforms
@@ -220,7 +230,7 @@
             <code>tnameserv, idlj, orbd, servertool</code>
         </li>
         <li>
-            <code>pack200, unpack200</code>
+            <code>pack200, unpack200</code> (<i>in progress</i>)
         </li>
         <li>
             <code>htmlconverter, javaws</code>
@@ -257,11 +267,6 @@
           to revisit given the differnet toolchains. There are many things to do
           in this area, many not listed.
         </p>
-        <p>
-          Currently, the project has been releasing snapshots of our class library,
-          but now that we have the DRLVM virtual machine, we can start doing complete
-          snapshot builds of a JRE, as well as the HDK.
-        </p>
 
         <ul>
           <li>
@@ -269,8 +274,11 @@
             - <code>libz, libpng, libjpeg, liblcms, libicu*,</code> etc.
           </li>
           <li>
-            Create regular schedule for snapshots and automate.
-            Maybe every two weeks for now?
+          <font color="green">
+            <b>DONE, 3/week</b>
+          </font>
+          <strike>          
+            Create regular schedule for snapshots and automate.</strike>
             <ol>
               <li>HDK - libraries, jars, headers</li>
               <li>JDK - tools + JRE</li>
@@ -278,8 +286,13 @@
             </ol>
           </li>
           <li>
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>          
             Federated build - abliity to builds a complete JDK from top level
             using choice of project VM
+          </strike>
           </li>
           <li>
             Agreement between project parts (DRLVM, classlib) on things like
@@ -292,8 +305,13 @@
             Switch DRLVM build to a class library-like ant + make configuration
           </li>
           <li>
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
             Remove assumption in class library build system that all that uses make is
             Linux.
+            </strike>
           </li>
         </ul>
       </subsection>
@@ -318,19 +336,28 @@
         </p>
         <ul>
           <li>
+          <font color="green">
+            <b>DONE</b>
+          </font>
+          <strike>
             Create live "status dashboard" with a summary of results from all tested platforms,
             as well as history for each tested platform.
+          </strike>
+               <ul>
+               <li><a href="http://people.apache.org/~mloenko/snapshot_testing/script/snapshots_summary.html">Snapshot testing history</a></li>
+               <li><a href="http://people.apache.org/~varlax/harmony-integrity/">Integrity testing status</a></li>
+               </ul>
           </li>
           <li>
             Integrate with <a href="http://www.kaffe.org/~stuart/japi/">JAPI</a>
           </li>
           <li>
             Integrate with <a href="http://sources.redhat.com/mauve/">Mauve</a> for further
-            class library testing
+            class library testing. (<i>in progress</i>)
           </li>
           <li>
             Integrate with test-coverage tool (for example, <a href="http://emma.sourceforge.net/">emma</a>
-            for auto-generated reports).
+            for auto-generated reports). (<i>in progress</i>)
           </li>
           <li>
             Externalize local properties into a 'test.properties' file for easy of localization.
@@ -386,7 +413,7 @@
           </li>
           <li>
             CORBA: re-use the Apache Yoko project (currently in incubator)
-            as the required implementation of CORBA nad related support
+            as the required implementation of CORBA and related support
             classes (<i>in progress</i>)
           </li>
           <li>
@@ -548,11 +575,3 @@
 
   </body>
 </document>
-
-
-
-
-
-
-
-
