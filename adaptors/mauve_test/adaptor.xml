@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                        BT Adaptor for Mauve Test
+     ====================================================================== -->
+<project name="mauve_test" default="run" basedir=".">
+
+    <property name="mauve.results.dir" location="${results.dir}/${suite.name}"/>
+    <property name="mauve.classes.dir" location="${classes.dir}/${suite.name}"/>
+    <property name="current.results.dir" location="${mauve.results.dir}/results"/>
+    <property name="mauve.summary" location="${mauve.results.dir}/summary.txt"/>
+
+    <target name="setup">
+        <echo level="info" message="============= Adaptor for ${suite.name}: Set Up ..."/>
+        <echo level="info" message=""/>
+        <echo level="info" message="Tested JVM: ${mauve_test.parameters.required.tested.jvm}"/>
+        <echo level="info" message="Compiler(ecj.jar) location: ${ext.ecj.jar.location}"/>
+        <echo level="info" message="Mauve source location: ${mauve.location}"/>
+        <echo level="info" message="Mauve classes location: ${mauve.classes.dir}"/>
+        <echo level="info" message=""/>
+
+        <mkdir dir="${current.results.dir}"/> 
+        <mkdir dir="${mauve.classes.dir}"/> 
+        <antcall target="-compile"/>
+    </target>
+
+    <target name="run">
+        <condition property="jvm.not.exist">
+            <not>
+                <available file="${tested.jvm}"/>
+            </not>
+        </condition>
+        <fail message="Path to JVM does not exist: ${tested.jvm}" if="jvm.not.exist"/>
+
+        <!-- Run mauve test -->
+        <java classname="gnu.testlet.runner.Mauve"
+              fork="yes"
+              jvm="${tested.jvm}"
+              dir="${mauve.classes.dir}">
+              <arg line="-o ${current.results.dir} ${test.sources.dir}/${suite.name}/${test.list}"/>
+            <classpath>
+                <pathelement path="${mauve.classes.dir}"/>
+            </classpath>
+        </java>
+       
+        <!-- Generate mail summary --> 
+        <echo file="${mauve.summary}" message="========== Mauve Test Summary =========="/>
+        <echo file="${mauve.summary}" append="true" message="${line.separator}${line.separator}"/>
+        <echo file="${mauve.summary}" append="true" message="Tested JVM: ${mauve_test.parameters.required.tested.jvm}"/>
+        <echo file="${mauve.summary}" append="true" message="${line.separator}"/>
+        <echo file="${mauve.summary}" append="true" message="Report Location: ${current.results.dir}"/>
+        <echo file="${mauve.summary}" append="true" message="${line.separator}${line.separator}"/>
+        <echo file="${mauve.summary}" append="true" message="Check the summary of mauve test in the attach file."/>
+        <echo file="${mauve.summary}" append="true" message="${line.separator}"/>
+        <echo file="${mauve.summary}" append="true" message="========================================"/>
+        <echo file="${mauve.summary}" append="true" message="${line.separator}"/>
+
+        <!--Backup test result--> 
+        <tstamp>
+            <format property="test.run.time" pattern="yyyyMMdd_HHmm"/>
+        </tstamp>
+        <mkdir dir="${current.results.dir}_${test.run.time}" />
+        <copy todir="${current.results.dir}_${test.run.time}" >
+            <fileset dir="${current.results.dir}"/>
+        </copy>
+        
+    </target>
+    
+    <target name="-compile" description="Compile the Mauve source for test">
+        <!-- Ecj is required to compile the mauve test --> 
+        <property name="mauve.javac.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <fail message=">>>>>>>> Error >>>>>>>>>${line.separator}${line.separator}
+                       The Eclipse compiler class for ant could not be found! ${line.separator}
+                       Please copy ${ext.ecj.jar.location} to ${ANT_HOME}/lib${line.separator}">
+            <condition>
+                <not>
+                    <available classname="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+                </not>
+            </condition>
+        </fail>
+ 
+        <!-- Configure the mauve test first  -->
+        <fail message=">>>>>>>> Error >>>>>>>>>${line.separator}
+                       Pls configure the mauve first, using './configure'. Or you can configure maunually.${line.separator}
+                       Replace the make tag in ${mauve.location}/gnu/testlet/config.java.in and rename it to config.java${line.separator}
+                       You can refer to the detail in ${mauve.location}/README. ${line.separator}">
+            <condition>
+                <not>
+                    <available file="${mauve.location}/gnu/testlet/config.java"/>
+                </not>
+            </condition>
+        </fail>
+        
+        <!-- Compile the test code within ecj, there exist compile failures -->
+        <javac compiler="${mauve.javac.compiler}" 
+               srcdir="${mauve.location}"
+               sourcepath="${mauve.location}" 
+               destdir="${mauve.classes.dir}"
+               nowarn="on"
+               failonerror="false">
+            <bootclasspath>
+                <fileset dir="${tested.jre}">
+                    <include name="**/*.jar"/>
+                    <exclude name="**/*-src.jar"/>
+                </fileset>
+            </bootclasspath>
+        </javac>
+
+    </target>
+
+    <target name="clean">
+        <delete dir="${mauve.results.dir}" quiet="true"/>
+        <delete dir="${mauve.classes.dir}" quiet="true"/>
+    </target>
+
+</project>

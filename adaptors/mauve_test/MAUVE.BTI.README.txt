@@ -1,0 +1,86 @@
+        ================================================
+        Running Muave Unit Tests under BT infrastructure
+        ================================================
+
+
+This document describes how to run Mauve Unit Test on Apache Harmony
+within Apache Harmony Build&Test infrastructure.
+Please see BTI's README.txt for general instructions on BT usage. 
+The following platforms are currently supported: Linux x86, Linux x86_64.
+
+---------------
+Archive Content
+---------------
+
+This archive contains scripts for running Mauve Test within BT. 
+The directories structure within BT trunk directory is as follows:
+
++<BTI trunk>/
+|-+adaptors/                        - scripts connecting test suites to BTI (called "adaptors")
+|  |
+|  |-+mauve_test/                   - mauve_test suite adaptor directory
+|     |
+|     |--adaptor.xml                - mauve_test suite adaptor
+|     |
+|     |--MAUVE.BTI.README.txt       - this readme file
+|     |
+|     |--parameters.xml             - parameters file
+|
+|-+tests/                           - test suites integrated into BTI
+   |
+   |-+muave_test/                   - mauve_test scripts directory
+      |
+      |--all.include.list.txt       - all test list that can run within harmony jre
+      |
+      |--include.list.txt           - test list can pass 100% within RI
+      |
+
+-----------------------------------------------------------------
+Running Mauve Unit Tests on Harmony JRE under BT infrastructure
+-----------------------------------------------------------------
+
+1. Follow instructions from <BTI trunk>/README.txt to satisfy general BTI
+   pre-requisites (install necessary software, specify environment variables,
+   specify proxy settings if necessary).
+
+2. Unpack this archive to <BTI trunk> directory
+
+3. Perform setup:
+
+     buildtest -Dtest.suites="classlib,drlvm,mauve_test" setup
+
+4. Configure Mauve Test for BT
+
+   * Modify platform specific include.list in <BTI trunk>/tests/mauve_test if necessary. 
+     You can change the ${required.test.list} in <BTI trunk>/adaptors/mauve_test/parameters.xml 
+     for the wanted test list to run. Default is the all.include.list.txt.
+
+   * Copy ecj_3.2.2.jar downloaded by BTI from <BTI trunk>/build/jar
+     to your ${ANT_HOME}/lib, since the mauve test need to compiled by ecj.jar.
+
+   * Make sure configure the mauve test first, since by default the compilation is compiled by make.
+     There are still some variable undefined in <mauve_src>/gnu/testlet/config.java.in.
+     You can configure it by "./configure", it will set the variable and change the file to cofig.java.
+     You can finish it manually. Refer to <mauve_src>/README for more details.
+
+5. Configure BT for Mauve Unit Test run:
+
+   * Specify appropriate mail settings in <BTI trunk>/framework.local.properties file
+     if you want Cruise Control to send mail notifications.
+
+   * Specify appropriate mail settings in <BTI trunk>/framework.local.properties file
+     if you want Cruise Control to send mail notifications.
+
+6. Build classlib and drlvm and run Mauve Unit Test on it:
+
+     buildtest -Dtest.suites="classlib,drlvm,mauve_test" run
+
+7. To continuously perform Harmony JRE build (classlib and drlvm) and EUT run under Cruise Control:
+
+     buildtest -Dtest.suites="classlib,drlvm,mauve_test" run-cc
+
+--------------------------------
+DISCLAIMER AND LEGAL INFORMATION
+--------------------------------
+Other brands and names are the property of their respective owners.
+
