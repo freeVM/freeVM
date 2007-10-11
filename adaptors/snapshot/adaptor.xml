@@ -367,12 +367,27 @@
     </target>
 
     <target name="publish-vtsvm">
-        <mkdir dir="${snapshot.results.dir}/vtsvm" />
+
+        <copy-execution-log />
+        <touch-status-file />
+
+        <!-- generate junit report only for failed tests -->
+        <mkdir dir="${snapshot.results.dir}/vtsvm/junit" />
         <junitreport todir="${snapshot.results.dir}/vtsvm">
-            <fileset dir="${results.dir}/vtsvm" includes="TEST*-*.xml" />
-            <report format="frames" todir="${snapshot.results.dir}/vtsvm" />
+            <fileset dir="${results.dir}/vtsvm" includes="TEST*-*.xml">
+                <containsregexp expression='(errors|failures)=.[1-9]' />
+                <exclude name="TESTS-TestSuites.xml" />
+            </fileset>
+            <report format="frames"
+                    todir="${snapshot.results.dir}/vtsvm/junit" />
         </junitreport>
-        <archive-result/>
+
+        <!-- insert link to junit report -->
+        <replaceregexp file="${snapshot.results.dir}/vtsvm/index.html"
+                       match="run:"
+                       replace="&lt;a href=&quot;junit/index.html&quot;&gt;JUnit report for failures&lt;a&gt;&#xA;&#xA;run:" />
+
+        <archive-result />
     </target>
 
 
