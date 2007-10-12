@@ -62,13 +62,19 @@
           invokes target build-java for all modules
          ================================= -->
     <target name="build-modules" depends="-prepare-depends">
-        <fail message="The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib. The JAR can copied from CLASSLIB_TRUNK/depends/jars/ecj_3.2 folder after the fetch-depends target has been run.">
-            <condition>
-                <not>
-                    <available classname="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-                </not>
-            </condition>
-        </fail>
+            <fail>
+                <condition>
+                    <and>
+                        <equals arg1="${hy.javac.compiler}" arg2="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+                        <not>
+                            <available classname="${hy.javac.compiler}"/>
+                        </not>
+                    </and>
+                </condition>
+The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib.
+The JAR can be downloaded directly from eclipse.org or copied from COMMON_RESOURCES/depends/jars/ecj_3.x folder after the fetch-depends target for JDKTOOLS has been run.
+Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.compiler=modern' for classic javac.                
+            </fail>
         <mkdir dir="${build.output}" />
         <call-modules target="build-java" />
     </target>
