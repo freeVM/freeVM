@@ -91,6 +91,13 @@
         the version of the tool you use. For example, edit <code>~/.subversion/servers</code>
         file for console version of <code>svn</code>.
       </p>
+      <p>Optional (but recommended) prerequisite is an Eclipse Java Compiler (ECJ), version 3.2 or higher. 
+      You need to <a href="http://download.eclipse.org/eclipse/downloads/">download</a> 
+      standalone ecj.jar and put it to <code>ANT_HOME/lib</code> directory.
+      Alternatively, you can switch to any other Java 1.5 compiler supported by Ant
+      via overriding <code>hy.javac.compiler</code> property.
+      </p>
+
       <p>
         The other prerequisites for building Harmony differ by platform. For
         examples of platform-specific setup instructions, please see these
@@ -514,12 +521,6 @@ C:...\trunk\working_vm\build>build.bat test
 On Linux:
 $ sh build.sh test</pre>
 
-            <p class="note">Note</p>
-            <p class="notetext">
-              The <code>kernel</code> tests do not currently pass.
-              To succeed, use <code>C Unit</code> and
-              <code>Smoke</code> tests.
-            </p>
           </li>
         </ol>
         <p>
