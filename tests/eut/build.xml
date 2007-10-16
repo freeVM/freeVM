@@ -349,7 +349,7 @@
         <delete file="${results.dir}/eut.efl"/>
         <touch file="${results.dir}/eut.efl"/>
         <concat destfile="${results.dir}/eut.efl">
-            <filelist dir="${basedir}" files="
+            <filelist dir="${basedir}/config" files="
                 eut${eclipse.buildid}.efl
                 eut${eclipse.buildid}.${os.eclipse.notation}.efl
                 eut${eclipse.buildid}.${os.eclipse.notation}.${ws}.efl

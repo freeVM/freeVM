@@ -57,7 +57,8 @@ public final class EUTReporter {
         System.err.println("    <tested_vm_args>   : tested VM arguments " + 
                 "to be printed to report");
         System.err.println("    Note: the current directory must contains:");
-        System.err.println("    *  <eut_version>.suites.properties file");
+        System.err.println("    *  config/<eut_version>.suites.properties"
+                + " file");
         System.err.println("    *  tested.java.version file");
         System.err.println("    *  running.java.version file");
         System.err.println("EUT SCRIPT: "
@@ -154,8 +155,8 @@ public final class EUTReporter {
         File eutEFL = new File(results_dir + File.separatorChar
                 + "eut.efl");
         checkFileExistance(eutEFL);
-        File eutSuitesProperties = new File("eut" + eut_version
-                + ".suites.properties");
+        File eutSuitesProperties = new File("config" + File.separatorChar
+                + "eut" + eut_version + ".suites.properties");
         checkFileExistance(eutSuitesProperties);
         File testedJavaVersionLog = new File("tested.java.version");
         checkFileExistance(testedJavaVersionLog);
