@@ -22,6 +22,7 @@ package org.apache.harmony.test.func.api.java.io.share.FilterOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 
 import org.apache.harmony.test.func.api.java.io.share.OutputStream.OutputStreamTestShared;
 import org.apache.harmony.test.func.api.java.io.share.MockOutputStream;
@@ -29,16 +30,22 @@ import org.apache.harmony.test.func.api.java.io.share.MultiThreadRunner;
 import org.apache.harmony.share.Result;
 
 public class FilterOutputStreamTestShared extends OutputStreamTestShared {
-    OutputStream underlyingStream = null;
     
     protected OutputStream getTestedOutputStream(int maxSize)
             throws IOException {
-        underlyingStream = super.getTestedOutputStream(maxSize);
-        return getOutputStream(underlyingStream);
+        return getOutputStream(super.getTestedOutputStream(maxSize));
     }
 
     protected String getWrittenAsString(OutputStream os) {
-        return super.getWrittenAsString(underlyingStream);
+        try {
+            final Field c = FilterOutputStream.class.getDeclaredField("out");
+            
+	    c.setAccessible(true);
+            return super.getWrittenAsString((OutputStream) c.get(os));
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
     
     protected OutputStream getOutputStream(OutputStream os) {
