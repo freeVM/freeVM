@@ -55,9 +55,6 @@ public class FontMetricsTest extends Test {
         
         if (!f.equals(m.getFont()))
             return fail("FontMetric.getFont returned incorrect value");
-        if (m.getHeight() != 13)
-            return fail("FontMetrics.getHeight == " + m.getHeight() + " != 13 " +
-                    " returned incorrect value");
         log.info("ok");
         return pass();
     }
