@@ -26,13 +26,42 @@ extern "C"
 {
 #endif
 #include "hyport.h"
-#include "hyzip.h"
-
+  typedef struct HyZipCachePool HyZipCachePool;
+  
 #if defined(HY_LOCAL_ZLIB)
 #define HY_ZIP_DLL_NAME "z"
 #else
 #define HY_ZIP_DLL_NAME "hyzlib"
 #endif
+
+#define ZIP_INTERNAL_MAX  80
+#define ZIP_CM_Reduced1  2
+#define ZIP_Unknown  0
+#define ZIP_GZIP  2
+#define ZIP_ERR_OUT_OF_MEMORY  -3
+#define ZIP_ERR_FILE_CORRUPT  -6
+#define ZIP_ERR_INTERNAL_ERROR  -11
+#define ZIP_CM_Imploded  6
+#define ZIP_CM_Reduced4  5
+#define ZIP_CM_Shrunk  1
+#define ZIP_CM_Reduced2  3
+#define ZIP_ERR_FILE_READ_ERROR  -1
+#define ZIP_CentralHeader  0x2014B50
+#define ZIP_ERR_FILE_CLOSE_ERROR  -10
+#define ZIP_ERR_BUFFER_TOO_SMALL  -7
+#define ZIP_CM_Reduced3  4
+#define ZIP_CM_Deflated  8
+#define ZIP_LocalHeader  0x4034B50
+#define ZIP_CM_Tokenized  7
+#define ZIP_PKZIP  1
+#define ZIP_CM_Stored  0
+#define ZIP_ERR_UNSUPPORTED_FILE_TYPE  -5
+#define ZIP_ERR_NO_MORE_ENTRIES  -2
+#define ZIP_CentralEnd  0x6054B50
+#define ZIP_ERR_FILE_OPEN_ERROR  -9
+#define ZIP_ERR_UNKNOWN_FILE_TYPE  -4
+#define ZIP_ERR_ENTRY_NOT_FOUND  -8
+#define ZIP_DataDescriptor  0x8074B50
 
   typedef struct HyZipCache
   {
@@ -67,6 +96,45 @@ extern "C"
     U_32 uncompressedSize;
   } HyZipDataDescriptor;
 
+
+  typedef struct HyZipEntry
+  {
+    U_8 *data;
+    U_8 *filename;
+    U_8 *extraField;
+    U_8 *fileComment;
+    I_32 dataPointer;
+    I_32 filenamePointer;
+    I_32 extraFieldPointer;
+    I_32 fileCommentPointer;
+    U_32 compressedSize;
+    U_32 uncompressedSize;
+    U_32 crc32;
+    U_16 filenameLength;
+    U_16 extraFieldLength;
+    U_16 fileCommentLength;
+    U_16 internalAttributes;
+    U_16 versionCreated;
+    U_16 versionNeeded;
+    U_16 flags;
+    U_16 compressionMethod;
+    U_16 lastModTime;
+    U_16 lastModDate;
+    U_8 internalFilename[80];
+  } HyZipEntry;
+
+
+  typedef struct HyZipFile
+  {
+    U_8 *filename;
+    struct HyZipCache *cache;
+    void *cachePool;
+    I_32 fd;
+    I_32 pointer;
+    U_8 internalFilename[80];
+    U_8 type;
+    char _hypadding0065[3];  /* 3 bytes of automatic padding */
+  } HyZipFile;
 
 /* HySourceZipSupport*/
   extern HY_CFUNC I_32 zip_getZipEntryData
