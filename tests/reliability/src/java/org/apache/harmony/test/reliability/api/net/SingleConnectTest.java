@@ -48,8 +48,8 @@ public class SingleConnectTest extends Test{
     static final int NUMBER_OF_THREADS = 100;
     static int numberOfThreads = NUMBER_OF_THREADS;
     final static int STARTING_PORT_NUMBER = 8100;
-    static int numberOfAcceptedRequests = 1000000;
-    static int numberOfTriesToOpenPort = 200;
+    static int numberOfAcceptedRequests = 1000;
+    static int numberOfTriesToOpenPort = 2000;
     static int portStarted = 0;
 
     public static void main(String[] params){
