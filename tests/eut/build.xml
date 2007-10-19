@@ -25,46 +25,50 @@
     <!-- ================ Setting global properties ================ -->
     <property file="eut.properties" />
 
-    <tstamp><format property="timestamp" pattern="yyyyMMdd_hhmm" /></tstamp>
+    <tstamp>
+        <format property="timestamp" pattern="yyyyMMdd_hhmm" />
+    </tstamp>
 
     <!--property name="timestamp" value="20070917_0436" /-->
 
-    <property name="work.dir" value="${basedir}"/>
+    <property name="work.dir" value="${basedir}" />
 
-    <property name="eut.work.dir" location="${work.dir}/eclipse-testing"/>
+    <property name="eut.work.dir" location="${work.dir}/eclipse-testing" />
 
-    <property name="tests" value=""/>
+    <property name="tests" value="" />
 
-    <property name="results.root.dir" value="${basedir}/results"/>
+    <property name="results.root.dir" value="${basedir}/results" />
 
-    <property name="results.dir" value="${results.root.dir}/${timestamp}"/>
+    <property name="results.dir" value="${results.root.dir}/${timestamp}" />
 
-    <property name="vm.options" value=""/>
+    <property name="vm.options" value="" />
 
     <condition property="cvs.settings.specified">
         <and>
-            <isset property="cvs_user"/>
-            <isset property="cvs_password"/>
-            <isset property="cvs_host"/>
-            <isset property="cvs_root"/>
+            <isset property="cvs_user" />
+            <isset property="cvs_password" />
+            <isset property="cvs_host" />
+            <isset property="cvs_root" />
         </and>
     </condition>
 
     <!-- Define Eclipse Automated Test version specific properties -->
     <condition property="is.eut32">
-        <and><equals arg1="${eclipse.buildid}" arg2="3.2"/></and>
+        <and>
+            <equals arg1="${eclipse.buildid}" arg2="3.2" />
+        </and>
     </condition>
 
     <!-- Define architecture and OS -->
     <condition property="os" value="linux">
         <and>
-            <os family="unix"/>
-            <os name="linux"/>
+            <os family="unix" />
+            <os name="linux" />
         </and>
     </condition>
 
     <condition property="os" value="windows">
-        <os family="windows"/>
+        <os family="windows" />
     </condition>
 
     <condition property="arch" value="x86">
@@ -84,164 +88,165 @@
     </condition>
 
     <condition property="is.windows">
-        <os family="windows"/>
+        <os family="windows" />
     </condition>
 
     <condition property="is.linux">
         <and>
-            <os family="unix"/>
-            <os name="linux"/>
+            <os family="unix" />
+            <os name="linux" />
         </and>
     </condition>
 
     <condition property="is.windows.x86">
         <and>
-            <isset property="is.windows"/>
-            <equals arg1="${arch}" arg2="x86"/>
+            <isset property="is.windows" />
+            <equals arg1="${arch}" arg2="x86" />
         </and>
     </condition>
 
-     <condition property="is.linux.x86">
+    <condition property="is.linux.x86">
         <and>
-            <isset property="is.linux"/>
-            <equals arg1="${arch}" arg2="x86"/>
+            <isset property="is.linux" />
+            <equals arg1="${arch}" arg2="x86" />
         </and>
     </condition>
 
-     <condition property="is.linux.x86_64">
+    <condition property="is.linux.x86_64">
         <and>
-            <isset property="is.linux"/>
-            <equals arg1="${arch}" arg2="x86_64"/>
+            <isset property="is.linux" />
+            <equals arg1="${arch}" arg2="x86_64" />
         </and>
     </condition>
 
     <!-- Define arch/os -specific properties -->
 
-    <condition property="eclipse.filename" value="${eclipse.filename.prefix}-win32.zip">
-        <isset property="is.windows.x86"/>
+    <condition property="eclipse.filename"
+               value="${eclipse.filename.prefix}-win32.zip">
+        <isset property="is.windows.x86" />
     </condition>
 
-    <condition property="eclipse.filename" value="${eclipse.filename.prefix}-linux-gtk.tar.gz">
-        <isset property="is.linux.x86"/>
+    <condition property="eclipse.filename"
+               value="${eclipse.filename.prefix}-linux-gtk.tar.gz">
+        <isset property="is.linux.x86" />
     </condition>
 
-    <condition property="eclipse.filename" value="${eclipse.filename.prefix}-linux-gtk-x86_64.tar.gz">
-        <isset property="is.linux.x86_64"/>
+    <condition property="eclipse.filename"
+               value="${eclipse.filename.prefix}-linux-gtk-x86_64.tar.gz">
+        <isset property="is.linux.x86_64" />
     </condition>
 
     <condition property="cmd.suffix" value=".bat" else="">
-        <isset property="is.windows"/>
+        <isset property="is.windows" />
     </condition>
 
     <condition property="cmd" value="sh" else="cmd">
-        <isset property="is.linux"/>
+        <isset property="is.linux" />
     </condition>
 
     <condition property="cmd.arg" value="-" else="/c">
-        <isset property="is.linux"/>
+        <isset property="is.linux" />
     </condition>
 
     <condition property="os.eclipse.notation" value="win32">
         <and>
-            <isset property="is.windows"/>
-            <equals arg1="${arch}" arg2="x86"/>
+            <isset property="is.windows" />
+            <equals arg1="${arch}" arg2="x86" />
         </and>
     </condition>
 
     <condition property="os.eclipse.notation" value="linux">
         <and>
-            <isset property="is.linux"/>
+            <isset property="is.linux" />
         </and>
     </condition>
 
     <condition property="ws" value="win32">
-         <and>
-            <isset property="is.windows"/>
-            <equals arg1="${arch}" arg2="x86"/>
+        <and>
+            <isset property="is.windows" />
+            <equals arg1="${arch}" arg2="x86" />
         </and>
-   </condition>
+    </condition>
 
     <!-- Assuming that GTK is default Window System type on Linux -->
     <condition property="ws" value="gtk">
-        <isset property="is.linux"/>
+        <isset property="is.linux" />
     </condition>
 
     <!-- ================ Setup ================ -->
     <target name="setup"
-        depends="install.eut,install.eclipse,setup.configuration,build.reporter"
-        description="Download and install EUT, Eclipse SDK; configuring EUT settings">
+            depends="install.eut,install.eclipse,setup.configuration,build.reporter"
+            description="Download and install EUT, Eclipse SDK; configuring EUT settings">
     </target>
 
     <target name="install.eut"
-        description="Download and unpack Eclipse Unit Tests archive">
-        <mkdir dir="${work.dir}"/>
+            description="Download and unpack Eclipse Unit Tests archive">
+        <mkdir dir="${work.dir}" />
         <get src="${eut.location}/${eut.filename}"
-            dest="${work.dir}/${eut.filename}"
-            usetimestamp="true"
-            verbose="true" />
-        <unzip src="${work.dir}/${eut.filename}" dest="${work.dir}"/>
-   </target>
+             dest="${work.dir}/${eut.filename}"
+             usetimestamp="true"
+             verbose="true" />
+        <unzip src="${work.dir}/${eut.filename}" dest="${work.dir}" />
+    </target>
 
     <target name="install.eclipse"
-        description="Download Eclipse archive"
-        depends="install.eut">
-        <mkdir dir="${work.dir}"/>
+            description="Download Eclipse archive"
+            depends="install.eut">
+        <mkdir dir="${work.dir}" />
         <get src="${eclipse.location}/${eclipse.filename}"
-            dest="${eut.work.dir}/${eclipse.filename}"
-            usetimestamp="true"
-            verbose="true" />
+             dest="${eut.work.dir}/${eclipse.filename}"
+             usetimestamp="true"
+             verbose="true" />
         <!-- Delete unused Eclipse SDK archives in order to make EUT scripts
         work properly -->
         <delete failonerror="false">
             <fileset dir="${eut.work.dir}">
-                <filename name="eclipse-SDK*.tar.gz"/>
-                <filename name="eclipse-SDK*.zip"/>
+                <filename name="eclipse-SDK*.tar.gz" />
+                <filename name="eclipse-SDK*.zip" />
                 <not>
-                    <filename name="${eclipse.filename}"/>
+                    <filename name="${eclipse.filename}" />
                 </not>
             </fileset>
         </delete>
     </target>
 
-    <target name="setup.configuration"  if="is.linux"
+    <target name="setup.configuration"
+            if="is.linux"
             description="Configure EUT settings files - patch runtests only">
         <replace file="${eut.work.dir}/runtests"
-            token="DISPLAY="
-            value="#DISPLAY="/>
+                 token="DISPLAY="
+                 value="#DISPLAY=" />
     </target>
 
-    <target name="build.reporter"
-        description="Build summary reporter classes">
-        <mkdir dir="${work.dir}/summary-reporter/classes"/>
-        <javac 
-            srcdir="${basedir}/summary-reporter/src"
-            destdir="${work.dir}/summary-reporter/classes"
-            includes="**/*.java" />
+    <target name="build.reporter" description="Build summary reporter classes">
+        <mkdir dir="${work.dir}/summary-reporter/classes" />
+        <javac srcdir="${basedir}/summary-reporter/src"
+               destdir="${work.dir}/summary-reporter/classes"
+               includes="**/*.java" />
     </target>
 
     <!-- ================ Run ================ -->
     <path id="test.jre.home.path.id">
-        <pathelement
-        location="${test.jre.home}"/>
+        <pathelement location="${test.jre.home}" />
     </path>
     <pathconvert targetos="unix"
-        property="test.jre.home.path"
-        refid="test.jre.home.path.id"/>
+                 property="test.jre.home.path"
+                 refid="test.jre.home.path.id" />
 
     <target name="run"
-        depends="run.configuration,run.tests,run.postprocess"
-        description="Configure and run EUT, process results">
+            depends="run.configuration,run.tests,run.postprocess"
+            description="Configure and run EUT, process results">
     </target>
 
     <target name="run.configuration"
-        depends="
+            depends="
             configure.eut.run.properties,
             configure.eut.run.properties.teamcvs,
             clean.before.run">
     </target>
 
     <target name="configure.eut.run.properties"
-        description="EUT ant inherent runner reads this property file - it's a
+            description="EUT ant inherent runner reads this property file - it's a
         way to pass properties from BTI run environment to EUT run one">
         <echo file="${eut.work.dir}/eut.run.properties" append="false">
             J2SE-5.0=${test.jre.home.path}/bin/java
@@ -253,8 +258,8 @@
     </target>
 
     <target name="configure.eut.run.properties.teamcvs"
-        description="Specify CVS settings for Team CVS tests"
-        if="cvs.settings.specified">
+            description="Specify CVS settings for Team CVS tests"
+            if="cvs.settings.specified">
         <echo file="${eut.work.dir}/eut.run.properties" append="true">
             cvs_user=${cvs_user}
             cvs_password=${cvs_password}
@@ -265,10 +270,10 @@
 
     <!-- Delete old results files and work directories -->
     <target name="clean.before.run"
-        description="Delete old results files and work directories">
-        <delete dir="${eut.work.dir}/results" failonerror="false"/>
-        <delete dir="${eut.work.dir}/eclipse" failonerror="false"/>
-        <delete file="${work.dir}/report.txt" failonerror="false"/>
+            description="Delete old results files and work directories">
+        <delete dir="${eut.work.dir}/results" failonerror="false" />
+        <delete dir="${eut.work.dir}/eclipse" failonerror="false" />
+        <delete file="${work.dir}/report.txt" failonerror="false" />
     </target>
 
     <!--                        -->
@@ -277,12 +282,17 @@
     <!--                        -->
     <!--                        -->
     <target name="run.tests" description="Launch EUT run">
-        <exec executable="${cmd}" dir="${eut.work.dir}" failonerror="false"
-            logError="false" resultproperty="resultproperty">
+        <exec executable="${cmd}"
+              dir="${eut.work.dir}"
+              failonerror="false"
+              logError="false"
+              resultproperty="resultproperty">
             <arg line="${cmd.arg} runtests${cmd.suffix}
                 -os ${os.eclipse.notation} -ws ${ws} -arch ${arch}
-                -properties eut.run.properties ${tests}"/>
-            <redirector alwaysLog="true" logError="false" output="${work.dir}/output.txt"/>
+                -properties eut.run.properties ${tests}" />
+            <redirector alwaysLog="true"
+                        logError="false"
+                        output="${work.dir}/output.txt" />
         </exec>
     </target>
 
@@ -292,86 +302,85 @@
     <!--                                       -->
     <!--                                       -->
     <target name="run.postprocess"
-        depends="
+            depends="
             collect.output.to.summarize,
             setup.efl,
             generate.reports,
             duplicate.results.in.latest,
             exit.based.on.eut.status"
-        description="Processes JUnit reports and creates a summary">
+            description="Processes JUnit reports and creates a summary">
     </target>
 
     <!-- Copy EUT generated reports and execution log to results directory -->
     <target name="collect.output.to.summarize"
-        description="Collect logs and report to one directory to process">
-        <delete dir="${results.dir}"/>
-        <mkdir dir="${results.dir}"/>
+            description="Collect logs and report to one directory to process">
+        <delete dir="${results.dir}" />
+        <mkdir dir="${results.dir}" />
         <copy todir="${results.dir}">
-            <fileset dir="${work.dir}" includes="output.txt"/>
+            <fileset dir="${work.dir}" includes="output.txt" />
         </copy>
-        <delete dir="${results.dir}/results"/>
-        <mkdir dir="${results.dir}/results"/>
+        <delete dir="${results.dir}/results" />
+        <mkdir dir="${results.dir}/results" />
         <copy todir="${results.dir}/results">
-            <fileset dir="${eut.work.dir}/results"/>
+            <fileset dir="${eut.work.dir}/results" />
         </copy>
     </target>
 
     <!-- Concats EFL files for specific platform -->
     <target name="setup.efl"
-        description="Combine a platform specific EFL file or create empty one">
-        <delete file="${results.dir}/eut.efl"/>
-        <touch file="${results.dir}/eut.efl"/>
+            description="Combine a platform specific EFL file or create empty one">
+        <delete file="${results.dir}/eut.efl" />
+        <touch file="${results.dir}/eut.efl" />
         <concat destfile="${results.dir}/eut.efl">
-            <filelist dir="${basedir}/config" files="
+            <filelist dir="${basedir}/config"
+                      files="
                 eut${eclipse.buildid}.efl
                 eut${eclipse.buildid}.${os.eclipse.notation}.efl
                 eut${eclipse.buildid}.${os.eclipse.notation}.${ws}.efl
-                eut${eclipse.buildid}.${os.eclipse.notation}.${ws}.${arch}.efl"
-            />
+                eut${eclipse.buildid}.${os.eclipse.notation}.${ws}.${arch}.efl" />
         </concat>
     </target>
 
     <!-- Print arch, os and JRE under test info to report file -->
-    <target name="generate.reports" 
-        depends="setup.efl,collect.output.to.summarize,
+    <target name="generate.reports"
+            depends="setup.efl,collect.output.to.summarize,
                 compose.report.get.java.version">
 
         <!-- Run reporter -->
-        <java
-            classpath="${work.dir}/summary-reporter/classes"
-            classname="org.apache.harmony.eut.reporter.EUTReporter"
-            fork="true"
-            failonerror="false"
-            resultproperty="reporter.exit.code"
-            output="${work.dir}/r_output.txt"> 
-            <arg value="${eclipse.buildid}"/>
-            <arg value="${results.dir}"/>
-            <arg value="${os.eclipse.notation}"/>
-            <arg value="${ws}"/>
-            <arg value="${arch}"/>
-            <arg value="${vm.options}"/>
+        <java classpath="${work.dir}/summary-reporter/classes"
+              classname="org.apache.harmony.eut.reporter.EUTReporter"
+              fork="true"
+              failonerror="false"
+              resultproperty="reporter.exit.code"
+              output="${work.dir}/r_output.txt">
+            <arg value="${eclipse.buildid}" />
+            <arg value="${results.dir}" />
+            <arg value="${os.eclipse.notation}" />
+            <arg value="${ws}" />
+            <arg value="${arch}" />
+            <arg value="${vm.options}" />
         </java>
 
         <concat destfile="${results.dir}/output.txt" append="true">
-            <fileset dir="${work.dir}" includes="r_output.txt"/>
+            <fileset dir="${work.dir}" includes="r_output.txt" />
         </concat>
-        <delete file="${work.dir}/r_output.txt"/>
-        <delete file="${basedir}/tested.java.version"/>
-        <delete file="${basedir}/running.java.version"/>
+        <delete file="${work.dir}/r_output.txt" />
+        <delete file="${basedir}/tested.java.version" />
+        <delete file="${basedir}/running.java.version" />
 
     </target>
 
     <!-- Copy specific files of report to 'latest' directory -->
     <target name="duplicate.results.in.latest">
-        <delete dir="${results.root.dir}/latest"/>
-        <mkdir dir="${results.root.dir}/latest"/>
+        <delete dir="${results.root.dir}/latest" />
+        <mkdir dir="${results.root.dir}/latest" />
         <copy todir="${results.root.dir}/latest">
             <fileset dir="${results.dir}">
-                <include name="results/html/*.html"/>
-                <include name="output.txt"/>
-                <include name="report.txt"/>
-                <include name="index.html"/>
-                <include name="eut.efl"/>
+                <include name="results/html/*.html" />
+                <include name="output.txt" />
+                <include name="report.txt" />
+                <include name="index.html" />
+                <include name="eut.efl" />
             </fileset>
         </copy>
     </target>
@@ -380,46 +389,52 @@
     <target name="exit.based.on.eut.status" depends="generate.reports">
         <fail message="EUT failed: There are unexpected failures">
             <condition>
-                <equals arg1="${reporter.exit.code}" arg2="1"/>
-           </condition>
+                <equals arg1="${reporter.exit.code}" arg2="1" />
+            </condition>
         </fail>
-        
+
         <fail message="EUT failed: Fatal Error: some reports are unavailable">
             <condition>
-                <equals arg1="${reporter.exit.code}" arg2="2"/>
-           </condition>
+                <equals arg1="${reporter.exit.code}" arg2="2" />
+            </condition>
         </fail>
 
         <fail message="EUT failed: Fatal Error: reporter internal error">
             <condition>
-                <equals arg1="${reporter.exit.code}" arg2="3"/>
-           </condition>
+                <equals arg1="${reporter.exit.code}" arg2="3" />
+            </condition>
         </fail>
 
         <fail message="EUT failed: Fatal Error: magic error (never happens)">
             <condition>
                 <not>
-                    <equals arg1="${reporter.exit.code}" arg2="0"/>
+                    <equals arg1="${reporter.exit.code}" arg2="0" />
                 </not>
-           </condition>
+            </condition>
         </fail>
-        <echo message="EUT passed!"/>
+        <echo message="EUT passed!" />
     </target>
 
     <target name="compose.report.get.java.version">
 
         <!-- tested java is specified in ${test.jre.home.path} var  -->
         <java jvm="${test.jre.home.path}/bin/java"
-            fork="true" classname="." failonerror="false" logError="false"
-            output="${basedir}/tested.java.version">
-            <jvmarg value="-version"/>
+              fork="true"
+              classname="."
+              failonerror="false"
+              logError="false"
+              output="${basedir}/tested.java.version">
+            <jvmarg value="-version" />
         </java>
 
         <!-- runtests(.bat) gets the running java directly from PATH var -->
         <java jvm="java"
-            fork="true" classname="." failonerror="false" logError="false"
-            output="${basedir}/running.java.version">
-            <jvmarg value="-version"/>
+              fork="true"
+              classname="."
+              failonerror="false"
+              logError="false"
+              output="${basedir}/running.java.version">
+            <jvmarg value="-version" />
         </java>
     </target>
 
