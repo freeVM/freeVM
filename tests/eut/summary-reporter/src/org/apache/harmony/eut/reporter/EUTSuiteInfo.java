@@ -112,6 +112,21 @@ final class EUTSuiteInfo {
      * Keeps the list of tests ended with unexpected error/failure. 
      */
     ArrayList<EUTTestInfo> unexpectedErrorFailureTests;
+
+    /**
+     * Keeps the suite global error /failure message extract from 
+     * 'error'/'failure' tag in XML report (like 'Can not find plugin" error.
+     */
+    String suiteIssueMessage;
+
+    /**
+     * Keeps the suite error/failure content extracted from 'error'/'failure'
+     * tag in XML report.
+     *
+     * This field null value indicates one more state of suite (it was run, it
+     * does not crash, still no testcases were run due to suite error).
+     */
+    StringBuffer suiteIssueContent;
 } // end of class 'EUTSuiteInfo' definition
 
 /**

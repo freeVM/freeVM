@@ -50,7 +50,8 @@ final class EUTTXTReportEmitter {
         out.println("Total run tests     : " + esi.tests_run_total);
         out.println("Relative passrate   : " + EUTReporter.makePassrateString(
                     esi.ss.tests_reported_passed, esi.tests_run_total));
-        out.println("Unexpected crashes  : " + esi.suites_unexpected_crashed.size());
+        out.println("Unexpected crashes  : "
+                + esi.suites_unexpected_crashed.size());
         out.println("Unexpected errors   : "
                 + esi.ss.tests_unexpected_end_with_error);
         out.println("Unexpected failures : "
@@ -62,7 +63,7 @@ final class EUTTXTReportEmitter {
                 EUTTestInfo.TEST_ERROR);
         emitErrorFailureResults(esi.ss.tests_unexpected_end_with_failure,
                 EUTTestInfo.TEST_FAILURE);
-     }
+    }
 
     private static void addFileToOutput(File log) throws Exception {
         BufferedReader in = new BufferedReader(new FileReader(log));
@@ -109,6 +110,15 @@ final class EUTTXTReportEmitter {
 
             if (!si.wasRun || si.isCrashed) {
                 continue;
+            }
+
+            if (si.suiteIssueContent != null &&
+                    issuesType == EUTTestInfo.TEST_ERROR) {
+                String testsStr = si.tests_total == 1 ? " test)" : " tests)";
+                out.println();
+                out.println(si.name + " (" + si.tests_total + testsStr);
+                out.println(si.suiteIssueMessage);
+                out.println(si.suiteIssueContent.toString().trim());
             }
 
             for (int j = 0; j < si.unexpectedErrorFailureTests.size(); j++) {

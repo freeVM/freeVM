@@ -30,6 +30,11 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 /**
+ * Parses information from XML report and does not calculate any statistics.
+ *
+ * For example, total number of tests / errors / failures in the suite is taken
+ * from &lt;testsuite&gt; tag, this is not summarised data taken from
+ * &lt;testcase&gt; tag.
  */
 final class EUTStatusCollector extends DefaultHandler {
 
@@ -107,6 +112,10 @@ final class EUTStatusCollector extends DefaultHandler {
 
     /**
      * Called by parser when new XML tag is found.
+     *
+     * Note that &lt;error&gt; tag may happen inside &lt;testsuite&gt; one
+     * without &lt;testcase&gt; parent tag. For example the the whole suite can
+     * not be run due to related plugin can not be found.
      */
     public void startElement(String uri, String localName, String qName,
             Attributes attributes) throws SAXException {
@@ -124,10 +133,26 @@ final class EUTStatusCollector extends DefaultHandler {
         }
 
         if (qName.equals("error") || qName.equals("failure")) {
-            processedTest.testStatus = qName.equals("error") ? 
-                    EUTTestInfo.TEST_ERROR : EUTTestInfo.TEST_FAILURE;
-            processedTest.testIssueMessage = attributes.getValue("message");
-            processedTest.testIssueContent = new StringBuffer();
+            if (processedTest != null) {
+                processedTest.testStatus = qName.equals("error") ? 
+                        EUTTestInfo.TEST_ERROR : EUTTestInfo.TEST_FAILURE;
+                processedTest.testIssueMessage = attributes.getValue("message");
+                processedTest.testIssueContent = new StringBuffer();
+            } else if (processedSuite != null) {
+
+                // there is a error preventing testsuite running - so all of
+                // its tests are considered as ended with unexpected error
+                if (EUTReporter.eflList.indexOf(processedSuite.name) != -1) {
+                    processedSuite.tests_expected_failures_errors +=
+                            processedSuite.tests_total;
+                } else {
+                    processedSuite.tests_unexpected_end_with_error +=
+                            processedSuite.tests_total;
+                    processedSuite.suiteIssueMessage =
+                            attributes.getValue("message");
+                    processedSuite.suiteIssueContent = new StringBuffer();
+                }
+            }
             return;
         }
     }
@@ -162,12 +187,14 @@ final class EUTStatusCollector extends DefaultHandler {
                 // remove passed test from EFL to calculate passrate correctly
                 EUTReporter.eflList.remove(eflIndex);
             }
+            processedTest = null;
             return;
         }
 
         // expected failure/error situation
         if (eflIndex != -1) {
             processedSuite.tests_expected_failures_errors++;
+            processedTest = null;
             return;
         }
 
@@ -186,6 +213,9 @@ final class EUTStatusCollector extends DefaultHandler {
             throws SAXException {
         if (processedTest != null && processedTest.testIssueContent != null) {
             processedTest.testIssueContent.append(ch, start, length);
+        } else if (processedSuite != null &&
+                processedSuite.suiteIssueContent != null) {
+            processedSuite.suiteIssueContent.append(ch, start, length);
         }
     }
 

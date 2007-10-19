@@ -89,6 +89,12 @@ public final class EUTReporter {
         String fractionStr = String.valueOf((int) Math.round((passrate -
                         (double) aliquot) * 100.0));
 
+        // fractionStr may become 100 for the real pass rate like 99.9971% -
+        // need to do incorrect rounding in such a case to avoid 100% reporting
+        if (fractionStr.equals("100")) {
+            return "99.99%";
+        }
+
         if (fractionStr.length() != 2) {
             fractionStr = "0" + fractionStr;
         }
