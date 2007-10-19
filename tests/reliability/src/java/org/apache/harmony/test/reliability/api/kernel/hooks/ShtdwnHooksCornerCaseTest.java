@@ -69,7 +69,7 @@ public class ShtdwnHooksCornerCaseTest extends Test {
 
     static final int SLEEP_TIMEOUT = 50;
 
-    static final int ITERATIONS = 300;
+    static final int ITERATIONS = 3000;
 
     static final String ok = "ok";
 
