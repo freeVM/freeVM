@@ -127,8 +127,7 @@
 
     <condition property="eclipse.filename" value="${eclipse.filename.prefix}-linux-gtk-x86_64.tar.gz">
         <isset property="is.linux.x86_64"/>
-     </condition>
-
+    </condition>
 
     <condition property="cmd.suffix" value=".bat" else="">
         <isset property="is.windows"/>
@@ -204,22 +203,11 @@
         </delete>
     </target>
 
-    <target name="setup.configuration"
-        depends="patch.runtests.display,patch.label.properties"
-        description="Configure EUT settings files">
-    </target>
-
-    <target name="patch.runtests.display" if="is.linux">
+    <target name="setup.configuration"  if="is.linux"
+            description="Configure EUT settings files - patch runtests only">
         <replace file="${eut.work.dir}/runtests"
             token="DISPLAY="
             value="#DISPLAY="/>
-    </target>
-
-    <target name="patch.label.properties"
-        description="Set Eclipse build id to use">
-        <echo file="${eut.work.dir}/label.properties" append="false">
-            buildId=${eclipse.buildid}
-        </echo>
     </target>
 
     <target name="build.reporter"
@@ -246,47 +234,32 @@
     </target>
 
     <target name="run.configuration"
-        depends="configure.properties.file,clean.before.run">
+        depends="
+            configure.eut.run.properties,
+            configure.eut.run.properties.teamcvs,
+            clean.before.run">
     </target>
 
-    <target name="configure.properties.file"
-        description="Delete old properties file and specify the path to JRE under test and other properties"
-        depends="configure.properties.file.common,configure.properties.file.teamcvs,configure.properties.file.linux.x86_64">
-    </target>
-
-     <target name="delete.properties.file"
-        description="Delete old eclipse-testing/properties.file">
-        <delete file="${eut.work.dir}/properties.file" failonerror="false"/>
-    </target>
-
-    <target name="configure.properties.file.teamcvs"
-            depends="delete.properties.file"
-        description="Specify CVS settings for Team CVS tests"
-        if="cvs.settings.specified">
-        <echo file="${eut.work.dir}/properties.file" append="true">
-            cvs_user=${cvs_user}
-            cvs_password=${cvs_password}
-            cvs_host=${cvs_host}
-            cvs_root=${cvs_root}
-        </echo>
-    </target>
-
-    <target name="configure.properties.file.common"
-            depends="delete.properties.file"
-        description="Specify the path to JRE under test and other properties">
-        <echo file="${eut.work.dir}/properties.file" append="true">
+    <target name="configure.eut.run.properties"
+        description="EUT ant inherent runner reads this property file - it's a
+        way to pass properties from BTI run environment to EUT run one">
+        <echo file="${eut.work.dir}/eut.run.properties" append="false">
             J2SE-5.0=${test.jre.home.path}/bin/java
             jvm=${test.jre.home.path}/bin/java
             extraVMargs=${vm.options}
             timeout=${timeout}
+            runtimeArchive=${eclipse.filename}
         </echo>
     </target>
 
-    <target name="configure.properties.file.linux.x86_64" if="is.linux.x86_64"
-            depends="delete.properties.file" >
-        <echo file="${eut.work.dir}/properties.file" append="true">
-            setupTarget=setup-tar.gz
-            runtimeArchive=${eclipse.filename}
+    <target name="configure.eut.run.properties.teamcvs"
+        description="Specify CVS settings for Team CVS tests"
+        if="cvs.settings.specified">
+        <echo file="${eut.work.dir}/eut.run.properties" append="true">
+            cvs_user=${cvs_user}
+            cvs_password=${cvs_password}
+            cvs_host=${cvs_host}
+            cvs_root=${cvs_root}
         </echo>
     </target>
 
@@ -308,7 +281,7 @@
             logError="false" resultproperty="resultproperty">
             <arg line="${cmd.arg} runtests${cmd.suffix}
                 -os ${os.eclipse.notation} -ws ${ws} -arch ${arch}
-                -properties properties.file ${tests}"/>
+                -properties eut.run.properties ${tests}"/>
             <redirector alwaysLog="true" logError="false" output="${work.dir}/output.txt"/>
         </exec>
     </target>
