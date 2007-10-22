@@ -22,6 +22,7 @@ package org.apache.harmony.test.func.api.java.net.Socket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -57,9 +58,11 @@ public class SocketTest extends MultiCase {
             try {
                 client.connect(addr, 1);
                 return failed("Expected SocketTimeoutException had not been thrown");
-
             } catch (SocketTimeoutException e) {
                 assertFalse(client.isConnected());
+            } catch (ConnectException ex) {
+              // Sometimes the above code throws "Connection refused" for localhost.
+              assertFalse(client.isConnected());
             }
             
         } catch (IOException e) {
