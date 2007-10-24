@@ -141,7 +141,7 @@ ProcPtr jdwp::GetProcAddress(LoadedLibraryHandler libHandler, const char* procNa
 
     dlerror();
     ProcPtr res = (ProcPtr)dlsym(libHandler, procName);
-    char* errorMessage = dlerror();
+    const char* errorMessage = dlerror();
     if (errorMessage) {
         JDWP_TRACE_PROG("FreeLibrary: getting library entry failed (error: " << errorMessage << ")");
     }
