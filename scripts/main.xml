@@ -151,7 +151,7 @@ ERROR: Could not find ${selected.suites.configuration}. Please, do 'setup' first
                       value="true"/>
 
             <property name="mail.execution.status" value="TEST MAIL"/>
-            <property name="framework.parameters.usemail.force" value="true"/>
+            <property name="framework.parameters.usedo.mail" value="true"/>
             <property name="thisbuildsuccessful" value="false"/>
         </ant>
     </target>

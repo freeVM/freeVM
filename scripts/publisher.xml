@@ -36,9 +36,6 @@
             </or>
         </and>
     </condition>
-    <condition property="do.mail">
-        <isset property="mail.force"/>
-    </condition>
 
     <condition property="mail.execution.status"
                value="PASSED"
