@@ -19,45 +19,46 @@
                         Status Publisher Implementation
      ====================================================================== -->
 <project name="publisher" default="publish" basedir=".">
-    
-    <!-- check whether we should send notification or not -->
-    <condition property="do.mail">
-        <and>
-            <!-- if framework was configured to send notifications -->
-            <isset property="mail"/>
-            <or>
-                <!-- and it was configured to always notify about run status -->
-                <istrue value="${mail.always}"/>
-                <!-- or, in case of run-status change -->
-                <not>
-                    <equals arg1="${thisbuildsuccessful}"
-                            arg2="${lastbuildsuccessful}"/>
-                </not>
-            </or>
-        </and>
-    </condition>
 
-    <condition property="mail.execution.status"
-               value="PASSED"
-               else="FAILED">
-        <istrue value="${thisbuildsuccessful}"/>
-    </condition>
-
-    <!-- architecture name -->
     <import file="properties.xml"/>
 
-    <!-- compose subject line -->
-    <property name="mail.subject.suffix" value=""/>
-    <property name="mail.subject.line"
-              value="${mail.subject.prefix} ${mail.execution.status} ${os.name} ${hy.arch}: ${suite.name} ${mail.subject.suffix}"/>
+    <target name="-configure" if="mail">
 
+        <!-- if was configured always notify about run status -->
+        <!-- or, in case of run-status change                 -->
+        <condition property="to" value="${mail.to}">
+            <or>
+                <istrue value="${mail.always}" />
+                <not>
+                    <equals arg1="${thisbuildsuccessful}"
+                            arg2="${lastbuildsuccessful}" />
+                </not>
+            </or>
+        </condition>
+        <condition property="bcc" value="${mail.bcc}">
+            <isset property="to" />
+        </condition>
+    </target>
+    
     <!-- implement publisher interface -->
-    <target name="publish" if="do.mail">
+    <target name="publish" if="to" depends="-configure">
+
+        <condition property="mail.execution.status"
+                   value="PASSED"
+                   else="FAILED">
+            <istrue value="${thisbuildsuccessful}" />
+        </condition>
+
+        <!-- compose subject line -->
+        <property name="mail.subject.suffix" value="" />
+        <property name="mail.subject.line"
+                  value="${mail.subject.prefix} ${mail.execution.status} ${os.name} ${hy.arch}: ${suite.name} ${mail.subject.suffix}" />
+
         <log message=""/>
         <log message="    Sending mail notification:"/>
         <log message="        smtp: '${mail}'"/>
-        <log message="        to: '${mail.to}'"/>
-        <log message="        bcc: '${mail.bcc}'"/>
+        <log message="        to: '${to}'"/>
+        <log message="        bcc: '${bcc}'"/>
         <log message="        from: '${mail.from}'"/>
         <log message="    Files to attach: ${mail.attachs}"/>
         <log message="    Execution logs file: ${mail.execution.log}"/>
@@ -85,9 +86,9 @@
             <!-- no attachments by default -->
             <property name="mail.attachs" value=""/>
             <mail mailhost="${mail}"
-                  tolist="${mail.to}"
+                  tolist="${to}"
                   from="${mail.from}"
-                  bcclist="${mail.bcc}"
+                  bcclist="${bcc}"
                   subject="${mail.subject.line}"
                   files="${mail.attachs},${mail.execution.log}">
                 <message>${mail.summary.content}${line.separator}${mail.message.content}</message>
@@ -115,8 +116,8 @@ Test Suite '${suite.name}' execution status: ${mail.execution.status}
         <text name="text"/>
         <sequential>
             <mail mailhost="${mail}"
-                  tolist="${mail.to}"
-                  bcclist="${mail.bcc}"
+                  tolist="${to}"
+                  bcclist="${bcc}"
                   from="${mail.from}"
                   subject="${mail.subject.line}">
                 <message>
