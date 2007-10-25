@@ -35,8 +35,15 @@
                 </not>
             </or>
         </condition>
-        <condition property="bcc" value="${mail.bcc}">
-            <isset property="to" />
+
+        <!-- if was configured always notify about FAILED status  -->
+        <!-- the notification is sent to mail.bcc list only       -->
+        <condition property="to" value="${mail.bcc}">
+            <and>
+                <isset property="mail.bcc" />
+                <isset property="mail.if.failed" />
+                <isfalse value="${thisbuildsuccessful}" />
+            </and>
         </condition>
     </target>
     
@@ -58,7 +65,7 @@
         <log message="    Sending mail notification:"/>
         <log message="        smtp: '${mail}'"/>
         <log message="        to: '${to}'"/>
-        <log message="        bcc: '${bcc}'"/>
+        <log message="        bcc: '${mail.bcc}'"/>
         <log message="        from: '${mail.from}'"/>
         <log message="    Files to attach: ${mail.attachs}"/>
         <log message="    Execution logs file: ${mail.execution.log}"/>
@@ -88,7 +95,7 @@
             <mail mailhost="${mail}"
                   tolist="${to}"
                   from="${mail.from}"
-                  bcclist="${bcc}"
+                  bcclist="${mail.bcc}"
                   subject="${mail.subject.line}"
                   files="${mail.attachs},${mail.execution.log}">
                 <message>${mail.summary.content}${line.separator}${mail.message.content}</message>
@@ -117,7 +124,7 @@ Test Suite '${suite.name}' execution status: ${mail.execution.status}
         <sequential>
             <mail mailhost="${mail}"
                   tolist="${to}"
-                  bcclist="${bcc}"
+                  bcclist="${mail.bcc}"
                   from="${mail.from}"
                   subject="${mail.subject.line}">
                 <message>
