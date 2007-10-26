@@ -86,7 +86,8 @@ void EventDispatcher::Run(JNIEnv* jni) {
 
         // release completion monitor and wait forever until VM kills this thread
         // TODO: remove this workaround to prevent from resource leak
-        m_completeMonitor->Wait(0);
+	// This is the old completion mechanism fixed in HARMONY-5019
+//        m_completeMonitor->Wait(0);
     }
     catch (const AgentException& e)
     {
@@ -117,8 +118,8 @@ void EventDispatcher::Init(JNIEnv *jni) throw(AgentException) {
 void EventDispatcher::Start(JNIEnv *jni) throw(AgentException) {
     JDWP_TRACE_ENTRY("Start(" << jni << ')');
 
-    m_threadObject = GetThreadManager().RunAgentThread(jni, StartFunction, this,
-        JVMTI_THREAD_MAX_PRIORITY, "_jdwp_EventDispatcher");
+    m_threadObject = jni->NewGlobalRef(GetThreadManager().RunAgentThread(jni, StartFunction, this,
+        JVMTI_THREAD_MAX_PRIORITY, "_jdwp_EventDispatcher"));
 }
 
 void EventDispatcher::Reset(JNIEnv *jni) throw(AgentException) {
@@ -171,7 +172,9 @@ void EventDispatcher::Stop(JNIEnv *jni) throw(AgentException) {
     } 
 
     // wait for thread finished
-//    GetThreadManager().Join(jni, m_threadObject);
+    GetThreadManager().Join(jni, m_threadObject);
+    jni->DeleteGlobalRef(m_threadObject);
+    m_threadObject = NULL;
 }
 
 void EventDispatcher::Clean(JNIEnv *jni) throw(AgentException) {
@@ -212,12 +215,11 @@ void EventDispatcher::Clean(JNIEnv *jni) throw(AgentException) {
 
     // do not delete m_completeMonitor because thread is waiting on it
     // TODO: remove this workaround to prevent from resource leak
-    /*
+    // This is the old completion mechanism fixed in HARMONY-5019
     if (m_completeMonitor != 0){
         delete m_completeMonitor;
         m_completeMonitor = 0;
     }
-    */
 
     // clean counter for packet id
 

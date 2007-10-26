@@ -32,7 +32,7 @@ CXXFLAGS += -fpic
 INCLUDES += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
             -I$(COMMON)generic -Idt_socket
 
-LDFLAGS += -lstdc++ -lgcc_s
+LDFLAGS += -lstdc++
 
 BUILDFILES = \
     $(CMNTRANS)common/LastTransportError.o \

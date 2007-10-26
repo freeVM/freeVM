@@ -28,7 +28,7 @@ CXXFLAGS += -fpic
 INCLUDES += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
             -I$(COMMON)generic -Icore
 
-LDFLAGS += -lstdc++ -lgcc_s
+LDFLAGS += -lstdc++
 
 BUILDFILES = \
     $(CMNAGENT)commands/ArrayReference.o \
