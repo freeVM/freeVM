@@ -45,10 +45,33 @@
                 <isfalse value="${thisbuildsuccessful}" />
             </and>
         </condition>
+
+        <condition property="if.mail.summary">
+            <and>
+                <isset property="to" />
+                <available file="${mail.summary}" />
+            </and>
+        </condition>
+        <condition property="if.mail.message">
+            <and>
+                <isset property="to" />
+                <available file="${mail.message}" />
+            </and>
+        </condition>
     </target>
-    
+
+    <target name="-load.mail.summary" if="if.mail.summary" depends="-configure">
+        <loadfile property="mail.summary.content" srcFile="${mail.summary}" />
+    </target>
+
+    <target name="-load.mail.message" if="if.mail.message" depends="-configure">
+        <loadfile property="mail.message.content" srcFile="${mail.message}" />
+    </target>
+
     <!-- implement publisher interface -->
-    <target name="publish" if="to" depends="-configure">
+    <target name="publish"
+            if="to"
+            depends="-configure,-load.mail.summary,-load.mail.message">
 
         <condition property="mail.execution.status"
                    value="PASSED"
@@ -60,6 +83,15 @@
         <property name="mail.subject.suffix" value="" />
         <property name="mail.subject.line"
                   value="${mail.subject.prefix} ${mail.execution.status} ${os.name} ${hy.arch}: ${suite.name} ${mail.subject.suffix}" />
+
+        <!-- empty message by default -->
+        <property name="mail.summary.content" value="" />
+        <property name="mail.message.content" value="" />
+
+        <!-- no execution logs to send by default -->
+        <property name="mail.execution.log" value="" />
+        <!-- no attachments by default -->
+        <property name="mail.attachs" value="" />
 
         <log message=""/>
         <log message="    Sending mail notification:"/>
@@ -73,25 +105,6 @@
 
         <trycatch property="mail.sending.exception">
         <try>
-            <if>
-                <available file="${mail.summary}"/>
-            <then>
-                <!-- 'if' suppresses 'nonexistence' warning -->
-                <loadfile property="mail.summary.content"
-                          srcFile="${mail.summary}"
-                          failonerror="false"/>
-            </then>
-            </if>
-            <property name="mail.summary.content" value=""/>
-            <loadfile property="mail.message.content"
-                      srcFile="${mail.message}"
-                      failonerror="false"/>
-            <!-- empty message by default -->
-            <property name="mail.message.content" value=""/>
-            <!-- no execution logs to send by default -->
-            <property name="mail.execution.log" value=""/> 
-            <!-- no attachments by default -->
-            <property name="mail.attachs" value=""/>
             <mail mailhost="${mail}"
                   tolist="${to}"
                   from="${mail.from}"
