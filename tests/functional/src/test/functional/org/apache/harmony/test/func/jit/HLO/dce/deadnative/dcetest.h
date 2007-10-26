@@ -23,8 +23,6 @@
 extern "C" {
 #endif
 
-extern jstring o;
-
 JNIEXPORT void JNICALL Java_org_apache_harmony_test_func_jit_HLO_dce_deadnative_DeadNativeTest_NativeMethodSet
   (JNIEnv *, jobject, jstring obj);
 
