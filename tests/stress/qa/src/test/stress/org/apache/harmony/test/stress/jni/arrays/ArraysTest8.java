@@ -41,11 +41,6 @@ public class ArraysTest8 extends MTArraysTest {
     private int maxArrCount;
 
     /**
-     * Temporary array for performing calculations in Java code
-     */
-    private int[] tmpArray;
-
-    /**
      * Temporary C array
      */
     private long tmpPtr;
@@ -80,7 +75,6 @@ public class ArraysTest8 extends MTArraysTest {
                             + "stress.jni.arrays.ArraysTest8.maxCnt", 20)
                     .intValue();
 
-            tmpArray = new int[arrSize];
             arrays = new int[maxArrCount][];
             tmpPtr = allocIntArray(arrSize);
 

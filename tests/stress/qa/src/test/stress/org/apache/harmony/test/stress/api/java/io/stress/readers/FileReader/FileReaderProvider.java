@@ -15,7 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */    
+ */
 /**
  * @author Dmitry Vozzhaev
  * @version $Revision: 1.2 $
@@ -33,41 +33,34 @@ import java.io.Writer;
 import org.apache.harmony.test.stress.api.java.io.stress.readers.share.ReaderPair;
 import org.apache.harmony.test.stress.api.java.io.stress.readers.share.ReaderProvider;
 
-
-/*
- * May 2, 2006
- */
-
 public abstract class FileReaderProvider extends ReaderProvider {
 
-	private File file;
+    public ReaderPair getNext() throws IOException {
+        return new ReaderPair() {
 
-	public ReaderPair getNext() throws IOException {
-		return new ReaderPair() {
+            private Writer output;
+            private Reader input;
+            private File file;
 
-			private Writer output;
-			private Reader input;
-			private File file;
-			
-			public void teardown() throws IOException {
-				input.close();
-				file.delete();
-			}
+            public void teardown() throws IOException {
+                input.close();
+                file.delete();
+            }
 
-			public Reader getInput() throws IOException {
-				output.close();
-				input = new FileReader(file);
-				return input;
-			}
+            public Reader getInput() throws IOException {
+                output.close();
+                input = new FileReader(file);
+                return input;
+            }
 
-			public Writer getOutput() throws IOException {
-				file = getNextFile();
-				output = new FileWriter(file);
-				return output;
-			}
-			
-		};
-	}
+            public Writer getOutput() throws IOException {
+                file = getNextFile();
+                output = new FileWriter(file);
+                return output;
+            }
 
-	public abstract File getNextFile() throws IOException;
+        };
+    }
+
+    public abstract File getNextFile() throws IOException;
 }

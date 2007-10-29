@@ -17,36 +17,34 @@
  specific language governing permissions and limitations
  under the License.
 -->
-<!DOCTYPE Test SYSTEM "test.dtd">
-<!--
-Author: Vera Y.Petrashkova
-Version: $Revision: 1.5 $
--->
-<Test ID="testNewClassLoader1" 
-        date-of-creation="2005-11-17"
-        timeout="1">
-    	<Copyright value="apache"/>
-        <Author value="Vera Y. Petrashkova"/>
-        <Description>
-	        Load a lot of correct classes using new class loader
-        	Parameters: 0 - one class loader - one class 
-        	            1 - number of iterations
-       		            2 - number of used classes
-       		            3 - location of used class
-        </Description>
-        <Keyword name="stress"/>
-        <Source name="../../share/CorrectClasses/testCorrectClass.java"/>        
-        <Source name="../../share/CorrectClasses/testCorrectClass_0.ccode"/>        
-        <Source name="../../share/CorrectClasses/newClassLoader.java"/>
-        <Runner ID="Runtime">
-            <Option value="-Dorg.apache.harmony.test.share.stress.ReliabilityRunner.params=
+<!DOCTYPE Test SYSTEM "../../../../../../../../../test.dtd">
+<Test ID="testNewClassLoader1" timeout="1">
+	<Description> Load correct classes using class loader
+        Parameters:
+            0 - one class loader - one class
+		    1 - number of iterations
+            2 - number of used classes
+            3 - location of used class
+    </Description>
+	<Keyword name="stress"/>
+	<Source name="../../share/CorrectClasses/testCorrectClass.java"/>
+	<Source name="../../share/CorrectClasses/testCorrectClass_0.ccode"/>
+	<Source name="../../share/CorrectClasses/newClassLoader.java"/>
+	<Runner ID="Runtime">
+		<Option
+			value="-Dorg.apache.harmony.test.share.stress.ReliabilityRunner.params=
 					org.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass {}"/>
-            <Option value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg0=1"/>
-            <Option value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg1=10"/>
-            <Option value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg2=1000"/>
-            <Option value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg3=$TestSuiteClassRoot"/>
-		<Param name="toRun" value="org.apache.harmony.test.share.stress.ReliabilityRunner">
+		<Option
+			value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg0=1"/>
+		<Option
+			value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg1=10"/>
+		<Option
+			value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg2=1000"/>
+		<Option
+			value="-Dorg.apache.harmony.test.stress.classloader.share.CorrectClasses.testCorrectClass.arg3=$TestSuiteClassRoot"/>
+		<Param name="toRun"
+			value="org.apache.harmony.test.share.stress.ReliabilityRunner">
 		</Param>
-		</Runner> 
-		<Restriction name="OtherVMOnly"/>
+	</Runner>
+	<Restriction name="OtherVMOnly"/>
 </Test>

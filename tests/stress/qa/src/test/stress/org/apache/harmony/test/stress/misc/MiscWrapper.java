@@ -136,7 +136,7 @@ public class MiscWrapper extends Thread {
                     }
                 }
 
-                Constructor c = null;
+                Constructor<?> c = null;
                 Thread th = null;
                 try {
                     c = newThread.getConstructor(fParams);

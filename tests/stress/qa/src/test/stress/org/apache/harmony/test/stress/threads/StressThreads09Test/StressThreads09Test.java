@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */    
-package org.apache.harmony.test.stress.vm.threads.StressThreads09Test;
+package org.apache.harmony.test.stress.threads.StressThreads09Test;
 
 import org.apache.harmony.share.Test;
 

@@ -17,55 +17,56 @@
  specific language governing permissions and limitations
  under the License.
 -->
-<!ELEMENT Test (Copyright+, Author+, (MulticaseTestDescription|APITestDescription|Description), Keyword*, Source+, Modification*, Runner, Resource*, Restriction*)>
+<!ELEMENT Test ((APITestDescription|Description), Keyword*, Source+, Runner,
+Resource*, Restriction*)>
 <!ATTLIST Test 
-	ID CDATA #REQUIRED
-	date-of-creation CDATA #REQUIRED
-	timeout CDATA #REQUIRED>
+ID CDATA #REQUIRED
+timeout CDATA #REQUIRED>
 <!ELEMENT Copyright EMPTY>
 <!ATTLIST Copyright 
-	value CDATA #REQUIRED>
+value CDATA #REQUIRED>
 <!ELEMENT Author EMPTY>
 <!ATTLIST Author 
-	value CDATA #REQUIRED>
+value CDATA #REQUIRED>
 <!ELEMENT MulticaseTestDescription (TestedClass, Case+)>
 <!ELEMENT APITestDescription ((TestedClass, TestedMethod+)+, Description)>
 <!ELEMENT TestedClass EMPTY>
 <!ATTLIST TestedClass 
-	name CDATA #REQUIRED>
-<!ELEMENT Case (TestedMethod+, (TestedClass, TestedMethod+)*, Precondition?, Description, Expected?)>
+name CDATA #REQUIRED>
+<!ELEMENT Case (TestedMethod+, (TestedClass, TestedMethod+)*, Precondition?,
+Description, Expected?)>
 <!ATTLIST Case 
-	ID CDATA #REQUIRED>
+ID CDATA #REQUIRED>
 <!ELEMENT TestedMethod EMPTY>
 <!ATTLIST TestedMethod 
-	name CDATA #REQUIRED>
+name CDATA #REQUIRED>
 <!ELEMENT Precondition (#PCDATA)>
 <!ELEMENT Expected (#PCDATA)>
 <!ELEMENT Description ANY>
 <!ELEMENT Keyword EMPTY>
 <!ATTLIST Keyword 
-	name CDATA #REQUIRED>
+name CDATA #REQUIRED>
 <!ELEMENT Source EMPTY>
 <!ATTLIST Source 
-	name CDATA #REQUIRED>
+name CDATA #REQUIRED>
 <!ELEMENT Modification EMPTY>
 <!ATTLIST Modification 
-	date CDATA #REQUIRED
-	author CDATA #REQUIRED>
+date CDATA #REQUIRED
+author CDATA #REQUIRED>
 <!ELEMENT Runner (Option*, Param+)>
 <!ATTLIST Runner 
-	ID CDATA #REQUIRED>
+ID CDATA #REQUIRED>
 <!ELEMENT Param (Option*)>
 <!ATTLIST Param
-	name CDATA #REQUIRED
-	value CDATA #REQUIRED>
+name CDATA #REQUIRED
+value CDATA #REQUIRED>
 <!ELEMENT Option EMPTY>
 <!ATTLIST Option
-	name CDATA #IMPLIED
-	value CDATA #IMPLIED>
+name CDATA #IMPLIED
+value CDATA #IMPLIED>
 <!ELEMENT Resource EMPTY>
 <!ATTLIST Resource
-	name CDATA #REQUIRED>
+name CDATA #REQUIRED>
 <!ELEMENT Restriction EMPTY>
 <!ATTLIST Restriction
-	name CDATA #REQUIRED>
+name CDATA #REQUIRED>

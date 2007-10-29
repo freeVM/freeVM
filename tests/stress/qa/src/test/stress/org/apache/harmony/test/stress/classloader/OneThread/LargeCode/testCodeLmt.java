@@ -60,7 +60,7 @@ public class testCodeLmt extends TestCase {
                         + cntLoop);
 
         Object[] arObjs;
-        Class[] arClss;
+        Class<?>[] arClss;
         Method m;
 
         for (int t = 0; t < cntLoop; t++) {
@@ -78,9 +78,8 @@ public class testCodeLmt extends TestCase {
                     arClss[i] = Class.forName(nm);
                     arObjs[i] = arClss[i].newInstance();
 
-                    m = arClss[i].getMethod("get", null);
-                    int ans = ((Integer) (m.invoke(arObjs[i], null)))
-                            .intValue();
+                    m = arClss[i].getMethod("get");
+                    int ans = ((Integer) (m.invoke(arObjs[i]))).intValue();
                     if (ans != ReliabilityRunner.RESULT_PASS) {
                         ReliabilityRunner.debug("Test failed: incorrect result: " + ans
                                 + " class: " + nm);
@@ -103,9 +102,8 @@ public class testCodeLmt extends TestCase {
                     arClss[i] = Class.forName(nm);
                     arObjs[i] = arClss[i].newInstance();
 
-                    m = arClss[i].getMethod("get", null);
-                    int ans = ((Integer) (m.invoke(arObjs[i], null)))
-                            .intValue();
+                    m = arClss[i].getMethod("get");
+                    ((Integer) (m.invoke(arObjs[i]))).intValue();
                     ReliabilityRunner.debug("Test failed: InvocationTargetException must be thrown. "
                             + " Class: " + nm);
                     ReliabilityRunner.mainTest.addError(this, new ClassLoaderTestError());

@@ -132,7 +132,7 @@ public class testManySubClasses extends TestCase {
                     fnd = false;
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get")) {
-                            lans = ((Long) (mm[j].invoke(arObjs[i], null)))
+                            lans = ((Long) (mm[j].invoke(arObjs[i])))
                                     .longValue();
                             if (i != 0) {
                                 if (lans != (long) i) {

@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */    
-package org.apache.harmony.test.stress.vm.threads;
+package org.apache.harmony.test.stress.threads;
 
-import org.apache.harmony.test.stress.vm.threads.share.StressTestParameters;
-import org.apache.harmony.test.stress.vm.threads.share.StressTestThreadSO;
+import org.apache.harmony.test.stress.threads.share.StressTestParameters;
+import org.apache.harmony.test.stress.threads.share.StressTestThreadSO;
 
 import org.apache.harmony.share.Test;
 import org.apache.harmony.share.DRLLogging;

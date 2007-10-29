@@ -106,7 +106,7 @@ public class testManySupIntf_01 extends TestCase {
                     fnd = false;
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get")) {
-                            ans1 = ((Integer) (mm[j].invoke(arObjs[i], null)))
+                            ans1 = ((Integer) (mm[j].invoke(arObjs[i])))
                                     .intValue();
                             if (ans1 != finF) {
                                 ReliabilityRunner.debug("Incorrect get(): " + ans1 + " must be "
@@ -138,7 +138,7 @@ public class testManySupIntf_01 extends TestCase {
                     fnd = false;
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get0")) {
-                            ans1 = ((Integer) (mm[j].invoke(arObjs[i], null)))
+                            ans1 = ((Integer) (mm[j].invoke(arObjs[i])))
                                     .intValue();
                             if (ans1 != finF) {
                                 ReliabilityRunner.debug("Incorrect get1(): " + ans1 + " must be "
@@ -168,7 +168,7 @@ public class testManySupIntf_01 extends TestCase {
 
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get1")) {
-                            ans1 = ((Integer) (mm[j].invoke(arObjs[i], null)))
+                            ans1 = ((Integer) (mm[j].invoke(arObjs[i])))
                                     .intValue();
                             if (ans1 != 100) {
                                 ReliabilityRunner.debug("Incorrect get2(): " + ans1
@@ -198,7 +198,7 @@ public class testManySupIntf_01 extends TestCase {
                     fnd = false;
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get2")) {
-                            ans1 = ((Integer) (mm[j].invoke(arObjs[i], null)))
+                            ans1 = ((Integer) (mm[j].invoke(arObjs[i])))
                                     .intValue();
                             if (ans1 != 200) {
                                 ReliabilityRunner.debug("Incorrect get2(): " + ans1
@@ -229,7 +229,7 @@ public class testManySupIntf_01 extends TestCase {
                     fnd = false;
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get3")) {
-                            ans1 = ((Integer) (mm[j].invoke(arObjs[i], null)))
+                            ans1 = ((Integer) (mm[j].invoke(arObjs[i])))
                                     .intValue();
                             if (ans1 != 300) {
                                 ReliabilityRunner.debug("Incorrect get3(): " + ans1
@@ -261,7 +261,7 @@ public class testManySupIntf_01 extends TestCase {
                     fnd = false;
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get4")) {
-                            ans1 = ((Integer) (mm[j].invoke(arObjs[i], null)))
+                            ans1 = ((Integer) (mm[j].invoke(arObjs[i])))
                                     .intValue();
                             if (ans1 != 400) {
                                 ReliabilityRunner.debug("Incorrect get4(): " + ans1
@@ -292,7 +292,7 @@ public class testManySupIntf_01 extends TestCase {
                     fnd = false;
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get5")) {
-                            ans1 = ((Integer) (mm[j].invoke(arObjs[i], null)))
+                            ans1 = ((Integer) (mm[j].invoke(arObjs[i])))
                                     .intValue();
                             if (ans1 != 500) {
                                 ReliabilityRunner.debug("Incorrect get5(): " + ans1
@@ -324,7 +324,7 @@ public class testManySupIntf_01 extends TestCase {
                     fnd = false;
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get500")) {
-                            ans1 = ((Integer) (mm[j].invoke(arObjs[i], null)))
+                            ans1 = ((Integer) (mm[j].invoke(arObjs[i])))
                                     .intValue();
                             if (ans1 != 500) {
                                 ReliabilityRunner.debug("Incorrect get500(): " + ans1
@@ -357,7 +357,7 @@ public class testManySupIntf_01 extends TestCase {
                     fnd = false;
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get499")) {
-                            ans1 = ((Integer) (mm[j].invoke(arObjs[i], null)))
+                            ans1 = ((Integer) (mm[j].invoke(arObjs[i])))
                                     .intValue();
                             if (ans1 != 500) {
                                 ReliabilityRunner.debug("Incorrect get499(): " + ans1
@@ -390,7 +390,7 @@ public class testManySupIntf_01 extends TestCase {
                     fnd = false;
                     for (int j = 0; j < mm.length; j++) {
                         if (mm[j].getName().equals("get498")) {
-                            ans1 = ((Integer) (mm[j].invoke(arObjs[i], null)))
+                            ans1 = ((Integer) (mm[j].invoke(arObjs[i])))
                                     .intValue();
                             if (ans1 != 500) {
                                 ReliabilityRunner.debug("Incorrect get498(): " + ans1

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */    
-package org.apache.harmony.test.stress.vm.threads.share;
+package org.apache.harmony.test.stress.threads.share;
 
 import org.apache.harmony.share.DRLLogging;
 import java.util.List;

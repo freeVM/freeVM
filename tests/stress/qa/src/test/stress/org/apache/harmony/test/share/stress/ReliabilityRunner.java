@@ -31,14 +31,14 @@ import junit.framework.TestResult;
 import org.apache.harmony.test.share.stress.util.Parser;
 
 /**
- * Class <code>ReliabilityRunner</code> runs a stress test scenario buit from
+ * Class <code>ReliabilityRunner</code> runs a stress test scenario built from
  * simple building blocks. It receives a list of activities via command line or
  * <code>org.apache.harmony.test.ReliabilityRunner.params</code> property.
  * 
  * Timeouts in seconds are specified by the properties
  * <code>org.apache.harmony.test.ReliabilityRunner.timeToWork</code>,
  * <code>org.apache.harmony.test.ReliabilityRunner.timeToAbort</code>. After
- * the first timeout is expired, tests are signalled to terminate gracefully. VM
+ * the first timeout is expired, tests are signaled to terminate gracefully. VM
  * is aborted after the expiration of the second timeout.
  * 
  * Decorator syntax is the following: FIXME

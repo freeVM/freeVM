@@ -48,7 +48,7 @@ Version: $Revision: 1.4 $
         <Keyword name="stress"/>
         <Source name="../../../../StressSynchronizationTest.java"/>        
         <Runner ID="Runtime">
-			<Param name="toRun" value="org.apache.harmony.test.stress.vm.threads.StressSynchronizationTest">
+			<Param name="toRun" value="org.apache.harmony.test.stress.threads.StressSynchronizationTest">
 				<Option name="-numThreads" value="100"/>
 				<Option name="-smallObjSize" value="500"/>
 				<Option name="-freeMem" value="1000"/>

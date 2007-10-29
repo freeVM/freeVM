@@ -80,8 +80,8 @@ public class testCodeLmt_0 extends TestCase {
                     arClss[i] = Class.forName(pkgN.concat(".").concat(nm));
                     arObjs[i] = arClss[i].newInstance();
 
-                    m = arClss[i].getMethod("get", null);
-                    int ans = ((Integer) (m.invoke(arObjs[i], null)))
+                    m = arClss[i].getMethod("get");
+                    int ans = ((Integer) (m.invoke(arObjs[i])))
                             .intValue();
                     if (i % 2 == 0) {
                         if (ans == 104) {
