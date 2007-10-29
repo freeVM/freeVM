@@ -17,27 +17,19 @@
 -->
 <!--
 Author: Sergey V. Dmitriev, Marina V. Goldburt
-Version: $Revision: 1.1.2.6 $
+Version: $Revision: 1.1.2.7 $
 -->
 <!--
-    This is build descriptor for the component "extra.java_script".
+    This is build descriptor for the component "extra.jre_libraries".
 
     Please refer to make/components/README.txt for details about the component
     build descriptor structure.
   -->
 
-<project name="extra.java_script">
+<project name="extra.jre_libraries">
     <target name="init" >
         <mkdir dir="${build.dir}/_other" />
-        <select osfamily="unix">
-            <echo file="${build.dir}/_other/java.sh">
-#!/bin/sh
-
-JAVA_DIR=`dirname $0`
-LD_LIBRARY_PATH=$JAVA_DIR:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH
-$JAVA_DIR/java.exec "$@"
-</echo>
-        </select>
+        <copy file="${build.VM.home}/vmcore/src/init/bootclasspath.properties" tofile="${build.dir}/_other/bootclasspath.properties"/>
+        <fixcrlf srcDir="${build.dir}/_other" includes="bootclasspath.properties" />
     </target>
 </project>

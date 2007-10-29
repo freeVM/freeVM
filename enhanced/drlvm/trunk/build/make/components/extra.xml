@@ -17,27 +17,25 @@
 -->
 <!--
 Author: Sergey V. Dmitriev, Marina V. Goldburt
-Version: $Revision: 1.1.2.6 $
+Version: $Revision: 1.1.2.11 $
 -->
 <!--
-    This is build descriptor for the component "extra.java_script".
+    This is build descriptor for the component "extra".
 
     Please refer to make/components/README.txt for details about the component
     build descriptor structure.
   -->
 
-<project name="extra.java_script">
-    <target name="init" >
-        <mkdir dir="${build.dir}/_other" />
-        <select osfamily="unix">
-            <echo file="${build.dir}/_other/java.sh">
-#!/bin/sh
-
-JAVA_DIR=`dirname $0`
-LD_LIBRARY_PATH=$JAVA_DIR:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH
-$JAVA_DIR/java.exec "$@"
-</echo>
-        </select>
+<project name="extra">
+    <target name="init">
+        <property name="build.depends" value="extra.apr,
+                                              extra.apriconv,
+                                              extra.aprutil,
+                                              extra.eclipse_script,
+                                              extra.java_script,
+                                              extra.jre_libraries,
+                                              extra.log4cxx,
+                                              extra.zlib" />
+       
     </target>
 </project>
