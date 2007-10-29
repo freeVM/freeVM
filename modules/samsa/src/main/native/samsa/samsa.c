@@ -24,19 +24,13 @@
 #if defined(WIN32)
 #include <windows.h>
 #endif
+#if defined(FREEBSD)
+#include <dlfcn.h>
+#endif
 
 #define TOOL_JAR      "tools.jar"
 #define CLASS_PREFIX  "org.apache.harmony.tools."
 #define CLASS_POSTFIX ".Main"
-
-#if defined(LINUX)
-#define PATH_SEPARATOR_CHAR '/'
-#define PATH_SEPARATOR      "/"
-#define EXE_POSTFIX         "/jre/bin/java"
-#define WEXE_POSTFIX        "/jre/bin/javaw"
-#define LIB_POSTFIX         "/lib/"
-#define CLASSPATH_SEP       ":"
-#endif
 
 #if defined(WIN32)
 #define PATH_SEPARATOR_CHAR '\\'
@@ -45,6 +39,13 @@
 #define WEXE_POSTFIX        "\\jre\\bin\\javaw.exe"
 #define LIB_POSTFIX         "\\lib\\"
 #define CLASSPATH_SEP       ";"
+#else
+#define PATH_SEPARATOR_CHAR '/'
+#define PATH_SEPARATOR      "/"
+#define EXE_POSTFIX         "/jre/bin/java"
+#define WEXE_POSTFIX        "/jre/bin/javaw"
+#define LIB_POSTFIX         "/lib/"
+#define CLASSPATH_SEP       ":"
 #endif
 
 typedef struct ToolData {
@@ -371,9 +372,7 @@ char *cleanToolName(const char *name)
     }
          
     return temp;     
- #endif
-    
- #if defined(LINUX)
+ #elif defined(LINUX) || defined(FREEBSD)
  
     /*
      *  if we found a slash (and someone didn't do something 
@@ -385,6 +384,8 @@ char *cleanToolName(const char *name)
     else { 
         return strdup(name);
     }
+ #else
+ #error Need to define basename-type function
  #endif
 }
 
@@ -417,19 +418,28 @@ char *getExeDir() {
 
     char *last = NULL;
     
-#if defined(LINUX)    
+#if defined(LINUX)
     char buffer[PATH_MAX + 1];
     
     int size = readlink ("/proc/self/exe", buffer, sizeof(buffer)-1);
     
     buffer[size+1] = '\0';
-#endif
+#elif defined(FREEBSD)
+    Dl_info info;
+    char buffer[PATH_MAX + 1];
+    if (dladdr( (const void*)&main, &info) == 0) {
+        return NULL;
+    }
+    strncpy(buffer, info.dli_fname, PATH_MAX+1);
+    buffer[PATH_MAX+1] = '\0';
 
-#if defined(WIN32)
+#elif defined(WIN32)
     char buffer[512];
     DWORD dwRet = GetModuleFileName(NULL, buffer, 512);
         
     // FIXME - handle this right - it could be that 512 isn't enough
+#else
+#error Need to implement executable name code
 #endif
 
     last = strrchr(buffer, PATH_SEPARATOR_CHAR);

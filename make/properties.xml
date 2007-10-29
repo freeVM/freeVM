@@ -191,6 +191,12 @@
     <condition property="make.command" value="nmake.exe">
         <isset property="is.windows"/>
     </condition>
+    <condition property="make.command" value="gmake">
+        <or>
+            <isset property="is.aix"/>
+            <isset property="is.freebsd"/>
+        </or>
+    </condition>
     <property name="make.command" value="make" />
 
     <property name="png.home" value="/usr" />
