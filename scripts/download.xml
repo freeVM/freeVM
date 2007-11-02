@@ -208,10 +208,6 @@
                 <contains string="${parameters.external.@{libname}.url.basename}?"
                           substring=".jar?" />
             </condition>
-            <!-- check jar for presence -->
-            <condition property="parameters.external.${lib.name}.downloaded">
-                <isset property="parameters.external.${lib.name}.exists" />
-            </condition>
         </sequential>
     </macrodef>
 
