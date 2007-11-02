@@ -85,7 +85,7 @@
 	-->
 	<property file="depends.properties"/>
 	
-	<target name="get.all" description="Downloading files">
+	<target name="get.all" description="Download" depends="get.punit">
 		
 		<mkdir dir="${cpptasks.dir}"/>
 		<download-one-file src="${cpptasks.url}" dest="${cpptasks.jar}"
@@ -101,14 +101,16 @@
 		<unzip src="${jasmin.zip}" dest="${jasmin.dir}" overwrite="false">
 			<patternset includes="${jasmin.extract.pattern}"/>
 		</unzip>
-		
+	</target>
+	
+	<target name="get.punit" description="P-unit checkout and build">
 		<mkdir dir="${punit.repository}"/>
 		<exec executable="svn" dir="${punit.repository}" failonerror="true">
 			<arg value="checkout"/>
 			<arg value="${punit.url}"/>
 		</exec>
 		<ant dir="${punit.dir}"/>
-		<ant dir="${punit.extension.dir}"/>
+		<ant dir="${punit.ext.dir}"/>
 	</target>
 	
 	<macrodef name="download-one-file">
@@ -172,7 +174,7 @@
 				<pathelement location="${th.jar}"/>
 				<pathelement location="${junit.jar}"/>
 				<pathelement location="${punit.jar}"/>
-				<pathelement location="${punit.ext.jars}"/>
+				<pathelement path="${punit.ext.jars}"/>
 			</classpath>
 			<arg value="-cfp"/>
 			<arg value="${harness.cfg}"/>
@@ -251,6 +253,7 @@
 				<pathelement location="${th.jar}"/>
 				<pathelement location="${junit.jar}"/>
 				<pathelement location="${punit.jar}"/>
+                                <pathelement path="${punit.ext.jars}"/>
 			</classpath>
 		</javac>
 	</target>
@@ -340,4 +343,5 @@
 	</target>
 	
 </project>
+
 

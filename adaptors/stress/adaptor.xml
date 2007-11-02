@@ -24,12 +24,9 @@
         <os family="windows"/>
     </condition>
 
-    <property name="junit.jar"      value="${ext.junit.location}"/>
     <property name="antcontrib.jar" value="${ext.ant-contrib.location}"/>
     <property name="cpptasks.jar"   value="${ext.cpptasks.location}/"/>
     <property name="jasmin.jar"     value="${ext.jasmin_1.1.location}/jasmin.jar"/>
-    <property name="th.jar"         value="${stress.depends.dir}/th.jar"/>
-    <property name="vmtt.jar"       value="${stress.depends.dir}/vmtt.jar"/>
 
     <property name="stress.root.dir" location="${test.sources.dir}/stress/qa"/>
     <property name="stress.make.dir" location="${stress.root.dir}"/>
@@ -44,8 +41,10 @@
         <svn-update-bt path="${test.sources.dir}/stress"/>
         <antcall target="setup-tools"/>
 
+        <call-stress target="get.punit"/>
+        <call-stress target="build.th"/>
+        <call-stress target="build.vmtt"/>
         <call-stress target="build.qa"/>
-        <!-- call-stress target="set.tasks,build.java,build.native"/ -->
 
         <mkdir dir="${stress.config.dir}"/>
         <copy todir="${stress.config.dir}">
@@ -78,12 +77,6 @@
 
     <target name="setup-tools">
         <svn-update-bt path="${test.sources.dir}/tools"/>
-        <ant dir="${test.sources.dir}/tools/harness"/>
-        <copy file="${test.sources.dir}/tools/th.dest/bin/th.jar"
-              todir="${stress.depends.dir}" failonerror="false" />
-        <ant dir="${test.sources.dir}/tools/vmtt"/>
-        <copy file="${test.sources.dir}/tools/vmtt.dest/bin/vmtt.jar"
-              todir="${stress.depends.dir}" failonerror="false"/>
     </target>
 
     <!-- do test execution -->
@@ -119,15 +112,13 @@
                <sysproperty key="harness.cfg" value="${stress.config.dir}/cfg_env.xml" />
                <sysproperty key="qa.exclude.list" value="${stress.config.dir}/exclude.file" />
                <sysproperty key="qa.bin" value="${stress.bin.dir}" />
-               <sysproperty key="junit.jar" value="${junit.jar}"/>
                <sysproperty key="antcontrib.jar" value="${antcontrib.jar}"/>
                <sysproperty key="cpptasks.jar" value="${cpptasks.jar}/"/>
                <sysproperty key="jasmin.jar" value="${jasmin.jar}"/>
-               <sysproperty key="th.jar" value="${th.jar}"/>
-               <sysproperty key="vmtt.jar" value="${vmtt.jar}"/>
             </exec-ant>
         </sequential>
     </macrodef>
 
 </project>
+
 
