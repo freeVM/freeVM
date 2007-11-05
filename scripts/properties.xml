@@ -153,5 +153,32 @@
     <!-- Normalized platform name -->
     <property name="hy.platform" value="${hy.os}_${hy.arch}"/>
 
+    <!-- Define properties describing platform type -->
+    <condition property="is.windows.x86">
+        <and>
+            <isset property="is.windows"/>
+            <isset property="is.x86" />
+        </and>
+    </condition>
 
+    <condition property="is.windows.x86_64">
+        <and>
+            <isset property="is.windows"/>
+            <isset property="is.x86_64" />
+        </and>
+    </condition>
+        
+    <condition property="is.linux.x86">
+        <and>
+            <isset property="is.linux"/>
+            <isset property="is.x86" />
+        </and>
+    </condition>
+
+    <condition property="is.linux.x86_64">
+        <and>
+            <isset property="is.linux"/>
+            <isset property="is.x86_64" />
+        </and>
+    </condition>
 </project>
