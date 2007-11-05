@@ -31,6 +31,8 @@
         <propertyref name="external.arch.dir" />
         <propertyref name="temp.files.dir" />
         <propertyref name="external.resources.location" />
+        <!-- to include all platfroms settings -->
+        <propertyref prefix="is" />
     </propertyset>
 
     <target name="download-all" depends="-make-dep-dirs,-setup-proxy">
@@ -157,18 +159,30 @@
             <echo file="${external.resources.location}" append="true">ext.@{libname}.location=${ext.@{libname}.location}
 </echo>
 
-            <!-- Check for lib file presence -->
-            <condition property="parameters.external.@{libname}.exists">
-                <available file="${ext.@{libname}.location}" />
+            <!-- Check for if download is required -->
+            <condition property="need.to.download">
+                <and>
+                    <not>
+                        <available file="${ext.@{libname}.location}" />
+                    </not>
+                    <or>
+                        <not>
+                            <isset property="parameters.external.@{libname}.if" />
+                        </not>
+                        <and>
+                            <isset property="parameters.external.@{libname}.if" />
+                            <isset property="${parameters.external.@{libname}.if}" />
+                        </and>
+                    </or>
+                </and>
             </condition>
 
             <echo message="===> Library Info: @{libname}" />
             <echo message="         Basename: ${parameters.external.@{libname}.basename}" />
             <echo message="         Location: ${ext.@{libname}.location}" />
-            <echo message="         Presence: ${parameters.external.@{libname}.exists}" />
 
             <!-- Proceed fetching if the target file does not exist -->
-            <antcall target="-fetch-unless-exists">
+            <antcall target="-fetch-if-necessary">
                 <param name="lib.name" value="@{libname}" />
                 <param name="url.file"
                        value="${parameters.external.@{libname}.url.basename}" />
@@ -181,8 +195,7 @@
     <!-- Determines the type of the resource to be downloaded and sets up
          corresponding properties. The further control flow depends on 
          this target. -->
-    <target name="-fetch-unless-exists"
-            unless="parameters.external.${lib.name}.exists">
+    <target name="-fetch-if-necessary" if="need.to.download">
         <determine-resource-type libname="${lib.name}" />
         <antcall target="-fetch" />
     </target>

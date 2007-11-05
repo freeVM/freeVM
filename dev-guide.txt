@@ -565,14 +565,17 @@ For example: let's look at the following description::
             md5="87A617D7E65979AE01B5ACE4649EB40B"
             dir="my-dep-dir"
             inc="*/lib/*.jar"
+            if="is.linux"
         />
     </external>
 
 It describes dependency called *my-dependency* which is located at specified
-URL and has particular MD5 check sum. During the local installation of
+URL and has particular MD5 check sum. The dependency will be downloaded only
+when local operation system is linux. During the local installation of
 downloaded archive only jar files from `lib` directory will be unzipped and
 placed under `my-dep-dir` directory. The path to this directory will be
-provided by ``ext.my-dependency.location`` property.
+provided by ``ext.my-dependency.location`` property.The `if` is an optional 
+parameters. There is no special requirement when it isn't set.
 
 This module is under development and provides only simple functionality.
 For working usage examples, please, look at ``./scripts/parameters.xml`` file.

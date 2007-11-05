@@ -46,6 +46,7 @@
 -->
 <project name="framework-implementation" default="run" basedir=".">
 
+    <import file="properties.xml"/>
     <import file="cc-project.xml"/>
 
     <!-- Sets up the framework -->
