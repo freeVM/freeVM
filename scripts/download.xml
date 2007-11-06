@@ -264,7 +264,6 @@
     <macrodef name="do-unzip-dir">
         <attribute name="libname" />
         <sequential>
-            <mkdir dir="${external.libs.dir}/${parameters.external.@{libname}.dir}" />
             <!-- If 'inc' attribute specifying the extract includes was not
                  specified, unzip all -->
             <property name="parameters.external.@{libname}.inc" value="**/*" />
@@ -284,6 +283,9 @@
                 <fileset dir="${parameters.external.@{libname}.tempfile}">
                     <include name="**/*" />
                 </fileset>
+                <mapper type="glob"
+                        from="${parameters.external.@{libname}.dir}${file.separator}"
+                        to="*" />
             </move>
             <delete dir="${parameters.external.@{libname}.tempfile}"
                     failonerror="false" />
