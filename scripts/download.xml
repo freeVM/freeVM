@@ -183,7 +183,6 @@
 
             <!-- Proceed fetching if the target file does not exist -->
             <antcall target="-fetch-if-necessary">
-                <param name="lib.name" value="@{libname}" />
                 <param name="url.file"
                        value="${parameters.external.@{libname}.url.basename}" />
                 <param name="lib.file"
@@ -196,7 +195,7 @@
          corresponding properties. The further control flow depends on 
          this target. -->
     <target name="-fetch-if-necessary" if="need.to.download">
-        <determine-resource-type libname="${lib.name}" />
+        <determine-resource-type libname="${libname}" />
         <antcall target="-fetch" />
     </target>
 
@@ -210,7 +209,7 @@
                           substring=".zip?" />
             </condition>
             <!-- check availability of the archive -->
-            <condition property="parameters.external.${lib.name}.downloaded">
+            <condition property="parameters.external.${libname}.downloaded">
                 <and>
                     <isset property="parameters.external.@{libname}.is.zip" />
                     <available file="${external.arch.dir}/${url.file}" />
@@ -229,7 +228,7 @@
     <target name="-fetch" depends="-download, -fetch-zip, -fetch-jar" />
 
     <!-- Do download external zip and extract it into external.libs.dir -->
-    <target name="-fetch-zip" if="parameters.external.${lib.name}.is.zip">
+    <target name="-fetch-zip" if="parameters.external.${libname}.is.zip">
         <echo>==> Fetch ZIP: ${url.file}</echo>
         <!-- file was downloaded, place it to the destination -->
         <move file="${temp.files.dir}/${url.file}"
@@ -243,7 +242,7 @@
     <target name="-do-unzip" depends="-do-unzip-jar, -do-unzip-dir" />
 
     <!-- Do unzip the specified jar library -->
-    <target name="-do-unzip-jar" if="parameters.external.${lib.name}.jar">
+    <target name="-do-unzip-jar" if="parameters.external.${libname}.jar">
         <unzip src="${external.arch.dir}/${url.file}" dest="${temp.files.dir}">
             <patternset>
                 <include name="**/${lib.file}" />
@@ -257,8 +256,8 @@
     </target>
 
     <!-- Do unzip the archive into specified by 'dir' attribute directory -->
-    <target name="-do-unzip-dir" if="parameters.external.${lib.name}.dir">
-        <do-unzip-dir libname="${lib.name}" />
+    <target name="-do-unzip-dir" if="parameters.external.${libname}.dir">
+        <do-unzip-dir libname="${libname}" />
     </target>
 
     <macrodef name="do-unzip-dir">
@@ -293,7 +292,7 @@
     </macrodef>
 
     <!-- Do download external jar into external.libs.dir -->
-    <target name="-fetch-jar" if="parameters.external.${lib.name}.is.jar">
+    <target name="-fetch-jar" if="parameters.external.${libname}.is.jar">
         <echo>==> Fetch JAR: ${url.file}</echo>
         <!-- file was downloaded, place it to the destination -->
         <move file="${temp.files.dir}/${url.file}"
@@ -302,8 +301,8 @@
     </target>
 
     <target name="-download"
-            unless="parameters.external.${lib.name}.downloaded">
-        <do-download libname="${lib.name}" />
+            unless="parameters.external.${libname}.downloaded">
+        <do-download libname="${libname}" />
     </target>
 
     <!-- Downloads external dependency pointed by @{libname}'s URL
