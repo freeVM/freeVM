@@ -73,7 +73,7 @@
         <loadproperties srcfile="${tmp.file}">
             <filterchain>
                 <tokenfilter>
-                    <replaceregex pattern="^([^=]+)=.*" replace="name=\1" />
+                    <replaceregex pattern="^([^=]+)=.*" replace="libname=\1" />
                 </tokenfilter>
             </filterchain>
         </loadproperties>
@@ -88,7 +88,7 @@
         <echo message="${rest}" file="${tmp.file}" />
 
         <!-- do download for the dependency -->
-        <fetch libname="${name}" subcomponent="${subcomponent}" />
+        <fetch libname="${libname}" subcomponent="${subcomponent}" />
 
         <ant antfile="${download.xml}" target="-iterate" inheritall="false">
             <propertyset refid="required.pops" />
