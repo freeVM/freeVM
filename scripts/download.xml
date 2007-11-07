@@ -88,7 +88,14 @@
         <echo message="${rest}" file="${tmp.file}" />
 
         <!-- do download for the dependency -->
-        <fetch libname="${libname}" subcomponent="${subcomponent}" />
+        <!--fetch libname="${libname}" subcomponent="${subcomponent}" /-->
+        <antcall target="-fetch-if-necessary">
+            <propertyset>
+                <propertyset refid="required.pops" />
+                <globmapper from="parameters.external.${libname}*" to="lib*" />
+            </propertyset>
+        </antcall>
+
 
         <ant antfile="${download.xml}" target="-iterate" inheritall="false">
             <propertyset refid="required.pops" />
@@ -115,87 +122,70 @@
          parameters.external.* - parameters for externals to fetch -->
 
     <!-- Fetches the external resource described by 
-                parameters.external.@{libname}.*
+                parameters.external.${libname}.*
          properties. 
          Now supported fetching of:
             - jar files described by 'url' and 'md5' attributes, 
             - zip files described by 'url, 'md5', 'jar' attributes 
          Fetched library can be referenced by 
-            ext.@{libname}.location 
+            ext.${libname}.location 
          property. -->
-    <macrodef name="fetch">
-        <attribute name="libname" />
-        <attribute name="subcomponent" />
-        <sequential>
-            <echo message="Fetching '@{libname}' external dependency for '@{subcomponent}' subcomponent." />
+    <target name="-init">
+        <echo message="Fetching '${libname}' external dependency for '${subcomponent}' subcomponent." />
 
-            <!-- Determine the basename of the URL pointing to library file
-                 (further procedure of the library fetching depends on its 
-                 type)                                                      -->
-            <basename file="${parameters.external.@{libname}.url}"
-                      property="parameters.external.@{libname}.url.basename" />
+        <!-- Determine the basename of the URL pointing to library file
+             (further procedure of the library fetching depends on its 
+             type)                                                      -->
+        <basename file="${lib.url}" property="lib.url.basename" />
 
-            <!-- Determine the [base]name of the library file:              -->
-            <!-- firstly: check if it was expicitly specified 
-                          by 'jar' attribute: -->
-            <condition property="parameters.external.@{libname}.basename"
-                       value="${parameters.external.@{libname}.jar}">
-                <isset property="parameters.external.@{libname}.jar" />
-            </condition>
-            <!-- secondly: check if it was expicitly specified 
-                          by 'dir' attribute: -->
-            <condition property="parameters.external.@{libname}.basename"
-                       value="${parameters.external.@{libname}.dir}">
-                <isset property="parameters.external.@{libname}.dir" />
-            </condition>
-            <!-- at last: if the name was not explicitly specified,
+        <!-- Determine the [base]name of the library file:              -->
+        <!-- firstly: check if it was expicitly specified 
+                      by 'jar' attribute: -->
+        <condition property="lib.basename" value="${lib.jar}">
+            <isset property="lib.jar" />
+        </condition>
+        <!-- secondly: check if it was expicitly specified 
+                       by 'dir' attribute: -->
+        <condition property="lib.basename" value="${lib.dir}">
+            <isset property="lib.dir" />
+        </condition>
+        <!-- at last: if the name was not explicitly specified,
                  use URL's basename. -->
-            <property name="parameters.external.@{libname}.basename"
-                      value="${parameters.external.@{libname}.url.basename}" />
+        <property name="lib.basename" value="${lib.url.basename}" />
 
-            <!-- Set up the library accessing property: -->
-            <property name="ext.@{libname}.location"
-                      location="${external.libs.dir}/${parameters.external.@{libname}.basename}" />
-            <echo file="${external.resources.location}" append="true">ext.@{libname}.location=${ext.@{libname}.location}
+        <!-- Set up the library accessing property: -->
+        <property name="lib.location"
+                  location="${external.libs.dir}/${lib.basename}" />
+        <echo file="${external.resources.location}" append="true">ext.${libname}.location=${lib.location}
 </echo>
 
-            <!-- Check for if download is required -->
-            <condition property="need.to.download">
-                <and>
+        <!-- Check for if download is required -->
+        <condition property="need.to.download">
+            <and>
+                <not>
+                    <available file="${lib.location}" />
+                </not>
+                <or>
                     <not>
-                        <available file="${ext.@{libname}.location}" />
+                        <isset property="lib.if" />
                     </not>
-                    <or>
-                        <not>
-                            <isset property="parameters.external.@{libname}.if" />
-                        </not>
-                        <and>
-                            <isset property="parameters.external.@{libname}.if" />
-                            <isset property="${parameters.external.@{libname}.if}" />
-                        </and>
-                    </or>
-                </and>
-            </condition>
+                    <and>
+                        <isset property="lib.if" />
+                        <isset property="${lib.if}" />
+                    </and>
+                </or>
+            </and>
+        </condition>
 
-            <echo message="===> Library Info: @{libname}" />
-            <echo message="         Basename: ${parameters.external.@{libname}.basename}" />
-            <echo message="         Location: ${ext.@{libname}.location}" />
-
-            <!-- Proceed fetching if the target file does not exist -->
-            <antcall target="-fetch-if-necessary">
-                <propertyset>
-                    <propertyref prefix="parameters.external" />
-                    <globmapper from="parameters.external.${libname}*"
-                                to="lib*" />
-                </propertyset>
-            </antcall>
-        </sequential>
-    </macrodef>
+        <echo message="===> Library Info: ${libname}" />
+        <echo message="         Basename: ${lib.basename}" />
+        <echo message="         Location: ${lib.location}" />
+    </target>
 
     <!-- Determines the type of the resource to be downloaded and sets up
          corresponding properties. The further control flow depends on 
          this target. -->
-    <target name="-fetch-if-necessary" if="need.to.download">
+    <target name="-fetch-if-necessary" if="need.to.download" depends="-init">
         <!-- determine if it is an archive -->
         <condition property="lib.is.zip">
             <contains string="${lib.url.basename}?" substring=".zip?" />
