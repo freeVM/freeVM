@@ -183,10 +183,11 @@
 
             <!-- Proceed fetching if the target file does not exist -->
             <antcall target="-fetch-if-necessary">
-                <param name="url.file"
-                       value="${parameters.external.@{libname}.url.basename}" />
-                <param name="lib.file"
-                       value="${parameters.external.@{libname}.basename}" />
+                <propertyset>
+                    <propertyref prefix="parameters.external" />
+                    <globmapper from="parameters.external.${libname}*"
+                                to="lib*" />
+                </propertyset>
             </antcall>
         </sequential>
     </macrodef>
@@ -204,21 +205,19 @@
         <attribute name="libname" />
         <sequential>
             <!-- determine if it is an archive -->
-            <condition property="parameters.external.@{libname}.is.zip">
-                <contains string="${parameters.external.@{libname}.url.basename}?"
-                          substring=".zip?" />
+            <condition property="lib.is.zip">
+                <contains string="${lib.url.basename}?" substring=".zip?" />
             </condition>
             <!-- check availability of the archive -->
-            <condition property="parameters.external.${libname}.downloaded">
+            <condition property="lib.downloaded">
                 <and>
-                    <isset property="parameters.external.@{libname}.is.zip" />
-                    <available file="${external.arch.dir}/${url.file}" />
+                    <isset property="lib.is.zip" />
+                    <available file="${external.arch.dir}/${lib.url.basename}" />
                 </and>
             </condition>
             <!-- determine if it is a jar library -->
-            <condition property="parameters.external.@{libname}.is.jar">
-                <contains string="${parameters.external.@{libname}.url.basename}?"
-                          substring=".jar?" />
+            <condition property="lib.is.jar">
+                <contains string="${lib.url.basename}?" substring=".jar?" />
             </condition>
         </sequential>
     </macrodef>
@@ -228,11 +227,11 @@
     <target name="-fetch" depends="-download, -fetch-zip, -fetch-jar" />
 
     <!-- Do download external zip and extract it into external.libs.dir -->
-    <target name="-fetch-zip" if="parameters.external.${libname}.is.zip">
-        <echo>==> Fetch ZIP: ${url.file}</echo>
+    <target name="-fetch-zip" if="lib.is.zip">
+        <echo>==> Fetch ZIP: ${lib.url.basename}</echo>
         <!-- file was downloaded, place it to the destination -->
-        <move file="${temp.files.dir}/${url.file}"
-              tofile="${external.arch.dir}/${url.file}"
+        <move file="${temp.files.dir}/${lib.url.basename}"
+              tofile="${external.arch.dir}/${lib.url.basename}"
               failonerror="false" />
         <!-- .. and unzip -->
         <antcall target="-do-unzip" />
@@ -242,21 +241,22 @@
     <target name="-do-unzip" depends="-do-unzip-jar, -do-unzip-dir" />
 
     <!-- Do unzip the specified jar library -->
-    <target name="-do-unzip-jar" if="parameters.external.${libname}.jar">
-        <unzip src="${external.arch.dir}/${url.file}" dest="${temp.files.dir}">
+    <target name="-do-unzip-jar" if="lib.jar">
+        <unzip src="${external.arch.dir}/${lib.url.basename}"
+               dest="${temp.files.dir}">
             <patternset>
-                <include name="**/${lib.file}" />
+                <include name="**/${lib.basename}" />
             </patternset>
         </unzip>
         <move todir="${external.libs.dir}" flatten="true">
             <fileset dir="${temp.files.dir}">
-                <include name="**/${lib.file}" />
+                <include name="**/${lib.basename}" />
             </fileset>
         </move>
     </target>
 
     <!-- Do unzip the archive into specified by 'dir' attribute directory -->
-    <target name="-do-unzip-dir" if="parameters.external.${libname}.dir">
+    <target name="-do-unzip-dir" if="lib.dir">
         <do-unzip-dir libname="${libname}" />
     </target>
 
@@ -265,75 +265,69 @@
         <sequential>
             <!-- If 'inc' attribute specifying the extract includes was not
                  specified, unzip all -->
-            <property name="parameters.external.@{libname}.inc" value="**/*" />
+            <property name="lib.inc" value="**/*" />
             <!-- Do all the work in the special directory -->
-            <tempfile destdir="${temp.files.dir}"
-                      property="parameters.external.@{libname}.tempfile" />
-            <mkdir dir="${parameters.external.@{libname}.tempfile}" />
-            <unzip src="${external.arch.dir}/${url.file}"
-                   dest="${parameters.external.@{libname}.tempfile}">
-                <patternset includes="${parameters.external.@{libname}.inc}" />
+            <tempfile destdir="${temp.files.dir}" property="lib.tempfile" />
+            <mkdir dir="${lib.tempfile}" />
+            <unzip src="${external.arch.dir}/${lib.url.basename}"
+                   dest="${lib.tempfile}">
+                <patternset includes="${lib.inc}" />
             </unzip>
             <!-- If archive's root dir name equals to target dir name
                  (specified by 'dir' attribute) move it to libs dir, 
                  otherwise - move all extracted files to target dir 
                  (under libs dir) -->
-            <move todir="${external.libs.dir}/${parameters.external.@{libname}.dir}">
-                <fileset dir="${parameters.external.@{libname}.tempfile}">
+            <move todir="${external.libs.dir}/${lib.dir}">
+                <fileset dir="${lib.tempfile}">
                     <include name="**/*" />
                 </fileset>
-                <mapper type="glob"
-                        from="${parameters.external.@{libname}.dir}${file.separator}"
-                        to="*" />
+                <mapper type="glob" from="${lib.dir}${file.separator}" to="*" />
             </move>
-            <delete dir="${parameters.external.@{libname}.tempfile}"
-                    failonerror="false" />
+            <delete dir="${lib.tempfile}" failonerror="false" />
         </sequential>
     </macrodef>
 
     <!-- Do download external jar into external.libs.dir -->
-    <target name="-fetch-jar" if="parameters.external.${libname}.is.jar">
-        <echo>==> Fetch JAR: ${url.file}</echo>
+    <target name="-fetch-jar" if="lib.is.jar">
+        <echo>==> Fetch JAR: ${lib.url.basename}</echo>
         <!-- file was downloaded, place it to the destination -->
-        <move file="${temp.files.dir}/${url.file}"
-              tofile="${external.libs.dir}/${lib.file}"
+        <move file="${temp.files.dir}/${lib.url.basename}"
+              tofile="${external.libs.dir}/${lib.basename}"
               failonerror="false" />
     </target>
 
-    <target name="-download"
-            unless="parameters.external.${libname}.downloaded">
+    <target name="-download" unless="lib.downloaded">
         <do-download libname="${libname}" />
     </target>
 
     <!-- Downloads external dependency pointed by @{libname}'s URL
-         into ${temp.files.dir}/${url.file} and checks its checksum -->
+         into ${temp.files.dir}/${lib.url.basename} and checks its checksum -->
     <macrodef name="do-download">
         <attribute name="libname" />
         <sequential>
-            <echo>==> Do Download from ${parameters.external.@{libname}.url}</echo>
-            <get src="${parameters.external.@{libname}.url}"
-                 dest="${temp.files.dir}/${url.file}"
+            <echo>==> Do Download from ${lib.url} </echo>
+            <get src="${lib.url}"
+                 dest="${temp.files.dir}/${lib.url.basename}"
                  usetimestamp="true"
                  verbose="true" />
             <!-- compute the checksum and check the downloaded file -->
-            <checksum file="${temp.files.dir}/${url.file}"
-                      property="parameters.external.@{libname}.url.md5" />
+            <checksum file="${temp.files.dir}/${lib.url.basename}"
+                      property="lib.url.md5" />
             <fail>
                 <condition>
                     <not>
-                        <equals arg1="${parameters.external.@{libname}.url.md5}"
-                                arg2="${parameters.external.@{libname}.md5}" />
+                        <equals arg1="${lib.url.md5}" arg2="${lib.md5}" />
                     </not>
                 </condition>
 ...
 File
-    ${lib.file} 
+    ${lib.basename} 
 downloaded from:
-    ${parameters.external.@{libname}.url} 
+    ${lib.url} 
 has incorrect MD5 checksum:
-    '${parameters.external.@{libname}.url.md5}'
+    '${lib.url.md5}'
 while expected is:
-    '${parameters.external.@{libname}.md5}'
+    '${lib.md5}'
             </fail>
         </sequential>
     </macrodef>
