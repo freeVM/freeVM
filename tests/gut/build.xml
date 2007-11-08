@@ -33,6 +33,8 @@
 
     <property name="maven.dir" value="${work.dir}"/>
 
+    <property name="maven.repository" location="${work.dir}/.m2"/>
+
     <condition property="res.dir" value="${result.dir}/${timestamp}"
         else="${basedir}/results/${timestamp}">
         <isset property="result.dir" />
@@ -110,17 +112,28 @@
     </path>
     <pathconvert targetos="unix" property="maven.cmd" refid="maven.cmd.id"/>
 
-    <target name="config.maven.settings" if="http.proxyHost"
-        description="Create maven settings file with proxy configuration if necessary">
+    <!-- Create settings.xml for maven -->
+    <target name="config.maven.settings" depends="config.maven.repository,config.maven.proxy">
+        <echo file="${work.dir}/settings.xml" append="true"><![CDATA[
+</settings>]]>
+            </echo>
+    </target>
+    <target name="config.maven.repository">
         <echo file="${work.dir}/settings.xml"><![CDATA[<settings>
+    <localRepository>${maven.repository}</localRepository>]]>
+            </echo>
+    </target>
+    <target name="config.maven.proxy" if="http.proxyHost"
+        depends="config.maven.repository"
+        description="Create maven settings file with proxy configuration if necessary">
+        <echo file="${work.dir}/settings.xml" append="true"><![CDATA[
     <proxies>
         <proxy>
             <protocol>http</protocol>
             <host>]]>${http.proxyHost}<![CDATA[</host>
             <port>]]>${http.proxyPort}<![CDATA[</port>
         </proxy>
-    </proxies>
-</settings>]]>
+    </proxies>]]>
         </echo>
     </target>
 
