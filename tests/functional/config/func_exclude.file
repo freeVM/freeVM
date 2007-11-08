@@ -96,13 +96,9 @@ functional/org/apache/harmony/test/func/api/javax/swing/JComponent/JComponentTes
 functional/org/apache/harmony/test/func/api/javax/swing/JComponent/JComponentAncestorListenerTest.xml 
 # H-4365
 functional/org/apache/harmony/test/func/api/java/io/FileReader/FileReaderTest.xml 
-# H-4377
-functional/org/apache/harmony/test/func/reg/jit/btest5704/Btest5704.xml
-functional/org/apache/harmony/test/func/reg/vm/btest4492/Btest4492.xml 
+ 
 # H-4366
 functional/org/apache/harmony/test/func/api/java/io/PipedInputStream/PipedInputStreamTest.xml
-# H-4187
-functional/org/apache/harmony/test/func/api/java/io/BufferedWriter/BufferedWriterTest.xml 
 # H-4434
 functional/org/apache/harmony/test/func/api/javax/print/F_PrintTest_01/F_PrintTest_01.xml
 # H-4435
@@ -115,13 +111,9 @@ functional/org/apache/harmony/test/func/networking/java/net/URL/OpenStream01/ope
 functional/org/apache/harmony/test/func/api/java/io/FileOutputStream/FileOutputStreamTest.xml
 # H-4415 (Bug in test, broken package of test launcher)
 functional/org/apache/harmony/test/func/reg/vm/btest5440/Btest5440.xml
-# H-4430
-functional/org/apache/harmony/test/func/reg/jit/btest4318/Btest4318.xml
 # H-4431
 functional/org/apache/harmony/test/func/reg/vm/btest5940/Btest5940_01.xml
 functional/org/apache/harmony/test/func/reg/vm/btest5940/Btest5940_02.xml
-# H-4432
-functional/org/apache/harmony/test/func/jit/HLO/inline/Exception/Exception9/Exception9.xml
 # H-4466 - test issue (Linux)
 functional/org/apache/harmony/test/func/vm/cli/agentpath/agentpath01/agentpath01.xml
 functional/org/apache/harmony/test/func/vm/cli/agentpath/agentpath02/agentpath02.xml
@@ -129,9 +121,6 @@ functional/org/apache/harmony/test/func/vm/cli/agentpath/agentpath03/agentpath03
 
 # H-2461
 functional/org/apache/harmony/test/func/reg/vm/btest4468/Btest4468.xml 
-
-# H-4294
-functional/org/apache/harmony/test/func/api/java/lang/F_StringTest_04/F_StringTest_04.xml
 
 # H-2741
 functional/org/apache/harmony/test/func/reg/vm/btest4925/Btest4925.xml 
@@ -154,12 +143,6 @@ functional/org/apache/harmony/test/func/api/java/beans/beancontext/TestBeanConte
 # H-4458 - test issue in testSplit()
 functional/org/apache/harmony/test/func/api/java/util/regex/Pattern/PatternTest.xml 
 
-# H-4278
-functional/org/apache/harmony/test/func/jit/HLO/lazyexc/Finalize/Finalize.xml
-
-# H-4267
-functional/org/apache/harmony/test/func/reg/jit/btest5014/Btest5014.xml
-
 # H-2034
 functional/org/apache/harmony/test/func/reg/vm/btest6607/Btest6607.xml 
 functional/org/apache/harmony/test/func/jit/HLO/dce/deadnative/DeadNativeTest.xml 
@@ -172,13 +155,6 @@ functional/org/apache/harmony/test/func/api/java/text/Collator/CollatorTest.xml
 
 # H-4001
 functional/org/apache/harmony/test/func/api/java/beans/beancontext/TestBeanContextMembership.xml 
-
-# H-2910
-functional/org/apache/harmony/test/func/api/java/security/F_PolicyTest_02/F_PolicyTest_02.xml 
-
-# H-1890
-functional/org/apache/harmony/test/func/api/java/beans/persistence/DecoderTest.xml 
-functional/org/apache/harmony/test/func/api/java/beans/persistence/EncoderDecoderTest.xml 
 
 # Interactive tests: 6 tests
 functional/org/apache/harmony/test/func/api/java/awt/Color/ColorInteractiveTest.xml
@@ -273,9 +249,6 @@ functional/org/apache/harmony/test/func/api/java/beans/introspector/useallmethod
 #  ERROR on RI: 22 tests
 # H-4440
 functional/org/apache/harmony/test/func/api/java/awt/EventQueue/EventQueueTest.xml
-# fixed
-functional/org/apache/harmony/test/func/api/java/lang/F_ClassLoaderTest_03/F_ClassLoaderTest_03.xml
-functional/org/apache/harmony/test/func/api/java/lang/reflect/Array/set/set10/set1010/set1010.xml
 # H-4361
 functional/org/apache/harmony/test/func/api/java/lang/ThreadGroup/destroy/destroy10/destroy1010/destroy1010.xml
 # H-4449
@@ -283,7 +256,6 @@ functional/org/apache/harmony/test/func/api/java/security/auth/F_AuthPermissionT
 # H-4320
 functional/org/apache/harmony/test/func/api/java/security/cert/F_CertificateFactoryTest_01/F_CertificateFactoryTest_01.xml
 functional/org/apache/harmony/test/func/api/java/security/cert/F_CertificateFactoryTest_02/F_CertificateFactoryTest_02.xml
-functional/org/apache/harmony/test/func/api/java/security/cert/F_CertificateTest_01/F_CertificateTest_01.xml
 # H-4417
 functional/org/apache/harmony/test/func/api/java/security/cert/F_CertPathTest_03/F_CertPathTest_03.xml
 # fixed
