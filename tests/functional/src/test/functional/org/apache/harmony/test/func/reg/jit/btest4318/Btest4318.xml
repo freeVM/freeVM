@@ -41,6 +41,7 @@
     <Runner ID="ExecuteRegression">
         <Param name="toRun" value="hang">
             <Option name="~opt"/>
+            <Option name="~crashString=~PASSED"/>
             <Option name="org.apache.harmony.test.func.reg.jit.btest4318.Btest4318"/>
         </Param>
     </Runner>
