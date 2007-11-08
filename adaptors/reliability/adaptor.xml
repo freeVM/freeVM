@@ -56,7 +56,7 @@
 
         <!-- remember start time -->
         <tstamp>
-            <format property="time.stamp" pattern="yyyy-MM-dd_hhmm" />
+            <format property="time.stamp" pattern="yyyy-MM-dd_HHmm" />
         </tstamp>
 
         <!-- running tests -->
@@ -69,6 +69,7 @@
             <sysproperty key="work.dir"         value="${work.dir}/temp"/>
             <sysproperty key="report.dir"       value="${report.dir}/${time.stamp}"/>
             <sysproperty key="test.classes.dir" value="${work.dir}/classes"/>
+            <sysproperty key="properties.file"  value="${scripts.dir}/properties.xml"/>
         </exec-ant>
 
         <!-- copy results to results/reliability/last directory -->

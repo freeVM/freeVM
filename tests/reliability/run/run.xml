@@ -58,9 +58,17 @@
     <!-- Path to a file with test-specific settings -->
     <property name="config.file" location="run.normal.mode.settings.xml"/> 
 	
-    <!-- Path to a exclude file  --> 
+    <!-- Path to a common exclude file  --> 
     <property name="exclude.file" location="exclude"/> 
     <property file="${exclude.file}"/>
+
+    <!-- architecture name, ${hy.platform} definition -->
+    <property name="properties.file" location="../../../scripts/properties.xml" />
+    <import file="${properties.file}"/>
+
+    <!-- Path to a platform exclude file  --> 
+    <property name="platform.exclude.file" location="exclude.${hy.platform}" />
+    <property file="${platform.exclude.file}"/>    
 
     <!-- a path to the root of the suite - i.e. directory under which there is src/ subdirectory -->
     <property name="test.root.dir" location=".." /> 
@@ -152,7 +160,7 @@
 	    <if>
 		<equals arg1="${@{test}.res.code}" arg2="@{expected-code}"/> 
 		<then>		
-<echo file="${report.dir}/TEST-${test.package.base}@{test}.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
+<echo file="${report.dir}/TEST-${test.package.base}.@{test}.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
 <testsuite errors="0" failures="0" name="@{test}" tests="1" time="0.01">
 <testcase classname="@{test}" name="test" time="0.1"/> 
 <system-out><![CDATA[@out]!]></system-out> 
@@ -162,15 +170,15 @@
 		    <if>
 			<isset property="@{test}.tmp.out"/> 
 		    <then>	
-	        	<replace file="${report.dir}/TEST-${test.package.base}@{test}.xml" token="@out]!" value="${@{test}.tmp.out}]" />
+	        	<replace file="${report.dir}/TEST-${test.package.base}.@{test}.xml" token="@out]!" value="${@{test}.tmp.out}]" />
 		    </then>
 		    <else>
-			<replace file="${report.dir}/TEST-${test.package.base}@{test}.xml" token="@out]!" value="]" /> 
+			<replace file="${report.dir}/TEST-${test.package.base}.@{test}.xml" token="@out]!" value="]" /> 
 		    </else>
 		    </if>	
 		</then>
 		<else>
-<echo file="${report.dir}/TEST-${test.package.base}@{test}.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
+<echo file="${report.dir}/TEST-${test.package.base}.@{test}.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8" ?> 
 <testsuite errors="0" failures="1" name="@{test}" tests="1" time="0.01"> 
 <testcase classname="@{test}" name="test" time="0.1"><error message="FAILED"> @@@d </error></testcase> 
 </testsuite>]]> 
@@ -182,21 +190,21 @@
 		    <if>                            
 			<isset property="@{test}.tmp.out"/>
 		    <then>                          
-			<replace file="${report.dir}/TEST-${test.package.base}@{test}.xml" token="@@@d" value="${@{test}.tmp.out}" />
+			<replace file="${report.dir}/TEST-${test.package.base}.@{test}.xml" token="@@@d" value="${@{test}.tmp.out}" />
 		    </then>                         
 		    <else>                          
-			<replace file="${report.dir}/TEST-${test.package.base}@{test}.xml" token="@@@d" value="" /> 
+			<replace file="${report.dir}/TEST-${test.package.base}.@{test}.xml" token="@@@d" value="" /> 
 		    </else>
 		    </if>
 																										    
 		</else>
 	    </if>
 
-	    <!--replace file="${report.dir}/TEST-${test.package.base}@{test}.xml" token="@fff" value="${failures.@{test}}" /> 
-	    <replace file="${report.dir}/TEST-${test.package.base}@{test}.xml" token="@eee" value="${errormessage.@{test}}" /--> 
+	    <!--replace file="${report.dir}/TEST-${test.package.base}.@{test}.xml" token="@fff" value="${failures.@{test}}" /> 
+	    <replace file="${report.dir}/TEST-${test.package.base}.@{test}.xml" token="@eee" value="${errormessage.@{test}}" /--> 
 			
             <!--loadfile property="@{test}.tmp.out" srcFile="${report.dir}/@{test}.txt" />
-	    <replace file="${report.dir}/TEST-${test.package.base}@{test}.xml" token="@out]!" value="${@{test}.tmp.out}]" /-->
+	    <replace file="${report.dir}/TEST-${test.package.base}.@{test}.xml" token="@out]!" value="${@{test}.tmp.out}]" /-->
 																										    				
 	    <!--echo message="failed: ${failed}"/-->
 	    
