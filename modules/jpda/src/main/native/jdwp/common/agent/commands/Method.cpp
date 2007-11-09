@@ -261,7 +261,7 @@ Method::IsObsoleteHandler::Execute(JNIEnv *jni) throw(AgentException)
             << ", classSignature=" << JDWP_CHECK_NULL(classSignature));
     }
 #endif
-    jboolean is_obsolete;
+    jboolean is_obsolete = JNI_FALSE;
 
     jvmtiError err;
     JVMTI_TRACE(err, GetJvmtiEnv()->IsMethodObsolete(methodID, &is_obsolete));
