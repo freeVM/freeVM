@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                   External Libraries Fetching Implementation
+     ====================================================================== -->
+<project name="SVN" default="checkout-all" basedir=".">
+
+    <!-- temporary file to store intermediate results of iteration -->
+    <property name="tmp.file" value="tmp.txt" />
+
+    <propertyset id="required.pops">
+        <propertyref prefix="parameters.svn" />
+        <propertyref name="svn.xml" />
+        <propertyref name="subcomponent" />
+        <propertyref name="checkouts.dir" />
+    </propertyset>
+
+    <target name="checkout-all">
+        <!-- default properties file -->
+        <property name="props.file" value="parameters.xml" />
+
+        <xmlproperty file="${props.file}"
+                     collapseAttributes="true"
+                     semanticAttributes="true" />
+
+        <!-- flash propertyset as string to file for iteration   -->
+        <!-- the string has the following format:                -->
+        <!--     "name1=url1, name2=url2 ..."                    -->
+        <propertyset id="tmp.id">
+            <propertyref regex="parameters\.svn\..+\.url$" />
+            <regexpmapper from="parameters\.svn\.(.+)\.url$" to="\1" />
+        </propertyset>
+        <property name="tmp.str" refid="tmp.id" />
+        <echo message="${tmp.str}" file="${tmp.file}" />
+
+        <basename file="${basedir}" property="subcomponent" />
+
+        <!-- iterate over propertyset fetching required dependencies -->
+        <ant antfile="${svn.xml}" target="-iterate" inheritall="false">
+            <propertyset refid="required.pops" />
+        </ant>
+
+        <delete file="${tmp.file}" />
+    </target>
+
+    <!-- ============================
+        Targets for iteration over propertyset of svn projects
+        ============================ -->
+    <target name="-checkout-next" if="donext">
+        <!-- make ant iterate over propertyset:                   -->
+        <!-- load a 'name' of dependency from temporary file and  -->
+        <!-- flash the 'rest' of dependencies back to the file.   -->
+        <loadproperties srcfile="${tmp.file}">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^([^=]+)=.*" replace="libname=\1" />
+                </tokenfilter>
+            </filterchain>
+        </loadproperties>
+        <loadproperties srcfile="${tmp.file}">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^[^=]+=[^,]+,? ?(.*)$"
+                                  replace="rest=\1" />
+                </tokenfilter>
+            </filterchain>
+        </loadproperties>
+        <echo message="${rest}" file="${tmp.file}" />
+
+        <!-- do check out -->
+        <antcall target="-checkout-if-necessary">
+            <propertyset>
+                <propertyset refid="required.pops" />
+                <globmapper from="parameters.svn.${libname}*" to="lib*" />
+            </propertyset>
+        </antcall>
+
+        <ant antfile="${svn.xml}" target="-iterate" inheritall="false">
+            <propertyset refid="required.pops" />
+        </ant>
+    </target>
+
+    <target name="-iterate">
+        <!-- check if next iteration should be done -->
+        <condition property="donext">
+            <length file="${tmp.file}" length="0" when="greater" />
+        </condition>
+        <ant antfile="${svn.xml}" target="-checkout-next" inheritAll="false">
+            <propertyset>
+                <propertyset refid="required.pops" />
+                <propertyref name="donext" />
+            </propertyset>
+        </ant>
+    </target>
+
+    <!--                                                  -->
+    <!-- DO TO: describe svn properties in parameters.xml -->
+    <!--                                                  -->
+    <target name="-init">
+
+        <!--TODO: detect if the dir indeed required svn url -->
+        <condition property="need.to.checkout">
+            <not>
+                <available file="${checkouts.dir}/${libname}" />
+            </not>
+        </condition>
+
+        <!--TODO: detect infra root -->
+        <condition property="url"
+                   value="http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0/${lib.url}"
+                   else="${lib.url}">
+            <!--FIXME: need regexp -->
+            <not>
+                <contains string="${lib.url}" substring="http" />
+            </not>
+        </condition>
+    </target>
+
+    <target name="-checkout-if-necessary" if="need.to.checkout" depends="-init">
+
+        <mkdir dir="${checkouts.dir}/${libname}" />
+
+        <exec executable="svn" failonerror="true">
+            <arg line="co ${url} ${checkouts.dir}/${libname}" />
+        </exec>
+    </target>
+</project>
+
