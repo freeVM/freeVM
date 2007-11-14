@@ -113,15 +113,28 @@
     <!--                                                  -->
     <target name="-init">
 
-        <!--TODO: detect if the dir indeed required svn url -->
-        <condition property="need.to.checkout">
-            <not>
-                <available file="${checkouts.dir}/${libname}" />
-            </not>
+        <property name="dir.to.checkout" value="${checkouts.dir}/${libname}" />
+
+        <!-- get dir url -->
+        <exec executable="svn" dir="${checkouts.dir}">
+            <arg line="info ${libname}" />
+            <redirector outputproperty="dir.url" errorproperty="dev.null">
+                <outputfilterchain>
+                    <linecontains>
+                        <contains value="URL: " />
+                    </linecontains>
+                    <tokenfilter>
+                        <replacestring from="URL: " to="" />
+                    </tokenfilter>
+                </outputfilterchain>
+            </redirector>
+        </exec>
+        <condition property="is.under.svn">
+            <length string="${dir.url}" trim="true" when="greater" length="0" />
         </condition>
 
         <!--TODO: detect infra root -->
-        <condition property="url"
+        <condition property="svn.url"
                    value="http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0/${lib.url}"
                    else="${lib.url}">
             <!--FIXME: need regexp -->
@@ -129,14 +142,43 @@
                 <contains string="${lib.url}" substring="http" />
             </not>
         </condition>
+
+        <fail message="Existing dir it is not under SVN: ${dir.to.checkout}">
+            <condition>
+                <and>
+                    <available file="${dir.to.checkout}" />
+                    <not>
+                        <isset property="is.under.svn" />
+                    </not>
+                </and>
+            </condition>
+        </fail>
+
+        <fail message="SVN urls conflict. Expected: ${svn.url}, actual: ${dir.url}">
+            <condition>
+                <and>
+                    <available file="${dir.to.checkout}" />
+                    <isset property="is.under.svn" />
+                    <not>
+                        <equals arg1="${svn.url}" arg2="${dir.url}" />
+                    </not>
+                </and>
+            </condition>
+        </fail>
+
+        <condition property="need.to.checkout">
+            <not>
+                <available file="${dir.to.checkout}" />
+            </not>
+        </condition>
     </target>
 
     <target name="-checkout-if-necessary" if="need.to.checkout" depends="-init">
 
-        <mkdir dir="${checkouts.dir}/${libname}" />
+        <mkdir dir="${dir.to.checkout}" />
 
         <exec executable="svn" failonerror="true">
-            <arg line="co ${url} ${checkouts.dir}/${libname}" />
+            <arg line="co ${svn.url} ${dir.to.checkout}" />
         </exec>
     </target>
 </project>
