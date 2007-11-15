@@ -45,7 +45,7 @@
         value="${work.dir}/geronimo-${geronimo.version}"/>
 
     <condition property="geronimo.exists">
-        <available file="${work.dir}/geronimo-1.2-beta"/>
+        <available file="${work.dir}/geronimo-1.2-beta/pom.xml"/>
     </condition>
 
     <condition property="maven.exists">
