@@ -94,7 +94,18 @@
         <mkdir dir="${snapshot.results.dir}" />
     </target>
 
-    <target name="download.snapshot" depends="-setup-proxy">
+    <!--                                                   -->
+    <!--            Snapshot Downloading                   -->
+    <!-- 'usetimestamp' in get task works only for HTTP    -->
+    <!-- so all targets below are required to avoid        -->
+    <!-- snapshot downloading in case of others protocols  -->
+    <!-- on each CC cycle that in turn trigges all         -->
+    <!-- dependent suites                                  -->
+    <target name="download.snapshot" depends="-download.http,-download.file" />
+
+    <target name="-download.http"
+            if="http.url"
+            depends="-define-protocol,-setup-proxy">
 
         <mkdir dir="${snapshot}" />
         <get src="${downloads.url}/${snapshot.file}"
@@ -103,13 +114,60 @@
              verbose="true" />
     </target>
 
+    <target name="-setup-proxy" if="http.proxyHost">
+        <setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+    </target>
+
+    <target name="-download.file"
+            if="is.file.uptodate"
+            depends="-define-protocol">
+
+        <mkdir dir="${snapshot}" />
+        <copy file="${file.url}/${snapshot.file}"
+              tofile="${snapshot}/${snapshot.file}" />
+    </target>
+
+    <target name="-define-protocol">
+
+        <!-- extract protocol from url by setting <schema>.url' property -->
+        <tempfile property="temp.file" />
+        <echo file="${temp.file}" message="${downloads.url}" />
+        <replaceregexp file="${temp.file}" match="://" replace=".url=" />
+        <loadproperties srcFile="${temp.file}" />
+        <delete file="${temp.file}" />
+
+        <fail message="Unsupported URL protocol: ${downloads.url}">
+            <condition>
+                <not>
+                    <or>
+                        <isset property="http.url" />
+                        <isset property="file.url" />
+                    </or>
+                </not>
+            </condition>
+        </fail>
+
+        <!-- check file's timestamp -->
+        <condition property="is.file.uptodate">
+            <and>
+                <isset property="file.url" />
+                <or>
+                    <not>
+                        <available file="${snapshot}/${snapshot.file}" />
+                    </not>
+                    <uptodate srcfile="${snapshot}/${snapshot.file}"
+                              targetfile="${file.url}" />
+                </or>
+            </and>
+        </condition>
+    </target>
+
+    <!--                                   -->
+    <!--                                   -->
+    <!--                                   -->
     <target name="-unzip" if="is.zip">
         <delete dir="${snapshot}/hdk" />
         <unzip src="${snapshot}/${snapshot.file}" dest="${snapshot}" />
-    </target>
-
-    <target name="-setup-proxy" if="http.proxyHost">
-        <setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
     </target>
 
     <target name="-gunzip" unless="is.zip">
