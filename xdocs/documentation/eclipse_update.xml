@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Apache Harmony Eclipse Plug-in</title>
+  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+ </properties>
+
+<body>
+  <section name="Introduction">
+    <p>
+      To use Apache Harmony as an installed JRE in Eclipse requires an
+      additional plug-in.  The following instructions show the installation
+      process using screen shots from Eclipse 3.3 running on Windows XP. 
+    </p>
+
+    <p>
+      First you must download and install the Apache Harmony support plug-in
+      from our Eclipse update site,
+<pre>
+http://harmony.apache.org/eclipse/update
+</pre>
+    </p>
+    <p>
+      Start by defining the update site as a remote location in the Eclipse
+      download manager:
+      <br/>
+      <br/>
+      <img src="../images/eclipse_update_1.png" alt="Open download manager"/>
+    </p>
+    <p>
+      The plug-in is a new feature:
+      <br/>
+      <br/>
+      <img src="../images/eclipse_update_2.png" alt="Select new feature"/>
+    </p>
+    <p>
+      Define the Apache Harmony update site as a new Remote Site:
+      <br/>
+      <br/>
+      <img src="../images/eclipse_update_3.png" alt="New remote site"/>
+    </p>
+    <p>
+      Enter a name of your choice, and the URL
+      <code>http://harmony.apache.org/eclipse/update</code>
+      <br/>
+      <br/>
+      <img src="../images/eclipse_update_4.png" alt="Define name and URL"/>
+    </p>
+    <p>
+      Click <b>OK</b> and <b>Next</b>, then after contacting the Apache
+      Harmony website you are presented with features to install.  Select the
+      latest Harmony JRE support feature:
+      <br/>
+      <br/>
+      <img src="../images/eclipse_update_5.png" alt="Select feature"/>
+    </p>
+    <p>
+      The plug-in is offered under the Apache License v2, which you must
+      explicitly accept before installing:
+      <br/>
+      <br/>
+      <img src="../images/eclipse_update_6.png" alt="Accept license"/>
+    </p>
+    <p>
+      Click <b>Next</b> and <b>Finish</b>.  Note that Apache Harmony do not
+      sign our plug-ins:
+      <br/>
+      <br/>
+      <img src="../images/eclipse_update_7.png" alt="Select install"/>
+    </p>
+    <p>
+      Finally, restart Eclipse to complete the installation of the plug-in:
+      <br/>
+      <br/>
+      <img src="../images/eclipse_update_8.png" alt="Restart Eclipse"/>
+    </p>
+  </section>
+
+<section name="Installing a Harmony JRE">
+  <p>
+    Once the Apache Harmony JRE support plug-in is installed, you can define a
+    new installed JRE type as follows. 
+  </p>
+  <p>
+    From the <b>Windows &gt; Preferences...</b> menu select <b>Installed
+    JREs</b>:
+    <br/>
+    <br/>
+    <img src="../images/eclipse_update_9.png" alt="Installed JREs"/>
+  </p>
+  <p>
+    There is now a new JRE type available called <b>Apache Harmony VM</b>:
+    <br/>
+    <br/>
+    <img src="../images/eclipse_update_10.png" alt="New install type"/>
+  </p>
+  <p>
+    Browse to the Harmony JRE home directory:
+    <br/>
+    <br/>
+    <img src="../images/eclipse_update_11.png" alt="Point to home directory"/>
+  </p>
+  <p>
+    The dialog is filled with the Harmony JRE components.  Click
+    <b>OK</b> and you can now develop against, and run with
+    Apache Harmony.
+    <br/>
+    <br/>
+    <img src="../images/eclipse_update_12.png" alt="Completed install"/>
+  </p>
+ 
+</section>
+
+</body>
+</document>
