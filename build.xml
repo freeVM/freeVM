@@ -121,9 +121,9 @@
            </fileset>
       </copy>
 
-      <copy file="${docs.src}/site.css" todir="${docs.dest}/"/>
-      <copy file="${docs.src}/screen.css" todir="${docs.dest}/"/>
-      <copy file="${docs.src}/print.css" todir="${docs.dest}/"/>
+      <copy file="${docs.src}/stylesheets/site.css" todir="${docs.dest}/css/"/>
+      <copy file="${docs.src}/stylesheets/screen.css" todir="${docs.dest}/css/"/>
+      <copy file="${docs.src}/stylesheets/print.css" todir="${docs.dest}/css/"/>
       <copy file="${docs.src}/.htaccess" todir="${docs.dest}/"/>
 
       <fixcrlf srcdir="${docs.dest}" includes="**/*.html" />

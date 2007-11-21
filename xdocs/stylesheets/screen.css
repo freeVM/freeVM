@@ -16,15 +16,9 @@
  */
 
 #navigationmenu {
-    position: absolute;
-    left: 10px;
+	clear: left;
+    float: left;
     width: 20%;
-    clear: both;
-    margin-top: 0.67em;
-}
-
-h1 {
-    margin-top: 0.67em;
 }
 
 #pageHeader {
@@ -36,8 +30,20 @@ h1 {
 }
 
 #top { /* Main Content */
-    margin-top: 5px;
-    margin-left: 21%;
-    width: 79%;
+	clear: right;
+	float: right;
+    width: 80%;
+}
+
+h1 {
+	margin-top: 0.67em;
+}
+
+#navigationmenu {
+	margin-top: 0.67em;
+}
+
+
+#pageFooter {
     clear: both;
 }

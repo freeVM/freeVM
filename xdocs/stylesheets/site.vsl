@@ -247,9 +247,9 @@ limitations under the License.
             #set ($csspath = "${relativePath}/")
         #end
 
-        <link rel="stylesheet" type="text/css" href="${csspath}site.css" media="all" />
-        <link rel="stylesheet" type="text/css" href="${csspath}screen.css" media="screen" />
-        <link rel="stylesheet" type="text/css" href="${csspath}print.css" media="print" />
+        <link rel="stylesheet" type="text/css" href="${csspath}css/site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="${csspath}css/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="${csspath}css/print.css" media="print" />
 
             #if ($root.getChild("properties").getChild("style"))
                 $root.getChild("properties").getChild("style")
