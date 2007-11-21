@@ -35,6 +35,7 @@
         <mkdir dir="${target.dir}/classes" />
 
         <javac sourcepath=""
+               debug="true"
                srcdir="${src.java}"
         	   nowarn="on"
                destdir="${target.dir}/classes">
