@@ -1,0 +1,334 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Performance</title>
+
+                        
+                        
+        <link rel="stylesheet" type="text/css" href="../../site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../../screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../print.css" media="print" />
+
+                        
+        </head>
+
+        <body>
+            <div id="pageHeader">
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="../../images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement -->
+            <a href="http://www.apachecon.com/2007/US/index.html">
+                <img id="advertisement"
+                     src="http://www.apache.org/ads/ApacheCon/2007-usa-234x60.png"
+                     width="234" height="60"
+                     alt="ApacheCon US 2007" /></a>
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../license.html">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../download.cgi">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../sitemap.html">Sitemap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../hdk.html">HDK</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Foundation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/sponsorship.html ">Sponsorship</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/thanks.html ">Thanks</a>
+</li>
+           
+                        
+        
+        </ul>
+                </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                                        <h1>
+      <a name="Performance">Performance</a>
+    </h1>
+                            
+    <h2>
+        <a name="SciMark - detailed results">SciMark - detailed results</a>
+    </h2>
+      
+                        <a href="../../performance.html">Back to performance page</a>
+                                <ul>
+   <li>
+     <a href="#win32">win32</a>
+   </li>
+   <li>
+     <a href="#linux32">linux32</a>
+   </li>
+   <li>
+     <a href="#win64">win64</a>
+   </li>
+   <li>
+     <a href="#linux64">linux64</a>
+   </li>
+ </ul>
+                                <a name="win32" />
+                                <p />
+                                <font color="green">win32 : 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE SP1</font>
+                                <p />
+                                <img src="../../images/scimark_win32.png" width="600" height="370" align="">
+                                <p>
+<table border="1">
+<tr><td>revision</td><td>SciMark:CompositeScore</td><td>FFT</td><td>SOR</td><td>MonteCarlo</td><td>SparseMatmult</td><td>LU</td><td nowrap="true">cmdline</td></tr>
+<tr><td>571358</td><td><font color="blue">281.53</font></td><td><font color="blue">336.21</font></td><td><font color="blue">310.60</font></td><td><font color="blue">42.53</font></td><td><font color="blue">251.07</font></td><td><font color="blue">467.25</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>572223</td><td><font color="blue">278.83</font></td><td><font color="blue">336.21</font></td><td><font color="blue">312.97</font></td><td><font color="blue">54.01</font></td><td><font color="blue">244.07</font></td><td><font color="blue">446.88</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>575152</td><td><font color="blue">272.27</font></td><td><font color="blue">336.21</font></td><td><font color="blue">310.60</font></td><td><font color="blue">53.35</font></td><td><font color="blue">220.64</font></td><td><font color="blue">440.55</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>578272</td><td><font color="blue">279.81</font></td><td><font color="blue">336.34</font></td><td><font color="blue">312.97</font></td><td><font color="blue">54.03</font></td><td><font color="blue">212.14</font></td><td><font color="blue">483.55</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>578627</td><td><font color="blue">279.76</font></td><td><font color="blue">338.29</font></td><td><font color="blue">310.74</font></td><td><font color="blue">54.03</font></td><td><font color="blue">212.07</font></td><td><font color="blue">483.67</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>581128</td><td><font color="blue">283.65</font></td><td><font color="blue">336.21</font></td><td><font color="blue">310.74</font></td><td><font color="blue">54.72</font></td><td><font color="blue">269.72</font></td><td><font color="blue">446.88</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>584034</td><td><font color="blue">284.36</font></td><td><font color="blue">336.21</font></td><td><font color="blue">312.97</font></td><td><font color="blue">54.36</font></td><td><font color="blue">268.03</font></td><td><font color="blue">450.22</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>588777</td><td><font color="blue">248.89</font></td><td><font color="blue">226.94</font></td><td><font color="blue">230.44</font></td><td><font color="blue">67.11</font></td><td><font color="blue">273.07</font></td><td><font color="blue">446.88</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>591876</td><td><font color="blue">250.43</font></td><td><font color="blue">227.83</font></td><td><font color="blue">231.74</font></td><td><font color="blue">67.38</font></td><td><font color="blue">278.30</font></td><td><font color="blue">446.88</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>595538</td><td><font color="blue">274.71</font></td><td><font color="blue">338.29</font></td><td><font color="blue">310.60</font></td><td><font color="blue">66.58</font></td><td><font color="blue">220.71</font></td><td><font color="blue">437.35</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+</table>
+</p>
+                                <p />
+                                <a name="linux32" />
+                                <font color="green">linux32 : 2xXeon (Woodcrest) 2.66 Ghz / 12 Gb DDR2 / SLES 9 32-bit</font>
+                                <p />
+                                <img src="../../images/scimark_lnx32.png" width="600" height="370" align="">
+                                <p>
+<table border="1">
+<tr><td>revision</td><td>SciMark:CompositeScore</td><td>FFT</td><td>SOR</td><td>MonteCarlo</td><td>SparseMatmult</td><td>LU</td><td nowrap="true">cmdline</td></tr>
+<tr><td>569232</td><td><font color="blue">230.32</font></td><td><font color="blue">328.85</font></td><td><font color="blue">139.26</font></td><td><font color="blue">65.19</font></td><td><font color="blue">171.44</font></td><td><font color="blue">446.88</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>571358</td><td><font color="blue">229.03</font></td><td><font color="blue">326.51</font></td><td><font color="blue">138.67</font></td><td><font color="blue">63.64</font></td><td><font color="blue">173.53</font></td><td><font color="blue">442.77</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>574120</td><td><font color="blue">237.14</font></td><td><font color="blue">331.10</font></td><td><font color="blue">139.32</font></td><td><font color="blue">63.79</font></td><td><font color="blue">167.32</font></td><td><font color="blue">484.16</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>577965</td><td><font color="blue">248.93</font></td><td><font color="blue">322.89</font></td><td><font color="blue">226.38</font></td><td><font color="blue">62.69</font></td><td><font color="blue">186.42</font></td><td><font color="blue">446.26</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>580537</td><td><font color="blue">250.90</font></td><td><font color="blue">324.21</font></td><td><font color="blue">230.03</font></td><td><font color="blue">62.95</font></td><td><font color="blue">191.87</font></td><td><font color="blue">445.44</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>582062</td><td><font color="blue">250.36</font></td><td><font color="blue">322.89</font></td><td><font color="blue">228.43</font></td><td><font color="blue">62.92</font></td><td><font color="blue">191.71</font></td><td><font color="blue">445.85</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>589486</td><td><font color="blue">248.13</font></td><td><font color="blue">320.99</font></td><td><font color="blue">226.22</font></td><td><font color="blue">62.20</font></td><td><font color="blue">189.68</font></td><td><font color="blue">441.56</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>591218</td><td><font color="blue">250.87</font></td><td><font color="blue">324.09</font></td><td><font color="blue">228.59</font></td><td><font color="blue">64.31</font></td><td><font color="blue">191.12</font></td><td><font color="blue">446.26</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>593416</td><td><font color="blue">220.68</font></td><td><font color="blue">224.31</font></td><td><font color="blue">226.30</font></td><td><font color="blue">46.59</font></td><td><font color="blue">171.61</font></td><td><font color="blue">434.59</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>595841</td><td><font color="blue">261.92</font></td><td><font color="blue">327.25</font></td><td><font color="blue">312.37</font></td><td><font color="blue">60.98</font></td><td><font color="blue">170.67</font></td><td><font color="blue">438.34</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+</table>
+</p>
+                                <p />
+                                <a name="win64" />
+                                <font color="green">win64 (32bit build) : 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE x64 SP1</font>
+                                <p />
+                                <img src="../../images/scimark_win64.png" width="600" height="370" align="">
+                                <p>
+<table border="1">
+<tr><td>revision</td><td>SciMark:CompositeScore</td><td>FFT</td><td>SOR</td><td>MonteCarlo</td><td>SparseMatmult</td><td>LU</td><td nowrap="true">cmdline</td></tr>
+<tr><td>569232</td><td><font color="blue">282.00</font></td><td><font color="blue">338.29</font></td><td><font color="blue">312.97</font></td><td><font color="blue">42.53</font></td><td><font color="blue">252.56</font></td><td><font color="blue">463.66</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>571358</td><td><font color="blue">281.90</font></td><td><font color="blue">338.29</font></td><td><font color="blue">313.12</font></td><td><font color="blue">42.10</font></td><td><font color="blue">252.56</font></td><td><font color="blue">463.43</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>575152</td><td><font color="blue">275.22</font></td><td><font color="blue">336.21</font></td><td><font color="blue">310.74</font></td><td><font color="blue">53.69</font></td><td><font color="blue">228.78</font></td><td><font color="blue">446.67</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>578272</td><td><font color="blue">284.23</font></td><td><font color="blue">334.15</font></td><td><font color="blue">312.97</font></td><td><font color="blue">54.03</font></td><td><font color="blue">220.64</font></td><td><font color="blue">499.34</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>578627</td><td><font color="blue">283.50</font></td><td><font color="blue">334.15</font></td><td><font color="blue">310.74</font></td><td><font color="blue">53.69</font></td><td><font color="blue">219.58</font></td><td><font color="blue">499.34</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>581128</td><td><font color="blue">270.67</font></td><td><font color="blue">334.15</font></td><td><font color="blue">313.12</font></td><td><font color="blue">53.69</font></td><td><font color="blue">212.07</font></td><td><font color="blue">440.35</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>584034</td><td><font color="blue">284.02</font></td><td><font color="blue">336.34</font></td><td><font color="blue">313.12</font></td><td><font color="blue">54.03</font></td><td><font color="blue">269.72</font></td><td><font color="blue">446.88</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>588777</td><td><font color="blue">249.16</font></td><td><font color="blue">226.88</font></td><td><font color="blue">230.44</font></td><td><font color="blue">67.11</font></td><td><font color="blue">274.71</font></td><td><font color="blue">446.67</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>591876</td><td><font color="blue">250.23</font></td><td><font color="blue">226.88</font></td><td><font color="blue">230.44</font></td><td><font color="blue">67.11</font></td><td><font color="blue">276.50</font></td><td><font color="blue">450.22</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>595538</td><td><font color="blue">274.69</font></td><td><font color="blue">336.21</font></td><td><font color="blue">310.74</font></td><td><font color="blue">66.58</font></td><td><font color="blue">219.58</font></td><td><font color="blue">440.35</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+</table>
+</p>
+                                <p />
+                                <a name="linux64" />
+                                <font color="green">linux64 : 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / SLES 9 64-bit</font>
+                                <p />
+                                <img src="../../images/scimark_lnx64.png" width="600" height="370" align="">
+                                <p>
+<table border="1">
+<tr><td>revision</td><td>SciMark:CompositeScore</td><td>FFT</td><td>SOR</td><td>MonteCarlo</td><td>SparseMatmult</td><td>LU</td><td nowrap="true">cmdline</td></tr>
+<tr><td>566908</td><td><font color="blue">371.80</font></td><td><font color="blue">348.71</font></td><td><font color="blue">324.76</font></td><td><font color="blue">77.99</font></td><td><font color="blue">419.59</font></td><td><font color="blue">687.95</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>569232</td><td><font color="blue">370.77</font></td><td><font color="blue">342.68</font></td><td><font color="blue">324.60</font></td><td><font color="blue">79.04</font></td><td><font color="blue">421.27</font></td><td><font color="blue">686.24</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>573431</td><td><font color="blue">371.79</font></td><td><font color="blue">340.81</font></td><td><font color="blue">325.73</font></td><td><font color="blue">78.44</font></td><td><font color="blue">426.53</font></td><td><font color="blue">687.46</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>580537</td><td><font color="blue">371.39</font></td><td><font color="blue">351.38</font></td><td><font color="blue">324.28</font></td><td><font color="blue">78.67</font></td><td><font color="blue">416.64</font></td><td><font color="blue">685.99</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>582062</td><td><font color="blue">368.26</font></td><td><font color="blue">346.08</font></td><td><font color="blue">324.11</font></td><td><font color="blue">78.88</font></td><td><font color="blue">409.40</font></td><td><font color="blue">682.83</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>588488</td><td><font color="blue">370.31</font></td><td><font color="blue">345.81</font></td><td><font color="blue">324.44</font></td><td><font color="blue">77.94</font></td><td><font color="blue">419.33</font></td><td><font color="blue">684.05</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>591218</td><td><font color="blue">371.04</font></td><td><font color="blue">344.17</font></td><td><font color="blue">323.32</font></td><td><font color="blue">78.88</font></td><td><font color="blue">420.88</font></td><td><font color="blue">687.95</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>593416</td><td><font color="blue">369.26</font></td><td><font color="blue">347.32</font></td><td><font color="blue">325.40</font></td><td><font color="blue">66.77</font></td><td><font color="blue">421.79</font></td><td><font color="blue">685.02</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xms1500M -Xmx1500M -Xem:server_GCv5</td></tr>
+<tr><td>596190</td><td><font color="blue">370.79</font></td><td><font color="blue">348.85</font></td><td><font color="blue">324.28</font></td><td><font color="blue">74.90</font></td><td><font color="blue">419.72</font></td><td><font color="blue">686.24</font></td><td nowrap="true"> -Xem:server</td></tr>
+</table>
+</p>
+                                <p />
+                   
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                
+                                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special"><em>
+                Copyright &#169; 2003-2007, The Apache Software Foundation
+            </em></div>
+
+            <!-- Google analytics tracker code -->
+            <script
+                src="http://www.google-analytics.com/urchin.js"
+                type="text/javascript" />
+            <script type="text/javascript">
+              _uacct = "UA-1973333-3";
+              urchinTracker();
+            </script>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

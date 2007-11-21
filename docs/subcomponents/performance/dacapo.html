@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Performance</title>
+
+                        
+                        
+        <link rel="stylesheet" type="text/css" href="../../site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../../screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../print.css" media="print" />
+
+                        
+        </head>
+
+        <body>
+            <div id="pageHeader">
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="../../images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement -->
+            <a href="http://www.apachecon.com/2007/US/index.html">
+                <img id="advertisement"
+                     src="http://www.apache.org/ads/ApacheCon/2007-usa-234x60.png"
+                     width="234" height="60"
+                     alt="ApacheCon US 2007" /></a>
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../license.html">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../download.cgi">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../sitemap.html">Sitemap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../hdk.html">HDK</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Foundation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/sponsorship.html ">Sponsorship</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/thanks.html ">Thanks</a>
+</li>
+           
+                        
+        
+        </ul>
+                </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                                        <h1>
+      <a name="Performance">Performance</a>
+    </h1>
+                            
+    <h2>
+        <a name="Dacapo - detailed results">Dacapo - detailed results</a>
+    </h2>
+      
+                        <a href="../../performance.html">Back to performance page</a>
+                                <p />
+                                <ul>
+   <li>
+     <a href="#win32">win32</a>
+   </li>
+   <li>
+     <a href="#linux32">linux32</a>
+   </li>
+   <li>
+     <a href="#win64">win64</a>
+   </li>
+   <li>
+     <a href="#linux64">linux64</a>
+   </li>
+ </ul>
+                                <a name="win32" />
+                                <font color="green">win32 : 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE SP1</font>
+                                <p />
+                                <img src="../../images/dacapo_win32.png" width="600" height="370" align="">
+                                <p>
+<table border="1">
+<tr><td>revision</td><td>DaCapo:geomean</td><td>antlr</td><td>bloat</td><td>chart</td><td>eclipse</td><td>fop</td><td>hsqldb</td><td>jython</td><td>luindex</td><td>lusearch</td><td>pmd</td><td>xalan</td><td nowrap="true">cmdline</td></tr>
+<tr><td>569232</td><td><font color="blue">4004.064</font></td><td><font color="blue">1887</font></td><td><font color="blue">5626</font></td><td><font color="blue">7439</font></td><td><font color="blue">25314</font></td><td><font color="blue">964</font></td><td><font color="blue">2084</font></td><td><font color="blue">8075</font></td><td><font color="blue">5351</font></td><td><font color="blue">2951</font></td><td><font color="blue">4139</font></td><td><font color="blue">2001</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+<tr><td>571358</td><td><font color="blue">3994.998</font></td><td><font color="blue">1823</font></td><td><font color="blue">5748</font></td><td><font color="blue">7217</font></td><td><font color="blue">26037</font></td><td><font color="blue">971</font></td><td><font color="blue">2093</font></td><td><font color="blue">8107</font></td><td><font color="blue">5271</font></td><td><font color="blue">2935</font></td><td><font color="blue">4103</font></td><td><font color="blue">2009</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+<tr><td>572223</td><td><font color="blue">3958.697</font></td><td><font color="blue">1748</font></td><td><font color="blue">5732</font></td><td><font color="blue">7128</font></td><td><font color="blue">25807</font></td><td><font color="blue">965</font></td><td><font color="blue">2098</font></td><td><font color="blue">7903</font></td><td><font color="blue">5434</font></td><td><font color="blue">2862</font></td><td><font color="blue">4154</font></td><td><font color="blue">1964</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+<tr><td>575152</td><td><font color="blue">4104.683</font></td><td><font color="blue">1851</font></td><td><font color="blue">5635</font></td><td><font color="blue">7381</font></td><td><font color="blue">25218</font></td><td><font color="blue">981</font></td><td><font color="blue">2160</font></td><td><font color="blue">8643</font></td><td><font color="blue">5574</font></td><td><font color="blue">3195</font></td><td><font color="blue">4173</font></td><td><font color="blue">2109</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+<tr><td>578272</td><td><font color="blue">4043.919</font></td><td><font color="blue">1831</font></td><td><font color="blue">5635</font></td><td><font color="blue">7306</font></td><td><font color="blue">25717</font></td><td><font color="blue">1003</font></td><td><font color="blue">2175</font></td><td><font color="blue">8070</font></td><td><font color="blue">5614</font></td><td><font color="blue">2889</font></td><td><font color="blue">4162</font></td><td><font color="blue">2053</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+<tr><td>578627</td><td><font color="blue">4037.222</font></td><td><font color="blue">1820</font></td><td><font color="blue">6029</font></td><td><font color="blue">7331</font></td><td><font color="blue">24592</font></td><td><font color="blue">990</font></td><td><font color="blue">2173</font></td><td><font color="blue">8032</font></td><td><font color="blue">5565</font></td><td><font color="blue">2890</font></td><td><font color="blue">4125</font></td><td><font color="blue">2048</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+<tr><td>581128</td><td><font color="blue">4057.183</font></td><td><font color="blue">1806</font></td><td><font color="blue">5768</font></td><td><font color="blue">7843</font></td><td><font color="blue">25098</font></td><td><font color="blue">993</font></td><td><font color="blue">2165</font></td><td><font color="blue">8107</font></td><td><font color="blue">5601</font></td><td><font color="blue">2837</font></td><td><font color="blue">4165</font></td><td><font color="blue">2073</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+<tr><td>584034</td><td><font color="blue">3938.366</font></td><td><font color="blue">1799</font></td><td><font color="red">FAILED</font></td><td><font color="blue">7798</font></td><td><font color="blue">26520</font></td><td><font color="blue">995</font></td><td><font color="blue">2161</font></td><td><font color="blue">8156</font></td><td><font color="blue">5554</font></td><td><font color="blue">2836</font></td><td><font color="blue">4154</font></td><td><font color="blue">2103</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+<tr><td>588777</td><td><font color="blue">4076.864</font></td><td><font color="blue">1879</font></td><td><font color="blue">5678</font></td><td><font color="blue">7406</font></td><td><font color="blue">25836</font></td><td><font color="blue">1004</font></td><td><font color="blue">2161</font></td><td><font color="blue">7998</font></td><td><font color="blue">5906</font></td><td><font color="blue">2834</font></td><td><font color="blue">4173</font></td><td><font color="blue">2090</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+<tr><td>591876</td><td><font color="blue">4061.873</font></td><td><font color="blue">1854</font></td><td><font color="blue">5804</font></td><td><font color="blue">7365</font></td><td><font color="blue">25479</font></td><td><font color="blue">996</font></td><td><font color="blue">2164</font></td><td><font color="blue">7959</font></td><td><font color="blue">5992</font></td><td><font color="blue">2821</font></td><td><font color="blue">4115</font></td><td><font color="blue">2061</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+<tr><td>595538</td><td><font color="blue">4127.950</font></td><td><font color="blue">1893</font></td><td><font color="blue">5900</font></td><td><font color="blue">7437</font></td><td><font color="blue">27042</font></td><td><font color="blue">1018</font></td><td><font color="blue">2143</font></td><td><font color="blue">8028</font></td><td><font color="blue">6134</font></td><td><font color="blue">2826</font></td><td><font color="blue">4167</font></td><td><font color="blue">2087</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_g5_inline -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+</table>
+</p>
+                                <p />
+                                <a name="linux32" />
+                                <font color="green">linux32 : 2xXeon (Woodcrest) 2.66 Ghz / 12 Gb DDR2 / SLES 9 32-bit</font>
+                                <img src="../../images/dacapo_lnx32.png" width="600" height="370" align="">
+                                <p>
+<table border="1">
+<tr><td>revision</td><td>DaCapo:geomean</td><td>antlr</td><td>bloat</td><td>chart</td><td>eclipse</td><td>fop</td><td>hsqldb</td><td>jython</td><td>luindex</td><td>lusearch</td><td>pmd</td><td>xalan</td><td nowrap="true">cmdline</td></tr>
+<tr><td>569232</td><td><font color="blue">6243.102</font></td><td><font color="blue">4328</font></td><td><font color="blue">8144</font></td><td><font color="blue">13154</font></td><td><font color="blue">28891</font></td><td><font color="blue">1839</font></td><td><font color="blue">4191</font></td><td><font color="blue">15545</font></td><td><font color="blue">6072</font></td><td><font color="blue">3765</font></td><td><font color="blue">6734</font></td><td><font color="blue">2273</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>571358</td><td><font color="blue">6423.575</font></td><td><font color="blue">4374</font></td><td><font color="blue">8195</font></td><td><font color="blue">13226</font></td><td><font color="blue">37821</font></td><td><font color="blue">1819</font></td><td><font color="blue">4216</font></td><td><font color="blue">15286</font></td><td><font color="blue">6132</font></td><td><font color="blue">3716</font></td><td><font color="blue">6876</font></td><td><font color="blue">2333</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>574120</td><td><font color="blue">6304.342</font></td><td><font color="blue">3428</font></td><td><font color="blue">8055</font></td><td><font color="blue">13229</font></td><td><font color="blue">38737</font></td><td><font color="blue">1879</font></td><td><font color="blue">4202</font></td><td><font color="blue">15583</font></td><td><font color="blue">6145</font></td><td><font color="blue">3816</font></td><td><font color="blue">6720</font></td><td><font color="blue">2279</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>577965</td><td><font color="blue">6068.612</font></td><td><font color="blue">5497</font></td><td><font color="blue">6854</font></td><td><font color="blue">12334</font></td><td><font color="blue">39710</font></td><td><font color="blue">1789</font></td><td><font color="blue">2960</font></td><td><font color="blue">14701</font></td><td><font color="blue">5708</font></td><td><font color="blue">3833</font></td><td><font color="blue">5858</font></td><td><font color="blue">2233</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>580537</td><td><font color="blue">6148.199</font></td><td><font color="blue">3957</font></td><td><font color="blue">6984</font></td><td><font color="blue">12192</font></td><td><font color="blue">37811</font></td><td><font color="blue">1787</font></td><td><font color="blue">2913</font></td><td><font color="blue">14922</font></td><td><font color="blue">5797</font></td><td><font color="red">FAILED</font></td><td><font color="blue">5867</font></td><td><font color="blue">2293</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>586242</td><td><font color="blue">6223.877</font></td><td><font color="red">FAILED</font></td><td><font color="red">FAILED</font></td><td><font color="red">FAILED</font></td><td><font color="blue">36640</font></td><td><font color="blue">1740</font></td><td><font color="blue">2930</font></td><td><font color="blue">14514</font></td><td><font color="blue">5633</font></td><td><font color="red">FAILED</font></td><td><font color="blue">5680</font></td><td><font color="blue">2241</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>589486</td><td><font color="blue">6281.625</font></td><td><font color="blue">5276</font></td><td><font color="blue">6905</font></td><td><font color="blue">12170</font></td><td><font color="blue">39959</font></td><td><font color="blue">1735</font></td><td><font color="blue">2924</font></td><td><font color="blue">14175</font></td><td><font color="blue">5897</font></td><td><font color="red">FAILED</font></td><td><font color="blue">5582</font></td><td><font color="blue">2281</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>591218</td><td><font color="blue">6208.894</font></td><td><font color="blue">5125</font></td><td><font color="blue">6842</font></td><td><font color="blue">12212</font></td><td><font color="blue">39205</font></td><td><font color="blue">1667</font></td><td><font color="blue">2882</font></td><td><font color="blue">14203</font></td><td><font color="blue">5949</font></td><td><font color="red">FAILED</font></td><td><font color="blue">5710</font></td><td><font color="blue">2188</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>593416</td><td><font color="blue">6335.592</font></td><td><font color="blue">5198</font></td><td><font color="blue">6912</font></td><td><font color="blue">12087</font></td><td><font color="blue">40734</font></td><td><font color="blue">1864</font></td><td><font color="blue">2794</font></td><td><font color="blue">14042</font></td><td><font color="blue">6369</font></td><td><font color="red">FAILED</font></td><td><font color="blue">5684</font></td><td><font color="blue">2225</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>595841</td><td><font color="blue">6298.925</font></td><td><font color="blue">5129</font></td><td><font color="blue">6809</font></td><td><font color="blue">12170</font></td><td><font color="blue">39988</font></td><td><font color="blue">1731</font></td><td><font color="blue">2779</font></td><td><font color="blue">14213</font></td><td><font color="blue">6434</font></td><td><font color="red">FAILED</font></td><td><font color="blue">5659</font></td><td><font color="blue">2324</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+</table>
+</p>
+                                <a name="win64" />
+                                <font color="green">win64 (32bit build) : 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE x64 SP1</font>
+                                <p />
+                                <img src="../../images/dacapo_win64.png" width="600" height="370" align="">
+                                <p>
+<table border="1">
+<tr><td>revision</td><td>DaCapo:geomean</td><td>antlr</td><td>bloat</td><td>chart</td><td>eclipse</td><td>fop</td><td>hsqldb</td><td>jython</td><td>luindex</td><td>lusearch</td><td>pmd</td><td>xalan</td><td nowrap="true">cmdline</td></tr>
+<tr><td>569232</td><td><font color="blue">4305.575</font></td><td><font color="blue">2049</font></td><td><font color="blue">6656</font></td><td><font color="blue">7920</font></td><td><font color="blue">28048</font></td><td><font color="blue">928</font></td><td><font color="blue">2285</font></td><td><font color="blue">8364</font></td><td><font color="blue">5804</font></td><td><font color="blue">3048</font></td><td><font color="blue">4465</font></td><td><font color="blue">2221</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>571358</td><td><font color="blue">4398.699</font></td><td><font color="blue">1909</font></td><td><font color="blue">7131</font></td><td><font color="blue">8037</font></td><td><font color="blue">37917</font></td><td><font color="blue">945</font></td><td><font color="blue">2264</font></td><td><font color="blue">8456</font></td><td><font color="blue">5774</font></td><td><font color="blue">2988</font></td><td><font color="blue">4474</font></td><td><font color="blue">2059</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>575152</td><td><font color="blue">4324.421</font></td><td><font color="blue">1907</font></td><td><font color="blue">6381</font></td><td><font color="blue">7628</font></td><td><font color="blue">33807</font></td><td><font color="blue">918</font></td><td><font color="blue">2239</font></td><td><font color="blue">8796</font></td><td><font color="blue">5781</font></td><td><font color="blue">3429</font></td><td><font color="blue">4160</font></td><td><font color="blue">2114</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>578272</td><td><font color="blue">4280.437</font></td><td><font color="blue">1889</font></td><td><font color="blue">6310</font></td><td><font color="blue">7629</font></td><td><font color="blue">36109</font></td><td><font color="blue">934</font></td><td><font color="blue">2225</font></td><td><font color="blue">8210</font></td><td><font color="blue">5717</font></td><td><font color="blue">3162</font></td><td><font color="blue">4142</font></td><td><font color="blue">2107</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>578627</td><td><font color="blue">4278.894</font></td><td><font color="blue">1939</font></td><td><font color="blue">6328</font></td><td><font color="blue">7632</font></td><td><font color="blue">34625</font></td><td><font color="blue">939</font></td><td><font color="blue">2229</font></td><td><font color="blue">8175</font></td><td><font color="blue">5686</font></td><td><font color="blue">3189</font></td><td><font color="blue">4187</font></td><td><font color="blue">2090</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>581128</td><td><font color="blue">4248.133</font></td><td><font color="blue">1950</font></td><td><font color="blue">6284</font></td><td><font color="blue">7624</font></td><td><font color="blue">32645</font></td><td><font color="blue">937</font></td><td><font color="blue">2228</font></td><td><font color="blue">8168</font></td><td><font color="blue">5803</font></td><td><font color="blue">3107</font></td><td><font color="blue">4118</font></td><td><font color="blue">2106</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>584034</td><td><font color="blue">4219.904</font></td><td><font color="blue">1918</font></td><td><font color="blue">6403</font></td><td><font color="blue">7668</font></td><td><font color="blue">33703</font></td><td><font color="blue">939</font></td><td><font color="blue">2231</font></td><td><font color="blue">8231</font></td><td><font color="blue">5717</font></td><td><font color="blue">2906</font></td><td><font color="blue">4187</font></td><td><font color="blue">1985</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>588777</td><td><font color="blue">4246.267</font></td><td><font color="blue">1893</font></td><td><font color="blue">6373</font></td><td><font color="blue">7721</font></td><td><font color="blue">35557</font></td><td><font color="blue">928</font></td><td><font color="blue">2251</font></td><td><font color="blue">8171</font></td><td><font color="blue">5968</font></td><td><font color="blue">2906</font></td><td><font color="blue">4154</font></td><td><font color="blue">1987</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>591876</td><td><font color="blue">4268.827</font></td><td><font color="blue">1961</font></td><td><font color="blue">6342</font></td><td><font color="blue">7737</font></td><td><font color="blue">34896</font></td><td><font color="blue">932</font></td><td><font color="blue">2239</font></td><td><font color="blue">8220</font></td><td><font color="blue">6021</font></td><td><font color="blue">2931</font></td><td><font color="blue">4137</font></td><td><font color="blue">2040</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+<tr><td>595538</td><td><font color="blue">4278.672</font></td><td><font color="blue">1925</font></td><td><font color="blue">6395</font></td><td><font color="blue">7593</font></td><td><font color="blue">34953</font></td><td><font color="blue">932</font></td><td><font color="blue">2215</font></td><td><font color="blue">8196</font></td><td><font color="blue">6312</font></td><td><font color="blue">2910</font></td><td><font color="blue">4176</font></td><td><font color="blue">2075</font></td><td nowrap="true"> -XX:gc.dlls=gc_gen.dll -Xem:server_GCv5 -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+</table>
+</p>
+                                <a name="linux64" />
+                                <font color="green">linux64 : 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / SLES 9 64-bit</font>
+                                <p />
+                                <img src="../../images/dacapo_lnx64.png" width="600" height="370" align="">
+                                <p>
+<table border="1">
+<tr><td>revision</td><td>DaCapo:geomean</td><td>antlr</td><td>bloat</td><td>chart</td><td>eclipse</td><td>fop</td><td>hsqldb</td><td>jython</td><td>luindex</td><td>lusearch</td><td>pmd</td><td>xalan</td><td nowrap="true">cmdline</td></tr>
+<tr><td>573431</td><td><font color="blue">5970.652</font></td><td><font color="blue">4250</font></td><td><font color="blue">10474</font></td><td><font color="blue">6522</font></td><td><font color="blue">32051</font></td><td><font color="blue">1866</font></td><td><font color="blue">3290</font></td><td><font color="blue">10029</font></td><td><font color="blue">5998</font></td><td><font color="blue">5661</font></td><td><font color="blue">5859</font></td><td><font color="blue">2729</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>580537</td><td><font color="blue">5759.161</font></td><td><font color="blue">3335</font></td><td><font color="blue">10612</font></td><td><font color="blue">6630</font></td><td><font color="blue">32157</font></td><td><font color="blue">1921</font></td><td><font color="blue">2885</font></td><td><font color="blue">10627</font></td><td><font color="blue">5926</font></td><td><font color="red">FAILED</font></td><td><font color="blue">5752</font></td><td><font color="blue">2650</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>582062</td><td><font color="blue">5978.421</font></td><td><font color="blue">4311</font></td><td><font color="blue">10556</font></td><td><font color="blue">6666</font></td><td><font color="blue">33245</font></td><td><font color="blue">1918</font></td><td><font color="blue">2887</font></td><td><font color="blue">10669</font></td><td><font color="blue">6051</font></td><td><font color="blue">6175</font></td><td><font color="blue">5795</font></td><td><font color="blue">2703</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>586242</td><td><font color="blue">6015.995</font></td><td><font color="red">FAILED</font></td><td><font color="blue">10543</font></td><td><font color="blue">6877</font></td><td><font color="blue">31789</font></td><td><font color="blue">1876</font></td><td><font color="blue">2900</font></td><td><font color="blue">10165</font></td><td><font color="blue">5929</font></td><td><font color="blue">5504</font></td><td><font color="blue">5800</font></td><td><font color="blue">2574</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>588488</td><td><font color="blue">5715.095</font></td><td><font color="blue">4140</font></td><td><font color="blue">10530</font></td><td><font color="blue">6501</font></td><td><font color="blue">34691</font></td><td><font color="blue">1847</font></td><td><font color="blue">2875</font></td><td><font color="blue">9353</font></td><td><font color="blue">6054</font></td><td><font color="blue">4934</font></td><td><font color="blue">5838</font></td><td><font color="blue">2495</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>591218</td><td><font color="blue">5636.507</font></td><td><font color="blue">4037</font></td><td><font color="blue">10003</font></td><td><font color="blue">6580</font></td><td><font color="blue">31940</font></td><td><font color="blue">1908</font></td><td><font color="blue">2845</font></td><td><font color="blue">9443</font></td><td><font color="blue">5992</font></td><td><font color="blue">4837</font></td><td><font color="blue">5744</font></td><td><font color="blue">2519</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>593416</td><td><font color="blue">5454.673</font></td><td><font color="blue">5096</font></td><td><font color="red">FAILED</font></td><td><font color="red">FAILED</font></td><td><font color="red">FAILED</font></td><td><font color="blue">1862</font></td><td><font color="blue">2741</font></td><td><font color="red">FAILED</font></td><td><font color="blue">14407</font></td><td><font color="red">FAILED</font></td><td><font color="blue">12887</font></td><td><font color="red">FAILED</font></td><td nowrap="true"> -XX:gc.dlls=libgc_gen.so -Xem:server_GCv5 -Xms1500M -Xmx1500M</td></tr>
+<tr><td>596190</td><td><font color="blue">6761.179</font></td><td><font color="blue">2214</font></td><td><font color="blue">11397</font></td><td><font color="blue">9476</font></td><td><font color="blue">34922</font></td><td><font color="blue">2217</font></td><td><font color="blue">2770</font></td><td><font color="blue">12478</font></td><td><font color="blue">9337</font></td><td><font color="blue">7356</font></td><td><font color="blue">9100</font></td><td><font color="blue">3375</font></td><td nowrap="true"> -Xem:server</td></tr>
+</table>
+</p>
+                                <p />
+                   
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                
+                                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special"><em>
+                Copyright &#169; 2003-2007, The Apache Software Foundation
+            </em></div>
+
+            <!-- Google analytics tracker code -->
+            <script
+                src="http://www.google-analytics.com/urchin.js"
+                type="text/javascript" />
+            <script type="text/javascript">
+              _uacct = "UA-1973333-3";
+              urchinTracker();
+            </script>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
