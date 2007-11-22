@@ -68,6 +68,14 @@
                 <property name='snapshot.arch.dir' value='${snapshot.arch.dir}'/>
                 <property name='cc.execution.log.file' value='${cc.execution.log.file}'/>
             </antpublisher>
+            <antpublisher
+                 anthome='${ant.home}'
+                 antWorkingDir='${root.dir}'
+                 buildfile='${adaptors.dir}/snapshot/adaptor.xml'
+                 target='clear-processes'>
+                <property name='jvm.location' value='${snapshot.jvm.location}'/>
+                <property name='do.processes.cleanup' value='${snapshot.do.processes.cleanup}'/>
+            </antpublisher>
         </publishers>
 
     </project>

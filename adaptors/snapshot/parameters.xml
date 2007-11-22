@@ -8,6 +8,10 @@
         <hdk value="${checkouts.dir}/snapshot/hdk"/>
         <jvm.location value="${checkouts.dir}/snapshot/hdk/jdk/jre/bin/java${exe}"/>
         <svn.revision.file location="${checkouts.dir}/snapshot/svn.revision"/>
+
+        <do.processes.cleanup
+            description="Whether to kill orphan processes(Linux only)"
+            value="false"/>
     </shared>
 
     <mail summary="${svn.revision.file}"/>

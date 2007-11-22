@@ -512,5 +512,50 @@
             </condition>
         </sequential>
     </macrodef>
+
+    <!--                                                     -->
+    <!-- clear orphan processes left by suite run            -->
+    <!-- the feature is optional (use 'do.processes.cleanup' -->
+    <!-- TODO: make the feature part of common cycle         -->
+    <!-- (not ony for snapshots)                             -->
+    <target name="clear-processes"
+            if="need.processes.cleanup"
+            depends="-init-clear-processes">
+
+        <echo>PROCESSES: ${proccess}</echo>
+        <exec executable="kill">
+            <arg value="proccess" />
+        </exec>
+    </target>
+
+    <target name="-init-clear-processes" unless="is.windows">
+        <exec executable="ps">
+            <arg value="a" />
+            <redirector outputproperty="proccess">
+                <outputfilterchain>
+                    <!-- select only snapshot vm -->
+                    <linecontains>
+                        <contains value="${jvm.location}" />
+                    </linecontains>
+                    <!-- get processes pids -->
+                    <tokenfilter>
+                        <replaceregex pattern="^\s*(\d+).*" replace="\1 " />
+                    </tokenfilter>
+                    <striplinebreaks />
+                </outputfilterchain>
+            </redirector>
+        </exec>
+
+        <condition property="need.processes.cleanup">
+            <and>
+                <istrue value="${do.processes.cleanup}" />
+                <length string="${proccess}"
+                        trim="true"
+                        when="greater"
+                        length="0" />
+            </and>
+        </condition>
+    </target>
+
 </project>
 
