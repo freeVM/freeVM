@@ -534,9 +534,9 @@
             <redirector outputproperty="proccess">
                 <outputfilterchain>
                     <!-- select only snapshot vm -->
-                    <linecontains>
-                        <contains value="${jvm.location}" />
-                    </linecontains>
+                    <linecontainsregexp>
+                        <regexp pattern="\s${jvm.location}\s" />
+                    </linecontainsregexp>
                     <!-- get processes pids -->
                     <tokenfilter>
                         <replaceregex pattern="^\s*(\d+).*" replace="\1 " />
