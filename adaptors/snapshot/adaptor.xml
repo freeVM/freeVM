@@ -524,7 +524,7 @@
 
         <echo>PROCESSES: ${proccess}</echo>
         <exec executable="kill">
-            <arg value="proccess" />
+            <arg value="${proccess}" />
         </exec>
     </target>
 
