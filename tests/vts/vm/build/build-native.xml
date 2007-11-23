@@ -212,8 +212,24 @@
 			<compilerarg value="${add.option}"/>
 
 		</cc>
+        <echo message="${tmp.dir}/${file.cpp}${ext}" />
 
-	</target>
+        <condition property="embed.manifest">
+            <available file="${tmp.dir}/${file.cpp}${ext}.manifest" />
+        </condition>
+
+        <antcall target="-include.manifest" />
+    </target>
+
+    <target name="-include.manifest" if="embed.manifest">
+        <echo message="Manifesting ${tmp.dir}/${file.cpp}${ext}" />
+        <exec executable="mt.exe">
+            <arg value="-nologo" />
+            <arg value="-manifest" />
+            <arg value="${tmp.dir}/${file.cpp}${ext}.manifest" />
+            <arg value="-outputresource:${tmp.dir}/${file.cpp}${ext};#2" />
+        </exec>
+    </target>
 
 	<target name="-mk.jvmti" depends="win.init,lnx.init" description="Compiling native parts for jvmti test">
 
