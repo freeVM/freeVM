@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                        BT Adaptor for ldap_scenario
+     ====================================================================== -->
+<project name="ldap_scenario" default="run" basedir=".">
+
+    <property name="ldap_scenario.results.dir" location="${results.dir}/${suite.name}"/>
+    <property name="current.results.dir" location="${ldap_scenario.results.dir}/results"/>
+    <property name="ldap_scenario.summary" location="${ldap_scenario.results.dir}/summary.txt"/>
+    <property name="ldap_scenario.src.test" 
+    	      location="${test.sources.dir}${file.separator}${suite.name}${file.separator}src"/>
+	<property name="ldap_scenario.bin.test" 
+	    	  location="${classes.dir}${file.separator}${suite.name}"/>
+
+    <!-- ================================= 
+         target: setup
+         ================================= -->
+    <target name="setup">
+        <echo level="info" message="============= Adaptor for ${suite.name}: Set Up ..."/>
+        <echo level="info" message=""/>
+        <echo level="info" message="Tested JVM: ${tested.jvm}"/>
+        <echo level="info" message=""/>
+
+        <mkdir dir="${current.results.dir}"/> 
+
+        <echo message="Compiling LDAP scenario tests" />
+        <mkdir dir="${ldap_scenario.bin.test}" />
+
+        <javac srcdir="${ldap_scenario.src.test}"
+                destdir="${ldap_scenario.bin.test}">
+
+            <classpath>
+                <fileset dir="${tested.jre}/lib/boot/">
+                    <include name="**/*.jar" />
+                </fileset>
+            </classpath>
+            <classpath location="${tested.jre}/../../build/test/support.jar"/>
+            <classpath location="${ext.ldap.ds.location}"/>
+            <classpath location="${ext.log4j.location}"/>
+        </javac>
+
+    </target>
+
+    <!-- ================================= 
+    	target: run
+    	================================= -->
+    <target name="run">
+    	<!-- Make sure the tested jvm is available -->
+    	<condition property="jvm.not.exist">
+    		<not>
+    			<available file="${tested.jvm}" />
+    		</not>
+    	</condition>
+    	<fail message="Path to JVM does not exist: ${tested.jvm}"
+    		if="jvm.not.exist" />
+
+    	<junit printsummary="withOutAndErr" errorproperty="test.errors"
+    		failureproperty="test.failures" showoutput="on"
+    		dir="${current.results.dir}" jvm="${tested.jvm}">
+
+    		<classpath location="${classes.dir}/${suite.name}" />
+    		<classpath location="${ext.ldap.ds.location}" />
+    		<classpath location="${ext.log4j.location}" />
+              <classpath location="${tested.jre}/../../build/test/support.jar"/>    		
+    		<classpath>
+    			<fileset dir="${tested.jre}/lib/boot/">
+    				<include name="**/*.jar" />
+    			</fileset>
+    		</classpath>
+    		<formatter type="plain" />
+    		<formatter type="xml" />
+    		<batchtest todir="${current.results.dir}"
+    			haltonfailure="no">
+    			<fileset dir="${ldap_scenario.src.test}">
+    				<include name="${converted.tc}" if="test.case" />
+    				<include name="**/*Test.java" unless="test.case" />
+    			</fileset>
+    		</batchtest>
+    	</junit>
+
+    	<!-- Backup test result -->
+    	<tstamp>
+    		<format property="test.run.time" pattern="yyyyMMdd_HHmm" />
+    	</tstamp>
+    	<mkdir dir="${current.results.dir}_${test.run.time}" />
+    	<copy todir="${current.results.dir}_${test.run.time}">
+    		<fileset dir="${current.results.dir}" />
+    	</copy>
+
+    	<!-- Generate test summary to mail -->
+    	<antcall target="-generate-summary" />
+    </target>
+
+    <!-- =================================
+    	target: clean
+    	================================= -->
+    <target name="clean">
+        <delete dir="${ldap_scenario.results.dir}" quiet="true"/>
+    </target>
+
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          customzied target                     
+          - - - - - - - - - - - - - - - - - -->
+    <target name="-generate-summary">
+    	<property name="ls" value="${line.separator}" />
+
+    	<echo file="${current.results.dir}/notification.txt"
+    		message="JRE:${ls}${ls}" />
+
+    	<exec executable="${tested.jvm}"
+    		output="${current.results.dir}/notification.txt" append="true">
+    		<arg value="-version" />
+    	</exec>
+
+    	<echo file="${current.results.dir}/notification.txt"
+    		append="true"
+    		message="${ls}================================================================================${ls}Scenario results:${ls}${ls}" />
+
+    	<concat destfile="${current.results.dir}/notification.txt"
+    		append="true">
+    		<fileset dir="${current.results.dir}"
+    			includes="TEST-*.txt" />
+    	</concat>
+
+    	<echo file="${current.results.dir}/notification.txt"
+    		append="true"
+    		message="${ls}================================================================================${ls}" />
+    </target>
+
+</project>
+
