@@ -50,6 +50,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </classpath>
+            <classpath location="${ext.junit.location}" />
             <classpath location="${tested.jre}/../../build/test/support.jar"/>
             <classpath location="${ext.ldap.ds.location}"/>
             <classpath location="${ext.log4j.location}"/>
@@ -77,6 +78,7 @@
     		<classpath location="${classes.dir}/${suite.name}" />
     		<classpath location="${ext.ldap.ds.location}" />
     		<classpath location="${ext.log4j.location}" />
+            <classpath location="${ext.junit.location}" />
               <classpath location="${tested.jre}/../../build/test/support.jar"/>    		
     		<classpath>
     			<fileset dir="${tested.jre}/lib/boot/">
