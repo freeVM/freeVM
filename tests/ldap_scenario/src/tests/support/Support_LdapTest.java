@@ -136,6 +136,10 @@ public class Support_LdapTest extends TestCase {
         }
     }
 
+    public void test_misc() {
+	// Do nothing
+    }
+
     /**
      * delete the whole working directory for Ldap server
      * 
