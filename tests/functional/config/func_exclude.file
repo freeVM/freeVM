@@ -286,3 +286,19 @@ functional/org/apache/harmony/test/func/api/javax/management/modelmbean/Notifica
 functional/org/apache/harmony/test/func/api/javax/management/remote/JMXRemoteProfilesTest.xml
 # 4358
 functional/org/apache/harmony/test/func/api/javax/swing/ImageIcon/ImageIconTest.xml
+
+# These tests fail on Linux but pass on Windows. RI behaves the same. HARMONY-4989.
+functional/org/apache/harmony/test/func/api/java/nio/F_MappedByteBufferTest_01/F_MappedByteBufferTest_01.xml
+functional/org/apache/harmony/test/func/api/java/nio/channels/fileChannel/FileChannelTest.xml
+
+# Invalid tests. Fail both on RI and Harmony.
+functional/org/apache/harmony/test/func/api/java/io/FileOutputStream/FileOutputStreamThreadTest.xml
+functional/src/test/functional/org/apache/harmony/test/func/api/java/security/cert/F_CertificateFactoryTest_03/F_CertificateFactoryTest_03.xml
+functional/src/test/functional/org/apache/harmony/test/func/reg/jit/btest5704/Btest5704.xml
+
+# Intermittently fails in concurrent mode
+functional/org/apache/harmony/test/func/jit/HLO/lazyexc/IO2/IO2.xml
+
+# Invalid test HARMONY-4867
+functional/src/test/functional/org/apache/harmony/test/func/reg/vm/btest6572/Btest6572.xml
+
