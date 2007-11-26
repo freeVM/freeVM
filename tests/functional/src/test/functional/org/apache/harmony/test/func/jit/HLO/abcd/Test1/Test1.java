@@ -36,7 +36,7 @@ public class Test1 extends Test {
         log.info("Start Test1 ...");
         try {
             boolean flag = false;
-            int limit = 100000;
+            int limit = 50000;
             Object[] obj = new Object[limit];;
             for (int i=0; i<limit; i++) {
                 try {

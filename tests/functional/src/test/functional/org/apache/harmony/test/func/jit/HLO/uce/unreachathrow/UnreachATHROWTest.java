@@ -40,7 +40,7 @@ public class UnreachATHROWTest extends Test {
     //this method contains unreachable code
     private int invoker() {
         UnreachATHROW unreach = new UnreachATHROW();
-            for(int i=0; i<20000000; i++) {
+            for(int i=0; i<500000; i++) {
                try {
                   unreach.test();
                   return fail("FAILED: exception should be thrown");
