@@ -95,6 +95,14 @@
     			</fileset>
     		</batchtest>
     	</junit>
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+	        </or>
+            </condition>
+        </fail>
 
     	<!-- Backup test result -->
     	<tstamp>
@@ -147,4 +155,5 @@
     </target>
 
 </project>
+
 
