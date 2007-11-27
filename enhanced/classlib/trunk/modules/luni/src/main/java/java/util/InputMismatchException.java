@@ -18,18 +18,31 @@ package java.util;
 import java.io.Serializable;
 
 /**
- * Unchecked Exception that is to be thrown out when a format string that
- * contains either an illegal syntax or format specifier is transferred as a
- * parameter. Only a subclass that is inherited explicitly from this exception
- * is allowed to be instantiated.
+ * An InputMismatchException is thrown by a scanner to indicate that the next
+ * token does not match the pattern the specified type.
+ * 
+ * @see Scanner
  */
-public class IllegalFormatException extends IllegalArgumentException implements
+public class InputMismatchException extends NoSuchElementException implements
         Serializable {
 
-    private static final long serialVersionUID = 18830826L;
+    static final long serialVersionUID = 8811230760997066428L;
 
-    // the constructor is not callable from outside from the package
-    IllegalFormatException() {
-        // do nothing
+    /**
+     * Constructs a InputMismatchException with no error message
+     * 
+     */
+    public InputMismatchException() {
+        super();
+    }
+
+    /**
+     * Constructs a InputMismatchException with msg as its error message
+     * 
+     * @param msg
+     *            The specified error message
+     */
+    public InputMismatchException(String msg) {
+        super(msg);
     }
 }
