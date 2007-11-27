@@ -248,7 +248,7 @@
 	</target>
 	
 	<target name="build.java" depends="build.ccode, build.jasmin">
-		<javac target="1.5" srcdir="${qa.src}" destdir="${qa.bin.classes}">
+		<javac target="1.5" debug="true" srcdir="${qa.src}" destdir="${qa.bin.classes}">
 			<classpath>
 				<pathelement location="${th.jar}"/>
 				<pathelement location="${junit.jar}"/>
