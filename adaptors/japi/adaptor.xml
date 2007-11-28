@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<project name="japi" default="run" basedir=".">
+
+    <target name="run">
+
+        <property name="japi.report" value="${results.dir}/japi" />
+        <delete dir="${japi.report}" />
+        <mkdir dir="${japi.report}" />
+
+        <property name="pkgs"
+                  value="+java +javax +org.ietf.jgss -java.awt.peer -java.awt.dnd.peer -javax.rmi.CORBA" />
+
+        <!--                 -->
+        <!-- japize: Harmony -->
+        <!--                 -->
+        <fileset dir="${harmony.home}" id="id.harmony.jars">
+            <include name="**/*.jar" />
+            <exclude name="**/*-src.jar" />
+            <exclude name="**/*-stubs.jar" />
+        </fileset >
+
+        <!-- FIXME: doesn't work if path contains spaces -->
+        <pathconvert property="harmony.jars"
+                     refid="id.harmony.jars"
+                     pathsep=" ">
+            <map from="*" to="${harmony.home}/*" />
+        </pathconvert>
+
+        <java classname="net.wuffies.japi.Japize"
+              classpath="${japi.home}/share/java/japitools.jar"
+              dir="${japi.report}"
+              fork="true">
+
+            <arg line="as ${harmony.name} packages ${harmony.jars} ${pkgs}" />
+        </java>
+
+        <!--            -->
+        <!-- japize: RI -->
+        <!--            -->
+        <fileset dir="${ri.home}" id="id.ri.jars">
+            <include name="**/*.jar" />
+        </fileset >
+
+        <pathconvert property="ri.jars" refid="id.ri.jars" pathsep=" ">
+            <map from="*" to="${ri.home}/*&quot;" />
+        </pathconvert>
+
+        <!-- FIXME: doesn't work if path contains spaces -->
+        <java classname="net.wuffies.japi.Japize"
+              classpath="${japi.home}/share/java/japitools.jar"
+              dir="${japi.report}"
+              fork="true">
+
+            <arg line="as ${ri.name} packages ${ri.jars} ${pkgs}" />
+        </java>
+
+        <!--         -->
+        <!-- compare -->
+        <!--         -->
+
+        <!-- Need to unzip reports, otherwize japicompat fails to load them -->
+        <gunzip src="${japi.report}/${harmony.name}.japi.gz"
+                dest="${japi.report}" />
+        <gunzip src="${japi.report}/${ri.name}.japi.gz" dest="${japi.report}" />
+
+        <exec executable="perl"
+              dir="${japi.report}"
+              output="${japi.report}/${harmony.name}_vs_${ri.name}.html"
+              logerror="true">
+
+            <arg line="${japi.home}/bin/japicompat -h ${harmony.name}.japi ${ri.name}.japi" />
+        </exec>
+
+        <exec executable="perl"
+              dir="${japi.report}"
+              output="${japi.report}/${ri.name}_vs_${harmony.name}.html"
+              logerror="true">
+
+            <arg line="${japi.home}/bin/japicompat -h ${ri.name}.japi ${harmony.name}.japi" />
+        </exec>
+    </target>
+</project>
+
