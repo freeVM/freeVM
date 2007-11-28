@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                        BT Adaptor for maven_test
+     ====================================================================== -->
+<project name="maven_test" default="run" basedir=".">
+    <property name="maven_test.results.dir" location="${results.dir}/${suite.name}"/>
+    <property name="install.marker" location="${test.sources.dir}/${suite.name}/install.complete"/>
+
+    <!-- ================================= 
+         target: setup
+         ================================= -->
+    <target name="setup" depends="-check-install,-install">
+        <echo level="info" message="============= Adaptor for ${suite.name}: Set Up ..."/>
+        <echo level="info" message=""/>
+        <echo level="info" message="Tested JVM: ${tested.runtime}"/>
+        <echo level="info" message="Maven.src.location: ${maven_test.parameters.optional.maven.src.location}"/>
+        <echo level="info" message="Maven.src.version: ${maven_test.parameters.optional.maven.src.version}"/>
+        <echo level="info" message="Maven.src.filename: ${maven_test.parameters.optional.maven.src.filename}"/>
+        <echo level="info" message="Maven.location: ${ext.maven-2.0.7.location}"/>
+        <echo level="info" message="Maven.repository.location: ${maven_test.parameters.optional.maven.repository.location}"/>
+        <echo level="info" message=""/>
+
+        <mkdir dir="${maven_test.results.dir}"/> 
+    </target>
+
+    <target name="-check-install">
+        <available property="skip.install" file="${install.marker}"/>
+    </target>
+
+    <target name="-install" unless="skip.install">
+        <description>
+            setup: Install, configure and build maven and its pre-requisites
+        </description>
+
+        <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
+        <exec-ant dir="${test.sources.dir}/${suite.name}"
+                  targets="setup"
+                  failonerror="true"
+                  failproperty="maven.setup.failed">
+            <sysproperty key="maven.src.location" value="${maven_test.parameters.optional.maven.src.location}"/>
+            <sysproperty key="maven.src.version"  value="${maven_test.parameters.optional.maven.src.version}"/>
+            <sysproperty key="maven.src.filename" value="${maven_test.parameters.optional.maven.src.filename}"/>
+            <sysproperty key="maven.location"     value="${ext.maven-2.0.7.location}"/>
+            <sysproperty key="maven.repository"   value="${maven_test.parameters.optional.maven.repository.location}"/>
+            <sysproperty key="work.dir"           value="${checkouts.dir}/${suite.name}"/>
+            <sysproperty key="maven.dir"          value="${checkouts.dir}/${suite.name}"/>
+            <sysproperty key="result.dir"         value="${maven_test.results.dir}"/>
+            <sysproperty key="test.jre.home"      value="${maven_test.parameters.required.tested.runtime}"/>
+       </exec-ant>
+
+        <fail message="Maven unit tests setup failed" if="maven.setup.failed"/>
+        <touch file="${install.marker}"/>
+    </target>
+
+
+    <!-- ================================= 
+          target: run
+         ================================= -->
+    <target name="run">
+        <!-- Make sure the tested jvm is available -->
+        <condition property="jre.not.exist">
+            <not>
+                <available file="${tested.runtime}"/>
+            </not>
+        </condition>
+        <fail message="Path to jre does not exist: ${tested.runtime}" if="jre.not.exist"/>
+
+        <!-- Execute test running here -->
+        <exec-ant dir="${test.sources.dir}/${suite.name}"
+                  targets="run"
+                  failonerror="true"
+                  failproperty="maven.run.failed">
+            <sysproperty key="maven.src.location" value="${maven_test.parameters.optional.maven.src.location}"/>
+            <sysproperty key="maven.src.version"  value="${maven_test.parameters.optional.maven.src.version}"/>
+            <sysproperty key="maven.src.filename" value="${maven_test.parameters.optional.maven.src.filename}"/>
+            <sysproperty key="maven.location"    value="${ext.maven-2.0.7.location}"/>
+            <sysproperty key="maven.repository"   value="${maven_test.parameters.optional.maven.repository.location}"/>
+            <sysproperty key="work.dir"          value="${checkouts.dir}/${suite.name}"/>
+            <sysproperty key="maven.dir"         value="${checkouts.dir}/${suite.name}"/>
+            <sysproperty key="result.dir"        value="${maven_test.results.dir}"/>
+            <sysproperty key="vm.options"        value="${maven_test.parameters.optional.tested.vm.options}"/>
+            <sysproperty key="test.jre.home"     value="${maven_test.parameters.required.tested.runtime}"/>
+        </exec-ant>
+
+        <fail message="Maven unit tests failed" if="maven.run.failed"/>
+    </target>
+
+    <!-- =================================
+          target: clean
+         ================================= -->
+    <target name="clean">
+        <delete dir="${maven_test.results.dir}" quiet="true"/>
+        <delete dir="${checkouts.dir}/${suite.name}" />
+        <delete file="${install.marker}"/>
+    </target>
+
+</project>
+

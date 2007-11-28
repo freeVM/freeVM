@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<parameters depends="drlvm">
+
+    <!-- Required parameters -->
+    <required>
+        <tested.runtime
+            description="Path to Tested Runtime"
+            value="${drlvm.parameters.shared.jre.dir}"/>
+    </required>
+
+    <!-- Optional parameters -->
+    <optional>
+    </optional>
+
+    <!-- External dependencies -->
+    <external>
+        <maven-2.0.7
+            url="http://apache.hkmirror.org/maven/binaries/maven-2.0.7-bin.zip"
+            md5="dae57b501e38ef3414678a873ab7fb1b"
+            dir="maven-2.0.7"
+        />
+    </external>
+
+    <!-- Shared parameters -->
+    <optional>
+        <tested.vm.options
+            description="JVM options for tested runtime"
+            value=""/>
+        <maven.src.location
+            description="URL to fetch Apache maven sources"
+            value="http://apache.hkmirror.org/maven/source"/>
+        <maven.src.filename
+            description="Apache maven sources archive name"
+            value="maven-2.0.7-src.zip"/>
+        <maven.src.version
+            description="Apache maven version to use"
+            value="2.0.7"/>
+        <maven.repository.location
+            description="The reposiotory location of maven"
+            value="${ext.maven-2.0.7.location}/repository"/>
+    </optional>
+
+    <!-- CC specific configuration -->
+    <cc>
+        <!-- Run this script for publishing results -->
+        <summary value="${maven_test.results.dir}/results/report.txt"/>
+
+        <!-- Merge results with CC log -->
+        <results value="${maven_test.results.dir}/results/reports"/>
+    </cc>
+
+</parameters>
