@@ -24,7 +24,11 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.naming.CompositeName;
+import javax.naming.ConfigurationException;
 import javax.naming.Context;
+import javax.naming.InvalidNameException;
+import javax.naming.Name;
 import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
@@ -36,6 +40,8 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.InvalidSearchFilterException;
+import javax.naming.directory.ModificationItem;
+import javax.naming.directory.SchemaViolationException;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
@@ -91,6 +97,8 @@ public class SchemaApacheDSTest extends Support_LdapTest {
     private static final Hashtable<String, ArrayList<String>> caseExactOrderingMatch = new Hashtable<String, ArrayList<String>>();
 
     private static final List<String> schemaClassDefName;
+    
+    private static final List<String> schemaClassDefNameAll;
 
     private static final String[] names = { "account", "alias",
             "apachecatalogentry", "apachefactoryconfiguration",
@@ -115,6 +123,14 @@ public class SchemaApacheDSTest extends Support_LdapTest {
     private static final Hashtable<String, Hashtable<String, ArrayList<String>>> classDefs = new Hashtable<String, Hashtable<String, ArrayList<String>>>();
     static {
         schemaClassDefName = Arrays.asList(names);
+
+        schemaClassDefNameAll = new ArrayList<String>();
+        schemaClassDefNameAll.addAll(schemaClassDefName);
+        schemaClassDefNameAll.add("top");
+        schemaClassDefNameAll.add("collectiveattributesubentry");
+        schemaClassDefNameAll.add("accesscontrolsubentry");
+        schemaClassDefNameAll.add("subschema");
+
         classDefs.put("top", top);
         classDefs.put("organization", organization);
         classDefs.put("dcobject", dcObject);
@@ -190,6 +206,10 @@ public class SchemaApacheDSTest extends Support_LdapTest {
         values = new ArrayList<String>();
         values.add("2.5.6.0");
         top.put("numericoid", values);
+
+        values = new ArrayList<String>();
+        values.add("top of the superclass chain");
+        top.put("desc", values);
 
         // organization
         values = new ArrayList<String>();
@@ -334,6 +354,10 @@ public class SchemaApacheDSTest extends Support_LdapTest {
         applicationentity.put("desc", values);
 
         values = new ArrayList<String>();
+        values.add("true");
+        applicationentity.put("structural", values);
+
+        values = new ArrayList<String>();
         values.add("supportedapplicationcontext");
         values.add("seealso");
         values.add("ou");
@@ -348,7 +372,7 @@ public class SchemaApacheDSTest extends Support_LdapTest {
         NamingEnumeration<NameClassPair> pairs = root.list("");
         while (pairs.hasMore()) {
             NameClassPair next = pairs.next();
-            assertTrue(ldapSchemaDef.contains(next.getName()));
+            assertTrue(ldapSchemaDef.contains(next.getName().toLowerCase()));
 
         }
         NamingEnumeration<SearchResult> e = null;
@@ -434,7 +458,7 @@ public class SchemaApacheDSTest extends Support_LdapTest {
         Attribute attr1 = attrs.get(id);
 
         assertEquals(1, attr1.size());
-        assertEquals(SYNTAX_DEFINITION, attr1.get(0));
+        assertEquals(SYNTAX_DEFINITION, ((String) attr1.get(0)).toLowerCase());
 
     }
 
@@ -526,6 +550,220 @@ public class SchemaApacheDSTest extends Support_LdapTest {
             }
         }
         assertSame(schemaClassDefName.size(), i);
+    }
+    
+    public void test_schema_list_Ljavax_naming_Name() throws NamingException {
+        try {
+            ctx.list("classdefinition");
+            fail("Should throw InvalidNameException");
+        } catch (InvalidNameException e) {
+            // expected
+        }
+        
+        DirContext root = ctx.getSchema("");
+        
+        // TODO ======== refactor these cases into unit test ========
+        try {
+            root.list((String) null);
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            root.list("test");
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // expected
+        }
+        
+        try {
+            root.list("classdefinition/test");
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // expected
+        }
+        
+        try {
+            root.list("test/classdefinition");
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // expected
+        }
+        
+        //==========================================================
+        
+        NamingEnumeration<NameClassPair> pairs = root.list("");
+        while (pairs.hasMore()) {
+            NameClassPair pair = pairs.next();
+            assertTrue(ldapSchemaDef.contains(pair.getName()
+                    .toLowerCase()));
+        }
+        
+        pairs = root.list("classdefinition");
+        
+        while (pairs.hasMore()) {
+            NameClassPair pair = pairs.next();
+            assertTrue(schemaClassDefNameAll.contains(pair.getName()
+                    .toLowerCase()));
+        }
+
+    }
+    
+    public void test_schema_lookup_Ljavax_naming_Name() throws NamingException {
+        // TODO =========== refactor these cases into unit test ==============
+        DirContext root = ctx.getSchema("");
+        
+        try {
+            root.lookup((String) null);
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        // ===================================================================
+
+        DirContext classdefs = (DirContext)root.lookup("");
+        Attributes classAttrs = classdefs.getAttributes("");
+        assertSame(0, classAttrs.size());
+        
+        
+        classdefs = (DirContext)root.lookup("classdefinition");
+        
+        // Get "classdefinition" object's attributes
+        classAttrs = classdefs.getAttributes("");
+        
+        assertNotSame(classAttrs, classdefs.getAttributes(""));
+        
+        assertTrue(classAttrs.getIDs().hasMore());
+        
+        String id = classAttrs.getIDs().next();
+        assertEquals("objectclass", id);
+        
+        Attribute attr = classAttrs.get(id);
+        
+        assertTrue(attr.getAll().hasMore());
+        assertEquals("classdefinition", ((String) attr.getAll().next())
+                .toLowerCase());
+
+        classdefs = (DirContext)root.lookup("");
+        
+        try {
+            classAttrs = classdefs.getAttributes("classdefinition/cn");
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // expected
+        }
+        
+        classAttrs = classdefs.getAttributes("classdefinition/top");
+        NamingEnumeration<String> ids = classAttrs.getIDs();
+        while(ids.hasMore()) {
+            id = ids.next();
+            assertTrue(top.keySet().contains(id.toLowerCase()));
+            attr = classAttrs.get(id);
+            NamingEnumeration<?> values = attr.getAll();
+            while(values.hasMore()) {
+                Object value = values.next();
+                if (value instanceof ArrayList) {
+                    assertTrue(top.get(id.toLowerCase()).equals(value));
+                } else {
+                    assertTrue(top.get(id.toLowerCase()).contains(
+                            value.toString().toLowerCase()));
+                }
+            }
+        }
+    }
+
+    public void test_CreateSubcontext_LName_LAttributes()
+            throws NamingException {
+        DirContext root = ctx.getSchema("");
+        // Specify attributes for the schema object
+        Attributes attrs = new BasicAttributes(true); // Ignore case
+        attrs.put("NUMERICOID", "1.3.6.1.4.1.42.2.27.4.2.3.1.1.1");
+        attrs.put("NAME", "fooObjectClass");
+        attrs.put("DESC", "for JNDITutorial example only");
+        attrs.put("SUP", "top");
+        attrs.put("STRUCTURAL", "true");
+        Attribute must = new BasicAttribute("MUST", "cn");
+        must.add("objectclass");
+        attrs.put(must);
+        try {
+            root.createSubcontext(new CompositeName("test"), attrs);
+            fail("Should throw SchemaViolationException");
+        } catch (SchemaViolationException e) {
+            // expected
+        }
+
+        attrs.remove("NUMERICOID");
+        try {
+            root.createSubcontext(new CompositeName(
+                    "ClassDefinition/fooObjectClass"), attrs);
+            fail("Should throw ConfigurationException");
+        } catch (ConfigurationException e) {
+            // expected
+        }
+    }
+    
+    public void testGetAttributesNameStringArray() throws NamingException {
+        DirContext root = ctx.getSchema("");
+        try {
+            root.getAttributes((Name) null, new String[] {});
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+        
+        try {
+            root.getAttributes("test", null);
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // expected
+        }
+    }
+
+    public void test_modifyAttributes_LString_LModificationItem() throws NamingException {
+        DirContext root = ctx.getSchema("");
+        try {
+            root.modifyAttributes((String)null, new ModificationItem[]{});
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            root.modifyAttributes("test", null);
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // expected
+        }
+        try {
+            root.modifyAttributes("AttributeDefinition/cn", null);
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+    }
+
+    public void test_search_LString_LAttributes_LString() throws NamingException {
+        DirContext root = ctx.getSchema("");
+        try {
+            root.search((String)null, new BasicAttributes(), new String[]{});
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
+
+        try {
+            root.modifyAttributes("test", null);
+            fail("Should throw NameNotFoundException");
+        } catch (NameNotFoundException e) {
+            // expected
+        }
+        try {
+            root.modifyAttributes("AttributeDefinition/cn", null);
+            fail("Should throw NPE");
+        } catch (NullPointerException e) {
+            // expected
+        }
     }
 
     private static DirContext ctx = null;
