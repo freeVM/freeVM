@@ -19,10 +19,8 @@
          BT Adaptor for Eclipse Hello World Application (EHWA) scenario
      ====================================================================== -->
 
-<project name="ehwa" default="run" basedir=".">
+<project name="ehwa-api" default="run" basedir=".">
     
-    <property environment="env"/>
-
     <!--
         Properties for Eclipse installation
     -->
@@ -89,16 +87,14 @@
                          value='${built.classlib.trunk}'/>
             <sysproperty key="machine.arch" value="${os.arch}"/>
             <sysproperty key="eclipse.home" value="${eclipse-3.2.1.homedir}/eclipse"/>
-        </exec-ant>
+            <sysproperty key="test.mode" 
+                         value="${ehwa-api.parameters.optional.test.mode}"/>
+            <sysproperty key="test.jre.home" 
+                         value="${ehwa-api.parameters.optional.tested.runtime}"/>
+    </exec-ant>
     </target>
     
-    <!-- Clean of the EHWA scenario results -->
-    <target name="clean">
-        <log message="============= Adaptor for ${suite.name}: Clean .."/>
-        <delete dir="${results.dir}/${suite.name}"/>
-        <delete dir="${test.sources.dir}/${suite.name}/workspace"/>
-    </target>
-
+    
     <!-- Targets for Eclipse downloading and installing -->
 
     <target name="-install-eclipse"

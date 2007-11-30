@@ -28,24 +28,21 @@
         <drlvm.config
             description="The built drlvm configuration (debug/release)"
             value="${drlvm.parameters.shared.build.config}"/>
+        <tested.runtime
+            description="Path to Tested Runtime"
+            value="${drlvm.parameters.shared.jre.dir}"/>
     </required>
     
     <optional>
+        <test.mode 
+            description="DRLVM Test Execution Modes"
+            value="jit,jet,opt,int,srv"/>
         <tested.jre.options
             description="Options for the tested runtime"
             value=""/>
-        <delay.factor
-            description="Factor used in time delays inside the scenario" 
-            value="2"/>  
         <eclipse.download.address
             description="Url where Eclipse download archives can be found" 
             value="http://archive.eclipse.org/eclipse/downloads/drops/R-3.2.1-200609210945"/>
     </optional>
-
-    <external/>
-    
-    <shared/> 
-    
-    <cc/>
 
 </parameters>

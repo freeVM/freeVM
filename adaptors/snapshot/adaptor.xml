@@ -315,6 +315,13 @@
         <archive-result/>
     </target>
 
+    <target name="publish-ehwa-api">
+        <mkdir dir="${snapshot.results.dir}/ehwa-api" />
+        <copy-execution-log />
+        <touch-status-file />
+        <archive-result/>
+    </target>
+
     <target name="publish-ega">
         <mkdir dir="${snapshot.results.dir}/ega" />
         <copy-execution-log />
