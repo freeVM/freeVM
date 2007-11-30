@@ -167,10 +167,20 @@
         </fail>
 
         <condition property="need.to.checkout">
-            <not>
-                <available file="${dir.to.checkout}" />
-            </not>
+            <or>
+                <not>
+                    <available file="${dir.to.checkout}" />
+                </not>
+                <isset property="lib.always.update" />
+            </or>
         </condition>
+
+        <echo>
+=====> Project: ${libname}
+       URL:     ${svn.url}
+       Update:  ${need.to.checkout}
+        </echo>
+
     </target>
 
     <target name="-checkout-if-necessary" if="need.to.checkout" depends="-init">
