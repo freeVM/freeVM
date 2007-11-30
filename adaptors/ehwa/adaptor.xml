@@ -70,9 +70,6 @@
     <target name="setup" description="Setup configuration for EHWA scenario run">
         <log message="============= Adaptor for ${suite.name}: Set Up ..."/>
 
-        <log message="Updating scenario sources..."/>
-        <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
-
         <log message="Installing Eclipse..."/>
         <antcall target="-install-eclipse"/>
     </target>
@@ -82,7 +79,7 @@
         <log message="============= Adaptor for ${suite.name}: Run ..."/>
 
         <exec-ant file="ehwa_run.xml"
-                  dir="${test.sources.dir}/${suite.name}">
+                  dir="${checkouts.dir}/ehwa">
             <sysproperty key="result.dir"         value="${results.dir}/${suite.name}"/>
             <sysproperty key="eclipse.home"       value="${eclipse-3.2.1.homedir}/eclipse"/>
             <sysproperty key="tested.jre"         value="${tested.runtime}"/>
@@ -95,7 +92,7 @@
     <target name="clean">
         <log message="============= Adaptor for ${suite.name}: Clean .."/>
         <delete dir="${results.dir}/${suite.name}"/>
-        <delete dir="${test.sources.dir}/${suite.name}/workspace"/>
+        <delete dir="${checkouts.dir}/ehwa/workspace"/>
     </target>
 
     <!-- Targets for Eclipse downloading and installing -->
