@@ -20,29 +20,8 @@
      ====================================================================== -->
 <project name="classlib" default="run" basedir=".">
 
-    <!-- do setup of the classlib workspace -->
-    <target name="setup">
-        <description>
-            setup:
-                Do checkout of the classlib's trunk to the place pointed
-                    by 'checkouts.dir' property.
-                Do setup of the suite (tune parameters)
-        </description>
+    <target name="setup" />
 
-        <!-- Note: Properties
-                ${trunk.dir} pointing to the classlib workspace
-             and
-                ${svn.url}" pointing to the svn url
-             are defined as 'shared' in parameters.xml
-        -->
-
-        <!-- mkdir for sources should be made by adaptor -->
-        <mkdir dir="${trunk.dir}"/>
-
-        <!-- do checkout of the workspace -->
-        <svn-co url="${svn.url}" trunk="${trunk.dir}"/>
-    </target>
-    
     <target name="run">
         <ant target="fetch-depends" 
              dir="${trunk.dir}" 

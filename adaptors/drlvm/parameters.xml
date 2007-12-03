@@ -26,6 +26,10 @@
         <build.config value="${build.config}"/>
     </shared>
 
+    <svn>
+      <drlvm url="http://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk" />
+    </svn>
+
     <!-- CC specific configuration -->
     <cc publish="false"> 
         <!-- reference to the value by parameter ID -->

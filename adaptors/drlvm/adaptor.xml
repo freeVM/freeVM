@@ -31,28 +31,7 @@
     <property name="build.config" 
               value="${drlvm.parameters.optional.build.cfg}"/>
 
-    <!-- do setup of the drlvm workspace -->
-    <target name="setup">
-        <description>
-            setup:
-                Do checkout of the drlvm's trunk to the place pointed
-                    by 'checkouts.dir' property.
-                Do setup of the suite (tune parameters)
-        </description>
-
-        <!-- Note: Properties 
-                ${trunk.dir} pointing to the drlvm workspace
-             and
-                ${svn.url}" pointing to the svn url
-             are defined as 'shared' in parameters.xml 
-        -->
-
-        <!-- mkdir for sources should be made by adaptor -->
-        <mkdir dir="${trunk.dir}"/>
-
-        <!-- do checkout of the DRLVM workspace -->
-        <svn-co url="${svn.url}" trunk="${trunk.dir}"/>
-    </target>
+    <target name="setup" />
 
     <target name="run" 
             description="Checks DRLVM trunk can be build."> 
