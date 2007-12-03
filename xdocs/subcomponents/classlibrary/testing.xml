@@ -60,21 +60,17 @@
        <p>
                     Tests are not separated by functionality under test, for example, tests against <code>clone()</code>
                     methods are NOT separated from tests against <code>equals()</code> methods.
-                    Classpath tests are separated from bootclasspath tests on a directory level:
+                    Find more details <a href="#Package and Class Names for Different Types of the Tests"> below</a>.
                 </p>
-<pre>&lt;modulename&gt;/src/test/api/<b>java</b> - Classpath tests
-&lt;modulename&gt;/src/test/api/<b>java.injected</b> - Bootclasspath tests</pre>
-               <p>
-                    Find more details <a href="#Package and Class Names for Different Types of the Tests">
-                        below</a>.
-               </p>
                 <p>
-                    Some modules might have platform specific tests that are in the case separated on a directory
-                    level:
+                    Some modules might have implementation specific tests that are in this case separated on a directory level:
                 </p>
-<pre>&lt;modulename&gt;/src/test/api/<b>common</b>
-&lt;modulename&gt;/src/test/api/<b>windows</b>
-&lt;modulename&gt;/src/test/api/<b>linux</b></pre>
+<pre>&lt;modulename&gt;/src/test/impl/<b>boot</b> - Package private tests
+&lt;modulename&gt;/src/test/impl/<b>linux</b> - Linux specific tests
+&lt;modulename&gt;/src/test/impl/<b>windows</b> - Windows specific tests</pre>
+                 <p>
+                    If one pretends to test implementation independent platform-specific functionality, the test should be placed at <code>&lt;modulename&gt;/src/test/api</code> directory and check platforms from test internals.
+                 </p>
             </subsection>
             <subsection name="Package and Class Names for Different Types of the Tests">
                 <p>
@@ -114,16 +110,10 @@ org.apache.harmony.auth.tests.<b>org.ietf.jgss</b></pre>
                 <p class="exampletext">
                     To separate the <code>impl</code> test results from
                     the <code>api</code> ones, the <code>impl</code> test names end with
-                    <code>_ImplTest</code>:<br/>
-                    <code>
-                        javax.crypto.<b>CipherTest</b>
-                    </code> - Implementation independent bootclasspath
-                    test for <code>javax.crypto.Cipher</code><br/>
-                    <code>
-                        javax.crypto.<b>Cipher_ImplTest</b>
-                    </code> - Implementation specific bootclasspath
-                    test for <code>javax.crypto.Cipher</code>
+                    <code>_ImplTest</code>:
                 </p>
+<pre>org.apache.harmony.javax.crypto.tests.javax.crypto.<b>CipherTest</b> - Implementation independent test for <code>javax.crypto.Cipher</code>
+org.apache.harmony.javax.crypto.tests.javax.crypto.<b>Cipher_ImplTest</b> - Implementation specific test for <code>javax.crypto.Cipher</code></pre>
             </subsection>
         </section>
     </body>
