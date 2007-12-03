@@ -53,6 +53,12 @@
         <!-- iterate over propertyset fetching required dependencies -->
         <ant antfile="${svn.xml}" target="-iterate" inheritall="false">
             <propertyset refid="required.pops" />
+            <!-- map external properties (including framework.local.properties) -->
+            <propertyset>
+                <propertyref prefix="${subcomponent}.parameters.svn." />
+                <globmapper from="${subcomponent}.parameters.svn.*"
+                            to="parameters.svn.*" />
+            </propertyset>
         </ant>
 
         <delete file="${tmp.file}" />
