@@ -90,7 +90,7 @@
             <sysproperty key="test.mode" 
                          value="${ehwa-api.parameters.optional.test.mode}"/>
             <sysproperty key="test.jre.home" 
-                         value="${ehwa-api.parameters.optional.tested.runtime}"/>
+                         value="${ehwa-api.parameters.required.tested.runtime}"/>
     </exec-ant>
     </target>
     
