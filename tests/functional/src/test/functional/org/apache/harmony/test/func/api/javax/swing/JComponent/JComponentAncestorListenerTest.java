@@ -263,9 +263,18 @@ public class JComponentAncestorListenerTest extends MultiCase {
         l1 = al1.getLog();
         l2 = al2.getLog();
 
-        if (l1.size() != 2 || !"removed".equals(l1.get(0))
-                || !"removed".equals(l1.get(1)) || l2.size() != 1
-                || !"removed".equals(l2.get(0))) {
+        if ((l1.size() != 2 || !"removed".equals(l1.get(0))
+                || !"removed".equals(l1.get(1)) || l2.size() != 1 || !"removed"
+                .equals(l2.get(0)))
+                && (l1.size() != 4 || !"removed".equals(l1.get(0))
+                        || !"removed".equals(l1.get(1))
+                        || !"removed".equals(l1.get(2))
+                        || !"removed".equals(l1.get(3))
+                        || l2.size() != 2 
+                        || !"removed".equals(l2.get(0))
+                        || !"removed".equals(l2.get(1))
+                        )
+                && (l1.size() != 0 && l2.size() != 0)) {
             return failed("wrong AncestorListener hooks called on second jc.setVisible(false)");
         }
 
