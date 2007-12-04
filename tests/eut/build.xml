@@ -174,9 +174,38 @@
         <isset property="is.linux" />
     </condition>
 
+    <!-- ======== check host configuration ===== -->
+    <target name="check-linux-config" if="is.linux">
+        <check-limit option="-n" value="8128" name="open files" />
+        <check-limit option="-s" value="8128" name="stack size" />
+        <check-limit option="-m" value="2000000" name="max memory size" />
+    </target>
+
+    <macrodef name="check-limit">
+        <attribute name="option" />
+        <attribute name="value" />
+        <attribute name="name" />
+        <sequential>
+
+            <exec executable="/bin/sh" resultproperty="exit.code.@{option}">
+                <arg value="-c" />
+                <arg value="test @{value} -le `ulimit @{option} | sed 's#unlimited#@{value}#'`" />
+            </exec>
+
+            <fail message="Host configuration: limit for @{name} should be at least @{value}">
+                <condition>
+                    <not>
+                        <equals arg1="${exit.code.@{option}}" arg2="0" />
+                    </not>
+                </condition>
+            </fail>
+        </sequential>
+    </macrodef>
+
+
     <!-- ================ Setup ================ -->
     <target name="setup"
-            depends="install.eut,install.eclipse,setup.configuration,build.reporter"
+            depends="check-linux-config,install.eut,install.eclipse,setup.configuration,build.reporter"
             description="Download and install EUT, Eclipse SDK; configuring EUT settings">
     </target>
 
@@ -235,7 +264,7 @@
                  refid="test.jre.home.path.id" />
 
     <target name="run"
-            depends="run.configuration,run.tests,run.postprocess"
+            depends="check-linux-config,run.configuration,run.tests,run.postprocess"
             description="Configure and run EUT, process results">
     </target>
 
