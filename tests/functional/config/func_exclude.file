@@ -1,20 +1,8 @@
-# H-4306:  16 tests
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/ST03/ST03Test.xml   
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/OV01/OV01Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/ST05/ST05Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/BR02/BR02Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/BR03/BR03Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/EV01/EV01Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/EV02/EV02Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/EV03/EV03Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/LV01/LV01Test.xml
+# Failing tests.
 functional/org/apache/harmony/test/func/jpda/jdwp/scenario/LV02/LV02Test.xml
 functional/org/apache/harmony/test/func/jpda/jdwp/scenario/LV03/LV03Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/ST01/ST01Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/ST07/ST07Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/TD01/TD01Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/TD02/TD02Test.xml
-functional/org/apache/harmony/test/func/jpda/jdwp/scenario/TD03/TD03Test.xml
+functional/org/apache/harmony/test/func/api/java/security/F_SecureClassLoaderTest_02/F_SecureClassLoaderTest_02.xml
+
 # H-4363
 functional/org/apache/harmony/test/func/jpda/jdwp/scenario/ST06/ST06Test.xml   
 
@@ -59,8 +47,6 @@ functional/org/apache/harmony/test/func/api/java/lang/F_PackageTest_02/F_Package
 functional/org/apache/harmony/test/func/api/java/util/jar/Manifest/ManifestTest.xml
 # H-4416
 functional/org/apache/harmony/test/func/api/java/util/GregorianCalendar/GregorianCalendarTest.xml
-# H-4406
-functional/org/apache/harmony/test/func/api/java/text/BreakIterator/LineInstanceTest.xml
 # H-4374
 functional/org/apache/harmony/test/func/api/java/security/cert/F_CertPathTest_04/F_CertPathTest_04.xml
 # H-4376
@@ -92,8 +78,6 @@ functional/org/apache/harmony/test/func/api/javax/swing/text/DefaultCaret/Defaul
 functional/org/apache/harmony/test/func/api/javax/swing/AbstractButton/AbstractButtonTest.xml
 functional/org/apache/harmony/test/func/api/javax/swing/JButton/JButtonTest.xml
 functional/org/apache/harmony/test/func/api/javax/swing/JComponent/JComponentTest.xml
-# H-4436
-functional/org/apache/harmony/test/func/api/javax/swing/JComponent/JComponentAncestorListenerTest.xml 
 # H-4365
 functional/org/apache/harmony/test/func/api/java/io/FileReader/FileReaderTest.xml 
  
@@ -132,12 +116,9 @@ functional/org/apache/harmony/test/func/vm/cli/Xbootclasspath/Xbootclasspath01/X
 # Bug in the test # H-4369: Testcase testWindow_getInputContext. 
 # The test doesn't guarantee and doesn't perform any checks that the current input method doesn't support reconvert operation.
 functional/org/apache/harmony/test/func/api/java/awt/Window/WindowTest.xml
-
  
 # H-4429
 functional/org/apache/harmony/test/func/api/java/awt/KeyboardFocusManager/KeyboardFocusManagerTest.xml
-H-4272
-functional/org/apache/harmony/test/func/api/java/beans/beancontext/TestBeanContextServicesSupport.xml
 
 # H-4248 in test CompileFlags()
 # H-4458 - test issue in testSplit()
@@ -145,16 +126,12 @@ functional/org/apache/harmony/test/func/api/java/util/regex/Pattern/PatternTest.
 
 # H-2034
 functional/org/apache/harmony/test/func/reg/vm/btest6607/Btest6607.xml 
-functional/org/apache/harmony/test/func/jit/HLO/dce/deadnative/DeadNativeTest.xml 
 
 # H-4187
 functional/org/apache/harmony/test/func/api/java/io/ObjectOutputStream/writeObjectReadObject0009/writeObjectReadObject0009.xml 
 
 # H-32
 functional/org/apache/harmony/test/func/api/java/text/Collator/CollatorTest.xml 
-
-# H-4001
-functional/org/apache/harmony/test/func/api/java/beans/beancontext/TestBeanContextMembership.xml 
 
 # Interactive tests: 6 tests
 functional/org/apache/harmony/test/func/api/java/awt/Color/ColorInteractiveTest.xml
@@ -249,8 +226,6 @@ functional/org/apache/harmony/test/func/api/java/beans/introspector/useallmethod
 #  ERROR on RI: 22 tests
 # H-4440
 functional/org/apache/harmony/test/func/api/java/awt/EventQueue/EventQueueTest.xml
-# H-4361
-functional/org/apache/harmony/test/func/api/java/lang/ThreadGroup/destroy/destroy10/destroy1010/destroy1010.xml
 # H-4449
 functional/org/apache/harmony/test/func/api/java/security/auth/F_AuthPermissionTest_01/F_AuthPermissionTest_01.xml
 # H-4320
@@ -258,16 +233,12 @@ functional/org/apache/harmony/test/func/api/java/security/cert/F_CertificateFact
 functional/org/apache/harmony/test/func/api/java/security/cert/F_CertificateFactoryTest_02/F_CertificateFactoryTest_02.xml
 # H-4417
 functional/org/apache/harmony/test/func/api/java/security/cert/F_CertPathTest_03/F_CertPathTest_03.xml
-# fixed
-functional/org/apache/harmony/test/func/api/java/security/F_SecureClassLoaderTest_02/F_SecureClassLoaderTest_02.xml
 # H-4364
 functional/org/apache/harmony/test/func/api/java/util/jar/JarFile/JarFileTest.xml
 # H-4394
 functional/org/apache/harmony/test/func/api/java/util/logging/LogManager/ReadConfiguration_03.xml
 # H-4367
 functional/org/apache/harmony/test/func/api/javax/management/modelmbean/DefaultDescriptorTest.xml
-# H-4401
-functional/org/apache/harmony/test/func/api/javax/management/remote/TLSClientAuthenticationTest.xml
 # H-4428
 functional/org/apache/harmony/test/func/api/javax/naming/provider/rmi/FederationSupportOFTest.xml
 functional/org/apache/harmony/test/func/api/javax/naming/provider/rmi/FederationSupportRefTest.xml
@@ -277,9 +248,9 @@ functional/org/apache/harmony/test/func/api/javax/xml/F_SAXParserTest_02/F_SAXPa
 functional/org/apache/harmony/test/func/api/javax/xml/F_SAXParserTest_03/F_SAXParserTest_03.xml
 # H-2607
 functional/org/apache/harmony/test/func/jit/HLO/dce/deadint3/DeadIntTest3.xml
-# not reproducible
+
+# Intermittently fails in concurrent mode because the test uses static port number.
 functional/org/apache/harmony/test/func/api/java/net/ServerSocket/ServerSocketTest_01.xml
-functional/org/apache/harmony/test/func/api/javax/management/modelmbean/NotificationLoggingTest.xml
 
 # unknown on RI: 2 tests
 # 4360
@@ -301,4 +272,5 @@ functional/org/apache/harmony/test/func/jit/HLO/lazyexc/IO2/IO2.xml
 
 # Invalid test HARMONY-4867
 functional/src/test/functional/org/apache/harmony/test/func/reg/vm/btest6572/Btest6572.xml
+
 
