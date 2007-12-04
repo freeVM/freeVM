@@ -33,7 +33,7 @@ public class destroy1010 extends Test {
     boolean  results[] = new boolean[100];
     String  logArray[] = new String[100];
     int     logIndex   = 0; 
-        Object dObjects[] = { null, new Object(), new Object() };
+    static volatile Object sync = new Object();
 
     void addLog(String s) {
         if ( logIndex < logArray.length )
@@ -43,144 +43,155 @@ public class destroy1010 extends Test {
 
     void destroy1010() {
 
-            ThreadGroup tgObjects[] = { null,
-                                       new ThreadGroup("tg1"),
-                                       new ThreadGroup("tg1"),
-                                       new ThreadGroup("tg2"),
-                                       null, null, null
-                                     };
-                       tgObjects[4] =   new ThreadGroup(tgObjects[2], "tg1");
-                       tgObjects[5] =   new ThreadGroup(tgObjects[3], "tg1");
-                       tgObjects[6] =   new ThreadGroup(tgObjects[3], "tg2");
+        ThreadGroup[] tgs = new ThreadGroup[11];
+        tgs[1] = new ThreadGroup("tg1"); // Single thread group without threads
+        tgs[2] = new ThreadGroup("tg2"); // Single thread group with non-started thread
+        tgs[3] = new ThreadGroup("tg3"); // Single thread group with started thread
+        tgs[4] = new ThreadGroup("tg4");
+        tgs[5] = new ThreadGroup(tgs[4], "tg5"); // subgroup with thread
+        tgs[6] = new ThreadGroup("tg6");
+        tgs[7] = new ThreadGroup(tgs[6], "tg7"); // subgroup without thread
+        tgs[8] = new ThreadGroup(tgs[6], "tg8"); // subgroup with thread
+        tgs[9] = new ThreadGroup(tgs[6], "tg9"); // subgroup without thread
+        tgs[10] = new ThreadGroup(tgs[6], "tg10"); // subgroup without thread
 
-            ThreadGroup tgObjects2[] = { null,
-                                       new ThreadGroup("tg1"),
-                                       new ThreadGroup("tg1"),
-                                       new ThreadGroup("tg2"),
-                                       null, null, null
-                                     };
-                       tgObjects2[4] =   new ThreadGroup(tgObjects2[2], "tg1");
-                       tgObjects2[5] =   new ThreadGroup(tgObjects2[3], "tg1");
-                       tgObjects2[6] =   new ThreadGroup(tgObjects2[3], "tg2");
-            label: {
-                Threaddestroy1010 t1[] = { null,
-                               new Threaddestroy1010(tgObjects[1], "t11"),
-                               new Threaddestroy1010(tgObjects[2], "t12"),
-                               new Threaddestroy1010(tgObjects[3], "t13"),
-                               new Threaddestroy1010(tgObjects[4], "t14"),
-                               new Threaddestroy1010(tgObjects[5], "t15"),
-                               new Threaddestroy1010(tgObjects[6], "t16")
-                             };
-//-1
-                for ( int i = 1; i < tgObjects.length; i++ ) {
-                    try {
-                        tgObjects[i].setDaemon(false);
-                        tgObjects[i].destroy();
-                        results[i] |= false;
-                    } catch (IllegalThreadStateException e) {
-                    }
-                }
-//-1)
-//-2
-                synchronized(dObjects[2]) {
-                    synchronized(dObjects[1]) {
-                        for (int j = 1; j < t1.length; j++ ) {
-                            try {
-                                t1[j].start();
-                                dObjects[1].wait(60000);
-                            } catch (InterruptedException e) {
-                                addLog("ERROR: unexpectead InterruptedException");
-                                results[results.length -1] = false;
-                                break label;
-                            }
-                        }
-                    }
-                }
-                for ( int j = t1.length -1; j > 0; j-- ) {
-                    try {
-                        t1[j].join();
-                    } catch (InterruptedException e) {
-                        addLog("ERROR: unexpectead InterruptedException");
-                        results[results.length -1] = false;
-                        break label;
-                    }
-                    try {
-                        tgObjects[j].destroy();
-                    } catch (IllegalThreadStateException e) {
-                        results[j+7] |= false;
-                    }
-                }
-//-2)
-//-3
-                for ( int j = t1.length -1; j > 0; j-- ) {
-                    try {
-                        tgObjects[j].destroy();
-                        results[j+14] |= false;
-                    } catch (IllegalThreadStateException e) {
-                    }
-                }
-//-3)
-//-4
-            Threaddestroy1010 t2[] = { null,
-                           new Threaddestroy1010(tgObjects2[1], "t21"),
-                           new Threaddestroy1010(tgObjects2[2], "t22"),
-                           new Threaddestroy1010(tgObjects2[3], "t23"),
-                           new Threaddestroy1010(tgObjects2[4], "t24"),
-                           new Threaddestroy1010(tgObjects2[5], "t25"),
-                           new Threaddestroy1010(tgObjects2[6], "t26")
-                         };
+        for (int i = 1; i < tgs.length; i++) {
+            tgs[i].setDaemon(false);
+        }
 
-                boolean expected[][] = {
-                                        {  true, false, false, false, false, false },
-                                        { false, false, false, false, false, false },
-                                        { false, false, false, false, false, false },
-                                        { false,  true, false,  true, false, false },
-                                        { false, false, false, false,  true, false },
-                                        { false, false,  true, false, false,  true },
-                                       };
+        Threaddestroy1010[] ts = new Threaddestroy1010[11];
 
-                for ( int i = 1; i < tgObjects2.length; i++ ) {
-                    tgObjects2[i].setDaemon(false);
-                }
+        label: {
 
-                synchronized(dObjects[1]) {
-                    for (int j = 1; j < t2.length; j++ ) {
+        try {
+            tgs[1].destroy();
+        } catch (Exception e) {
+            results[1] = false;
+            break label;
+        }
+
+        try {
+            ts[2] = new Threaddestroy1010(tgs[2], "t2");
+            tgs[2].destroy();
+        } catch (Exception e) {
+            results[2] = false;
+            break label;
+        }
+
+        try {
+            ts[3] = new Threaddestroy1010(tgs[3], "t3");
+            synchronized (sync) {
+                ts[3].start();
+                tgs[3].destroy();
+                // Destroyed with running thread
+                results[3] = false;
+                break label;
+            }
+        } catch (Exception e) {
+            try {
+                ts[3].join();
+            } catch (InterruptedException ee) {
+            }
+        }
+
+        try {
+            ts[5] = new Threaddestroy1010(tgs[5], "t5");
+            synchronized (sync) {
+                ts[5].start();
+                tgs[4].destroy();
+                // Destroyed with subgroup with running thread
+                results[4] = false;
+                break label;
+            }
+        } catch (Exception e) {
+
+            try {
+                ts[5].join();
+            } catch (InterruptedException ee) {
+                // Unexpected InterruptedException
+                results[5] = false;
+                break label;
+            }
+
+            if (!tgs[4].isDestroyed()) {
+                // Top empty group is not destroyed
+                results[6] = false;
+                break label;
+            }
+
+            if (tgs[5].isDestroyed()) {
+                // Non-empty group was destroyed
+                results[7] = false;
+                break label;
+            }
+
+            try {
+                tgs[5].destroy();
+            } catch (Exception ee) {
+                // Can't destroy with subgroup with finished thread
+                results[8] = false;
+                break label;
+            }
+        }
 
 
-                        try {
-                            t2[j].start();
-                            dObjects[1].wait(60000);
-                            t2[j].join();
-                        } catch (InterruptedException e) {
-                            addLog("ERROR: unexpectead InterruptedException");
-                            results[results.length -1] = false;
-                            break label;
-                        }
-                        for ( int k = 1; k < tgObjects2.length; k++ ) {
-                            try {
-                                tgObjects2[j].destroy();
-                                results[j+21] |= expected[j-1][k-1];
-                            } catch (IllegalThreadStateException e) {
-                                results[j+21] |= ! expected[j-1][k-1];
-                            }
-                        }
-                    }
-                }
-//-4)
-            } //label:
-        return ;
+        try {
+            ts[8] = new Threaddestroy1010(tgs[8], "t8");
+            synchronized (sync) {
+                ts[8].start();
+                tgs[6].destroy();
+                // Destroyed with non-empty subgroups
+                results[9] = false;
+                break label;
+            }
+        } catch (Exception e) {
+
+            if (!tgs[6].isDestroyed()) {
+                // Top empty group is not destroyed
+                results[10] = false;
+                break label;
+            }
+
+            if (!tgs[7].isDestroyed()) {
+                // Empty subgroup was not destroyed - wrong groups order
+                results[11] = false;
+                break label;
+            }
+
+            if (tgs[8].isDestroyed()) {
+                // Non-empty subgroup was destroyed
+                results[12] = false;
+                break label;
+            }
+
+            if (tgs[9].isDestroyed()) {
+                // Group was destroyed - wrong groups order
+                results[13] = false;
+                break label;
+            }
+
+            if (tgs[10].isDestroyed()) {
+                // Group was destroyed - wrong groups order
+                results[14] = false;
+                break label;
+            }
+        }
+
+        } //label:
+            
     }
 
-class Threaddestroy1010 extends Thread {
-    Threaddestroy1010(ThreadGroup tg, String s) {super(tg, s);}
-    public void run() {
-        synchronized(dObjects[1]) {
-            dObjects[1].notify();
+    class Threaddestroy1010 extends Thread {
+
+        Threaddestroy1010(ThreadGroup tg, String s) {
+            super(tg, s);
         }
-        synchronized(dObjects[2]) {
+
+        public void run() {
+            synchronized(sync) {
+            }
         }
     }
-}
 
 
     public int test() {
