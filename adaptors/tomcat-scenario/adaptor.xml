@@ -21,7 +21,7 @@
 <project name="tomcat-scenario" default="run" basedir=".">
 
     <property name="tomcat.results.dir" location="${results.dir}/${suite.name}"/>
-    <property name="tomcat.src.dir" location="${test.sources.dir}/${suite.name}"/>
+    <property name="tomcat.src.dir" location="${checkouts.dir}/tomcat-scenario" />
     <property environment="env"/>
 
     <condition property="shell" value="cmd" else="sh">
@@ -45,11 +45,6 @@
     <!-- Setup of the Tomcat scenario -->
     <target name="setup">
         
-        <!-- 
-            Load the test sources into BTI workspace
-        -->
-        <svn-update-bt path="${tomcat.src.dir}"/>
-
         <!--
             Setup port number for Tomcat server
         -->
