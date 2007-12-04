@@ -55,7 +55,7 @@ public class DeadNativeTest extends Test {
 
        private double calc() {
            double d = 0.0;
-           for(int i = 0; i < 20000000; ++i) {
+           for(int i = 0; i < 200000; ++i) {
              d = 1000000.;
              for(;;) {
                 d *= .9;
