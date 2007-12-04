@@ -80,7 +80,7 @@
     </target>
 
     <!-- do test execution -->
-    <target name="run">
+    <target name="run" depends="setup">
 
         <mkdir dir="${stress.res.dir}"/>
         <!-- remove old results (they were archived after creation) -->
