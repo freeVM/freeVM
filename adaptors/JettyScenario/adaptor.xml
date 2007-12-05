@@ -21,7 +21,7 @@
 <project name="JettyScenario" default="run" basedir=".">
 
     <property name="scenario.dir" location="${checkouts.dir}/${suite.name}"/>
-    <property name="scenario.src.dir" location="${test.sources.dir}/${suite.name}"/>
+    <property name="scenario.src.dir" location="${checkouts.dir}/${suite.name}"/>
     <property name="scenario.bin.dir" location="${scenario.dir}/classes"/>
     <property name="scenario.results.dir" location="${results.dir}/${suite.name}"/>
 
@@ -50,16 +50,13 @@
             2. Create working directory
             3. Compile scenario sources
         -->
-
-        <svn-update-bt path="${scenario.src.dir}"/>
-
         <mkdir dir="${scenario.bin.dir}"/>
 
         <antcall target="-compile-sources"/>
     </target>
 
     <target name="-compile-sources">
-        <javac srcdir="${test.sources.dir}/${suite.name}/src"
+        <javac srcdir="${scenario.src.dir}/src"
                destdir="${scenario.bin.dir}">
             <classpath>
                 <pathelement location="${scenario.bin.dir}"/>

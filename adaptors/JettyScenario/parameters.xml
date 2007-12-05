@@ -58,6 +58,10 @@
             inc="*/lib/**,*/*.txt"/>
     </external>
 
+    <svn>
+      <JettyScenario url="tests/JettyScenario"/>
+    </svn>
+
     <!-- Shared parameters -->
     <shared>
         <!-- define where the scenario sources are placed -->
