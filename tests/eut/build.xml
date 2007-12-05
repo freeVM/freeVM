@@ -150,23 +150,15 @@
     </condition>
 
     <condition property="os.eclipse.notation" value="win32">
-        <and>
-            <isset property="is.windows" />
-            <equals arg1="${arch}" arg2="x86" />
-        </and>
+        <isset property="is.windows.x86" />
     </condition>
 
     <condition property="os.eclipse.notation" value="linux">
-        <and>
-            <isset property="is.linux" />
-        </and>
+        <isset property="is.linux" />
     </condition>
 
     <condition property="ws" value="win32">
-        <and>
-            <isset property="is.windows" />
-            <equals arg1="${arch}" arg2="x86" />
-        </and>
+        <isset property="is.windows.x86" />
     </condition>
 
     <!-- Assuming that GTK is default Window System type on Linux -->
