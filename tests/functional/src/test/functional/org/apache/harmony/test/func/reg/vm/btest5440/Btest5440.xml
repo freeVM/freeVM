@@ -41,7 +41,7 @@
     <Runner ID="Execute">
         <Param name="toRun" value="$ReferenceRuntime">
             <Option name="-cp" value="$CP"/>
-            <Option name="share.HangTest"/>
+            <Option name="org.apache.harmony.test.share.reg.HangTest"/>
             <Option name="$TestedRuntime"/>
             <Option name="~timeout=$TestTimeout"/>
             <Option name="~crashString=PASSED!"/>
