@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>Open Source Java SE</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
+
+  <body>
+
+    <section name="Ñ ÷åãî íà÷àòü ïîëüçîâàòåëÿì">
+    <p>Ñ ïîìîùüþ ýòîé èíñòðóêöèè âû ñìîæåòå çàïóñêàòü Java* ïðèëîæåíèÿ íà 
+    âèðòóàëüíîé ìàøèíå Apache Harmony. Óñòàíàâëèâàòü äîïîëíèòåëüíîå ÏÎ
+    èëè êîìïèëèðîâàòü èñõîäíûé êîä âèðòóàëüíîé ìàøèíû íå òðåáóåòñÿ. 
+    Ïîäðîáíàÿ èíôîðìàöèÿ î ïîñòðîåíèè è íàñòðîéêå âèðòóàëüíîé ìàøèíû
+    Apache Harmony äàíà â ðàçäåëå äëÿ Ðàçðàáîò÷èêîâ.
+    </p>
+
+    <subsection name="1. Çàãðóçêà ñîáðàííîé âåðñèè Apache Harmony">
+    <p>Çàãðóçèòå ñ ñàéòà harmony.apache.org áèíàðíûé ôàéë
+    âèðòóàëüíîé ìàøèíû (Virtual Machine, VM) äëÿ ñîîòâåòñòâóþùåé
+    ïëàòôîðìû. Â íàñòîÿùåå âðåìÿ äîñòóïíû âåðñèè äëÿ Linux è 
+    Microsoft Windows (ñì. <a href="roadmap.html#Porting%20Matrix">
+    ñïèñîê ïîääåðæèâàåìûõ ïëàòôîðì</a>).
+    Ïðîåêò Apache Harmony ïîêà íå âûïóñòèë îôèöèàëüíîé âåðñèè ïðîäóêòà;
+    îäíàêî, ó âàñ åñòü âîçìîæíîñòü ñêà÷àòü ñîáðàííóþ âåðñèþ VM, 
+    êîòîðàÿ ñòàáèëüíî ðàáîòàåò íà óêàçàííîé ïëàòôîðìå.</p>
+    </subsection>
+    <subsection name="2. Ðàñïàêîâêà àðõèâà">
+    Ïîñëå çàãðóçêè áèíàðíîãî ôàéëà ñáîðêè, ðàñïàêóéòå åãî.
+    Àðõèâ ðàñïàêîâûâàåòñÿ â ïàïêó jre (äàëåå, êîðíåâàÿ ïàïêà).
+    Äëÿ òîãî, ÷òîáû ðàçàðõèâèðîâàòü ôàéë:
+    <p><strong>Linux</strong>: Çàïóñòèòå tar êîìàíäîé:</p>
+    <pre>$ tar -tzf &lt;latest-harmony-jre-linux&gt;.tar.gz</pre>
+    <p>Àðõèâ áóäåò ðàñïàêîâàí â òåêóùóþ äèðåêòîðèþ.</p>
+    <p><strong>Windows</strong>: Èñïîëüçóéòå ëþáîé àðõèâàòîð äëÿ Windows, êîòîðûé
+     îáðàáàòûâàåò zip ôàéëû. Íàèáîëåå ðàñïðîñòðàíåíû ñëåäóþùèå àðõèâàòîðû:
+    </p>
+    <ul>
+        <li>Info-ZIP (áåñïëàòíî)</li>
+        <li>7-Zip (áåñïëàòíî)</li>
+        <li>Winzip (ïëàòíî)</li>
+    </ul>
+    <p>Àðõèâ áóäåò ðàñïàêîâàí â óêàçàííóþ äèðåêòîðèþ.</p>
+    </subsection>
+    <subsection name="3. Íàñòðîéêà ðàáî÷åãî îêðóæåíèÿ">
+    Âèðòóàëüíàÿ ìàøèíà Apache Harmony íå òðåáóåò äîïîëíèòåëüíîé
+    íàñòðîéêè îêðóæåíèÿ, íî ýòîãî ìîãóò òðåáîâàòü ñòîðîííèå ïðîãðàììû.
+    Äëÿ óäîáñòâà, âû ìîæåòå óêàçàòü äèðåêòîðèþ Apache Harmony â 
+    íàñòðîéêàõ îêðóæåíèÿ. Äëÿ íàñòðîéêè ïåðåìåííûõ îêðóæåíèÿ 
+    JAVA_HOME è PATH, âîñïîëüçóéòåñü ñîîòâåòñòâóþùèìè êîìàíäàìè
+    âàøåé îïåðàöèîííîé ñèñòåìû, êàê ïîêàçàíî íèæå.
+    <p><strong>Linux</strong>: Â îáîëî÷êå shell (íàïðèìåð, bash), ââåäèòå ñëåäóþùèå êîìàíäû:</p>
+    <pre>$ cd &lt;harmony_install_dir&gt;
+$ export JAVA_HOME=`pwd`
+$ cd bin
+$ export PATH=`pwd`:$PATH</pre>
+    <p>Ïðèìå÷àíèå: ñèìâîë ` - ýòî îáðàòíàÿ êàâû÷êà.</p>
+    <p><strong>Windows</strong>: Â ïðèìåðå àðõèâ ðàñïàêîâûâàåòñÿ â êîðíåâóþ äèðåêòîðèþ C:\. Âû ìîæåòå óñòàíîâèòü Apache Harmony â äðóãóþ óäîáíóþ äèðåêòîðèþ. 
+</p>
+<pre>
+C:&gt; cd jre
+C:\jre&gt;set JAVA_HOME=C:\jre
+C:\jre&gt; cd bin
+C:\jre\bin&gt; set PATH=C:\jre\bin;%PATH%</pre>
+    </subsection>
+<subsection name="4. Èñïîëüçîâàíèå Apache Harmony">
+
+<p>Ïîñëå âûïîëíåíèÿ øàãîâ 1-3, Apache Harmony ãîòîâà ê ðàáîòå. Îáðàòèòå âíèìàíèå, ÷òî â ñáîðêó â íàñòîÿùåå âðåìÿ íå âõîäèò êîìïèëÿòîð javac, íî âû ìîæåòå èñïîëüçîâàòü êîìïèëÿòîð äðóãîé ñðåäû èñïîëíåíèÿ, íàïðèìåð Eclipse (ñì. <a href="http://harmony.apache.org/bundles.ru.html"> ãîòîâàÿ ñáîðêà Apache Harmony ñ Eclipse</a>). Ïîïðîáóéòå çàïóñòèòü âàøå Java ïðèëîæåíèå, èñïîëüçóÿ ñòàíäàðòíûé ñèíòàêñèñ: 
+</p>
+<pre>
+$ java Foo
+$ java -jar myjar.jar
+</pre>
+<p>Apache Harmony ïîääåðæèâàåò ñòàíäàðòíûé íàáîð îïöèé, à òàêæå ðÿä äîïîëíèòåëüíûõ äëÿ äàëüíåéøåé íàñòðîéêè âèðòóàëüíîé ìàøèíû, ñì. <a href="cmd_options.html"> ïîëíûé ñïèñîê</a>.  </p>
+</subsection>
+    
+    </section>
+  </body>
+</document>

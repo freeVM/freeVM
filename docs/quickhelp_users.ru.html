@@ -36,7 +36,7 @@ limitations under the License.
             
             
             
-            <title>Apache Harmony - Apache Harmony Code Scanning Tools</title>
+            <title>Apache Harmony - Open Source Java SE</title>
 
                         
                 
@@ -193,43 +193,77 @@ limitations under the License.
             <!-- MAIN CONTENT -->
             <div id="top">
                                                         <h1>
-      <a name="Apache Harmony Code Scanning Tools">Apache Harmony Code Scanning Tools</a>
+      <a name="С чего начать пользователям">С чего начать пользователям</a>
     </h1>
-                        <p>
-                The Apache Harmony project is dedicated to producing a codebase that
-                has clear IP pedigree and protects the IP rights of others. As part
-                of this effort, we are developing and using tools that help us examine
-                code in a more effient way. Below are some tools that we either have
-                created, or are listing to provide awareness. The Apache Harmony project
-                or the ASF does not endorse or promote any of these tools, projects
-                or commercial organizations, and does not make any claims as to
-                suitability, accuracy or dependability.
-            </p>
+                        <p>С помощью этой инструкции вы сможете запускать Java* приложения на 
+    виртуальной машине Apache Harmony. Устанавливать дополнительное ПО
+    или компилировать исходный код виртуальной машины не требуется. 
+    Подробная информация о построении и настройке виртуальной машины
+    Apache Harmony дана в разделе для Разработчиков.
+    </p>
                                     
     <h2>
-        <a name="Apache Harmony Keyword Scanner">Apache Harmony Keyword Scanner</a>
+        <a name="1. Загрузка собранной версии Apache Harmony">1. Загрузка собранной версии Apache Harmony</a>
     </h2>
       
-                        <p>
-                    Keyword scanning is a simple technique to find "the code you never
-                    knew you had." By searching for a set of well chosen keywords (like
-                    "copyright", "license" etc), you can discover code that may not
-                    be redistributable (you have the license to use by not re-distribute
-                    or re-license), or that you didn't want to contribute.
-                </p>
-                                <p>
-                    The Apache Harmony Keyword Scanner is a new contribution that can be found
-                    here:
-                </p>
-                                <p>
-                    <a href="http://svn.apache.org/viewcvs.cgi/harmony/standard/tools/keywordscan/">
-                        http://svn.apache.org/viewcvs.cgi/harmony/standard/tools/keywordscan/
-                    </a>
-                </p>
-                                <p>
-                    We welcome any feedback and further contributions to this or other code-provenance
-                    utilities and tools.
-                </p>
+                        <p>Загрузите с сайта harmony.apache.org бинарный файл
+    виртуальной машины (Virtual Machine, VM) для соответствующей
+    платформы. В настоящее время доступны версии для Linux и 
+    Microsoft Windows (см. <a href="roadmap.html#Porting%20Matrix">
+    список поддерживаемых платформ</a>).
+    Проект Apache Harmony пока не выпустил официальной версии продукта;
+    однако, у вас есть возможность скачать собранную версию VM, 
+    которая стабильно работает на указанной платформе.</p>
+                   
+                                    
+    <h2>
+        <a name="2. Распаковка архива">2. Распаковка архива</a>
+    </h2>
+      
+                        <p><strong>Linux</strong>: Запустите tar командой:</p>
+                                <pre>$ tar -tzf &lt;latest-harmony-jre-linux&gt;.tar.gz</pre>
+                                <p>Архив будет распакован в текущую директорию.</p>
+                                <p><strong>Windows</strong>: Используйте любой архиватор для Windows, который
+     обрабатывает zip файлы. Наиболее распространены следующие архиваторы:
+    </p>
+                                <ul>
+        <li>Info-ZIP (бесплатно)</li>
+        <li>7-Zip (бесплатно)</li>
+        <li>Winzip (платно)</li>
+    </ul>
+                                <p>Архив будет распакован в указанную директорию.</p>
+                   
+                                    
+    <h2>
+        <a name="3. Настройка рабочего окружения">3. Настройка рабочего окружения</a>
+    </h2>
+      
+                        <p><strong>Linux</strong>: В оболочке shell (например, bash), введите следующие команды:</p>
+                                <pre>$ cd &lt;harmony_install_dir&gt;
+$ export JAVA_HOME=`pwd`
+$ cd bin
+$ export PATH=`pwd`:$PATH</pre>
+                                <p>Примечание: символ ` - это обратная кавычка.</p>
+                                <p><strong>Windows</strong>: В примере архив распаковывается в корневую директорию C:\. Вы можете установить Apache Harmony в другую удобную директорию. 
+</p>
+                                <pre>
+C:&gt; cd jre
+C:\jre&gt;set JAVA_HOME=C:\jre
+C:\jre&gt; cd bin
+C:\jre\bin&gt; set PATH=C:\jre\bin;%PATH%</pre>
+                   
+                                    
+    <h2>
+        <a name="4. Использование Apache Harmony">4. Использование Apache Harmony</a>
+    </h2>
+      
+                        <p>После выполнения шагов 1-3, Apache Harmony готова к работе. Обратите внимание, что в сборку в настоящее время не входит компилятор javac, но вы можете использовать компилятор другой среды исполнения, например Eclipse (см. <a href="http://harmony.apache.org/bundles.ru.html"> готовая сборка Apache Harmony с Eclipse</a>). Попробуйте запустить ваше Java приложение, используя стандартный синтаксис: 
+</p>
+                                <pre>
+$ java Foo
+$ java -jar myjar.jar
+</pre>
+                                <p>Apache Harmony поддерживает стандартный набор опций, а также ряд дополнительных для дальнейшей настройки виртуальной машины, см. <a href="cmd_options.html"> полный список</a>.  </p>
                    
                 <p class="backtotop"><a href="#top">Back to top</a></p>
                 
