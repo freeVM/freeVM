@@ -20,7 +20,7 @@ require HTTP::Request;
                "classlib-test"   => "Classlib tests",
                "dacapo"          => "Dacapo",
                "ehwa"            => "Eclipse Hello World Application(GUI)",
-               "ehwa-api         => "Eclipse Hello World Application(API)",
+               "ehwa-api"        => "Eclipse Hello World Application(API)",
                "eut"             => "Eclipse 3.2 Unit Tests",
                "eut33"           => "Eclipse 3.3 Unit Tests",
                "tptp"            => "Eclipse TPTP Tests",
