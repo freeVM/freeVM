@@ -59,7 +59,7 @@ public class Exception9 extends Test {
     }
     
     final void inlineMethod() {
-        if (count < 10000) {
+        if (count < 1000) {
             count++;
             System.loadLibrary("non_existing_lib");
         } else {
