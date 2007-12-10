@@ -85,13 +85,13 @@ class TestThread2 extends Thread {
     
     public void run() {
         try {
-            sleep(50);
+            sleep(200);
         } catch (InterruptedException e) {
             error = true;
         }
         thread1.vol = 100;
         try {
-            sleep(20);
+            sleep(200);
         } catch (InterruptedException e) {
             error = true;
         }
