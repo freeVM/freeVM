@@ -30,11 +30,11 @@
         <format property="timestamp" pattern="yyyyMMdd_HHmm" />
     </tstamp>
 
-    <!--property name="timestamp" value="20070917_0436" /-->
-
     <property name="work.dir" value="${basedir}" />
 
     <property name="eut.work.dir" location="${work.dir}/eclipse-testing" />
+
+    <property name="eut.tmp.dir" value="${work.dir}/eclipse-testing/tmp" />
 
     <property name="tests" value="" />
 
@@ -248,12 +248,22 @@
     </target>
 
     <!-- ================ Run ================ -->
-    <path id="test.jre.home.path.id">
-        <pathelement location="${test.jre.home}" />
-    </path>
-    <pathconvert targetos="unix"
-                 property="test.jre.home.path"
-                 refid="test.jre.home.path.id" />
+    <pathconvert targetos="unix" property="test.jre.home.path">
+        <path id="test.jre.home.path.id">
+            <pathelement location="${test.jre.home}" />
+        </path>
+    </pathconvert>
+
+    <pathconvert targetos="unix" property="eut.tmp.dir.path">
+        <path id="eut.tmp.dir.path.id">
+            <pathelement location="${eut.tmp.dir}" />
+        </path>
+    </pathconvert>
+
+    <property name="vm.options.ext"
+        value="${vm.options} 
+        -Duser.home=${eut.tmp.dir.path}/home
+        -Djava.io.tmpdir=${eut.tmp.dir.path}/tmp" />
 
     <target name="run"
             depends="check-linux-config,run.configuration,run.tests,run.postprocess"
@@ -261,10 +271,9 @@
     </target>
 
     <target name="run.configuration"
-            depends="
+            depends="refresh.eut.installation,
             configure.eut.run.properties,
-            configure.eut.run.properties.teamcvs,
-            clean.before.run">
+            configure.eut.run.properties.teamcvs">
     </target>
 
     <target name="configure.eut.run.properties"
@@ -273,9 +282,11 @@
         <echo file="${eut.work.dir}/eut.run.properties" append="false">
             J2SE-5.0=${test.jre.home.path}/bin/java
             jvm=${test.jre.home.path}/bin/java
-            extraVMargs=${vm.options}
+            extraVMargs=${vm.options.ext}
             timeout=${timeout}
             runtimeArchive=${eclipse.filename}
+            user.home=${eut.tmp.dir.path}/home
+            java.io.tmpdir=${eut.tmp.dir.path}/tmp
         </echo>
     </target>
 
@@ -291,11 +302,15 @@
     </target>
 
     <!-- Delete old results files and work directories -->
-    <target name="clean.before.run"
-            description="Delete old results files and work directories">
+    <target name="refresh.eut.installation">
         <delete dir="${eut.work.dir}/results" failonerror="false" />
         <delete dir="${eut.work.dir}/eclipse" failonerror="false" />
-        <delete file="${work.dir}/report.txt" failonerror="false" />
+
+        <!-- create the directories for redefined HOME and TMP -->
+        <delete dir="${eut.tmp.dir}" />
+        <mkdir dir="${eut.tmp.dir}" />
+        <mkdir dir="${eut.tmp.dir}/home" />
+        <mkdir dir="${eut.tmp.dir}/tmp" />
     </target>
 
     <!--                        -->
@@ -380,7 +395,7 @@
             <arg value="${os.eclipse.notation}" />
             <arg value="${ws}" />
             <arg value="${arch}" />
-            <arg value="${vm.options}" />
+            <arg value="${vm.options.ext}" />
         </java>
 
         <concat destfile="${results.dir}/output.txt" append="true">
