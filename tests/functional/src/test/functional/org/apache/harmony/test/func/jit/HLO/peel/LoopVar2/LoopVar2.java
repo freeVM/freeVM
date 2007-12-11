@@ -35,7 +35,7 @@ public class LoopVar2 extends Test {
         
         public int test() {
             log.info("Start LoopVar2 peel test...");
-            int limit = 100000;
+            int limit = 10000;
             int i = -1;
             int k = -1;
             while(k<limit) {
