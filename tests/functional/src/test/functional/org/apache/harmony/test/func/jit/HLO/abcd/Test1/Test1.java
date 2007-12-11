@@ -36,8 +36,8 @@ public class Test1 extends Test {
         log.info("Start Test1 ...");
         try {
             boolean flag = false;
-            int limit = 50000;
-            Object[] obj = new Object[limit];;
+            int limit = 25000;
+            Object[] obj = new Object[limit];
             for (int i=0; i<limit; i++) {
                 try {
                     obj[i] = String.valueOf(i);
