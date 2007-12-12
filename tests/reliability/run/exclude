@@ -1,5 +1,4 @@
 ## the list of excluded tests ##
-## 23 tests excluded ##
 
 ## HARMONY-2039, no class unloading
 api.kernel.pckg.PackageGetTest
@@ -47,3 +46,6 @@ api.net.MultiConnectTest
 
 ## HARMONY-5172
 api.kernel.hooks.AddRmPropertiesHooksTest
+
+## HARMONY-5295, intermittent hang, also sometimes failed on SUN and BEA; probably test issue
+api.kernel.thread.VolatileVariableTest.DekkerTest
