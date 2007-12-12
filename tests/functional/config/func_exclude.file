@@ -258,13 +258,13 @@ functional/org/apache/harmony/test/func/api/java/nio/channels/fileChannel/FileCh
 
 # Invalid tests. Fail both on RI and Harmony.
 functional/org/apache/harmony/test/func/api/java/io/FileOutputStream/FileOutputStreamThreadTest.xml
-functional/src/test/functional/org/apache/harmony/test/func/api/java/security/cert/F_CertificateFactoryTest_03/F_CertificateFactoryTest_03.xml
+functional/org/apache/harmony/test/func/api/java/security/cert/F_CertificateFactoryTest_03/F_CertificateFactoryTest_03.xml
 
 # Intermittently fails in concurrent mode
 functional/org/apache/harmony/test/func/jit/HLO/lazyexc/IO2/IO2.xml
 
 # Invalid test HARMONY-4867
-functional/src/test/functional/org/apache/harmony/test/func/reg/vm/btest6572/Btest6572.xml
+functional/org/apache/harmony/test/func/reg/vm/btest6572/Btest6572.xml
 
 # The test fails intermittently because it uses Thread.sleep() for synchronization.
 functional/org/apache/harmony/test/func/api/java/awt/Frame/FrameTest.xml
