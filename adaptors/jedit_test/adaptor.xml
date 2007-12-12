@@ -54,14 +54,6 @@
           target: setup
          ================================= -->
     <target name="setup">
-        <condition property="tested.vm.exist">
-            <or>
-                <available file="${jedit_test.tested.runtime}/bin/java"/>
-                <available file="${jedit_test.tested.runtime}/bin/java.exe"/>
-            </or>
-        </condition>
-        <fail message="Can't find java executable in: ${jedit_test.tested.runtime}/bin" unless="tested.vm.exist"/>
-
         <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
 
         <external-ant-build target="setup"
@@ -78,6 +70,14 @@
         <tstamp>
             <format property="time.stamp" pattern="yyyy-MM-dd_HHmm" />
         </tstamp>
+
+        <condition property="tested.vm.exist">
+            <or>
+                <available file="${jedit_test.tested.runtime}/bin/java"/>
+                <available file="${jedit_test.tested.runtime}/bin/java.exe"/>
+            </or>
+        </condition>
+        <fail message="Can't find java executable in: ${jedit_test.tested.runtime}/bin" unless="tested.vm.exist"/>
 
         <external-ant-build target="launch"
                             failonerror="false"
