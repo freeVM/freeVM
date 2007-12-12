@@ -17,23 +17,6 @@
 
 ###############################################################################
 #
-# These tests unexpectedly PASSED during M3 snapshoot testing - keep them for
-# now
-#
-
-# There is an issue in RI & ECJ & Harmony (see HARMONY-3862 for technical
-# details). Related Eclipse issue is:
-# https://bugs.eclipse.org/bugs/show_bug.cgi?id=194398 
-# (target=3.4 status=INVALID)
-org.eclipse.team.tests.ccvs.core.subscriber.CVSMergeSubscriberTest.testIncomingChanges
-org.eclipse.team.tests.ccvs.core.subscriber.CVSMergeSubscriberTest.testLocalScrub
-org.eclipse.team.tests.ccvs.core.subscriber.CVSMergeSubscriberTest.testUnmergableConflicts
-org.eclipse.team.tests.ccvs.core.subscriber.CVSWorkspaceSubscriberTest.testAdditionConflicts
-org.eclipse.team.tests.ccvs.core.subscriber.CVSWorkspaceSubscriberTest.testDeletionConflicts
-org.eclipse.team.tests.ccvs.core.subscriber.CVSWorkspaceSubscriberTest.testOverideAndUpdateSimple
-
-###############################################################################
-#
 # Failure analysis is required
 #
 org.eclipse.ltk.core.refactoring.tests.AllTests
@@ -123,6 +106,10 @@ org.eclipse.jdt.debug.tests.sourcelookup.ExternalArchiveSourceContainerTests.tes
 # https://bugs.eclipse.org/bugs/show_bug.cgi?id=176157 (but status=FIXED for 3.3)
 org.eclipse.ant.tests.ui.editor.CodeCompletionTest.testAttributeProposals
 
+# invalid tests (not reproted to Eclipse.org, see HARMONY-5248)
+org.eclipse.ui.tests.api.IWorkingSetManagerTest.testAddWorkingSet
+org.eclipse.ui.tests.api.IWorkingSetManagerTest.testGetWorkingSets
+org.eclipse.ui.tests.api.IWorkingSetManagerTest.testRemoveWorkingSet
 
 ##############################################################################
 #
@@ -134,12 +121,12 @@ org.eclipse.ant.tests.ui.editor.CodeCompletionTest.testAttributeProposals
 org.eclipse.jdt.ui.tests.LeakTestSuite
 
 # Invalid: intermittently fails on RI (see technical details in HARMONY-3851)
-org.eclipse.core.tests.internal.runtime.PlatformURLSessionTest.test1OutputOnReadOnly
-org.eclipse.core.tests.internal.runtime.PlatformURLSessionTest.test2Resolution
+# org.eclipse.core.tests.internal.runtime.PlatformURLSessionTest.test1OutputOnReadOnly
+# org.eclipse.core.tests.internal.runtime.PlatformURLSessionTest.test2Resolution
 
 # Invalid: intermittently fails on RI
-org.eclipse.core.tests.runtime.jobs.JobTest.testGetResult
-org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_copy
-org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_paste
-org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_copy
+# org.eclipse.core.tests.runtime.jobs.JobTest.testGetResult
+# org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_copy
+# org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_paste
+# org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_copy
 org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_pasteIndex: efl.linux.x86
