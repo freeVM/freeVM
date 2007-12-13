@@ -54,10 +54,10 @@
     </condition>
 
     <!-- Define Eclipse Automated Test version specific properties -->
-    <condition property="is.eut32">
-        <and>
-            <equals arg1="${eclipse.buildid}" arg2="3.2" />
-        </and>
+    <condition property="eclipse.launcher" 
+        value="eclipse/startup.jar"
+        else="eclipse/plugins/org.eclipse.equinox.launcher_1.0.0.v20070606.jar">
+        <equals arg1="${eclipse.buildid}" arg2="3.2" />
     </condition>
 
     <!-- Define architecture and OS -->
@@ -137,18 +137,6 @@
         <isset property="is.linux.x86_64" />
     </condition>
 
-    <condition property="cmd.suffix" value=".bat" else="">
-        <isset property="is.windows" />
-    </condition>
-
-    <condition property="cmd" value="sh" else="cmd">
-        <isset property="is.linux" />
-    </condition>
-
-    <condition property="cmd.arg" value="-" else="/c">
-        <isset property="is.linux" />
-    </condition>
-
     <condition property="os.eclipse.notation" value="win32">
         <isset property="is.windows.x86" />
     </condition>
@@ -197,7 +185,7 @@
 
     <!-- ================ Setup ================ -->
     <target name="setup"
-            depends="check-linux-config,install.eut,install.eclipse,setup.configuration,build.reporter"
+            depends="check-linux-config,install.eut,install.eclipse,build.reporter"
             description="Download and install EUT, Eclipse SDK; configuring EUT settings">
     </target>
 
@@ -208,36 +196,16 @@
              dest="${work.dir}/${eut.filename}"
              usetimestamp="true"
              verbose="true" />
-        <unzip src="${work.dir}/${eut.filename}" dest="${work.dir}" />
     </target>
 
     <target name="install.eclipse"
             description="Download Eclipse archive"
             depends="install.eut">
-        <mkdir dir="${work.dir}" />
+        <mkdir dir="${eut.work.dir}" />
         <get src="${eclipse.location}/${eclipse.filename}"
              dest="${eut.work.dir}/${eclipse.filename}"
              usetimestamp="true"
              verbose="true" />
-        <!-- Delete unused Eclipse SDK archives in order to make EUT scripts
-        work properly -->
-        <delete failonerror="false">
-            <fileset dir="${eut.work.dir}">
-                <filename name="eclipse-SDK*.tar.gz" />
-                <filename name="eclipse-SDK*.zip" />
-                <not>
-                    <filename name="${eclipse.filename}" />
-                </not>
-            </fileset>
-        </delete>
-    </target>
-
-    <target name="setup.configuration"
-            if="is.linux"
-            description="Configure EUT settings files - patch runtests only">
-        <replace file="${eut.work.dir}/runtests"
-                 token="DISPLAY="
-                 value="#DISPLAY=" />
     </target>
 
     <target name="build.reporter" description="Build summary reporter classes">
@@ -301,36 +269,90 @@
         </echo>
     </target>
 
-    <!-- Delete old results files and work directories -->
+    <!-- Because of EUT are quite sensetive to running environment      -->
+    <!-- one needs to remove all trash from previous run.               -->
+    <!-- The safest way is just to reinstall EUT/SDK files from scratch -->
     <target name="refresh.eut.installation">
-        <delete dir="${eut.work.dir}/results" failonerror="false" />
-        <delete dir="${eut.work.dir}/eclipse" failonerror="false" />
 
-        <!-- create the directories for redefined HOME and TMP -->
-        <delete dir="${eut.tmp.dir}" />
+        <!-- if files can't be deleted it may mean the zomby uses it 
+             - invalid run anyway (so failonerror is true) -->
+        <delete failonerror="true" includeemptydirs="true">
+            <fileset dir="${eut.work.dir}" excludes="${eclipse.filename}" />
+        </delete>
+
+        <!-- unpack eclipse-Automated-Tests-*.zip archive -->
+        <unzip src="${work.dir}/${eut.filename}" dest="${work.dir}" />
+
+        <!-- SDK is either zip or tar.gz archive -->
+        <antcall target="unpack.SDK" />
+
+        <!-- unzip -qq -o -C eclipse-junit-tests*.zip */plugins/org.eclipse.test* -->
+        <echo message="Unpacking junit tests..."/>
+        <unzip dest="${eut.work.dir}" overwrite="true">
+            <fileset dir="${eut.work.dir}">
+                <include name="eclipse-junit-tests*.zip"/>
+            </fileset>
+            <patternset>
+                <include name="*/plugins/org.eclipse.test*"/>
+            </patternset>
+        </unzip>
+
+        <!-- create the directories for HOME and TMP in eut.work.dir -->
         <mkdir dir="${eut.tmp.dir}" />
         <mkdir dir="${eut.tmp.dir}/home" />
         <mkdir dir="${eut.tmp.dir}/tmp" />
     </target>
 
-    <!--                        -->
-    <!--                        -->
-    <!-- Launch main EUT script -->
-    <!--                        -->
-    <!--                        -->
-    <target name="run.tests" description="Launch EUT run">
-        <exec executable="${cmd}"
-              dir="${eut.work.dir}"
-              failonerror="false"
-              logError="false"
-              resultproperty="resultproperty">
-            <arg line="${cmd.arg} runtests${cmd.suffix}
-                -os ${os.eclipse.notation} -ws ${ws} -arch ${arch}
-                -properties eut.run.properties ${tests}" />
-            <redirector alwaysLog="true"
-                        logError="false"
-                        output="${work.dir}/output.txt" />
-        </exec>
+    <target name="unpack.SDK"
+            depends="unpack.SDK.with.unzip, unpack.SDK.with.untar">
+        <echo message="SDK is unpacked..."/>
+    </target>
+
+    <target name="unpack.SDK.with.unzip" if="is.windows">
+        <unzip src="${eut.work.dir}/${eclipse.filename}" dest="${eut.work.dir}"
+            overwrite="true" />
+    </target>
+
+    <target name="unpack.SDK.with.untar" if="is.linux">
+        <untar src="${eut.work.dir}/${eclipse.filename}" dest="${eut.work.dir}"
+            overwrite="true" compression="gzip" />
+    </target>
+
+    <!--                                                         -->
+    <!--                                                         -->
+    <!-- Launch main EUT script                                  -->
+    <!-- (derived from eclipse-testing/runtests(.bat)            -->
+    <!--                                                         -->
+    <target name="run.tests" description="Launch EUT">
+        <java
+            fork="true"
+            newenvironment="true"
+            jar="${eut.work.dir}/${eclipse.launcher}"
+            dir="${eut.work.dir}"
+            failonerror="false"
+            logError="false"
+            resultproperty="resultproperty">
+            <jvmarg value="-Dosgi.os=${os.eclipse.notation}" />
+            <jvmarg value="-Dosgi.ws=${ws}" />
+            <jvmarg value="-Dosgi.arch=${arch}" />
+            <arg value="-data" />
+            <arg value="workspace" />
+            <arg value="-application" />
+            <arg value="org.eclipse.ant.core.antRunner" />
+            <arg value="-file" />
+            <arg value="test.xml" />
+            <arg value="${tests}" />
+            <arg value="-Dos=${os.eclipse.notation}" />
+            <arg value="-Dws=${ws}" />
+            <arg value="-Darch=${arch}" />
+            <arg value="-Dclean=true" />
+            <arg value="-propertyfile" />
+            <arg value="eut.run.properties" />
+            <arg value="-logger" />
+            <arg value="org.apache.tools.ant.DefaultLogger" />
+            <redirector alwaysLog="true" logError="false"
+                    output="${work.dir}/output.txt" />
+        </java>
     </target>
 
     <!--                                       -->
