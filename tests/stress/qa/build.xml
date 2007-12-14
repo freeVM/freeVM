@@ -107,7 +107,8 @@
 		<mkdir dir="${punit.repository}"/>
 		<exec executable="svn" dir="${punit.repository}" failonerror="true">
 			<arg value="checkout"/>
-			<arg value="${punit.url}"/>
+			<arg value="${punit.url}/punit"/>
+			<arg value="${punit.url}/punit.extension"/>
 		</exec>
 		<ant dir="${punit.dir}"/>
 		<ant dir="${punit.ext.dir}"/>
