@@ -132,10 +132,10 @@ $ export PATH=`pwd`:$PATH</pre>
             The following example assumes you unpacked the <code>zip</code> 
             file into the root directory <code>C:\</code>.
             Please adjust as necessary.
-<pre>C:> cd jre
-C:\jre>set JAVA_HOME=C:\jre
-C:\jre> cd bin
-C:\jre\bin> set PATH=C:\jre\bin;%PATH%</pre>
+<pre>
+C:\&gt; set JAVA_HOME=C:\jre
+C:\&gt; set PATH=C:\jre\bin;%PATH%
+</pre>
 </dd>
       </dl>
     </subsection>
