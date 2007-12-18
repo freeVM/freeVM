@@ -54,6 +54,8 @@
     <target name="run">
         <log message="============= Adaptor for ${suite.name}: Run .."/>
 
+        <delete dir="${report.dir}/last"/>
+
         <!-- remember start time -->
         <tstamp>
             <format property="time.stamp" pattern="yyyy-MM-dd_HHmm" />
