@@ -284,17 +284,10 @@
               value="${checkouts.dir}/hdk/working_jdktools/build/test_report/html" />
     <target name="publish-jdktools-test" depends="-copy-report-files" />
 
-    <!-- Struts testing scenario -->
-    <target name="publish-jedit_test">
-        <mkdir dir="${snapshot.results.dir}/jedit_test" />
-        <junitreport todir="${snapshot.results.dir}/jedit_test">
-            <fileset dir="${results.dir}/jedit_test/last"
-                     includes="TEST*-*.xml" />
-            <report format="frames"
-                    todir="${snapshot.results.dir}/jedit_test" />
-        </junitreport>
-        <archive-result />
-    </target>
+    <!-- JEdit testing scenario -->
+    <property name="jedit_test.junit.report"
+              value="${results.dir}/jedit_test/last" />
+    <target name="publish-jedit_test" depends="-copy-report-files" />
 
     <target name="publish-JettyScenario">
         <mkdir dir="${snapshot.results.dir}/JettyScenario" />
