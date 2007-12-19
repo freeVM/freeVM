@@ -481,12 +481,26 @@
         </sequential>
     </macrodef>
 
-    <!-- Targets and macro for copying junit report files          -->
-    <!-- The files are looking in ${<suitename>.report} dir        -->
-    <!-- if there are no report files then execution log is copied -->
+    <!-- Targets and macro for copying junit report files                  -->
+    <!-- The junit reports are searched in ${<suitename>.junit.report} dir -->
+    <!-- The other files   are searched in ${<suitename>.report}       dir -->
+    <!-- if there are no report files then execution log is copied         -->
     <target name="-copy-report-files"
-            depends="-copy-junit-report-files,-copy-execution-log">
+            depends="-gen-junit-report,
+                     -copy-junit-report-files,
+                     -copy-execution-log">
         <archive-result />
+    </target>
+
+    <target name="-gen-junit-report"
+            if="junit.report.dir"
+            depends="-init-publisher">
+
+        <junitreport todir="${snapshot.results.dir}/${projectname}">
+            <fileset dir="${junit.report.dir}" includes="TEST*-*.xml" />
+            <report format="frames"
+                    todir="${snapshot.results.dir}/${projectname}" />
+        </junitreport>
     </target>
 
     <target name="-copy-junit-report-files"
@@ -499,7 +513,7 @@
     </target>
 
     <target name="-copy-execution-log"
-            unless="report.dir"
+            if="exec.log.only"
             depends="-init-publisher">
 
         <copy-execution-log />
@@ -514,9 +528,30 @@
     <macrodef name="get-report-dir">
         <attribute name="suitename" />
         <sequential>
+
+            <uptodate property="junit.report.dir"
+                      value="${@{suitename}.junit.report}"
+                      targetfile="${snapshot}/${snapshot.file}">
+
+                <!-- report files should be at least newer
+                     then tested snapshot -->
+                <srcfiles dir="${@{suitename}.junit.report}"
+                          includes="TEST*-*.xml" />
+            </uptodate>
+
             <condition property="report.dir" value="${@{suitename}.report}">
                 <available file="${@{suitename}.report}" type="dir" />
             </condition>
+
+            <condition property="exec.log.only">
+                <not>
+                    <or>
+                        <isset property="junit.report.dir" />
+                        <isset property="report.dir" />
+                    </or>
+                </not>
+            </condition>
+
         </sequential>
     </macrodef>
 
