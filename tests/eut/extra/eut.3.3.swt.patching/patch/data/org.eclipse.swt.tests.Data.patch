@@ -1,0 +1,10 @@
+diff -r -u org.eclipse.swt.tests/data/browser3.html org.eclipse.swt.tests/data/browser3.html
+--- org.eclipse.swt.tests/data/browser3.html	2007-12-14 20:51:57.000000000 +0300
++++ org.eclipse.swt.tests/data/browser3.html	2007-12-17 03:24:01.944717000 +0300
+@@ -1,5 +1,5 @@
+ <html>
+-<script type="text/javascript">window.open("http://www.google.com", "Dialog")</script>
++<script type="text/javascript">window.open("SWTLOCALURL", "Dialog")</script>
+ <body>
+ This test uses javascript to open a new window.
+ </body>
