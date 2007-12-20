@@ -106,6 +106,16 @@ org.eclipse.jdt.debug.tests.sourcelookup.ExternalArchiveSourceContainerTests.tes
 # https://bugs.eclipse.org/bugs/show_bug.cgi?id=176157 (but status=FIXED for 3.3)
 org.eclipse.ant.tests.ui.editor.CodeCompletionTest.testAttributeProposals
 
+# these tests fail if one runs them with user.home & java.io.tmpdir properties
+# redefined on both Harmony and RI. This may be an issues of tests or of Eclipse
+# itself.
+org.eclipse.jdt.ui.tests.quickfix.CleanUpTest.testSerialVersion01
+org.eclipse.jdt.ui.tests.quickfix.CleanUpTest.testSerialVersion02
+org.eclipse.jdt.ui.tests.quickfix.CleanUpTest.testSerialVersion03
+org.eclipse.jdt.ui.tests.quickfix.CleanUpTest.testSerialVersion04
+org.eclipse.jdt.ui.tests.quickfix.CleanUpTest.testSerialVersion05
+org.eclipse.jdt.ui.tests.quickfix.CleanUpTest.testSerialVersionBug139381
+
 # invalid tests (not reproted to Eclipse.org, see HARMONY-5248)
 org.eclipse.ui.tests.api.IWorkingSetManagerTest.testAddWorkingSet
 org.eclipse.ui.tests.api.IWorkingSetManagerTest.testGetWorkingSets
