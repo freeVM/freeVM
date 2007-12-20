@@ -271,13 +271,37 @@
     </target>
 
     <target name="publish-func">
-        <delete dir="${snapshot.results.dir}/func" />
-        <mkdir dir="${snapshot.results.dir}/func" />
+
+        <mkdir dir="${snapshot.results.dir}/func/junit" />
+        <touch-status-file />
+
+        <!-- copy execurtion log -->
+        <concat destfile="${snapshot.results.dir}/func/index.html">
+
+            <!-- insert link to junit report -->
+            <header trimleading="yes" filtering="no">
+                &lt;html&gt;&lt;body&gt;&lt;pre&gt;
+                &lt;a href=&quot;junit/index.html&quot;&gt;JUnit report for failures&lt;a&gt;&#xA;&#xA;
+            </header>
+
+            <fileset file="${results.dir}/func/th.log" />
+
+            <footer trimleading="yes" filtering="no">
+                &lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;
+            </footer>
+        </concat>
+
+        <!-- generate junit report only for failed tests -->
         <junitreport todir="${snapshot.results.dir}/func">
-            <fileset dir="${results.dir}/func" includes="TEST*-*.xml" />
-            <report format="frames" todir="${snapshot.results.dir}/func" />
+            <fileset dir="${results.dir}/func" includes="TEST*-*.xml">
+                <containsregexp expression='(errors|failures)=.[1-9]' />
+                <exclude name="TESTS-TestSuites.xml" />
+            </fileset>
+            <report format="frames"
+                    todir="${snapshot.results.dir}/func/junit" />
         </junitreport>
-        <archive-result/>
+
+        <archive-result />
     </target>
 
     <property name="jdktools-test.report"
