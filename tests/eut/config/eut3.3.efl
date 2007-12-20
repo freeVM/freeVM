@@ -108,7 +108,7 @@ org.eclipse.ant.tests.ui.editor.CodeCompletionTest.testAttributeProposals
 
 # these tests fail if one runs them with user.home & java.io.tmpdir properties
 # redefined on both Harmony and RI. This may be an issues of tests or of Eclipse
-# itself.
+# itself. (see HARMONY-5307)
 org.eclipse.jdt.ui.tests.quickfix.CleanUpTest.testSerialVersion01
 org.eclipse.jdt.ui.tests.quickfix.CleanUpTest.testSerialVersion02
 org.eclipse.jdt.ui.tests.quickfix.CleanUpTest.testSerialVersion03
