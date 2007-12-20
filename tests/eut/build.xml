@@ -36,8 +36,6 @@
 
     <property name="eut.tmp.dir" value="${work.dir}/eclipse-testing/tmp" />
 
-    <property name="tests" value="" />
-
     <property name="results.root.dir" value="${basedir}/results" />
 
     <property name="results.dir" value="${results.root.dir}/${timestamp}" />
@@ -51,6 +49,17 @@
             <isset property="cvs_host" />
             <isset property="cvs_root" />
         </and>
+    </condition>
+
+    <condition property="tests.undefined">
+        <or>
+          <not><isset property="tests" /></not>
+          <length string="${tests}" trim="true" when="equal" length="0" />
+        </or>
+    </condition>
+
+    <condition property="tests.list" value="${tests}">
+        <not><isset property="tests.undefined" /></not>
     </condition>
 
     <!-- Define Eclipse Automated Test version specific properties -->
@@ -185,7 +194,7 @@
 
     <!-- ================ Setup ================ -->
     <target name="setup"
-            depends="check-linux-config,install.eut,install.eclipse,build.reporter"
+            depends="check-linux-config,install.eut,install.eclipse,build.utils"
             description="Download and install EUT, Eclipse SDK; configuring EUT settings">
     </target>
 
@@ -208,10 +217,10 @@
              verbose="true" />
     </target>
 
-    <target name="build.reporter" description="Build summary reporter classes">
-        <mkdir dir="${work.dir}/summary-reporter/classes" />
-        <javac srcdir="${basedir}/summary-reporter/src"
-               destdir="${work.dir}/summary-reporter/classes"
+    <target name="build.utils" description="Build utilities classes">
+        <mkdir dir="${work.dir}/utils/classes" />
+        <javac srcdir="${basedir}/utils/src"
+               destdir="${work.dir}/utils/classes"
                includes="**/*.java" />
     </target>
 
@@ -234,14 +243,70 @@
         -Djava.io.tmpdir=${eut.tmp.dir.path}/tmp" />
 
     <target name="run"
-            depends="check-linux-config,run.configuration,run.tests,run.postprocess"
-            description="Configure and run EUT, process results">
+            description="Configure and run EUT, process results"
+            depends="check-linux-config,define-suites-list">
+        <taskdef resource="net/sf/antcontrib/antlib.xml">
+            <classpath>
+                <pathelement location="${ext.ant-contrib.location}" />
+            </classpath>
+        </taskdef>
+
+        <!-- create the results directory to collect each suite result -->
+        <delete dir="${results.dir}" />
+        <mkdir dir="${results.dir}/results" />
+
+        <!-- iterate over suites -->
+        <for list="${tests.list}" param="suite" keepgoing="true" trim="true">
+            <sequential>
+                <echo message="" />
+                <echo message="" />
+                <echo message="Starting @{suite} run" />
+                <echo message="" />
+                <echo message="" />
+
+                <antcall target="run.suite">
+                    <param name="suite" value="@{suite}" />
+                </antcall>
+
+                <antcall target="kill.zombies" />
+
+                <!-- copy results now - they are deleted by next suite run -->
+                <!-- if suite is skipped then no "results" & copying fails -->
+                <copy todir="${results.dir}/results" failonerror="false">
+                    <fileset dir="${eut.work.dir}/results" />
+                </copy>
+            </sequential>
+        </for>
+        <antcall target="run.postprocess" />
     </target>
 
-    <target name="run.configuration"
-            depends="refresh.eut.installation,
-            configure.eut.run.properties,
-            configure.eut.run.properties.teamcvs">
+    <target name="kill.zombies" if="is.linux">
+        <exec executable="killall" failonerror="false">
+            <arg line="${test.jre.home.path}/jre/bin/java" />
+        </exec>
+    </target>
+
+    <target name="define-suites-list" if="tests.undefined">
+        <echo message="extracting suite list from ${eut.work.dir}/test.xml" />
+
+        <!-- unpack test.xml from eclipse-Automated-Tests-*.zip -->
+        <unzip src="${work.dir}/${eut.filename}" dest="${work.dir}">
+            <patternset>
+                <include name="eclipse-testing/test.xml"/>
+            </patternset>
+        </unzip>
+
+        <!-- parse eclipse-testing/text.xml to get the suite list -->
+        <java classpath="${work.dir}/utils/classes"
+              classname="org.apache.harmony.eut.extractor.EUTSuiteExtractor"
+              fork="true"
+              failonerror="true" 
+              output="${eut.work.dir}/eut.suites.run.properties">
+            <arg value="${eut.work.dir}/test.xml" />
+        </java>
+
+        <!-- read "tests.list" property -->
+        <property file="${eut.work.dir}/eut.suites.run.properties" />
     </target>
 
     <target name="configure.eut.run.properties"
@@ -323,7 +388,11 @@
     <!-- Launch main EUT script                                  -->
     <!-- (derived from eclipse-testing/runtests(.bat)            -->
     <!--                                                         -->
-    <target name="run.tests" description="Launch EUT">
+    <target name="run.suite"
+        description="Refresh EUT installation and run a single EUT suite"
+        depends="refresh.eut.installation,
+            configure.eut.run.properties,
+            configure.eut.run.properties.teamcvs">
         <java
             fork="true"
             newenvironment="true"
@@ -341,7 +410,7 @@
             <arg value="org.eclipse.ant.core.antRunner" />
             <arg value="-file" />
             <arg value="test.xml" />
-            <arg value="${tests}" />
+            <arg value="${suite}" />
             <arg value="-Dos=${os.eclipse.notation}" />
             <arg value="-Dws=${ws}" />
             <arg value="-Darch=${arch}" />
@@ -351,7 +420,7 @@
             <arg value="-logger" />
             <arg value="org.apache.tools.ant.DefaultLogger" />
             <redirector alwaysLog="true" logError="false"
-                    output="${work.dir}/output.txt" />
+                    output="${results.dir}/output.txt" append="true"/>
         </java>
     </target>
 
@@ -362,27 +431,11 @@
     <!--                                       -->
     <target name="run.postprocess"
             depends="
-            collect.output.to.summarize,
             setup.efl,
             generate.reports,
             duplicate.results.in.latest,
             exit.based.on.eut.status"
             description="Processes JUnit reports and creates a summary">
-    </target>
-
-    <!-- Copy EUT generated reports and execution log to results directory -->
-    <target name="collect.output.to.summarize"
-            description="Collect logs and report to one directory to process">
-        <delete dir="${results.dir}" />
-        <mkdir dir="${results.dir}" />
-        <copy todir="${results.dir}">
-            <fileset dir="${work.dir}" includes="output.txt" />
-        </copy>
-        <delete dir="${results.dir}/results" />
-        <mkdir dir="${results.dir}/results" />
-        <copy todir="${results.dir}/results">
-            <fileset dir="${eut.work.dir}/results" />
-        </copy>
     </target>
 
     <!-- Concats EFL files for specific platform -->
@@ -402,11 +455,10 @@
 
     <!-- Print arch, os and JRE under test info to report file -->
     <target name="generate.reports"
-            depends="setup.efl,collect.output.to.summarize,
-                compose.report.get.java.version">
+            depends="setup.efl,compose.report.get.java.version">
 
         <!-- Run reporter -->
-        <java classpath="${work.dir}/summary-reporter/classes"
+        <java classpath="${work.dir}/utils/classes"
               classname="org.apache.harmony.eut.reporter.EUTReporter"
               fork="true"
               failonerror="false"
