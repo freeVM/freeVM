@@ -165,7 +165,7 @@
 
     <!-- ======== check host configuration ===== -->
     <target name="check-linux-config" if="is.linux">
-        <check-limit option="-n" value="8128" name="open files" />
+        <check-limit option="-n" value="16256" name="open files" />
         <check-limit option="-s" value="8128" name="stack size" />
         <check-limit option="-m" value="2000000" name="max memory size" />
     </target>
