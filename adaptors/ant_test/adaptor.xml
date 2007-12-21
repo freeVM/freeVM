@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+        http://www.apache.org/licenses/LICENSE-2.0
+     
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License. -->
+
+<!-- ====================================================================== 
+                        BT Adaptor for ant_test
+     ====================================================================== -->
+<project name="ant_test" default="run" basedir=".">
+    <property name="ant.src.url" value="${ant_test.parameters.optional.ant.src.url}"/>
+    <property name="ant.src.version"  value="${ant_test.parameters.optional.ant.src.version}"/>
+    <property name="ant.src.filename" value="${ant_test.parameters.optional.ant.src.filename}"/>
+
+    <property name="ant.src.dir" location="${checkouts.dir}/${suite.name}/apache-ant-${ant.src.version}"/>
+    <property name="ant.config.location" location="${test.sources.dir}/${suite.name}"/>
+    <property name="ant_test.results.dir" location="${results.dir}/${suite.name}"/>
+    <property name="current.results.dir" location="${ant_test.results.dir}/results"/>
+    <property name="ant_test.summary" location="${ant_test.results.dir}/summary.txt"/>
+
+    <condition property="exe" value=".exe" else="">
+        <os family="windows" />
+    </condition>
+    <property name="tested.jvm" location="${tested.jdk}/jre/bin/java${exe}"/>
+    
+    <!-- Platform information -->
+    <condition property="is.windows">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="is.linux">
+        <and>
+            <os family="unix"/>
+            <os name="linux"/>
+        </and>
+    </condition>
+
+    <condition property="os" value="linux">
+        <and>
+            <os family="unix"/>
+            <os name="linux"/>
+        </and>
+    </condition>
+
+    <condition property="os" value="windows">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="arch" value="x86">
+        <and>
+            <contains string="${os.arch}" substring="86" />
+            <not>
+                <contains string="${os.arch}" substring="64" />
+            </not>
+        </and>
+    </condition>
+
+    <condition property="arch" value="x86_64">
+        <or>
+            <contains string="${os.arch}" substring="86_64" />
+            <contains string="${os.arch}" substring="amd64" />
+        </or>
+    </condition>
+    
+    <condition property="ant.src.exists">
+        <available file="${ant.src.dir}"/>
+    </condition>
+    
+    <condition property="os.specific.exclude.list.exists">
+        <available file="${ant.config.location}/exclude.list.${os}.${arch}"/>
+    </condition>
+
+    <condition property="exclude.list" value="exclude.list.${os}.${arch}"
+        else="exclude.list.empty">
+        <isset property="os.specific.exclude.list.exists"/>
+    </condition>
+
+    <condition property="modified.build.xml.exists">
+        <available file="${ant.src.dir}/bti-build.xml"/>
+    </condition>    
+
+    <!-- ================================= 
+         target: setup
+         ================================= -->
+    <target name="setup">
+        <echo level="info" message="============= Adaptor for ${suite.name}: Set Up ..."/>
+        <echo level="info" message=""/>
+        <echo level="info" message="Tested JVM: ${tested.jvm}"/>
+        <echo level="info" message="URL: ${ant.src.url}/${ant.src.filename}"/>
+        <echo level="info" message="Ant Version: ${ant.src.version}"/>
+
+        <!-- Download ant source file -->
+        <antcall target="-install-ant-src"/>
+        
+        <!-- Configure build.xml -->
+        <antcall target="-config-build"/>
+        
+        <!-- Remove old logs before running -->
+        <delete dir="${ant.src.dir}/build/testcases"/>
+    </target>
+
+    <!-- ================================= 
+          target: run
+         ================================= -->
+    <target name="run">
+        <!-- Make sure the tested jvm is available -->
+        <condition property="jvm.not.exist">
+            <not>
+                <available file="${tested.jvm}"/>
+            </not>
+        </condition>
+        <fail message="Path to JVM does not exist: ${tested.jvm}" if="jvm.not.exist"/>
+
+        <!-- Execute test running here -->
+        <exec-ant dir="${ant.src.dir}"
+                  targets="junit-report"
+                  file="bti-build.xml">
+            <sysproperty key="tested.jvm"           value="${tested.jvm}"/>
+            <sysproperty key="test.haltonfailure"   value="false"/>
+            <sysproperty key="junit.fork"           value="true"/>
+            <sysproperty key="junit.forkmode"       value="perBatch"/>
+            <sysproperty key="run.junit.report"     value="true"/>
+            <env key="CLASSPATH"                    value="${tested.jdk}/lib/tools.jar"/>
+        </exec-ant>
+
+        <!-- Backup test result -->
+        <delete dir="${current.results.dir}"/>
+        <copy todir="${current.results.dir}/xml" failonerror="false">
+            <fileset dir="${ant.src.dir}/build/testcases/xml"/>
+        </copy>
+
+        <copy todir="${current.results.dir}/reports" failonerror="false">
+            <fileset dir="${ant.src.dir}/build/testcases/reports"/>
+        </copy>
+        
+        <tstamp>
+            <format property="test.run.time" pattern="yyyyMMdd_HHmm"/>
+        </tstamp>
+        <mkdir dir="${current.results.dir}_${test.run.time}" />
+        <copy todir="${current.results.dir}_${test.run.time}" >
+            <fileset dir="${current.results.dir}"/>
+        </copy>
+
+        <!-- Generate test summary to mail -->
+        <antcall target="-generate-summary"/>
+    </target>
+
+    <!-- =================================
+          target: clean
+         ================================= -->
+    <target name="clean">
+        <delete dir="${checkouts.dir}/${suite.name}" quiet="true"/>
+        <delete dir="${ant_test.results.dir}" quiet="true"/>
+    </target>
+
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          customzied target                     
+          - - - - - - - - - - - - - - - - - -->
+
+    <target name="-install-ant-src"
+            description="Download and unpack ant source"
+            unless="ant.src.exists">
+        <mkdir dir="${checkouts.dir}/${suite.name}"/>
+        <get src="${ant.src.url}/${ant.src.filename}"
+            dest="${checkouts.dir}/${suite.name}/${ant.src.filename}"
+            usetimestamp="true"
+            verbose="true" />
+        <unzip src="${checkouts.dir}/${suite.name}/${ant.src.filename}" dest="${checkouts.dir}/${suite.name}"/>
+    </target>
+
+    <target name="-setup-empty-exclude-list" unless="os.specific.exclude.list.exists">
+        <!-- Create empty exclude list in order to use if no exclude lists for the platform are specified -->
+        <delete file="${checkouts.dir}/${suite.name}/${exclude.list}"/>
+        <touch file="${checkouts.dir}/${suite.name}/${exclude.list}"/>
+    </target>
+
+    <target name="-setup-non-empty-exclude-list" if="os.specific.exclude.list.exists">
+        <delete file="${ant.src.dir}/${exclude.list}"/>
+        <!-- Copy exclude list and remove comments -->
+        <copy file="${ant.config.location}/exclude.list.${os}.${arch}"
+            tofile="${checkouts.dir}/${suite.name}/exclude.list.${os}.${arch}"
+            overwrite="true"
+            failonerror="false">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="(.*?)#.*" replace="\1" flags="m"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+    </target>
+
+    <target name="-config-build" depends="-setup-empty-exclude-list,-setup-non-empty-exclude-list">
+        <!-- Clone the build.xml for customized testing -->
+        <delete file="${ant.src.dir}/bti-build.xml"/>
+        <copy file="${ant.src.dir}/build.xml"
+              tofile="${ant.src.dir}/bti-build.xml"
+              failonerror="false"/>
+        
+        <!-- Compose the exclude list according to the exclude file -->
+        <replaceregexp  file="${checkouts.dir}/${suite.name}/${exclude.list}"
+            match="\s+"
+            replace=","
+            flags="g"/>
+        <loadfile property="exclude.tests" srcFile="${checkouts.dir}/${suite.name}/${exclude.list}" failonerror="false"/>
+        <replaceregexp file="${ant.src.dir}/bti-build.xml">
+            <regexp pattern='(.*&lt;property name=\"junit\.excludes\" value\=.*)'/>
+            <substitution expression='&lt;property name\=\"junit\.excludes\" value=\"${exclude.tests}\"\/&gt;'/> 
+        </replaceregexp> 
+        
+        <replace file="${ant.src.dir}/bti-build.xml">
+            <replacetoken><![CDATA[haltonfailure="${test.haltonfailure}"]]></replacetoken>
+            <replacevalue><![CDATA[haltonfailure="${test.haltonfailure}"
+               jvm="${tested.jvm}"]]></replacevalue>
+        </replace>
+    </target>
+
+    <target name="-generate-summary">
+        <!-- Generate mail summary --> 
+        <echo file="${ant_test.summary}" message="========== ant_test Test Summary =========="/>
+        <echo file="${ant_test.summary}" append="true" message="${line.separator}${line.separator}"/>
+        <echo file="${ant_test.summary}" append="true" message="Tested JVM: ${tested.jvm}${line.separator}"/>
+        <echo file="${ant_test.summary}" append="true" message="URL: ${ant.src.url}/${ant.src.filename}${line.separator}"/>
+        <echo file="${ant_test.summary}" append="true" message="Ant Version: ${ant.src.version}${line.separator}"/>
+    </target>
+
+</project>
+
