@@ -54,7 +54,6 @@
           target: setup
          ================================= -->
     <target name="setup">
-        <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
 
         <external-ant-build target="setup"
                             failonerror="false"
@@ -135,7 +134,7 @@
         <attribute name="failproperty" default="external-ant-build.fail.property"/>
         <sequential>
             <exec-ant targets="@{target}"
-                      dir="${test.sources.dir}/${suite.name}"
+                      dir="${checkouts.dir}/jedit_test"
                       failonerror="@{failonerror}"
                       failproperty="@{failproperty}">
                 <sysproperty key="target.dir"                        value="${checkouts.dir}/${suite.name}"/>
