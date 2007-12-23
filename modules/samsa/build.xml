@@ -78,6 +78,9 @@
         <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/jarsigner${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/jarsigner${exe.suffix}" perm="ugo+x" />
 
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/appletviewer${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/appletviewer${exe.suffix}" perm="ugo+x" />
+
     </target>
 
     <!-- copy windows javaw executable -->
