@@ -325,26 +325,11 @@
 
     <target name="publish-dacapo" depends="-copy-report-files" />
 
-    <target name="publish-ehwa">
-        <mkdir dir="${snapshot.results.dir}/ehwa" />
-        <copy-execution-log />
-        <touch-status-file />
-        <archive-result/>
-    </target>
+    <target name="publish-ehwa" depends="-copy-report-files" />
 
-    <target name="publish-ehwa-api">
-        <mkdir dir="${snapshot.results.dir}/ehwa-api" />
-        <copy-execution-log />
-        <touch-status-file />
-        <archive-result/>
-    </target>
+    <target name="publish-ehwa-api" depends="-copy-report-files" />
 
-    <target name="publish-ega">
-        <mkdir dir="${snapshot.results.dir}/ega" />
-        <copy-execution-log />
-        <touch-status-file />
-        <archive-result/>
-    </target>
+    <target name="publish-ega" depends="-copy-report-files" />
 
     <target name="publish-eut">
         <mkdir dir="${snapshot.results.dir}/eut" />
@@ -380,31 +365,16 @@
         <archive-result/>
     </target>
 
-    <target name="publish-hdk_by_hdk">
-        <mkdir dir="${snapshot.results.dir}/hdk_by_hdk" />
+    <!-- ANT testing scenario -->
+    <target name="publish-hdk_by_hdk" depends="-copy-report-files" />
 
-        <copy-execution-log />
-        <touch-status-file />
-        <archive-result />
-    </target>
+    <!-- Reliability suite -->
+    <property name="reliability.junit.report"
+              value="${results.dir}/reliability/last" />
+    <target name="publish-reliability" depends="-copy-report-files" />
 
-    <target name="publish-reliability">
-        <mkdir dir="${snapshot.results.dir}/reliability" />
-        <junitreport todir="${results.dir}/reliability/last">
-            <fileset dir="${results.dir}/reliability/last" includes="TEST-*.xml" />
-            <report format="frames" todir="${snapshot.results.dir}/reliability" />
-        </junitreport>
-        <archive-result/>
-    </target>
-
-
-    <target name="publish-scimark">
-        <mkdir dir="${snapshot.results.dir}/scimark" />
-
-        <copy-execution-log />
-        <touch-status-file />
-        <archive-result/>
-    </target>
+    <!-- Scimark testing scenario -->
+    <target name="publish-scimark" depends="-copy-report-files" />
 
     <target name="publish-stress">
 
