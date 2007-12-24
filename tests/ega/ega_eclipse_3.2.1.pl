@@ -663,7 +663,7 @@ sub Main {
  $winID = WinWaitImpl("Help - Eclipse SDK");
  Sleep(3000);
  LogWrite("\tClose Help \n");
- WinSendKeys('^(q)', "Help - Eclipse SDK");
+ WinSendKeys('%(f)q', "Help - Eclipse SDK");
  WinWaitCloseImpl($winID);
  LogWrite("\tEnd Help \n");
  Sleep(6000);
