@@ -893,7 +893,7 @@ ERROR: Execution of Test Suite '@{suite}' FAILED.
 
             <if>
                 <and>
-                    <not><isset property="framework.parameters.repository.noupdate"/></not>
+                    <not><istrue value="${framework.parameters.repository.noupdate}" /></not>
                     <not><contains string="${framework.parameters.repository.awaited}"
                                    substring="|${tmp.relative.path}|"/></not>
                 </and>
