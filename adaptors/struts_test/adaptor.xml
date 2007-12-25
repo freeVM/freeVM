@@ -21,7 +21,7 @@
 <project name="struts_test" default="run" basedir=".">
 
     <!-- hardcoded properties -->
-    <property name="suite.dir" location="${test.sources.dir}/${suite.name}"/>
+    <property name="suite.dir" location="${checkouts.dir}/struts_test"/>
     <property name="tests.src.dir" location="${suite.dir}/src"/>
     <property name="tests.res.dir" location="${suite.dir}/resources/showcase"/>
     <property name="tests.classes.dir" location="${checkouts.dir}/${suite.name}/classes"/>
@@ -125,7 +125,6 @@
           target: -create-build-dirs                      
          - - - - - - - - - - - - - - - - - -->
     <target name="-create-build-dirs">
-        <svn-update-bt path="${suite.dir}"/>
         <mkdir dir="${tests.classes.dir}"/>
     </target>
 
