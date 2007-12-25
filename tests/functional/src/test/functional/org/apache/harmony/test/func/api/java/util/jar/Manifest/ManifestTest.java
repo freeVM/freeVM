@@ -165,10 +165,10 @@ public class ManifestTest extends IOMultiCase {
         try {
             Manifest mf = new Manifest(new ByteArrayInputStream(s.getBytes()));
         } catch (IOException e) {
-            return failed("expected IOException in reference JVM though manifest is correct (bug in the reference VM)");
+            return passed();
         }
 
-        return passed();
+        return failed("IOException is expected");
     }
 
     public Result testConstructorInputStream() throws IOException {
