@@ -76,6 +76,10 @@ void JNICALL callbackException(prms_EXCPT)
     fflush(stderr);
     if (result != JVMTI_ERROR_NONE) return;
 
+    if (!is_needed_field_found(jvmti_env, "ClearFieldModif0103.java", "second_field", &myclass, &myfield, DEBUG_OUT))
+        return;
+
+
     result = jvmti_env->ClearFieldModificationWatch(myclass, myfield);
     fprintf(stderr, "\tnative: ClearFieldModificationWatch result = %d (must be JVMTI_ERROR_NOT_FOUND (41)) \n", result);
     fprintf(stderr, "\tnative: class is %p \n", myclass);
