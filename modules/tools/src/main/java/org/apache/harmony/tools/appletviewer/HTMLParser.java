@@ -75,7 +75,12 @@ class HTMLParser {
 				appletInfo.setWidth(attrs.getValue("width"));
 				appletInfo.setHeight(attrs.getValue("height"));
 				list.add(appletInfo);
-			}			
+				return;
+			}
+			
+			if (appletInfo != null && qName.equalsIgnoreCase("PARAM")) {
+				appletInfo.setParameter(attrs.getValue("name"), attrs.getValue("value"));
+			}
 		}
 		
 		public void endElement(String uri, String lName, String qName) throws SAXException {
