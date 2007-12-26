@@ -69,7 +69,7 @@ void JNICALL callbackException(prms_EXCPT)
     if (!is_needed_field_found(jvmti_env, "SetFieldModificationWatch0104.java", "third_field", &myclass, &myfield, DEBUG_OUT))
         return;
 
-    result = jvmti_env->SetFieldModificationWatch(myclass, myfield);
+    result = jvmti_env->SetFieldModificationWatch(NULL, myfield);
     fprintf(stderr, "\tnative: SetFieldModificationWatch result = %d (must be JVMTI_ERROR_INVALID_CLASS (21)) \n", result);
     fflush(stderr);
 

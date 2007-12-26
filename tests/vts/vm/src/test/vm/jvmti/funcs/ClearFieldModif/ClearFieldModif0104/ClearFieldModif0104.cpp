@@ -76,7 +76,7 @@ void JNICALL callbackException(prms_EXCPT)
     fflush(stderr);
     if (result != JVMTI_ERROR_NONE) return;
 
-    result = jvmti_env->ClearFieldModificationWatch(myclass, myfield);
+    result = jvmti_env->ClearFieldModificationWatch(NULL, myfield);
     fprintf(stderr, "\tnative: ClearFieldModificationWatch result = %d (must be JVMTI_ERROR_INVALID_CLASS (21)) \n", result);
     fprintf(stderr, "\tnative: class is %p \n", myclass);
     fprintf(stderr, "\tnative: field is %p \n", myfield);
