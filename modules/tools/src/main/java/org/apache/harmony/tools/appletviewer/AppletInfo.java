@@ -57,11 +57,11 @@ public class AppletInfo {
 	}
 
 	public String getParameter(String name) {
-		return params.get(name);
+		return params.get(name.toUpperCase());
 	}
 
 	public void setParameter(String name, String value) {
-		params.put(name, value);
+		params.put(name.toUpperCase(), value);
 	}
 
 	public String getCode() {
