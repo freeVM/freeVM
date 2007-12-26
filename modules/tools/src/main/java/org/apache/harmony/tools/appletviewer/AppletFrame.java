@@ -45,12 +45,11 @@ class AppletFrame extends JFrame {
 		applet.setPreferredSize(new Dimension(appletInfo.getWidth(), appletInfo.getHeight()));
 		add(applet, BorderLayout.CENTER);
 
-		// Start applet
-		applet.init();
-		applet.start();
-
-		// Make frame visible
+		// Start applet and make frame visible
+		// Init should be called after pack to make components displayable
 		pack();
+		applet.init();
 		setVisible(true);		
+		applet.start();
 	}
 }
