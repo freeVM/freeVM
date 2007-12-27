@@ -46,7 +46,7 @@
     </target>
 
     <!-- do test execution -->
-    <target name="run">
+    <target name="run" depends="setup">
 
         <!-- remove old results (they were archived after creation) -->
         <delete quiet="true" verbose="false">
