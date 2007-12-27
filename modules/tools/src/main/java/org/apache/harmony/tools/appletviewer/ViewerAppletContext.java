@@ -21,6 +21,7 @@ import java.applet.Applet;
 import java.applet.AppletContext;
 import java.applet.AudioClip;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -28,6 +29,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 class ViewerAppletContext implements AppletContext {
+	public ViewerAppletContext() {
+	}
 
 	public Applet getApplet(String name) {
 		// TODO Auto-generated method stub
@@ -40,13 +43,11 @@ class ViewerAppletContext implements AppletContext {
 	}
 
 	public AudioClip getAudioClip(URL url) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ViewerAudioClip(url);
 	}
 
 	public Image getImage(URL url) {
-		// TODO Auto-generated method stub
-		return null;
+		return Toolkit.getDefaultToolkit().createImage(url);
 	}
 
 	public InputStream getStream(String key) {
