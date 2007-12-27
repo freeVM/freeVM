@@ -313,15 +313,10 @@
               value="${results.dir}/jedit_test/last" />
     <target name="publish-jedit_test" depends="-copy-report-files" />
 
-    <target name="publish-JettyScenario">
-        <mkdir dir="${snapshot.results.dir}/JettyScenario" />
-        <copy todir="${snapshot.results.dir}/JettyScenario">
-            <fileset dir="${results.dir}/JettyScenario/html">
-                <include name="**" />
-            </fileset>
-        </copy>
-        <archive-result/>
-    </target>
+    <!-- Jetty testing scenario -->
+    <property name="JettyScenario.report"
+              value="${results.dir}/JettyScenario/html" />
+    <target name="publish-JettyScenario" depends="-copy-report-files" />
 
     <target name="publish-dacapo" depends="-copy-report-files" />
 

@@ -101,6 +101,7 @@
         </condition>
         <fail message="Path to JVM does not exist: ${scenario.framework.jvm}" if="fw.vm.not.exist"/>
 
+        <delete dir="${scenario.results.dir}" />
         <mkdir dir="${scenario.results.dir}"/>
         <delete file="${scenario.results.dir}/jetty.log"/>
 
