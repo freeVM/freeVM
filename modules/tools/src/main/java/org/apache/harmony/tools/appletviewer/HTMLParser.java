@@ -17,6 +17,7 @@
 
 package org.apache.harmony.tools.appletviewer;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,14 +47,21 @@ class HTMLParser {
 	}
 
 	private class AppletHTMLHandler extends DefaultHandler {
-		private final URL documentBase;
+		private URL documentBase;
 		private final ArrayList<AppletInfo> list;
 		private AppletInfo appletInfo = null;
 		private String startElement = null;
 		
 		public AppletHTMLHandler(String url, ArrayList<AppletInfo> list) throws MalformedURLException {
 			super();
-			this.documentBase = new URL(url);
+			
+			// String could represent file path or URL
+			try  {
+				this.documentBase = new URL(url);
+			} catch (MalformedURLException _) {
+				File f = new File(url);
+				this.documentBase = f.toURL();
+			}
 			this.list = list;
 		}
 
