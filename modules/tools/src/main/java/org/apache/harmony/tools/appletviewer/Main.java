@@ -19,22 +19,22 @@ package org.apache.harmony.tools.appletviewer;
 
 public class Main {
     public static void main(String argv[]) throws Exception {
-    	if (argv.length == 0) {
-    		printHelp();
-    		return;
-    	}
-    	
-    	HTMLParser parser = new HTMLParser();
-    	Object []applets = parser.parse(argv, 0);
-    	
-    	// Start applets
-    	for (int i = 0; i < applets.length; i++)
-    		new AppletFrame((AppletInfo)applets[i]);
+        if (argv.length == 0) {
+            printHelp();
+            return;
+        }
+        
+        HTMLParser parser = new HTMLParser();
+        Object []applets = parser.parse(argv, 0);
+        
+        // Start applets
+        for (int i = 0; i < applets.length; i++)
+            new AppletFrame((AppletInfo)applets[i]);
     }
 
-	private static void printHelp() {
-		System.err.println("Applet viewer");
-		System.err.println("Usage: appletviewer urls");
-	}
+    private static void printHelp() {
+        System.err.println("Applet viewer");
+        System.err.println("Usage: appletviewer urls");
+    }
 }
 

@@ -24,87 +24,87 @@ import java.util.HashMap;
 import javax.swing.JLabel;
 
 public class AppletInfo {
-	private static final int DEFAULT_WIDTH=300;
-	private static final int DEFAULT_HEIGHT=200;	
-	
-	private URL documentBase;
-	private URL codeBase;
-	private String code;
-	private int width;
-	private int height;
-	private HashMap<String, String> params;
-	private JLabel statusLabel = null;
-	
-	public AppletInfo() {
-		params = new HashMap<String, String>();
-	}
+    private static final int DEFAULT_WIDTH=300;
+    private static final int DEFAULT_HEIGHT=200;    
+    
+    private URL documentBase;
+    private URL codeBase;
+    private String code;
+    private int width;
+    private int height;
+    private HashMap<String, String> params;
+    private JLabel statusLabel = null;
+    
+    public AppletInfo() {
+        params = new HashMap<String, String>();
+    }
 
-	public URL getDocumentBase() {
-		return documentBase;
-	}
+    public URL getDocumentBase() {
+        return documentBase;
+    }
 
-	public void setDocumentBase(URL documentBase) {
-		this.documentBase = documentBase;
-	}
+    public void setDocumentBase(URL documentBase) {
+        this.documentBase = documentBase;
+    }
 
-	public URL getCodeBase() {
-		return codeBase;
-	}
+    public URL getCodeBase() {
+        return codeBase;
+    }
 
-	public void setCodeBase(URL codeBase) {
-		this.codeBase = codeBase;
-	}
+    public void setCodeBase(URL codeBase) {
+        this.codeBase = codeBase;
+    }
 
-	public void setCodeBase(String codeBaseStr) throws MalformedURLException {
-		this.codeBase = new URL(this.documentBase, (codeBaseStr == null)?"./":codeBaseStr);
-	}
+    public void setCodeBase(String codeBaseStr) throws MalformedURLException {
+        this.codeBase = new URL(this.documentBase, (codeBaseStr == null)?"./":codeBaseStr);
+    }
 
-	public String getParameter(String name) {
-		return params.get(name.toUpperCase());
-	}
+    public String getParameter(String name) {
+        return params.get(name.toUpperCase());
+    }
 
-	public void setParameter(String name, String value) {
-		params.put(name.toUpperCase(), value);
-	}
+    public void setParameter(String name, String value) {
+        params.put(name.toUpperCase(), value);
+    }
 
-	public String getCode() {
-		return code;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public void setCode(String code) {
-		this.code = (code.endsWith(".class"))?code.substring(0, code.length()-6):code;
-	}
+    public void setCode(String code) {
+        this.code = (code.endsWith(".class"))?code.substring(0, code.length()-6):code;
+    }
 
-	public int getWidth() {
-		return width;
-	}
+    public int getWidth() {
+        return width;
+    }
 
-	public void setWidth(int width) {
-		this.width = width;
-	}
+    public void setWidth(int width) {
+        this.width = width;
+    }
 
-	public void setWidth(String widthStr) {		
-		this.width = (widthStr == null)?DEFAULT_WIDTH:Integer.parseInt(widthStr);
-	}
+    public void setWidth(String widthStr) {     
+        this.width = (widthStr == null)?DEFAULT_WIDTH:Integer.parseInt(widthStr);
+    }
 
-	public int getHeight() {
-		return height;
-	}
+    public int getHeight() {
+        return height;
+    }
 
-	public void setHeight(int height) {
-		this.height = height;
-	}	
+    public void setHeight(int height) {
+        this.height = height;
+    }   
 
-	public void setHeight(String heightStr) {		
-		this.height = (heightStr == null)?DEFAULT_HEIGHT:Integer.parseInt(heightStr);
-	}
+    public void setHeight(String heightStr) {       
+        this.height = (heightStr == null)?DEFAULT_HEIGHT:Integer.parseInt(heightStr);
+    }
 
-	public void setStatusLabel(JLabel statusLabel) {
-		this.statusLabel  = statusLabel;
-	}
+    public void setStatusLabel(JLabel statusLabel) {
+        this.statusLabel  = statusLabel;
+    }
 
-	public void setStatus(String text) {
-		if (statusLabel != null)
-			statusLabel.setText(text);
-	}
+    public void setStatus(String text) {
+        if (statusLabel != null)
+            statusLabel.setText(text);
+    }
 }

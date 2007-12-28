@@ -29,56 +29,56 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 class ViewerAppletContext implements AppletContext {
-	private final AppletInfo appletInfo;
+    private final AppletInfo appletInfo;
 
-	public ViewerAppletContext(AppletInfo appletInfo) {
-		this.appletInfo = appletInfo;
-	}
+    public ViewerAppletContext(AppletInfo appletInfo) {
+        this.appletInfo = appletInfo;
+    }
 
-	public Applet getApplet(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Applet getApplet(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public Enumeration<Applet> getApplets() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Enumeration<Applet> getApplets() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public AudioClip getAudioClip(URL url) {
-		return new ViewerAudioClip(url);
-	}
+    public AudioClip getAudioClip(URL url) {
+        return new ViewerAudioClip(url);
+    }
 
-	public Image getImage(URL url) {
-		return Toolkit.getDefaultToolkit().createImage(url);
-	}
+    public Image getImage(URL url) {
+        return Toolkit.getDefaultToolkit().createImage(url);
+    }
 
-	public InputStream getStream(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public InputStream getStream(String key) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public Iterator<String> getStreamKeys() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Iterator<String> getStreamKeys() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public void setStream(String key, InputStream stream) throws IOException {
-		// TODO Auto-generated method stub
+    public void setStream(String key, InputStream stream) throws IOException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public void showDocument(URL url) {
-		// TODO Auto-generated method stub
+    public void showDocument(URL url) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public void showDocument(URL url, String target) {
-		// TODO Auto-generated method stub
+    public void showDocument(URL url, String target) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public void showStatus(String status) {
-		appletInfo.setStatus(status);
-	}
+    public void showStatus(String status) {
+        appletInfo.setStatus(status);
+    }
 }

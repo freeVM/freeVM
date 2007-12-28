@@ -32,79 +32,79 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 class AppletFrame extends JFrame {
-	private final AppletInfo appletInfo;
-	private final Applet applet;
-	private final JLabel statusLabel;
-	
-	private static ShutdownHandler shutdownHandler = new ShutdownHandler();
-	
-	public AppletFrame(AppletInfo appletInfo) throws Exception {
-		this.appletInfo = appletInfo;
-		shutdownHandler.addFrame(this);
-		
-		// Load applet class
-		URL []urls = new URL[1];
-		urls[0] = appletInfo.getCodeBase();
-		URLClassLoader cl = new URLClassLoader(urls);
-		Class clz = cl.loadClass(this.appletInfo.getCode());
-		applet = (Applet)clz.newInstance();
-		applet.setStub(new ViewerAppletStub(applet, appletInfo));
-		
-		// Create applet pane
-		setLayout(new BorderLayout());
-		JPanel appletPanel = new JPanel();
-		appletPanel.add(applet);
-		add(appletPanel, BorderLayout.CENTER);
-		applet.setPreferredSize(new Dimension(appletInfo.getWidth(), appletInfo.getHeight()));
-		
-		// Create status pane
-		JPanel panel = new JPanel();
-		statusLabel = new JLabel();
-		panel.add(statusLabel);
-		add(panel, BorderLayout.SOUTH);
-		appletInfo.setStatusLabel(statusLabel);
-		
-		statusLabel.setMinimumSize(new Dimension(100, 40));
-		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+    private final AppletInfo appletInfo;
+    private final Applet applet;
+    private final JLabel statusLabel;
+    
+    private static ShutdownHandler shutdownHandler = new ShutdownHandler();
+    
+    public AppletFrame(AppletInfo appletInfo) throws Exception {
+        this.appletInfo = appletInfo;
+        shutdownHandler.addFrame(this);
+        
+        // Load applet class
+        URL []urls = new URL[1];
+        urls[0] = appletInfo.getCodeBase();
+        URLClassLoader cl = new URLClassLoader(urls);
+        Class clz = cl.loadClass(this.appletInfo.getCode());
+        applet = (Applet)clz.newInstance();
+        applet.setStub(new ViewerAppletStub(applet, appletInfo));
+        
+        // Create applet pane
+        setLayout(new BorderLayout());
+        JPanel appletPanel = new JPanel();
+        appletPanel.add(applet);
+        add(appletPanel, BorderLayout.CENTER);
+        applet.setPreferredSize(new Dimension(appletInfo.getWidth(), appletInfo.getHeight()));
+        
+        // Create status pane
+        JPanel panel = new JPanel();
+        statusLabel = new JLabel();
+        panel.add(statusLabel);
+        add(panel, BorderLayout.SOUTH);
+        appletInfo.setStatusLabel(statusLabel);
+        
+        statusLabel.setMinimumSize(new Dimension(100, 40));
+        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
-		// Start applet and make frame visible
-		// Init should be called after pack to make components displayable
-		pack();
-		applet.init();
-		setVisible(true);		
-		applet.start();
-	}		
-	
-	private  static class ShutdownHandler implements WindowListener {
-		HashSet<JFrame> frameList = new HashSet<JFrame>();
+        // Start applet and make frame visible
+        // Init should be called after pack to make components displayable
+        pack();
+        applet.init();
+        setVisible(true);       
+        applet.start();
+    }       
+    
+    private  static class ShutdownHandler implements WindowListener {
+        HashSet<JFrame> frameList = new HashSet<JFrame>();
 
-		public void windowActivated(WindowEvent e) {
-		}
+        public void windowActivated(WindowEvent e) {
+        }
 
-		public void windowClosed(WindowEvent e) {
-		}
+        public void windowClosed(WindowEvent e) {
+        }
 
-		public void windowClosing(WindowEvent e) {
-			frameList.remove(e.getWindow());
-			if (frameList.isEmpty())
-				System.exit(0);
-		}
+        public void windowClosing(WindowEvent e) {
+            frameList.remove(e.getWindow());
+            if (frameList.isEmpty())
+                System.exit(0);
+        }
 
-		public void windowDeactivated(WindowEvent e) {
-		}
+        public void windowDeactivated(WindowEvent e) {
+        }
 
-		public void windowDeiconified(WindowEvent e) {
-		}
+        public void windowDeiconified(WindowEvent e) {
+        }
 
-		public void windowIconified(WindowEvent e) {
-		}
+        public void windowIconified(WindowEvent e) {
+        }
 
-		public void windowOpened(WindowEvent e) {
-		}
-		
-		public void addFrame(JFrame frame) {
-			frameList.add(frame);
-			frame.addWindowListener(this);
-		}
-	}
+        public void windowOpened(WindowEvent e) {
+        }
+        
+        public void addFrame(JFrame frame) {
+            frameList.add(frame);
+            frame.addWindowListener(this);
+        }
+    }
 }
