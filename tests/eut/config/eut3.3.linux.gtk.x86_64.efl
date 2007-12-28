@@ -9,6 +9,23 @@
 #
 # Failure analysis is required
 #
-org.eclipse.swt.tests.junit.browser.Test_BrowserSuite.Browser1
-org.eclipse.swt.tests.junit.browser.Test_BrowserSuite.Browser3
-org.eclipse.swt.tests.junit.browser.Test_BrowserSuite.Browser6
+org.eclipse.ant.tests.ui.separateVM.SeparateVMTests.testXmlLoggerListener
+org.eclipse.ant.tests.ui.debug.RunToLineTests.testRunToLine
+
+org.eclipse.core.tests.runtime.content.TestBug94498.test2
+org.eclipse.core.tests.internal.preferences.EclipsePreferencesTest.testLegacy
+
+org.eclipse.jdt.debug.tests.breakpoints.DeferredBreakpointTests.testDeferredBreakpoints
+org.eclipse.jdt.debug.tests.breakpoints.PatternBreakpointTests.testPatternBreakpoints
+org.eclipse.jdt.debug.tests.breakpoints.TargetPatternBreakpointTests.testTargetPatternBreakpoints
+org.eclipse.jdt.debug.tests.core.ArgumentTests.testProgramArgEmptyString
+org.eclipse.jdt.debug.tests.core.ArgumentTests.testProgramArgStandardQuotes
+org.eclipse.jdt.debug.tests.core.ArgumentTests.testProgramArgOneQuote
+
+org.eclipse.jface.text.tests.DefaultUndoManagerTest.testLoopRandomAccess
+org.eclipse.releng.tests.BuildTests.testVersionCompare
+
+org.eclipse.team.tests.core.RepositoryProviderTests.testLinkFailure
+org.eclipse.team.tests.core.RepositoryProviderTests.testIsShared
+org.eclipse.team.tests.core.StorageMergerTests.testGetByExtension
+org.eclipse.team.tests.core.StorageMergerTests.testGetByContentType
