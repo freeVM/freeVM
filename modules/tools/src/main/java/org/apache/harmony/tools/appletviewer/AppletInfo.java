@@ -21,6 +21,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
+import javax.swing.JLabel;
+
 public class AppletInfo {
 	private static final int DEFAULT_WIDTH=300;
 	private static final int DEFAULT_HEIGHT=200;	
@@ -31,6 +33,7 @@ public class AppletInfo {
 	private int width;
 	private int height;
 	private HashMap<String, String> params;
+	private JLabel statusLabel = null;
 	
 	public AppletInfo() {
 		params = new HashMap<String, String>();
@@ -94,5 +97,14 @@ public class AppletInfo {
 
 	public void setHeight(String heightStr) {		
 		this.height = (heightStr == null)?DEFAULT_HEIGHT:Integer.parseInt(heightStr);
+	}
+
+	public void setStatusLabel(JLabel statusLabel) {
+		this.statusLabel  = statusLabel;
+	}
+
+	public void setStatus(String text) {
+		if (statusLabel != null)
+			statusLabel.setText(text);
 	}
 }

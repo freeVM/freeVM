@@ -29,7 +29,10 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 class ViewerAppletContext implements AppletContext {
-	public ViewerAppletContext() {
+	private final AppletInfo appletInfo;
+
+	public ViewerAppletContext(AppletInfo appletInfo) {
+		this.appletInfo = appletInfo;
 	}
 
 	public Applet getApplet(String name) {
@@ -76,8 +79,6 @@ class ViewerAppletContext implements AppletContext {
 	}
 
 	public void showStatus(String status) {
-		// TODO Auto-generated method stub
-
+		appletInfo.setStatus(status);
 	}
-
 }

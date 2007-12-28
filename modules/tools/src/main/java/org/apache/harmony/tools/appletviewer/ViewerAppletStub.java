@@ -23,13 +23,17 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.net.URL;
 
+import javax.swing.JLabel;
+
 class ViewerAppletStub implements AppletStub {
     private final Component appletPane;
     private final AppletInfo appletInfo;
+    private final AppletContext appletContext;
 
     ViewerAppletStub(Component appletPane, AppletInfo appletInfo) {
         this.appletPane = appletPane;
         this.appletInfo = appletInfo;
+        this.appletContext = new ViewerAppletContext(appletInfo);
     }
     
     public boolean isActive() {
@@ -49,7 +53,7 @@ class ViewerAppletStub implements AppletStub {
     }
     
     public AppletContext getAppletContext() {
-        return new ViewerAppletContext();
+        return appletContext;
     }
     
     public void appletResize(int width, int height) {
