@@ -32,7 +32,7 @@
     </target>
 
     <!-- do run -->
-    <target name="run" depends="-setup-classlib-ws,-update-classlib-ws">
+    <target name="run" depends="-update-classlib-ws">
         <!-- remove old results (they have been archived after the run) -->
         <delete quiet="true" verbose="false">
             <fileset dir="${classlib-test.results.dir}" includes="**/*"/>
@@ -88,21 +88,6 @@
                 arg2="snapshot"
                 trim="yes" />
     </condition>
-
-    <condition property="need.setup.ws">
-        <and>
-            <isset property="is.snapshot" />
-            <not>
-                <available file="${classlib-test.trunk.dir}/deploy/jdk/jre/lib/boot"/>
-            </not>
-        </and>
-    </condition>
-
-    <target name="-setup-classlib-ws" if="need.setup.ws">
-        <mkdir dir="${classlib-test.parameters.required.trunk.dir}" />
-        <svn-co url="${classlib-test.parameters.required.trunk.url}"
-                trunk="${classlib-test.parameters.required.trunk.dir}" />
-    </target>
 
     <target name="-update-classlib-ws"
             if="is.snapshot"

@@ -33,6 +33,10 @@
             value="${jre.options}"/>
     </optional>
 
+    <svn>
+      <classlib url="http://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk" />
+    </svn>
+
     <cc
         results="${classlib-test.results.dir}"
     />
