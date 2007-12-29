@@ -70,8 +70,6 @@
 
     <!-- CC specific configuration -->
     <cc>
-        <!-- Re-run if changes in SVN -->
-        <usesvn refid="trunk.dir.id"/>
         <!-- Run this script for publishing results -->
         <summary value="${scenario.results.dir}/notification.txt"/>
         <!-- Merge results with CC log -->
