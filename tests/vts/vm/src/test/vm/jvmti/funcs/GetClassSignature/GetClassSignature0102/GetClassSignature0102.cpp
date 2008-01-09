@@ -78,9 +78,6 @@ void JNICALL callbackException(prms_EXCPT)
 
     result = jvmti_env->GetClassSignature((jclass)thread, &signature, &generic);
     fprintf(stderr, "\tnative: GetClassSignature result = %d (must be JVMTI_ERROR_INVALID_CLASS (21)) \n", result);
-    fprintf(stderr, "\tnative: classes ptr is %p \n", myclass);
-    fprintf(stderr, "\tnative: signature is %s \n", signature);
-    fprintf(stderr, "\tnative: generic is %s \n", generic);
     fflush(stderr);
 
     if (result != JVMTI_ERROR_INVALID_CLASS) return;
