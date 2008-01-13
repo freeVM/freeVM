@@ -23,8 +23,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.net.URL;
 
-import javax.swing.JLabel;
-
 class ViewerAppletStub implements AppletStub {
     private final Component appletPane;
     private final AppletInfo appletInfo;
