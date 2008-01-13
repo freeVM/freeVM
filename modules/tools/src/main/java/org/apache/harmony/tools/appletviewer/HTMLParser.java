@@ -92,6 +92,11 @@ class HTMLParser {
 				} catch (Exception e) {
 					appletInfo.setCodeBase((URL)null);
 				}
+				try {
+					appletInfo.setArchive((String)attributes.getAttribute(HTML.Attribute.ARCHIVE));
+				} catch (MalformedURLException e) {
+					appletInfo.setArchive((URL)null);
+				}
                 appletInfo.setWidth((String)attributes.getAttribute(HTML.Attribute.WIDTH));
                 appletInfo.setHeight((String)attributes.getAttribute(HTML.Attribute.HEIGHT));
                 list.add(appletInfo);

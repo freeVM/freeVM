@@ -23,13 +23,10 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.beans.PropertyChangeListener;
-import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashSet;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -51,9 +48,7 @@ class AppletFrame extends JFrame {
         shutdownHandler.addFrame(this);
         
         // Load applet class
-        URL []urls = new URL[1];
-        urls[0] = appletInfo.getCodeBase();
-        URLClassLoader cl = new URLClassLoader(urls);
+        URLClassLoader cl = new URLClassLoader(appletInfo.getClassLoaderURLs());
         Class clz = cl.loadClass(this.appletInfo.getCode());
         applet = (Applet)clz.newInstance();
         applet.setStub(new ViewerAppletStub(applet, appletInfo));

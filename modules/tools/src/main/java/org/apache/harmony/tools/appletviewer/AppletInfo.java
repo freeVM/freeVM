@@ -29,6 +29,7 @@ public class AppletInfo {
     
     private URL documentBase;
     private URL codeBase;
+    private URL archive;
     private String code;
     private int width;
     private int height;
@@ -57,6 +58,18 @@ public class AppletInfo {
 
     public void setCodeBase(String codeBaseStr) throws MalformedURLException {
         this.codeBase = new URL(this.documentBase, (codeBaseStr == null)?"./":codeBaseStr);
+    }
+
+    public URL getArchive() {
+        return archive;
+    }
+
+    public void setArchive(URL archive) {
+        this.archive = archive;
+    }
+
+    public void setArchive(String archive) throws MalformedURLException {
+        this.archive = (archive == null)?null:new URL(this.documentBase, archive);
     }
 
     public String getParameter(String name) {
@@ -106,5 +119,14 @@ public class AppletInfo {
     public void setStatus(String text) {
         if (statusLabel != null)
             statusLabel.setText(text);
+    }
+    
+    public URL []getClassLoaderURLs() {
+    	URL []res = (archive == null)?new URL[1]:new URL[2];
+    	switch (res.length) {
+    		case 2: res[1] = archive;
+    		case 1: res[0] = codeBase;
+    	}
+    	return res;
     }
 }
