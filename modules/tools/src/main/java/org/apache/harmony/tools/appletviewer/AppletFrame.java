@@ -20,15 +20,23 @@ package org.apache.harmony.tools.appletviewer;
 import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashSet;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 class AppletFrame extends JFrame {
@@ -57,6 +65,9 @@ class AppletFrame extends JFrame {
         add(appletPanel, BorderLayout.CENTER);
         applet.setPreferredSize(new Dimension(appletInfo.getWidth(), appletInfo.getHeight()));
         
+        // Create menu bar
+        setJMenuBar(createMenu());
+        
         // Create status pane
         JPanel panel = new JPanel();
         statusLabel = new JLabel();
@@ -73,9 +84,67 @@ class AppletFrame extends JFrame {
         applet.init();
         setVisible(true);       
         applet.start();
-    }       
+    }
     
-    private  static class ShutdownHandler implements WindowListener {
+    private JMenuBar createMenu() {
+    	JMenuBar menuBar = new JMenuBar();
+    	
+    	// Create Control menu
+    	JMenu controlMenu = new JMenu("Control");
+    	controlMenu.add(new JMenuItem(new StartAction()));
+    	controlMenu.add(new JMenuItem(new StopAction()));
+    	controlMenu.add(new JSeparator());
+    	controlMenu.add(new JMenuItem(new CloseAction()));
+    	controlMenu.add(new JMenuItem(new ExitAction()));
+    	
+    	menuBar.add(controlMenu);
+    	
+    	return menuBar;
+    }
+    
+    private class StartAction extends  AbstractAction {
+    	public StartAction() {
+    		super("Start");
+    	}
+    	
+		public void actionPerformed(final ActionEvent e) {
+			applet.start();
+			applet.setEnabled(true);
+		}
+    }
+    
+    private class StopAction extends  AbstractAction {
+    	public StopAction() {
+    		super("Stop");
+    	}
+    	
+		public void actionPerformed(ActionEvent e) {
+			applet.stop();
+			applet.setEnabled(false);
+		}
+    }
+    
+    private class CloseAction extends  AbstractAction {
+    	public CloseAction() {
+    		super("Close");
+    	}
+    	
+		public void actionPerformed(ActionEvent e) {
+			setVisible(false);
+		}
+    }
+    
+    private class ExitAction extends  AbstractAction {
+    	public ExitAction() {
+    		super("Exit");
+    	}
+    	
+		public void actionPerformed(ActionEvent e) {
+			System.exit(0);
+		}
+    }
+    
+    private static class ShutdownHandler implements WindowListener {
         HashSet<JFrame> frameList = new HashSet<JFrame>();
 
         public void windowActivated(WindowEvent e) {
