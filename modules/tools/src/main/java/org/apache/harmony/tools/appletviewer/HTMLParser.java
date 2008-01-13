@@ -17,45 +17,48 @@
 
 package org.apache.harmony.tools.appletviewer;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
+import javax.swing.text.ChangedCharSetException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.parser.DTD;
+import javax.swing.text.html.parser.TagElement;
 
 class HTMLParser {
-    HTMLParser() {
+	private final ParserImpl parser;
+	
+    HTMLParser() throws IOException {
+        DTD dtd = DTD.getDTD("reader");
+        dtd.read(new DataInputStream(dtd.getClass().getResourceAsStream("html32.bdtd")));//transitional401.bdtd")));
+        parser = new ParserImpl(dtd);
     }
     
-    Object []parse(String urls[], int start) throws ParserConfigurationException, SAXException, IOException {
-        SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+    synchronized Object []parse(String urls[], int start) throws IOException {    	
         ArrayList<AppletInfo> list = new ArrayList<AppletInfo>(urls.length-start);
         for (int i = start; i < urls.length; i++) {
-            AppletHTMLHandler handler = new AppletHTMLHandler(urls[i], list);
-            parser.parse(urls[i], handler);
+            parser.parse(urls[i], list);
         }
         return list.toArray();
     }
-
-    private class AppletHTMLHandler extends DefaultHandler {
-        private URL documentBase;
-        private final ArrayList<AppletInfo> list;
+    
+    private class ParserImpl extends javax.swing.text.html.parser.Parser {
+    	private URL documentBase;
+		private ArrayList<AppletInfo> list;
         private AppletInfo appletInfo = null;
-        private String startElement = null;
-        
-        public AppletHTMLHandler(String url, ArrayList<AppletInfo> list) throws MalformedURLException {
-            super();
-            
-            // String could represent file path or URL
+        private HTML.Tag startElement = null;
+    	
+    	public ParserImpl(DTD dtd) {
+    		super(dtd);
+		}
+    	
+    	public void parse(String url, ArrayList<AppletInfo> list) throws IOException {
             try  {
                 this.documentBase = new URL(url);
             } catch (MalformedURLException _) {
@@ -63,37 +66,58 @@ class HTMLParser {
                 this.documentBase = f.toURL();
             }
             this.list = list;
-        }
+            
+            // Open the stream
+            InputStreamReader isr = new InputStreamReader(documentBase.openStream());
+            parse(isr);
+    	}
 
-        public void startElement(String uri, String lName, String qName, Attributes attrs) throws SAXException {
-            if (qName.equalsIgnoreCase("APPLET") || qName.equalsIgnoreCase("OBJECT")) {
+		@Override
+		protected void handleStartTag(TagElement tag) {
+			if (tag == null)
+				return;
+			HTML.Tag htmlTag = tag.getHTMLTag();
+            if (htmlTag == HTML.Tag.APPLET || htmlTag == HTML.Tag.OBJECT) {
                 if (startElement != null) {
-                    throw new SAXParseException(qName+" inside "+startElement, null);
+                    throw new RuntimeException(htmlTag+" inside "+startElement);
                 }
                 
-                startElement = qName;
+                startElement = htmlTag;
                 appletInfo = new AppletInfo();
                 appletInfo.setDocumentBase(documentBase);
-                appletInfo.setCode(attrs.getValue("code"));
+                SimpleAttributeSet attributes = getAttributes();
+                appletInfo.setCode((String)attributes.getAttribute(HTML.Attribute.CODE));
                 try {
-                    appletInfo.setCodeBase(attrs.getValue("codebase"));
-                } catch (Exception e) {
-                    appletInfo.setCodeBase((URL)null);
-                }
-                appletInfo.setWidth(attrs.getValue("width"));
-                appletInfo.setHeight(attrs.getValue("height"));
+					appletInfo.setCodeBase((String)attributes.getAttribute(HTML.Attribute.CODEBASE));
+				} catch (Exception e) {
+					appletInfo.setCodeBase((URL)null);
+				}
+                appletInfo.setWidth((String)attributes.getAttribute(HTML.Attribute.WIDTH));
+                appletInfo.setHeight((String)attributes.getAttribute(HTML.Attribute.HEIGHT));
                 list.add(appletInfo);
                 return;
+            }            
+
+            if (appletInfo != null && htmlTag == HTML.Tag.PARAM) {
+                SimpleAttributeSet attributes = getAttributes();
+                appletInfo.setParameter((String)attributes.getAttribute(HTML.Attribute.NAME), (String)attributes.getAttribute(HTML.Attribute.VALUE));
             }
-            
-            if (appletInfo != null && qName.equalsIgnoreCase("PARAM")) {
-                appletInfo.setParameter(attrs.getValue("name"), attrs.getValue("value"));
-            }
-        }
-        
-        public void endElement(String uri, String lName, String qName) throws SAXException {
-            if (qName.equalsIgnoreCase(startElement))
+		}
+
+		@Override
+		protected void handleEndTag(TagElement tag) {
+			if (tag != null && tag.getHTMLTag() == startElement)
                 startElement = null;
-        }
+		}
+
+		@Override
+		protected void handleEmptyTag(TagElement tag)
+				throws ChangedCharSetException {
+			HTML.Tag htmlTag = tag.getHTMLTag();
+            if (appletInfo != null && htmlTag == HTML.Tag.PARAM) {
+                SimpleAttributeSet attributes = getAttributes();
+                appletInfo.setParameter((String)attributes.getAttribute(HTML.Attribute.NAME), (String)attributes.getAttribute(HTML.Attribute.VALUE));
+            }
+		}
     }
 }
