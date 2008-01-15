@@ -63,6 +63,11 @@
                     Find more details <a href="#Package and Class Names for Different Types of the Tests"> below</a>.
                 </p>
                 <p>
+                    The test code is placed in directories as suggested by <a href="http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html">Apache Maven</a> project conventions:
+                </p>
+<pre>&lt;modulename&gt;/src/test/api/<b>java</b> - Java code
+&lt;modulename&gt;/src/test/api/<b>resources</b> - Test resources</pre>
+                <p>
                     Some modules might have implementation specific tests that are in this case separated on a directory level:
                 </p>
 <pre>&lt;modulename&gt;/src/test/impl/<b>boot</b> - Package private tests
