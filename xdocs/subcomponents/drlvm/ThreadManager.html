@@ -244,7 +244,7 @@
             [<a href="#APR_ref">4</a>]
          </li>
          <li>
-            Compliance with the Harmony <code>hythread</code> interface [<a
+            Compliance with the Harmony <code>hythread</code> interface [<a
             href="#hythread_ref">8</a>]
          </li>
          <li>
@@ -265,7 +265,7 @@
       <ul>
          <li>
             <b>The VM core</b> to access information on object layout and for
-            binding between <code>java.lang.Thread</code> objects and
+            binding between <code>java.lang.Thread</code> objects and
             appropriate native threads. For that, the thread manager queries
             the <code>thread_externals.h</code> interface of the VM core.
          </li>
@@ -341,8 +341,8 @@
          The native interface is inspired by the Harmony <code>hythread</code>
          module. This is a low-level layer that provides Java<a
          href="#*">*</a>-like threading functionality, such as interruption
-         support for waiting operations (for example, <code>wait</code>, 
-         <code>park</code>, <code>join</code> and <code>sleep</code>) and helps
+         support for waiting operations (for example, <code>wait</code>, 
+         <code>park</code>, <code>join</code> and <code>sleep</code>) and helps
          establish correct interaction of threads with the garbage collector.
          This layer does not deal with Java<a href="#*">*</a> objects.
       </p>
@@ -350,10 +350,10 @@
          The native interface consists of the following function sets:
       </p>
       <p class="class">
-          <code>hythread.h</code>
+          <code>hythread.h</code>
       </p>
       <p>
-         Functions of the <code>hythread</code> set [<a
+         Functions of the <code>hythread</code> set [<a
          href="#hythread_ref">8</a>] responsible for:
       </p>
       <ul>
@@ -374,10 +374,10 @@
          </li>
       </ul>
       <p class="class">
-          <code>hythread_ext.h</code>
+          <code>hythread_ext.h</code>
       </p>
       <p>
-         Set of functions extending the <code>hythread</code> set responsible
+         Set of functions extending the <code>hythread</code> set responsible
          for:
       </p>
       <ul>
@@ -446,7 +446,7 @@
          href="#*">*</a> interface consists of 3 parts:
       </p>
       <p class="class">
-          <code>jthread.h</code>
+          <code>jthread.h</code>
       </p>
       <p>
          Functions supporting <code>java.lang.Object</code> and
@@ -479,7 +479,7 @@
          </li>
       </ul>
       <p class="class">
-          <code>ti_thread.h</code>
+          <code>ti_thread.h</code>
       </p>
       <p>
          Functions supporting various JVMTI functions and the
@@ -509,7 +509,7 @@
          </li>
       </ul>
       <p class="class">
-          <code>thread_helpers.h</code>
+          <code>thread_helpers.h</code>
       </p>
       <p>
          Functions providing the stubs that help to optimize the performance
@@ -564,7 +564,7 @@
          <li>
             <em>Java<a href="#*">*</a> thread</em> attached to the Java<a
             href="#*">*</a> layer of the thread manager and associated with
-            a <code>java.lang.Thread</code> object
+            a <code>java.lang.Thread</code> object
          </li>
       </ul>
       <p>
@@ -640,7 +640,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>int16 </code> 
+               <code>int16</code> 
             </td>
             <td class="TableCell">
                <code>suspend_disable_count</code> 
@@ -651,7 +651,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hylatch_t </code> 
+               <code>hylatch_t</code> 
             </td>
             <td class="TableCell">
                <code>safe_region_event</code> 
@@ -663,7 +663,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hysem_t </code> 
+               <code>hysem_t</code> 
             </td>
             <td class="TableCell">
                <code>resume_event</code> 
@@ -675,7 +675,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hythread_event_callback_proc </code> 
+               <code>hythread_event_callback_proc</code> 
             </td>
             <td class="TableCell">
                <code>safepoint_callback</code> 
@@ -691,7 +691,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hythread_group_t </code> 
+               <code>hythread_group_t</code> 
             </td>
             <td class="TableCell">
                <code>group</code> 
@@ -705,7 +705,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hythread_t </code> 
+               <code>hythread_t</code> 
             </td>
             <td class="TableCell">
                <code>next</code> 
@@ -716,7 +716,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hythread_t </code> 
+               <code>hythread_t</code> 
             </td>
             <td class="TableCell">
                <code>prev</code> 
@@ -727,7 +727,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>apr_thread_t * </code> 
+               <code>apr_thread_t *</code> 
             </td>
             <td class="TableCell">
                <code>os_handle</code> 
@@ -738,7 +738,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>void * </code> 
+               <code>void *</code> 
             </td>
             <td class="TableCell">
                <code>private_data</code> 
@@ -751,7 +751,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>Boolean </code> 
+               <code>Boolean</code> 
             </td>
             <td class="TableCell">
                <code>exit_request</code> 
@@ -762,7 +762,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>IDATA </code> 
+               <code>IDATA</code> 
             </td>
             <td class="TableCell">
                <code>exit_value</code> 
@@ -778,7 +778,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hysem_t </code> 
+               <code>hysem_t</code> 
             </td>
             <td class="TableCell">
                <code>park_event</code> 
@@ -789,7 +789,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hysem_t </code> 
+               <code>hysem_t</code> 
             </td>
             <td class="TableCell">
                <code>sleep_event</code> 
@@ -800,7 +800,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hylatch_t </code> 
+               <code>hylatch_t</code> 
             </td>
             <td class="TableCell">
                <code>join_event</code> 
@@ -811,7 +811,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hycond_t </code> 
+               <code>hycond_t</code> 
             </td>
             <td class="TableCell">
                <code>current_condition</code> 
@@ -828,7 +828,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>IDATA </code> 
+               <code>IDATA</code> 
             </td>
             <td class="TableCell">
                <code>state</code> 
@@ -846,7 +846,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>char * </code> 
+               <code>char *</code> 
             </td>
             <td class="TableCell">
                <code>name</code> 
@@ -857,7 +857,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>IDATA </code> 
+               <code>IDATA</code> 
             </td>
             <td class="TableCell">
                <code>priority</code> 
@@ -868,7 +868,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>IDATA </code> 
+               <code>IDATA</code> 
             </td>
             <td class="TableCell">
                <code>daemon</code> 
@@ -884,7 +884,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>IDATA </code> 
+               <code>IDATA</code> 
             </td>
             <td class="TableCell">
                <code>thread_id</code> 
@@ -898,7 +898,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>apr_pool_t * </code> 
+               <code>apr_pool_t *</code> 
             </td>
             <td class="TableCell">
                <code>pool</code> 
@@ -909,7 +909,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>apr_threadattr_t * </code> 
+               <code>apr_threadattr_t *</code> 
             </td>
             <td class="TableCell">
                <code>apr_attrs</code> 
@@ -920,7 +920,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hythread_entrypoint_t </code> 
+               <code>hythread_entrypoint_t</code> 
             </td>
             <td class="TableCell">
                <code>start_proc</code> 
@@ -931,7 +931,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>void * </code> 
+               <code>void *</code> 
             </td>
             <td class="TableCell">
                <code>start_proc_args</code> 
@@ -942,7 +942,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>void * </code> 
+               <code>void *</code> 
             </td>
             <td class="TableCell">
                <code>thread_local_storage</code> 
@@ -953,7 +953,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>void * </code> 
+               <code>void *</code> 
             </td>
             <td class="TableCell">
                <code>big_local_storage</code> 
@@ -1002,7 +1002,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>JNIEnv * </code> 
+               <code>JNIEnv *</code> 
             </td>
             <td class="TableCell">
                <code>jenv</code> 
@@ -1014,7 +1014,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>jthread </code> 
+               <code>jthread</code> 
             </td>
             <td class="TableCell">
                <code>thread_object</code> 
@@ -1026,7 +1026,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>hycond_t </code> 
+               <code>hycond_t</code> 
             </td>
             <td class="TableCell">
                <code>monitor_condition</code> 
@@ -1038,7 +1038,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>jthrowable </code> 
+               <code>jthrowable</code> 
             </td>
             <td class="TableCell">
                <code>stop_exception</code> 
@@ -1049,7 +1049,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>jlong </code> 
+               <code>jlong</code> 
             </td>
             <td class="TableCell">
                <code>blocked_time</code> 
@@ -1061,7 +1061,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>jlong </code> 
+               <code>jlong</code> 
             </td>
             <td class="TableCell">
                <code>waited_time</code> 
@@ -1073,7 +1073,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>JVMTILocalStorage </code> 
+               <code>JVMTILocalStorage</code> 
             </td>
             <td class="TableCell">
                <code>jvmti_local_storage</code> 
@@ -1084,7 +1084,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>jobject </code> 
+               <code>jobject</code> 
             </td>
             <td class="TableCell">
                <code>contended_monitor</code> 
@@ -1095,7 +1095,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>jobject </code> 
+               <code>jobject</code> 
             </td>
             <td class="TableCell">
                <code>wait_monitor</code> 
@@ -1106,7 +1106,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>jobject * </code> 
+               <code>jobject *</code> 
             </td>
             <td class="TableCell">
                <code>owned_monitors</code> 
@@ -1117,7 +1117,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>int </code> 
+               <code>int</code> 
             </td>
             <td class="TableCell">
                <code>owned_monitors_nmb</code> 
@@ -1128,7 +1128,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>apr_pool_t * </code> 
+               <code>apr_pool_t *</code> 
             </td>
             <td class="TableCell">
                <code>pool</code> 
@@ -1139,7 +1139,7 @@
          </tr>
          <tr>
             <td class="TableCell">
-               <code>jobject </code> 
+               <code>jobject</code> 
             </td>
             <td class="TableCell">
                <code>thread_ref</code> 
@@ -1208,7 +1208,7 @@
          alt="Implementing the thread synchronizer in TM" border="0" />
       </p>
       <p class="special">
-         Figure 6: Components of the TM Synchronizer 
+         Figure 6: Components of the TM Synchronizer
       </p>
       <p>
          The elements in the figure have the following meaning:
@@ -1220,9 +1220,9 @@
          </li>
          <li>
             The TM conditional variable and TM mutex wrap appropriate APR
-            primitives by adding the <code>wait</code> interruption support.
+            primitives by adding the <code>wait</code> interruption support.
             These synchronizers also ensure that a thread enters the safe
-            suspension mode when it is put into a <code>wait</code> state using
+            suspension mode when it is put into a <code>wait</code> state using
             the conditional variable or when the thread is blocked while
             acquiring a mutex.
          </li>
@@ -1600,7 +1600,7 @@
             function to designate the points of safe suspension.<br />
              If a suspension request has been set previously for T2, this
             method notifies the T1 thread and then waits until T1 resumes it by
-            calling <code>hythread_resume(T2)</code>. 
+            calling <code>hythread_resume(T2)</code>.
          </li>
          <li>
             When the T2 thread enters a safe region, it calls the
