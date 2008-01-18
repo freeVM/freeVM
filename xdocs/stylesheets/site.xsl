@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- Content Stylesheet for "jakarta-site2" Documentation -->
 <!-- NOTE:  Changes here should also be reflected in "site.vsl" and vice
      versa, so either Anakia or XSLT can be used for document generation.   -->
@@ -21,7 +21,7 @@
 
   <!-- Output method -->
   <xsl:output method="html"
-            encoding="iso-8859-1"
+            encoding="UTF-8"
               indent="no"/>
 
 

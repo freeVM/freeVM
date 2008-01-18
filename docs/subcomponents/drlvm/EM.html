@@ -25,7 +25,7 @@ limitations under the License.
     <!-- ====================================================================== -->
     <html>
         <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=windows-1251"/>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
                                                     <meta name="author" value="Harmony Documentation Team">
             <meta name="email" value="dev@harmony.apache.org">
@@ -215,7 +215,7 @@ limitations under the License.
 <html xmlns="http://www.w3.org/1999/xhtml">
    <head>
       <meta http-equiv="Content-Type"
-      content="text/html; charset=ISO-8859-1" />
+      content="text/html; charset=UTF-8" />
       <link rel="stylesheet" type="text/css" href="../../site.css" />
       <title>
          DRLVM Execution Manager
@@ -438,13 +438,13 @@ limitations under the License.
       <p>
          The VM core component sends requests to EM to execute methods. VM
          passes a method handle and parameters to the execution manager through
-         the <code><a href="#EM_VM">EM_VM</a></code> interface. EM selects the
+         theпїЅ<code><a href="#EM_VM">EM_VM</a></code> interface. EM selects the
          engine for compiling the method and sends a compilation request to VM
          to compile the method with the selected engine.
       </p>
       <p>
          Instantiating and configuring JIT compilers goes through
-         the <code>JIT_EM</code> interface [<a href="#DRLDevGuide">3</a>]. In
+         theпїЅ<code>JIT_EM</code> interface [<a href="#DRLDevGuide">3</a>]. In
          its turn, the execution manager exports the <code>EM_JIT</code>
          interface for accessing method profiles and profile collectors.
          Specifically, the <a href="#EM_JIT">EM_JIT</a> interface consists of
@@ -532,7 +532,7 @@ enum EM_JIT_PC_Role {
          <a id="EM_PC" name="EM_PC"></a>EM_PC Interface
       </h3>
       <p>
-         The <code>EM_PC</code> interface handles interaction between the
+         TheпїЅ<code>EM_PC</code> interface handles interaction between the
          execution manager and the profile collectors and consists of the
          following function groups:
       </p>
