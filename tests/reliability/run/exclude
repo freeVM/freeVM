@@ -6,16 +6,10 @@ vm.stack.StackFramesRestoreTest
 vm.classloading.MultiThreadedLoading
 vm.classloading.ClassUnloadingTest
 
-## HARMONY-4215, mostly reproduced on release build
-api.kernel.thread.ExcptHandlerTest.ExcptHandlerTest
-api.kernel.thread.LifeSimulationTest.Life
-api.kernel.thread.ThreadLocalTest.ThreadLocalTest
-api.text.getSentenceInstance
-
 ## HARMONY-4220, HARMONY-4232, the issue could be in the test
 api.kernel.thread.ThreadKill.ThreadKillTest
 
-## HARMONY-2742, HARMONY-3224, hang
+## HARMONY-3224 - hang
 api.text.getAvailableLocals_RBC
 
 ## HARMONY-2752, hang  
@@ -35,7 +29,6 @@ api.nio.channels.filechannel.ChannelWriteTest
 api.nio.channels.filechannel.FileChannelThrSafetyTest
  
 ## HARMONY-62 
-api.nio.charset.CharsetSyncCacheTest
 api.text.getSentenceInstance_check
 
 ## HARMONY-4758, immediate hang - not a reliability issue
@@ -54,3 +47,11 @@ api.kernel.thread.VolatileVariableTest.DekkerTest
 api.kernel.thread.Calculation.CalcTest
 api.kernel.thread.ThreadArrayTest.ThreadArrayTest
 api.kernel.object.ObjectFinalizeTest
+api.kernel.thread.LifeSimulationTest.Life
+
+## HARMONY-5400
+api.nio.charset.CharsetSyncCacheTest
+
+## HARMONY-5402, reproduced intermittently on release build only
+api.kernel.thread.ExcptHandlerTest.ExcptHandlerTest
+
