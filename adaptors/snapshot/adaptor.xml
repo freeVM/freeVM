@@ -519,6 +519,7 @@
     </target>
 
     <target name="-init-publisher">
+        <delete dir="${snapshot.results.dir}/${projectname}" />
         <mkdir dir="${snapshot.results.dir}/${projectname}" />
         <get-report-dir suitename="${projectname}" />
     </target>
