@@ -17,7 +17,8 @@
 
 <project name="jdktools-test" default="run" basedir=".">
 
-    <property name="tests.results.dir" value="${built.trunk.dir}/build/test_report"/>
+    <property name="tests.results.dir"
+              value="${built.trunk.dir}/build/test_report" />
 
     <target name="run" depends="-setup-jdktools-ws,-update-jdktools-ws">
         <ant target="test" dir="${built.trunk.dir}">
@@ -55,8 +56,15 @@
     <target name="-update-jdktools-ws"
             if="is.snapshot"
             description="adjusts jdktools-tests to snapshots revision">
+
+        <!-- Do clean first (even before rebuild) -->
+        <!-- to remove previous results           -->
+        <ant target="clean-tests" dir="${built.trunk.dir}" inheritAll="false" />
+
         <loadproperties srcFile="${snapshot.svn.revision.file}" />
-        <exec executable="svn" dir="${built.trunk.dir}" failonerror="true">
+        <exec executable="svn"
+              dir="${jdktools-test.parameters.required.hdk.trunk.dir}"
+              failonerror="true">
             <arg line="-r${svn.revision}" />
             <arg line="update" />
             <!-- update only build.xml. ws update is done during rebuild -->
