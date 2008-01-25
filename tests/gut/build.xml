@@ -36,10 +36,8 @@
 
     <property name="maven.repository" location="${work.dir}/.m2"/>
 
-    <condition property="res.dir" value="${result.dir}/${timestamp}"
-        else="${basedir}/results/${timestamp}">
-        <isset property="result.dir" />
-    </condition>
+    <property name="result.dir" value="${basedir}/results" />
+    <property name="res.dir" value="${result.dir}/${timestamp}" />
 
     <!-- Geronimo working directory -->
     <property name="geronimo.dir"
@@ -403,6 +401,12 @@ Failures: ${failed}, errors: ${error}
                      includes="**/surefire-reports/TEST*-*.xml"/>
             <report format="frames" todir="${html.reports.dir}"/>
         </junitreport>
+
+        <!-- copy the latest report -->
+        <delete dir="${result.dir}/latest" />
+        <copy todir="${result.dir}/latest">
+            <fileset dir="${res.dir}" />
+        </copy>
     </target>
 
     <target name="run"

@@ -350,15 +350,9 @@
         <archive-result />
     </target>
 
-    <target name="publish-gut">
-        <mkdir dir="${snapshot.results.dir}/gut" />
-        <junitreport todir="${checkouts.dir}/gut/logs">
-            <fileset dir="${checkouts.dir}/gut/geronimo-2.0.2"
-                     includes="**/surefire-reports/TEST*-*.xml" />
-            <report format="frames" todir="${snapshot.results.dir}/gut" />
-        </junitreport>
-        <archive-result/>
-    </target>
+    <!-- Geronimo Unit Tests -->
+    <property name="gut.report" value="${results.dir}/gut/latest/html" />
+    <target name="publish-gut" depends="-copy-report-files" />
 
     <!-- ANT testing scenario -->
     <target name="publish-hdk_by_hdk" depends="-copy-report-files" />

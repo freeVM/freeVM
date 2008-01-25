@@ -60,7 +60,7 @@
     <cc>
         <summary
             description="Geronimo tests report to attach to CC notification"
-            value="${test.sources.dir}/${suite.name}/report.txt"/>
+            value="${result.dir}/${suite.name}/latest/report.txt"/>
     </cc>
 
 </parameters>
