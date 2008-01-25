@@ -30,24 +30,6 @@
         <tested.vm.options
             description="JVM options for tested runtime"
             value=""/>
-        <geronimo.location
-            description="URL to fetch Apache Geronimo sources"
-            value="http://apache.org/dist/geronimo/2.0.2/"/>
-        <geronimo.filename
-            description="Apache Geronimo sources archive name"
-            value="geronimo-2.0.2-src.tar.gz"/>
-        <geronimo.version
-            description="Apache Geronimo version to use"
-            value="2.0.2"/>
-        <maven.location
-            description="URL to fetch Apache Maven binaries"
-            value="http://archive.apache.org/dist/maven/binaries/"/>
-        <maven.filename
-            description="Apache Maven archive name"
-            value="maven-2.0.6-bin.tar.gz"/>
-        <maven.version
-            description="Apache Maven version to use"
-            value="2.0.6"/>
     </optional>
 
     <!-- external dependencies -->

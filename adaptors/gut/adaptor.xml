@@ -25,30 +25,15 @@
     <available property="skip.install" file="${install.marker}" />
         
     <target name="setup" unless="skip.install">
-        <description>
-            setup: Install, configure and build Geronimo and its pre-requisites
-        </description>
         <log message="============= Adaptor for ${suite.name}: Set Up ..."/>
 
         <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
 
-        <exec-ant dir="${test.sources.dir}/${suite.name}"
-                  targets="setup"
-                  failonerror="true"
-                  failproperty="gut.setup.failed">
-            <sysproperty key="geronimo.location" value="${gut.parameters.optional.geronimo.location}"/>
-            <sysproperty key="geronimo.version"  value="${gut.parameters.optional.geronimo.version}"/>
-            <sysproperty key="geronimo.filename" value="${gut.parameters.optional.geronimo.filename}"/>
-            <sysproperty key="maven.location"    value="${gut.parameters.optional.maven.location}"/>
-            <sysproperty key="maven.version"     value="${gut.parameters.optional.maven.version}"/>
-            <sysproperty key="maven.filename"    value="${gut.parameters.optional.maven.filename}"/>
-            <sysproperty key="work.dir"          value="${test.sources.dir}/${suite.name}"/>
-            <sysproperty key="maven.dir"         value="${test.sources.dir}/${suite.name}"/>
+        <exec-ant dir="${test.sources.dir}/${suite.name}" targets="setup">
             <sysproperty key="result.dir"        value="${results.dir}/${suite.name}"/>
             <sysproperty key="test.jre.home"     value="${gut.parameters.required.tested.runtime}"/>
         </exec-ant>
 
-        <fail message="Geronimo unit tests setup failed" if="gut.setup.failed"/>
         <touch file="${install.marker}"/>
     </target>
 
@@ -56,24 +41,11 @@
     <target name="run" description="Run Geronimo Unit Tests">
         <log message="============= Adaptor for ${suite.name}: Run ..."/>
 
-        <exec-ant dir="${test.sources.dir}/${suite.name}"
-                  targets="run"
-                  failonerror="true"
-                  failproperty="gut.run.failed">
-            <sysproperty key="geronimo.location" value="${gut.parameters.optional.geronimo.location}"/>
-            <sysproperty key="geronimo.version"  value="${gut.parameters.optional.geronimo.version}"/>
-            <sysproperty key="geronimo.filename" value="${gut.parameters.optional.geronimo.filename}"/>
-            <sysproperty key="maven.location"    value="${gut.parameters.optional.maven.location}"/>
-            <sysproperty key="maven.version"     value="${gut.parameters.optional.maven.version}"/>
-            <sysproperty key="maven.filename"    value="${gut.parameters.optional.maven.filename}"/>
-            <sysproperty key="work.dir"          value="${test.sources.dir}/${suite.name}"/>
-            <sysproperty key="maven.dir"         value="${test.sources.dir}/${suite.name}"/>
+        <exec-ant dir="${test.sources.dir}/${suite.name}" targets="run">
             <sysproperty key="result.dir"        value="${results.dir}/${suite.name}"/>
             <sysproperty key="vm.options"        value="${gut.parameters.optional.tested.vm.options}"/>
             <sysproperty key="test.jre.home"     value="${gut.parameters.required.tested.runtime}"/>
         </exec-ant>
-
-        <fail message="Geronimo unit tests failed" if="gut.run.failed"/>
     </target>
 
     <!-- Clean Geronimo build and test results -->
