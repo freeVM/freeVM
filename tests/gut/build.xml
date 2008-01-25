@@ -46,7 +46,7 @@
         value="${work.dir}/geronimo-${geronimo.version}"/>
 
     <condition property="geronimo.exists">
-        <available file="${work.dir}/geronimo-1.2-beta/pom.xml"/>
+        <available file="${geronimo.dir}/pom.xml"/>
     </condition>
 
     <condition property="maven.exists">
@@ -139,7 +139,6 @@
     </target>
 
     <target name="download.geronimo" description="Download Geronimo">
-        <mkdir dir="${geronimo.dir}"/>
         <get src="${geronimo.location}/${geronimo.filename}"
             dest="${work.dir}/${geronimo.filename}"
             usetimestamp="true"
@@ -149,6 +148,7 @@
     <target name="unpack.geronimo" description="Unpack Geronimo">
         <untar src="${work.dir}/${geronimo.filename}" dest="${work.dir}"
             compression="gzip"/>
+        <move file="${geronimo.dir}-src" tofile="${geronimo.dir}"/>
     </target>
 
     <target name="install.geronimo"
@@ -200,48 +200,47 @@
        </exec>
     </target>
 
+    <property name="exclude.list.platform" value="${basedir}/exclude.list.${os}.${arch}"/>
+
     <condition property="os.specific.exclude.list.exists">
-        <available file="${basedir}/exclude.list.${os}.${arch}"/>
+        <available file="${exclude.list.platform}"/>
     </condition>
 
-    <condition property="exclude.list" value="exclude.list.${os}.${arch}"
-        else="exclude.list.empty">
-        <isset property="os.specific.exclude.list.exists"/>
-    </condition>
+    <property name="exclude.list" value="${work.dir}/exclude.list"/>
 
     <target name="setup.empty.exclude.list" unless="os.specific.exclude.list.exists">
         <!-- Create empty exclude list in order to use if no exclude lists for the platform are specified -->
-        <delete file="${work.dir}/${exclude.list}"/>
-        <touch file="${work.dir}/${exclude.list}"/>
+        <delete file="${exclude.list}"/>
+        <touch file="${exclude.list}"/>
     </target>
 
     <target name="setup.non-empty.exclude.list" if="os.specific.exclude.list.exists">
-        <delete file="${work.dir}/${exclude.list}"/>
         <!-- Copy exclude list and remove comments -->
-        <copy file="${basedir}/exclude.list.${os}.${arch}"
-            tofile="${work.dir}/exclude.list.${os}.${arch}"
-            overwrite="true"
-            failonerror="false">
+        <copy file="${exclude.list.platform}"
+            tofile="${exclude.list}"
+            overwrite="true">
             <filterchain>
                 <tokenfilter>
                     <replaceregex pattern="(.*?)#.*" replace="\1" flags="m"/>
                 </tokenfilter>
             </filterchain>
         </copy>
-   </target>
+    </target>
+
+    <property name="tests.list" value="${work.dir}/tests.list"/>
 
     <target name="configure.exclude.list"
         depends="setup.empty.exclude.list,setup.non-empty.exclude.list"
         description="Process x-list if there is one or create the empty x-list">
         <copy file="${basedir}/alltests.list"
-            tofile="${work.dir}/tests.list"
+            tofile="${tests.list}"
             overwrite="true"/>
         <!-- Use fake token and value to avoid failure if exclude.list is empty -->
-        <replace file="${work.dir}/tests.list"
-        replacefilterfile="${work.dir}/${exclude.list}"
-        token="fake_token"
-        value="fake_token"/>
-        <replaceregexp  file="${work.dir}/tests.list"
+        <replace file="${tests.list}"
+            replacefilterfile="${exclude.list}"
+            token="fake_token"
+            value="fake_token"/>
+        <replaceregexp file="${tests.list}"
             match="\s+"
             replace=","
             flags="g"/>
@@ -266,7 +265,7 @@
 
     <target name="configure.run.options"
         depends="restore.geronimo.pom,backup.geronimo.pom,configure.exclude.list">
-        <loadfile property="tests" srcFile="${work.dir}/tests.list" failonerror="false"/>
+        <loadfile property="tests" srcFile="${tests.list}" failonerror="false"/>
         <!-- specify VM options and tests list -->
         <replaceregexp file="${geronimo.dir}/pom.xml"
             match='(&lt;build>\s*&lt;pluginManagement>\s*&lt;plugins>)'
@@ -334,22 +333,23 @@
        <fail message="GUT run failed: see results directory for more details" unless="status.successful"/>
     </target>
 
+    <property name="reports.dir" value="${res.dir}/reports"/>
+    <property name="html.reports.dir" value="${res.dir}/html"/>
+
     <target name="compose.report">
-        <delete dir="${work.dir}/logs"/>
+        <delete dir="${reports.dir}"/>
         <delete>
             <fileset dir="${work.dir}" includes="tmpfile.*"/>
         </delete>
         <delete file="${work.dir}/report.txt"/>
-        <mkdir dir="${work.dir}/logs"/>
-        <copy todir="${work.dir}/logs" flatten="true">
+
+        <mkdir dir="${reports.dir}"/>
+        <copy todir="${reports.dir}" flatten="true">
             <fileset dir="${geronimo.dir}" includes="**/surefire-reports/*.txt"/>
         </copy>
-        <mkdir dir="${res.dir}/reports"/>
-        <copy todir="${res.dir}/reports" flatten="true">
-            <fileset dir="${geronimo.dir}" includes="**/surefire-reports/*.txt"/>
-        </copy>
+
         <concat destfile="${work.dir}/tmpfile.results.txt">
-            <fileset dir="${work.dir}/logs" includes="*.txt"/>
+            <fileset dir="${reports.dir}" includes="*.txt"/>
         </concat>
         <copy file="${work.dir}/tmpfile.results.txt"
             tofile="${work.dir}/tmpfile.results.failed.error.txt"
@@ -391,10 +391,18 @@ Failures: ${failed}, errors: ${error}
         <concat destfile="${work.dir}/report.txt" append="true">
              <filelist dir="${work.dir}" files="tmpfile.results.failed.error.txt"/>
         </concat>
+
         <mkdir dir="${res.dir}"/>
         <copy todir="${res.dir}">
             <fileset dir="${work.dir}" includes="output.txt,report.txt"/>
         </copy>
+
+        <mkdir dir="${html.reports.dir}"/>
+        <junitreport todir="${res.dir}">
+            <fileset dir="${geronimo.dir}"
+                     includes="**/surefire-reports/TEST*-*.xml"/>
+            <report format="frames" todir="${html.reports.dir}"/>
+        </junitreport>
     </target>
 
     <target name="run"

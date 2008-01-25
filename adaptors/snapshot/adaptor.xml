@@ -353,7 +353,7 @@
     <target name="publish-gut">
         <mkdir dir="${snapshot.results.dir}/gut" />
         <junitreport todir="${checkouts.dir}/gut/logs">
-            <fileset dir="${checkouts.dir}/gut/geronimo-1.2-beta"
+            <fileset dir="${checkouts.dir}/gut/geronimo-2.0.2"
                      includes="**/surefire-reports/TEST*-*.xml" />
             <report format="frames" todir="${snapshot.results.dir}/gut" />
         </junitreport>

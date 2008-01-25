@@ -1,32 +1,46 @@
+###
+### PLATFORM-INDEPENDENT ISSUES:
+###
+
+# Test issue: http://issues.apache.org/jira/browse/GERONIMO-3672
+org/apache/geronimo/j2ee/deployment/annotation/AnnotationHelperTest # 3 fails of 6 test cases
+ 
+# Hangs on all platforms, requires investigation
+org/apache/geronimo/yoko/TSSConfigEditorTest # Hangs, the childest java process needs to be killed
+
+# Errors intermittently, requires investigation
+org/apache/geronimo/cxf/CXFHandlerResolverTest # 4 intermittent errors out of 5 test cases
+
 # 4 test cases fail due to an error in external tool
 # fail due to initialization in external class xstream_1.1.3.jar
 # reference to field elementType in class java.util.enumSet
 # there is such a field in RI (package access)
-# XSTR-379: http://jira.codehaus.org/browse/XSTR-379?page=com.atlassian.jira.plugin.system.issuetabpanels:changehistory-tabpanel   
-# fixed in xstream 1.2.2, but geronimo-1.2-beta uses xstream 1.1.3
+# XSTR-379: http://jira.codehaus.org/browse/XSTR-379
+# fixed in XStream 1.2.2, should be fixed in Geronimo 2.1
 org/apache/geronimo/kernel/config/ConfigurationUtilTest # 1 fail out of 1 test case
 org/apache/geronimo/timer/jdbc/DerbyJDBCWorkerPersistenceTest # 3 errors out of 3 test cases
 
 # Test issue
 # Test harms editorSearchPath being run first in a testlist and then subsequent runs 
 # of other unit tests for this module in the same environment will result in NPE
-# GERONIMO-2860: https://issues.apache.org/jira/browse/GERONIMO-2860?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel 
-org/apache/geronimo/common/propertyeditor/PropertyEditorsTest # 2 test cases 
+# GERONIMO-2860: http://issues.apache.org/jira/browse/GERONIMO-2860
+# - The problem disappeared after moving from GUT v1.2beta to v2.0.2
+#org/apache/geronimo/common/propertyeditor/PropertyEditorsTest # 2 test cases 
 
-# Test issue: https://issues.apache.org/jira/browse/GERONIMO-3323
-org/apache/geronimo/gjndi/binding/GBeanBindingTest # 1 fail out of 1 test case
+# Test issue: http://issues.apache.org/jira/browse/GERONIMO-3323
+# - The problem disappeared after moving from GUT v1.2beta to v2.0.2
+#org/apache/geronimo/gjndi/binding/GBeanBindingTest # 1 fail out of 1 test case
 
-# TODO: invesigate. Fails on RI + https://issues.apache.org/jira/browse/GERONIMO-2055
-org/apache/geronimo/directory/RunningTest # 1 error out of 1 test case
+# TODO: invesigate. Fails on RI + http://issues.apache.org/jira/browse/GERONIMO-2055
+# - The test was present in GUT v1.2beta but disappeared in v2.0.2
+#org/apache/geronimo/directory/RunningTest # 1 error out of 1 test case
 
 # Tests issue, extend unstable AbstractThreadPooledTimerTest test, see line 37
 # Remove from exclude when start to use Harmony release build
-org/apache/geronimo/timer/TransactionalThreadPooledTimerTest # variable number of fails out of 10 test cases
-org/apache/geronimo/timer/NontransactionalThreadPooledTimerTest # variable number of fails out of 10 test cases
+# - The problem disappeared after moving from GUT v1.2beta to v2.0.2
+#org/apache/geronimo/timer/TransactionalThreadPooledTimerTest # variable number of fails out of 10 test cases
+#org/apache/geronimo/timer/NontransactionalThreadPooledTimerTest # variable number of fails out of 10 test cases
 
-# H-4053 
-# org/apache/geronimo/gjndi/JavaCompContextTest    # 9 test cases
-# org/apache/geronimo/gjndi/JavaCompGBeanTest 	 # 1 test case
-# org/apache/geronimo/gjndi/KernelContextGBeanTest # 1 test case
-
-
+###
+### WINDOWS/X86 PLATFORM-SPECIFIC ISSUES:
+###

@@ -46,8 +46,8 @@
             <sysproperty key="maven.location"    value="${gut.parameters.optional.maven.location}"/>
             <sysproperty key="maven.version"     value="${gut.parameters.optional.maven.version}"/>
             <sysproperty key="maven.filename"    value="${gut.parameters.optional.maven.filename}"/>
-            <sysproperty key="work.dir"          value="${checkouts.dir}/${suite.name}"/>
-            <sysproperty key="maven.dir"         value="${checkouts.dir}/${suite.name}"/>
+            <sysproperty key="work.dir"          value="${test.sources.dir}/${suite.name}"/>
+            <sysproperty key="maven.dir"         value="${test.sources.dir}/${suite.name}"/>
             <sysproperty key="result.dir"        value="${results.dir}/${suite.name}"/>
             <sysproperty key="test.jre.home"     value="${gut.parameters.required.tested.runtime}"/>
         </exec-ant>
@@ -70,8 +70,8 @@
             <sysproperty key="maven.location"    value="${gut.parameters.optional.maven.location}"/>
             <sysproperty key="maven.version"     value="${gut.parameters.optional.maven.version}"/>
             <sysproperty key="maven.filename"    value="${gut.parameters.optional.maven.filename}"/>
-            <sysproperty key="work.dir"          value="${checkouts.dir}/${suite.name}"/>
-            <sysproperty key="maven.dir"         value="${checkouts.dir}/${suite.name}"/>
+            <sysproperty key="work.dir"          value="${test.sources.dir}/${suite.name}"/>
+            <sysproperty key="maven.dir"         value="${test.sources.dir}/${suite.name}"/>
             <sysproperty key="result.dir"        value="${results.dir}/${suite.name}"/>
             <sysproperty key="vm.options"        value="${gut.parameters.optional.tested.vm.options}"/>
             <sysproperty key="test.jre.home"     value="${gut.parameters.required.tested.runtime}"/>
@@ -87,4 +87,3 @@
     </target>
 
 </project>
-
