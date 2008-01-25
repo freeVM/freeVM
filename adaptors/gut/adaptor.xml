@@ -23,28 +23,33 @@
     <property name="install.marker"
               location="${test.sources.dir}/${suite.name}/install.complete" />
     <available property="skip.install" file="${install.marker}" />
-        
-    <target name="setup" unless="skip.install">
-        <log message="============= Adaptor for ${suite.name}: Set Up ..."/>
 
-        <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
+    <target name="setup" unless="skip.install">
+        <log message="============= Adaptor for ${suite.name}: Set Up ..." />
+
+        <svn-update-bt path="${test.sources.dir}/${suite.name}" />
 
         <exec-ant dir="${test.sources.dir}/${suite.name}" targets="setup">
-            <sysproperty key="result.dir"        value="${results.dir}/${suite.name}"/>
-            <sysproperty key="test.jre.home"     value="${gut.parameters.required.tested.runtime}"/>
+            <sysproperty key="result.dir"
+                         value="${results.dir}/${suite.name}" />
+            <sysproperty key="test.jre.home"
+                         value="${gut.parameters.required.tested.runtime}" />
         </exec-ant>
 
-        <touch file="${install.marker}"/>
+        <touch file="${install.marker}" />
     </target>
 
     <!-- Run Geronimo unit tests -->
     <target name="run" description="Run Geronimo Unit Tests">
-        <log message="============= Adaptor for ${suite.name}: Run ..."/>
+        <log message="============= Adaptor for ${suite.name}: Run ..." />
 
         <exec-ant dir="${test.sources.dir}/${suite.name}" targets="run">
-            <sysproperty key="result.dir"        value="${results.dir}/${suite.name}"/>
-            <sysproperty key="vm.options"        value="${gut.parameters.optional.tested.vm.options}"/>
-            <sysproperty key="test.jre.home"     value="${gut.parameters.required.tested.runtime}"/>
+            <sysproperty key="result.dir"
+                         value="${results.dir}/${suite.name}" />
+            <sysproperty key="vm.options"
+                         value="${gut.parameters.optional.tested.vm.options}" />
+            <sysproperty key="test.jre.home"
+                         value="${gut.parameters.required.tested.runtime}" />
         </exec-ant>
     </target>
 
