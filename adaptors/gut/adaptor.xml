@@ -20,15 +20,11 @@
      ====================================================================== -->
 <project name="gut" default="run" basedir=".">
 
-    <!-- Setup Geronimo and its pre-requisites -->
-    <target name="setup" depends="check-install,install"/>
+    <property name="install.marker"
+              location="${test.sources.dir}/${suite.name}/install.complete" />
+    <available property="skip.install" file="${install.marker}" />
         
-    <property name="install.marker" location="${test.sources.dir}/${suite.name}/install.complete"/>
-    <target name="check-install">
-        <available property="skip.install" file="${install.marker}"/>
-    </target>
-        
-    <target name="install" unless="skip.install">
+    <target name="setup" unless="skip.install">
         <description>
             setup: Install, configure and build Geronimo and its pre-requisites
         </description>
