@@ -20,16 +20,14 @@
      ====================================================================== -->
 <project name="gut" default="run" basedir=".">
 
-    <property name="install.marker"
-              location="${test.sources.dir}/${suite.name}/install.complete" />
+    <property name="suite.dir" value="${checkouts.dir}/gut" />
+    <property name="install.marker" location="${suite.dir}/install.complete" />
     <available property="skip.install" file="${install.marker}" />
 
     <target name="setup" unless="skip.install">
+
         <log message="============= Adaptor for ${suite.name}: Set Up ..." />
-
-        <svn-update-bt path="${test.sources.dir}/${suite.name}" />
-
-        <exec-ant dir="${test.sources.dir}/${suite.name}" targets="setup">
+        <exec-ant dir="${suite.dir}" targets="setup">
             <sysproperty key="result.dir"
                          value="${results.dir}/${suite.name}" />
             <sysproperty key="test.jre.home"
@@ -43,7 +41,7 @@
     <target name="run" description="Run Geronimo Unit Tests">
         <log message="============= Adaptor for ${suite.name}: Run ..." />
 
-        <exec-ant dir="${test.sources.dir}/${suite.name}" targets="run">
+        <exec-ant dir="${suite.dir}" targets="run">
             <sysproperty key="result.dir"
                          value="${results.dir}/${suite.name}" />
             <sysproperty key="vm.options"
@@ -55,7 +53,7 @@
 
     <!-- Clean Geronimo build and test results -->
     <target name="clean">
-        <delete dir="${checkouts.dir}/${suite.name}" />
+        <delete dir="${suite.dir}" />
         <delete dir="${results.dir}/${suite.name}" />
     </target>
 
