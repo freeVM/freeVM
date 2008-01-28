@@ -24,8 +24,7 @@
     <!-- SETUP -->
     <target name="setup" description="Setup configuration for EGA scenario run">
         <log message="============= Adaptor for ${suite.name}: Set Up ..."/>
-        <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
-        <exec-ant dir="${test.sources.dir}/${suite.name}" 
+        <exec-ant dir="${checkouts.dir}/ega" 
                   targets="setup">
             <sysproperty key="eclipse.download.address"  value="${ega.parameters.optional.eclipse.download.address}"/>
             <sysproperty key="maven.download.address"    value="${ega.parameters.optional.maven.download.address}"/>
@@ -39,7 +38,7 @@
     <!-- RUN -->
     <target name="run">
         <log message="============= Adaptor for ${suite.name}: Run ..."/>
-        <exec-ant dir="${test.sources.dir}/${suite.name}" 
+        <exec-ant dir="${checkouts.dir}/ega" 
                   targets="run"
                   failonerror="false"
                   failproperty="ega.run.failed">
@@ -61,10 +60,10 @@
     <!-- CLEAN -->
     <target name="clean">    
         <log message="============= Adaptor for ${suite.name}: Clean ..."/>
-        <log message="Removing all generated data from ${test.sources.dir}/${suite.name} ..."/>
-        <delete dir="${test.sources.dir}/${suite.name}/project"/>
-        <delete dir="${test.sources.dir}/${suite.name}/workspace"/>
-        <delete file="${test.sources.dir}/${suite.name}/test.class"/>
+        <log message="Removing all generated data from ${checkouts.dir}/ega ..."/>
+        <delete dir="${checkouts.dir}/ega/project"/>
+        <delete dir="${checkouts.dir}/ega/workspace"/>
+        <delete file="${checkouts.dir}/ega/test.class"/>
     </target>
 
 </project>
