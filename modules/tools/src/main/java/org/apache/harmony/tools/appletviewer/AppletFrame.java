@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.net.URLClassLoader;
+import java.net.URL;
 import java.util.HashSet;
 
 import javax.swing.AbstractAction;
@@ -45,33 +46,45 @@ class AppletFrame extends JFrame {
     
     public AppletFrame(AppletInfo appletInfo) throws Exception {
         this.appletInfo = appletInfo;
+        String code = this.appletInfo.getCode();
+        if(code == null || code.equals("")){
+            System.err.println("Warning: <" + appletInfo.getTag() +"> tag requires code attribute.");
+            System.exit(0);
+        }
+
         shutdownHandler.addFrame(this);
         
         // Load applet class
+        if(appletInfo.getCodeBase() == null){
+            appletInfo.setCodeBase(new URL(appletInfo.getDocumentBase(), "./"));
+        }
+
         URLClassLoader cl = new URLClassLoader(appletInfo.getClassLoaderURLs());
-        Class clz = cl.loadClass(this.appletInfo.getCode());
+        Class clz = cl.loadClass(code);
         applet = (Applet)clz.newInstance();
         applet.setStub(new ViewerAppletStub(applet, appletInfo));
-        
-        // Create applet pane
-        setLayout(new BorderLayout());
-        JPanel appletPanel = new JPanel();
-        appletPanel.add(applet);
-        add(appletPanel, BorderLayout.CENTER);
         applet.setPreferredSize(new Dimension(appletInfo.getWidth(), appletInfo.getHeight()));
         
         // Create menu bar
         setJMenuBar(createMenu());
         
+        // Create applet pane
+        setLayout(new BorderLayout());
+        JPanel appletPanel = new JPanel();
+        appletPanel.add(applet);
+        add(appletPanel, BorderLayout.NORTH);
+        
         // Create status pane
         JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.setMinimumSize(new Dimension(100, 15));
+        panel.setPreferredSize(new Dimension(100, 15));
         statusLabel = new JLabel();
-        panel.add(statusLabel);
+        statusLabel.setMinimumSize(new Dimension(100, 15));
+        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        panel.add(statusLabel, BorderLayout.WEST);
         add(panel, BorderLayout.SOUTH);
         appletInfo.setStatusLabel(statusLabel);
-        
-        statusLabel.setMinimumSize(new Dimension(100, 40));
-        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
         // Start applet and make frame visible
         // Init should be called after pack to make components displayable
@@ -99,44 +112,44 @@ class AppletFrame extends JFrame {
     
     private class StartAction extends  AbstractAction {
     	public StartAction() {
-    		super("Start");
+            super("Start");
     	}
     	
-		public void actionPerformed(final ActionEvent e) {
-			applet.start();
-			applet.setEnabled(true);
-		}
+        public void actionPerformed(final ActionEvent e) {
+            applet.start();
+            applet.setEnabled(true);
+        }
     }
     
     private class StopAction extends  AbstractAction {
-    	public StopAction() {
-    		super("Stop");
-    	}
+        public StopAction() {
+            super("Stop");
+        }
     	
-		public void actionPerformed(ActionEvent e) {
-			applet.stop();
-			applet.setEnabled(false);
-		}
+        public void actionPerformed(ActionEvent e) {
+            applet.stop();
+            applet.setEnabled(false);
+        }
     }
     
     private class CloseAction extends  AbstractAction {
-    	public CloseAction() {
-    		super("Close");
-    	}
+        public CloseAction() {
+            super("Close");
+        }
     	
-		public void actionPerformed(ActionEvent e) {
-			setVisible(false);
-		}
+        public void actionPerformed(ActionEvent e) {
+            setVisible(false);
+        }
     }
     
     private class ExitAction extends  AbstractAction {
-    	public ExitAction() {
-    		super("Exit");
-    	}
+        public ExitAction() {
+            super("Exit");
+        }
     	
-		public void actionPerformed(ActionEvent e) {
-			System.exit(0);
-		}
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+        }
     }
     
     private static class ShutdownHandler implements WindowListener {

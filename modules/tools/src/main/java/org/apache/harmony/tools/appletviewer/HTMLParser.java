@@ -32,7 +32,8 @@ import javax.swing.text.html.parser.DTD;
 import javax.swing.text.html.parser.TagElement;
 
 class HTMLParser {
-	private final ParserImpl parser;
+
+    private final ParserImpl parser;
 	
     HTMLParser() throws IOException {
         DTD dtd = DTD.getDTD("reader");
@@ -49,14 +50,14 @@ class HTMLParser {
     }
     
     private class ParserImpl extends javax.swing.text.html.parser.Parser {
-    	private URL documentBase;
-		private ArrayList<AppletInfo> list;
+        private URL documentBase;
+        private ArrayList<AppletInfo> list;
         private AppletInfo appletInfo = null;
         private HTML.Tag startElement = null;
     	
     	public ParserImpl(DTD dtd) {
-    		super(dtd);
-		}
+            super(dtd);
+        }
     	
     	public void parse(String url, ArrayList<AppletInfo> list) throws IOException {
             try  {
@@ -72,57 +73,69 @@ class HTMLParser {
             parse(isr);
     	}
 
-		@Override
-		protected void handleStartTag(TagElement tag) {
-			if (tag == null)
-				return;
-			HTML.Tag htmlTag = tag.getHTMLTag();
+        @Override
+        protected void handleStartTag(TagElement tag) {
+            if (tag == null)
+                return;
+
+            HTML.Tag htmlTag = tag.getHTMLTag();
+
             if (htmlTag == HTML.Tag.APPLET || htmlTag == HTML.Tag.OBJECT) {
+
                 if (startElement != null) {
                     throw new RuntimeException(htmlTag+" inside "+startElement);
                 }
                 
                 startElement = htmlTag;
                 appletInfo = new AppletInfo();
+                appletInfo.setTag(htmlTag.toString());
+                list.add(appletInfo);
+
                 appletInfo.setDocumentBase(documentBase);
+       
                 SimpleAttributeSet attributes = getAttributes();
-                appletInfo.setCode((String)attributes.getAttribute(HTML.Attribute.CODE));
-                try {
-					appletInfo.setCodeBase((String)attributes.getAttribute(HTML.Attribute.CODEBASE));
-				} catch (Exception e) {
-					appletInfo.setCodeBase((URL)null);
-				}
-				try {
-					appletInfo.setArchive((String)attributes.getAttribute(HTML.Attribute.ARCHIVE));
-				} catch (MalformedURLException e) {
-					appletInfo.setArchive((URL)null);
-				}
                 appletInfo.setWidth((String)attributes.getAttribute(HTML.Attribute.WIDTH));
                 appletInfo.setHeight((String)attributes.getAttribute(HTML.Attribute.HEIGHT));
-                list.add(appletInfo);
-                return;
-            }            
 
-            if (appletInfo != null && htmlTag == HTML.Tag.PARAM) {
-                SimpleAttributeSet attributes = getAttributes();
-                appletInfo.setParameter((String)attributes.getAttribute(HTML.Attribute.NAME), (String)attributes.getAttribute(HTML.Attribute.VALUE));
-            }
-		}
+                try {
+                    appletInfo.setArchive((String)attributes.getAttribute(HTML.Attribute.ARCHIVE));
+                } catch (MalformedURLException e) {
+                    appletInfo.setArchive((URL)null);
+                }
 
-		@Override
-		protected void handleEndTag(TagElement tag) {
-			if (tag != null && tag.getHTMLTag() == startElement)
+                try {
+                    appletInfo.setCode((String)attributes.getAttribute(HTML.Attribute.CODE));
+                } catch (Exception e) {}
+
+                if (htmlTag == HTML.Tag.APPLET) {
+                    try {
+                        appletInfo.setCodeBase((String)attributes.getAttribute(HTML.Attribute.CODEBASE));
+                    } catch (Exception e) {
+                        appletInfo.setCodeBase((URL)null);
+                    }
+                }
+            }           
+        }
+
+        @Override
+        protected void handleEndTag(TagElement tag) {
+            if (tag != null && tag.getHTMLTag() == startElement)
                 startElement = null;
-		}
+        }
 
-		@Override
-		protected void handleEmptyTag(TagElement tag)
-				throws ChangedCharSetException {
-			HTML.Tag htmlTag = tag.getHTMLTag();
+        @Override
+        protected void handleEmptyTag(TagElement tag) throws ChangedCharSetException {
+
+            HTML.Tag htmlTag = tag.getHTMLTag();
             if (appletInfo != null && htmlTag == HTML.Tag.PARAM) {
                 SimpleAttributeSet attributes = getAttributes();
-                appletInfo.setParameter((String)attributes.getAttribute(HTML.Attribute.NAME), (String)attributes.getAttribute(HTML.Attribute.VALUE));
+                String name = (String)attributes.getAttribute(HTML.Attribute.NAME);
+                if(name.equalsIgnoreCase("code")){
+                    appletInfo.setCode((String)attributes.getAttribute(HTML.Attribute.VALUE));
+                } else {
+                    appletInfo.setParameter(name, (String)attributes.getAttribute(HTML.Attribute.VALUE));
+                }
             }
-		}
+        }
     }
 }

@@ -31,6 +31,7 @@ public class AppletInfo {
     private URL codeBase;
     private URL archive;
     private String code;
+    private String tagName;
     private int width;
     private int height;
     private HashMap<String, String> params;
@@ -128,5 +129,13 @@ public class AppletInfo {
     		case 1: res[0] = codeBase;
     	}
     	return res;
+    }
+
+    public void setTag(String tagName){
+        this.tagName = tagName;
+    }
+
+    public String getTag(){
+        return tagName;
     }
 }
