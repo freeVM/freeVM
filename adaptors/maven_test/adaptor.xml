@@ -19,8 +19,10 @@
                         BT Adaptor for maven_test
      ====================================================================== -->
 <project name="maven_test" default="run" basedir=".">
+    
+    <property name="suite.dir" value="${checkouts.dir}/maven_test" />
     <property name="maven_test.results.dir" location="${results.dir}/${suite.name}"/>
-    <property name="install.marker" location="${test.sources.dir}/${suite.name}/install.complete"/>
+    <property name="install.marker" location="${suite.dir}/install.complete"/>
 
     <!-- ================================= 
          target: setup
@@ -48,8 +50,7 @@
             setup: Install, configure and build maven and its pre-requisites
         </description>
 
-        <svn-update-bt path="${test.sources.dir}/${suite.name}"/>
-        <exec-ant dir="${test.sources.dir}/${suite.name}"
+        <exec-ant dir="${suite.dir}"
                   targets="setup"
                   failonerror="true"
                   failproperty="maven.setup.failed">
@@ -58,8 +59,8 @@
             <sysproperty key="maven.src.filename" value="${maven_test.parameters.optional.maven.src.filename}"/>
             <sysproperty key="maven.location"     value="${ext.maven-2.0.7.location}"/>
             <sysproperty key="maven.repository"   value="${maven_test.parameters.optional.maven.repository.location}"/>
-            <sysproperty key="work.dir"           value="${checkouts.dir}/${suite.name}"/>
-            <sysproperty key="maven.dir"          value="${checkouts.dir}/${suite.name}"/>
+            <sysproperty key="work.dir"           value="${suite.dir}"/>
+            <sysproperty key="maven.dir"          value="${suite.dir}"/>
             <sysproperty key="result.dir"         value="${maven_test.results.dir}"/>
             <sysproperty key="test.jre.home"      value="${maven_test.parameters.required.tested.runtime}"/>
        </exec-ant>
@@ -82,7 +83,7 @@
         <fail message="Path to jre does not exist: ${tested.runtime}" if="jre.not.exist"/>
 
         <!-- Execute test running here -->
-        <exec-ant dir="${test.sources.dir}/${suite.name}"
+        <exec-ant dir="${suite.dir}"
                   targets="run"
                   failonerror="true"
                   failproperty="maven.run.failed">
@@ -91,8 +92,8 @@
             <sysproperty key="maven.src.filename" value="${maven_test.parameters.optional.maven.src.filename}"/>
             <sysproperty key="maven.location"    value="${ext.maven-2.0.7.location}"/>
             <sysproperty key="maven.repository"   value="${maven_test.parameters.optional.maven.repository.location}"/>
-            <sysproperty key="work.dir"          value="${checkouts.dir}/${suite.name}"/>
-            <sysproperty key="maven.dir"         value="${checkouts.dir}/${suite.name}"/>
+            <sysproperty key="work.dir"          value="${suite.dir}"/>
+            <sysproperty key="maven.dir"         value="${suite.dir}"/>
             <sysproperty key="result.dir"        value="${maven_test.results.dir}"/>
             <sysproperty key="vm.options"        value="${maven_test.parameters.optional.tested.vm.options}"/>
             <sysproperty key="test.jre.home"     value="${maven_test.parameters.required.tested.runtime}"/>

@@ -25,10 +25,6 @@
             value="${drlvm.parameters.shared.jre.dir}"/>
     </required>
 
-    <!-- Optional parameters -->
-    <optional>
-    </optional>
-
     <!-- External dependencies -->
     <external>
         <maven-2.0.7
@@ -37,6 +33,10 @@
             dir="maven-2.0.7"
         />
     </external>
+
+    <svn>
+      <maven_test url="tests/maven_test"/>
+    </svn>
 
     <!-- Shared parameters -->
     <optional>
