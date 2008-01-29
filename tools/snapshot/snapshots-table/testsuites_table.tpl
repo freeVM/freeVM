@@ -10,6 +10,7 @@
     <span style="font-weight: bold;">
       Harmony snapshot r{SNAPSHOT_NUM} status page
     </span><br>
+    {API_REPORT}
   </big>
 
 <table style="text-align: left; width: 1008px;" border="1" cellpadding="2" cellspacing="2">

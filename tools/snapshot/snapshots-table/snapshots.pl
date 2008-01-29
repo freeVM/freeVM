@@ -92,6 +92,9 @@ $test_results_output_path = ".";
 #testsuites summary file
 $test_results_output_file = "index.html";
 
+# API completeness report location
+$api_report_path="Linux_x86/japi/index.html";
+
 #################### Subroutines ####################
 
 sub get_result {
@@ -270,6 +273,27 @@ sub get_result {
 }
 
 
+sub get_api_report {
+
+    # TODO: search reports on all platforms
+    my $rev = $_[0];
+
+    my $i = 0;
+    my @test_results_links_list = keys(%test_results_links);
+    while (defined($test_results_links_list[$i])) {
+        $snapshot_api_report="$test_results_links_list[$i]/$api_report_path";
+        $snapshot_api_report=~ s/\{SNAPSHOT\}/$rev/g;
+        $request = HTTP::Request->new(GET => "$snapshot_api_report");
+        $response = $ua->request($request);
+        if ($response->is_success) {
+            $api_report = $snapshot_api_report;
+            $data_updated = 1;
+            return;
+        }
+        $i++;
+    }
+}
+
 #################### Main script ####################
 
 # Undef variable to put file one variable.
@@ -344,6 +368,7 @@ foreach $snapshot (reverse(sort(keys %snapshots))) {
 
     $cur_timestamp = time;
 
+    undef $api_report;
     if ($snapshot_cache_data) {
         if (defined($verbose)) {
             print "Cache file loaded: $snapshot_cache_file\n";
@@ -355,6 +380,10 @@ foreach $snapshot (reverse(sort(keys %snapshots))) {
         #Parse snapshot date
         if (($snapshot_cache_data =~ /SNAPSHOT_DATE\:\s*(.*?)\;/g) && $1) {
             $snapshots{$snapshot} = $1;
+        }
+        #Find API completeness report
+        if (($snapshot_cache_data =~ /API_REPORT\:\s*(.*?)\;/g) && $1) {
+            $api_report = $1;
         }
         #Parse cachefile data if cache is older than $cache_lag
         if ($cache_timestamp && (($cur_timestamp - $cache_timestamp) > $cache_lag)) {
@@ -395,6 +424,9 @@ foreach $snapshot (reverse(sort(keys %snapshots))) {
         $snapshots_row =~ s/\{$platform\_PASSED\}/$passed/g;
         $snapshots_row =~ s/\{$platform\_FAILED\}/$failed/g;
     }
+    if (!defined($api_report)) {
+        get_api_report($snapshot);
+    }
 
     #We needd to update snapshot testing results table and cache file only if 
     #some new data was downloaded or if table or cachefile were removed
@@ -431,6 +463,12 @@ foreach $snapshot (reverse(sort(keys %snapshots))) {
             if (!defined ($hide_no_results) || $row_has_results) {
                 $testsuites_table =~ s/\{TABLE_ROW\}/$testsuites_row\n\{TABLE_ROW\}/g;
             }
+        }
+        if (defined($api_report)) {
+            $testsuites_table =~ s/\{API_REPORT\}/<i><small><a href=\"$api_report\">API completeness report<a> (without endorsed packages)<small><i>/g;
+            $snapshot_cache_data .= "API_REPORT:$api_report;\n";
+        } else {
+            $testsuites_table =~ s/\{API_REPORT\}//g;
         }
         $testsuites_table =~ s/\{TABLE_ROW\}//g;
         $time = gmtime;
