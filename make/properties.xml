@@ -225,6 +225,11 @@
         <isset property="is.windows" />
     </condition>
     <property name="object.suffix" value=".o" />
+    
+    <condition property="linklib.prefix" value="">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="linklib.prefix" value="lib" />
 
     <condition property="linklib.suffix" value=".lib">
         <isset property="is.windows"/>
