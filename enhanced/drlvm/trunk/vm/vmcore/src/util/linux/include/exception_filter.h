@@ -19,35 +19,9 @@
  * @version $Revision: 1.1.2.1.4.3 $
  */  
 
-#ifndef _CRASH_HANDLER_H
-#define _CRASH_HANDLER_H
-
 #include "vm_core_types.h"
 
 /**
- * \file
- * Provides definition needed to install gdb crash handler.
+ * For using in crash handlers
  */
-
-/**
- * Checks if gdb crash handler is enabled and prepared.
- *
- * @return true if gdb crash handler is enabled and ready for use.
- */
-bool is_gdb_crash_handler_enabled();
-
-/**
- * Initializes the static state needed for gdb crash handler.
- *
- * @return 0 on success or negative value on failure
- */
-void init_gdb_crash_handler();
-
-/**
- * Invokes gdb.
- *
- * @return true on success or false on failure
- */
-bool gdb_crash_handler(Registers* regs);
-
-#endif // _CRASH_HANDLER_H
+void print_reg_state(Registers* regs);

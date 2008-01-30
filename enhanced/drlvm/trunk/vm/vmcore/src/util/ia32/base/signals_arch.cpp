@@ -14,40 +14,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Intel, Evgueni Brevnov
- * @version $Revision: 1.1.2.1.4.3 $
- */  
 
-#ifndef _CRASH_HANDLER_H
-#define _CRASH_HANDLER_H
-
+#include <stdio.h>
 #include "vm_core_types.h"
 
-/**
- * \file
- * Provides definition needed to install gdb crash handler.
- */
-
-/**
- * Checks if gdb crash handler is enabled and prepared.
- *
- * @return true if gdb crash handler is enabled and ready for use.
- */
-bool is_gdb_crash_handler_enabled();
-
-/**
- * Initializes the static state needed for gdb crash handler.
- *
- * @return 0 on success or negative value on failure
- */
-void init_gdb_crash_handler();
-
-/**
- * Invokes gdb.
- *
- * @return true on success or false on failure
- */
-bool gdb_crash_handler(Registers* regs);
-
-#endif // _CRASH_HANDLER_H
+void print_reg_state(Registers* regs)
+{
+    fprintf(stderr, "Registers:\n");
+    fprintf(stderr, "    EAX: 0x%"W_PI_FMT", EBX: 0x%"W_PI_FMT", ECX: 0x%"W_PI_FMT", EDX: 0x%"W_PI_FMT"\n",
+        regs->eax, regs->ebx, regs->ecx, regs->edx);
+    fprintf(stderr, "    ESI: 0x%"W_PI_FMT", EDI: 0x%"W_PI_FMT", ESP: 0x%"W_PI_FMT", EBP: 0x%"W_PI_FMT"\n",
+        regs->esi, regs->edi, regs->esp, regs->ebp);
+    fprintf(stderr, "    EIP: 0x%"W_PI_FMT"\n", regs->eip);
+}
