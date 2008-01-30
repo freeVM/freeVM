@@ -81,6 +81,9 @@
         <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/appletviewer${exe.suffix}" />
         <chmod file="${hy.jdk}/bin/appletviewer${exe.suffix}" perm="ugo+x" />
 
+        <copy file="${hy.samsa.exe}" tofile="${hy.jdk}/bin/unpack200${exe.suffix}" />
+        <chmod file="${hy.jdk}/bin/unpack200${exe.suffix}" perm="ugo+x" />
+
     </target>
 
     <!-- copy windows javaw executable -->
@@ -107,6 +110,7 @@
         <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/javadoc${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/keytool${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/jarsigner${progdb.suffix}" />
+    	<copy file="${hy.samsa.progdb}" tofile="${hy.jdk}/bin/unpack200${progdb.suffix}" />
 
     </target>
 
@@ -174,6 +178,13 @@
 	        executable="${test.jre.home}/../bin/keytool${exe.suffix}"
 	        dir="${hy.tests.reports}">
 	    <arg line="-help" />
+        </exec>
+
+        <echo message="Run jdk/bin/unpack200 in ${hy.tests.reports}"/>
+        <exec failonerror="true"
+	        executable="${test.jre.home}/../bin/unpack200${exe.suffix}"
+	        dir="${hy.tests.reports}">
+	    <arg line="" />
         </exec>
 
     </target>
