@@ -58,11 +58,6 @@
         <copy todir="${work.dir}" file="${tests.dir}/report.xsl"/>
         <copy todir="${work.dir}" file="${tests.dir}/test.xsl"/>
 
-        <!-- Compile sources -->
-        <javac srcdir="${work.dir}"
-               destdir="${work.dir}"
-               includes="*.java"/>
-
         <!-- Copy exclude list file for updating suite's config -->
         <copy todir="${tptp.results}" file="${tests.dir}/${tptp.parameters.optional.exclude.list}"/>
 

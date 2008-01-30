@@ -66,11 +66,13 @@ ${JAVA_HOME}/bin/java \
     <echo message="CLASSPATH: ${classpath_jar}"/>
     <echo message="BOOTCLASSPATH: ${bootclasspath_jar}"/>
 
+    <property name="classes" location="${basedir}/classes" />
+    
     <!-- All arguments -->
     <property name="jvm.args" value="${tptp.options} -Dtest.param='${tested.vm.options}' -Dtest.timeout=${test.timeout} -Dconfigfile=${config.file.new} -Dtest.output=${report.dir} -Dtest.java=${tested.runtime} -Dtest.home=${test.home} -Dac.home=${ac.home} -Dtest.verbose=false -Xbootclasspath/p:${bootclasspath_jar} "/> 
       
     <!-- Tests running -->     
-    <target name="run"> 
+    <target name="run" depends="compile"> 
         <!-- Clear previous results -->
         <delete dir="${report.dir}" failonerror="false"/>
         <mkdir dir="${report.dir}"/>
@@ -82,7 +84,7 @@ ${JAVA_HOME}/bin/java \
         <echo message="=====Running class: ${tptp.test.class}"/>  
 
         <java classname="updateExclude"
-              classpath="."
+              classpath="${classes}"
               fork="yes"
               failonerror="true">
             <arg value="${config.file}"/>
@@ -118,7 +120,7 @@ ${JAVA_HOME}/bin/java \
         
         <!-- Migrate txt results file to xml -->
         <java classname="updateResults"
-              classpath="."
+              classpath="${classes}"
               fork="yes"
               failonerror="true">
             <arg value="${report.dir}/AllTests.txt"/>
@@ -127,7 +129,7 @@ ${JAVA_HOME}/bin/java \
         
         <!-- Prepere summary report -->       
         <java classname="testsCount"
-              classpath="."
+              classpath="${classes}"
               fork="yes"
               resultproperty="test.res.code">
             <arg value="${report.dir}"/>
@@ -154,4 +156,8 @@ ${JAVA_HOME}/bin/java \
 
     </target>   
 
+    <target name="compile">
+        <mkdir dir="${classes}" />
+        <javac srcdir="${basedir}" destdir="${classes}" includes="*.java" />
+    </target>
 </project>
