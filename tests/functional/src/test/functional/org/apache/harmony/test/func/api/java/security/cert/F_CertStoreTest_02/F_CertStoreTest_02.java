@@ -152,7 +152,7 @@ public class F_CertStoreTest_02 extends ScenarioTest {
                 return fail("FAILED: couln't find any valid CRL");
             }
             
-            crlSelector.setDateAndTime(new Date());
+            crlSelector.setDateAndTime(crl.getThisUpdate());
             if (!crlSelector.match(crl)) {
                 return fail("FAILED: the CRL doesn't match in spite of the fact that current date falls within the CRL validity period");
             }
@@ -176,7 +176,7 @@ public class F_CertStoreTest_02 extends ScenarioTest {
                 return fail("FAILED: two same certificates aren't equal");
             }
             
-            log.info(retrievedTestCert.toString());
+            //log.info(retrievedTestCert.toString());
             X500Principal testCertIssuer = retrievedTestCert.getIssuerX500Principal();
             log.info("Certificate's issuer: " + testCertIssuer.getName());
             if (!testCertIssuer.equals(crlIssuerPrincipal)) {
