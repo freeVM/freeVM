@@ -286,7 +286,8 @@ sub get_api_report {
         $request = HTTP::Request->new(GET => "$snapshot_api_report");
         $response = $ua->request($request);
         if ($response->is_success) {
-            $api_report = $api_report_path;
+            $api_report = "$test_results_links{$test_results_links_list[$i]}/$api_report_path";
+            $api_report =~ s/\{SNAPSHOT\}/$rev/g;
             $data_updated = 1;
             return;
         }
