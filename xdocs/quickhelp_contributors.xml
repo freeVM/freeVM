@@ -48,9 +48,11 @@
       <a href="#Running Java Applications">run Java applications</a> with Harmony.
     </p>
     <p>
-      If you only need specific parts of the source code and not the whole HDK
-      (Harmony Java developer's kit), you can follow
-      <a href="#Detailed Building Instructions">component-wise instructions</a>.
+      If you only need building specific parts of the source code and not the whole JDK, 
+      you can <a href="download.cgi">download</a>
+      a HDK (<a href="hdk.html">Harmony Java Developer's Kit</a>) bundle,
+      obtain the source code and follow       
+      <a href="#Detailed Building Instructions for Components">component-wise instructions</a>.
     </p>
 
     <p class="note">Note:</p>
@@ -161,6 +163,19 @@
           </td>
         </tr>
       </table>
+      <p class="note">Note:</p>
+      <p class="notetext">
+      You have to ensure you properly configured the tools in the user environment, 
+      please refer to corresponding manuals as needed. In particular, 
+      the working environment should be such that the PATH environment variable 
+      contains all of the directories where the executables of the tools 
+      are located and that all of those executables can be successfully invoked 
+      from the command line. <br/>
+      For example, for using a C++ compiler on Windows you'd typically need to 
+      launch a specific batch script, such as 
+      &quot;Visual Studio .NET 2003 Command Prompt&quot;, prior to building.
+      </p>
+      
       <p>
         <strong>Additional Prerequisites</strong>
       </p>
@@ -176,22 +191,13 @@
       </p>
       <ul>
         <li>
-          <a href="http://xml.apache.org/xalan-j/">Xalan-Java</a>,
-          version 2.7.0 (taken from class libraries component)
-        </li>
-        <li>
           <a href="http://sourceforge.net/project/showfiles.php?group_id=36177">
             Cpp Tasks</a> collection,
             version 1.0 beta 3 or higher (downloaded)
         </li>
         <li>
-          <a href="http://sourceforge.net/project/showfiles.php?group_id=36177">
-            Ant-Contrib</a> collection of tasks,
-            version 0.6 or higher (downloaded)
-        </li>
-        <li>
           <a href="http://www.zlib.net">Zlib</a> library, binaries,
-          version 1.2.1 or higher (downloaded)
+          version 1.2.1 or higher (Windows only, downloaded)
         </li>
         <li>
           <a href="http://apr.apache.org/download.cgi">Apache Portable Runtime Layer</a>,
@@ -208,27 +214,23 @@
         <li>
           <a href="http://svn.apache.org/repos/asf/logging/log4cxx/trunk">
             Log4cxx
-          </a>, latest log4cxx, SVN revision 467164 (downloaded)
+          </a>, latest log4cxx (downloaded from SVN)
         </li>
       </ul>
       <p>
-        You can download these resources prior to building DRLVM,
-        unpack them, and specify the resulting locations by using the environment variables,
-        as described in the
-        <a href="http://svn.apache.org/viewvc/harmony/enhanced/drlvm/trunk/README.txt?view=co">
-          README file
-        </a>, step 3.3.1. In this file, you can find instructions
-        on how to point to local versions instead of making the build download new ones from the net.
-        <br /> Because the list of sotware is subject to change, we do <b>not</b> recommend
-        that you download the software and not let the
-        build do that for you.
+        You can download these resources prior to building a component,
+        and specify the resulting locations (e.g. by editing 
+        <code>make/depends.properties</code> in component's workspace).
+        However, because the list of sotware is subject to change, we do <b>not</b> recommend
+        that you download the software and not let the build do that for you.
       </p>
     </subsection>
     <subsection name="2. Checking out the Federated Build Tree">
       <p>
         The Harmony codebase is divided into many separate parts. To create
-        a working JRE, you need a <i>class library</i> and a <i>virtual machine</i>. To
-        obtain these tools, use the <i>federated build</i> tree and then work
+        a working JDK, you need a <i>class library</i>, a <i>virtual machine</i> 
+        and <i>jdktools</i>. To
+        obtain these parts, use the <i>federated build</i> tree and then work
         within the class library directory and the VM directory as you choose.
         Currently, the federated build uses the DRLVM virtual machine.
       </p>
@@ -241,12 +243,13 @@
 
       <p>
         This command checks out a directory structure that
-        contains <code>working_classlib</code> and <code>working_vm</code>
+        contains <code>common_resources</code>, <code>working_classlib</code>,
+        <code>working_vm</code> and <code>working_jdktools</code>
         directories. After you populate the source trees in the next step,
         <code>working_classlib</code>
-        will be the checkout of the class library SVN tree
-        and <code>working_vm</code> will be the checkout
-        of the DRLVM SVN tree.
+        will be the checkout of the class library SVN tree,
+        <code>working_vm</code> will be the checkout
+        of the DRLVM SVN tree, etc.
       </p>
       <p class="note">Note</p>
       <p class="notetext">
@@ -262,8 +265,8 @@
         you might want to fetch all the dependencies.
         If you do not, or if in the future a new dependency is added, the build will tell
         you what to do, so that you can do this step periodically. To fetch the
-        dependencies and check out, build, and package snapshots of the JRE and HDK, type
-        the following command in the root directory of the federated build:
+        dependencies and check out, build, and package snapshots of the JRE, JDK and HDK, 
+        type the following command in the root directory of the federated build:
       </p>
       <source>$ ant -Dauto.fetch=true</source>
       <p>
@@ -283,53 +286,54 @@
       <p>
         Because running Ant in the root directory builds the full JDK, it can be inconvenient
         for a developer focused on a specific area. If you are not interested in building
-        the full HDK, follow the <a href="#Detailed Building Instructions">detailed instructions</a>
-        to build each JRE component separately.
+        the full HDK, follow the <a href="#Detailed Building Instructions for Components">detailed instructions</a>
+        to build each component of JRE separately.
       </p>
     </subsection>
   </section>
-  <section name="Detailed Building Instructions">
+  <section name="Detailed Building Instructions for Components">
     <p>If you do not need to build the whole HDK and did not execute <code>ant</code>
-    in <a href="Running the Federated Build">step 3</a>, follow these instructions to
+    in <a href="#3. Starting the Federated Build">step 3</a>, follow these instructions to
     build each component in turn and assemble the JRE from them. The building
     procedure consists of the following steps:</p>
     <ol>
       <li>
-        <a href="#1. Populating the Source Trees">
-          Populate the source trees.
-        </a>
+        <a href="#1. Populating the Source Trees">Populate the source trees.</a>
       </li>
       <li>
         <a href="#2. Updating the Source Trees">Update the source trees.</a>
       </li>
       <li>
-        <a href="#3. Building the Class Library">Build the class library source code.</a>
+        <a href="#3. Building the Components">Build the JDK components.</a>
       </li>
       <li>
-        <a href="#4. Building DRLVM">Build the DRLVM source code.</a>
-      </li>
-      <li>
-        <a href="#5. Combining JRE from Built Components">Combine class libraries and VM into JRE.</a>
+        <a href="#4. Combining JRE from Built Components">Combine class libraries and VM into JRE.</a>
       </li>
     </ol>
     
     <subsection name="1. Populating the Source Trees">
         <p>
-          To populate the source trees, use the target located
+          To populate the source trees of all JDK components, use the target located
           in the federated build <code>build.xml</code> script.
           Type the following command in the root directory of the
           federated build:
         </p>
         <source>$ ant populate_source</source>
         <p>
-          The given command checks out class library and DRLVM into the
-          <code>working_classlib</code> and <code>working_vm</code>
-          directories respectively, <i>
+          The given command checks out class library, DRLVM and jdktools into the
+          <code>working_classlib</code>, <code>working_vm</code> and <code>working_jdktools</code>
+          directories respectively, along with a <code>common_resources</code>, <i>
             at the same SVN version of
             the <code>build.xml</code> file
           </i>.
           The source trees are large,
           therefore a checkout can take a very long time.
+        </p>
+        <p>
+          Optionally, you can skip using the federated build at all and manually 
+          check out only specific components. In this case you will need to build
+          against a binary <a href="http://harmony.apache.org/hdk.html">HDK</a> bundle,
+          which can be found in Harmony downloads.
         </p>
       </subsection>
     <subsection name="2. Updating the Source Trees">
@@ -343,8 +347,7 @@ $ cd working_classlib
 $ svn update</source>
 
         <p>
-          The aforementioned commands are valid checkouts of the class library
-          and DRLVM. After executing <code>svn update</code>, your tree will
+          After executing <code>svn update</code>, your tree will
           reflect any modifications made to the SVN repository. If you are a
           project committer, you can make commits from within this tree, as it
           is a normal SVN checkout.
@@ -357,195 +360,56 @@ $ svn update</source>
         <source>$ ant clean</source>
 
       </subsection>
-    <subsection name="3. Building the Class Library">
+    <subsection name="3. Building the Components">
       <p>
-        Now you should be ready to build the code. First build
-        the class library because DRLVM has a dependency on it and also
-        assembles a working JRE as part of its build.
+        Now you should be ready to build the code. You need to build components in this order:
+        first the class library, then DRLVM and last jdktools, to satisfy their build dependencies. 
+        Each next component takes necessary artifacts from it's predeccessor and 
+        assembles a working JRE/JDK as part of its build.
       </p>  
       <p>
-          For the first time you build, you might want to fetch all the
-          class library dependencies. If you do not, or if in the future a new
+        All components have unified build interfaces, i.e. they support the same basic set of Ant targets
+        and properties. Thus the following instructions are given by the example of class library, 
+        but apply to any other component.
+      </p>  
+      <p>
+          For the first time you build, you might want to fetch all the external
+          component dependencies. If you do not, or if in the future a new
           dependency is added, the build will tell you what to do, so that you
-          can do this step periodically. To fetch the class library dependencies
-          and then build class library, use the following commands:
+          can do this step periodically. To fetch the dependencies
+          and then build the component, use the following commands:
         </p>
         <source>
 $ cd working_classlib
 $ ant fetch-depends
 $ ant</source>
         <p>
-          You can only test the class libraries in case you have a virtual machine.
-          If you do, run the following command to get the full test suite for the class library:
+          Move on to validate the build. Each component provides a decent set of 
+          unit and functional tests and normally should pass 100% of them.
+          Note, you can only test the class libraries in case you have a virtual machine. 
+          You can use a VM other than DRLVM, see
+          <a href="#4. Combining JRE from Built Components">Combining JRE from Built Components</a>.
+          If you want to use DRLVM, proceed with the instruction to build it.
+          <br/>
+          Run the following command to build and run the full test suite for the component:
         </p>
         <source>$ ant test</source>
         <p>
-          You can use a VM other than DRLVM, see
-          <a href="#Combining JRE from Built Components">Combining JRE from Built Components</a>.
-          If you want to
-          use DRLVM, proceed with the instruction to build it.
+        At this point, the build is complete. A produced JRE is in the <code>deploy/jdk/jre</code> subdirectory 
+        of the component workspace.
         </p>
+        <p class="note">Note</p>
+        <p class="notetext">
+          DRLVM creates the deploy subdirectory only if <code>deploy.canonical.flag</code> property was 
+          set to <code>TRUE</code>. Otherwise you can find the build artifacts deeper 
+          in <code>build/&lt;platform-specific&gt;/deploy/jdk/jre</code> directories.
+        </p>
+        <p> 
+          You can get more information on build nuances of each component by running:
+        </p>
+        <source>$ ant help</source>
       </subsection>
-    <subsection name="4. Building DRLVM">
-        <ol>
-          <li>
-            <b>Enter the build directory.</b><br />
-            After building the class library, build DRLVM
-            assembling a working JRE. For that, return
-            to the root of the federated build and switch into the
-            <code>working_vm</code> directory, then to the <code>build</code>
-            directory:
-            <pre>
-$ cd working_vm/build</pre>
-          </li>
-          <li>
-            <b>Configure the environment.</b>
-            <ul>
-              <li>
-                Edit <code>drlvm.properties</code>
-                <p>
-                  Tell the DRLVM build where to find the class library:
-                  rename the file <code>drlvm.properties.example</code> in the DRLVM
-                  <code>build</code> directory to <code>drlvm.properties</code>.
-                </p>
-                <pre>$ cp drlvm.properties.example drlvm.properties</pre>
-                <p>
-                This file contains a property definition that tells DRLVM build to
-                use the class library in <code>working_classlib</code>.
-                  If you want to point to another build of the class library, override
-                  the given file on the command line.
-                </p>
-                <p>
-                Double-check that the resulting properties file has
-                <code>deploy.canonical.flag</code> set to <code>TRUE</code>. This value
-                enables the build to create the
-                <code>deploy/jre/bin</code> directory. Further building procedures require
-                this directory.</p>
-              </li>
-              <li>
-                Select the compiler.
-                <p>
-                You can switch between the different compilers and modes by using
-                the environment variables, as follows:
-              </p>
-                <table>
-                  <tr>
-                    <th class="TableHeading">
-                      Compiler
-                    </th>
-                    <th class="TableHeading">
-                      On Windows
-                    </th>
-                    <th class="TableHeading">
-                      On Linux
-                    </th>
-                  </tr>
-                  <tr>
-                    <td class="TableCell">
-                      MSVC compiler
-                    </td>
-                    <td class="TableCell">
-                      set CXX=msvc
-                    </td>
-                    <td class="TableCell">
-                      N/A
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="TableCell">
-                      Intel(R) compiler
-                    </td>
-                    <td class="TableCell">
-                      set CXX=icl
-                    </td>
-                    <td class="TableCell">
-                      export CXX=icc
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="TableCell">
-                      GCC compiler
-                    </td>
-                    <td class="TableCell">
-                      N/A
-                    </td>
-                    <td class="TableCell">
-                      export CXX=gcc
-                    </td>
-                  </tr>
-                </table>
-              </li>
-              <li>
-                Select the working mode: debug or release.
-                <p>
-              By default, the debug configuration is used. To switch to
-              the release mode, do:
-              </p>
-              <pre>
-On Windows:
-> set BUILD_CFG=release
-> build.bat
-
-On Linux:
-$ BUILD_CFG=release ./build.bat
-</pre>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <b>Fetch the dependencies.</b><br />
-            Before starting the build, fetch the
-            dependencies. Note that this can take a long time.
-            <pre>
-On Windows:
-C:...\trunk\working_vm\build>build.bat update
-
-On Linux:
-$ sh build.sh update</pre>
-          </li>
-          <li>
-            <b>Build the code.</b><br />
-            To proceed with the build, run the following:
-            <pre>
-On Windows:
-C:...\trunk\working_vm\build>build.bat
-
-On Linux:
-$ sh build.sh</pre>
-          </li>
-          <li>
-            <b>Run the acceptance tests.</b><br />
-            To complete the operation, run the following acceptance tests:
-            <pre>
-On Windows:
-C:...\trunk\working_vm\build>build.bat test
-
-On Linux:
-$ sh build.sh test</pre>
-
-          </li>
-        </ol>
-        <p>
-          At this point, the DRLVM build is complete. A full JRE is in the
-          <code>deploy/jre</code> subdirectory of the <code>build</code>
-          directory.
-        </p>
-        <p>
-          For example, you can run JRE with the <code>-version</code> argument
-          to see its version:
-        </p>
-
-        <pre>
-$ cd deploy/jre/bin
-$ ./java -version
-Apache Harmony Launcher:
-(c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable.
-java version "1.5.0"
-pre-alpha : not complete or compatible
-svn = r479551, (Nov 27 2006), Windows/ia32/msvc 1310, debug build
-http://harmony.apache.org</pre>
-      </subsection>
-    <subsection name="5. Combining JRE from Built Components">
+    <subsection name="4. Combining JRE from Built Components">
         <p>
           <b>Class library developers</b> can work with DRLVM or install
           another compatible VM. For example, you can use the
