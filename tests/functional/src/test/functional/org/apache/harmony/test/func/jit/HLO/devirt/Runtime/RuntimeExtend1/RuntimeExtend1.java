@@ -16,6 +16,7 @@
  */
 package org.apache.harmony.test.func.jit.HLO.devirt.Runtime.RuntimeExtend1;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -68,11 +69,10 @@ public class RuntimeExtend1 extends Test {
 
 class AuxiliaryClass {
     
-    void changeObj(String path) throws ClassNotFoundException,
-            InstantiationException, IllegalAccessException,
-            MalformedURLException {
-        URL url = new URL("file:///" + path + "/child.jar");
-        if (url == null) {
+    void changeObj(String path) throws Exception {
+        URL url = new URL("file://" + path + "/child.jar");
+        if (!new File(url.toURI()).exists()) {
+            // TODO: remove this check?
             throw new RuntimeException("TEST EXCEPTION: url file:/" + path
                     + "/child.jar is not valid");
         }
