@@ -94,6 +94,11 @@
 
             <arg line="${japi.home}/bin/japicompat -h ${ri.name}.japi ${harmony.name}.japi" />
         </exec>
+
+        <copy file="${japi.report}/${ri.name}_vs_${harmony.name}.html"
+              tofile="${japi.report}/index.html" />
+        <copy file="${japi.home}/design/japi.css"
+              tofile="${japi.report}/japi.css" />
     </target>
 </project>
 
