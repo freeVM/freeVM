@@ -288,6 +288,10 @@ sub get_api_report {
         if ($response->is_success) {
             $api_report = "$test_results_links{$test_results_links_list[$i]}/$api_report_path";
             $api_report =~ s/\{SNAPSHOT\}/$rev/g;
+            
+            $response->content =~ m/="Total good">([^%]+)%<\/td>/sm;
+            $api_percent = $1;
+            
             $data_updated = 1;
             return;
         }
@@ -383,8 +387,9 @@ foreach $snapshot (reverse(sort(keys %snapshots))) {
             $snapshots{$snapshot} = $1;
         }
         #Find API completeness report
-        if (($snapshot_cache_data =~ /API_REPORT\:\s*(.*?)\;/g) && $1) {
+        if (($snapshot_cache_data =~ /API_REPORT\:\s*([^:]*)\:\(.*\)\;/g) && $1) {
             $api_report = $1;
+            $api_percent = $2;
         }
         #Parse cachefile data if cache is older than $cache_lag
         if ($cache_timestamp && (($cur_timestamp - $cache_timestamp) > $cache_lag)) {
@@ -466,8 +471,8 @@ foreach $snapshot (reverse(sort(keys %snapshots))) {
             }
         }
         if (defined($api_report)) {
-            $testsuites_table =~ s/\{API_REPORT\}/<i><small><a href=\"$api_report\">API completeness report<a> (without endorsed packages)<small><i>/g;
-            $snapshot_cache_data .= "API_REPORT:$api_report;\n";
+            $testsuites_table =~ s/\{API_REPORT\}/<br><i><small><a href=\"$api_report\">API completeness report<a> (without endorsed packages): $api_percent%<small><i>/g;
+            $snapshot_cache_data .= "API_REPORT:$api_report:$api_percent;\n";
         } else {
             $testsuites_table =~ s/\{API_REPORT\}//g;
         }
