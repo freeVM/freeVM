@@ -357,6 +357,19 @@
     <!-- ANT testing scenario -->
     <target name="publish-hdk_by_hdk" depends="-copy-report-files" />
 
+    <!-- JAPI report -->
+    <target name="publish-japi">
+
+        <mkdir dir="${snapshot.results.dir}/japi" />
+        <copy todir="${snapshot.results.dir}/japi">
+            <fileset dir="${results.dir}/japi">
+                <include name="index.html" />
+                <include name="japi.css" />
+            </fileset>
+        </copy>
+        <archive-result />
+    </target>
+
     <!-- Reliability suite -->
     <property name="reliability.junit.report"
               value="${results.dir}/reliability/last" />
