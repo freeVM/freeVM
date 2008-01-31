@@ -24,7 +24,7 @@
         <mkdir dir="${japi.report}" />
 
         <property name="pkgs"
-                  value="+java +javax +org.ietf.jgss -java.awt.peer -java.awt.dnd.peer -javax.rmi.CORBA" />
+                  value="+java +javax +org.ietf.jgss -java.awt.peer -java.awt.dnd.peer -javax.rmi.CORBA -javax.jnlp" />
 
         <!--                 -->
         <!-- japize: Harmony -->
