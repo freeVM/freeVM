@@ -28,12 +28,12 @@
     <property name="tests.results.dir" location="${results.dir}/${suite.name}/test-results"/>
 
     <property name="catalina.localhost.port.default" value="8080" />
-    <property name="catalina.config.file"  location="${ext.tomcat-5.0.30.location}/conf/server.xml"/>
-    <property name="catalina.base.dir" location="${ext.tomcat-5.0.30.location}"/>
-    <property name="catalina.home.dir" location="${ext.tomcat-5.0.30.location}"/>
-    <property name="catalina.tmp.dir"  location="${ext.tomcat-5.0.30.location}/temp"/>
+    <property name="catalina.config.file"  location="${ext.tomcat-6.0.14.location}/conf/server.xml"/>
+    <property name="catalina.base.dir" location="${ext.tomcat-6.0.14.location}"/>
+    <property name="catalina.home.dir" location="${ext.tomcat-6.0.14.location}"/>
+    <property name="catalina.tmp.dir"  location="${ext.tomcat-6.0.14.location}/temp"/>
     <property name="catalina.out.file" location="${results.dir}/${suite.name}/catalina.out"/>
-    <property name="catalina.maxwait" value="180"/>
+    <property name="catalina.maxwait" value="1800"/>
 
     <property name="tomcat.deploy.app.name" value="struts2-showcase-2.0.6"/>
 
@@ -282,7 +282,7 @@
           target: -start-server                      
          - - - - - - - - - - - - - - - - - -->
     <target name="-start-server" depends="-set-server-port,-reset-server-port" >
-        <server-java output="${catalina.out.file}" append="false" arg="start" />
+        <server-java output="${catalina.out.file}" append="false" arg="start"/>
     </target>
 
     <!-- - - - - - - - - - - - - - - - - - 
@@ -290,7 +290,7 @@
          - - - - - - - - - - - - - - - - - -->
     <target name="-start-server-for-setup" depends="-set-server-port,-reset-server-port" >
         <server-java jvm="${req.driver.java.home}/bin/java"
-            output="${catalina.out.file}" append="false" arg="start" />
+            output="${catalina.out.file}" append="false" arg="start"/>
     </target>
 
     <!-- - - - - - - - - - - - - - - - - - 
@@ -312,11 +312,12 @@
           target: -stop-server                      
          - - - - - - - - - - - - - - - - - -->
     <target name="-stop-server">
-        <parallel failonany="true">
-            <server-java output="${catalina.out.file}" append="true" arg="stop" />
+        <parallel failonany="false">
+            <server-java output="${catalina.out.file}" append="true" arg="stop"/>
             <waitfor maxwait="${catalina.maxwait}" maxwaitunit="second" timeoutproperty="failed.timeout">
                 <isfileselected file="${catalina.out.file}">
-                    <contains text="INFO: Stopping Coyote HTTP/1.1 on http-" />
+                    <!--contains text="INFO: Stopping Coyote HTTP/1.1 on http-" /-->
+                    <contains text="Stopping service Catalina"/>
                 </isfileselected>
             </waitfor>
         </parallel>
@@ -329,7 +330,7 @@
     <target name="-stop-server-for-setup">
         <parallel failonany="true">
             <server-java jvm="${req.driver.java.home}/bin/java"
-                output="${catalina.out.file}" append="true" arg="stop" />
+                output="${catalina.out.file}" append="true" arg="stop"/>
             <waitfor maxwait="${catalina.maxwait}" maxwaitunit="second"
                 timeoutproperty="failed.timeout">
                 <isfileselected file="${catalina.out.file}">
@@ -344,27 +345,30 @@
           target: -prepare-run
          - - - - - - - - - - - - - - - - - -->
     <target name="-prepare-run">
-        <copy file="${req.test.java.home}/lib/boot/bootclasspath.properties"
+        <!-- Outdated, newer versions of Tomcat does not contain MX4J -->
+
+        <!--copy file="${req.test.java.home}/lib/boot/bootclasspath.properties"
             tofile="${req.test.java.home}/lib/boot/bootclasspath.properties.bak"
             failonerror="false"
-        />
-        <replaceregexp
+        /-->
+        <!--replaceregexp
             file="${req.test.java.home}/lib/boot/bootclasspath.properties"
             match="(bootclasspath.*/mx4j.*\.jar)"
             replace="#\1"
             flags="g"
-        />
+        /-->
     </target>
 
     <!-- - - - - - - - - - - - - - - - - - 
           target: -finish-run                      
          - - - - - - - - - - - - - - - - - -->
     <target name="-finish-run">
-        <move file="${req.test.java.home}/lib/boot/bootclasspath.properties.bak"
+        <!-- Outdated, see -prepare-run -->
+        <!--move file="${req.test.java.home}/lib/boot/bootclasspath.properties.bak"
             tofile="${req.test.java.home}/lib/boot/bootclasspath.properties"
             overwrite="true"
             failonerror="false"
-        />
+        /-->
     </target>
 
 
@@ -406,6 +410,7 @@
         <attribute name="output"/>
         <attribute name="append"/>
         <attribute name="arg"/>
+        <attribute name="failOnError" default="false"/>
         <sequential  >
         <condition property="vm.options"
             value="${struts_test.parameters.optional.tested.vm.options}"
@@ -414,7 +419,7 @@
         </condition>
         <java jvm="@{jvm}"
             fork="true"
-            failonerror="true"
+            failonerror="@{failOnError}"
             errorproperty="failed.server.java"
             classname="org.apache.catalina.startup.Bootstrap"
             output="@{output}"
