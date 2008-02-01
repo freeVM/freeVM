@@ -38,17 +38,10 @@
         </tstamp>
 
         <!-- launch the tests -->
-        <exec-ant dir="${built.drlvm.trunk}/build"
-                  file="make/build.xml"
-                  targets="reg.test"
-                  lib="${built.drlvm.trunk}/build/make/tmp"
-                  failonerror="false"
-                  failproperty="drlvm-reg-test.run.failed">
+        <exec-ant dir="${built.drlvm.trunk}" targets="reg.test" 
+            failonerror="false" failproperty="drlvm-reg-test.run.failed">
             <sysproperty key="build.cfg" value="${drlvm.config}"/>
-            <sysproperty key="external.dep.CLASSLIB.loc"
-                         value='${built.classlib.trunk}'/>
-            <sysproperty key="machine.arch" value="${os.arch}"/>
-            <sysproperty key="junit.jar" value="${ext.junit.location}"/>
+            <sysproperty key="common.resources.loc" value="${common.resources}"/>
             <arg line="${tested.hdk.param}"/>
         </exec-ant>
 
@@ -91,33 +84,19 @@
     <target name="-update" if="is.snapshot" 
         description="adjusts tests to snapshot revision">
         <mkdir dir="${built.drlvm.trunk}" />
+        <mkdir dir="${common.resources}" />
         <loadproperties srcFile="${snapshot.svn.revision.file}" />
-        <exec executable="svn"
-              dir="${built.drlvm.trunk}"
-              failonerror="true">
+        <exec executable="svn" dir="${common.resources}" failonerror="true">
+            <arg line="co -r${svn.revision} ${common.resources.url} ." />
+        </exec>
+        <exec executable="svn" dir="${built.drlvm.trunk}" failonerror="true">
             <arg line="co -r${svn.revision} ${drlvm.trunk.url} ." />
         </exec>
 
-        <exec-ant dir="${built.drlvm.trunk}/build"
-                  file="make/build.xml"
-                  targets="clean"
-                  lib="${built.drlvm.trunk}/build/make/tmp"
+        <exec-ant dir="${built.drlvm.trunk}" targets="clean fetch-depends"
                   failonerror="true">
             <sysproperty key="build.cfg" value="${drlvm.config}"/>
-            <sysproperty key="external.dep.CLASSLIB.loc"
-                         value='${built.classlib.trunk}'/>
-            <sysproperty key="machine.arch" value="${os.arch}"/>
-        </exec-ant>
-
-        <exec-ant dir="${built.drlvm.trunk}/build"
-                  file="make/build.xml"
-                  targets="update"
-                  lib="${built.drlvm.trunk}/build/make/tmp"
-                  failonerror="true">
-            <sysproperty key="build.cfg" value="${drlvm.config}"/>
-            <sysproperty key="external.dep.CLASSLIB.loc"
-                         value='${built.classlib.trunk}'/>
-            <sysproperty key="machine.arch" value="${os.arch}"/>
+            <sysproperty key="common.resources.loc" value="${common.resources}"/>
         </exec-ant>
                     
     </target>

@@ -20,23 +20,21 @@
      ====================================================================== -->
 <project name="drlvm" default="run" basedir=".">
 
-    <!-- platform dependent suffix for executables, 
-         used in parameters.xml for 'path to jvm' definition -->
-    <condition property="exe" value=".exe" else="">
-        <os family="windows" />
-    </condition>
-
     <!-- define build configuration, 
          used in parameters.xml for assignment the value to shared parameter -->
     <property name="build.config" 
               value="${drlvm.parameters.optional.build.cfg}"/>
+    
+    <property name="common.resources" 
+              value="${checkouts.dir}/common_resources"/>
 
     <target name="setup" />
 
-    <target name="run" 
-            description="Checks DRLVM trunk can be build."> 
-        <drlvm-build targets="clean update"/>
-        <drlvm-build targets="build"/>
+    <target name="run" description="Verifies integrity of the DRLVM trunk"> 
+        <exec executable="svn" dir="${common.resources}" failonerror="true">
+            <arg line="update" />
+        </exec>
+        <drlvm-build targets="fetch-depends rebuild"/>
     </target>
 
     <target name="clean">
@@ -47,15 +45,13 @@
         <attribute name="targets"/>
         <sequential>
             <!-- Use BTI staff to execute Ant Build in new process -->
-            <exec-ant dir="${trunk.dir}/build"
-                      file="make/build.xml"
-                      targets="@{targets}"
-                      lib="${trunk.dir}/build/make/tmp">
+            <exec-ant dir="${trunk.dir}" targets="@{targets}">
                 <sysproperty key="deploy.canonical.flag" value="true"/>
                 <sysproperty key="build.cfg" value="${build.config}"/>
                 <sysproperty key="machine.arch" value="${os.arch}"/>
                 <sysproperty key="external.dep.CLASSLIB.loc"
                              value='${classlib.trunk}'/>
+                <sysproperty key="common.resources.loc" value="${common.resources}"/>
             </exec-ant>
         </sequential>
     </macrodef>

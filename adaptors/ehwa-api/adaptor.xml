@@ -76,16 +76,12 @@
     <target name="run">
         <log message="============= Adaptor for ${suite.name}: Run ..."/>
 
-        <exec-ant dir="${built.drlvm.trunk}/build"
-                  file="make/build.xml"
+        <exec-ant dir="${built.drlvm.trunk}"
                   targets="ehwa.test"
-                  lib="${built.drlvm.trunk}/build/make/tmp"
                   failonerror="true"
                   failproperty="drlvm-ehwa-test.run.failed">
             <sysproperty key="build.cfg" value="${drlvm.config}"/>
-            <sysproperty key="external.dep.CLASSLIB.loc"
-                         value='${built.classlib.trunk}'/>
-            <sysproperty key="machine.arch" value="${os.arch}"/>
+            <sysproperty key="common.resources.loc" value="${common.resources}"/>
             <sysproperty key="eclipse.home" value="${eclipse-3.2.1.homedir}/eclipse"/>
             <sysproperty key="test.mode" 
                          value="${ehwa-api.parameters.optional.test.mode}"/>

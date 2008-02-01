@@ -181,4 +181,10 @@
             <isset property="is.x86_64" />
         </and>
     </condition>
+    
+    <condition property="exe.suffix" value=".exe">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="exe.suffix" value="" />
+
 </project>

@@ -21,20 +21,19 @@
         <!-- the path to built DRLVM JRE -->
         <jre.dir value="${drlvm.parameters.shared.trunk.dir}/build/deploy/jdk/jre"/>
         <!-- the path to built DRLVM JVM -->
-        <jvm.location value="${drlvm.parameters.shared.trunk.dir}/build/deploy/jdk/jre/bin/java${exe}"/>
+        <jvm.location value="${drlvm.parameters.shared.trunk.dir}/build/deploy/jdk/jre/bin/java${exe.suffix}"/>
         <!-- DRLVM build configuration (debug/release) -->
         <build.config value="${build.config}"/>
     </shared>
 
     <svn>
       <drlvm url="http://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk" />
+      <common_resources url="http://svn.apache.org/repos/asf/harmony/enhanced/common_resources"/>
     </svn>
 
     <!-- CC specific configuration -->
     <cc publish="false"> 
         <!-- reference to the value by parameter ID -->
         <usesvn refid="trunk.dir.id"/>
-        <!-- reference to the value by property name -->
-        <trigger value="${drlvm.parameters.shared.trunk.dir}/${suite.name}.trigger"/>
     </cc>
 </parameters>

@@ -22,9 +22,9 @@
         <built.drlvm.trunk 
             description="Path to built drlvm trunk"
             value="${drlvm.parameters.shared.trunk.dir}" />
-        <built.classlib.trunk
-            description="Path to built classlib trunk" 
-            value="${classlib.parameters.shared.trunk.dir}"/>
+        <common.resources description="Path to shared pool" 
+            value="${built.drlvm.trunk}/../common_resources"
+            url="http://svn.apache.org/repos/asf/harmony/enhanced/common_resources"/>
         <drlvm.config
             description="The built drlvm configuration (debug/release)"
             value="${drlvm.parameters.shared.build.config}"/>
