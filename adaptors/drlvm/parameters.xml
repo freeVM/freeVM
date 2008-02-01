@@ -19,9 +19,9 @@
         <!-- the trunk url for svn -->
         <svn.url value="http://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk"/>
         <!-- the path to built DRLVM JRE -->
-        <jre.dir value="${drlvm.parameters.shared.trunk.dir}/build/deploy/jdk/jre"/>
+        <jre.dir value="${drlvm.parameters.shared.trunk.dir}/deploy/jdk/jre"/>
         <!-- the path to built DRLVM JVM -->
-        <jvm.location value="${drlvm.parameters.shared.trunk.dir}/build/deploy/jdk/jre/bin/java${exe.suffix}"/>
+        <jvm.location value="${drlvm.parameters.shared.trunk.dir}/deploy/jdk/jre/bin/java${exe.suffix}"/>
         <!-- DRLVM build configuration (debug/release) -->
         <build.config value="${build.config}"/>
     </shared>
