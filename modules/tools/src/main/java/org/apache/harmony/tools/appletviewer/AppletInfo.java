@@ -30,6 +30,7 @@ public class AppletInfo {
     private URL documentBase;
     private URL codeBase;
     private URL archive;
+    private String archiveStr;
     private String code;
     private String tagName;
     private int width;
@@ -62,6 +63,12 @@ public class AppletInfo {
     }
 
     public URL getArchive() {
+        if (archive == null && archiveStr != null) {
+            try {
+                archive = new URL(getCodeBase(), archiveStr);
+            } catch (MalformedURLException _) {                
+            }
+        }
         return archive;
     }
 
@@ -69,8 +76,8 @@ public class AppletInfo {
         this.archive = archive;
     }
 
-    public void setArchive(String archive) throws MalformedURLException {
-        this.archive = (archive == null)?null:new URL(this.documentBase, archive);
+    public void setArchive(String archive) {
+        this.archiveStr = archive;
     }
 
     public String getParameter(String name) {
@@ -123,10 +130,10 @@ public class AppletInfo {
     }
     
     public URL []getClassLoaderURLs() {
-    	URL []res = (archive == null)?new URL[1]:new URL[2];
+    	URL []res = (archive == null && archiveStr == null)?new URL[1]:new URL[2];
     	switch (res.length) {
-    		case 2: res[1] = archive;
-    		case 1: res[0] = codeBase;
+    		case 2: res[1] = getArchive();
+    		case 1: res[0] = getCodeBase();
     	}
     	return res;
     }
