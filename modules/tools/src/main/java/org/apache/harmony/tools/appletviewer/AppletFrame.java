@@ -138,7 +138,8 @@ class AppletFrame extends JFrame {
         }
     	
         public void actionPerformed(ActionEvent e) {
-            setVisible(false);
+            AppletFrame.this.processWindowEvent(
+                new WindowEvent(AppletFrame.this, WindowEvent.WINDOW_CLOSING));
         }
     }
     
