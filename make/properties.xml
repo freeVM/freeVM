@@ -38,6 +38,11 @@
         <equals arg1="${hy.cfg}" arg2="debug" />
     </condition>
 
+    <!-- Local variable tables should be available in debug, and unavailable in release modes. -->
+    <condition property="build.compilerarg" value="-nowarn -g" else="-nowarn -g:lines,source">
+        <equals arg1="${hy.cfg}" arg2="debug" />
+    </condition>
+
     <!-- Test run property -->
     <property name="hy.test.forkmode" value="perBatch" />
     <property name="hy.test.timeout" value="900000" />
@@ -200,6 +205,11 @@
     </condition>
     <property name="make.command" value="make" />
 
+    <condition property="make.arg" value="/nologo">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="make.arg" value="" />
+
     <property name="png.home" value="/usr" />
     <property name="lcms.home" value="/usr" />
     <property name="jpeg.home" value="/usr" />
@@ -337,7 +347,8 @@ properties in preference to these:
         <attribute name="dir" />
         <attribute name="target" default="" />
         <sequential>
-            <echo> LOCAL MAKE DEFN L ${hy.drlvm} @{dir}</echo>
+            <echo>Making "@{target}" in @{dir}</echo>
+            <echo> LOCAL MAKE DEFN L ${hy.drlvm}</echo>
             <exec failonerror="true"
                   executable="${make.command}"
                   dir="@{dir}">
@@ -353,6 +364,7 @@ properties in preference to these:
                 <env key="HY_PLATFORM" value="${hy.platform}" />
                 <env key="HY_CFLAGS" value="${hy.cflags}" />
                 <env key="HY_ARCH_DEFINE" value="${hy.arch.define}" />
+                <arg line="${make.arg}" />
                 <arg line="@{target}" />
             </exec>
         </sequential>

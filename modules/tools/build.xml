@@ -90,6 +90,8 @@
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
+            <compilerarg line="${build.compilerarg}" />
+
             <bootclasspath>
                 <fileset dir="${hy.hdk}/jdk/jre/lib/boot">
                     <include name="**/*.jar" />

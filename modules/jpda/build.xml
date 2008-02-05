@@ -76,6 +76,8 @@
                target="${hy.javac.target}"
                debug="${hy.javac.debug}">
 
+            <compilerarg line="${build.compilerarg}" />
+
             <!-- HDK class library -->
             <classpath>
                 <fileset dir="${hy.hdk}/jdk/jre/lib/boot">
