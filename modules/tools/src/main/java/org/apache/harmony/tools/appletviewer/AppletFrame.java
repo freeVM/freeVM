@@ -23,8 +23,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.net.URLClassLoader;
-import java.net.URL;
 import java.util.HashSet;
 
 import javax.swing.AbstractAction;
@@ -38,32 +36,18 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 class AppletFrame extends JFrame {
-    private final AppletInfo appletInfo;
     private final Applet applet;
     private final JLabel statusLabel;
     
     private static ShutdownHandler shutdownHandler = new ShutdownHandler();
     
     public AppletFrame(AppletInfo appletInfo) throws Exception {
-        this.appletInfo = appletInfo;
-        String code = this.appletInfo.getCode();
-        if(code == null || code.equals("")){
-            System.err.println("Warning: <" + appletInfo.getTag() +"> tag requires code attribute.");
-            System.exit(0);
-        }
+        // Load applet class
+        applet = ViewerAppletContext.loadApplet(appletInfo);
+
+        applet.setPreferredSize(new Dimension(appletInfo.getWidth(), appletInfo.getHeight()));
 
         shutdownHandler.addFrame(this);
-        
-        // Load applet class
-        if(appletInfo.getCodeBase() == null){
-            appletInfo.setCodeBase(new URL(appletInfo.getDocumentBase(), "./"));
-        }
-
-        URLClassLoader cl = new URLClassLoader(appletInfo.getClassLoaderURLs());
-        Class clz = cl.loadClass(code);
-        applet = (Applet)clz.newInstance();
-        applet.setStub(new ViewerAppletStub(applet, appletInfo));
-        applet.setPreferredSize(new Dimension(appletInfo.getWidth(), appletInfo.getHeight()));
         
         // Create menu bar
         setJMenuBar(createMenu());
@@ -108,6 +92,10 @@ class AppletFrame extends JFrame {
     	menuBar.add(controlMenu);
     	
     	return menuBar;
+    }
+
+    Applet getApplet(){
+        return applet;
     }
     
     private class StartAction extends  AbstractAction {
@@ -163,7 +151,16 @@ class AppletFrame extends JFrame {
         }
 
         public void windowClosing(WindowEvent e) {
-            frameList.remove(e.getWindow());
+            JFrame frame = (JFrame)e.getWindow();
+            frameList.remove(frame);
+
+            Applet applet = ((AppletFrame)frame).getApplet();
+            if(applet != null){
+                ViewerAppletContext ac = 
+                    (ViewerAppletContext)applet.getAppletContext();
+                ac.remove(applet);
+            }
+
             if (frameList.isEmpty())
                 System.exit(0);
         }
@@ -184,5 +181,7 @@ class AppletFrame extends JFrame {
             frameList.add(frame);
             frame.addWindowListener(this);
         }
+
     }
+
 }

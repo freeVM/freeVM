@@ -31,7 +31,6 @@ public class AppletInfo {
     private URL codeBase;
     private URL archive;
     private String archiveStr;
-    private String code;
     private String tagName;
     private int width;
     private int height;
@@ -76,24 +75,12 @@ public class AppletInfo {
         this.archive = archive;
     }
 
-    public void setArchive(String archive) {
-        this.archiveStr = archive;
-    }
-
     public String getParameter(String name) {
         return params.get(name.toUpperCase());
     }
 
     public void setParameter(String name, String value) {
         params.put(name.toUpperCase(), value);
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = (code.endsWith(".class"))?code.substring(0, code.length()-6):code;
     }
 
     public int getWidth() {
@@ -130,6 +117,7 @@ public class AppletInfo {
     }
     
     public URL []getClassLoaderURLs() {
+        archiveStr = getParameter("ARCHIVE");
     	URL []res = (archive == null && archiveStr == null)?new URL[1]:new URL[2];
     	switch (res.length) {
     		case 2: res[1] = getArchive();

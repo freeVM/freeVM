@@ -94,22 +94,13 @@ class HTMLParser {
                 appletInfo.setDocumentBase(documentBase);
        
                 SimpleAttributeSet attributes = getAttributes();
-                appletInfo.setWidth((String)attributes.getAttribute(HTML.Attribute.WIDTH));
-                appletInfo.setHeight((String)attributes.getAttribute(HTML.Attribute.HEIGHT));
 
-                appletInfo.setArchive((String)attributes.getAttribute(HTML.Attribute.ARCHIVE));
+                appletInfo.setParameter("WIDTH", (String)attributes.getAttribute(HTML.Attribute.WIDTH)); 
+                appletInfo.setParameter("HEIGHT", (String)attributes.getAttribute(HTML.Attribute.HEIGHT));
+                appletInfo.setParameter("CODE", (String)attributes.getAttribute(HTML.Attribute.CODE));
+                appletInfo.setParameter("CODEBASE", (String)attributes.getAttribute(HTML.Attribute.CODEBASE));
+                appletInfo.setParameter("ARCHIVE", (String)attributes.getAttribute(HTML.Attribute.ARCHIVE));
 
-                try {
-                    appletInfo.setCode((String)attributes.getAttribute(HTML.Attribute.CODE));
-                } catch (Exception e) {}
-
-                if (htmlTag == HTML.Tag.APPLET) {
-                    try {
-                        appletInfo.setCodeBase((String)attributes.getAttribute(HTML.Attribute.CODEBASE));
-                    } catch (Exception e) {
-                        appletInfo.setCodeBase((URL)null);
-                    }
-                }
             }           
         }
 
@@ -125,13 +116,10 @@ class HTMLParser {
             HTML.Tag htmlTag = tag.getHTMLTag();
             if (appletInfo != null && htmlTag == HTML.Tag.PARAM) {
                 SimpleAttributeSet attributes = getAttributes();
-                String name = (String)attributes.getAttribute(HTML.Attribute.NAME);
-                if(name.equalsIgnoreCase("code")){
-                    appletInfo.setCode((String)attributes.getAttribute(HTML.Attribute.VALUE));
-                } else {
-                    appletInfo.setParameter(name, (String)attributes.getAttribute(HTML.Attribute.VALUE));
-                }
+                appletInfo.setParameter((String)attributes.getAttribute(HTML.Attribute.NAME), 
+                    (String)attributes.getAttribute(HTML.Attribute.VALUE));
             }
+
         }
     }
 }

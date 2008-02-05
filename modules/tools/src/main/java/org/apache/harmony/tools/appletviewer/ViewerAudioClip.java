@@ -37,9 +37,7 @@ class ViewerAudioClip implements AudioClip {
         try {
             ais = AudioSystem.getAudioInputStream(url);
         } catch (Exception e) {
-            System.out.println(url.toString());
             e.printStackTrace();
-            ais = null;
             return;
         }
         af = ais.getFormat();
