@@ -186,19 +186,19 @@ sub get_result {
                                 \<td\>\s*([0-9]+)\s*\<\/td\>\s*         #Sudden Failures -> $1
                                 \<td\>\s*([0-9]+)\s*\<\/td\>\s*         #Sudden Errors   -> $2
                                 \<td\>\s*([0-9]+)\s*\<\/td\>\s*         #Sudden Crashes  -> $3
-                                \<td\>\s*[0-9]+\.[0-9]+\%\s*\<\/td\>    #Success rate
+                                \<td\>\s*[0-9]+(\.[0-9]+)?\%\s*\<\/td\> #Success rate
                                 .*?                                     #Skip the data between 2 tables
-                                \<td\>\s*([0-9]+)\s*\<\/td\>\s*         #Tests           -> $4
+                                \<td\>\s*([0-9]+)\s*\<\/td\>\s*         #Tests           -> $5
                                 \<td\>\s*[0-9]+\s*\<\/td\>\s*           #Sudden Failures 
                                 \<td\>\s*[0-9]+\s*\<\/td\>\s*           #Sudden Errors
                                 \<td\>\s*[0-9]+\s*\<\/td\>\s*           #Sudden Crashes
-                                \<td\>\s*([0-9]+\.[0-9]+)\%\s*\<\/td\>  #Success rate    -> $5
+                                \<td\>\s*([0-9]+(\.[0-9]+)?)\%\s*\<\/td\>  #Success rate    -> $6
                                /xigsm) {
 
                     #gathered new data 
                     $data_updated = 1;
 
-                    $result_data = "$5% ($4)";
+                    $result_data = "$6% ($5)";
                     $failures = $1 + $2 + $3;
                     $result_text =~ s/\{RESULT\}/$result_data/g;
                     if ($failures > 0) {
