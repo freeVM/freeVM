@@ -21,28 +21,18 @@
 <project name="tptp" default="run" basedir=".">
 
     <!--- Define used properties -->    
-    <property environment="env"/>
-    <property name="work.dir"        value="${checkouts.dir}/${suite.name}"/> 
-    <property name="tests.dir"       value="${test.sources.dir}/${suite.name}"/>
+    <property name="work.dir"        value="${checkouts.dir}/tptp"/> 
     <property name="tests.module"    value="${tptp.parameters.optional.tptp.tests.module}"/>
     <property name="tptp.results"    value="${results.dir}/${suite.name}"/>
     <property name="tptp.report"     value="${tptp.results}/tptp_report"/>      
     <property name="tptp.failed.zip" value="${tptp.results}/FailedTests.zip"/>      
-
-    <!-- Setup of the TPTP profiler test suite -->
-    <target name="setup">
-        <log message="============= Adaptor for ${suite.name}.  Set Up .."/>
-
-        <!-- update suite resources from SVN -->
-        <svn-update-bt path="${tests.dir}"/>
-    </target>
 
     <!-- Run the TPTP profiler test suite -->
     <target name="run" description="Run TPTP profiler tests."> 
         <log message="============= Adaptor for ${suite.name}. Run .."/>
 
         <!-- make the dir to store built tests -->
-        <delete dir="${work.dir}"/>
+        <delete dir="${work.dir}/${tests.module}"/>
         <mkdir dir="${work.dir}/${tests.module}"/>
 
         <!-- Copy tests from build to build/checkouts/tptp -->
@@ -50,16 +40,8 @@
             <fileset dir="${tptp.tests.build.home}/${tests.module}"/>
         </copy>        
 
-        <!-- Copy additional files from tests/tptp to build/checkouts/tptp -->
-        <copy todir="${work.dir}" file="${tests.dir}/build.xml"/>
-        <copy todir="${work.dir}" file="${tests.dir}/testsCount.java"/>
-        <copy todir="${work.dir}" file="${tests.dir}/updateExclude.java"/>
-        <copy todir="${work.dir}" file="${tests.dir}/updateResults.java"/>
-        <copy todir="${work.dir}" file="${tests.dir}/report.xsl"/>
-        <copy todir="${work.dir}" file="${tests.dir}/test.xsl"/>
-
         <!-- Copy exclude list file for updating suite's config -->
-        <copy todir="${tptp.results}" file="${tests.dir}/${tptp.parameters.optional.exclude.list}"/>
+        <copy todir="${tptp.results}" file="${work.dir}/${tptp.parameters.optional.exclude.list}"/>
 
         <!-- Remember start time -->
         <tstamp>

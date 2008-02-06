@@ -29,6 +29,10 @@
             value=""/>
     </required>                 
 
+    <svn>
+      <tptp url="tests/tptp"/>
+    </svn>
+
     <optional>
         <tested.vm.options
             description="JVM options for tested runtime"
