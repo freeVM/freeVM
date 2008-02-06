@@ -20,8 +20,7 @@
      ====================================================================== -->
 <project name="reliability" default="run" basedir=".">
 
-    <property name="tests.dir"  location="${test.sources.dir}/${suite.name}"/>
-    <property name="work.dir"   location="${checkouts.dir}/${suite.name}"/>
+    <property name="tests.dir"  location="${checkouts.dir}/reliability"/>
     <property name="report.dir" location="${results.dir}/${suite.name}"/>
 
     <!-- Set up the test suite:
@@ -32,9 +31,6 @@
     <target name="setup">
         <log message="============= Adaptor for ${suite.name}: Set Up .."/>
 
-        <!-- update suite sources -->
-        <svn-update-bt path="${tests.dir}"/>
-
         <condition property="serialize.jar.not.exist">
             <not>
                 <available file="${ext.cc.location}/lib/serializer-2.7.0.jar"/>
@@ -44,10 +40,7 @@
         <fail message="Required serialize.jar does not exists in ${ext.cc.location}/lib"
               if="serialize.jar.not.exist"/>
 
-        <exec-ant dir="${tests.dir}"
-                  targets="build">
-            <sysproperty key="target.dir" value="${work.dir}"/>
-        </exec-ant>
+        <exec-ant dir="${tests.dir}" targets="build" />
     </target>
 
     <!-- Run test suite -->
@@ -68,9 +61,7 @@
                   targets="run">
             <sysproperty key="jvm.under.test"   value="${jvm.under.test}"/>
             <sysproperty key="jvm.args"         value="${reliability.parameters.optional.tested.vm.options}"/>
-            <sysproperty key="work.dir"         value="${work.dir}/temp"/>
             <sysproperty key="report.dir"       value="${report.dir}/${time.stamp}"/>
-            <sysproperty key="test.classes.dir" value="${work.dir}/classes"/>
             <sysproperty key="properties.file"  value="${scripts.dir}/properties.xml"/>
         </exec-ant>
 

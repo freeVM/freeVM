@@ -23,6 +23,10 @@
             value="${drlvm.parameters.shared.jvm.location}"/>
     </required>
 
+    <svn>
+      <reliability url="tests/reliability"/>
+    </svn>
+
     <optional>
         <tested.vm.options
             description="JVM options for tested runtime"
