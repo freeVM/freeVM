@@ -31,7 +31,6 @@ require HTTP::Request;
                "tomcat-scenario" => "Tomcat scenario",
                "stress"          => "Stress Test Suite",
                "reliability"     => "Reliability Test Suite",
-               "jedit_test"      => "JEdit scenario",
                "ega"             => "Eclipse Geronimo Application (EGA) scenario x 48h",
                "drlvm-test"      => "DRLVM tests",
                "drlvm-reg-test"  => "DRLVM regression tests",
