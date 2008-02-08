@@ -246,6 +246,16 @@
         <equals arg1="${shlib.suffix}" arg2="${linklib.suffix}"/>
     </condition>
 
+    <condition property="lib.prefix" value="">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="lib.prefix" value="lib" />
+
+    <condition property="lib.suffix" value=".lib">
+        <isset property="is.windows"/>
+    </condition>
+    <property name="lib.suffix" value=".a" />
+
     <property name="manifest.suffix" value=".manifest" />
 
     <condition property="make.command" value="nmake.exe">
