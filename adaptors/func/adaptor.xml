@@ -26,7 +26,7 @@
 
     <property name="jasmin.jar"     value="${ext.jasmin_1.1.location}/jasmin.jar"/>
 
-    <property name="func.root.dir" location="${test.sources.dir}/functional"/>
+    <property name="func.root.dir" location="${checkouts.dir}/functional" />
     <property name="func.make.dir" location="${func.root.dir}"/>
     <available file="${func.bin.dir}/setup.OK" property="setup.OK"/>
 
@@ -38,7 +38,6 @@
 
     <!-- do setup of func suite -->
     <target name="setup" unless="setup.OK">
-        <svn-update-bt path="${test.sources.dir}/functional"/>
         <call-func target="fetch-depends"/>
         <antcall target="setup-tools"/>
 
@@ -57,12 +56,11 @@
     </target>
 
     <target name="setup-tools">
-        <svn-update-bt path="${test.sources.dir}/tools"/>
-        <ant dir="${test.sources.dir}/tools/harness"/>
-        <copy file="${test.sources.dir}/tools/th.dest/bin/th.jar"
+        <ant dir="${checkouts.dir}/tools/harness"/>
+        <copy file="${checkouts.dir}/tools/th.dest/bin/th.jar"
               todir="${func.depends.dir}" failonerror="false" />
-        <ant dir="${test.sources.dir}/tools/vmtt"/>
-        <copy file="${test.sources.dir}/tools/vmtt.dest/bin/vmtt.jar"
+        <ant dir="${checkouts.dir}/tools/vmtt"/>
+        <copy file="${checkouts.dir}/tools/vmtt.dest/bin/vmtt.jar"
               todir="${func.depends.dir}" failonerror="false"/>
     </target>
 

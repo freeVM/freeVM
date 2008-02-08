@@ -52,6 +52,11 @@
         />
     </external>
 
+    <svn>
+      <functional url="tests/functional"/>
+      <tools      url="tests/tools"/>
+    </svn>
+
     <cc results="${func.results.dir}" attachs="${run.log}"/>
 
 </parameters>
