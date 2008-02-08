@@ -24,7 +24,7 @@
             value="${drlvm.parameters.shared.trunk.dir}" />
         <common.resources description="Path to shared pool" 
             value="${built.drlvm.trunk}/../common_resources"
-            url="http://svn.apache.org/repos/asf/harmony/enhanced/common_resources"/>
+            url="http://svn.apache.org/repos/asf/harmony/enhanced/common_resources/trunk"/>
         <drlvm.config
             description="The built drlvm configuration (debug/release)"
             value="${drlvm.parameters.shared.build.config}"/>
