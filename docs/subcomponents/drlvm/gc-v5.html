@@ -1,0 +1,818 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+                                                    <meta name="author" value="Harmony Documentation Team">
+            <meta name="email" value="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Generational Garbage Collector v5</title>
+
+                        
+                        
+        <link rel="stylesheet" type="text/css" href="../../css/site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../../css/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../css/print.css" media="print" />
+
+                        
+        </head>
+
+        <body>
+            <div id="pageHeader">
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="../../images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement -->
+            <a href="http://eu.apachecon.com">
+                <img id="advertisement"
+                     src="http://eu.apachecon.com/eu2008/images/buttons/basic_234x60.jpg"
+                     width="234" height="60"
+                     alt="ApacheCon Europe 2008" /></a>
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../license.html">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../download.cgi">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../sitemap.html">Sitemap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../hdk.html">HDK</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Foundation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/sponsorship.html ">Sponsorship</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/thanks.html ">Thanks</a>
+</li>
+           
+                        
+        
+        </ul>
+                </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                
+                                                    <div>
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<link rel="stylesheet" type="text/css" href="site.css" />
+<title>Generational Garbage Collector</title>
+</head>
+<body >
+<h1>GCv5 Component Description</h1>
+
+  <p><a href="#RevisionHistory">Revision History</a></p>
+<ol>  
+   <li><a href="#about_this_document">About This Document</a>
+      <ol>
+        <li><a href="#purpose">Purpose</a></li>
+        <li><a href="#Intended_Audience">Intended Audience</a></li>
+        <li><a href="#Documentation_Conventions">Documentation Conventions</a></li>
+        <li><a href="#terminology">Terminology</a></li>
+      </ol>
+  </li>
+  <li><a href="#Overview">Overview</a>
+      <ol>
+        <li><a href="#Background">Background</a></li>
+        <li><a href="#Key_Feature">Key Features</a></li>
+      </ol>
+  </li>
+  <li><a href="#architecture">Architecture</a>
+    <ol>
+      <li><a href="#heap_partitioning">Heap Partitioning</a></li>
+      <li><a href="#Adaptation_Techniques">Run-time Adaptations</a>
+        <ol>
+          <li><a href="#switch_major_minor">Switch between major and minor collection
+          modes</a></li>
+          <li><a href="#switch_gen_nongen">Switch between generational and non-generational
+          modes</a></li>
+          <li><a href="#adjust_space_size">Dynamically adjust space size for best
+          heap utilization</a></li>
+        </ol>
+      </li>
+      <li><a href="#_Object_references">Object References</a></li>
+      <li><a href="#code_overview">Code Overview</a></li>
+    </ol>
+  </li>
+  <li><a href="#Processes">Processes</a>
+    <ol>
+      <li><a href="#memory_allocation">Memory Allocation</a>
+        <ol>
+          <li><a href="#mutator_allocation">Mutator allocation</a></li>
+          <li><a href="#collector_allocation">Collector allocation</a></li>
+        </ol>
+      </li>
+      <li><a href="#RSE">Root Set Enumeration</a></li>
+      <li><a href="#GC">Garbage Collection</a>
+        <ol>
+          <li><a href="#minor_collection">Minor collection - trace-forward algorithm</a></li>
+          <li><a href="#major_collection">Major collection - compaction algorithms</a></li>
+          <li>Fallback</li>
+        </ol>
+      </li>
+      <li><a href="#parallel_load_balance">Parallel Load Balance: Pool Sharing</a></li>
+      <li><a href="#finalizer_subsystem_support">Finalizer Subsystem Support</a>
+        <ol>
+          <li><a href="#finalizer_subsystem">Finalizer subsystem</a></li>
+          <li><a href="#fin_process">Finalization process</a></li>
+          <li><a href="#fin_load_balance">Finalization load balance</a></li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+  <li><a href="#public_interface">Public Interface</a></li>
+  <li><a href="#references">References</a></li>
+</ol>
+<h1> <a id="RevisionHistory" name="RevisionHistory"></a>Revision History </h1>
+<table border="0" cellpadding="0" width="100%">
+  <tr>
+    <th class="TableHeading"> Version </th>
+    <th class="TableHeading"> Version Information </th>
+    <th class="TableHeading"> Date </th>
+  </tr>
+  <tr>
+    <td class="TableCell"> Initial version </td>
+    <td class="TableCell"> Nadya Morozova, Xiao Feng Li: document created. </td>
+    <td class="TableCell"> January 2008</td>
+  </tr>
+</table>
+<h1> <a
+name="about_this_document"></a>1. About This Document</h1>
+<h2><a name="purpose"></a>1.1           Purpose</h2>
+<p>This document introduces the <em>generational garbage collector</em> (a.k.a GC version
+  5, GCv5) component delivered as part of the DRL (Dynamic Runtime Layer) initiative.
+  This document focuses on the specifics of the current implementation showing the
+  garbage collector role inside the DRL virtual machine, and the internal organization
+  of the garbage collection subsystem. This document uses the <a
+href="../../../../H-3886/docs/documentation/conventions.html">unified conventions</a> for
+  the DRL documentation kit.</p>
+<h2> <a id="Intended_Audience" name="Intended_Audience"></a>1.2 Intended Audience </h2>
+<p> The target audience for the document includes
+  a wide community of engineers interested in further work with garbage collecting
+  technology to contribute to its development. The document assumes that readers
+  are familiar with DRLVM architecture basics, garbage collection methodologies and
+structures.</p>
+<h2> <a id="Documentation_Conventions"
+         name="Documentation_Conventions"></a>1.3 Documentation Conventions </h2>
+<p> This document uses the <a href="../../documentation/conventions.html"> unified
+    conventions</a> for the DRL documentation kit. </p>
+<h2><a name="terminology" id="terminology"></a>1.4           Terminology</h2>
+<p>The document uses a number of key terms related to memory management, as follows:</p>
+<ul>
+<li><b>Heap</b> - the memory where
+  Java objects are allocated and stay.</li>
+<li><b>Memory manager</b> - a low-level
+  component in the runtime system responsible for managing the memory used by the
+  system. <br>
+  The memory manager interacts with the underlying platform, especially the native
+  memory, and provides a unified interface to the system components for memory usage. </li>
+<li><b>Garbage collector </b> -
+  a higher-level a component in the runtime system responsible for automatic memory
+  management. <br>
+  The garbage collector performs new object allocation and dead object reclamation,
+  and may also improve object access locality by re-arranging the live object layout
+  in the heap. This role is increasingly important along with the evolution of modern
+  platforms. </li>
+<li><b>Space</b> - a part of the
+  heap managed separately. </li>
+<li><b>Collector</b> - the thread
+  that conducts garbage collection on the heap. <br>
+  A parallel GC can have multiple collectors running collaboratively.</li>
+<li><b>Mutator</b> - the thread
+  that executes on behalf of the user application, such as a Java* thread. <br>
+  A VM internal thread, such as finalizing thread, can also be treated as a mutator,
+  because it executes Java object finalizers.</li>
+<li><b>Minor collection</b> - the
+  collection working with only a part of the heap, usually containing the space for
+  the newly allocated objects.</li>
+<li><b>Major collection</b> - the
+  collection that covers the whole heap.</li>
+</ul>
+<h1><a
+name="Overview"></a>2.   Overview</h1>
+<p>Usually, a runtime system has a memory manager for all memory-related functionality,
+  and the memory manager can host multiple garbage collectors on top of it. The current
+  Harmony DRL virtual machine has no separate memory manager module (under design),
+  and two functional garbage collector modules. GCv5 is current Harmony default GC.
+  This document describes GCv5 only.</p>
+<h2><a
+name="Background"></a>2.1           Background:
+    GC History</h2>
+<p>So far, Harmony DRLVM has delivered three independent stop-the-world garbage collectors:</p>
+<ul>
+  <li><b>GCv4</b> is a sequential non-generational mark-compaction collector based
+    on the LISP2 compactor algorithm [<a href="#abuaiadh">3</a>][<a href="#knut">4</a>]. This is a legacy collector and no longer
+    maintained, though the code base is still kept in Harmony source tree for reference.</li>
+  <li><b>GCv4.1</b> (a.k.a gc_cc) is a sequential non-generational copying collector
+    with a compaction fall-back, based on the threaded reference algorithm [<a href="#_jonkers">1</a>][<a href="#morris">2</a>]. </li>
+  <li><b>GCv5</b> is a fully parallel collector that can work in generational and
+    non-generational modes. GCv5 achieves good scalability on shared-memory machines
+    that have multiple processors or multiple cores. </li>
+</ul>
+<p> Two more completely new collectors are under development. Working parts of their
+code are already in Apache Harmony code base. </p>
+<ul>
+  <li><strong> GCv6 </strong> improves the collection performance over GCv5 for many
+    workloads. It employs a semi-space algorithm for minor collection, and a compact
+    algorithm as fallback or major collection. <strong></strong></li>
+  <li><strong> Tick </strong> is a concurrent collector kit implementing several
+    concurrent GC algorithms , including mostly-concurrent GC, DLG-based on-the-fly
+    GC, and sliding-view on-the-fly GC.<strong></strong></li>
+</ul>
+<h2><a
+name="key_features"></a>2.2           Key
+    Features</h2>
+<p>GCv5 possesses the following key features:</p>
+<ul>
+  <li><b>Pluggability</b>: The collector is fully pluggable into DRLVM architecture
+    and interacts with the VM via the standardized <a
+ href="http://harmony.apache.org/subcomponents/drlvm/doxygen/vmcore/html/vm__gc_8h.html">VM-GC
+    interface</a>. You can create and plug in another collector instead of this garbage
+    collector by following instructions of the <a
+ href="gc-howto.html">How To Write
+    GC</a> document.</li>
+  <li><b>Modularity: </b></li>
+  <ul >
+    <li><b>Threading</b>: GCv5 has an abstraction on threads: the <b>Allocator</b> superclass
+      with collectors and mutators as subclasses. They both allocate memory: the
+      mutator - for new objects, and the collector - for object copying. At the same
+      time, GCv5 does not use mutator�s context for collection, that is, mutators
+      and collectors are independent thread entities. This design separates the contexts
+      of allocation and collection, which simplifies transitions between allocation
+      and collection.</li>
+    <li><b>Space management</b>: GCv5 has an abstraction on space: each space related
+      to a collection algorithm. For example, Fspace is the space managed with the
+      copying algorithm. In this way, a GC is only a combination of multiple spaces,
+      or it is a collaborator of multiple collection algorithms over the heap. This
+      design separates the collection algorithm from GC construction, which simplifies
+      the construction of a new GC based on the existing collection algorithms.</li>
+  </ul>
+  <li><b>Flexibility</b>: GCv5 can adjust dynamically at run time depending on workload
+    behavior, see <a href="#Adaptation_Techniques">Adaptation Techniques</a>. Examples
+    of such runtime adjustment are:</li>
+  <ul >
+    <li>Triggering a minor or a major collection for best performance</li>
+    <li>Adjusting the size of spaces depending on the characteristics of allocated
+      objects</li>
+    <li>Dynamically switching between generational and non-generational collections</li>
+  </ul>
+  <li><b>Scalability</b>: GCv5 is a fully parallel GC with major garbage collection
+    phases parallelized. GCv5 uses new load-balance mechanisms and parallel collection
+    techniques. This garbage collector can achieve very good scalability on shared
+    memory platforms that have no more than 8 processors or cores. </li>
+  <li><b>Platform support</b>: GCv5 is primarily as a 32-bit component with 64-bit
+    support enabled via the compressed reference technique, where a 64-bit pointer
+    can be represented in 32 bits. See <a
+ href="#_Object_references">Object references</a> for more details. The collector
+    runs on Windows and on Linux.</li>
+</ul>
+<h1><a
+name="architecture"></a>3.   Architecture</h1>
+<h2><a
+name="heap_partitioning"></a>3.1 Heap Partitioning</h2>
+<p>In GCv5, all spaces are inherited from a common <code>Space</code> class. <i>Blocked space</i> is
+  a space type <code>Blocked_Space</code> where the space is arranged in fixed-size blocks. Another
+  derived structure of Space is <code>Lspace</code>, which consists of alternate-sized blocks.
+  Currently, the space is continuous and the blocked space assumes the blocks are
+  contiguous. In future, this assumption may be removed. </p>
+<p>Division of the heap into spaces relies on the size of allocated objects: <i>normal
+    objects</i> are of size equal to or smaller than a threshold (called the large
+    object size threshold), and <i>large objects</i> are of size greater than the
+    threshold. Based on that, the default GCv5 configuration partitions the heap
+    space into three basic parts:</p>
+<ul>
+  <li>Nursery object space (NOS) is used for normal object allocation. </li>
+  <li>Mature object space (MOS) is used for allocation of NOS survivor objects: in
+    a minor collection, live objects in NOS are copied to MOS free area.</li>
+  <li>Large object space (LOS) used for large object allocation.</li>
+</ul>
+<p>The
+boundaries between the spaces are automatically adjustable by GC according to the
+space, utilizations; see Figure 1.
+</p>
+<h3>Figure 1: Heap Partitioning</h3>
+<p><img src="images/heap_partitioning.gif"></p>
+<h2><a name="Adaptation_Techniques"></a>3.2           Run-time
+  Adaptations</h2>
+<p>Adaptation of the garbage collection process at run time is essential for good
+  GC performance. GCv5 supports the following runtime automatic adaptations:</p>
+<h3><a
+name="switch_major_minor"></a>3.2.1        Switch between major
+  and minor collections modes</h3>
+<p>The minor collection is significantly faster than the major collection, but the
+  major collection frees more space. GCv5 switches between the two kinds of collections
+  with a throughput-driven heuristic algorithm. Roughly speaking, a major collection
+  will be triggered when MOS is approximately half-filled.</p>
+<p class="note"><b>Note</b></p>
+<p class="notetext">Users can specify the major collection type in command line, so that
+  all collections are full-heap collections.</p>
+<h3><a
+name="switch_gen_nongen"></a>3.2.2        Switch between
+  generational and non-generational modes</h3>
+<p>In the non-generational mode, a minor collection traces the entire heap from the
+  root set for live-object marking, and in the generational mode, only NOS is traced
+  from both remember set and root set. In the latter case, the GC does not trace
+  the whole heap, but can retain lots of floating garbage. GCv5 can dynamically switch
+  between generational and non-generational modes so as to leverage both advantages.</p>
+<p class="note"><b>Note</b></p>
+<p class="notetext">This adaptation is turned off by default because the performance
+  depends on the workload's behavior. </p>
+<h3><a
+name="adjust_space_size"></a>3.2.3        Dynamically
+    adjust space size for best heap utilization</h3>
+<p>Based on the survive ratios and allocation speeds of the spaces, GCv5 reserves
+  only adequate MOS free space for the NOS minor collection, and tries to get MOS
+  and LOS equally full when a major collection happens. In other words, GC adjusts
+  <code>nos_boundary</code> after each collection, and <code>los_boundary</code> after a major collection,
+  if necessary.</p>
+<p class="note"><b>Note</b></p>
+<p class="notetext">If the MOS reserve space is not enough to hold NOS-survived objects,
+  the fall-back compaction happens.</p>
+<h2><a
+name="_Object_references"></a>3.3           Object
+    References </h2>
+<p>The JVM specification does not govern reference representation and leaves this
+  to the VM implementation. You can have 32-bit or 64-bit or hybrid reference representations
+  considering the cost-efficiency in space and time. For generic information on object
+  references, including compressed references for 64-bit platform support, please
+  refer to the developer's guide.</p>
+<p>GCv5 defines the REF type for an object reference, and does not take into account
+  the layout or physical meaning of a <code>REF</code> value. When the collector accesses a reference,
+  it always calls <code>ref_to_obj_ptr()</code> to convert the <code>REF</code> value to a real address pointer.
+  Conversely, the collector needs to <code>call obj_ptr_to_ref()</code> to encode an address into
+  a reference. The encoding rule is set by the implementation of this function depending
+  on the platform: on a 32-bit platform, this function can return the same value
+  untouched, and on a 64-bit platform, it can use the �compressed reference� technique
+  to encode/decode <code>REF</code> into an object pointer. </p>
+<p>A &quot;<em>compressed reference</em>&quot; is a form of object reference representation,
+  where the runtime environment uses a 32-bit value for object reference representation.
+  The real address is the sum of the 32-bit value and a heap base address value,
+  and the compressed value of this heap base address is zero. To distinguish this
+  zero value from the NULL reference, the GC avoids having the zero value by setting
+  the heap base address several bytes lower than the real heap start address. </p>
+<p>All reference fields are encoded in the 32-bit compressed mode, and we also use
+  32-bit compressed mode to encode the vtable field in the object header. Because
+  the <code>obj_info</code> field is kept 32-bit on both platforms, the total object header overhead
+  remains two 32-bit words (or one 64-bit word). </p>
+<h2><a
+name="code_overview"></a>3.4        Code Overview</h2>
+<p>The GC v5 source tree under the <code>working_vm/vm/gc_gen</code> main directory has the following
+  structure:</p>
+<ul>
+  <li><code>src</code> - the GCv5 implementation main body written in pure C language; consists
+    of C source and header files using .cpp suffices. These files have not been tested
+    with a C compiler. </li>
+  <li><code>common</code> - common GC routines and definitions; </li>
+  <li><code>trace_forward</code> - copying collection algorithms;</li>
+  <li><code>mark_compaction</code> - compacting collection algorithms; </li>
+  <li><code>los</code> - the mark-sweep collection only for large objects;</li>
+  <li><code>mark_sweep</code> - the mark-sweep collection algorithm for both normal and large
+    objects, which is under development and not included in the GCv5 default setting;</li>
+  <li><code>thread</code> - threading functionalities, including mutator and collector; </li>
+  <li><code>utils</code> - common data structures or routines, not specific for GC; </li>
+  <li><code>gen</code> - generational collection control; </li>
+  <li><code>finalizer_weakref</code> - GC support for finalizer and weak references;</li>
+  <li><code>verify</code> - correctness verification routines for memory management operations; </li>
+  <li><code>jni</code> - support routines for GC Java* helpers in the javasrc directory; </li>
+  <li><code>javasrc</code> - the Java* source code used by JIT to inline the fast path of frequent
+    GC operations</li>
+</ul>
+<p class="note"><b>Note</b></p>
+<p class="notetext">Because inlining of GC helpers is only conducted for the server mode of Harmony,
+  the javasrc directory can be skipped initially by GC developers, and more explanation
+  will be given later. </p>
+<p>The source tree structure may change according to changes in a collector kit framework. </p>
+<h1><a
+name="Processes"></a>4.   Processes</h1>
+<h2><a
+name="memory_allocation"></a>4.1           Memory
+    allocation</h2>
+<p>GCv5 has 2 types of allocation: mutator allocation for the needs of mutator threads,
+  and collector allocation only for trace-forward algorithm during collection.</p>
+<h3><a
+name="mutator_allocation"></a>4.1.1   Mutator allocation</h3>
+<p>According to the requested size, memory is allocated in different spaces. If the
+  object is larger than the large object size threshold, it is allocated in LOS;
+  otherwise, it is called a normal size object and is allocated in NOS.</p>
+<p>For higher parallelism and better locality, each mutator is associated with a
+  local block of space. If the requested object is a normal size object, it is allocated
+  in this local block directly. When spaces in the local block runs out, the mutator
+  gets the next free block in NOS.</p>
+<h3><a
+name="collector_allocation"></a>4.1.2   Collector allocation</h3>
+<p>During minor collections, live objects in NOS are copied to MOS. Allocation in
+  MOS uses the same interface as allocation in NOS, except that the large object
+  threshold is not checked.</p>
+<h2><a
+name="RSE"></a>4.2           Root
+    set enumeration</h2>
+<p>In tracing garbage collection, a <i>root</i> is a reference to an object that
+  is a priori reachable. Roots basically comprise the references in the state of
+  the mutator. Typical roots are global variables, other static data, and the control
+  stack. The <i>root set</i> is the collection of roots when GC is invoked. The root
+  set is used as the starting point in determining all reachable data. The enumeration
+  process is to gather all roots into the root set.</p>
+<p>In DRLVM, the enumeration process is a part of VM core rather than of a GC, and
+  is identical for all collectors.</p>
+<p>Before root set enumeration, the mutator, which invokes GC, tries to suspend all
+  mutators one by one expect itself. Only when a mutator is suspended, its state
+  is invariable and thus ready for root set enumeration and subsequent garbage collection.
+  After all mutators are suspended, the mutator, which invokes GC, finds all roots
+  of each mutator and all global variables to compose the root set.</p>
+<h2><a
+name="GC"></a>4.3           Garbage
+    collection</h2>
+<p><a
+name="_Generational/non_generational"></a>GCv5 has two types of garbage collections: </p>
+<ul>
+  <li><i>Minor collection</i> collects only NOS, which holds all newly allocated
+    normal-size objects in the last GC cycle. In this collection, all live objects
+    in NOS are traced and forwarded into MOS. After a minor collection, NOS becomes
+    a continuous free area ready for allocation.</li>
+  <li><i>Major collection</i> considers MOS and NOS a single virtually continuous
+    space and compacts all live objects in this space to the lower end of it. After
+    this collection, this space consists of a continuous live data area and a continuous
+    free area. The NOS boundary is reset to a new address according to the live ratio
+    of objects in NOS, so that both MOS and NOS get reasonable free spaces to maximize
+    performance. The major collection also collects LOS with the mark-sweep algorithm.</li>
+</ul>
+<p>The minor collection is expected to produce a better throughput (relation of the
+  free memory space to GC time), because it only collects NOS, and objects in NOS
+  tend to become unused sooner than those in MOS, which are copied from NOS in minor
+  collections. This way, the minor collection takes significantly less time than
+  the major collection and is invoked in most GC cases. Only when the throughput
+  of the minor collection is equal to that of the major collection, or when MOS has
+  run out of free space, a major collection is invoked.</p>
+<h3><a
+name="minor_collection"></a>4.3.1   Minor collection --- trace-forward algorithm</h3>
+<p>Based on whether MOS and LOS are traced, the minor collection has two modes, which
+  can be specified on the command line or adapted at run time.</p>
+<dl>
+<dt>Non-Generational mode</dt>
+<dd>Collectors trace all objects in the whole heap in the depth-first order.
+<br/>When tracing an object for the first time, the collector copies that object into
+  MOS and stores the forwarding pointer (the new address in MOS) in the object header
+  of the original object. When the GC finds that an object is forwarded, the reference
+  pointing to that object is updated by collectors.
+<br/>After all objects in NOS are copied into MOS, the collection is over and NOS is
+  ready for the following mutator allocation.</dd>
+<dt>Generational mode </dt>
+<dd>Rather than tracing all objects in the heap, collectors trace only objects in
+  NOS. Objects in MOS and LOS are ignored and considered live objects. In this case,
+  the GC must store the references from non-NOS to NOS, the set of which is called
+  the remember set (the rem set). The rem set is considered a part of the root set
+  when tracing live objects.
+<br/>Except for the above, the generational trace-forward collection is identical in
+  tracing and copying.</dd>
+<dt>Selecting generational mode or non-generational mode</dt>
+<dd>The generational mode is preferred over the non-generational mode if: 
+<ul>
+	<li>The application behavior matches the generational hypothesis</li>
+	<li>The overhead for the non-generational mode mark-scan is too high</li>
+ </ul>	<p>The hybrid mode results in better performance than either generational or non-generational
+  mode. The real performance depends on workloads.</p>
+ </dd>
+</dl>
+<h3><a
+name="major_collection"></a>4.3.2   Major collection --- Compaction algorithms</h3>
+<p>GCv5 uses two compaction algorithms in the major collection: the parallel LISP2-based
+  sliding compactor and the two-pass parallel move-compactor.</p>
+<dl>
+<dt>Parallel LISP2-based sliding compactor</dt>
+<dd>
+<p>This compactor is composed of three
+    main phases:</p>
+<ol>
+  <li><i>Target-address computing</i></a>:
+    compute target addresses for all live objects in the heap and, usually, install
+    a forwarding pointer in the object header for each live object. The target address
+    of a live object is its new location after the compaction process.</li>
+  <li><i>Reference re-pointing</i>: traverse
+      the heap and re-point all object references in the heap to the target addresses
+      of the reference objects.</li>
+  <li><i>Object moving</i>: move the live
+      objects in order from one end of the heap through the other. When an object
+    is copied to its new location, the original data in this location has been copied
+      already, so that no data loss occurs.</li>
+</ol>
+<p>During the compaction process, each space block can act as the source from which
+  data is copied, and as the destination block where live data is copied to. The
+  key idea is that a list of source blocks is created for each destination block
+  during phase 1, and then each thread picks a source block from the list of blocks
+  for this destination block to copy live data from the source to the destination. </p>
+<p>All the phases can be executed by multiple threads in parallel, as long as there
+  is a barrier between two phases.</p>
+<p>It is proved that when an area in the destination block is acting as the destination
+  area, live objects in it must have been copied in phase 3. This guarantees that
+  the data unread by one thread cannot be overwritten by another thread.</p>
+<p>The following figure shows how collector threads compact live objects from source
+  blocks into destination blocks in phase 3.</p>
+  <p><strong>Figure 2: Collector threads compacting live objects </strong></p>
+  <p><img src="images/lisp2.gif"></p>
+</dd>
+<dt>2-pass parallel-move compactor</dt>
+<dd>
+<p>The parallel-move compactor has fewer passes than the parallel sliding compactor.
+  Its key idea is based on the parallel compaction algorithm defined at [<a href="#abuaiadh">3</a>], but
+  the parallelization scheme in GCv5 is different, and free spaces between live objects
+  in a sector are not compacted.</p>
+<p>This compactor is composed of two main phases:</p>
+<ol>
+  <li><i>Object moving</i>: move live data
+    from the source to the destination. Each collector gets a source block and a destination
+    block, as with the parallel sliding compactor. The source block is partitioned
+    into fixed-size sectors (currently, 256 bytes). In each sector, the area of unmarked
+    objects at the head and the end of this sector is considered free and will be squeezed
+    out. The area in the middle, with or without free areas, is considered to contain
+    live data and is moved to the destination block. During moving, collectors record
+    the offset of the new starting address of that live area into the sector offset
+    table in the block header.</li>
+  <li><i>Reference re-pointing</i>: use
+      the sector offset in the block header to get the new address of each live object,
+      and fix re-pointed references.</li>
+</ol>
+<p>The following figure shows how the move-compactor works.</p>
+<p><strong>Figure 3: Move Compactor</strong></p>
+<p><img src="images/move_compactor.gif"></p>
+</dd>  </dl>
+<p>Currently, GCv5 uses parallel-move compactor and parallel sliding compactor for
+  respective collection scenarios.</p>
+
+<h3><a
+name="Fallback"></a>4.3.3   Fallback</h3>
+<p>Before mutators run at the beginning of each GC cycle, a part of the continuous
+  free area in MOS and NOS is reserved for the free MOS area, and the rest is NOS.
+  Because the survive ratio of NOS in the next minor collection is unpredictable,
+  the free MOS area might be smaller than needed. In this case, MOS cannot accommodate
+  all live objects in NOS in the next minor collection, and the GC stops the minor
+  collection and launches a major collection, which is called <i>fallback</i> in
+  GCv5.</p>
+<p>For better modularity of GCv5, the fallback mechanism could be straightforward:
+  when collectors find that a fallback is needed, they give up the minor collection
+  and return to the main GC process. The GC launches a major collection and re-activates
+  the collectors. However, this kind of major collection is a little different from
+  the usual major collection, because some objects in NOS are copied into MOS and
+  some references pointing to them are not updated in the minor collection. The solution
+  is to update those stale references in the marking phase of the major collection.
+  Except for this, other collection phases are identical to the normal major collection.</p>
+<h2><a
+name="parallel_load_balance"></a>4.4           Parallel
+    Load Balance: pool sharing</h2>
+<p>GCv5 uses the pool-sharing algorithm to achieve parallel load balance for marking
+  and forwarding.</p>
+<p><strong>Figure 4: Pool Sharing</strong></p>
+<p><img src="images/pool_sharing.gif"> </p>
+<p>As the above figure shows, the task pool serves for the shared pool of task blocks.
+  Each task block is an array of references. Getting a task block from the pool or
+  putting it there is a synchronized operation. And one reference stands for one
+  task. </p>
+<p>While marking, a collector grabs a task block from the pool and takes references
+  one by one from the task block for tracing in the depth-first order. Child nodes
+  in the tracing tree are put to a local mark stack. When the mark stack is full,
+  the collector puts the full mark stack into the task pool as a task block, and
+  gets another empty stack to hold the child nodes. If the local stack is empty,
+  the collector takes another task from the task block. If all references in the
+  task block are traced, collector grabs another task block from the task pool to
+  trace. When the task pool is empty, tracing is done.</p>
+<h2><a
+name="finalizer_subsystem_support"></a>4.5           Finalizer
+    subsystem support</h2>
+<h3><a
+name="finalizer_subsystem"></a>4.5.1 Finalizer Subsystem</h3>
+<p>For a definition of the finalization system, please see the developer's guide.
+  The GCv5 finalizer subsystem includes support for weak references. Because the
+  finalizer and the weak reference are similar and closely related, they can be related
+  to as the finref subsystem interchangeably with the finalizer subsystem. </p>
+<h3><a name="fin_process"></a>4.5.2 Finalization Process</h3>
+<p> The finalization process includes the following major activities: </p>
+<ol>
+  <li><b>Recognize all the objects that have the finalizer</b>. This is done in the
+    mutator's context at the allocation time and it increases the allocation path
+    a bit. </li>
+  <li><b>Identify the finalizable objects</b>. Once the GC marking phase is finished
+    and all live objects are marked, the collector goes through the queue of objects
+    with finalizers and checks whether any objects are unreachable. Those unreachable
+    objects in the queue are finalizable objects, and passed to VM for finalization.
+    Before they are handed over to VM, the collector traces those objects to resurrect
+    all the recursively referenced objects from them. This is conducted in the collector's
+    context during garbage collection, and is specific for the GC implementation. </li>
+  <li><b>Finalize the finalizable objects</b>. VM has a couple of finalizer threads
+    sleeping and waiting for new finalization tasks. These finalizer threads are
+    native threads associated with Java thread objects, because they act as Java
+    threads when executing finalizers. When GC passes new finalizable objects to
+    VM, the finalizing threads wake up and start invoking the <code>finalize()</code> method of
+    those objects. This is conducted in the finalizer thread context, and is the
+    same for all GCs. </li>
+</ol>
+<h3><a name="fin_load_balance"></a>4.5.3 Finalization load balance</h3>
+<p>If a mutator keeps producing objects with finalizer, and the finalizers are not
+  able to be executed on time, the dead objects waiting for being finalized will
+  consume the heap space, and an out-of-memory exception occurs. Harmony produces
+  2 solutions:</p>
+<ol>
+  <li>Create more finalizing threads to
+      compete with the mutators for processor resources, and hopefully executing
+    more finalizers than generated by the mutators.</li>
+  <li>Block the guilty mutators until the
+      queue of finalizable objects are shortened by finalizing threads.</li>
+</ol>
+<p>GCv4.1 adopts the first solution, and GCv5 adopts the second solution.</p>
+<h1><a
+name="public_interface"></a>5.   Public GC Interface</h1>
+<p>This section describes the interface that the generational garbage collector exports
+  to communicate with other components. GCv5 exposes the standardized interface to
+  enable pluggability and covers all necessary interfaces to work as a part of the
+  run-time environment. </p>
+<h1><a name="references"></a>6. References</h1>
+<p><a
+name="_jonkers"></a>[1] H.B. M. Jonkers. <em>A fast garbage compaction
+  algorithm</em>. Information Processing Letters, July 1979</p>
+<p><a
+name="morris">[</a>2] F. L. Morris. <em>A time- and space-efficient
+  garbage compaction algorithm</em>. Communications of the ACM, 21(8):662-5 1978</p>
+<p><a name="abuaiadh"></a>[3] Diab Abuaiadh, Yoav Ossia, Erez Petrank, and Uri Silbershtein.   <a
+href="http://www.cs.technion.ac.il/~erez/Papers/parallel-compaction.ps" target="_blank"><em>An Efficient
+    Parallel Heap Compaction Algorithm</em></a>.  ACM Conference on Object-Oriented
+    Programming, Systems, Languages, and Applications  (OOPSLA'04), October
+    2004.</p>
+<p><a name="knut"></a>[4] Donald E. Knut, <em>Art of Computer Programming,
+Volume 1: Fundamental Algorithms</em> (3rd Edition), section 2.3.5</p>
+</body>
+</html>
+</div>
+                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special"><em>
+                Copyright &#169; 2003-2007, The Apache Software Foundation
+            </em></div>
+
+            <!-- Google analytics tracker code -->
+            <script
+                src="http://www.google-analytics.com/urchin.js"
+                type="text/javascript" />
+            <script type="text/javascript">
+              _uacct = "UA-1973333-3";
+              urchinTracker();
+            </script>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
