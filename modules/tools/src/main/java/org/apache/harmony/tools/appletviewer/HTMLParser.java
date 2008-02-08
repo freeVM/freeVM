@@ -69,7 +69,13 @@ class HTMLParser {
             this.list = list;
             
             // Open the stream
-            InputStreamReader isr = new InputStreamReader(documentBase.openStream());
+            InputStreamReader isr = null;
+            try{
+                isr = new InputStreamReader(documentBase.openStream());
+            } catch(IOException e){
+                System.err.println("I/O exception while reading: " + e.getMessage());
+                System.exit(-1);
+            }
             parse(isr);
     	}
 
@@ -98,8 +104,11 @@ class HTMLParser {
                 appletInfo.setParameter("WIDTH", (String)attributes.getAttribute(HTML.Attribute.WIDTH)); 
                 appletInfo.setParameter("HEIGHT", (String)attributes.getAttribute(HTML.Attribute.HEIGHT));
                 appletInfo.setParameter("CODE", (String)attributes.getAttribute(HTML.Attribute.CODE));
-                appletInfo.setParameter("CODEBASE", (String)attributes.getAttribute(HTML.Attribute.CODEBASE));
                 appletInfo.setParameter("ARCHIVE", (String)attributes.getAttribute(HTML.Attribute.ARCHIVE));
+
+                if (htmlTag != HTML.Tag.OBJECT) {
+                    appletInfo.setParameter("CODEBASE", (String)attributes.getAttribute(HTML.Attribute.CODEBASE));
+                }
 
             }           
         }
