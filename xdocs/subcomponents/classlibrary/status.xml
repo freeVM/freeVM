@@ -29,25 +29,20 @@
         <section name="Class Library Component Status">
 
             <p>
-                Stuart Ballard of the Kaffe project is generously creating automated coverage comparisons
-                of
-                <a href="http://www.kaffe.org/~stuart/japi/htmlout/h-jdk15-harmony.html">JDK 1.5</a>
-                and
-                <a href="http://www.kaffe.org/~stuart/japi/htmlout/h-jdk6-harmony.html">JDK 1.6</a>
-                against the
-                <a href="http://people.apache.org/builds/harmony/snapshots/">Harmony class library snapshots.</a>
+              Automated
+              <a href="http://people.apache.org/~smishura/latest-harmony-japi.html">API completeness reports</a>
+              of Harmony class library
+              <a href="http://people.apache.org/builds/harmony/snapshots/">snapshots</a>
+              against the JDK 1.5 are provided.
             </p>
-            <p>
-              The comparisons above is measuring compatibility with RI's
-              implementation. There is a number of
+            <p class="note">Note</p>
+            <p class="notetext">
+              The published API completness report doesn't include 
               <a href="http://java.sun.com/j2se/1.5.0/docs/guide/standards/index.html">endorsed packages</a>
               for which it is allowed to implement a later version of theirs specification.
               In case of newer specification it is acceptable to have difference with RI (for
               example, <a href="http://incubator.apache.org/projects/yoko.html">CORBA implementation</a>).
-              To measure Harmony API completeness (i.e. differences that have to be
-              fixed) the report without endorsed packages is provided:
-              <a href="http://people.apache.org/~apetrenko/japitool/jdk5vsharmony5.javajavax.html">RI vs Harmony M1</a>
-            </p>
+           </p>
 
         </section>
 
