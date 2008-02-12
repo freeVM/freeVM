@@ -43,7 +43,7 @@
 
 	<property name="jpda-framework" location="${depends}/jpda-framework" />
 	<property name="jpda-fr-package" value="org/apache/harmony/jpda/tests/framework" />
-	<property name="svn-URL" value="https://svn.apache.org/repos/asf/harmony/enhanced" />
+	<property name="svn-URL" value="http://svn.apache.org/repos/asf/harmony/enhanced" />
 
 	<target name="build-n-run" depends="build,run-tests" />
 
