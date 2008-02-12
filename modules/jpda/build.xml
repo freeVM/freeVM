@@ -21,7 +21,7 @@
 
     <!-- import common properties -->
     <property name="hy.hdk" location="${basedir}/../../deploy" />
-    <property name="tests.build.output" location="../../build/tests" />
+    <property name="tests.build.output" location="${basedir}/../../build/tests" />
     <import file="../../make/properties.xml" />
 
     <!-- set global properties for this build. -->
