@@ -40,7 +40,7 @@
         <!-- launch the tests kernel.test -->
         <exec-ant dir="${built.drlvm.trunk}" targets="test"
                   failonerror="false" failproperty="drlvm-test.run.failed">
-            <sysproperty key="build.cfg" value="${drlvm.config}"/>
+            <sysproperty key="hy.cfg" value="${drlvm.config}"/>
             <sysproperty key="common.resources.loc" value="${common.resources}"/>
             <sysproperty key="test.mode" 
                          value="${drlvm-test.parameters.optional.test.mode}"/>
@@ -97,7 +97,7 @@
 
         <exec-ant dir="${built.drlvm.trunk}" targets="clean fetch-depends"
                   failonerror="true">
-            <sysproperty key="build.cfg" value="${drlvm.config}"/>
+            <sysproperty key="hy.cfg" value="${drlvm.config}"/>
             <sysproperty key="common.resources.loc" value="${common.resources}"/>
         </exec-ant>
     </target>

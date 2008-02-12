@@ -47,8 +47,7 @@
             <!-- Use BTI staff to execute Ant Build in new process -->
             <exec-ant dir="${trunk.dir}" targets="@{targets}">
                 <sysproperty key="deploy.canonical.flag" value="true"/>
-                <sysproperty key="build.cfg" value="${build.config}"/>
-                <sysproperty key="machine.arch" value="${os.arch}"/>
+                <sysproperty key="hy.cfg" value="${build.config}"/>
                 <sysproperty key="external.dep.CLASSLIB.loc"
                              value='${classlib.trunk}'/>
                 <sysproperty key="common.resources.loc" value="${common.resources}"/>

@@ -40,7 +40,7 @@
         <!-- launch the tests -->
         <exec-ant dir="${built.drlvm.trunk}" targets="reg.test" 
             failonerror="false" failproperty="drlvm-reg-test.run.failed">
-            <sysproperty key="build.cfg" value="${drlvm.config}"/>
+            <sysproperty key="hy.cfg" value="${drlvm.config}"/>
             <sysproperty key="common.resources.loc" value="${common.resources}"/>
             <arg line="${tested.hdk.param}"/>
         </exec-ant>
@@ -95,7 +95,7 @@
 
         <exec-ant dir="${built.drlvm.trunk}" targets="clean fetch-depends"
                   failonerror="true">
-            <sysproperty key="build.cfg" value="${drlvm.config}"/>
+            <sysproperty key="hy.cfg" value="${drlvm.config}"/>
             <sysproperty key="common.resources.loc" value="${common.resources}"/>
         </exec-ant>
                     
