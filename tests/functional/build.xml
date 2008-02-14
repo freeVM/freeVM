@@ -451,7 +451,7 @@ ERROR: Can not find JPDA test framework : '${jpda-framework}/${jpda-fr-package}'
         <mkdir dir="${jpda-framework}" />
         <exec executable="svn" dir="${jpda-framework}" failonerror="true">
             <arg line="checkout"/>
-            <arg line="${svn-URL}/jdktools/trunk/modules/jpda/test/common/unit/${jpda-fr-package} " />
+            <arg line="${svn-URL}/jdktools/trunk/modules/jpda/src/test/java/${jpda-fr-package} " />
             <arg line="${jpda-fr-package}" />
         </exec>
 	</target>
