@@ -1825,7 +1825,7 @@ public class VmMirror {
             return new ArrayList(0);
         }
 
-        ArrayList frames = new ArrayList(framesCount);
+        ArrayList<Frame> frames = new ArrayList<Frame>(framesCount);
         for (int i = 0; i < framesCount; i++) {
             Frame frame = new Frame();
             frame.setThreadID(threadID);
@@ -1891,7 +1891,7 @@ public class VmMirror {
             return null;
         }
 
-        ArrayList vars = new ArrayList(slots);
+        ArrayList<Variable> vars = new ArrayList<Variable>(slots);
         for (int i = 0; i < slots; i++) {
             Variable var = new Frame().new Variable();
             var.setCodeIndex(reply.getNextValueAsLong());
@@ -2113,13 +2113,13 @@ public class VmMirror {
      * @return A list of Field objects representing each field of the class
      */
     public final List getAllFields(long classID) {
-        ArrayList fields = new ArrayList(0);
+        ArrayList<Field> fields = new ArrayList<Field>(0);
 
         long superID = getSuperclassId(classID);
         if (superID != 0) {
             List superClassFields = getAllFields(superID);
             for (int i = 0; i < superClassFields.size(); i++) {
-                fields.add(superClassFields.toArray()[i]);
+                fields.add((Field)superClassFields.toArray()[i]);
             }
         }
 

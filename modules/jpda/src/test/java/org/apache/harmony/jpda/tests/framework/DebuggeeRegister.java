@@ -46,7 +46,7 @@ import java.util.List;
  */
 public class DebuggeeRegister {
 
-    LinkedList registered = new LinkedList();
+    LinkedList<DebuggeeWrapper> registered = new LinkedList<DebuggeeWrapper>();
     
     /**
      * Registers started debuggee.

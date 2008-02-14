@@ -88,14 +88,14 @@ public class PacketDispatcher extends Thread {
         /**
          * List of received events.
          */
-        private List eventQueue;
+        private List<EventPacket> eventQueue;
 
         /**
          * A default constructor.
          */
         EventsSynchronyzer() {
             // initialize eventQueue
-            eventQueue = new ArrayList();
+            eventQueue = new ArrayList<EventPacket>();
         }
 
         /**
@@ -193,16 +193,16 @@ public class PacketDispatcher extends Thread {
 
         private int commandId;
 
-        private Hashtable commands;
+        private Hashtable<Integer, CommandPacket> commands;
 
-        private Hashtable replies;
+        private Hashtable<Integer, ReplyPacket> replies;
 
         /**
          * A default constructor.
          */
         CommandsSynchronyzer() {
-            commands = new Hashtable();
-            replies = new Hashtable();
+            commands = new Hashtable<Integer, CommandPacket>();
+            replies = new Hashtable<Integer, ReplyPacket>();
 
             // set first command id to 1
             commandId = 1;
