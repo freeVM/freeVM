@@ -169,6 +169,7 @@ public class ExceptionTest extends JDWPEventTestCase {
         debuggeeWrapper.vmMirror.resume();
     }
 
+    @SuppressWarnings("unused")
     private Location getTopFrameLocation(long threadID) {
 
         // getting frames of the thread

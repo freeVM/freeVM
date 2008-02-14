@@ -91,5 +91,6 @@ public class OnthowDebuggerLaunchDebuggee extends Debuggee {
     protected JPDADebuggeeSynchronizer synchronizer;
 }
 
+@SuppressWarnings("serial")
 class ExceptionForDebugger extends Exception {
 }

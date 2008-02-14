@@ -202,7 +202,7 @@ public class JDWPUnitDebuggeeProcessWrapper extends JDWPDebuggeeWrapper {
 
         int len = cmd.length();
         char chars[] = new char[len];
-        Vector argv = new Vector();
+        Vector<String> argv = new Vector<String>();
 
         if (len > 0) {
             for (int arg = 0; arg < len;) {
@@ -250,7 +250,7 @@ public class JDWPUnitDebuggeeProcessWrapper extends JDWPDebuggeeWrapper {
     	logWriter.println("Splitted command line: " + argv);
         int size = argv.size();
         String args[] = new String[size];
-        return (String[])argv.toArray(args);
+        return (String[])argv.toArray((String[])args);
 	}
 
     /**

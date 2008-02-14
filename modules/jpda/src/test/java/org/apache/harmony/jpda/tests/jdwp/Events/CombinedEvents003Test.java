@@ -50,7 +50,6 @@ public class CombinedEvents003Test extends CombinedEventsTestCase {
         "org.apache.harmony.jpda.tests.jdwp.Events.CombinedEvents003Debuggee";
     
     private boolean eventVmDeathReceived = false;
-    private boolean eventMethodExitReceived = false;
 
     protected String getDebuggeeClassName() {
         return CombinedEvents003Debuggee.class.getName();
@@ -73,7 +72,6 @@ public class CombinedEvents003Test extends CombinedEventsTestCase {
                 JDWPConstants.EventKind.BREAKPOINT,
                 JDWPConstants.EventKind.SINGLE_STEP,
                 JDWPConstants.EventKind.METHOD_EXIT};
-        int EXPECTED_EVENTS_COUNT = EXPECTED_EVENTS_ARRAY.length;
 
         String debuggeeMainThreadName = synchronizer.receiveMessage();
 
@@ -210,9 +208,6 @@ public class CombinedEvents003Test extends CombinedEventsTestCase {
                         + parsedEvents[i].getRequestID());
                 if ( parsedEvents[i].getEventKind() == JDWPConstants.EventKind.VM_DEATH ) {
                     eventVmDeathReceived = true;
-                }
-                if ( parsedEvents[i].getEventKind() == JDWPConstants.EventKind.METHOD_EXIT ) {
-                    eventMethodExitReceived = true;
                 }
             }
             if ( eventVmDeathReceived ) {

@@ -421,7 +421,7 @@ public class FramesTest extends JDWPSyncTestCase {
 
     private Vector getFrames(int startFrame, int length) {
 
-        Vector frames = new Vector();
+        Vector<FrameStruct> frames = new Vector<FrameStruct>();
         
         logWriter.println("startFrame=" + startFrame
                 + "; length=" + length);

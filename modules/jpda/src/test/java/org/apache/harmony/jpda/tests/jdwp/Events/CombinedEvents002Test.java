@@ -97,7 +97,6 @@ public class CombinedEvents002Test extends CombinedEventsTestCase {
                 + TESTED_METHOD_NAME + "' ";
             printErrorAndFail(failureMessage);
         }
-        boolean expectColocatedEvents = (testedMethodStartCodeIndex == testedMethodEndCodeIndex);
 
         logWriter.println("==> ");
         logWriter.println("==> Set request for METHOD_ENTRY event for '" + TESTED_CLASS_NAME + "'... ");

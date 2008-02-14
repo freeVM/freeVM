@@ -29,7 +29,6 @@ package org.apache.harmony.jpda.tests.jdwp.Events;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.LinkedList;
 
 import org.apache.harmony.jpda.tests.framework.LogWriter;
 import org.apache.harmony.jpda.tests.framework.TestErrorException;
@@ -94,7 +93,6 @@ public class ClassUnloadDebuggee extends SyncDebuggee {
      */
     protected void createMemoryStress(int arrayLength_0, int arrayLength_1) {
         Runtime currentRuntime = Runtime.getRuntime();
-        boolean isOutOfMemory = false;
         long freeMemory = currentRuntime.freeMemory();
         logWriter.println
         ("--> Debuggee: createMemoryStress: freeMemory (bytes) before memory stress = " + freeMemory);
@@ -109,7 +107,6 @@ public class ClassUnloadDebuggee extends SyncDebuggee {
             }
             logWriter.println("--> Debuggee: createMemoryStress: NO OutOfMemoryError!!!");
         } catch ( OutOfMemoryError outOfMem ) {
-            isOutOfMemory = true;
             longArrayForCreatingMemoryStress = null;
             logWriter.println("--> Debuggee: createMemoryStress: OutOfMemoryError!!!");
         }
@@ -168,16 +165,16 @@ public class ClassUnloadDebuggee extends SyncDebuggee {
             this.logWriter = writer;
         }
 
-        public Class loadClass(String name) throws ClassNotFoundException {
-    		if (TESTED_CLASS_NAME.equals(name)) {
-    			// load only tested class with this loader
-    			return findClass(name);
-        	}
-			return getParent().loadClass(name);
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (TESTED_CLASS_NAME.equals(name)) {
+                // load only tested class with this loader
+                return findClass(name);
+            }
+            return getParent().loadClass(name);
         }
 
-        public Class findClass(String name) throws ClassNotFoundException {
-    		try {
+        public Class<?> findClass(String name) throws ClassNotFoundException {
+            try {
                 logWriter.println("-->> CustomClassLoader: Find class: " + name);
 	        	String res = name.replace('.', '/') + ".class";
 	            URL url = getResource(res);

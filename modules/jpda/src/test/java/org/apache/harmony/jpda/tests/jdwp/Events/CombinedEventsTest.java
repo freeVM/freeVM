@@ -81,7 +81,6 @@ public class CombinedEventsTest extends CombinedEventsTestCase {
                 JDWPConstants.EventKind.SINGLE_STEP,
                 JDWPConstants.EventKind.BREAKPOINT,
             };
-        int EXPECTED_EVENTS_COUNT = EXPECTED_EVENTS_ARRAY.length;
 
         String debuggeeMainThreadName = synchronizer.receiveMessage();
 
@@ -209,7 +208,6 @@ public class CombinedEventsTest extends CombinedEventsTestCase {
                 JDWPConstants.EventKind.BREAKPOINT,
                 JDWPConstants.EventKind.METHOD_EXIT,
             };
-        int EXPECTED_EVENTS_COUNT = EXPECTED_EVENTS_ARRAY.length;
 
         synchronizer.receiveMessage(JPDADebuggeeSynchronizer.SGNL_READY);
 
@@ -345,7 +343,6 @@ public class CombinedEventsTest extends CombinedEventsTestCase {
                 JDWPConstants.EventKind.METHOD_ENTRY,
                 JDWPConstants.EventKind.SINGLE_STEP,
             };
-        int EXPECTED_EVENTS_COUNT = EXPECTED_EVENTS_ARRAY.length;
 
         String debuggeeMainThreadName = synchronizer.receiveMessage();
 
@@ -729,8 +726,7 @@ public class CombinedEventsTest extends CombinedEventsTestCase {
                 
         }
         if ( (! success) || (! locationsOK) ) {
-            String failureMessage = "## FAILURE during checking events! !";
-            //DBG__printErrorAndFail(failureMessage);
+            logWriter.println("## FAILURE during checking events!");
         }
         logWriter.println("");
         logWriter.println("=> Clean request for METHOD_ENTRY event...");
@@ -891,7 +887,7 @@ public class CombinedEventsTest extends CombinedEventsTestCase {
                 
         }
         if ( (! success) || (! locationsOK) ) {
-            String failureMessage = "## FAILURE during checking events !";
+            logWriter.println("## FAILURE during checking events!");
             //DBG__printErrorAndFail(failureMessage);
         }
         if ( eventMethodExitReceived ) {

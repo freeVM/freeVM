@@ -112,7 +112,8 @@ public abstract class CombinedEventsTestCase extends JDWPSyncTestCase {
         long methodStartCodeIndex = lineTableReply.getNextValueAsLong();
         return methodStartCodeIndex;
     }
-    
+
+    @SuppressWarnings("unused")
     long getMethodEndCodeIndex(long classID, String methodName) {
         long methodID = debuggeeWrapper.vmMirror.getMethodID(classID, methodName);
         if ( methodID == -1 ) {
@@ -165,6 +166,7 @@ public abstract class CombinedEventsTestCase extends JDWPSyncTestCase {
         return location;
     }
 
+    @SuppressWarnings("unused")
     protected Location getMethodEndLocation(long classID, String methodName) {
         long methodID = debuggeeWrapper.vmMirror.getMethodID(classID, methodName);
         if ( methodID == -1 ) {
