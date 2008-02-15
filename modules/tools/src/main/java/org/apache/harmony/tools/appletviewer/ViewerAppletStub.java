@@ -21,6 +21,7 @@ import java.applet.AppletContext;
 import java.applet.AppletStub;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.net.URL;
 
 class ViewerAppletStub implements AppletStub {
@@ -55,6 +56,17 @@ class ViewerAppletStub implements AppletStub {
     }
     
     public void appletResize(int width, int height) {
+        Component cmp = appletPane;
+
         appletPane.setPreferredSize(new Dimension(width, height));
+
+        while (cmp != null) {
+            cmp = cmp.getParent();
+
+            if (cmp instanceof Window) {
+                ((Window) cmp).pack();
+                break;
+            }
+        }
     }
 }

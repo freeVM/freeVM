@@ -76,7 +76,7 @@ class AppletFrame extends JFrame {
         setLayout(new BorderLayout());
         JPanel appletPanel = new JPanel();
         appletPanel.add(applet);
-        add(appletPanel, BorderLayout.NORTH);
+        add(appletPanel, BorderLayout.WEST);
         
         // Create status pane
         JPanel panel = new JPanel();
