@@ -74,7 +74,9 @@
                 <!--
                     Starting Tomcat server
                 -->
+                <!-- FIXME: timeout should be adaptor's parameter-->
                 <exec executable="${shell}"
+                      timeout="600000"
                       dir="${ext.tomcat.location}/bin"
                       spawn="true">
                     <arg line="${start.script}"/>
