@@ -47,5 +47,10 @@
         />
     </external>
 
+    <svn>
+      <stress url="tests/stress"/>
+      <tools  url="tests/tools"/>
+    </svn>
+
     <cc results="${stress.results.dir}" />
 </parameters>

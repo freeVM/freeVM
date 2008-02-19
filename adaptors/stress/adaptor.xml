@@ -28,7 +28,7 @@
     <property name="cpptasks.jar"   value="${ext.cpptasks.location}/"/>
     <property name="jasmin.jar"     value="${ext.jasmin_1.1.location}/jasmin.jar"/>
 
-    <property name="stress.root.dir" location="${test.sources.dir}/stress/qa"/>
+    <property name="stress.root.dir" location="${checkouts.dir}/stress/qa"/>
     <property name="stress.make.dir" location="${stress.root.dir}"/>
 
     <property name="stress.results.dir" value="${results.dir}/${suite.name}"/>
@@ -38,8 +38,6 @@
 
     <!-- do setup of stress suite -->
     <target name="setup" unless="setup.OK">
-        <svn-update-bt path="${test.sources.dir}/stress"/>
-        <antcall target="setup-tools"/>
 
         <call-stress target="get.punit"/>
         <call-stress target="build.th"/>
@@ -73,10 +71,6 @@
             <replacevalue><![CDATA[<arg line="-version -failonerror" />]]></replacevalue>
         </replace>
         <touch file="${stress.bin.dir}/setup.OK"/>
-    </target>
-
-    <target name="setup-tools">
-        <svn-update-bt path="${test.sources.dir}/tools"/>
     </target>
 
     <!-- do test execution -->
