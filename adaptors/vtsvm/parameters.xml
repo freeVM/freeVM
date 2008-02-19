@@ -35,5 +35,10 @@
         />
     </external>
 
+    <svn>
+      <vts   url="tests/vts"/>
+      <tools url="tests/tools"/>
+    </svn>
+
     <cc results="${results.dir}/${suite.name}"/>
 </parameters>

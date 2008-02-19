@@ -20,8 +20,8 @@
      ====================================================================== -->
 <project name="vtsvm" default="run" basedir=".">
 
-    <property name="vtsvm.make.dir" location="${test.sources.dir}/vts/vm/build"/>
-    <property name="vtsvm.dest.dir" location="${test.sources.dir}/vts/dest"/>
+    <property name="vtsvm.make.dir" location="${checkouts.dir}/vts/vm/build"/>
+    <property name="vtsvm.dest.dir" location="${checkouts.dir}/vts/dest"/>
 
     <!-- the file containing the summary of test execution -->
     <property name="vtsvm.results.dir" 
@@ -33,8 +33,6 @@
 
     <!-- do setup of VTSVM suite -->
     <target name="setup">
-        <svn-update-bt path="${test.sources.dir}/tools"/>
-        <svn-update-bt path="${test.sources.dir}/vts"/>
         <call-vtsvm target="setup"/>
         <call-vtsvm target="check-config"/>
         <available property="skip.build" file="${vtsvm.dest.dir}/VTS-built"/>
