@@ -28,10 +28,11 @@
     <property name="tests.results.dir" location="${results.dir}/${suite.name}/test-results"/>
 
     <property name="catalina.localhost.port.default" value="8080" />
-    <property name="catalina.config.file"  location="${ext.tomcat-6.0.14.location}/conf/server.xml"/>
-    <property name="catalina.base.dir" location="${ext.tomcat-6.0.14.location}"/>
     <property name="catalina.home.dir" location="${ext.tomcat-6.0.14.location}"/>
-    <property name="catalina.tmp.dir"  location="${ext.tomcat-6.0.14.location}/temp"/>
+    <property name="catalina.base.dir"
+              location="${catalina.home.dir}/bases/struts_test"/>
+    <property name="catalina.config.file"  location="${catalina.base.dir}/conf/server.xml"/>
+    <property name="catalina.tmp.dir"  location="${catalina.base.dir}/temp"/>
     <property name="catalina.out.file" location="${results.dir}/${suite.name}/catalina.out"/>
     <property name="catalina.maxwait" value="1800"/>
 
@@ -46,6 +47,7 @@
           target: setup
          ================================= -->
     <target name="setup" depends="
+        -prepare-base-dir,
         -setup-conditions,
         -create-build-dirs,
         -compile-test-sources,
@@ -78,15 +80,29 @@
           Private targets
          ================================= -->
 
+    <target name="-prepare-base-dir">
+        <mkdir dir="${catalina.base.dir}/conf"/>
+        <mkdir dir="${catalina.base.dir}/logs"/>
+        <mkdir dir="${catalina.base.dir}/shared"/>
+        <mkdir dir="${catalina.base.dir}/webapps"/>
+        <mkdir dir="${catalina.base.dir}/temp"/>
+        <mkdir dir="${catalina.base.dir}/work"/>
+        <copy todir="${catalina.base.dir}/conf">
+            <fileset dir="${catalina.home.dir}/conf"
+                     includes="*.xml, *.properties, *.policy">
+            </fileset>
+        </copy>
+    </target>
+
     <!-- - - - - - - - - - - - - - - - - - 
           target: -setup-conditions                      
          - - - - - - - - - - - - - - - - - -->
     <target name="-setup-conditions">
         <condition property="already-deployed" >
-            <available file="${catalina.home.dir}/webapps/${tomcat.deploy.app.name}" type="dir"/>
+            <available file="${catalina.base.dir}/webapps/${tomcat.deploy.app.name}" type="dir"/>
         </condition>
         <condition property="data-generation-not-needed">
-            <available file="${catalina.home.dir}/work/Catalina/localhost/${tomcat.deploy.app.name}/org/apache/jsp/validation" type="dir" />
+            <available file="${catalina.base.dir}/work/Catalina/localhost/${tomcat.deploy.app.name}/org/apache/jsp/validation" type="dir" />
         </condition>
         <condition property="already-deployed-and-generated">
             <and>
@@ -151,7 +167,7 @@
             <sequential>
                 <antcall target="-wait-for-server-started" />
                 <condition property="deployed.ok">
-                    <available file="${catalina.home.dir}/webapps/${tomcat.deploy.app.name}" type="dir" />
+                    <available file="${catalina.base.dir}/webapps/${tomcat.deploy.app.name}" type="dir" />
                 </condition>
                 <antcall target="-generate-test-data" />
                 <antcall target="-stop-server-for-setup" />
@@ -275,7 +291,7 @@
          - - - - - - - - - - - - - - - - - -->
     <target name="-copy-war">
         <copy file="${ext.struts-2.0.6.location}/apps/${tomcat.deploy.app.name}.war"
-             todir="${catalina.home.dir}/webapps" />
+             todir="${catalina.base.dir}/webapps" />
     </target>
 
     <!-- - - - - - - - - - - - - - - - - - 
@@ -394,7 +410,7 @@
 
     <path id="catalina-start-jars">
         <pathelement location="${req.driver.java.home}/lib/tools.jar" />
-        <fileset dir="${catalina.base.dir}/bin">
+        <fileset dir="${catalina.home.dir}/bin">
             <include name="**/bootstrap.jar"/>
             <include name="**/commons-logging-api.jar"/>
         </fileset>

@@ -22,6 +22,9 @@
 
     <property name="tomcat.results.dir" location="${results.dir}/${suite.name}"/>
     <property name="tomcat.src.dir" location="${checkouts.dir}/tomcat-scenario" />
+    <property name="catalina.home.dir" location="${ext.tomcat.location}"/>
+    <property name="catalina.base.dir"
+              location="${catalina.home.dir}/bases/tomcat-scenario"/>
     <property environment="env"/>
 
     <condition property="shell" value="cmd" else="sh">
@@ -43,12 +46,12 @@
               value="http://localhost:${tomcat-scenario.parameters.optional.port.number}/examples/jsp/jsp2/el/basic-comparisons.jsp"/>
 
     <!-- Setup of the Tomcat scenario -->
-    <target name="setup">
+    <target name="setup" depends="-prepare-base-dir">
         
         <!--
             Setup port number for Tomcat server
         -->
-        <replaceregexp file="${ext.tomcat.location}/conf/server.xml"
+        <replaceregexp file="${catalina.base.dir}/conf/server.xml"
                        match="port=\&quot;.*\&quot; protocol=\&quot;HTTP(.*)\&quot;"
                        replace="port=\&quot;${tomcat-scenario.parameters.optional.port.number}\&quot; protocol=\&quot;HTTP\1\&quot;"
                        flags="g" byline="true"/>
@@ -61,9 +64,30 @@
             Make Tomcat startup scripts executable
         -->
         <chmod perm="a+x">
-            <fileset dir="${ext.tomcat.location}/bin" includes="*.sh"/>
+            <fileset dir="${catalina.home.dir}/bin" includes="*.sh"/>
         </chmod>
 
+    </target>
+
+    <!-- Prepare CATALINA_BASE dir for running server tomcat instance -->    
+    <target name="-prepare-base-dir">
+        <mkdir dir="${catalina.base.dir}/conf"/>
+        <mkdir dir="${catalina.base.dir}/logs"/>
+        <mkdir dir="${catalina.base.dir}/shared"/>
+        <mkdir dir="${catalina.base.dir}/webapps"/>
+        <mkdir dir="${catalina.base.dir}/temp"/>
+        <mkdir dir="${catalina.base.dir}/work"/>
+        <copy todir="${catalina.base.dir}/conf">
+            <fileset dir="${catalina.home.dir}/conf"
+                     includes="*.xml, *.properties, *.policy">
+            </fileset>
+        </copy>
+        <copy todir="${catalina.base.dir}/webapps/ROOT">
+            <fileset dir="${catalina.home.dir}/webapps/ROOT"/>
+        </copy>
+        <copy todir="${catalina.base.dir}/webapps/examples">
+            <fileset dir="${catalina.home.dir}/webapps/examples"/>
+        </copy>
     </target>
     
     <target name="run" depends="clean">
@@ -75,11 +99,13 @@
                     Starting Tomcat server
                 -->
                 <exec executable="${shell}"
-                      dir="${ext.tomcat.location}/bin"
+                      dir="${catalina.home.dir}/bin"
                       spawn="true">
                     <arg line="${start.script}"/>
                     <env key="JRE_HOME" path="${tested.runtime}"/>
                     <env key="JAVA_OPTS" value="${tomcat-scenario.parameters.optional.tested.vm.options}"/>
+                    <env key="CATALINA_HOME" value="${catalina.home.dir}"/>
+                    <env key="CATALINA_BASE" value="${catalina.base.dir}"/>
                     <env key="PATH" path="${tested.runtime}${file.separator}bin${path.separator}${env.PATH}"/>
                 </exec>
 
@@ -91,7 +117,7 @@
                 -->
                 <waitfor maxwait="300" maxwaitunit="second" timeoutproperty="failed.timeout">
                     <length when="greater" length="0">
-                        <fileset dir="${ext.tomcat.location}/logs">
+                        <fileset dir="${catalina.base.dir}/logs">
                             <filename name="catalina*.log"/>
                             <contains text="INFO: Server startup in"/>
                         </fileset>
@@ -115,10 +141,12 @@
                     Stop Tomcat server
                 -->
                 <exec executable="${shell}"
-                      dir="${ext.tomcat.location}/bin">
+                      dir="${catalina.home.dir}/bin">
                     <arg line="${stop.script}"/>
                     <env key="JRE_HOME" path="${tested.runtime}"/>
                     <env key="JAVA_OPTS" value="${tomcat-scenario.parameters.optional.tested.vm.options}"/>
+                    <env key="CATALINA_HOME" value="${catalina.home.dir}"/>
+                    <env key="CATALINA_BASE" value="${catalina.base.dir}"/>
                     <env key="PATH" path="${tested.runtime}${file.separator}bin${path.separator}${env.PATH}"/>
                 </exec>
             </sequential>
@@ -149,7 +177,7 @@
             Removing logs of previous Tomcat run
         -->
         <delete failonerror="false">
-            <fileset dir="${ext.tomcat.location}/logs" includes="*.log"/>
+            <fileset dir="${catalina.base.dir}/logs" includes="*.log"/>
         </delete>
     </target>
 
