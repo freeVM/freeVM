@@ -14,18 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/** 
- * @author Pavel Dolgov
- * @version $Revision: 1.2 $
- */
 package org.apache.harmony.applet;
 
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.IdentityHashMap;
-
-import org.apache.harmony.awt.ContextThreadGroup;
-
 
 /**
  * Common context for all applets loaded from the same code base
@@ -34,7 +27,7 @@ final class CodeBase {
     
     final URL codeBase;
     final URLClassLoader classLoader;
-    final ContextThreadGroup threadGroup;
+    final AppletThreadGroup threadGroup;
     final Factory factory;
 
     private final IdentityHashMap<Document, DocumentSlice> docSlices = new IdentityHashMap<Document, DocumentSlice>();
@@ -43,7 +36,7 @@ final class CodeBase {
         this.codeBase = url;
         this.factory = factory;
         classLoader = new URLClassLoader(new URL[]{ url });
-        threadGroup = new ContextThreadGroup("Context-" + url.toString());
+        threadGroup = new AppletThreadGroup("Context-" + url.toString());
         threadGroup.setMaxPriority(4);
     }
     
