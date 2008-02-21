@@ -19,5 +19,5 @@ package org.apache.harmony.applet.callbacks;
 import java.awt.Container;
 
 public interface JRECallback {
-	Container attachNativeWindow(long parentWindowId);
+    Container attachNativeWindow(long parentWindowId);
 }

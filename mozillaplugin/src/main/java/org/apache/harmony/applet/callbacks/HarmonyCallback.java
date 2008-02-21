@@ -21,8 +21,8 @@ import java.awt.Container;
 import org.apache.harmony.awt.ComponentInternals;
 
 public class HarmonyCallback implements JRECallback {
-	public Container attachNativeWindow(long parentWindowId) {
+    public Container attachNativeWindow(long parentWindowId) {
         ComponentInternals ci = ComponentInternals.getComponentInternals();
         return ci.attachNativeWindow(parentWindowId);
-	}
+    }
 }

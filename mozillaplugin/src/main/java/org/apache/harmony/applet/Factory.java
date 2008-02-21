@@ -130,15 +130,15 @@ final class Factory {
     }
     
     void appletResize(Proxy p, int width, int height) {
-    	browserCallback.appletResize(p.params.id, width, height);
+        browserCallback.appletResize(p.params.id, width, height);
     }
     
     void showStatus(DocumentSlice ds, String status) {
-    	browserCallback.showStatus(ds.document.id, status);
+        browserCallback.showStatus(ds.document.id, status);
     }
     
     void showDocument(DocumentSlice ds, URL url, String target) {
-    	browserCallback.showDocument(ds.document.id, url, target);
+        browserCallback.showDocument(ds.document.id, url, target);
     }
 
     void add(Proxy p) {

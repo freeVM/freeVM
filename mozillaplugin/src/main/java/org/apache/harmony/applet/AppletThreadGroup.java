@@ -17,10 +17,10 @@
 package org.apache.harmony.applet;
 
 public class AppletThreadGroup extends ThreadGroup {
-	public AppletThreadGroup(String name) {
-		super(name);
-	}
+    public AppletThreadGroup(String name) {
+        super(name);
+    }
 
-	public void dispose() {
-	}
+    public void dispose() {
+    }
 }

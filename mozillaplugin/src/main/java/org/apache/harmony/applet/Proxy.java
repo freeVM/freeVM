@@ -36,8 +36,8 @@ import org.apache.harmony.applet.callbacks.JRECallback;
  * Applet's state and parameters, implementation <b>AppletStub</b> interface
  */
 class Proxy implements AppletStub {
-	
-	private static final JRECallback jreCallback = getJRECallback();
+    
+    private static final JRECallback jreCallback = getJRECallback();
 
     final DocumentSlice docSlice;
     final Parameters params;
@@ -56,11 +56,11 @@ class Proxy implements AppletStub {
     }
     
     private static JRECallback getJRECallback() {
-    	// SPI like loading of JRECallback instance should be implemented
-		return new HarmonyCallback();
-	}
+        // SPI like loading of JRECallback instance should be implemented
+        return new HarmonyCallback();
+    }
 
-	Applet getApplet() {
+    Applet getApplet() {
         return applet;
     }
     
