@@ -18,14 +18,14 @@
  * @author Pavel Dolgov
  * @version $Revision: 1.2 $
  */
-package org.apache.harmony.applet;
+package org.apache.harmony.applet.callbacks;
 
 import java.net.URL;
 
 /**
  * Callback from applet to the host application
  */
-interface Callback {
+public interface BrowserCallback {
 
     void showDocument(int documentId, URL url, String target);
 
