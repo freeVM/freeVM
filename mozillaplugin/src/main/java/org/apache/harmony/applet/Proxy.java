@@ -28,13 +28,16 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.net.URL;
 
-import org.apache.harmony.awt.ComponentInternals;
+import org.apache.harmony.applet.callbacks.HarmonyCallback;
+import org.apache.harmony.applet.callbacks.JRECallback;
 
 
 /**
  * Applet's state and parameters, implementation <b>AppletStub</b> interface
  */
 class Proxy implements AppletStub {
+	
+	private static final JRECallback jreCallback = getJRECallback();
 
     final DocumentSlice docSlice;
     final Parameters params;
@@ -52,7 +55,12 @@ class Proxy implements AppletStub {
         ds.add(this);
     }
     
-    Applet getApplet() {
+    private static JRECallback getJRECallback() {
+    	// SPI like loading of JRECallback instance should be implemented
+		return new HarmonyCallback();
+	}
+
+	Applet getApplet() {
         return applet;
     }
     
@@ -80,10 +88,8 @@ class Proxy implements AppletStub {
         if ((params.container != null) && (params.container instanceof Container)) { 
 
             parent = (Container)params.container;
-        } else {
-            
-            ComponentInternals ci = ComponentInternals.getComponentInternals();
-            parent = ci.attachNativeWindow(params.parentWindowId);
+        } else {            
+            parent = jreCallback.attachNativeWindow(params.parentWindowId);
         }
 
         applet = createApplet();
