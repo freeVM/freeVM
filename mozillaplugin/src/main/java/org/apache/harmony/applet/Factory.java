@@ -25,18 +25,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.harmony.applet.callbacks.BrowserCallback;
+
 /**
  * Applet context factory
  */
 final class Factory {
     
-    private final Callback callback;
+    private final BrowserCallback browserCallback;
     private final Map<URL, CodeBase> codeBases = Collections.synchronizedMap(new HashMap<URL, CodeBase>());
     private final Map<Integer, Proxy> allProxies = Collections.synchronizedMap(new HashMap<Integer, Proxy>());
     private final Map<Integer, Document> documents = Collections.synchronizedMap(new HashMap<Integer, Document>());
     
-    Factory(Callback callback) {
-        this.callback = callback;
+    Factory(BrowserCallback browserCallback) {
+        this.browserCallback = browserCallback;
     }
     
     CodeBase getCodeBase(URL url) {
@@ -128,15 +130,15 @@ final class Factory {
     }
     
     void appletResize(Proxy p, int width, int height) {
-        callback.appletResize(p.params.id, width, height);
+    	browserCallback.appletResize(p.params.id, width, height);
     }
     
     void showStatus(DocumentSlice ds, String status) {
-        callback.showStatus(ds.document.id, status);
+    	browserCallback.showStatus(ds.document.id, status);
     }
     
     void showDocument(DocumentSlice ds, URL url, String target) {
-        callback.showDocument(ds.document.id, url, target);
+    	browserCallback.showDocument(ds.document.id, url, target);
     }
 
     void add(Proxy p) {

@@ -29,10 +29,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
+import org.apache.harmony.applet.callbacks.BrowserCallback;
+
 /**
  * Standalone applet launcher
  */
-public final class Launcher implements Callback {
+public final class Launcher implements BrowserCallback {
     
     private final Factory factory;
     

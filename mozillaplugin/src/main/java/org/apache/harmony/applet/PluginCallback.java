@@ -19,7 +19,9 @@ package org.apache.harmony.applet;
 
 import java.net.URL;
 
-public class PluginCallback implements Callback {
+import org.apache.harmony.applet.callbacks.BrowserCallback;
+
+public class PluginCallback implements BrowserCallback {
     private final long pluginInstance;
     
     public PluginCallback(long pluginInstance) {
