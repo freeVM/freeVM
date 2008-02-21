@@ -34,6 +34,9 @@
 
     <target name="setup">
         <mkdir dir="${hdk_by_hdk.parameters.required.trunk.dir}" />
+
+        <!--FIXME: need to do checkout first
+            or add corresponding svn value to parameters.xml -->
     </target>
 
     <target name="-get-revision" if="is.snapshot">
@@ -44,9 +47,10 @@
     <target name="run" depends="-get-revision">
         <echo message="Checkout HDK trunk ${co.target} into ${hdk_by_hdk.parameters.required.trunk.dir}"/>
         <property name="co.target" value=""/>
+        
         <exec executable="svn" dir="${hdk_by_hdk.parameters.required.trunk.dir}" 
             failonerror="true">
-            <arg line="co ${co.target} ${hdk_by_hdk.parameters.required.trunk.url} ." />
+            <arg line="up --ignore-externals ${co.target} ." />
         </exec>
 
         <exec-ant dir="${trunk.dir}" javaVM="${tested.jdk}/bin/java">
