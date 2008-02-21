@@ -18,6 +18,7 @@
 package org.apache.harmony.applet;
 
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 
 public class PluginAppletFactory {
@@ -40,5 +41,14 @@ public class PluginAppletFactory {
                 String []paramStrings, String name, Object container) {
         Factory f = getFactory(pluginInstance);
         f.createAndRun(id, parentWindowId, documentBase, documentId, codeBase, className, paramStrings, name, container);
+    }    
+
+    public static void createAndRun(long pluginInstance, int id, long parentWindowId, String documentBase,
+                int documentId, String codeBase, String className,
+                String []paramStrings, String name, Object container) throws MalformedURLException {
+        // Code base URL is relative to document base
+        URL docBaseURL = new URL(documentBase);
+        
+        createAndRun(pluginInstance, id, parentWindowId, docBaseURL, documentId, new URL(docBaseURL, codeBase), className, paramStrings, name, container);
     }    
 }
