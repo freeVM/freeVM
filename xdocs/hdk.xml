@@ -19,24 +19,26 @@
 <document>
 
     <properties>
-        <title>Harmony Development Kit for the Apache Harmony Class Library</title>
+        <title>Harmony Development Kit for the Apache Harmony</title>
         <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
     </properties>
 
     <body>
 
-        <section name="Harmony Development Kit for the Apache Harmony Class Library">
+        <section name="Harmony Development Kit for the Apache Harmony">
             <p>
                 The Harmony Development Kit (HDK) allows a Harmony developer to
-                rebuild any module of the Harmony Classlib in a standalone way by providing all the
-                necesary supplementary binaries and header files. This document describes the layout
-                of such an HDK and its contents.
+                rebuild any module of the Harmony Classlib or DRLVM in a standalone way by providing all the
+                necesary supplementary binaries and header files. 
+                HDK bundles are available for download as a standard part of regular Harmony builds
+                (nightly, stable, etc).
+                This document describes the layout of such an HDK and its contents.
             </p>
 
             <subsection name="Layout of the HDK">
                 <p>
                     An HDK contains all the header files and binaries, both native and Java, required
-                    for a Harmony classlib developer to build against. The directory structure for an
+                    for a Harmony developer to build against. The directory structure for an
                     HDK is as follows:
 <pre>&lt;hdkbase&gt;
     |
@@ -83,13 +85,13 @@
 
                         <li>
                             <code>&lt;hdkbase&gt;/include</code> - this directory contains header files that
-                            are Harmony specific and are used across multiple classlib modules.
+                            are Harmony specific and are used across multiple Harmony modules.
                         </li>
 
                         <li>
                             <code>&lt;hdkbase&gt;/lib</code> - this directory is used in HDKs on Windows for
                             .lib files and on Linux for .a files necessary for linking during compilation of
-                            classlib natives.
+                            Harmony natives.
                         </li>
                     </ul>
                 </p>
@@ -113,14 +115,14 @@
                         <li>
                             <b>Building against an HDK</b> - The location of an HDK must be specified at
                             the Ant command line, and the ouptut will be built into the default (deploy)
-                            directory. The command line for this is <code><nobr>ant -DHY.HDK=path/to/HDK</nobr></code>.
+                            directory. The command line for this is <code><nobr>ant -Dhy.hdk=path/to/HDK</nobr></code>.
                         </li>
                         <li>
-                            <b>Building against an HDK and into a target directory</b> - The location of
+                            <b>Building against an HDK and into a target directory (TBD)</b> - The location of
                             an HDK and of a target directory must be specified on the Ant command line.
                             The Class Library code will be compiled against the libraries contained in
                             the HDK, and the output of those compiles will be placed into the specified
-                            target directory. The command line for this is <code><nobr>ant -DHY.HDK=path/to/HDK
+                            target directory. The command line for this is <code><nobr>ant -Dhy.hdk=path/to/HDK
                             -DHY.TARGET=path/to/target</nobr>
                             </code>.
                         </li>
@@ -134,7 +136,7 @@
                         <li>Checkout the luni module</li>
                         <li>cd into the root directory of the module</li>
                         <li>Execute <code>
-                            <nobr>ant -DHY.HDK=path/to/hdk -DHY.TARGET=path/to/target</nobr>
+                            <nobr>ant -Dhy.hdk=path/to/hdk -DHY.TARGET=path/to/target</nobr>
                         </code></li>
                     </ol></p>
                     <p>The luni Java and native code will be built against the HDK location

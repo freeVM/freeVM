@@ -443,14 +443,14 @@ $ tar xzf &lt;path_to_vm_tarball&gt; --directory ../..</source>
   <section name="Running Java Applications">
       <p>
         Ensure that the <code>JAVA_HOME</code> environment variable is unset, or pointing
-        to the <code>deploy/jre</code> directory.
+        to the Harmony build directory (<code>deploy/jdk/jre</code> if you've built it as described above).
       </p>
       <p>
         Run Java applications normally using the launcher in
-        <code>deploy/jre/bin</code>:
+        <code>deploy/jdk/jre/bin</code>:
       </p>
       <source>
-$ deploy/jre/bin/java -showversion -jar helloworld.jar
+$ deploy/jdk/jre/bin/java -showversion -jar helloworld.jar
 Apache Harmony Launcher:
 (c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable.
 java version "1.5.0"

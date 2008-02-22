@@ -77,8 +77,17 @@
       <anakia basedir="${docs.src}" destdir="${docs.dest}/"
            extension=".html" style="./site.vsl"
            projectFile="stylesheets/project.xml"
-           excludes="**/stylesheets/** empty.xml"
+           excludes="**/stylesheets/** empty.xml **/*.ru.xml"
            includes="**/*.xml"
+           lastModifiedCheck="true"
+           templatePath="xdocs/stylesheets">
+      </anakia>
+
+      <anakia basedir="${docs.src}" destdir="${docs.dest}/"
+           extension=".html" style="./site.vsl"
+           projectFile="stylesheets/project.ru.xml"
+           excludes="**/stylesheets/** empty.xml"
+           includes="**/*.ru.xml"
            lastModifiedCheck="true"
            templatePath="xdocs/stylesheets">
       </anakia>

@@ -41,11 +41,20 @@
 		      <a href="http://ant.apache.org/">Apache Ant</a>
 		    </li>
 			<li>
-			   Java 1.4.2 JDK
+			   Java 1.4.2 JDK (Harmony is highly recommended)
 			</li>
 		</ul>
 	</p>
 	
+    <p class="note">Note:</p>
+    <p class="notetext">
+        Some versions of JRE (e.g. Hotspot 1.5 on Windows) have problems converting Russian pages,
+        in particular they corrupt UTF-8 cyrillic symbols. This can be easily detected, just open
+        any generated <a href="../index.ru.html">Russian</a> page in a browser and check if it contains 
+        unreadable symbols (like empty boxes).
+        If you see them, you must use another JRE - Harmony is the natural choice. Set 
+        <code>JAVA_HOME</code> environment variable to point to an appropriate directory and you're done.
+    </p>
 
 		<ol>
 			<li>
