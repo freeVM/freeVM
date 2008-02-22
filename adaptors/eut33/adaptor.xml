@@ -27,9 +27,8 @@
         </description>
         <log message="============= Adaptor for ${suite.name}: Set Up ..." />
         <!-- Note, that EUT32 and EUT33 uses the same 'tests/eut' scripts -->
-        <svn-update-bt path="${test.sources.dir}/eut" />
         <ant antfile="build.xml"
-            dir="${test.sources.dir}/eut"
+            dir="${checkouts.dir}/eut33"
             target="setup"
             inheritAll="false">
             <property name="eut.location"
@@ -54,7 +53,7 @@
     <target name="run" description="Run Eclipse Unit Tests">
         <log message="============= Adaptor for ${suite.name}: Run ..." />
          <ant antfile="build.xml"
-            dir="${test.sources.dir}/eut"
+            dir="${checkouts.dir}/eut33"
             target="run"
             inheritAll="false">
             <property name="eut.location"
