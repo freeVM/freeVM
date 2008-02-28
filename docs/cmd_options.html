@@ -194,6 +194,8 @@ limitations under the License.
       <a name="Harmony JRE Command-Line Options">Harmony JRE Command-Line Options</a>
     </h1>
                         <p>
+	Command-Line options can be either standard or non-standard.
+	While the first set is valid for any JVM the second set of options are specific for a particular VM.
         This document provides information on command-line options supported by the DRL virtual machine (DRLVM),
         including component-specific options and properties that can be used during code development and issue evaluation.
       </p>
@@ -213,9 +215,19 @@ limitations under the License.
     </h2>
       
                         <p>
-          To get the list of non-standard JRE options supported by this virtual machine, run DRLVM with the <code>-X</code> option:
+	  Harmony non-standard options can be devided into the following groups:
+	  <ul>	
+		<li> 
+			"-X"  options are commonly used non-standard options. 	
+		        To get the list of non-standard JRE options supported by DRLVM 
+			run the VM with the <code>-X</code> option:
+		        <pre>java -X</pre>
+		</li>
+		<li>
+			"-XX" options are non-standard component-specific options.
+		</li>
+	  </ul>
         </p>
-                                <pre>java -X</pre>
                    
                                     
     <h2>
@@ -251,7 +263,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:-vm.assert_dialog</code>
+                <code>-XX:vm.assert_dialog=&lt;true|false&gt;</code>
 
               </strong>
             
@@ -259,7 +271,7 @@ limitations under the License.
                                 <td class="TableCell" colspan="" rowspan="">
     
                 
-              Prevents assertion failures from popping up a dialog box
+              Prevents assertion failures from popping up a dialog box.  Default is <code>false</code>.
             
         </td>
             </tr>
@@ -269,16 +281,14 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:+vm.crash_handler</code>
+                <code>-XX:vm.crash_handler=&lt;true|false&gt;</code>
               </strong>
-
             
         </td>
                                 <td class="OddRowCell" colspan="" rowspan="">
     
                 
-              Invokes the <code>gdb</code> debugger on crashes (POSIX only)
-
+              Invokes the <code>gdb</code> debugger on crashes (POSIX only). Default is <code>false</code>.
             
         </td>
             </tr>
@@ -288,7 +298,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:-vm.finalize</code>
+                <code>-XX:vm.finalize=&lt;true|false&gt;</code>
 
               </strong>
             
@@ -296,7 +306,8 @@ limitations under the License.
                                 <td class="TableCell" colspan="" rowspan="">
     
                 
-              Disables finalization subsystem, that is, prevents starting finalization threads and ignores finalization requests from the GC
+              Disables finalization subsystem, that is, prevents starting finalization 
+		threads and ignores finalization requests from the GC.  Default is <code>true</code>.
             
         </td>
             </tr>
@@ -305,16 +316,15 @@ limitations under the License.
     
                 
               <strong>
-              <code>-XX:+vm.jvmti_compiled_method_load_inlined</code>
+              <code>-XX:vm.jvmti_compiled_method_load_inlined=&lt;true|false&gt;</code>
               </strong>
-
-
             
         </td>
                                 <td class="OddRowCell" colspan="" rowspan="">
     
                 
-              Reports inlined methods with <code>JVMTI_EVENT_COMPILED_METHOD_LOAD</code>; relevant for the optimizing JIT compiler
+              Reports inlined methods with <code>JVMTI_EVENT_COMPILED_METHOD_LOAD</code>; 
+	      relevant for the optimizing JIT compiler.   Default is <code>false</code>.
             
         </td>
             </tr>
@@ -324,15 +334,14 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:+vm_bootclasspath_appendclasspath</code>
+                <code>-XX:vm_bootclasspath_appendclasspath=&lt;true|false&gt;</code>
               </strong>
-
             
         </td>
                                 <td class="TableCell" colspan="" rowspan="">
     
                 
-              Appends classpath to the bootclasspath
+              Appends classpath to the bootclasspath.   Default is <code>false</code>.
             
         </td>
             </tr>
@@ -354,15 +363,73 @@ limitations under the License.
             
         </td>
             </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="">
+    
+                
+
+              <strong>
+                <code>-XX:thread.soft_unreservation=&lt;true|false&gt;</code>
+              </strong>
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="">
+    
+                
+                "soft" unreservation allows transferring lock thread locality from one thread to another. 
+                This can give performance benefits on applications with many uncontended and mainly thread-local locks.
+                Be aware that it can introduce performance penalties on applications that have 
+                many uncontended, but not thread-local locks.
+                Default is <code>false</code>.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="OddRowCell" colspan="" rowspan="">
+    
+                
+
+              <strong>
+                <code>-XX:vm.sort_fields=&lt;true|false&gt;</code>
+              </strong>
+
+            
+        </td>
+                                <td class="OddRowCell" colspan="" rowspan="">
+    
+                
+                Enables sorting class fields in size-decreasing order to ensure proper alignment. 
+                Default is <code>false</code>.
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="">
+    
+                
+
+              <strong>
+                <code>-XX:vm.compact_fields=&lt;true|false&gt;</code>
+              </strong>
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="">
+    
+                
+                Enables compacting class fields in order to fill the gaps induced by field alignment.
+                Default is <code>false</code>.
+            
+        </td>
+            </tr>
             </table>
                                 <h3>Execution Manager (vm/em)</h3>
                                 <table>
                         <tr>
                         <th class="TableHeading" colspan="" rowspan="" width="50%">
                 
-
               Options
-
             
         </th>
                                 <th class="TableHeading" colspan="" rowspan="" width="50%">
@@ -431,7 +498,7 @@ limitations under the License.
     
                 
               Specifies the Execution Manager configuration file to use; choose one of the predefined files
-              (<a href="#EMClient">client</a>, <a href="#EMServer">server</a>, <a href="#EMOpt">opt</a>, <a href="#EMJet">jet</a>)
+              (<a href="#EMClient">client</a>, <a href="#EMServer">server</a>, <a href="#EMServerAggressive">server_aggressive</a>, <a href="#EMOpt">opt</a>, <a href="#EMJet">jet</a>)
               <br />or specify your own
 
             
@@ -488,8 +555,8 @@ limitations under the License.
                 
 
               <strong>
-                <a name="EMJet" />
-                <code>-Xem:jet</code>
+                <a name="EMServerAggressive" />
+                <code>-Xem:server_aggressive</code>
               </strong>
 
 
@@ -498,12 +565,33 @@ limitations under the License.
                                 <td class="OddRowCell" colspan="" rowspan="">
     
                 
-              Configures VM to use only the fast-compiling non-optimizing JIT Jitrino.JET
+
+              Sets the optimization sequence for server applications to perform at high speed
             
         </td>
             </tr>
                                 <tr>
                         <td class="TableCell" colspan="" rowspan="">
+    
+                
+
+              <strong>
+                <a name="EMJet" />
+                <code>-Xem:jet</code>
+              </strong>
+
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="">
+    
+                
+              Configures VM to use only the fast-compiling non-optimizing JIT Jitrino.JET
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="OddRowCell" colspan="" rowspan="">
     
                 
 
@@ -514,7 +602,7 @@ limitations under the License.
 
             
         </td>
-                                <td class="TableCell" colspan="" rowspan="">
+                                <td class="OddRowCell" colspan="" rowspan="">
     
                 
               Configures VM to use only the aggressively optimizing JIT compiler Jitrino.OPT
@@ -522,7 +610,7 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="OddRowCell" colspan="" rowspan="">
+                        <td class="TableCell" colspan="" rowspan="">
     
                 
 
@@ -535,7 +623,7 @@ limitations under the License.
 
             
         </td>
-                                <td class="OddRowCell" colspan="" rowspan="">
+                                <td class="TableCell" colspan="" rowspan="">
     
                 
               Use to specify DRLVM-execution manager (EM) dll to load at startup.
@@ -543,7 +631,7 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="">
+                        <td class="OddRowCell" colspan="" rowspan="">
     
                 
 
@@ -556,7 +644,7 @@ limitations under the License.
 
             
         </td>
-                                <td class="TableCell" colspan="" rowspan="">
+                                <td class="OddRowCell" colspan="" rowspan="">
     
                 
               Use to override the default path for all JIT dlls in <code>EM.conf</code> with path.
@@ -564,7 +652,7 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="OddRowCell" colspan="" rowspan="">
+                        <td class="TableCell" colspan="" rowspan="">
     
                 
 
@@ -577,7 +665,7 @@ limitations under the License.
 
           
         </td>
-                                <td class="OddRowCell" colspan="" rowspan="">
+                                <td class="TableCell" colspan="" rowspan="">
     
                 
             Use to override the default path for <code>JIT_NAME</code> JIT dll in <code>EM.conf</code> with path.
@@ -585,7 +673,7 @@ limitations under the License.
         </td>
             </tr>
                                 <tr>
-                        <td class="TableCell" colspan="" rowspan="">
+                        <td class="OddRowCell" colspan="" rowspan="">
     
                 
 
@@ -598,7 +686,7 @@ limitations under the License.
 
             
         </td>
-                                <td class="TableCell" colspan="" rowspan="">
+                                <td class="OddRowCell" colspan="" rowspan="">
     
                 
               Sets up a path to em configuration file to use.
@@ -784,7 +872,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:gc.nos_size=N</code>
+                <code>-XX:gc.prefetch=&lt;true|false&gt;</code>
               </strong>
 
             
@@ -792,12 +880,108 @@ limitations under the License.
                                 <td class="TableCell" colspan="" rowspan="">
     
                 
-              Specifies a fixed size for NOS (nursery object space or young generation)
+               Enables prefetching a platform-specific distance ahead 
+               when allocating in the TLAB (Thread local allocation buffer). Default is <code>false</code>
             
         </td>
             </tr>
                                 <tr>
                         <td class="OddRowCell" colspan="" rowspan="">
+    
+                
+
+              <strong>
+                <code>-XX:gc.prefetch_distance=N</code>
+              </strong>
+
+            
+        </td>
+                                <td class="OddRowCell" colspan="" rowspan="">
+    
+                
+               Sets number of bytes prefetched in advance. Default is <code>1KB</code>
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="">
+    
+                
+
+              <strong>
+                <code>-XX:gc.zeroing_size=N</code>
+              </strong>
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="">
+    
+                
+               Sets number of bytes cleared ahead when allocating 
+               a new block for a thread or no space remains in previous cleared area
+               to hold a newly allocated object. Default is <code>2KB</code>
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="OddRowCell" colspan="" rowspan="">
+    
+                
+
+              <strong>
+                <code>-XX:gc.minor_algorithm=STRING</code>
+              </strong>
+
+            
+        </td>
+                                <td class="OddRowCell" colspan="" rowspan="">
+    
+                
+               Sets GC minor collection algorithm. The following algos are available:
+               <code>MINOR_NONGEN_FORWARD_POOL, MINOR_GEN_FORWARD_POOL, MINOR_NONGEN_SEMISPACE_POOL, MINOR_GEN_SEMISPACE_POOL</code>.
+               <br>Default is <code>MINOR_NONGEN_FORWARD_POOL</code></br>
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="">
+    
+                
+
+              <strong>
+                <code>-XX:gc.tospace_size=N</code>
+              </strong>
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="">
+    
+                
+                Sets to-space size for semi-space collection algo to hold 
+                objects survived in NOS after a collection. Default is 1/8 of NOS size
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="OddRowCell" colspan="" rowspan="">
+    
+                
+
+              <strong>
+                <code>-XX:gc.nos_size=N</code>
+              </strong>
+
+            
+        </td>
+                                <td class="OddRowCell" colspan="" rowspan="">
+    
+                
+              Specifies a fixed size for NOS (nursery object space or young generation)
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="">
     
                 
 
@@ -807,29 +991,12 @@ limitations under the License.
 
             
         </td>
-                                <td class="OddRowCell" colspan="" rowspan="">
-    
-                
-
-              Specifies the number of collectors used for collections for parallel collection
-            
-        </td>
-            </tr>
-                                <tr>
-                        <td class="TableCell" colspan="" rowspan="">
-    
-                
-
-              <strong>
-                <code>-XX:+gc.use_large_page</code>
-              </strong>
-
-            
-        </td>
                                 <td class="TableCell" colspan="" rowspan="">
     
                 
-              Turns ON large page support of the platform
+
+              Specifies the number of collectors used for collections for parallel collection. 
+              Default value is usually equals to number of cores available to java process
             
         </td>
             </tr>
@@ -839,16 +1006,15 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:+gc.verify</code>
+                <code>-XX:gc.use_large_page=&lt;true|false&gt; for Windows or <br>&lt;hugetlbfs mount point&gt; for Linux</br></code>
               </strong>
-
 
             
         </td>
                                 <td class="OddRowCell" colspan="" rowspan="">
     
                 
-              Turns ON GC verifier for GC debugging, type to see available options
+              Turns ON/OFF large page support of the platform. Default is <code>false</code>
             
         </td>
             </tr>
@@ -858,15 +1024,16 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:+gc.force_major_collect</code>
+                <code>-XX:gc.verify=&lt;true|false&gt;</code>
               </strong>
+
 
             
         </td>
                                 <td class="TableCell" colspan="" rowspan="">
     
                 
-              Forces every collection to be full heap collection (i.e., no minor collections)
+              Turns ON/OFF GC verifier for GC debugging, type to see available options. Default is <code>false</code>
             
         </td>
             </tr>
@@ -876,7 +1043,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:+gc.ignore_finref</code>
+                <code>-XX:gc.force_major_collect=&lt;true|false&gt;</code>
               </strong>
 
             
@@ -884,12 +1051,30 @@ limitations under the License.
                                 <td class="OddRowCell" colspan="" rowspan="">
     
                 
-              Disables processing of finalizer and weak references
+              Forces every collection to be full heap collection (i.e., no minor collections). Default is <code>false</code>
             
         </td>
             </tr>
                                 <tr>
                         <td class="TableCell" colspan="" rowspan="">
+    
+                
+
+              <strong>
+                <code>-XX:gc.ignore_finref=&lt;true|false&gt;</code>
+              </strong>
+
+            
+        </td>
+                                <td class="TableCell" colspan="" rowspan="">
+    
+                
+              Turns ON/OFF processing of finalizer and weak references.  Default is <code>false</code>
+            
+        </td>
+            </tr>
+                                <tr>
+                        <td class="OddRowCell" colspan="" rowspan="">
     
                 
 
@@ -899,7 +1084,7 @@ limitations under the License.
 
             
         </td>
-                                <td class="TableCell" colspan="" rowspan="">
+                                <td class="OddRowCell" colspan="" rowspan="">
     
                 
               Disables JVMTI functionality of heap iteration
@@ -946,7 +1131,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:-gc.adaptive=0</code>
+                <code>-XX:-gc.adaptive</code>
               </strong>
 
 
@@ -987,7 +1172,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:+gc.heap_iteration=1</code>
+                <code>-XX:+gc.heap_iteration</code>
               </strong>
 
             
@@ -1007,7 +1192,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:+gc.ignore_finalizers=1</code>
+                <code>-XX:+gc.ignore_finalizers</code>
               </strong>
 
 
@@ -1027,7 +1212,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:+gc.lp=1</code>
+                <code>-XX:+gc.lp</code>
               </strong>
 
             
@@ -1036,7 +1221,7 @@ limitations under the License.
     
                 
 
-              On Windows, enables (<code>1</code>) or disables (<code>0</code>) using large pages for more effective TLB utilization;
+              On Windows, enables (<code>+</code>) or disables (<code>-</code>) using large pages for more effective TLB utilization;
               <br />Use <code>-verbose:gc.lp</code> for more diagnostics
 
 
@@ -1071,7 +1256,7 @@ limitations under the License.
                 
 
               <strong>
-                <code>-XX:+gc.remember_root_set=1</code>
+                <code>-XX:+gc.remember_root_set</code>
               </strong>
 
             
