@@ -24,6 +24,7 @@ use X11::GUITest qw/
     FindWindowLike
     
     GetWindowName
+    SetWindowName
 
     SetInputFocus
     GetInputFocus
@@ -653,6 +654,11 @@ sub Main {
  Sleep(6000);
  LogWrite("\tSelect Help->Help Contents \n");
  WinSendKeys("%(h)h", "Java - Eclipse SDK");
+ Sleep(6000);
+ if (!WaitWindowViewable('Help - Eclipse SDK', 0, 5)) {
+  # workaround for Linux x86_64
+  SetWindowName(GetInputFocus(),'Help - Eclipse SDK');
+ }
  Sleep(6000);
  my @winIds = FindWindowLike('Select User Profile');
  if (scalar(@winIds) > 0) {
