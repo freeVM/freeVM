@@ -115,6 +115,13 @@ public class JDWPCommands {
         public static final byte FieldsWithGenericCommand = 14;
 
         public static final byte MethodsWithGenericCommand = 15;
+        
+        //New commands for Java 6
+        public static final byte InstancesCommand = 16;
+        
+        public static final byte ClassFileVersionCommand = 17;
+        
+        public static final byte ConstantPoolCommand = 18;
     }
 
     /**

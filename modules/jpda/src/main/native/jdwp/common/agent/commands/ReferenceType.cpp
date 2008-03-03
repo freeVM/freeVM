@@ -848,4 +848,46 @@ ReferenceType::SourceDebugExtensionHandler::Execute(JNIEnv *jni)
 
 } // SourceDebugExtensionHandler::Execute()
 
+// New commands for Java 6
+
 //------------------------------------------------------------------------------
+// ClassFileVersionHandler(17)-----------------------------------------------
+
+void
+ReferenceType::ClassFileVersionHandler::Execute(JNIEnv *jni)
+        throw (AgentException)
+{
+     jclass jvmClass = m_cmdParser->command.ReadReferenceTypeID(jni);
+    // Can be: InternalErrorException, OutOfMemoryException,
+    // JDWP_ERROR_INVALID_CLASS, JDWP_ERROR_INVALID_OBJECT
+#ifndef NDEBUG
+    if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
+        jvmtiError err;
+        char* signature = 0;
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
+        JvmtiAutoFree afcs(signature);
+        JDWP_TRACE_DATA("SourceDebugExtension: received: refTypeID=" << jvmClass
+            << ", classSignature=" << JDWP_CHECK_NULL(signature));
+    }
+#endif
+    
+    jint minorVersion = -1;
+    jint majorVersion = -1;
+    jvmtiError err;
+    JVMTI_TRACE(err, GetJvmtiEnv()->GetClassVersionNumbers(jvmClass, &minorVersion, &majorVersion));
+
+    if (err != JVMTI_ERROR_NONE) {
+        // Can be: JVMTI_ERROR_ABSENT_INFORMATION, JVMTI_ERROR_INVALID_CLASS, 
+        // JVMTI_ERROR_NULL_POINTER
+        throw AgentException(err);
+    }
+
+    m_cmdParser->reply.WriteInt(majorVersion);
+     JDWP_TRACE_DATA("ClassFileVersion: send: majorVersion=" 
+        << majorVersion);
+     
+     m_cmdParser->reply.WriteInt(minorVersion);
+    JDWP_TRACE_DATA("ClassFileVersion: send: minorVersion=" 
+        << minorVersion);
+    
+}

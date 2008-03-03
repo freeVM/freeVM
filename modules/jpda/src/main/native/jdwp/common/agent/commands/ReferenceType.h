@@ -346,8 +346,26 @@ namespace jdwp {
 
         }; // MethodsWithGenericHandler class
 
-    // =========================================================================
+    //New commands for Java 6
 
+    // =========================================================================
+        /**
+        * The class implements the <code> ClassFileVersion(17)</code>
+         * command from the <code>ReferenceType</code> command set.
+         */
+        class ClassFileVersionHandler : public SyncCommandHandler {
+        protected:
+
+            /**
+             * Executes the <code>ClassFileVersion</code> JDWP command for the
+             * <code>ReferenceType</code> command set.
+             *
+             * @param jni - the JNI interface pointer
+             */
+            virtual void Execute(JNIEnv *jni) throw(AgentException);
+        };// ClassFileVersionHandler class
+
+   // =========================================================================
     } // ReferenceType namespace
 
 } // jdwp namesoace
