@@ -35,37 +35,6 @@
     <property file="${framework.local.configuration.file}"/>
 
     <!-- ================================================================== 
-                      Framework Installation Functionality
-         ================================================================== -->
-    <target name="install" description="installs the BTI on local workstation"
-            depends="update-framework, create-local-configuration">
-    </target>
-
-    <target name="update-framework" 
-            unless="framework.parameters.repository.noupdate">
-        <!-- do update of framework implementation and test suite 
-             integration scripts -->
-        <exec executable="svn" dir="${root.dir}" failonerror="true">
-            <arg line="update ${scripts.dir} ${adaptors.dir}"/>
-        </exec>
-    </target>
-
-    <condition property="framework.local.config.exists">
-        <available file="${framework.local.configuration.file}"/>
-    </condition>
-
-    <target name="create-local-configuration"
-            unless="framework.local.config.exists">
-        <!-- create the file for local BTI configuration -->
-        <echo file="${framework.local.configuration.file}">#
-# Any BTI framework local configuration properties 
-# should be specified in this file. 
-# For more information on which parameters can be configured see
-#     ${scripts.dir}/parameters.xml
-</echo>
-    </target>
-
-    <!-- ================================================================== 
                       Import BTI Framework command line UI
          ================================================================== -->
     <property name="framework.main.file" 

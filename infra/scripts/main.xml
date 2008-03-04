@@ -51,7 +51,7 @@
                          Framework Setup Functionality
          ================================================================== -->
     <target name="setup"
-            depends="check-install, setup-framework, -save-suites-configuration,
+            depends="create-local-configuration, setup-framework, -save-suites-configuration,
                         load-required-parameters, save-required-parameters"/>
 
     <target name="-save-suites-configuration" depends="define-ant-contrib">
@@ -73,21 +73,19 @@
         </for>
     </target>
 
-    <target name="check-install">
-        <fail>
-            <condition>
-                <not>
-                    <and>
-                        <available file="${adaptors.dir}" type="dir"/>
-                        <available file="${scripts.dir}" type="dir"/>
-                        <available file="${framework.implementation.file}"/>
-                        <available file="${framework.local.configuration.file}"/>
-                    </and>
-                </not>
-            </condition>
-Could not found some of the framework components.
-Please, do buildtest install first.
-        </fail>
+    <condition property="framework.local.config.exists">
+        <available file="${framework.local.configuration.file}"/>
+    </condition>
+
+    <target name="create-local-configuration"
+            unless="framework.local.config.exists">
+        <!-- create the file for local BTI configuration -->
+        <echo file="${framework.local.configuration.file}">#
+# Any BTI framework local configuration properties 
+# should be specified in this file. 
+# For more information on which parameters can be configured see
+#     ${scripts.dir}/parameters.xml
+</echo>
     </target>
 
     <!-- ================================================================== 
