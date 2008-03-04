@@ -81,7 +81,14 @@ namespace jdwp {
         unsigned int canGetSourceDebugExtension : 1;
         unsigned int canRequestVMDeathEvent : 1;
         unsigned int canSetDefaultStratum : 1;
-        unsigned int : 17;
+        unsigned int canGetInstanceInfo : 1; 
+        unsigned int canRequestMonitorEvents : 1;  
+        unsigned int canGetMonitorFrameInfo : 1;   
+        unsigned int canUseSourceNameFilters : 1; 
+        unsigned int canGetConstantPool : 1;
+        unsigned int canForceEarlyReturn : 1;
+
+        unsigned int : 11;
     };
 
     /**

@@ -410,7 +410,8 @@ public class VmMirror {
                 .getNextValueAsBoolean();
         targetVMCapabilities.canSetDefaultStratum = replyPacket
                 .getNextValueAsBoolean();
-        targetVMCapabilities.reserved16 = replyPacket.getNextValueAsBoolean();
+        targetVMCapabilities.canGetInstanceInfo = replyPacket
+                .getNextValueAsBoolean();
         targetVMCapabilities.reserved17 = replyPacket.getNextValueAsBoolean();
         targetVMCapabilities.reserved18 = replyPacket.getNextValueAsBoolean();
         targetVMCapabilities.reserved19 = replyPacket.getNextValueAsBoolean();

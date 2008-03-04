@@ -851,6 +851,86 @@ ReferenceType::SourceDebugExtensionHandler::Execute(JNIEnv *jni)
 // New commands for Java 6
 
 //------------------------------------------------------------------------------
+// InstancesHandler(16)-----------------------------------------------
+
+void
+ReferenceType::InstancesHandler::Execute(JNIEnv *jni)
+        throw (AgentException)
+{
+    jclass jvmClass = m_cmdParser->command.ReadReferenceTypeID(jni);
+    // Can be: InternalErrorException, OutOfMemoryException,
+    // JDWP_ERROR_INVALID_CLASS, JDWP_ERROR_INVALID_OBJECT
+#ifndef NDEBUG
+    if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
+        jvmtiError err;
+        char* signature = 0;
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
+        JvmtiAutoFree afcs(signature);
+        JDWP_TRACE_DATA("SourceDebugExtension: received: refTypeID=" << jvmClass
+            << ", classSignature=" << JDWP_CHECK_NULL(signature));
+    }
+#endif
+    jint maxInstances = m_cmdParser->command.ReadInt();
+    if(maxInstances < 0) {
+        throw AgentException(JDWP_ERROR_ILLEGAL_ARGUMENT);
+    }
+
+    jvmtiHeapCallbacks hcbs;
+    memset(&hcbs, 0, sizeof(hcbs));
+    hcbs.heap_iteration_callback = NULL;
+    hcbs.heap_reference_callback = &HeapReferenceCallback;
+    hcbs.primitive_field_callback = &PrimitiveFieldCallback;
+    hcbs.array_primitive_value_callback = &ArrayPrimitiveValueCallback;
+    hcbs.string_primitive_value_callback = &StringPrimitiveValueCallback;
+
+    jvmtiError err;
+    //It initiates a traversal over the objects that are directly and indirectly reachable from the heap roots.
+    JVMTI_TRACE(err, GetJvmtiEnv()->FollowReferences(0, jvmClass,  NULL,
+         &hcbs, NULL));
+     if (err != JVMTI_ERROR_NONE) {
+        // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_INVALID_CLASS
+        // JVMTI_ERROR_INVALID_OBJECT, JVMTI_ERROR_NULL_POINTER 
+        throw AgentException(err);
+     }
+
+     const jlong tags[1] = {EXPECTED_INSTANCE_TAG};
+     int reachableInstancesNum = 0;
+     jobject * pResultObjects = 0;
+     // Return the instances that have been marked EXPECTED_INSTANCE_TAG tag.
+     JVMTI_TRACE(err, GetJvmtiEnv()->GetObjectsWithTags(1, tags, &reachableInstancesNum,
+            &pResultObjects, NULL));
+     JvmtiAutoFree afResultObjects(pResultObjects);
+
+     if (err != JVMTI_ERROR_NONE) {
+        // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_ILLEGAL_ARGUMENT 
+        // JVMTI_ERROR_ILLEGAL_ARGUMENT, JVMTI_ERROR_NULL_POINTER  
+        throw AgentException(err);
+     }
+
+     jint returnInstancesNum;
+     //If maxInstances is zero, all instances are returned.
+     if(0 == maxInstances) {
+        returnInstancesNum = reachableInstancesNum;
+     }
+     else if(maxInstances < reachableInstancesNum) {
+        returnInstancesNum = maxInstances;
+     }
+     else {
+        returnInstancesNum = reachableInstancesNum;
+     }
+
+     // Compose reply package
+     m_cmdParser->reply.WriteInt(returnInstancesNum);
+     JDWP_TRACE_DATA("Instances: return instances number:" << returnInstancesNum);
+
+     for(int i = 0; i < returnInstancesNum; i++) {
+          m_cmdParser->reply.WriteTaggedObjectID(jni, pResultObjects[i]);
+     }
+     JDWP_TRACE_DATA("Instances: tagged-objectID returned.");
+
+}
+
+//------------------------------------------------------------------------------
 // ClassFileVersionHandler(17)-----------------------------------------------
 
 void
@@ -883,11 +963,78 @@ ReferenceType::ClassFileVersionHandler::Execute(JNIEnv *jni)
     }
 
     m_cmdParser->reply.WriteInt(majorVersion);
-     JDWP_TRACE_DATA("ClassFileVersion: send: majorVersion=" 
+    JDWP_TRACE_DATA("ClassFileVersion: send: majorVersion=" 
         << majorVersion);
      
-     m_cmdParser->reply.WriteInt(minorVersion);
+    m_cmdParser->reply.WriteInt(minorVersion);
     JDWP_TRACE_DATA("ClassFileVersion: send: minorVersion=" 
         << minorVersion);
     
 }
+
+//-----------------------------------------------------------------------------
+// Heap callbacks, used in Instances command
+//-----------------------------------------------------------------------------
+
+     /**
+     * Describes a reference from an object or the VM (the referrer) 
+     * to another object (the referree) or a heap root to a referree. 
+     */
+     jint JNICALL ReferenceType::HeapReferenceCallback
+        (jvmtiHeapReferenceKind reference_kind, 
+         const jvmtiHeapReferenceInfo* reference_info, 
+         jlong class_tag, 
+         jlong referrer_class_tag, 
+         jlong size, 
+         jlong* tag_ptr, 
+         jlong* referrer_tag_ptr, 
+         jint length, 
+         void* user_data) {
+            *tag_ptr = EXPECTED_INSTANCE_TAG;
+            return JVMTI_VISIT_OBJECTS;
+     }
+
+    /**
+     * This callback will describe a static field if the object is a class, 
+     * and otherwise will describe an instance field. 
+     */
+     jint JNICALL ReferenceType::PrimitiveFieldCallback
+        (jvmtiHeapReferenceKind kind, 
+         const jvmtiHeapReferenceInfo* info, 
+         jlong object_class_tag, 
+         jlong* object_tag_ptr, 
+         jvalue value, 
+         jvmtiPrimitiveType value_type, 
+         void* user_data) {
+              *object_tag_ptr = EXPECTED_INSTANCE_TAG;
+              return JVMTI_VISIT_OBJECTS;
+     }
+     
+    /**
+     * Describes the values in an array of a primitive type.
+     */
+     jint JNICALL ReferenceType::ArrayPrimitiveValueCallback
+        (jlong class_tag, 
+         jlong size, 
+         jlong* tag_ptr, 
+         jint element_count, 
+         jvmtiPrimitiveType element_type, 
+         const void* elements, 
+         void* user_data) {
+             *tag_ptr = EXPECTED_INSTANCE_TAG;
+             return JVMTI_VISIT_OBJECTS;
+     }
+     
+    /**
+     * Describes the value of a java.lang.String. 
+     */ 
+     jint JNICALL ReferenceType::StringPrimitiveValueCallback
+        (jlong class_tag, 
+         jlong size, 
+         jlong* tag_ptr, 
+         const jchar* value, 
+         jint value_length, 
+         void* user_data) {
+             *tag_ptr = EXPECTED_INSTANCE_TAG;
+             return JVMTI_VISIT_OBJECTS;
+     }

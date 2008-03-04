@@ -33,6 +33,10 @@
 #include "AgentException.h"
 #include "CommandHandler.h"
 
+//This tag is used to mark instance that is reachable for garbage collection purpose
+//It will be used in Instances command
+#define   EXPECTED_INSTANCE_TAG  0xfffff
+
 namespace jdwp {
 
     /**
@@ -347,6 +351,22 @@ namespace jdwp {
         }; // MethodsWithGenericHandler class
 
     //New commands for Java 6
+   // =========================================================================
+        /**
+        * The class implements the <code> Instances(16)</code>
+         * command from the <code>ReferenceType</code> command set.
+         */
+        class InstancesHandler : public SyncCommandHandler {
+        protected:
+
+            /**
+             * Executes the <code>Instances</code> JDWP command for the
+             * <code>ReferenceType</code> command set.
+             *
+             * @param jni - the JNI interface pointer
+             */
+            virtual void Execute(JNIEnv *jni) throw(AgentException);
+        };// InstancesHandler class
 
     // =========================================================================
         /**
@@ -365,7 +385,62 @@ namespace jdwp {
             virtual void Execute(JNIEnv *jni) throw(AgentException);
         };// ClassFileVersionHandler class
 
+
    // =========================================================================
+   //-----------------------------------------------------------------------------
+   // Heap callbacks, used in Instances command
+   //-----------------------------------------------------------------------------
+    /**
+     * Describes a reference from an object or the VM (the referrer) 
+     * to another object (the referree) or a heap root to a referree. 
+     */
+     jint JNICALL HeapReferenceCallback
+        (jvmtiHeapReferenceKind reference_kind, 
+         const jvmtiHeapReferenceInfo* reference_info, 
+         jlong class_tag, 
+         jlong referrer_class_tag, 
+         jlong size, 
+         jlong* tag_ptr, 
+         jlong* referrer_tag_ptr, 
+         jint length, 
+         void* user_data) ;
+
+    /**
+     * This callback will describe a static field if the object is a class, 
+     * and otherwise will describe an instance field. 
+     */
+     jint JNICALL PrimitiveFieldCallback
+        (jvmtiHeapReferenceKind kind, 
+         const jvmtiHeapReferenceInfo* info, 
+         jlong object_class_tag, 
+         jlong* object_tag_ptr, 
+         jvalue value, 
+         jvmtiPrimitiveType value_type, 
+         void* user_data);
+     
+    /**
+     * Describes the values in an array of a primitive type.
+     */
+     jint JNICALL ArrayPrimitiveValueCallback
+        (jlong class_tag, 
+         jlong size, 
+         jlong* tag_ptr, 
+         jint element_count, 
+         jvmtiPrimitiveType element_type, 
+         const void* elements, 
+         void* user_data);
+     
+    /**
+     * Describes the value of a java.lang.String. 
+     */ 
+     jint JNICALL StringPrimitiveValueCallback
+        (jlong class_tag, 
+         jlong size, 
+         jlong* tag_ptr, 
+         const jchar* value, 
+         jint value_length, 
+         void* user_data);
+
     } // ReferenceType namespace
 
 } // jdwp namesoace

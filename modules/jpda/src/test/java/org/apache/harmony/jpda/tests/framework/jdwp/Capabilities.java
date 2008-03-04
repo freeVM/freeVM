@@ -61,7 +61,7 @@ public class Capabilities {
 
     public boolean canSetDefaultStratum             = false;
 
-    public boolean reserved16                       = false;
+    public boolean canGetInstanceInfo               = false;
 
     public boolean reserved17                       = false;
 

@@ -251,6 +251,9 @@ CommandDispatcher::CreateCommandHandler(jdwpCommandSet cmdSet, jdwpCommand cmdKi
             return new ReferenceType::MethodsWithGenericHandler();
         
         //New commands for Java 6
+        case JDWP_COMMAND_RT_INSTANCES:
+            return new ReferenceType::InstancesHandler();
+
         case JDWP_COMMAND_RT_CLASS_FILE_VERSION:
             return new ReferenceType::ClassFileVersionHandler();
 

@@ -612,8 +612,17 @@ VirtualMachine::CapabilitiesNewHandler::Execute(JNIEnv *jni)
     m_cmdParser->reply.WriteBoolean(IsAdded(caps.canRequestVMDeathEvent));
     m_cmdParser->reply.WriteBoolean(IsAdded(caps.canSetDefaultStratum));
 
-    for (int i = 0; i < 17; i++)
+    // New capabilities for Java 6
+    m_cmdParser->reply.WriteBoolean(IsAdded(caps.canGetInstanceInfo));
+    m_cmdParser->reply.WriteBoolean(IsAdded(caps.canRequestMonitorEvents));
+    m_cmdParser->reply.WriteBoolean(IsAdded(caps.canGetMonitorFrameInfo));
+    m_cmdParser->reply.WriteBoolean(IsAdded(caps.canUseSourceNameFilters));
+    m_cmdParser->reply.WriteBoolean(IsAdded(caps.canGetConstantPool ));
+    m_cmdParser->reply.WriteBoolean(IsAdded(caps.canForceEarlyReturn));
+
+    for (int i = 0; i < 11; i++){
         m_cmdParser->reply.WriteBoolean(JNI_FALSE);
+    }
 }
 
 //-----------------------------------------------------------------------------

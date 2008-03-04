@@ -375,6 +375,17 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         env.caps.canRequestVMDeathEvent = 1;
         env.caps.canSetDefaultStratum = 0;
 
+        //New capabilities for Java 6
+        env.caps.canGetInstanceInfo = 1;
+        env.caps.canRequestMonitorEvents = 1;
+        env.caps.canGetMonitorFrameInfo = 1;
+        env.caps.canUseSourceNameFilters = 1;
+        env.caps.canGetConstantPool = 
+            caps.can_get_constant_pool;
+        env.caps.canForceEarlyReturn =
+            caps.can_force_early_return;
+        caps.can_tag_objects = 1;
+
         // these caps should be added for full agent functionality
         // caps.can_suspend = 1;
         // caps.can_signal_thread = 1;
@@ -390,7 +401,6 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         // caps.can_redefine_any_class = 1;
 
         // these caps look unnecessary for JDWP agent
-        caps.can_tag_objects = 0;
         caps.can_maintain_original_method_order = 0;
         caps.can_redefine_any_class = 0;
         caps.can_get_current_thread_cpu_time = 0;
