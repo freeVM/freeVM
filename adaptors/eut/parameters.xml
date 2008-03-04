@@ -25,6 +25,10 @@
             value="${hdk.parameters.shared.binaries.jre.dir}"/>
     </required>
 
+    <svn>
+      <eut url="tests/eut"/>
+    </svn>
+
     <!-- shared values -->
     <shared>
     </shared>
