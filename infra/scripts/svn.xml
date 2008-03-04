@@ -141,7 +141,7 @@
 
         <!--TODO: detect infra root -->
         <condition property="svn.url"
-                   value="http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0/${lib.url}"
+                   value="http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk/${lib.url}"
                    else="${lib.url}">
             <!--FIXME: need regexp -->
             <not>
