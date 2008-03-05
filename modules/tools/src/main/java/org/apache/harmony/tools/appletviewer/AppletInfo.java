@@ -20,6 +20,7 @@ package org.apache.harmony.tools.appletviewer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 import javax.swing.JLabel;
 
@@ -29,7 +30,7 @@ public class AppletInfo {
     
     private URL documentBase;
     private URL codeBase;
-    private URL archive;
+    private URL[] clURLs;
     private String archiveStr;
     private String tagName;
     private int width;
@@ -59,20 +60,6 @@ public class AppletInfo {
 
     public void setCodeBase(String codeBaseStr) throws MalformedURLException {
         this.codeBase = new URL(this.documentBase, (codeBaseStr == null)?"./":codeBaseStr);
-    }
-
-    public URL getArchive() {
-        if (archive == null && archiveStr != null) {
-            try {
-                archive = new URL(getCodeBase(), archiveStr);
-            } catch (MalformedURLException _) {                
-            }
-        }
-        return archive;
-    }
-
-    public void setArchive(URL archive) {
-        this.archive = archive;
     }
 
     public String getParameter(String name) {
@@ -115,16 +102,40 @@ public class AppletInfo {
         if (statusLabel != null)
             statusLabel.setText(text);
     }
-    
-    public URL []getClassLoaderURLs() {
-        archiveStr = getParameter("ARCHIVE");
-    	URL []res = (archive == null && archiveStr == null)?new URL[1]:new URL[2];
-    	switch (res.length) {
-    		case 2: res[1] = getArchive();
-    		case 1: res[0] = getCodeBase();
-    	}
-    	return res;
+
+    public URL[] getClassLoaderURLs() {
+
+        if (clURLs == null) {
+            archiveStr = getParameter("ARCHIVE");
+
+            if (archiveStr == null) {
+                clURLs = new URL[] { getCodeBase() };
+            } else {
+                StringTokenizer st = new StringTokenizer(archiveStr, ", ");
+                int k = 0;
+
+                clURLs = new URL[st.countTokens() + 1];
+                clURLs[k++] = getCodeBase();
+
+                try {
+                    while (st.hasMoreTokens()) {
+                        String token = st.nextToken();
+                        clURLs[k++] = new URL(getCodeBase(), token);
+                    }
+                } catch (MalformedURLException e) {
+                    //TODO add exception handler
+                }
+            }
+
+        }
+
+        return clURLs;
     }
+
+    public void setClassLoaderURLs(URL[] urls) {
+        this.clURLs = urls;
+    }
+
 
     public void setTag(String tagName){
         this.tagName = tagName;
