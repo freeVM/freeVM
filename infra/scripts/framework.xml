@@ -51,7 +51,7 @@
 
     <!-- Sets up the framework -->
     <target name="setup-framework" 
-            depends="fetch-depends, checkout-projects, load-depends, define-tasks, make-dirs, patch-ant, 
+            depends="load-depends, define-tasks, make-dirs, patch-ant, 
                         check-selected-names, reorder-suites, -delete-temporal-properties"/>
 
     <!-- Initialize the framework for test execution -->
@@ -98,30 +98,6 @@ Please, check the names specified by test.suites property:
          obtained on setup stage -->
     <target name="load-suites-configuration" depends="define-ant-contrib">
         <var file="${selected.suites.configuration}"/>
-    </target>
-
-    <target name="fetch-depends">
-        <property name="download.xml" location="${scripts.dir}/download.xml"/>
-
-        <!-- create empty file -->
-        <echo file="${external.resources.location}" message=""/>
-        
-        <!-- download framework dependencies -->
-        <subant genericantfile="${download.xml}" target="download-all" buildpath="${scripts.dir}" inheritall="true"/>
-        
-        <!-- download suites dependencies -->
-        <subant genericantfile="${download.xml}" target="download-all"  inheritall="true">
-            <dirset dir="${adaptors.dir}" includes="${test.suites}"/>
-        </subant>
-    </target>
-
-    <target name="checkout-projects" depends="make-dirs">
-        <property name="svn.xml" location="${scripts.dir}/svn.xml"/>
-
-        <!-- download suites dependencies -->
-        <subant genericantfile="${svn.xml}" target="checkout-all"  inheritall="true">
-            <dirset dir="${adaptors.dir}" includes="${test.suites}"/>
-        </subant>
     </target>
 
     <condition property="ant.to.patch" value="1.6.5">
