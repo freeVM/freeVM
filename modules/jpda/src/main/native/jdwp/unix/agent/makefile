@@ -28,6 +28,8 @@ CXXFLAGS += -fpic
 INCLUDES += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
             -I$(COMMON)generic -Icore
 
+INCLUDES := -I../../../include $(INCLUDES)
+
 LDFLAGS += -lstdc++
 
 BUILDFILES = \

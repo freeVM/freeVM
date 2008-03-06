@@ -30,7 +30,7 @@ INCLUDES = $(INCLUDES) \
          -I$(CMNAGENT)commands -I$(CMNAGENT)core \
          -I$(COMMON)generic -Icore
 
-HYCFLAGS = $(HYCFLAGS) $(INCLUDES) -GX -wd4290
+HYCFLAGS = -I..\..\..\include $(HYCFLAGS) $(INCLUDES) -GX -wd4290
 
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
