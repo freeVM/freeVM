@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+    <properties>
+        <title>Apache Harmony Mailing Lists - RU</title>
+        <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    </properties>
+    <body>
+        <section name="Электронная рассылка Apache Harmony">
+        <p style="text-align: right">RU | <a href="mailing.html">EN</a></p>
+         <P><strong>Внимание</strong>: Данная страница является переводом английской 
+    версии на сайте и находится в стадии разработки.</P>
+    
+            <p>
+                Почтовая рассылка проекта Apache Harmony осуществляется в соответствии со следующими условиями:
+            </p>
+            <ul>
+                <li>
+                    Данный форум был создан как средство связи общего пользования для
+                    обсуждения проектов открытого сообщества The Apache Software Foundation
+                    (далее "Сообщества"), некоммерческой организации шт. Делавэр, которая 
+                    согласно ст.501(c)(3) относится к общественной благотворительности.  
+                </li>
+                <li>
+                    Вся информация, намеренно предоставляемая Сообществу посредством данного форума,
+                    считается Вкладом в развитие Сообщества, если не указано иначе.       
+              </li>
+                <li>
+                    Положения и условия, применимые к Вашим вкладам определяются 
+                    Лицензионным Соглашением Участника (CLA), подписанным Вами и/или Вашим
+                    работодателем или, если такого документа в распоряжении Сообщества нет, 
+                    Положениями и Условиями Вкладов, описанных в лицензии Apache License, версия 2.0.
+                </li>
+                <li>
+                    Если Вы не согласны с тем, что Ваше сообщение на форуме будет считаться Вкладом,
+                    мы рекомендуем не создавать сообщение. Однако, если Вы все же его разместите,
+                    мы просим вас поместить надпись "НЕ СЧИТАТЬ ВКЛАДОМ" ("NOT A CONTRIBUTION")
+                    на верху сообщения. 
+                </li>
+                <li>Запрещается размещать код, авторство на который не принадлежит Вам, или на размещение
+                    которого у Вас нет четкого разрешения. 
+                </li>
+                <li>
+                    Не разрешается вести детальное обсуждение какой-либо представленной Вами программной реализации, 
+                    которая не находится в общем доступе по лицензии свободного использования кода или не 
+                    является вашей собственной реализацией.
+                </li>
+                <li>
+                    Ни при каких обстоятельствам ни один член сообщества не примет для включения
+                    в репозиторий код, размещенный через форум, если он не предложен 
+                    <a href="contribution_policy.html">Авторизованным Участником</a> сообщества. 
+                </li>
+            </ul>
+            <subsection name="Список рассылок">
+            <p>
+                В настоящее время доступны три адреса электронной рассылки проекта Harmony:
+            </p>
+                <dl>
+                  <dt><strong>dev@harmony.apache.org</strong></dt>
+                  <dd>Основная рассылка для обсуждения изменений и развития проекта.
+                  Подписка на эту рассылку доступна всем, но только подписчики могут помещать
+                  сообщения в рассылку.
+                  </dd>
+
+                  <dt><strong>commits@harmony.apache.org</strong></dt>
+                  <dd>
+                    Все проекты сообщества Apache хранятся на репозиториях общего
+                    доступа с использованием контроля версий SVN.
+                    Только некоторые разработчики, участвующие в проекте (члены сообщества, committers),
+                    имеют права на запись в этих репозиториях; остальные имеют 
+                    права на чтение через анонимный доступ в SVN.
+                  </dd>
+                  <dt><strong>private@harmony.apache.org</strong></dt>
+                  <dd>
+                    Приватная рассылка членов комитета по управлению проектом используется для
+                    обсуждения тем, не подходящих для публичного обсуждения, например,
+                    вопросов юридического, личного характера или связанных с безопасностью проекта,
+                    до публикации их решения. Подписка на эту рассылку доступна только
+                    членам комитета.
+                  </dd>              
+               </dl>
+             <p> Отметим, что для переписки используется только английский язык. Для сообщения
+                об ошибках или пожеланиях на русском, воспользуйтесь нашей 
+                <a href="http://issues.apache.org/jira/browse/HARMONY">системой учета дефектов</a>.
+             </p>
+            </subsection>
+            <subsection name="Рассылка для разработчиков">
+
+                <p>
+                    Данная рассылка используется разработчиками проекта для обсуждения планов,
+                    принятия решений, голосования по техническим вопросам, и т.д. Эта рассылка 
+                    достаточно объемна, хотя часть обсуждений также проходит в канале
+                    <a href="get-involved.html#irc-channel">IRC</a> .
+                </p>
+                <ul>
+                    <li>
+                        <a href="mailto:dev-subscribe@harmony.apache.org">Подписаться</a> на dev@harmony.apache.org
+                    </li>
+                    <li>
+                        <b><a href="mailto:dev-unsubscribe@harmony.apache.org">Отписаться</a></b> от dev@harmony.apache.org
+                    </li>
+                    <li>
+                        Просмотреть <a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-dev/">
+                        архивы harmony-dev@incubator.apache.org (май 2005 - октябрь 2006)</a>
+                    </li>
+                    <li>
+                        Просмотреть <a href="http://mail-archives.apache.org/mod_mbox/harmony-dev/">
+                        архивы dev@harmony.apache.org (с ноября 2006)</a>
+                    </li>
+                </ul>
+
+                <p class="note">Примечание</p>
+                <p class="notetext">
+                В настоящее время, для формирования единого сообщества в рассылку включается 
+                вся переписка разработчиков - обсуждение Java библиотек классов,
+                виртуальной машины, документации, поддержки сайта, разработки приложений и т.п. 
+                Предполагается, что позднее рассылка будет подразделена на несколько обсуждений 
+                различной тематики. 
+                </p>
+                <p>
+                    Для облегчения сортировка писем рассылки, мы просим добавлять следующие
+                    маркеры к теме Вашего сообщения:
+                </p>
+                <ul>
+                    <li>
+                        [general] - общие вопросы
+                    </li>
+                    <li>
+                        [announce] - объявления
+                    </li>
+                    <li>
+                        [legal] - юридические вопросы
+                    </li>
+                    <li>
+                        [classlib]<i>[module]</i> - вопросы по библиотекам классов (по желанию с указанием 
+                        названия модуля)
+                    </li>
+                    <li>
+                        [drlvm]<i>[module]</i> - вопросы по виртуальной машине DRLVM (по желанию с указанием 
+                        названия модуля)
+                    </li>
+                    <li>
+                        [jchevm]<i>[module]</i> - вопросы по виртуальной машине jchevm (по желанию с указанием 
+                        названия модуля)
+                    </li>
+                    <li>
+                        [bootvm]<i>[module]</i> - вопросы по виртуальной машине bootvm (по желанию с указанием 
+                        названия модуля) 
+                    </li>
+                    <li>
+                        [doc] - документация
+                    </li>
+                    <li>
+                        [tools] - программы
+                    </li>
+                    <li>
+                        [testing] или [qa] - тестирование
+                    </li>
+                </ul>
+                <p>
+                   Просто вставьте соответствующий маркер перед темой сообщения.</p>
+                <p class="example">Пример</p>
+<source>
+To: dev@harmony.apache.org
+From: harmony_user@openjava.org
+Subject: [classlib][io] Problem with java.io.OutputSocket
+....</source>
+            </subsection>
+            <subsection name="Рассылка системы контроля исходного кода">
+                <p>
+                    Подписавшись на рассылку, Вы сможете получать уведомления об всех изменениях
+                    в исходном коде Harmony на репозитории (со списком изменений), а также об
+                    изменениях на Вики-страницах проекта и изменениях в  
+                    <a href="http://issues.apache.org/jira/browse/HARMONY">системе учета дефектов</a>.
+                </p>
+                <ul>
+                    <li>
+                        <a href="mailto:commits-subscribe@harmony.apache.org">Подписаться</a> на commits@harmony.apache.org
+                    </li>
+                    <li>
+                        <a href="mailto:commits-unsubscribe@harmony.apache.org">Отписаться</a> от commits@harmony.apache.org
+                    </li>
+                    <li>
+                       Просмотреть <a href="http://mail-archives.apache.org/mod_mbox/incubator-harmony-commits/">
+                       архивы harmony-commits@incubator.apache.org (май 2005 - октябрь 2006)</a>
+                    </li>
+                    <li>
+                        Просмотреть <a href="http://mail-archives.apache.org/mod_mbox/harmony-commits/">архивы commits@harmony.apache.org (с ноября 2006)</a>
+                    </li>
+                </ul>
+            </subsection>
+            <subsection name="Рассылка оповещений">
+                <p>
+                    Подписавшись на эту рассылку, Вы сможете получать оповещения от различных систем построения и тестирования
+                    кода, используемых сообществом Harmony с информацией о неисправных сборках кода и результатах тестирования.
+                </p>
+                <ul>
+                    <li>
+                        <a href="mailto:alerts-subscribe@harmony.apache.org">Подписаться</a> на alerts@harmony.apache.org
+                    </li>
+                    <li>
+                        <a href="mailto:alerts-unsubscribe@harmony.apache.org">Отписаться</a> от alerts@harmony.apache.org
+                    </li>
+                    <li>
+                       Просмотреть <a href="http://mail-archives.apache.org/mod_mbox/harmony-alerts/">архив alerts@harmony.apache.org</a>
+                    </li>
+                </ul>
+            </subsection>
+            <subsection name="Другие рассылки">
+                <p>
+                    Комитет по управлению проектом Harmony также использует приватную рассылку
+                    для решения административных вопросов. Подписка на рассылку доступна только
+                    членам комитета, куда входит большинство членов сообщества. 
+                </p>
+            </subsection>
+        </section>
+    </body>
+</document>
+
+
+
+
+
+
+
