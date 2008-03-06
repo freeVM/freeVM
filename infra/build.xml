@@ -170,12 +170,12 @@
     <target name="-patch-ant-1.6.5" depends="-init-setup" if="is.ant.1.6.5">
         <property name="ant.to.patch" value="1.6.5" />
         <property name="ant.patch.url"
-                  value="http://issues.apache.org/bugzilla/attachment.cgi?id=15681" />
+                  value="https://issues.apache.org/bugzilla/attachment.cgi?id=15681" />
     </target>
     <target name="-patch-ant-1.7.0" depends="-init-setup" if="is.ant.1.7.0">
         <property name="ant.to.patch" value="1.7.0" />
         <property name="ant.patch.url"
-                  value="http://issues.apache.org/bugzilla/attachment.cgi?id=19566" />
+                  value="https://issues.apache.org/bugzilla/attachment.cgi?id=19566" />
     </target>
 
     <target name="patch-ant"
