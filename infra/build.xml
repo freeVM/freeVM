@@ -69,8 +69,27 @@
     <!-- ================================================================== 
                          Framework Setup Functionality
          ================================================================== -->
+    <target name="-init-setup">
+
+        <!-- create dirs -->
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${checkouts.dir}" />
+        <mkdir dir="${results.dir}" />
+        <mkdir dir="${temp.files.dir}" />
+        <mkdir dir="${classes.dir}" />
+
+        <!-- init properties -->
+        <condition property="is.ant.1.6.5">
+            <contains string="${ant.version}" substring="1.6.5" />
+        </condition>
+        <condition property="is.ant.1.7.0">
+            <contains string="${ant.version}" substring="1.7.0" />
+        </condition>
+    </target>
+
     <target name="setup"
-            depends="fetch-depends,
+            depends="-init-setup,
+                     fetch-depends,
                      checkout-projects,
                      create-local-configuration,
                      setup-framework,
@@ -114,7 +133,7 @@
 </echo>
     </target>
 
-    <target name="fetch-depends">
+    <target name="fetch-depends" depends="-init-setup">
         <property name="download.xml" location="${scripts.dir}/download.xml" />
 
         <!-- create empty file -->
@@ -134,7 +153,7 @@
         </subant>
     </target>
 
-    <target name="checkout-projects" depends="make-dirs">
+    <target name="checkout-projects" depends="-init-setup">
         <property name="svn.xml" location="${scripts.dir}/svn.xml" />
 
         <!-- download suites dependencies -->
@@ -144,6 +163,46 @@
             <dirset dir="${adaptors.dir}" includes="${test.suites}" />
         </subant>
     </target>
+
+    <!-- Tasks to patch Ant's Bug described at: 
+         http://issues.apache.org/bugzilla/show_bug.cgi?id=30569
+        -->
+    <target name="-patch-ant-1.6.5" depends="-init-setup" if="is.ant.1.6.5">
+        <property name="ant.to.patch" value="1.6.5" />
+        <property name="ant.patch.url"
+                  value="http://issues.apache.org/bugzilla/attachment.cgi?id=15681" />
+    </target>
+    <target name="-patch-ant-1.7.0" depends="-init-setup" if="is.ant.1.7.0">
+        <property name="ant.to.patch" value="1.7.0" />
+        <property name="ant.patch.url"
+                  value="http://issues.apache.org/bugzilla/attachment.cgi?id=19566" />
+    </target>
+
+    <target name="patch-ant"
+            depends="-patch-ant-1.6.5,-patch-ant-1.7.0,-setup-proxy"
+            if="ant.to.patch">
+
+        <mkdir dir="${temp.files.dir}/${ant.to.patch}" />
+        <property name="ant.patch.file"
+                  location="${temp.files.dir}/${ant.to.patch}/SubAnt.java" />
+
+        <!-- FIXME: download only if required (i.e. no patch file) -->
+        <get src="${ant.patch.url}"
+             dest="${ant.patch.file}"
+             usetimestamp="true"
+             verbose="true" />
+
+        <javac srcdir="${temp.files.dir}/${ant.to.patch}"
+               destdir="${classes.dir}"
+               includesfile="${ant.patch.file}">
+            <depend targetdir="${classes.dir}/org/apache/tools/ant/taskdefs">
+                <mapper>
+                    <globmapper from="*.java" to="*.class" />
+                </mapper>
+            </depend>
+        </javac>
+    </target>
+
 
     <!-- ================================================================== 
                           Test Execution Functionality
@@ -225,5 +284,9 @@ ERROR: Could not find ${selected.suites.configuration}. Please, do 'setup' first
             depends="init-framework, clean-suites" />
 
     <target name="distclean" description="distclean" />
+
+    <target name="-setup-proxy" if="http.proxyHost">
+        <setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+    </target>
 
 </project>

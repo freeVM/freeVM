@@ -51,7 +51,7 @@
 
     <!-- Sets up the framework -->
     <target name="setup-framework" 
-            depends="load-depends, define-tasks, make-dirs, patch-ant, 
+            depends="load-depends, define-tasks, 
                         check-selected-names, reorder-suites, -delete-temporal-properties"/>
 
     <!-- Initialize the framework for test execution -->
@@ -98,61 +98,6 @@ Please, check the names specified by test.suites property:
          obtained on setup stage -->
     <target name="load-suites-configuration" depends="define-ant-contrib">
         <var file="${selected.suites.configuration}"/>
-    </target>
-
-    <condition property="ant.to.patch" value="1.6.5">
-        <contains string="${ant.version}" substring="1.6.5"/>
-    </condition>
-
-    <condition property="ant.to.patch" value="1.7.0">
-        <contains string="${ant.version}" substring="1.7.0"/>
-    </condition>
-
-    <!-- Fixes Ant's Bug described at: 
-         http://issues.apache.org/bugzilla/show_bug.cgi?id=30569
-        -->
-    <target name="patch-ant" depends="make-dirs, define-ant-contrib" if="ant.to.patch">
-
-        <condition 
-            property="ant.patch.url"
-            value="http://issues.apache.org/bugzilla/attachment.cgi?id=15681"
-            else="http://issues.apache.org/bugzilla/attachment.cgi?id=19566">
-            <equals arg1="${ant.to.patch}" arg2="1.6.5"/>
-        </condition>
-
-        <mkdir dir="${temp.files.dir}/${ant.to.patch}"/>
-        <property name="ant.patch.file" 
-                  value="${temp.files.dir}/${ant.to.patch}/SubAnt.java"/>
-
-        <if>
-            <not><available file="${ant.patch.file}"/></not>
-        <then>
-            <get src="${ant.patch.url}"
-                 dest="${ant.patch.file}"
-                 usetimestamp="true"
-                 verbose="true"
-            />
-        </then>
-        </if>
-        <javac 
-            srcdir="${temp.files.dir}/${ant.to.patch}"
-            destdir="${classes.dir}"
-            includesfile="${ant.patch.file}">
-            <depend targetdir="${classes.dir}/org/apache/tools/ant/taskdefs">
-                <mapper>
-                    <globmapper from="*.java" to="*.class"/>
-                </mapper>
-            </depend>
-        </javac>
-    </target>
-
-    <target name="make-dirs">
-        <!-- Make Dirs -->
-        <mkdir dir="${build.dir}"/>
-        <mkdir dir="${checkouts.dir}"/>
-        <mkdir dir="${results.dir}"/>
-        <mkdir dir="${temp.files.dir}"/>
-        <mkdir dir="${classes.dir}"/>
     </target>
 
     <target name="define-tasks" depends="define-ant-contrib"/>
