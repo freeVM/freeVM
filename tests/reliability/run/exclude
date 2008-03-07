@@ -1,7 +1,6 @@
 ## the list of excluded tests ##
 
 ## HARMONY-2039, no class unloading
-api.kernel.pckg.PackageGetTest
 vm.stack.StackFramesRestoreTest
 vm.classloading.MultiThreadedLoading
 vm.classloading.ClassUnloadingTest
@@ -57,3 +56,6 @@ api.kernel.thread.ExcptHandlerTest.ExcptHandlerTest
 
 ## HARMONY-5484, handle leakage
 api.kernel.thread.StackTraceTest.StackTraceTest
+
+## HARMONY-5512
+api.kernel.pckg.PackageGetTest
