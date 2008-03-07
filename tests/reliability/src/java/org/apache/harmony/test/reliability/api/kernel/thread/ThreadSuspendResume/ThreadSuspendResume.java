@@ -116,6 +116,11 @@ public class ThreadSuspendResume extends Test {
             thrds[k].start();
         }
         
+        // load Sestem class to avoid deadlock in ClassLoader due to 
+        // unsafe suspend/resume operations
+        Class sysClass = System.class;
+        sysClass = null;
+        
         // suspend/resume section
         //System.out.println("Startign suspension/resuming");
         int cycles = numberOfIterations * 2;
