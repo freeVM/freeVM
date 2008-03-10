@@ -233,7 +233,7 @@
                        errorproperty="test.errors"
                        failureproperty="test.failures"
                        showoutput="off"
-                       dir="${hy.tests.reports}"
+                       dir="${tests.build.output}/classes"
                        jvm="${test.debugger.jvm}">
 
             <!-- JVM arguments for debugger process -->

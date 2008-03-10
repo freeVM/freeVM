@@ -385,6 +385,22 @@ namespace jdwp {
             virtual void Execute(JNIEnv *jni) throw(AgentException);
         };// ClassFileVersionHandler class
 
+    // =========================================================================
+        /**
+        * The class implements the <code> ConstantPool(18)</code>
+         * command from the <code>ReferenceType</code> command set.
+         */
+        class ConstantPoolHandler : public SyncCommandHandler {
+        protected:
+
+            /**
+             * Executes the <code>ConstantPool</code> JDWP command for the
+             * <code>ReferenceType</code> command set.
+             *
+             * @param jni - the JNI interface pointer
+             */
+            virtual void Execute(JNIEnv *jni) throw(AgentException);
+        };//ConstantPoolHandler class
 
    // =========================================================================
    //-----------------------------------------------------------------------------

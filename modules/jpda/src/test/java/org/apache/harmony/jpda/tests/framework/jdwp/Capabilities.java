@@ -69,7 +69,7 @@ public class Capabilities {
 
     public boolean reserved19                       = false;
 
-    public boolean reserved20                       = false;
+    public boolean canGetConstantPool               = false;
 
     public boolean reserved21                       = false;
 

@@ -257,6 +257,8 @@ CommandDispatcher::CreateCommandHandler(jdwpCommandSet cmdSet, jdwpCommand cmdKi
         case JDWP_COMMAND_RT_CLASS_FILE_VERSION:
             return new ReferenceType::ClassFileVersionHandler();
 
+        case JDWP_COMMAND_RT_CONSTANT_POOL:
+            return new ReferenceType::ConstantPoolHandler();
         }//JDWP_COMMAND_SET_REFERENCE_TYPE
         break;
 

@@ -37,7 +37,7 @@ public class ClassFileVersionTest extends JDWPSyncTestCase {
 
 	static final String debuggeeSignature = "Lorg/apache/harmony/jpda/tests/jdwp/ReferenceType/ClassFileVersionDebuggee;";
 
-	static final String debuggeeClass = "org\\apache\\harmony\\jpda\\tests\\jdwp\\ReferenceType\\ClassFileVersionDebuggee.class";
+	static final String debuggeeClass = "org/apache/harmony/jpda/tests/jdwp/ReferenceType/ClassFileVersionDebuggee.class";
 
 	@Override
 	protected String getDebuggeeClassName() {

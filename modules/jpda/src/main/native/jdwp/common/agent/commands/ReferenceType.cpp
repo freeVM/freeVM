@@ -972,6 +972,55 @@ ReferenceType::ClassFileVersionHandler::Execute(JNIEnv *jni)
     
 }
 
+//------------------------------------------------------------------------------
+// ConstantPoolHandler(18)-----------------------------------------------
+
+void
+ReferenceType::ConstantPoolHandler::Execute(JNIEnv *jni)
+        throw (AgentException)
+{
+    jclass jvmClass = m_cmdParser->command.ReadReferenceTypeID(jni);
+    // Can be: InternalErrorException, OutOfMemoryException,
+    // JDWP_ERROR_INVALID_CLASS, JDWP_ERROR_INVALID_OBJECT
+#ifndef NDEBUG
+    if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
+        jvmtiError err;
+        char* signature = 0;
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
+        JvmtiAutoFree afcs(signature);
+        JDWP_TRACE_DATA("SourceDebugExtension: received: refTypeID=" << jvmClass
+            << ", classSignature=" << JDWP_CHECK_NULL(signature));
+    }
+#endif
+    jvmtiError err;
+    jint count = 0;
+    jint bytes = 0;
+    unsigned char* cpbytes = 0;
+    // Return the raw bytes of the constant pool 
+    JVMTI_TRACE(err, GetJvmtiEnv()->GetConstantPool(jvmClass, &count, &bytes, &cpbytes));
+    JvmtiAutoFree afCpbytes(cpbytes);
+
+    if (err != JVMTI_ERROR_NONE) {
+        // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_ABSENT_INFORMATION
+        // JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_INVALID_OBJECT
+        // JVMTI_ERROR_NULL_POINTER 
+        throw AgentException(err);
+     }
+
+    m_cmdParser->reply.WriteInt(count);
+    JDWP_TRACE_DATA("ConstantPool: send: count=" 
+        << count);
+
+    m_cmdParser->reply.WriteInt(bytes);
+     JDWP_TRACE_DATA("ConstantPool: send: bytes=" 
+        << bytes);
+
+    for (int i = 0; i < bytes; i++) {
+        m_cmdParser->reply.WriteByte(cpbytes[i]);
+    }
+
+}
+
 //-----------------------------------------------------------------------------
 // Heap callbacks, used in Instances command
 //-----------------------------------------------------------------------------
