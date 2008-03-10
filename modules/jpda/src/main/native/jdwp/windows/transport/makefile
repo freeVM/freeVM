@@ -36,7 +36,8 @@ HYLDFLAGS = $(HYLDFLAGS) -def:dt_socket\$(LIBBASE).def
 
 BUILDFILES = \
     $(CMNTRANS)common\LastTransportError.obj \
-    $(CMNTRANS)dt_socket\SocketTransport.obj 
+    $(CMNTRANS)dt_socket\SocketTransport.obj \
+    dt_socket\SocketTransport_pd.obj
 
 VIRTFILES = 
 
