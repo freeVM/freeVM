@@ -53,6 +53,7 @@ BUILDFILES = \
     $(CMNAGENT)core/ObjectManager.o $(CMNAGENT)core/OptionParser.o $(CMNAGENT)core/PacketDispatcher.o \
     $(CMNAGENT)core/PacketParser.o $(CMNAGENT)core/RequestManager.o $(CMNAGENT)core/RequestModifier.o \
     $(CMNAGENT)core/ThreadManager.o $(CMNAGENT)core/TransportManager.o $(CMNAGENT)core/AgentManager.o \
+    $(CMNAGENT)core/CallBacks.o \
     core/TransportManager_pd.o
 
 MDLLIBFILES = 

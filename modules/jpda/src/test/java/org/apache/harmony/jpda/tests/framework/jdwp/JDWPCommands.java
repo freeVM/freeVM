@@ -77,6 +77,8 @@ public class JDWPCommands {
         public static final byte SetDefaultStratumCommand = 19;
 
         public static final byte AllClassesWithGenericCommand = 20;
+        
+        public static final byte InstanceCountsCommand = 21;
     }
 
     /**

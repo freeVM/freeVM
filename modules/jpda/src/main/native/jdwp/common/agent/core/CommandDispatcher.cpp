@@ -197,6 +197,10 @@ CommandDispatcher::CreateCommandHandler(jdwpCommandSet cmdSet, jdwpCommand cmdKi
         case JDWP_COMMAND_VM_ALL_CLASSES_WITH_GENERIC:
             return new VirtualMachine::AllClassesWithGenericHandler();
 
+        // New commands for Java 6
+        case JDWP_COMMAND_VM_INSTANCE_COUNTS:
+            return new VirtualMachine::InstanceCountsHandler();
+
         }//JDWP_COMMAND_SET_VIRTUAL_MACHINE
         break;
 

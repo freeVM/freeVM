@@ -417,6 +417,23 @@ namespace jdwp {
 
         };//AllClassesWithGenericHandler
 
+        // New command for Java 6
+        /**
+         * The class implements the <code>InstanceCounts</code> command from the
+         * VirtualMachine command set.
+         */
+        class InstanceCountsHandler : public SyncCommandHandler {
+        protected:
+
+            /**
+             * Executes the <code>InstanceCounts</code> JDWP command for the
+             * VirtualMachine command set.
+             *
+             * @param jni - the JNI interface pointer
+             */
+            virtual void Execute(JNIEnv *jni) throw(AgentException);
+
+        };//InstanceCountsHandler
     } // VirtualMachine
 
 } //jdwp

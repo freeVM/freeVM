@@ -83,6 +83,8 @@ typedef enum jdwpCommand {
     JDWP_COMMAND_VM_REDEFINE_CLASSES = 18,
     JDWP_COMMAND_VM_SET_DEFAULT_STRATUM = 19,
     JDWP_COMMAND_VM_ALL_CLASSES_WITH_GENERIC= 20,
+	//New commands for Java 6
+    JDWP_COMMAND_VM_INSTANCE_COUNTS = 21,
 
     /* Commands ReferenceType */
     JDWP_COMMAND_RT_SIGNATURE = 1,

@@ -31,9 +31,11 @@
 #include "ObjectManager.h"
 #include "EventDispatcher.h"
 #include "TransportManager.h"
+#include "CallBacks.h"
 
 using namespace jdwp;
 using namespace VirtualMachine;
+using namespace CallBacks;
 
 //-----------------------------------------------------------------------------
 //VersionHandler---------------------------------------------------------------
@@ -767,6 +769,85 @@ VirtualMachine::AllClassesWithGenericHandler::Compose41Class(JNIEnv *jni_env,
          << JDWP_CHECK_NULL(generic) << ", status=" << status);
 
     return 0;
+}
+
+// New command for Java 6
+//-----------------------------------------------------------------------------
+//InstanceCountsHandler-------------------------------------------------
+
+void
+VirtualMachine::InstanceCountsHandler::Execute(JNIEnv *jni) throw(AgentException)
+{
+    jint refTypesCount = m_cmdParser->command.ReadInt();
+    // Illegal argument
+    if(refTypesCount < 0) {
+        throw AgentException(JDWP_ERROR_ILLEGAL_ARGUMENT);
+    }
+
+    m_cmdParser->reply.WriteInt(refTypesCount);
+    JDWP_TRACE_DATA("InstanceCounts: return the number of counts that follow:" << refTypesCount);
+
+    // Number of reference types equals zero
+    if(0 == refTypesCount) {
+        return;
+    }
+
+    jclass jvmClass;
+    jvmtiError err;
+    char* signature = 0;
+    // Tag is used to mark object which is reported in FollowReferences
+    jlong tag_value = 0xffff;
+    jlong tags[1] = {tag_value};
+    jint reachableInstancesNum = 0;
+
+    // Initial callbacks for FollowReferences
+    // These callbacks will tag the expected objects which are reported in FollowReferences
+    jvmtiHeapCallbacks hcbs;
+    memset(&hcbs, 0, sizeof(hcbs));
+    hcbs.heap_iteration_callback = NULL;
+    hcbs.heap_reference_callback = &HeapReferenceCallback;
+    hcbs.primitive_field_callback = &PrimitiveFieldCallback;
+    hcbs.array_primitive_value_callback = &ArrayPrimitiveValueCallback;
+    hcbs.string_primitive_value_callback = &StringPrimitiveValueCallback;
+
+    for(int i = 0; i < refTypesCount;i++) {
+         jvmClass = m_cmdParser->command.ReadReferenceTypeID(jni);
+        // Can be: InternalErrorException, OutOfMemoryException,
+        // JDWP_ERROR_INVALID_CLASS, JDWP_ERROR_INVALID_OBJECT
+#ifndef NDEBUG
+        if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
+            JvmtiAutoFree afcs(signature);
+            JDWP_TRACE_DATA("SourceDebugExtension: received: refTypeID=" << jvmClass
+                << ", classSignature=" << JDWP_CHECK_NULL(signature));
+        }
+#endif
+        
+        //It initiates a traversal over the objects that are directly and indirectly reachable from the heap roots.
+        JVMTI_TRACE(err, GetJvmtiEnv()->FollowReferences(0, jvmClass,  NULL,
+             &hcbs, &tag_value));
+        if (err != JVMTI_ERROR_NONE) {
+            // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_INVALID_CLASS
+            // JVMTI_ERROR_INVALID_OBJECT, JVMTI_ERROR_NULL_POINTER 
+            throw AgentException(err);
+        }
+
+        // Return the instances that have been marked expected tag_value tag.
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetObjectsWithTags(1, tags, &reachableInstancesNum,
+            NULL, NULL));
+  
+        if (err != JVMTI_ERROR_NONE) {
+            // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_ILLEGAL_ARGUMENT 
+            // JVMTI_ERROR_ILLEGAL_ARGUMENT, JVMTI_ERROR_NULL_POINTER  
+            throw AgentException(err);
+        }
+
+        m_cmdParser->reply.WriteLong(reachableInstancesNum);
+        JDWP_TRACE_DATA("InstanceCounts: return the number of instances for the corresponding  reference type:"
+            << reachableInstancesNum);
+        // tag_value is changed to indicate instances of other types 
+        tags[0] = ++tag_value;
+    }
 }
 
 //-----------------------------------------------------------------------------

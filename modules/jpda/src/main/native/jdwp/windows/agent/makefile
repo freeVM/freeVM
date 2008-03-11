@@ -55,6 +55,7 @@ BUILDFILES = \
     $(CMNAGENT)core\ObjectManager.obj $(CMNAGENT)core\OptionParser.obj $(CMNAGENT)core\PacketDispatcher.obj \
     $(CMNAGENT)core\PacketParser.obj $(CMNAGENT)core\RequestManager.obj $(CMNAGENT)core\RequestModifier.obj \
     $(CMNAGENT)core\ThreadManager.obj $(CMNAGENT)core\TransportManager.obj $(CMNAGENT)core\AgentManager.obj \
+    $(CMNAGENT)core\CallBacks.obj \
     core\TransportManager_pd.obj
 
 VIRTFILES = 

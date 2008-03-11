@@ -23,10 +23,12 @@
 #include "ReferenceType.h"
 #include "PacketParser.h"
 #include "ClassManager.h"
+#include "CallBacks.h"
 #include <cstring>
 
 using namespace jdwp;
 using namespace ReferenceType;
+using namespace CallBacks;
 
 //------------------------------------------------------------------------------
 //SignatureFileHandler(1)----------------------------------------------------------
@@ -884,19 +886,22 @@ ReferenceType::InstancesHandler::Execute(JNIEnv *jni)
     hcbs.string_primitive_value_callback = &StringPrimitiveValueCallback;
 
     jvmtiError err;
+    //This tag is used to mark instance that is reachable for garbage collection purpose
+    const jlong tag_value = 0xfffff;
+
     //It initiates a traversal over the objects that are directly and indirectly reachable from the heap roots.
     JVMTI_TRACE(err, GetJvmtiEnv()->FollowReferences(0, jvmClass,  NULL,
-         &hcbs, NULL));
+         &hcbs, &tag_value));
      if (err != JVMTI_ERROR_NONE) {
         // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_INVALID_CLASS
         // JVMTI_ERROR_INVALID_OBJECT, JVMTI_ERROR_NULL_POINTER 
         throw AgentException(err);
      }
 
-     const jlong tags[1] = {EXPECTED_INSTANCE_TAG};
-     int reachableInstancesNum = 0;
+     const jlong tags[1] = {tag_value};
+     jint reachableInstancesNum = 0;
      jobject * pResultObjects = 0;
-     // Return the instances that have been marked EXPECTED_INSTANCE_TAG tag.
+     // Return the instances that have been marked expectd tag_value tag.
      JVMTI_TRACE(err, GetJvmtiEnv()->GetObjectsWithTags(1, tags, &reachableInstancesNum,
             &pResultObjects, NULL));
      JvmtiAutoFree afResultObjects(pResultObjects);
@@ -1021,69 +1026,3 @@ ReferenceType::ConstantPoolHandler::Execute(JNIEnv *jni)
 
 }
 
-//-----------------------------------------------------------------------------
-// Heap callbacks, used in Instances command
-//-----------------------------------------------------------------------------
-
-     /**
-     * Describes a reference from an object or the VM (the referrer) 
-     * to another object (the referree) or a heap root to a referree. 
-     */
-     jint JNICALL ReferenceType::HeapReferenceCallback
-        (jvmtiHeapReferenceKind reference_kind, 
-         const jvmtiHeapReferenceInfo* reference_info, 
-         jlong class_tag, 
-         jlong referrer_class_tag, 
-         jlong size, 
-         jlong* tag_ptr, 
-         jlong* referrer_tag_ptr, 
-         jint length, 
-         void* user_data) {
-            *tag_ptr = EXPECTED_INSTANCE_TAG;
-            return JVMTI_VISIT_OBJECTS;
-     }
-
-    /**
-     * This callback will describe a static field if the object is a class, 
-     * and otherwise will describe an instance field. 
-     */
-     jint JNICALL ReferenceType::PrimitiveFieldCallback
-        (jvmtiHeapReferenceKind kind, 
-         const jvmtiHeapReferenceInfo* info, 
-         jlong object_class_tag, 
-         jlong* object_tag_ptr, 
-         jvalue value, 
-         jvmtiPrimitiveType value_type, 
-         void* user_data) {
-              *object_tag_ptr = EXPECTED_INSTANCE_TAG;
-              return JVMTI_VISIT_OBJECTS;
-     }
-     
-    /**
-     * Describes the values in an array of a primitive type.
-     */
-     jint JNICALL ReferenceType::ArrayPrimitiveValueCallback
-        (jlong class_tag, 
-         jlong size, 
-         jlong* tag_ptr, 
-         jint element_count, 
-         jvmtiPrimitiveType element_type, 
-         const void* elements, 
-         void* user_data) {
-             *tag_ptr = EXPECTED_INSTANCE_TAG;
-             return JVMTI_VISIT_OBJECTS;
-     }
-     
-    /**
-     * Describes the value of a java.lang.String. 
-     */ 
-     jint JNICALL ReferenceType::StringPrimitiveValueCallback
-        (jlong class_tag, 
-         jlong size, 
-         jlong* tag_ptr, 
-         const jchar* value, 
-         jint value_length, 
-         void* user_data) {
-             *tag_ptr = EXPECTED_INSTANCE_TAG;
-             return JVMTI_VISIT_OBJECTS;
-     }

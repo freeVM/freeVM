@@ -216,7 +216,7 @@ public class TestOptions {
 
         return getProperty("jpda.settings.debuggeeAgentOptions",
                 "transport=dt_socket,address=" + address + ",server=" + serv
-                + ",suspend=" + getDebuggeeSuspend() + agentExtraOptions);
+                + ",suspend=" + getDebuggeeSuspend() + agentExtraOptions + ",trace=all");
     }
 
     /**
