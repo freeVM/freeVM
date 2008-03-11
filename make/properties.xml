@@ -19,13 +19,14 @@
 
  -->
 
-<project name="Top-Level property definitions" default="echo">
+<project name="Common property definitions" default="echo">
     <description>
         Ant file of common properties to be imported by other ant files
     </description>
 
     <property file="${user.home}/.harmony.properties" />
-    <dirname property="common.basedir" file="${ant.file.Top-Level property definitions}/.."/>
+    <dirname property="common.basedir"
+             file="${ant.file.Common property definitions}/.."/>
 
     <!-- Root directory of the common dependemcy pool -->
     <property name="base.dep.dir" location="${common.basedir}/depends"/>
@@ -35,7 +36,8 @@
 
     <!-- Javac properties -->
     <!-- Explicitly set to ECJ as the default compiler. -->
-    <property name="hy.javac.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+    <property name="hy.javac.compiler"
+              value="org.eclipse.jdt.core.JDTCompilerAdapter" />
     <property name="hy.javac.source" value="1.5" />
     <property name="hy.javac.target" value="1.5" />
     <property name="hy.javac.maxmem" value="384M" />
@@ -45,8 +47,10 @@
         <equals arg1="${hy.cfg}" arg2="debug" />
     </condition>
 
-    <!-- Local variable tables should be available in debug, and omitted in release modes. -->
-    <condition property="build.compilerarg" value="-nowarn -g" else="-nowarn -g:lines,source">
+    <!-- Local variable tables should be available in debug, and
+         omitted in release modes. -->
+    <condition property="build.compilerarg" value="-nowarn -g"
+               else="-nowarn -g:lines,source">
         <equals arg1="${hy.cfg}" arg2="debug" />
     </condition>
 
@@ -515,6 +519,7 @@ properties in preference to these:
                 <env key="HY_PLATFORM" value="${hy.platform}" />
                 <env key="HY_NO_SIG" value="${hy.no.sig}" />
                 <env key="HY_NO_THR" value="${hy.no.thr}" />
+                <env key="HY_THR_NO_DEPLOY" value="${hy.thr.nodeploy}" />
                 <env key="HY_LOCAL_ZLIB" value="${hy.local.zlib}" />
                 <env key="HY_SHLIB_SUFFIX" value="${shlib.suffix}" />
                 <env key="HY_LINKLIB_SUFFIX" value="${linklib.suffix}" />
