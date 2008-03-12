@@ -1,0 +1,4248 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<tagfile>
+  <compound kind="file">
+    <name>hycomp.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>hycomp_8h</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>hycomp_h</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>8db20a7485b88321a4e0f9ec419521b4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_PLATFORM_DOUBLE_ORDER</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>096187c9da2e8e6b868b5ece37b2ee77</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>NO_LVALUE_CASTING</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>d620485dcc14d98bc0bee4752754a57d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VMAPICALL</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>5cc0f8e06c254a13189b94cc290739a8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VMCALL</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>79424431d656038ff7c9036f65e523b1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>EXE_EXTENSION_CHAR</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>689a3e87f7c78c7ca580825529ec3417</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DIR_SEPARATOR</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>0920890c442b665b0c6609fa796e9047</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DIR_SEPARATOR_STR</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>23e72ca2d8456a971c13441bdfc4586f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_PRIORITY_MAP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>5bfa75ca2c5a48a0a594b2b69f5dc3f9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GLOBAL_DATA</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>81910c686faba3f29c44c84011b823dd</anchor>
+      <arglist>(symbol)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GLOBAL_TABLE</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>b60e4ef0f6e5fbedf1c16b78b5494c4a</anchor>
+      <arglist>(symbol)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>PVMCALL</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>dd35c42ccf72e199b77bbf76be5220e3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYCONST64</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>08ae5c2fa16893a9223780d5ce552d39</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_DEFAULT_SCHED</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>417080935b430ccd69141b819754e46b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALSE</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>a93f0eb578d23995850d61f7d61c55c1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TRUE</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>a8cecfc5c5c054d2875c03e77b7be15d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>NULL</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>070d2ce7b6bb7e5c05602aa8c308d0c4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>USE_PROTOTYPES</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>da440ec54eb75c757b0a71134f1cf891</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>5f0c9bf21ca3ae29010d461ecd7d4bd9</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VARARGS</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>5a3872cc14d02a851fcb9ca4ee08a81b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>PLATFORM_LINE_DELIMITER</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>65fe01b8766e8c825690f29c87fcd89d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MAX_IMAGE_PATH_LENGTH</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>80792e32a9abfee07306bef039a015c2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>CLEAR_U64</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>fa489e08f16b4ad1e18abbc8fe2cdfed</anchor>
+      <arglist>(u64)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOW_LONG</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>c11e5a8abf1c97dfaa53882b708cda5a</anchor>
+      <arglist>(l)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HIGH_LONG</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>562cea1c6980614225c2b2b5d43569db</anchor>
+      <arglist>(l)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>I8</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>b169fe9e0c078009e70cee377d9a13b1</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>I8P</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>405b5b440ca33b31e52e573b26f85884</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>U16</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>9ffc30ad81cb2c45cf19a8e9fc319ff5</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>I16</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>2206a183ccfe90c0029845da7154be64</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>I16P</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>e3c49569c1e92862fb1d8887eb8dc890</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>U32</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>cb18ff4abb30f45c190e8b4178ada437</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>I32</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>f93b2852161677292e8e91264ed23ec5</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>I32P</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>b6d0284a883a19bf1a9bd6c1e0ae9afb</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>U16P</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>11356fea59ebb596f16ea769aa470db0</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>U32P</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>d7e94b4cc155d05c90a5be31c68276e8</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OBJP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>69755fd73b9728693a33cac5f7b2c096</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OBJPP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>0b956b600eda8530a6508b56a299d83e</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OBJPPP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>e6a467fc2b81cd8b88633120b5f33de2</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>CLASSP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>bcc3984debcab2649ddb5c4658997d2d</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>CLASSPP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>fd6ddef75f23a485842e57f8ca312129</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BYTEP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>0b3dc6a2b96a4a9cc485e4e28719be91</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ESCHAR</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>dd2b19d754bd223e3c8304d9d284885b</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FLT</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>7dd6e58c3f0255963921d1821312730c</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FLTP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>a639acc392f721eaaa780d44e70c6190</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LI8</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>5bc42c67b893ed0eecd6b4434aa5919d</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LI8P</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>bd7b650bc06468090b3b4d43c1da1c10</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LU16</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>902360a59a3b2bbbb38a8d85bf6940aa</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LI16</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>a699fb685eb5486c692c2f227eabd6bd</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LU32</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>2b42661d461ff8c6b4b46e807bf1da29</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LI32</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>461975b9f3036d21b2669ea17a293935</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LI32P</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>1e39bae121a44fc47d6f272b57f97170</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LU16P</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>bb0f901fe7f74ca6177bd2848017aec6</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LU32P</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>f5243abcb9a1ee3b4fb179f776e50db2</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOBJP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>f3dd1a66f1d5e814db3fb3911af05701</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOBJPP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>5d55404d0c1b2e0f6ad104f88952dd67</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOBJPPP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>1f0e9c0712543ed0dd72bb9282edec7d</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LCLASSP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>33d73cba837dfa7035ddc338c103d4cb</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LBYTEP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>72d96b6b6382a0974a5a2f847e8191f6</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LCHAR</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>31ea4fbe06aa4b26bda2f2687475e284</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LFLT</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>c3ab0c12cc308beb416c7717970487ba</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LFLTP</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>78e8055b77dc9a49317624e59f8a1cfd</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HIGH_WORD</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>1eff9341413b5e3ae151ff796245c587</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOW_WORD</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>52f169fcd35e3960bbfeb2caaab5355e</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOW_BIT</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>42fd9c6b27a9aa6a8a8fdd68a8b27bf7</anchor>
+      <arglist>(o)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOW_2_BITS</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>c9675da7ad82d3adaf009bf6d6374838</anchor>
+      <arglist>(o)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOW_3_BITS</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>6a8c8f08da44be3ce81504b5e990cce6</anchor>
+      <arglist>(o)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOW_4_BITS</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>335eae2c0eb88a5351e9b80975151157</anchor>
+      <arglist>(o)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MAKE_32</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>582277486bb7acd4bc4ad1a523ecae4e</anchor>
+      <arglist>(h, l)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MAKE_64</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>c9170dbd1b005cf6f3143d5dab3618df</anchor>
+      <arglist>(h, l)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_CFUNC</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>383bd2b7781d056c7fca3a7049151bb9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_CDATA</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>d98ca836d0b9dbc87c4bb9596c839206</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>READSVMTHREAD</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>dc48e27ae9c614f0fb9004e876d13419</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>WRITESVMTHREAD</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>fc54a2235d0d72d8ae07ec54934b31e6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>REQUIRESSTACKFRAME</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>a433265b100789db1075b6b9c0e5f0b5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>NORETURN</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>a1728270d73c5d1598de1fd691762eb1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>PTR_LONG_STORE</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>9c1a81e19f075afa7bf32b7d863593bd</anchor>
+      <arglist>(dstPtr, aLongPtr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>PTR_LONG_VALUE</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>e01bfd153aae4311fa5c343d370295cf</anchor>
+      <arglist>(dstPtr, aLongPtr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYCONST_TABLE</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>202fda7ca11c91a6ef19962aa0c8a8d6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_SORT</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>fd6221236ddc2e3f18b3ce13f674d294</anchor>
+      <arglist>(base, nmemb, size, compare)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>__int64</type>
+      <name>I_64</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>a834dc6a37f270a73f4888c55ba7db47</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>unsigned __int64</type>
+      <name>U_64</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>e3afd246d1e3ead3659b5f91d0e3be6e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>double</type>
+      <name>SYS_FLOAT</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>ef25ee1df36ed82bb1d3dcf5fd84ff16</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>unsigned int</type>
+      <name>UDATA</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>dc9b7bee0fe6b8b2320bc46be74b4e69</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>unsigned int</type>
+      <name>U_32</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>4ac20826c44c5a16fafffedce114da80</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>unsigned short</type>
+      <name>U_16</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>5308f244769c9d39cbe39fa27607dd45</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>unsigned char</type>
+      <name>U_8</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>cdaf881f2be7a4afbd021d8ea7f9d909</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>int</type>
+      <name>IDATA</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>1a623c7167664c4f31120d213cb6f0f3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>int</type>
+      <name>I_32</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>0994ed41cc6e93e729bfbaf91c765f1b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>short</type>
+      <name>I_16</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>1a9dd3b7e98eddd11b4b4e818a44cebf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>char</type>
+      <name>I_8</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>91bdd7c6a6874b226c51d8a8b37cec72</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>double</type>
+      <name>ESDOUBLE</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>13ce33f16b091f1717694fe067222156</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>float</type>
+      <name>ESSINGLE</name>
+      <anchorfile>hycomp_8h.html</anchorfile>
+      <anchor>df53af0aa4280178403d830f297ad604</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>hythread.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>hythread_8h</filename>
+    <class kind="struct">HyThreadMonitorTracing</class>
+    <class kind="struct">HyThread_public</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_H</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>513ef82f9d1bb4994c36ba6bf4b95123</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>hy_inline</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>a75092d8ec69547d2e15c125132bebb7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_PROC</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>3fc9863ec29d0ed7a95601e17ee6deca</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_PRIORITY_MIN</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>183e9b0b86ba49fa7d4f3b86fc55e95a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_PRIORITY_USER_MIN</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>8659fac78cb93aabca009e104c7b7d7a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_PRIORITY_NORMAL</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>ee7f18674d612a830391ce935182a95d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_PRIORITY_USER_MAX</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>0145d6ad21431fa7f1652c9e2ce2eb31</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_PRIORITY_MAX</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>5d1476b9a547c01f19f1c78b45c5c322</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_LOCKING_DEFAULT</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>445b1112091453b66b796799e85f6fb1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_LOCKING_NO_DATA</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>c7fbb897f3bd3c228173b2da40c0e6ad</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_BLOCKED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>7e45750a7bcb4e42acf0abccaa382c60</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_ALREADY_INITIALIZED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>2fafbc5e70a2a1363dfdeb1ac2c248b8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_TIMED_OUT</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>a4f1824a2d88e7b725b40942e45ed707</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_STARTED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>6655b11f68b7f3a664d4b986ef0d6576</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_JLM_HAS_BEEN_ENABLED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>f3bdc4cc3c1e03e1be8e5b4866a5dea0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_ILLEGAL_MONITOR_STATE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>3f597d2e9cd1b05dafae149e7b13f289</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_PRIORITY_INTERRUPTED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>9f535473b5570741705915596666a93b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_JLMHST_ENABLED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>48a7f32ec6e2831460989fd3e8ce2d2c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_JLM_ENABLED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>e99427266a9a1d67bb930cf17b3644b7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_INTERRUPTED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>2d708f55a8f33cb02a81df4f9dd1a6be</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_INVALID_ARGUMENT</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>1b73dae99c9b3e5f3046750a9bc83d8e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_DETACHED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>99135e991a0aed5c6f207ea296499f3e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_PRIORITY_INTERRUPTED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>3894e16a041449fac65194229064b98a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_CANCELED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>2dcc5774940c22fd5c6749cb822c04cc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_NOTIFIED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>75fbe635a1d4347ea12e605186204779</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_ATTACHED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>6d5ce712db75fbf708a12aba8d95a98c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_WOULD_BLOCK</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>72cd9d721227d119021561747d8edf17</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_DEAD</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>085a917f6ef8184ef4a77f6473c9f272</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_WAITING</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>cf8a9a4400be8b97bd692bc5dfe5bded</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_PARKED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>46f88f9663dcd802bb43e931de10a1e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_UNPARKED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>eec11cae1d3ebc6c7b4e13fd05a431c9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_INTERRUPTABLE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>c404178d84f7e2c8aaa8baa6bb1c9f88</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_TIMER_SET</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>18f7b04bfe4c93ade36c9c656d5e609a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_JLM_ENABLED_ALL</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>4a7b6e52f72e06760e8b97cd41212938</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_JLMTS_ENABLED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>7b0fc5b4bd04a0914674e4e636baae6b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_INTERRUPTED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>be76b10e0552e5e83fa41c2d8c552161</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_BLOCKED_AFTER_WAIT</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>51a42b8d5118638d429034eae97b662d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_ALREADY_ATTACHED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>7877c7d762dbbb8333430fc734d0b876</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_SUSPENDED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>1d58362c82f1378ba3edc2ae3fe6e0ad</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FLAG_SLEEPING</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>e3dd53b91714645e7d17d20111f11900</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_INFLATED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>83ad7da1438b486b0c57a3a82fba0ff3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_INTERRUPTABLE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>436cb878b2c576eb6b08a480b08c7d5e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_PRIORITY_INTERRUPTABLE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>6c69c90037cea90e353d7f504d7838aa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_SYSTEM</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>93e4c8d6bbe3f67659bca51255736a21</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_OBJECT</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>ac6536f01ce41a68fc93c920fc0c0dd4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_MUTEX_UNINITIALIZED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>75c4b17a2ca5a739705e4f7ffa5e6892</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_SUPPRESS_CONTENDED_EXIT</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>90a7ff46d951d1c010f4626db6a03ef6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_MUTEX_IN_USE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>7bbf9aa9c1cff7184782e3abd468c801</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_SPINLOCK_UNOWNED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>f182373455044b1f5976a22725f4395d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_SPINLOCK_OWNED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>1baa835aae3476d789c1ce228137fa47</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_MONITOR_SPINLOCK_EXCEEDED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>2867ff3a5c80d207b183839388a05db2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_LIB_FLAG_JLMHST_ENABLED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>0189e5d7745e11e4d3ad316d7e76101e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_LIB_FLAG_JLM_ENABLED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>196c8ac1502da175e6eeeedd0317ebfd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_LIB_FLAG_JLM_ENABLED_ALL</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>7ca11249cd861250ba10adc23d79bf0e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_LIB_FLAG_JLM_HAS_BEEN_ENABLED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>e030ab19e0d839489bf9377fd88ab5a2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_LIB_FLAG_JLMTS_ENABLED</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>ae639e47126f40425dbea7fffc0242ea</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYSIZEOF_HyThreadMonitorTracing</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>e00904864b2329943d34b6d19dbc481e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>_HYVMTHREADHELPERS_</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>aef9ba01bdc5b5bff9e518dbb0be70fb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>_HYVMTHREADSPINLOCKS_</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>4a90ce80e881186462d17265a97a951e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>hythread_global_monitor</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>f362c96a15a41e4b52e438ca8691b5c3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>hythread_monitor_init</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>0eceb054f20ffe59e30b0897839ac197</anchor>
+      <arglist>(pMon, flags)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>hythread_monitor_set_name</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>905c9db4853b847a3a4b5597cb726393</anchor>
+      <arglist>(pMon, pName)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ASM_MONITOR_HELPER</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>a1d1769fa5bae8d6787012140835c0fe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_FAST_TLS_ATTRIBUTE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>9833bc567c2f89a00460ac61f2205d27</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>UDATA</type>
+      <name>hythread_tls_key_t</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>f63543edc3469ad6389bfee68857e0e3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>IDATA(VMCALL *)</type>
+      <name>hythread_entrypoint_t</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>07f4479a1ddeea976469b2c1c5c0fc6f</anchor>
+      <arglist>(void *)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>void(VMCALL *)</type>
+      <name>hythread_tls_finalizer_t</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>91da42218b4b65b0d05b417febae17a0</anchor>
+      <arglist>(void *)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>HyThread *</type>
+      <name>hythread_t</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>2f10664b7fedd35e83217d31124f8775</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>HyThreadGroup *</type>
+      <name>hythread_group_t</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>77152471c2c13d01c1f51f642d9ca75c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>HyThreadMonitor *</type>
+      <name>hythread_monitor_t</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>cdff111d50e5b0ad9a903094cc251aae</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>HySemaphore *</type>
+      <name>hysem_t</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>e8117824dca31546dfbfccf75e76b07d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>RWMutex *</type>
+      <name>hythread_rwmutex_t</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>05e9a9901d7d824f351cde69f23270c9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC void VMCALL hythread_detach</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>095bafa2b4727e7068d944ffd3708bd0</anchor>
+      <arglist>((hythread_t thread))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC UDATA VMCALL hythread_lib_set_flags</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>f5158cb6ec8265d5c6bebd46074be2b2</anchor>
+      <arglist>((UDATA flags))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_tls_alloc</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>3cf1b40ad60f0b9fe863fe4641ef7364</anchor>
+      <arglist>((hythread_tls_key_t *handle))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_sleep_interruptable</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>e56f1218fe31ba52882a6675a327eb09</anchor>
+      <arglist>((I_64 millis, IDATA nanos))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_monitor_enter_using_threadId</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>76649d365333f438d3ebdbff00f70a78</anchor>
+      <arglist>((hythread_monitor_t monitor, hythread_t threadId))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC UDATA VMCALL hythread_clear_interrupted</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>9488fd26876c3fed37157273a868cf15</anchor>
+      <arglist>((void))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC void VMCALL hythread_lib_unlock</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>0857b6773e844460cad181c841b7f135</anchor>
+      <arglist>((hythread_t self))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_monitor_enter</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>a42981f60cfee808c77b9c30c79155dc</anchor>
+      <arglist>((hythread_monitor_t monitor))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_attach</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>dc7c76901e85a9ab3a84c24d85e461ca</anchor>
+      <arglist>((hythread_t *handle))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC HyThreadMonitorTracing *VMCALL hythread_jlm_get_gc_lock_tracing</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>49b50d1a5e434b1443bf3125214c24b2</anchor>
+      <arglist>(())</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hysem_post</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>0d210956172212278872cf0ba516260e</anchor>
+      <arglist>((hysem_t s))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC void VMCALL hythread_monitor_lock</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>0e599a0c882f001d128083dccac42961</anchor>
+      <arglist>((hythread_t self, hythread_monitor_t monitor))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_monitor_init_with_name</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>e6faff9e413af64ba9db96c9aca995c8</anchor>
+      <arglist>((hythread_monitor_t *handle, UDATA flags, char *name))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_tls_free</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>05a657da60a8c8477db78c221bbdbbe9</anchor>
+      <arglist>((hythread_tls_key_t key))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_tls_set</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>1e3332cec5c2e368fc37c1c577c1670d</anchor>
+      <arglist>((hythread_t thread, hythread_tls_key_t key, void *value))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_create</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>bdf58af296da6aee56edcecc8298bf37</anchor>
+      <arglist>((hythread_t *handle, UDATA stacksize, UDATA priority, UDATA suspend, hythread_entrypoint_t entrypoint, void *entryarg))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hysem_init</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>c28589c69c93af56c8fdbc01333b4f12</anchor>
+      <arglist>((hysem_t *sp, I_32 initValue))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_monitor_init_policy</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>780e47b6b1a73ecdd9b0281e5e4e33a7</anchor>
+      <arglist>((hythread_monitor_t *handle, UDATA flags, IDATA policy, IDATA policyData))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_monitor_wait_interruptable</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>04093a10e94ccb17bfb7d602d33244f0</anchor>
+      <arglist>((hythread_monitor_t monitor, I_64 millis, IDATA nanos))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_set_priority</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>df677c81797d0b8a557cafe6856b490d</anchor>
+      <arglist>((hythread_t thread, UDATA priority))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_monitor_init</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>adb37ec571ce6e8cb8732394afdeaf75</anchor>
+      <arglist>((hythread_monitor_t *handle, UDATA flags))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_sleep</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>e14a70b44bede883b16f9cdcadc84ee8</anchor>
+      <arglist>((I_64 millis))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC UDATA *VMCALL hythread_global</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>cfce0239c8811c5bc254da1b33b48ec5</anchor>
+      <arglist>((char *name))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_tls_alloc_with_finalizer</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>36d16adc63dada7cde26b29719301233</anchor>
+      <arglist>((hythread_tls_key_t *handle, hythread_tls_finalizer_t finalizer))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC void VMCALL hythread_enable_stack_usage</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>a261e8ad4a22430ca8e54c56ebe10f54</anchor>
+      <arglist>((UDATA enable))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_get_os_priority</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>2fbef8653dd55842536d83eb676fe671</anchor>
+      <arglist>((hythread_t thread, IDATA *policy, IDATA *priority))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC UDATA VMCALL hythread_get_flags</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>ff3e24d5435990140bf79031b461394e</anchor>
+      <arglist>((hythread_t thread, hythread_monitor_t *blocker))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_rwmutex_enter_read</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>e5bcfbfca9d4e5f6b1ea5bd8c1426198</anchor>
+      <arglist>((hythread_rwmutex_t mutex))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL hythread_rwmutex_init</type>
+      <name>PROTOTYPE</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>7651e0141a42b0d4994993b2ed51bfb9</anchor>
+      <arglist>((hythread_rwmutex_t *handle, UDATA flags, const char *name))</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC UDATA VMCALL</type>
+      <name>current_stack_depth</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>260d0c9e42d9a58b9450b4135fca6ae6</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC void VMCALL</type>
+      <name>hythread_monitor_unpin</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>936f9b668fc67199c210c1142370ed91</anchor>
+      <arglist>(hythread_monitor_t monitor, hythread_t osThread)</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC void VMCALL</type>
+      <name>hythread_monitor_pin</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>d63330d291d2f95023e2cb0bff933137</anchor>
+      <arglist>(hythread_monitor_t monitor, hythread_t osThread)</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC IDATA VMCALL</type>
+      <name>hythread_spinlock_acquire</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>5fe43e5749b806745e2de1fbf38f4b7f</anchor>
+      <arglist>(hythread_t self, hythread_monitor_t monitor)</arglist>
+    </member>
+    <member kind="function">
+      <type>HY_CFUNC UDATA VMCALL</type>
+      <name>hythread_spinlock_swapState</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>37dad8048426fde7fb50ea6a796e879e</anchor>
+      <arglist>(hythread_monitor_t monitor, UDATA newState)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>__declspec</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>f1480b7b14ccabcbe66d90ed00791f13</anchor>
+      <arglist>(thread) hythread_t tm_self_tls</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static __forceinline hythread_t VMCALL</type>
+      <name>hythread_self</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>c7c35bc8d481a3d5215ab43b8b5890e6</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static __forceinline void *VMCALL</type>
+      <name>hythread_tls_get</name>
+      <anchorfile>hythread_8h.html</anchorfile>
+      <anchor>d4331aef21db9a4bba3bd32b4c094af6</anchor>
+      <arglist>(hythread_t thread, hythread_tls_key_t key)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>hythread_ext.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>hythread__ext_8h</filename>
+    <class kind="struct">HyThread</class>
+    <class kind="struct">hythread_start_proc_data</class>
+    <class kind="struct">tm_props</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOCK_RESERVATION</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>536b0b8f5a406cfdaaee214989aff288</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>HyLatch *</type>
+      <name>hylatch_t</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>02de2ab1f1c6aff1d4ab1ce5b6b22f32</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>HyThread *</type>
+      <name>hythread_iterator_t</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>132439cbf67fd368fd8c378ec530ef82</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>HyThreadLibrary *</type>
+      <name>hythread_library_t</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>e1ee92926d99d4c986438bc7d01c992b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>U_32</type>
+      <name>hythread_thin_monitor_t</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>869f395591f6566be7466f95dc432427</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void(*)</type>
+      <name>hythread_event_callback_proc</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>97601d186cb8efe4b58c37a24a84b8b3</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>int(HYTHREAD_PROC *)</type>
+      <name>hythread_wrapper_t</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>519dba3c0dc27b1d5862c1902dc35895</anchor>
+      <arglist>(void *)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>hythread_start_proc_data *</type>
+      <name>hythread_start_proc_data_t</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>650e705027a755838fa45960431ac9a5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>VMIMPORT tm_props *</type>
+      <name>tm_properties</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>19f0926f2b7aab326894df614032cba6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_QUANTITY_OF_PREDEFINED_TLS_KEYS</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>e1f42ef145a389c405742a2e87a3c52f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_alive</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>f2d2f01b658335f3962bdfe8960cdac8</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_terminated</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>bf2e5033a1f3e7d18ba4856aaa67d238</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_runnable</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>9a355f3d8b1b01ef9843d3afb8a2fbf7</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_blocked_on_monitor_enter</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>ce437e900a148a6261b6617c8fd7b728</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_waiting</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>3a7c274f24057c0b2a89cd3d5854d7f1</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_waiting_indefinitely</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>b254065aebf806f20580183be72dccc0</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_waiting_with_timeout</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>ea04807803d9eae735e2682d0e1f00c5</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_sleeping</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>52824fdcbeba58a8d3b044ee36c49056</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_in_monitor_wait</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>4c3e9855787bff10aee6e64d9651ad6b</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_parked</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>d7cc6e095de2b2a5b3af205cdc4cd89f</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_suspended</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>ac9e3cda74256d4dea4aa7cceb1f4a55</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_interrupted</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>2b4224de36cd536fa4ca74ac48c6de09</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_in_native</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>8025e9ca1ccbba8c5479134c81782ef7</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_daemon</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>84d018592f54b47c9fd76100bf8a4163</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HYTHREAD_EXT_H</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>a3161c8c40fe911bd4060576330c07c8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_NEW</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>9681a0776312e08b7a5d7e98f4ac2b84</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_ALIVE</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>a377e8326891471d2a1f3f8447208958</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_TERMINATED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>ec35ffa77cae5a829fc5e1c77883bcd6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_WAITING</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>0ed12f1fa0b6f086738e2d6483aeb158</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_WAITING_INDEFINITELY</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>6daec25f64419f97ef05bdca614260fb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_WAITING_WITH_TIMEOUT</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>880dc5ab27ddc4687eb0cced24b9f31c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_RUNNABLE</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>419e2fc13e20cadbd0f3700ab4fc4d4a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_SLEEPING</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>93dc6049a5ec21a10cf56b52faafc2b8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_IN_MONITOR_WAIT</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>681c30045384c3282c51a90b71796579</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_PARKED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>ea5b9a1acba961e966506afc320048c0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_BLOCKED_ON_MONITOR_ENTER</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>af8d15238e7ee24395d76c1a879dd099</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_UNPARKED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>25fb9f4be49e6c0e0eed3ba6d6b26933</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_SUSPENDED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>add6ce32a679cb5fe595f553048fb302</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_INTERRUPTED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>00e07aaf821ce8f97221476446e1aa25</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_THREAD_STATE_IN_NATIVE</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>6b74c4b3258ead566d7536122984466e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_MUTEX_DEFAULT</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>3f0f05ad6878a796d9708379e374ce8e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_MUTEX_NESTED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>31628169701d1364657407d209f46e3f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_MUTEX_UNNESTED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>8e01bfbbb51f53a7c6644b4aac969348</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>WAIT_INTERRUPTABLE</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>21a44d77d755e0a1014bf5fd0ed683b6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>WAIT_NONINTERRUPTABLE</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>61ab4d0f2c2d00ab5ee5af29587b6bc3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_NONE</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>23194ae896e95f322a55b33fed01790f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_INVALID_MONITOR</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>e618dd62b906bd67dcd358072a42963f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_NOT_MONITOR_OWNER</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>49ddc8bb0fa450128fa90fc71b59053f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_INTERRUPT</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>e09c40563e6440063327e94ad0c4baa3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_NULL_POINTER</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>f6e5eb31d719a21b45c880af96d16cde</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_OUT_OF_MEMORY</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>fe66184844349331aada118b7dc81cae</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_ACCESS_DENIED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>d678dc2afcfbbeb16a19790672c12ddb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_WRONG_PHASE</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>d373736c2394bfebbb44b8e68cb97ecc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_INTERNAL</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>c96aee0fc0dcc91dcf6ff9226f875e6f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_UNATTACHED_THREAD</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>943e3c4c5cc60ad54d61ee895ef29255</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_INVALID_ENVIRONMENT</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>11848a8ab8687278d1963f0c8c3f6938</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_MAX_THREADS</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>8a6b30a818aa4b357a37b9b75d1df48c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_ILLEGAL_STATE</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>cce532fa70a1cff5b54787e8274ff751</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_RUNNING_THREADS</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>0bb446be066a56657e0ed690685868bc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_EBUSY</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>46dc89e5133d0ba8c2125151d03eaa90</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_TIMEOUT</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>2215c8edbe282b877129b6f0a77b2a11</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_ERROR_START</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>f1bee0c05984a3f48975c89287548053</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_OS_ERROR</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>da944b77ee9c1c6c4c8aee6a9c02ad85</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_DEFAULT_STACKSIZE</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>938223f6cdc8d2faaed006671bc3a197</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_STATUS_WITHOUT_JAVA</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>97801b7f852e5bc5ec1d5900cc0e1f94</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_STATUS_ALLOCATED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>cd84a865eedc1d9622380e78d7d35ba8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_STATUS_INITIALIZED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>6877e60e064b8a471eb29a96edae6763</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_LIBRARY_STATUS_NOT_INITIALIZED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>7a315a1b8f112914bfc833cfb514792e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_LIBRARY_STATUS_INITIALIZED</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>9641dcce70ac1b7fe672804cf8194a2f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TM_LIBRARY_STATUS_SHUTDOWN</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>335d33c4bcb3e6d1d675c547286aaffd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_global_lock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>721209395d618731ddf16c02bc71c8d7</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_global_unlock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>6a3c9c6408bbe41d03eb1c3f4ffdc14a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_init</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>4c35b06eccb30a21507533284c3e0cbe</anchor>
+      <arglist>(hythread_library_t lib)</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_shutdown</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>b33b84785d6ab8ace3c5eccb827ae3fa</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_shutdowning</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>f701e8d24620c9ab0e251dad76ab625c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_lib_state</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>6e7ae1741f4e959582e80d581c7f2ff2</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_lib_create</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>5606e96a060bcfb45168f5c208f9e120</anchor>
+      <arglist>(hythread_library_t *lib)</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_lib_destroy</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>b7c8655b2e0ac83188a256b6248b5280</anchor>
+      <arglist>(hythread_library_t lib)</arglist>
+    </member>
+    <member kind="function">
+      <type>hythread_group_t VMCALL</type>
+      <name>get_java_thread_group</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>3f5d6819df3a805a016e25ced84e8291</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_create_ex</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>baec821ff56384d0145c440b64f920fd</anchor>
+      <arglist>(hythread_t new_thread, hythread_group_t group, UDATA stacksize, UDATA priority, hythread_wrapper_t wrapper, hythread_entrypoint_t func, void *data)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_attach_ex</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>daca60f58bd1cb51883aa476242314e1</anchor>
+      <arglist>(hythread_t new_handle, hythread_library_t lib, hythread_group_t group)</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_detach_ex</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>f9f840536f3b3cc1a885fb773a5b032d</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_set_to_group</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>f02f12612366aa7536dae7f1346059b3</anchor>
+      <arglist>(hythread_t thread, hythread_group_t group)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_remove_from_group</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>9423cea352169881e2bd44193020eb50</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_set_self</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>ab9e038a0b32e0df20fabbf681974d02</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>UDATA VMCALL</type>
+      <name>hythread_clear_interrupted_other</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>38e7a60acc22f878c92846a4e4ca5943</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_yield_other</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>db21d5475183af6cd8777ebf34af4875</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_get_self_id</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>00b218b2232d0ef53420441351924e80</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_get_id</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>5bb57c3d695d7e279d4f0e8e6a17d030</anchor>
+      <arglist>(hythread_t t)</arglist>
+    </member>
+    <member kind="function">
+      <type>hythread_t VMCALL</type>
+      <name>hythread_get_thread</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>892e0d6672062e9adcd985c1f2ad02bb</anchor>
+      <arglist>(IDATA id)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_struct_init</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>015dc1018caa70b16098a8ece2fe413c</anchor>
+      <arglist>(hythread_t new_thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_struct_release</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>31066b17c1ff890dd400b21b90a4a9f9</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_cancel_all</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>98c5a4a4a565ff09aa0bf9b9fc76e94b</anchor>
+      <arglist>(hythread_group_t group)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>hythread_group_create</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>5e132e9de926cd09827cf0c828333675</anchor>
+      <arglist>(hythread_group_t *group)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_group_release</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>9468034517dd87714ef82c5261e63fb5</anchor>
+      <arglist>(hythread_group_t group)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_group_get_list</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>9d8ee61276638c5a81e098b0c67558c9</anchor>
+      <arglist>(hythread_group_t **list, int *size)</arglist>
+    </member>
+    <member kind="function">
+      <type>UDATA VMCALL</type>
+      <name>hythread_tls_get_offset</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>51285a191e1604fc1bc1f2dfd6c9dbec</anchor>
+      <arglist>(hythread_tls_key_t key)</arglist>
+    </member>
+    <member kind="function">
+      <type>UDATA VMCALL</type>
+      <name>hythread_tls_get_request_offset</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>65865e9326f2307ff7fbee1076968903</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>UDATA VMCALL</type>
+      <name>hythread_get_thread_times</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>d3ec693ac1bd4d52b53411b8f02f4f10</anchor>
+      <arglist>(hythread_t thread, int64 *pkernel, int64 *puser)</arglist>
+    </member>
+    <member kind="function">
+      <type>UDATA</type>
+      <name>hythread_get_thread_stacksize</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>91b1389bd9e719098c9527eb40e0e832</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>UDATA VMCALL</type>
+      <name>hythread_uses_fast_tls</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>4e2a2c3de0a3a1463f29f870f2f59b51</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_get_hythread_offset_in_tls</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>1cf814b49caa6db9db6d796ffc08c730</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_get_struct_size</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>968f4ef4a718a43845ba1341be498686</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thread_lock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>383c450b8447dee7df349a41db3412b4</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thread_unlock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>6e32e8aa24a483f4ddcb1e97fdc8973b</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_get_state</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>13ae925da602a32517ac775fdc0ec9f1</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_set_state</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>76c1cf76d6bbc1643681d30943fbc9ba</anchor>
+      <arglist>(hythread_t thread, IDATA state)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_reset_suspend_disable</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>81a803501116745d9c5cfdb7e539fe73</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_set_suspend_disable</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>24f94d3e40e944a28a8104e3c3aa1b2c</anchor>
+      <arglist>(int count)</arglist>
+    </member>
+    <member kind="function">
+      <type>int VMCALL</type>
+      <name>hythread_is_fat_lock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>447f45d65b3d1c2f686698478097fcfa</anchor>
+      <arglist>(hythread_thin_monitor_t lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>hythread_monitor_t VMCALL</type>
+      <name>hythread_inflate_lock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>24e0d5207c6802a7a3f555bd4854dd3e</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_owns_thin_lock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>c24e98968f6a7ecf358f0e784a5cabdd</anchor>
+      <arglist>(hythread_t thread, hythread_thin_monitor_t lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_unreserve_lock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>f46418dea648fab7c6f3e03b71c1080b</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_get_thread_id_offset</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>0615fc0f2ccade67a2dc7369ce7dfe6f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_set_thread_stop_callback</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>576f48728c3d6e214d5a5c24e78c9e84</anchor>
+      <arglist>(hythread_t thread, hythread_event_callback_proc stop_callback)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_wait_for_nondaemon_threads</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>91a415606516eb26038005c00aeedc43</anchor>
+      <arglist>(hythread_t thread, IDATA threads_to_keep)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_increase_nondaemon_threads_count</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>e782184b27930e4b02ebb90bf9c19bc6</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_decrease_nondaemon_threads_count</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>ccebcf0ee18660ba031bc199e79879e7</anchor>
+      <arglist>(hythread_t thread, IDATA threads_to_keep)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hycond_create</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>d65b5e8e647034b35b441bbb5ec4dde6</anchor>
+      <arglist>(hycond_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hycond_wait</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>197f8ba038a0d9024dd1ccbccceca5f0</anchor>
+      <arglist>(hycond_t *cond, hymutex_t *mutex)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hycond_wait_timed</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>7efa9dc8a2d3d4b8704c4bf388badb1f</anchor>
+      <arglist>(hycond_t *cond, hymutex_t *mutex, I_64 millis, IDATA nanos)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hycond_wait_timed_raw</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>337a7899ac66cded39307ac441362c19</anchor>
+      <arglist>(hycond_t *cond, hymutex_t *mutex, I_64 ms, IDATA nano)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hycond_wait_interruptable</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>90b4fc418e1fb5d34c4150738d5a7bcf</anchor>
+      <arglist>(hycond_t *cond, hymutex_t *mutex, I_64 millis, IDATA nanos)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hycond_notify</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>87a271a9c6b3020a4da88a44698ca118</anchor>
+      <arglist>(hycond_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hycond_notify_all</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>37de2734d0f3d8d7d32f86ed1a5d8600</anchor>
+      <arglist>(hycond_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hycond_destroy</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>b73a0d9804bae4390468c88539d285ba</anchor>
+      <arglist>(hycond_t *cond)</arglist>
+    </member>
+    <member kind="function">
+      <type>hy_inline IDATA VMCALL</type>
+      <name>hythread_is_suspend_enabled</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>852d756107bf410ff4294dbac60613c5</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>hy_inline void VMCALL</type>
+      <name>hythread_suspend_enable</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>532c9a912f0c3b5ad6bbd7520f9213f6</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>hy_inline void VMCALL</type>
+      <name>hythread_suspend_disable</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>e62d119e79749eaf88ce215d4047a27d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>hythread_safe_point</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>b26bb1349185097c8d711140f4382f6d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>hythread_safe_point_other</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>6a45e6cbd3004c0b68676189616c5df4</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_exception_safe_point</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>02f401f867c739a72c7e3942f3b9732f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_send_suspend_request</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>d2b9e06ffba68ad6b92bbe47b7ed89cf</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_suspend_other</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>1ac1d2437ee8ced181f8364017af7a54</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_set_safepoint_callback</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>8ac6c6a8e1939f3c75bbaeb9bab156fd</anchor>
+      <arglist>(hythread_t thread, hythread_event_callback_proc callback)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_suspend_all</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>f76771ee3cb67d3733718322b95d6f5b</anchor>
+      <arglist>(hythread_iterator_t *t, hythread_group_t group)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_resume_all</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>be3dc81a29d179972f6a74d44d16b199</anchor>
+      <arglist>(hythread_group_t group)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hylatch_create</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>0ac611c0440dac81552a6d2cbbd8f91b</anchor>
+      <arglist>(hylatch_t *latch, IDATA count)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hylatch_wait</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>a036fa2300822bb40ca6c8d763082695</anchor>
+      <arglist>(hylatch_t latch)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hylatch_wait_timed</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>5343091e7c4ccca209d284bc78b933b3</anchor>
+      <arglist>(hylatch_t latch, I_64 ms, IDATA nano)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hylatch_wait_interruptable</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>89ba9bbaababc58af0b512a746a76ef6</anchor>
+      <arglist>(hylatch_t latch, I_64 ms, IDATA nano)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hylatch_set</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>ec3dd817726846fb9007d0f645bf43a0</anchor>
+      <arglist>(hylatch_t latch, IDATA count)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hylatch_count_down</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>bd08c498a02b6f8346dc387962282237</anchor>
+      <arglist>(hylatch_t latch)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hylatch_get_count</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>9f1f95231db79c98b27f4543a2f2d5bd</anchor>
+      <arglist>(IDATA *count, hylatch_t latch)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hylatch_destroy</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>7ed6ee05a7a2dabb3b38e0b2d919355c</anchor>
+      <arglist>(hylatch_t latch)</arglist>
+    </member>
+    <member kind="function">
+      <type>hythread_iterator_t VMCALL</type>
+      <name>hythread_iterator_create</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>adae6848767e0afa70e8f132fd65780c</anchor>
+      <arglist>(hythread_group_t group)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_iterator_release</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>ed237c603560c25da1fdebbb17d18f74</anchor>
+      <arglist>(hythread_iterator_t *it)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_iterator_reset</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>525f313add4a31382dc4e79a490ef062</anchor>
+      <arglist>(hythread_iterator_t *it)</arglist>
+    </member>
+    <member kind="function">
+      <type>hythread_t VMCALL</type>
+      <name>hythread_iterator_next</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>57abdfe5f3046d9f8fdfcdf143e1db66</anchor>
+      <arglist>(hythread_iterator_t *it)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_iterator_has_next</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>cde0b3fcaa73780cfeb94e9bd3956274</anchor>
+      <arglist>(hythread_iterator_t it)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_iterator_size</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>aa45416a76ca8de2be7e22602e563f71</anchor>
+      <arglist>(hythread_iterator_t iterator)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>hysem_create</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>8cfe52698c3d4c2b8026e97f25bab2e4</anchor>
+      <arglist>(hysem_t *sem, UDATA initial_count, UDATA max_count)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hysem_wait_timed</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>ede71fe0fa53f1768383ba2879430895</anchor>
+      <arglist>(hysem_t sem, I_64 ms, IDATA nano)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hysem_wait_interruptable</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>fe2ec7d86e297e90d9e361a9c68645b3</anchor>
+      <arglist>(hysem_t sem, I_64 ms, IDATA nano)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hysem_getvalue</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>97b4510d3a19131743a470a13a0396c2</anchor>
+      <arglist>(IDATA *count, hysem_t sem)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>hysem_set</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>2b2c5ee54032122c7f1b173eac18ad14</anchor>
+      <arglist>(hysem_t sem, IDATA count)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>hymutex_create</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>706e1bb07a7fe3da5e18e35f1a577701</anchor>
+      <arglist>(hymutex_t *mutex, UDATA flags)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>hymutex_lock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>e361aa7e27b5ba4618e2cdc2248b29ab</anchor>
+      <arglist>(hymutex_t *mutex)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>hymutex_trylock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>09e1ea58026b9d48bcd7b4f75a6c5472</anchor>
+      <arglist>(hymutex_t *mutex)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>hymutex_unlock</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>baa4a6187380d0abeefb3fe913065567</anchor>
+      <arglist>(hymutex_t *mutex)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>hymutex_destroy</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>1de649db0fb5f6817f43d8dcd1f802ee</anchor>
+      <arglist>(hymutex_t *mutex)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_create</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>662c219176de72749df545bbd5f0958b</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_enter</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>850b2a70cfdf36280b2dc82f631be66c</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_try_enter</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>efdcda37901f432288a9e351b4404261</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_exit</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>e4f276e5840b59dafbea0aa7f23cee9e</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_release</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>8c17b6331ac49838550fb3f6ff1c5ca6</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_wait</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>dc258e56d6b46e6c985fb18048d893cf</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_wait_timed</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>306706e9dc493cea8d744eeaa4ade4fa</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword_ptr, I_64 ms, IDATA nano)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_wait_interruptable</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>de6f99ac7e7b9daec273bf86104cdf7a</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword_ptr, I_64 ms, IDATA nano)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_notify</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>36a60e0531b7dd15ac38162543e5fd42</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_notify_all</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>5ab692f6e0ab36515884c787efc57b71</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_destroy</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>399a57f108c1d9a064eaeff897e55c5a</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>hythread_t VMCALL</type>
+      <name>hythread_thin_monitor_get_owner</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>85607e1038e758980fb9b266b9e629ec</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_thin_monitor_get_recursion</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>3eb6c09953ffdaf17e1fa2a97b289d2e</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword)</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_native_resource_is_live</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>5e33326333b41eddc13b9701e848d572</anchor>
+      <arglist>(U_32)</arglist>
+    </member>
+    <member kind="function">
+      <type>void VMCALL</type>
+      <name>hythread_reclaim_resources</name>
+      <anchorfile>hythread__ext_8h.html</anchorfile>
+      <anchor>220186827601396e791cb5bd20dfc9ce</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>jthread.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>jthread_8h</filename>
+    <member kind="typedef">
+      <type>JVMTIThread *</type>
+      <name>jvmti_thread_t</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>89812cca69532e6c15118f030a459825</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>jthread_start_proc_data *</type>
+      <name>jthread_start_proc_data_t</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>6ad330e462cb285d1c01f63b622dbad6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>VM_thread *</type>
+      <name>vm_thread_t</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>1281755e1dfc14aeb55c96457c69e028</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jlong</type>
+      <name>jthread_thread_init</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>89c79ef40cced3b3dd47edc91843821c</anchor>
+      <arglist>(JNIEnv *jni_env, jthread java_thread, jobject weak_ref, hythread_t dead_thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_create</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>140ce27951234f6516833a9e730ec7dd</anchor>
+      <arglist>(JNIEnv *jni_env, jthread thread, jthread_start_proc_data_t attrs)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_create_with_function</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>84a9d0dddc9d4e7f34ce936875f1accd</anchor>
+      <arglist>(JNIEnv *jni_env, jthread thread, jthread_start_proc_data_t attrs)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_attach</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>7d734124abb689b50c73d1418da78a94</anchor>
+      <arglist>(JNIEnv *jni_env, jthread thread, jboolean daemon)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_detach</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>3c3cc61433271d58739fb50df6a8507e</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_java_detach</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>4531403b052ef21cc1ca39824e641d0a</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_vm_detach</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>4e163e360d54350e993f1664afaa09e7</anchor>
+      <arglist>(vm_thread_t vm_thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_yield</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>4b44e38cc4c0dcd4598d450cbf4b4034</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_stop</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>ec3f2a234a70b44910bfe66c88271b07</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_exception_stop</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>78083a1d4995eb3066f26bacae3a6809</anchor>
+      <arglist>(jthread thread, jobject throwable)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_sleep</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>ca0911f92561975767f4fba2b6bc0cf6</anchor>
+      <arglist>(jlong millis, jint nanos)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT JNIEnv *</type>
+      <name>jthread_get_JNI_env</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>d5164a5e685260a81606c65d7ff49a80</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_wait_for_all_nondaemon_threads</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>0088bb5d8d76140f239af2d747d4bf20</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jthread</type>
+      <name>jthread_self</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>ab9bb9d284cb027cb0319369cd07ed5a</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jlong</type>
+      <name>jthread_get_id</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>36b754b2ebbe6fbe18ff18ae9bf8ea20</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jthread</type>
+      <name>jthread_get_thread</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>210a5eb75b53fb175d3ab1aea7df02a3</anchor>
+      <arglist>(jlong thread_id)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jthread</type>
+      <name>jthread_get_java_thread</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>590a36947cb3a378b69d212b1c107516</anchor>
+      <arglist>(hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_set_priority</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>32e6ec7bf839f72a0d41279ec6bef70d</anchor>
+      <arglist>(jthread thread, jint priority)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jint</type>
+      <name>jthread_get_priority</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>ed9e92fa8cd8d5af0d0c3fc383bd4c8e</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_set_name</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>b925b33c445f3a8cf49ae30537aad210</anchor>
+      <arglist>(jthread thread, jstring name)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jstring</type>
+      <name>jthread_get_name</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>dae86d1023969d4f86c1a114fbe29649</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_interrupt</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>63acf5560d239f721a4a03790ae2f2d3</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jboolean</type>
+      <name>jthread_is_interrupted</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>11868f5b4a27d1c85effca6e144e2f38</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_clear_interrupted</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>c179a17aeea1c8462b29015050185235</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_monitor_init</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>24c15433a76e972fa970f06522fb0aa9</anchor>
+      <arglist>(jobject mon)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_monitor_enter</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>f98bcbe11fb69721cd90d8c11f0ffcd1</anchor>
+      <arglist>(jobject mon)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_monitor_try_enter</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>c0906ccce768e3128d821ae3382b9fc9</anchor>
+      <arglist>(jobject mon)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_monitor_exit</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>e71f08d6050fb08d2024d8ff3ea77307</anchor>
+      <arglist>(jobject mon)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_monitor_release</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>1c70a4f93826de1ba564c2025709fb2d</anchor>
+      <arglist>(jobject mon)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_monitor_notify</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>87f0142df4c152a26862dae7abff0681</anchor>
+      <arglist>(jobject mon)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_monitor_notify_all</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>5090db8ac06aa0d5097f08167f4be6fa</anchor>
+      <arglist>(jobject mon)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_monitor_wait</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>bcdb28f5f77bba12dd33fb0be6adf620</anchor>
+      <arglist>(jobject mon)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_monitor_timed_wait</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>96f0416ccd30acdd8fad35ad1bad3bb1</anchor>
+      <arglist>(jobject mon, jlong millis, jint nanos)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_park</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>9d165a2e593f71809b64faf23c002694</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_timed_park</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>cac3dbede16df27746d26566006d1496</anchor>
+      <arglist>(jlong millis, jint nanos)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_unpark</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>aeb23ccc00de779d97d5206a070c4392</anchor>
+      <arglist>(jthread thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_park_until</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>055bd1801691cacf74f27a04abbb6edf</anchor>
+      <arglist>(jlong milis)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_suspend</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>d7078cb386aec2b1fb626b64a31c4656</anchor>
+      <arglist>(jobject thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_suspend_all</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>6f340ff1875ecb8feb2fc3b3e85a591f</anchor>
+      <arglist>(jvmtiError *results, jint count, const jobject *thread_list)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_resume</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>1e39c1108fd3d17de52eeb4aed400396</anchor>
+      <arglist>(jobject thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_resume_all</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>c2bfbd9db23972ca3f72e1e1fb369ec5</anchor>
+      <arglist>(jvmtiError *results, jint count, const jobject *thread_list)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_cancel_all</name>
+      <anchorfile>jthread_8h.html</anchorfile>
+      <anchor>73b891a7af6c0e4e3a830a25d0f559e2</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>thread_helpers.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>thread__helpers_8h</filename>
+    <member kind="typedef">
+      <type>void *</type>
+      <name>fast_tls_func</name>
+      <anchorfile>thread__helpers_8h.html</anchorfile>
+      <anchor>7567959a1143a5acbb1de6ea9eb28025</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>fast_tls_func *</type>
+      <name>get_tls_helper</name>
+      <anchorfile>thread__helpers_8h.html</anchorfile>
+      <anchor>c1da4ea4570f459d9fa8ce515feb3185</anchor>
+      <arglist>(hythread_tls_key_t key)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>thread_private.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/thread/src/</path>
+    <filename>thread__private_8h</filename>
+    <class kind="struct">HyThreadLibrary</class>
+    <class kind="struct">HyThreadGroup</class>
+    <class kind="struct">HyThreadMonitor</class>
+    <class kind="struct">HyLatch</class>
+    <class kind="struct">HySemaphore</class>
+    <class kind="struct">HyFatLockTable</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>TRACE</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>f433b05d8a466d0640f88d491e2b3339</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DIE</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>87f8f26282d17a4b2c899fd2caaba77e</anchor>
+      <arglist>(A)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>RET_ON_ERROR</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>583997aa2b621d83f04eb67ae40b4092</anchor>
+      <arglist>(stat)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>CONVERT_ERROR</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>bc59b3c0a479d0686ec18cb8d344e6ea</anchor>
+      <arglist>(stat)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FAST_LOCAL_STORAGE_SIZE</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>6024628dfbfaa6e58cd01700b9661da5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_FAT_LOCK_ID_OFFSET</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>2709b5204359793815c28518bd0ceeb1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_FAT_LOCK_ID_MASK</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>9dfc340ee40c0cb62e89bd87986ce67c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_FAT_TABLE_ENTRIES</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>1a9ff9652b9879b4067d9e979c0133fe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_MAX_FAT_LOCKS</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>752144b24374643cdf0bb41d8b28fc38</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_MAX_FAT_TABLES</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>9daf7f6b78dfe1ab552e0cee93e9e5fb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>THREAD_ID_SIZE</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>ff00f32c4a5de82ae0c322d27bf81fe6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum hythread_locktable_state</type>
+      <name>hythread_locktable_state_t</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>d00d681f359d3cd0ca065d1d1d03dd64</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void(*)</type>
+      <name>tm_thread_event_callback_proc</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>7e89cfc7b9e4373323c3baf702807bfa</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="enumeration">
+      <name>hythread_locktable_state</name>
+      <anchor>6ce90b44f987e33536f2e6ad84934319</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>HYTHREAD_LOCKTABLE_IDLE</name>
+      <anchor>6ce90b44f987e33536f2e6ad84934319246188feeef6ba996c4bd36404161eb2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>HYTHREAD_LOCKTABLE_READING</name>
+      <anchor>6ce90b44f987e33536f2e6ad84934319e30a573cf64f2acc1c785154ae8d7e19</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>HYTHREAD_LOCKTABLE_WRITING</name>
+      <anchor>6ce90b44f987e33536f2e6ad849343198a1c54c5df12469da599ddb0bb67a5f3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>hythread_get_group</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>36128c6fd570e29bfcfafc5c0c1edcc6</anchor>
+      <arglist>(hythread_group_t *group, hythread_t thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>throw_interrupted_exception</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>5e22ed156b319912a70372d6b6b9bd05</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>hythread_group_t</type>
+      <name>get_java_thread_group</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>fd3af1c329d6361111e840e5ed9cdc25</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA VMCALL</type>
+      <name>set_safepoint_callback</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>147e2018c08a72853838fe66ba3d9ab7</anchor>
+      <arglist>(hythread_t thread, tm_thread_event_callback_proc callback)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>acquire_start_lock</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>97f403d428512430b6a16a9e1dd09312</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>release_start_lock</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>b20e5a6f45b7a999f5aa0a16b782cf15</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>thread_sleep_impl</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>a117be92a316fdd4cc550700c9b509d6</anchor>
+      <arglist>(I_64 millis, IDATA nanos, IDATA interruptable)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>condvar_wait_impl</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>c546b3064eefeb3de4e4621f4231871f</anchor>
+      <arglist>(hycond_t *cond, hymutex_t *mutex, I_64 ms, IDATA nano, IDATA interruptable)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>monitor_wait_impl</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>5ae37fd68885ce4739acb642e92a5313</anchor>
+      <arglist>(hythread_monitor_t mon_ptr, I_64 ms, IDATA nano, IDATA interruptable)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>thin_monitor_wait_impl</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>c46c21c1cffe1fd550d7651dd0e59840</anchor>
+      <arglist>(hythread_thin_monitor_t *lockword_ptr, I_64 ms, IDATA nano, IDATA interruptable)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>sem_wait_impl</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>05e8eda6487a08088adab80bb09a4100</anchor>
+      <arglist>(hysem_t sem, I_64 ms, IDATA nano, IDATA interruptable)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>os_thread_create</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>bfa8963e6a06130fc19d32aaee9cc010</anchor>
+      <arglist>(osthread_t *phandle, UDATA stacksize, UDATA priority, hythread_wrapper_t func, void *data)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>os_thread_set_priority</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>c187b3aa86709b045938b5904d21e1ba</anchor>
+      <arglist>(osthread_t thread, int priority)</arglist>
+    </member>
+    <member kind="function">
+      <type>osthread_t</type>
+      <name>os_thread_current</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>f8364ceea6ec0917501171c176e0eff8</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>os_thread_free</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>f70b95b361f6fbf845861e247b30229c</anchor>
+      <arglist>(osthread_t os_thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>os_thread_exit</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>f1ce6670163bbd9f7bdb81101074bd04</anchor>
+      <arglist>(IDATA status)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>os_thread_join</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>9460f401ab832aef7ac92b81fa0cf5f4</anchor>
+      <arglist>(osthread_t os_thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>os_get_thread_times</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>f650d2f74941631e75bd3ed97f8f84b1</anchor>
+      <arglist>(osthread_t os_thread, int64 *pkernel, int64 *puser)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>os_cond_timedwait</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>d4297b876564b45587ee03f37a50039e</anchor>
+      <arglist>(hycond_t *cond, hymutex_t *mutex, I_64 ms, IDATA nano)</arglist>
+    </member>
+    <member kind="function">
+      <type>UDATA</type>
+      <name>os_get_foreign_thread_stack_size</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>d94bcb263efcd8f708322e52befbd852</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_group_t</type>
+      <name>TM_DEFAULT_GROUP</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>c14b3b5e501568e6b9699fadaf86efd8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int16</type>
+      <name>tm_tls_capacity</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>1c1d917a7e6010c88d8e00dbdc70efe6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int16</type>
+      <name>tm_tls_size</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>08c9cf3efcfd3b6bf605e0b0a8f5adcc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_group_t</type>
+      <name>group_list</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>b6dd57e7a74ba6efc27faefe2c423659</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>IDATA</type>
+      <name>groups_count</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>c67b674090377199f84db1044cd841e2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>apr_pool_t *</type>
+      <name>TM_POOL</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>9ca76a4178a16675eb43b14ab4b717f7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>apr_threadkey_t *</type>
+      <name>TM_THREAD_KEY</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>5c5874bafd1a5e5108b27ce66ab4d5f5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>max_group_index</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>1a9260da3ed2ee41047c04bfbfcaa808</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>HyFatLockTable *</type>
+      <name>lock_table</name>
+      <anchorfile>thread__private_8h.html</anchorfile>
+      <anchor>b414f567aec84c8bb4a4711115daea79</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>ti_thread.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>ti__thread_8h</filename>
+    <class kind="struct">JVMTILocalStorage</class>
+    <member kind="typedef">
+      <type>HyThread *</type>
+      <name>jthread_iterator_t</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>c3254b777f2acde6a013980829b21d3d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT JVMTILocalStorage *</type>
+      <name>jthread_get_jvmti_local_storage</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>1ee80d5b6efb57a7228e406524b9926f</anchor>
+      <arglist>(jthread java_thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_jvmti_state</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>53c9305179c6293df4ee9b691ded23e1</anchor>
+      <arglist>(jthread thread, jint *thread_state)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_all_threads</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>764673972d4d08e5aeea30f5d07af64d</anchor>
+      <arglist>(jthread **threads, jint *count)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_deadlocked_threads</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>52653b610056a8a317909702f4a9fc89</anchor>
+      <arglist>(jthread *thread_list, jint thread_count, jthread **dead_list, jint *dead_count)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_thread_count</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>0fb7376dbf95679027f499929d5552e8</anchor>
+      <arglist>(jint *count)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_blocked_count</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>d625579dcd3092f9931f00215eaa60f4</anchor>
+      <arglist>(jint *count)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_waited_count</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>d80a0abba7b82fe203e609c4cd9c4ddc</anchor>
+      <arglist>(jint *count)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_total_started_thread_count</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>04ff263fb1fa5851ed12a6cab2e312f2</anchor>
+      <arglist>(jint *count)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_contended_monitor</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>bf5deab405db67f3fe904af97da8bd38</anchor>
+      <arglist>(jthread thread, jobject *monitor)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_wait_monitor</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>4fb71c208849c9e4ef14d03e5f324e54</anchor>
+      <arglist>(jthread thread, jobject *monitor)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jboolean</type>
+      <name>jthread_holds_lock</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>5724d290a19ef213f49cda2ca11d99dc</anchor>
+      <arglist>(jthread thread, jobject monitor)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_lock_owner</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>dcede5d3cc408abd9d4cf66c89f930f0</anchor>
+      <arglist>(jobject monitor, jthread *lock_owner)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_lock_recursion</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>153f7cc4a18957f7c536412b02e4d06f</anchor>
+      <arglist>(jobject monitor, jthread lock_owner)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_owned_monitors</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>402ed9c263a114621ce397a1155f9e5b</anchor>
+      <arglist>(jthread thread, jint *mon_count_ptr, jobject **monitors)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jboolean</type>
+      <name>jthread_is_thread_contention_monitoring_enabled</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>a78b858a12cb8c9665c124eae8f96015</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jboolean</type>
+      <name>jthread_is_thread_contention_monitoring_supported</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>a43fe965f744e365a06d342434e62178</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>jthread_set_thread_contention_monitoring_enabled</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>b688d2e941e97f546683c9d1197aadb7</anchor>
+      <arglist>(jboolean flag)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_thread_cpu_time</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>4887e352a1d8a1d8ec08c60c8123b0c4</anchor>
+      <arglist>(jthread thread, jlong *nanos_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_thread_user_cpu_time</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>46d1f7bc5b1350f67630e8c473648c80</anchor>
+      <arglist>(jthread thread, jlong *nanos_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_thread_blocked_time</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>59fe0f2cb86ae0e93174b8c9c63bfd11</anchor>
+      <arglist>(jthread thread, jlong *nanos_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_thread_waited_time</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>7b0eeb6296dd7d6d51bbeb8617128976</anchor>
+      <arglist>(jthread thread, jlong *nanos_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_thread_cpu_timer_info</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>9127d915cc70fffe81968ffcbc75f862</anchor>
+      <arglist>(jvmtiTimerInfo *info_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jlong</type>
+      <name>jthread_get_thread_blocked_times_count</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>bd8c0bb432d0cca6a6a65eb039c8e227</anchor>
+      <arglist>(jthread java_thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jlong</type>
+      <name>jthread_get_thread_waited_times_count</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>5a4e190bce0084a9450bd1b090868616</anchor>
+      <arglist>(jthread java_thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jboolean</type>
+      <name>jthread_is_current_thread_cpu_time_supported</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>ac2979da6fbc4a6843ea5f4abc2c18eb</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jboolean</type>
+      <name>jthread_is_thread_cpu_time_enabled</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>6bfb1ff19dfc4494fbcd15e9d8f4f1d5</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jboolean</type>
+      <name>jthread_is_thread_cpu_time_supported</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>7f4d37b7864a233339c580f15b1135af</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>jthread_set_thread_cpu_time_enabled</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>9c433ee60ce37f230877bab39b91de23</anchor>
+      <arglist>(jboolean flag)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_reset_peak_thread_count</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>b7bc0ff2c09aa89746beff93a67e72a4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_get_peak_thread_count</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>a8000fcb0bdf3e01e1795f0efaa926a9</anchor>
+      <arglist>(jint *threads_count_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_raw_monitor_create</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>f0372795b2968a98b504f54f3cd93a14</anchor>
+      <arglist>(jrawMonitorID *mon_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_raw_monitor_destroy</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>90838fac4d53a5d3a27f5a7b05132700</anchor>
+      <arglist>(jrawMonitorID mon_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_raw_monitor_enter</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>58620c86b8c853119499fab6735664ae</anchor>
+      <arglist>(jrawMonitorID mon_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_raw_monitor_try_enter</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>001c7efd91cf9324e1e2812766a24fcf</anchor>
+      <arglist>(jrawMonitorID mon_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_raw_monitor_exit</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>3acde0eafd8f56f94573a080b4379602</anchor>
+      <arglist>(jrawMonitorID mon_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_raw_monitor_notify</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>428990d6e61ba0eaaf9544cd0d220936</anchor>
+      <arglist>(jrawMonitorID mon_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_raw_monitor_notify_all</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>f4a1efd2519d8f1dd0997971e48f762c</anchor>
+      <arglist>(jrawMonitorID mon_ptr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_raw_monitor_wait</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>be2bcc4a16b526aa1b7da69c0f5b6176</anchor>
+      <arglist>(jrawMonitorID mon_ptr, I_64 millis)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jthread_iterator_t</type>
+      <name>jthread_iterator_create</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>06813ab954bb9b5d3ec3ca2531da4541</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT jthread</type>
+      <name>jthread_iterator_next</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>30a4bdc7522b0946e2c2dcc33821eeee</anchor>
+      <arglist>(jthread_iterator_t *it)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_iterator_reset</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>37bc88fe3b0b5d066db4c36a5602c4aa</anchor>
+      <arglist>(jthread_iterator_t *it)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_iterator_size</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>dc4de4546035c8709ab887932ab37519</anchor>
+      <arglist>(jthread_iterator_t iterator)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT IDATA</type>
+      <name>jthread_iterator_release</name>
+      <anchorfile>ti__thread_8h.html</anchorfile>
+      <anchor>3fe949140c26270b4a065328fc1031f4</anchor>
+      <arglist>(jthread_iterator_t *it)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>HyFatLockTable</name>
+    <filename>struct_hy_fat_lock_table.html</filename>
+    <member kind="variable">
+      <type>hythread_monitor_t *</type>
+      <name>tables</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>84b5da8024a52daab1ee7273d2eb83b9</anchor>
+      <arglist>[(((0xFFFFF+1)+(16 *1024)-1)/HY_FAT_TABLE_ENTRIES)]</arglist>
+    </member>
+    <member kind="variable">
+      <type>hymutex_t</type>
+      <name>mutex</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>6e1b561fec6e4ab85b8252a9e29627ee</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hycond_t</type>
+      <name>read</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>ed65fa619da35eda30968c1239b097c4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hycond_t</type>
+      <name>write</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>1a39d0667b7654fe283b07f41823a803</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>readers_reading</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>1d8fc268e6d6fb8dfda3aa01cd4fe7a7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>readers_waiting</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>aa9872fd6e51390894ce9fb14b1a795c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>writers_waiting</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>b98eba8458dda6239f1ed1b2ce4df4c7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_locktable_state_t</type>
+      <name>state</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>2a3c53c2c2b1011f536d9c8163069dde</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>U_32</type>
+      <name>read_count</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>1d25d10b1e518d963e296463d07f902f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned char *</type>
+      <name>live_objs</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>ea4187afdb20a9d0b6c70e7e2fa26fed</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>U_32</type>
+      <name>size</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>7cbf77e7413e4abc138729e31b954da0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>U_32</type>
+      <name>array_cursor</name>
+      <anchorfile>struct_hy_fat_lock_table.html</anchorfile>
+      <anchor>e7a75fa48746481a629a6ebe85e9a777</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>HyLatch</name>
+    <filename>struct_hy_latch.html</filename>
+    <member kind="variable">
+      <type>IDATA</type>
+      <name>count</name>
+      <anchorfile>struct_hy_latch.html</anchorfile>
+      <anchor>32cda79f82adce60e088b26afbb72a3c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hycond_t</type>
+      <name>condition</name>
+      <anchorfile>struct_hy_latch.html</anchorfile>
+      <anchor>7df3fafcd1aaadf96be52a78bf18d7ac</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hymutex_t</type>
+      <name>mutex</name>
+      <anchorfile>struct_hy_latch.html</anchorfile>
+      <anchor>fc5d53efa641e29e4a088786ce96fa6d</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>HySemaphore</name>
+    <filename>struct_hy_semaphore.html</filename>
+    <member kind="variable">
+      <type>int</type>
+      <name>count</name>
+      <anchorfile>struct_hy_semaphore.html</anchorfile>
+      <anchor>f8357978eb4486519133a14b81890468</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>max_count</name>
+      <anchorfile>struct_hy_semaphore.html</anchorfile>
+      <anchor>5995c01e3419f0e7231f89e4925a2ca4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hycond_t</type>
+      <name>condition</name>
+      <anchorfile>struct_hy_semaphore.html</anchorfile>
+      <anchor>ab6352ef0518af016b07b51bc04b84a9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hymutex_t</type>
+      <name>mutex</name>
+      <anchorfile>struct_hy_semaphore.html</anchorfile>
+      <anchor>6ecef1a5891ec1c89e67716c3089e970</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>HyThread</name>
+    <filename>struct_hy_thread.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>reserved</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>fcc1a9c84c304bc60aa2b5c5653a08f7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32</type>
+      <name>request</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>e00fd86e1269fb69b167e69259ec1ddf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int16</type>
+      <name>disable_count</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>06ff0c192a419ecaa8ea6979de608f54</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_group_t</type>
+      <name>group</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>183592eaa07de918d9f8b6880c1690b1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>thread_local_storage</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>d389d1ea525a766bf9150ac568df012a</anchor>
+      <arglist>[10]</arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_library_t</type>
+      <name>library</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>bbcb0cadcc94435204a6bd895e693dda</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32</type>
+      <name>suspend_count</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>45604302d409e2f13b1cb6779c71e04d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_event_callback_proc</type>
+      <name>safepoint_callback</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>a3cad6ff5ec47aa1b856b55f8191fd28</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hysem_t</type>
+      <name>resume_event</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>d66b415308fd88c3c74837df093debb7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_t</type>
+      <name>next</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>6acd7d71e95b7cffe2e11fc05ee2777d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_t</type>
+      <name>prev</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>6af4a3427053b3121184966ad5ad2789</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>osthread_t</type>
+      <name>os_handle</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>e4ba996a2ca5330db559f9c9ddc5c2c4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hymutex_t</type>
+      <name>mutex</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>284abdec0a29cebcb2b78c87477d27ca</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_monitor_t</type>
+      <name>monitor</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>bdde678e9a37f0a836a1651b06811a6f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hycond_t *</type>
+      <name>current_condition</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>50787f1b7462f8ff7f4e88e3af1df838</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>IDATA</type>
+      <name>state</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>6b1937639768cae454c0294282b38a17</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>priority</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>484e2aaecdf6cb4240df31ef1cc1fc2f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char</type>
+      <name>java_status</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>11d40e4835c68d7ea5cd6e2c53b2ae4a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char</type>
+      <name>need_to_free</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>5222d60a5c2def8842194b2c09985b94</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>UDATA</type>
+      <name>stacksize</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>ac995d576d49dd660cb52372fd7d412b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32</type>
+      <name>interrupted</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>fa3979c38b67921e761eb83709c73740</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_monitor_t</type>
+      <name>waited_monitor</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>5ab3abe01a45219abd75fe573ac382ef</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>IDATA</type>
+      <name>thread_id</name>
+      <anchorfile>struct_hy_thread.html</anchorfile>
+      <anchor>f008ef6051fb8126615c8af54a44baf9</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>HyThread_public</name>
+    <filename>struct_hy_thread__public.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>reserved</name>
+      <anchorfile>struct_hy_thread__public.html</anchorfile>
+      <anchor>15880616f1674b9bc49329b425339341</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int32</type>
+      <name>request</name>
+      <anchorfile>struct_hy_thread__public.html</anchorfile>
+      <anchor>5dcf90aae0ff3ce3e50d87ae2f807a6b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int16</type>
+      <name>disable_count</name>
+      <anchorfile>struct_hy_thread__public.html</anchorfile>
+      <anchor>54daec3b1d77deac1aaf9c0fe076fabf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_group_t</type>
+      <name>group</name>
+      <anchorfile>struct_hy_thread__public.html</anchorfile>
+      <anchor>56f9776d1560d0519ca3131823ffe671</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>thread_local_storage</name>
+      <anchorfile>struct_hy_thread__public.html</anchorfile>
+      <anchor>eaff63f1f6bb130856fb7cb4f67822d5</anchor>
+      <arglist>[10]</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>hythread_start_proc_data</name>
+    <filename>structhythread__start__proc__data.html</filename>
+    <member kind="variable">
+      <type>hythread_t</type>
+      <name>thread</name>
+      <anchorfile>structhythread__start__proc__data.html</anchorfile>
+      <anchor>8c7ea4701ee431538ba43e55aacec543</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_group_t</type>
+      <name>group</name>
+      <anchorfile>structhythread__start__proc__data.html</anchorfile>
+      <anchor>30522a6c1f5fbf32dc0d5801671159c6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_entrypoint_t</type>
+      <name>proc</name>
+      <anchorfile>structhythread__start__proc__data.html</anchorfile>
+      <anchor>c68f3f599f0b4190be28fa20b82fcccb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>proc_args</name>
+      <anchorfile>structhythread__start__proc__data.html</anchorfile>
+      <anchor>d3ee0473bdc6921688af7740e8a88dcd</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>HyThreadGroup</name>
+    <filename>struct_hy_thread_group.html</filename>
+    <member kind="variable">
+      <type>hythread_t</type>
+      <name>thread_list</name>
+      <anchorfile>struct_hy_thread_group.html</anchorfile>
+      <anchor>8fb6808eb6f1c67bbfda06bb9f0d123e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_t</type>
+      <name>thread_list_tail</name>
+      <anchorfile>struct_hy_thread_group.html</anchorfile>
+      <anchor>c992fc5193a63f6a56fba3fe20277c94</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>threads_count</name>
+      <anchorfile>struct_hy_thread_group.html</anchorfile>
+      <anchor>056694d1f624c2c87b9f3562168065e1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>group_index</name>
+      <anchorfile>struct_hy_thread_group.html</anchorfile>
+      <anchor>6a631cc6ebe2c952c604c306eddaca64</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>apr_pool_t *</type>
+      <name>pool</name>
+      <anchorfile>struct_hy_thread_group.html</anchorfile>
+      <anchor>69ddb39b9a97ca48534c3340bc577da8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_group_t</type>
+      <name>next</name>
+      <anchorfile>struct_hy_thread_group.html</anchorfile>
+      <anchor>36bd41f5f77ec0145999fcd5e55610ac</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_group_t</type>
+      <name>prev</name>
+      <anchorfile>struct_hy_thread_group.html</anchorfile>
+      <anchor>a008d9bea813f89486fdd7b5cc25b0db</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>HyThreadLibrary</name>
+    <filename>struct_hy_thread_library.html</filename>
+    <member kind="variable">
+      <type>IDATA</type>
+      <name>a</name>
+      <anchorfile>struct_hy_thread_library.html</anchorfile>
+      <anchor>d751a183a671db1fac112ee22610ef72</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hymutex_t</type>
+      <name>TM_LOCK</name>
+      <anchorfile>struct_hy_thread_library.html</anchorfile>
+      <anchor>8fadb4e9f2590aedaabc1bb9dd7d1e94</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>IDATA</type>
+      <name>nondaemon_thread_count</name>
+      <anchorfile>struct_hy_thread_library.html</anchorfile>
+      <anchor>92227b1bffee45dd7eab1b188f9c9b0c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hycond_t</type>
+      <name>nondaemon_thread_cond</name>
+      <anchorfile>struct_hy_thread_library.html</anchorfile>
+      <anchor>13d379f8d72cfddc32752e79b2366e1a</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>HyThreadMonitor</name>
+    <filename>struct_hy_thread_monitor.html</filename>
+    <member kind="variable">
+      <type>hymutex_t</type>
+      <name>mutex</name>
+      <anchorfile>struct_hy_thread_monitor.html</anchorfile>
+      <anchor>f41078a0e7dc096eaf156ad9ab0973eb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hycond_t</type>
+      <name>condition</name>
+      <anchorfile>struct_hy_thread_monitor.html</anchorfile>
+      <anchor>ebf4e246ad36a0e1d9c88a659c895a82</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>IDATA</type>
+      <name>recursion_count</name>
+      <anchorfile>struct_hy_thread_monitor.html</anchorfile>
+      <anchor>39e45e91fd3a24349adaf468921eb800</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_t</type>
+      <name>owner</name>
+      <anchorfile>struct_hy_thread_monitor.html</anchorfile>
+      <anchor>5a90abbc0ba64fc652946ef14fc28f1f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>wait_count</name>
+      <anchorfile>struct_hy_thread_monitor.html</anchorfile>
+      <anchor>8ccbbb66fa15e4ee7b781b58cb00564f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>notify_count</name>
+      <anchorfile>struct_hy_thread_monitor.html</anchorfile>
+      <anchor>e61e2962bd655bfe4df73ce20771f89b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>IDATA</type>
+      <name>thread_id</name>
+      <anchorfile>struct_hy_thread_monitor.html</anchorfile>
+      <anchor>81e2f126485e14d1027a0a3283c546d0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>UDATA</type>
+      <name>flags</name>
+      <anchorfile>struct_hy_thread_monitor.html</anchorfile>
+      <anchor>cddee5f19b0f9deecd4255fc65f8c15e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>name</name>
+      <anchorfile>struct_hy_thread_monitor.html</anchorfile>
+      <anchor>2bc5447c1e2776e8cd9252b8fdbeff02</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>HyThreadMonitorTracing</name>
+    <filename>struct_hy_thread_monitor_tracing.html</filename>
+    <member kind="variable">
+      <type>char *</type>
+      <name>monitor_name</name>
+      <anchorfile>struct_hy_thread_monitor_tracing.html</anchorfile>
+      <anchor>e7a4103e1f4026ad24964bb61bf2c32f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>UDATA</type>
+      <name>enter_count</name>
+      <anchorfile>struct_hy_thread_monitor_tracing.html</anchorfile>
+      <anchor>ccabc65921d3a409210e2e1d3cc00f49</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>UDATA</type>
+      <name>slow_count</name>
+      <anchorfile>struct_hy_thread_monitor_tracing.html</anchorfile>
+      <anchor>95c307cfc54e6a9e496d1bf5e2338487</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>UDATA</type>
+      <name>recursive_count</name>
+      <anchorfile>struct_hy_thread_monitor_tracing.html</anchorfile>
+      <anchor>d7cb6b74aefe93d1ce5a3dda36e1ee66</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>UDATA</type>
+      <name>spin2_count</name>
+      <anchorfile>struct_hy_thread_monitor_tracing.html</anchorfile>
+      <anchor>efc5602b27e144b2902ebd9adb713d2b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>UDATA</type>
+      <name>yield_count</name>
+      <anchorfile>struct_hy_thread_monitor_tracing.html</anchorfile>
+      <anchor>1a93beeb1c0a5e90c0dcbcf22099c9ef</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>JVMTILocalStorage</name>
+    <filename>struct_j_v_m_t_i_local_storage.html</filename>
+    <member kind="variable">
+      <type>jvmtiEnv *</type>
+      <name>env</name>
+      <anchorfile>struct_j_v_m_t_i_local_storage.html</anchorfile>
+      <anchor>f6c26f83806c8d47e65cf95af310c223</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>data</name>
+      <anchorfile>struct_j_v_m_t_i_local_storage.html</anchorfile>
+      <anchor>300661adb6ade85e2467547d12ed75aa</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tm_props</name>
+    <filename>structtm__props.html</filename>
+    <member kind="variable">
+      <type>int</type>
+      <name>use_soft_unreservation</name>
+      <anchorfile>structtm__props.html</anchorfile>
+      <anchor>a11e66d896e404a168ada9df87d11322</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+</tagfile>

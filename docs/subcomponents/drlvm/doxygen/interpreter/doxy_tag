@@ -1,0 +1,1433 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<tagfile>
+  <compound kind="file">
+    <name>interp_defs.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/</path>
+    <filename>interp__defs_8h</filename>
+    <class kind="union">Value</class>
+    <class kind="union">Value2</class>
+    <class kind="class">Stack</class>
+    <class kind="class">Locals</class>
+    <class kind="struct">FramePopListener</class>
+    <class kind="struct">MonitorList</class>
+    <class kind="struct">StackFrame</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOG_DOMAIN</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>95a1d08c807e0aada863b5298a61d08d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DEBUG_PRINT</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>0ac338b253b5d5e6276b89b0c3c0a9b3</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DEBUG</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>8a979668ecb044c9ac0e5017107f1d52</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DEBUG_BYTECODE</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>3d8d4c0fd1cbb4c5c6ec59c89001ae5a</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DEBUG_GC</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>3aa243c6c0a5fb3827f99ebfe436ff1b</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DEBUG2</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>cf64b98877212b5d057935537bc1a34e</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DEBUG_TRACE_PLAIN</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>456612f0dae0eacbc6e1f2fd8bf97762</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DEBUG_TRACE</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>65914631c898c45d07c477a35687e19d</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ASSERT_TAGS</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>9335930e0c856314d3e965fff902eef4</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ASSERT_OBJECT</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>6441c1378b17cf8613af5496d6418b66</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ALLOC_FRAME</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>025e92ca85ec9b954ecc0ddb38643764</anchor>
+      <arglist>(sz)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FREE_FRAME</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>37d70e35f46f3dcb468dd6076f71a444</anchor>
+      <arglist>(ptr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>uword</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>645c4a16053be082b9fd1c6127913407</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>word</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>836535f59bf515522a395858a8029d42</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VAL32</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>daeefd15aee0e4b1d767e8043b06fee1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MAKEREFVAL</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>544ba8a0ba2916c5739378f2e54404d5</anchor>
+      <arglist>(_val_)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MAKECRVAL</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>9a1ab44f2c9f32974dc39f45f17de88a</anchor>
+      <arglist>(_val_)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>STORE_UREF_BY_ADDR</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>3da4817eac39e46820e8a822338ec81f</anchor>
+      <arglist>(_addr_, _val_)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>UNCOMPRESS_REF</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>d5252cfa5fc2d957c2b8c54282beb98c</anchor>
+      <arglist>(cref)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>COMPRESS_INTERP</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>780ba5ee123de533083ff9d1dfa22ff1</anchor>
+      <arglist>(ref)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>UNCOMPRESS_INTERP</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>20f9177da1a63993e5f0bf1e60aa0f23</anchor>
+      <arglist>(cref)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>REF_NULL</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>869cc5be8bfdbcae32af496278566bd8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>s0</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>83fef61a4d1350cc7e3eb6ba499d8449</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>s1</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>09dff3d9a89874939fa7cc9d056b114c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>l0</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>8283b5ded3a040fc6ff7b37a3719064e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>l1</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>d91129aeadd7d76e6d3ac94a9e4312bb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>c0</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>c18b3d0edccb2b9062a09d00b0d8b83b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>c1</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>8f9aca421a560153a31ebb326da34216</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>a0</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>a42b800f0f58b50bc7604c67cc2853ab</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>a1</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>b89a77e63a7226fffaecb2e2c2ab5219</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ar0</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>d8b93d51b73751283eb646b0f3d527b5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ar1</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>3b2066ddf8081d0467e4c4a301e22a60</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>res0</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>5fc1d37ce54a4681edb5c1d90235aeb3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>res1</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>9a0071ce83b34a388de54c848986d22b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SETUP_LOCALS_AND_STACK</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>900eb688b3db63234eb3ae4ac6a81dee</anchor>
+      <arglist>(frame, method)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>ManagedObject *</type>
+      <name>REF</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>1aa165a41713c4d8ed6694b37f0702a2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>FLAG_NONE</name>
+      <anchor>06fc87d81c62e9abb8790b6e5713c55b5928d275e9e42840d63ed0f5cf5c1e9b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>FLAG_RET_ADDR</name>
+      <anchor>06fc87d81c62e9abb8790b6e5713c55b928364b22828d2e80d7b6b18a401edf0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>FLAG_OBJECT</name>
+      <anchor>06fc87d81c62e9abb8790b6e5713c55b1a61d583d8e7ec128eceb422b2b0375b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>PopFrameState</name>
+      <anchor>143387c8155f162cc7d58143bdd581c7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>POP_FRAME_UNAVAILABLE</name>
+      <anchor>143387c8155f162cc7d58143bdd581c792812cfe714a99009aa584a3afa8945f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>POP_FRAME_AVAILABLE</name>
+      <anchor>143387c8155f162cc7d58143bdd581c753191fb79f3231b220e2fc85e53239c2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>POP_FRAME_NOW</name>
+      <anchor>143387c8155f162cc7d58143bdd581c7a67b8e4a9773264a48aa03b84c217572</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>interpreter_state</name>
+      <anchor>g7da9a27e00297f87da885d2a3f4258e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>INTERP_STATE_STACK_OVERFLOW</name>
+      <anchor>gg7da9a27e00297f87da885d2a3f4258e9f958e78d198a5c424e823ef3c79afc4d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>interpreter_ti_events</name>
+      <anchor>0777e1295d1235d6198e8869d305f4ab</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>INTERPRETER_TI_METHOD_ENTRY_EVENT</name>
+      <anchor>0777e1295d1235d6198e8869d305f4ab15e83daf254138bb6375057b5c30d82b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>INTERPRETER_TI_METHOD_EXIT_EVENT</name>
+      <anchor>0777e1295d1235d6198e8869d305f4ab3b3b263dd8febac596a4cdaf14156680</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>INTERPRETER_TI_SINGLE_STEP_EVENT</name>
+      <anchor>0777e1295d1235d6198e8869d305f4ab8563d6059d474f39375258e83af1d09c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>INTERPRETER_TI_POP_FRAME_EVENT</name>
+      <anchor>0777e1295d1235d6198e8869d305f4abc35c7102c6b14222f0d2121a711441f2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>INTERPRETER_TI_FIELD_ACCESS</name>
+      <anchor>0777e1295d1235d6198e8869d305f4ab8dc4b5a667081deda40e411a9229ac9e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>INTERPRETER_TI_FIELD_MODIFICATION</name>
+      <anchor>0777e1295d1235d6198e8869d305f4abadacc8efcd90fabbddf8079bccad2bee</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>INTERPRETER_TI_OTHER</name>
+      <anchor>0777e1295d1235d6198e8869d305f4ab6d4ae499d5fb7e11646db6ddaaae1c0e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>uint8</type>
+      <name>Opcode_BREAKPOINT</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g725acd31a9156a5e120faffb6c92628a</anchor>
+      <arglist>(StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interp_enumerate_root_set_single_thread_on_stack</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g2cc1719a4f01c1b19da42fb0a61a290c</anchor>
+      <arglist>(VM_thread *)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interpreter_execute_native_method</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gcc184a5b008f69525bec5403fbe996f1</anchor>
+      <arglist>(Method *method, jvalue *return_value, jvalue *args)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interpreterInvokeStaticNative</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gada3ea0293f85a6cc14a0e44d58e2ffb</anchor>
+      <arglist>(StackFrame &amp;prevFrame, StackFrame &amp;frame, Method *method)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interpreterInvokeVirtualNative</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g56c908737fc0ee8dfd1ac45f96568efa</anchor>
+      <arglist>(StackFrame &amp;prevFrame, StackFrame &amp;frame, Method *method, int sz)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interpreter_execute_method</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g0c11e61117f8458f48d8ae93621235a2</anchor>
+      <arglist>(Method *method, jvalue *return_value, jvalue *args)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>method_entry_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g144aadf9ffbdacd59577ebe7cd96452c</anchor>
+      <arglist>(Method *method)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>method_exit_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g38204a1848b86d5b94b207c3e475bc2a</anchor>
+      <arglist>(Method *method, bool was_popped_by_exception, jvalue ret_val)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>method_exit_callback_with_frame</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gf0617b792fcfc6af8367d0fa8e84733b</anchor>
+      <arglist>(Method *method, StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>putfield_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g14b1ce9bdb421b1834035f588a1cae65</anchor>
+      <arglist>(Field *field, StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getfield_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g5706f4d4480a77c3e189d99c5348e62e</anchor>
+      <arglist>(Field *field, StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>putstatic_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gf6a72dc36b914b0741be61a64a2ca333</anchor>
+      <arglist>(Field *field, StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getstatic_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g4d211bbbddbd536b0bdb23eab62a1aa1</anchor>
+      <arglist>(Field *field, StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>frame_pop_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g018884c8df3417f125118f9fb9614fbb</anchor>
+      <arglist>(FramePopListener *l, Method *method, jboolean was_popped_by_exception)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>single_step_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g0cf95393de4ddd3ade3ec4bd4d449ac1</anchor>
+      <arglist>(StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>findExceptionHandler</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gce2b1992378bfd74f8841e9c3c6cb2cf</anchor>
+      <arglist>(StackFrame &amp;frame, ManagedObject **exception, Handler **h)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>load_method_handled_exceptions</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gef0cdee856f8ac3b4cb5f8e20414dbf3</anchor>
+      <arglist>(Method *m)</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static StackFrame *</type>
+      <name>getLastStackFrame</name>
+      <anchorfile>group___inlines.html</anchorfile>
+      <anchor>g4c8649758b86ce4580d1d07fa12bf354</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static StackFrame *</type>
+      <name>getLastStackFrame</name>
+      <anchorfile>group___inlines.html</anchorfile>
+      <anchor>ge7fb7cdc18bdcfa199c812bf9c31ea42</anchor>
+      <arglist>(VM_thread *thread)</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static void</type>
+      <name>setLastStackFrame</name>
+      <anchorfile>group___inlines.html</anchorfile>
+      <anchor>g0b8de14505816feaad33b46d03aef1b1</anchor>
+      <arglist>(StackFrame *frame)</arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>interpreter_enable_debug</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>81f4f84f3ed7e5c3775ec76191c89f56</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>interpreter_ti_notification_mode</name>
+      <anchorfile>interp__defs_8h.html</anchorfile>
+      <anchor>0045ee7d2cc6c8d568bd708aaeaf413e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>interp_native.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/</path>
+    <filename>interp__native_8h</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>M2N_ALLOC_MACRO</name>
+      <anchorfile>interp__native_8h.html</anchorfile>
+      <anchor>acaa9f3aaf173600cbf2f67ebaffe672</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>M2N_FREE_MACRO</name>
+      <anchorfile>interp__native_8h.html</anchorfile>
+      <anchor>43e0f9b97def244c9b9e29712de53e59</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>vm_enumerate_root_set_single_thread_not_on_stack</name>
+      <anchorfile>interp__native_8h.html</anchorfile>
+      <anchor>e8068c82cb00f3412b4b25d7a5c72e59</anchor>
+      <arglist>(VM_thread *thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>free_local_object_handles2</name>
+      <anchorfile>interp__native_8h.html</anchorfile>
+      <anchor>bb80beaeba1763555908db16d421146a</anchor>
+      <arglist>(ObjectHandles *head)</arglist>
+    </member>
+    <member kind="function">
+      <type>GenericFunctionPointer</type>
+      <name>interpreterGetNativeMethodAddr</name>
+      <anchorfile>interp__native_8h.html</anchorfile>
+      <anchor>c7af7c610401eebf644f1dbad451d040</anchor>
+      <arglist>(Method *)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>interp_vm_helpers.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/</path>
+    <filename>interp__vm__helpers_8h</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>interp_throw_exception</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>760e08504b7f0dfb71169466706a4bcb</anchor>
+      <arglist>(const char *exc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interp_throw_exception</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>d037b91484727de2ae014f13b0458a4b</anchor>
+      <arglist>(const char *exc, const char *message)</arglist>
+    </member>
+    <member kind="function">
+      <type>GenericFunctionPointer</type>
+      <name>interp_find_native</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>5e69b5db2351b5935a8710b7b2ec3076</anchor>
+      <arglist>(Method_Handle method)</arglist>
+    </member>
+    <member kind="function">
+      <type>Class *</type>
+      <name>interp_resolve_class</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>0c4453e51d28f3f6813b509467e7b87c</anchor>
+      <arglist>(Class *clazz, int classId)</arglist>
+    </member>
+    <member kind="function">
+      <type>Class *</type>
+      <name>interp_resolve_class_new</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>075e37586c051a45f5cebde5de32b87f</anchor>
+      <arglist>(Class *clazz, int classId)</arglist>
+    </member>
+    <member kind="function">
+      <type>Field *</type>
+      <name>interp_resolve_static_field</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>d37beb29f7246c5175890bc8799ff4af</anchor>
+      <arglist>(Class *clazz, int fieldId, bool putfield)</arglist>
+    </member>
+    <member kind="function">
+      <type>Field *</type>
+      <name>interp_resolve_nonstatic_field</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>52ce8d045e49bb751033ce6a35c20131</anchor>
+      <arglist>(Class *clazz, int fieldId, bool putfield)</arglist>
+    </member>
+    <member kind="function">
+      <type>Method *</type>
+      <name>interp_resolve_virtual_method</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>3d6d6cb9ec6fdd54b96cca6bfba68cc8</anchor>
+      <arglist>(Class *clazz, int methodId)</arglist>
+    </member>
+    <member kind="function">
+      <type>Method *</type>
+      <name>interp_resolve_interface_method</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>53004d1bface6a812b2e454318fcbfd0</anchor>
+      <arglist>(Class *clazz, int methodId)</arglist>
+    </member>
+    <member kind="function">
+      <type>Method *</type>
+      <name>interp_resolve_static_method</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>edf8d534323f01476b78946741193ba6</anchor>
+      <arglist>(Class *clazz, int methodId)</arglist>
+    </member>
+    <member kind="function">
+      <type>Method *</type>
+      <name>interp_resolve_special_method</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>01ba14c22b73481ee7c7755a443a2f48</anchor>
+      <arglist>(Class *clazz, int methodId)</arglist>
+    </member>
+    <member kind="function">
+      <type>Class *</type>
+      <name>interp_class_get_array_of_class</name>
+      <anchorfile>interp__vm__helpers_8h.html</anchorfile>
+      <anchor>1bb1885e5448121378a20abda925fa97</anchor>
+      <arglist>(Class *objClass)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>interpreter_exports.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/</path>
+    <filename>interpreter__exports_8h</filename>
+    <class kind="struct">Interpreter</class>
+    <member kind="typedef">
+      <type>FrameHandle</type>
+      <name>FrameHandle</name>
+      <anchorfile>interpreter__exports_8h.html</anchorfile>
+      <anchor>0f9d86fdd01ce64781098b7e1639e013</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Interpreter *</type>
+      <name>interpreter_table</name>
+      <anchorfile>interpreter__exports_8h.html</anchorfile>
+      <anchor>550b1265cb59bfd7a1004a3b91439bcf</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>open_interfaces</name>
+    <title>Open Interfaces</title>
+    <filename>group__open__interfaces.html</filename>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>interpreter_ti_set_notification_mode</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>gca6c803185f565050884d402b26b7f12</anchor>
+      <arglist>)(jvmtiEvent event_type, bool enable)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jbyte(*</type>
+      <name>interpreter_ti_set_breakpoint</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>g87949d479c2b40cc6a0f50fd16a6d521</anchor>
+      <arglist>)(jmethodID method, jlocation location)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>interpreter_ti_clear_breakpoint</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>g6c685fa06d412de21c0be8fce40f981e</anchor>
+      <arglist>)(jmethodID method, jlocation location, jbyte saved)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_notify_frame_pop</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>g31911fb944a5252e1ff410c03df2ea3c</anchor>
+      <arglist>)(jvmtiEnv *, VM_thread *thread, int depth)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_pop_frame</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>g9a90649b8994566b4a28af64de5240b9</anchor>
+      <arglist>)(jvmtiEnv *, VM_thread *thread)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>stack_dump</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>g60975925d8444580cfd1f4b8244143e4</anchor>
+      <arglist>)(int, VM_thread *)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>Prototypes</name>
+    <title>Prototypes</title>
+    <filename>group___prototypes.html</filename>
+    <member kind="function">
+      <type>uint8</type>
+      <name>Opcode_BREAKPOINT</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g725acd31a9156a5e120faffb6c92628a</anchor>
+      <arglist>(StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interp_enumerate_root_set_single_thread_on_stack</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g2cc1719a4f01c1b19da42fb0a61a290c</anchor>
+      <arglist>(VM_thread *)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interpreter_execute_native_method</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gcc184a5b008f69525bec5403fbe996f1</anchor>
+      <arglist>(Method *method, jvalue *return_value, jvalue *args)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interpreterInvokeStaticNative</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gada3ea0293f85a6cc14a0e44d58e2ffb</anchor>
+      <arglist>(StackFrame &amp;prevFrame, StackFrame &amp;frame, Method *method)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interpreterInvokeVirtualNative</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g56c908737fc0ee8dfd1ac45f96568efa</anchor>
+      <arglist>(StackFrame &amp;prevFrame, StackFrame &amp;frame, Method *method, int sz)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>interpreter_execute_method</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g0c11e61117f8458f48d8ae93621235a2</anchor>
+      <arglist>(Method *method, jvalue *return_value, jvalue *args)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>method_entry_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g144aadf9ffbdacd59577ebe7cd96452c</anchor>
+      <arglist>(Method *method)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>method_exit_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g38204a1848b86d5b94b207c3e475bc2a</anchor>
+      <arglist>(Method *method, bool was_popped_by_exception, jvalue ret_val)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>method_exit_callback_with_frame</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gf0617b792fcfc6af8367d0fa8e84733b</anchor>
+      <arglist>(Method *method, StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>putfield_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g14b1ce9bdb421b1834035f588a1cae65</anchor>
+      <arglist>(Field *field, StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getfield_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g5706f4d4480a77c3e189d99c5348e62e</anchor>
+      <arglist>(Field *field, StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>putstatic_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gf6a72dc36b914b0741be61a64a2ca333</anchor>
+      <arglist>(Field *field, StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getstatic_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g4d211bbbddbd536b0bdb23eab62a1aa1</anchor>
+      <arglist>(Field *field, StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>frame_pop_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g018884c8df3417f125118f9fb9614fbb</anchor>
+      <arglist>(FramePopListener *l, Method *method, jboolean was_popped_by_exception)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>single_step_callback</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>g0cf95393de4ddd3ade3ec4bd4d449ac1</anchor>
+      <arglist>(StackFrame &amp;frame)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>findExceptionHandler</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gce2b1992378bfd74f8841e9c3c6cb2cf</anchor>
+      <arglist>(StackFrame &amp;frame, ManagedObject **exception, Handler **h)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>load_method_handled_exceptions</name>
+      <anchorfile>group___prototypes.html</anchorfile>
+      <anchor>gef0cdee856f8ac3b4cb5f8e20414dbf3</anchor>
+      <arglist>(Method *m)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>Inlines</name>
+    <title>Inline Functions</title>
+    <filename>group___inlines.html</filename>
+    <member kind="enumeration">
+      <name>interpreter_state</name>
+      <anchor>g7da9a27e00297f87da885d2a3f4258e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>INTERP_STATE_STACK_OVERFLOW</name>
+      <anchor>gg7da9a27e00297f87da885d2a3f4258e9f958e78d198a5c424e823ef3c79afc4d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static StackFrame *</type>
+      <name>getLastStackFrame</name>
+      <anchorfile>group___inlines.html</anchorfile>
+      <anchor>g4c8649758b86ce4580d1d07fa12bf354</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static StackFrame *</type>
+      <name>getLastStackFrame</name>
+      <anchorfile>group___inlines.html</anchorfile>
+      <anchor>ge7fb7cdc18bdcfa199c812bf9c31ea42</anchor>
+      <arglist>(VM_thread *thread)</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static void</type>
+      <name>setLastStackFrame</name>
+      <anchorfile>group___inlines.html</anchorfile>
+      <anchor>g0b8de14505816feaad33b46d03aef1b1</anchor>
+      <arglist>(StackFrame *frame)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>FramePopListener</name>
+    <filename>struct_frame_pop_listener.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>listener</name>
+      <anchorfile>struct_frame_pop_listener.html</anchorfile>
+      <anchor>b182b4a06993527f2c86c70623301461</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>FramePopListener *</type>
+      <name>next</name>
+      <anchorfile>struct_frame_pop_listener.html</anchorfile>
+      <anchor>f7345e328ef446547f8c821ec86a5c66</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>Interpreter</name>
+    <filename>struct_interpreter.html</filename>
+    <member kind="variable">
+      <type>bool(*</type>
+      <name>interpreter_st_get_frame</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>3922a64847a0ebd51dd9f6f8393480f6</anchor>
+      <arglist>)(unsigned target_depth, struct StackTraceFrame *stf)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>interpreter_st_get_trace</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>dbca99c845d77c6d4067f8dc99d773bc</anchor>
+      <arglist>)(struct VM_thread *thread, unsigned *res_depth, struct StackTraceFrame **stfs)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>interpreter_enumerate_thread</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>42c39c23654cd04496b026ddb26a1524</anchor>
+      <arglist>)(struct VM_thread *thread)</arglist>
+    </member>
+    <member kind="variable">
+      <type>FrameHandle *(*</type>
+      <name>interpreter_get_last_frame</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>be258bcf5983058015f53e34ad2fb73c</anchor>
+      <arglist>)(struct VM_thread *thread)</arglist>
+    </member>
+    <member kind="variable">
+      <type>FrameHandle *(*</type>
+      <name>interpreter_get_prev_frame</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>de22139460f3eb684c96d9feef4f418b</anchor>
+      <arglist>)(FrameHandle *frame)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Method_Handle(*</type>
+      <name>interpreter_get_frame_method</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>bdd250eae2883c480a6b0d3bb5e6422a</anchor>
+      <arglist>)(FrameHandle *frame)</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint8 *(*</type>
+      <name>interpreter_get_frame_bytecode_ptr</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>5900f65c57987a586909a2c36ad03b96</anchor>
+      <arglist>)(FrameHandle *frame)</arglist>
+    </member>
+    <member kind="variable">
+      <type>bool(*</type>
+      <name>is_frame_in_native_frame</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>58f35b349d04479ccfcf629bd2df4d85</anchor>
+      <arglist>)(struct FrameHandle *frame, void *begin, void *end)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>interpreter_ti_enumerate_thread</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>ffd968f4718381fa6c38eccbfc0c6899</anchor>
+      <arglist>)(jvmtiEnv *, struct VM_thread *thread)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_getFrameLocation</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>ea63ef92b7b055c5f37df42ee366f6a2</anchor>
+      <arglist>)(jvmtiEnv *, struct VM_thread *, int, struct _jmethodID **, int64 *)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_getLocal32</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>77b1d746389b33f15c225c108e22d710</anchor>
+      <arglist>)(jvmtiEnv *, struct VM_thread *, int, int, int *)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_getLocal64</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>705976e1cb58d1231d76265245eda5f7</anchor>
+      <arglist>)(jvmtiEnv *, struct VM_thread *, int, int, int64 *)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_getObject</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>fc9e4458a0caa1686e44eea951c6aa36</anchor>
+      <arglist>)(jvmtiEnv *, struct VM_thread *, int, int, struct _jobject **)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_getStackTrace</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>f3927285f1a0a856a040ba0ce63deea1</anchor>
+      <arglist>)(jvmtiEnv *, struct VM_thread *, int, int, jvmtiFrameInfo *, int *)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_get_frame_count</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>a979b104b86bd877cc0532f32444ebdc</anchor>
+      <arglist>)(jvmtiEnv *, struct VM_thread *, int *)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_setLocal32</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>f526a07a673a2a6f8bf6f1103d10bf2f</anchor>
+      <arglist>)(jvmtiEnv *, struct VM_thread *, int, int, int)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_setLocal64</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>e76c9f73a8a353f2893496ee70d2c4e1</anchor>
+      <arglist>)(jvmtiEnv *, struct VM_thread *, int, int, int64)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_setObject</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>c596c52c705669f84b27748dba20e333</anchor>
+      <arglist>)(jvmtiEnv *, struct VM_thread *, int, int, struct _jobject *)</arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int(*</type>
+      <name>interpreter_st_get_interrupted_method_native_bit</name>
+      <anchorfile>struct_interpreter.html</anchorfile>
+      <anchor>3e8510098460e0e7a05ec250d337cdac</anchor>
+      <arglist>)(struct VM_thread *)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>interpreter_ti_set_notification_mode</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>gca6c803185f565050884d402b26b7f12</anchor>
+      <arglist>)(jvmtiEvent event_type, bool enable)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jbyte(*</type>
+      <name>interpreter_ti_set_breakpoint</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>g87949d479c2b40cc6a0f50fd16a6d521</anchor>
+      <arglist>)(jmethodID method, jlocation location)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>interpreter_ti_clear_breakpoint</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>g6c685fa06d412de21c0be8fce40f981e</anchor>
+      <arglist>)(jmethodID method, jlocation location, jbyte saved)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_notify_frame_pop</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>g31911fb944a5252e1ff410c03df2ea3c</anchor>
+      <arglist>)(jvmtiEnv *, VM_thread *thread, int depth)</arglist>
+    </member>
+    <member kind="variable">
+      <type>jvmtiError(*</type>
+      <name>interpreter_ti_pop_frame</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>g9a90649b8994566b4a28af64de5240b9</anchor>
+      <arglist>)(jvmtiEnv *, VM_thread *thread)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>stack_dump</name>
+      <anchorfile>group__open__interfaces.html</anchorfile>
+      <anchor>g60975925d8444580cfd1f4b8244143e4</anchor>
+      <arglist>)(int, VM_thread *)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Locals</name>
+    <filename>class_locals.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>Locals</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>64528fb4d192916d4eec225872b0a445</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>~Locals</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>c6c40ef14814dfd95af2c62cd075b452</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>init</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>3fa7e59ed9cd35fc1f25a8d49d56f88c</anchor>
+      <arglist>(void *ptr, uint32 size)</arglist>
+    </member>
+    <member kind="function">
+      <type>Value &amp;</type>
+      <name>operator()</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>ca3faf8957e96b07fafb9ae06f27907f</anchor>
+      <arglist>(uint32 id)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setLong</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>c1f66fdc1d5c56cb98e75e2fe14413f5</anchor>
+      <arglist>(int idx, Value2 val)</arglist>
+    </member>
+    <member kind="function">
+      <type>Value2</type>
+      <name>getLong</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>70ed04ab3f33efac49c00a19cd01b049</anchor>
+      <arglist>(int idx)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint8 &amp;</type>
+      <name>ref</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>e63053787cf5c65305584a59f72248a9</anchor>
+      <arglist>(uint32 id)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>getLocalsNumber</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>18eaa40ae0b7253c4bcc7c228b1cda64</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static int</type>
+      <name>getStorageSize</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>cef880974cf8ce849b3b8491aab7de2c</anchor>
+      <arglist>(int size)</arglist>
+    </member>
+    <member kind="friend">
+      <type>friend void</type>
+      <name>interp_enumerate_root_set_single_thread_on_stack</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>2cc1719a4f01c1b19da42fb0a61a290c</anchor>
+      <arglist>(VM_thread *)</arglist>
+    </member>
+    <member kind="friend">
+      <type>friend void</type>
+      <name>interp_ti_enumerate_root_set_single_thread_on_stack</name>
+      <anchorfile>class_locals.html</anchorfile>
+      <anchor>4f79bcce395e6e16f526e7d3ad6ed442</anchor>
+      <arglist>(jvmtiEnv *ti_env, VM_thread *thread)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>MonitorList</name>
+    <filename>struct_monitor_list.html</filename>
+    <member kind="variable">
+      <type>ManagedObject *</type>
+      <name>monitor</name>
+      <anchorfile>struct_monitor_list.html</anchorfile>
+      <anchor>0b4fcea4f70b501514a8123874a38371</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>MonitorList *</type>
+      <name>next</name>
+      <anchorfile>struct_monitor_list.html</anchorfile>
+      <anchor>9b4fa2b9d5dd55e0079268e1c1b295f2</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Stack</name>
+    <filename>class_stack.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>Stack</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>ad2dba93f4d8907a5a7729ee840f444b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>~Stack</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>40bd5dff912f0e5290777c4b46d17809</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>init</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>f6abf0e6e12447fe2c4741a1bda5946b</anchor>
+      <arglist>(void *ptr, int size)</arglist>
+    </member>
+    <member kind="function">
+      <type>Value &amp;</type>
+      <name>pick</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>8a079ea72facd1fe2d42f1809c5c0269</anchor>
+      <arglist>(int offset=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint8 &amp;</type>
+      <name>ref</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>742592eb35488b1b3c864ed938033fae</anchor>
+      <arglist>(int offset=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>push</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>3522667a9240ad767250acef3574ea8a</anchor>
+      <arglist>(int size=1)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>pop</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>ac905aa6f79c0cc6c5f5de6ca0249c93</anchor>
+      <arglist>(int size=1)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>popClearRef</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>10b764339a224500f74d6a76e7f90ef4</anchor>
+      <arglist>(int size=1)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setLong</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>060597ea2499804883541bf4192a2375</anchor>
+      <arglist>(int idx, Value2 val)</arglist>
+    </member>
+    <member kind="function">
+      <type>Value2</type>
+      <name>getLong</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>06abf24012cc68332a22af1d355b8c11</anchor>
+      <arglist>(int idx)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>clear</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>dab1284b8929385d4020356fb52c8139</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>getIndex</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>77c239f5d54b5ba258c61426c9e10821</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static int</type>
+      <name>getStorageSize</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>1dc075f487c2000ed892185e56b695e9</anchor>
+      <arglist>(int size)</arglist>
+    </member>
+    <member kind="friend">
+      <type>friend void</type>
+      <name>interp_enumerate_root_set_single_thread_on_stack</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>2cc1719a4f01c1b19da42fb0a61a290c</anchor>
+      <arglist>(VM_thread *)</arglist>
+    </member>
+    <member kind="friend">
+      <type>friend void</type>
+      <name>interp_ti_enumerate_root_set_single_thread_on_stack</name>
+      <anchorfile>class_stack.html</anchorfile>
+      <anchor>4f79bcce395e6e16f526e7d3ad6ed442</anchor>
+      <arglist>(jvmtiEnv *ti_env, VM_thread *thread)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>StackFrame</name>
+    <filename>struct_stack_frame.html</filename>
+    <member kind="variable">
+      <type>uint8 *</type>
+      <name>ip</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>1db981b50f2aa3809491d16d1319d6cc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Stack</type>
+      <name>stack</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>3ad130c27479c6114d68bc4785361b9c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Locals</type>
+      <name>locals</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>f721a732439c603cecea7b679b7b842a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Method *</type>
+      <name>method</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>270020c8f46f2b1da710b88f0b1abd58</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>StackFrame *</type>
+      <name>prev</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>265fe8ecf224c16d77f30dda44fec802</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>FramePopListener *</type>
+      <name>framePopListener</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>ecb34cdb704c49beb8a7c8d90f2ca598</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>ManagedObject *</type>
+      <name>This</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>de947bcea05543676a50b03de07c89a7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>MonitorList *</type>
+      <name>locked_monitors</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>2f752159225aadbfc836180a07471356</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>MonitorList *</type>
+      <name>free_monitors</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>f90d0cfbbc8d296addca0520d48aab00</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>PopFrameState</type>
+      <name>jvmti_pop_frame</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>bba3f94f289f62a6c7ccd26e922c28df</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>dump_bytecodes</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>90ef0192c6be147daae2bedad3cf0b5b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>ManagedObject *</type>
+      <name>exc</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>eb40a222cad1a9daaee17d0f8397a82f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>ManagedObject *</type>
+      <name>exc_catch</name>
+      <anchorfile>struct_stack_frame.html</anchorfile>
+      <anchor>371dee79e6d637be6ca0e2971674d8d7</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="union">
+    <name>Value</name>
+    <filename>union_value.html</filename>
+    <member kind="variable">
+      <type>uint32</type>
+      <name>u</name>
+      <anchorfile>union_value.html</anchorfile>
+      <anchor>56a36646d617a9eb8853d65176f00eaf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int32</type>
+      <name>i</name>
+      <anchorfile>union_value.html</anchorfile>
+      <anchor>6f3d711aa827b33ac270b861e45df3b0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>float</type>
+      <name>f</name>
+      <anchorfile>union_value.html</anchorfile>
+      <anchor>69ea45789404f52552bd5a6432f44830</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>REF</type>
+      <name>ref</name>
+      <anchorfile>union_value.html</anchorfile>
+      <anchor>1deacdae4598dada2bf88c0b3a526a73</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="union">
+    <name>Value2</name>
+    <filename>union_value2.html</filename>
+    <member kind="variable">
+      <type>Value</type>
+      <name>v</name>
+      <anchorfile>union_value2.html</anchorfile>
+      <anchor>a6ad3577dc9851e6df84d7c2be8c32ed</anchor>
+      <arglist>[2]</arglist>
+    </member>
+    <member kind="variable">
+      <type>int64</type>
+      <name>i64</name>
+      <anchorfile>union_value2.html</anchorfile>
+      <anchor>963073e054a9dcbb5c424b495c06cb74</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64</type>
+      <name>u64</name>
+      <anchorfile>union_value2.html</anchorfile>
+      <anchor>7833847887fecab123e82bb7f19a74df</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>double</type>
+      <name>d</name>
+      <anchorfile>union_value2.html</anchorfile>
+      <anchor>184170445d90efcddb82eee88013379e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>ManagedObject *</type>
+      <name>ref</name>
+      <anchorfile>union_value2.html</anchorfile>
+      <anchor>ce14f7e9df41f1d216d4d6306bfc76d8</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+</tagfile>

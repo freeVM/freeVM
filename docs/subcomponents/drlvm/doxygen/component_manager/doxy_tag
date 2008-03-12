@@ -1,0 +1,399 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<tagfile>
+  <compound kind="file">
+    <name>compmgr.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>compmgr_8h</filename>
+    <class kind="struct">_OpenInterface</class>
+    <class kind="struct">_OpenComponent</class>
+    <class kind="struct">_OpenInstance</class>
+    <class kind="struct">_OpenInstanceAllocator</class>
+    <class kind="struct">_OpenComponentManager</class>
+    <member kind="typedef">
+      <type>_OpenInterface *</type>
+      <name>OpenInterfaceHandle</name>
+      <anchorfile>compmgr_8h.html</anchorfile>
+      <anchor>6a25de83da37ac4265973fe8302bae55</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>_OpenComponent *</type>
+      <name>OpenComponentHandle</name>
+      <anchorfile>compmgr_8h.html</anchorfile>
+      <anchor>3c9a787ad0d21cf7bfa47f57091579f0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>_OpenInstance *</type>
+      <name>OpenInstanceHandle</name>
+      <anchorfile>compmgr_8h.html</anchorfile>
+      <anchor>94b206d9e6b549a79c9da4b5115707a8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>_OpenInstanceAllocator *</type>
+      <name>OpenInstanceAllocatorHandle</name>
+      <anchorfile>compmgr_8h.html</anchorfile>
+      <anchor>9d2b985638b324d1839d0ebf50516049</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>_OpenComponentManager *</type>
+      <name>OpenComponentManagerHandle</name>
+      <anchorfile>compmgr_8h.html</anchorfile>
+      <anchor>c9e17c1a4c915ec8866a761397e99bdf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>int(*)</type>
+      <name>OpenComponentInitializer</name>
+      <anchorfile>compmgr_8h.html</anchorfile>
+      <anchor>129e4538c308f7eee6457bb11e390c38</anchor>
+      <arglist>(OpenComponentHandle *p_component, OpenInstanceAllocatorHandle *p_allocator, apr_pool_t *pool)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>component_manager.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/</path>
+    <filename>component__manager_8h</filename>
+    <member kind="function">
+      <type>int</type>
+      <name>CmAcquire</name>
+      <anchorfile>component__manager_8h.html</anchorfile>
+      <anchor>a9225c0967d371c25c2ddb9443c97bd4</anchor>
+      <arglist>(OpenComponentManagerHandle *p_cm)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>CmRelease</name>
+      <anchorfile>component__manager_8h.html</anchorfile>
+      <anchor>6af39f343a7e5ce61c996e66cb0ad2c9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>CmAddComponent</name>
+      <anchorfile>component__manager_8h.html</anchorfile>
+      <anchor>213c01fe463d0fc106b9485671a630ac</anchor>
+      <arglist>(OpenComponentInitializer init_func)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>CmLoadComponent</name>
+      <anchorfile>component__manager_8h.html</anchorfile>
+      <anchor>35175451d4d0d7ab1e1f6165e1221ab2</anchor>
+      <arglist>(const char *path, const char *initializer_function_name)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>CmFreeComponent</name>
+      <anchorfile>component__manager_8h.html</anchorfile>
+      <anchor>50a70dac56093b11fb1fbae5946698f6</anchor>
+      <arglist>(const char *component_name)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>component_manager_impl.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/vmstart/src/compmgr/</path>
+    <filename>component__manager__impl_8h</filename>
+    <class kind="struct">_Dll</class>
+    <class kind="struct">_ComponentInfo</class>
+    <class kind="struct">_InstanceInfo</class>
+    <class kind="struct">_ComponentManagerImpl</class>
+    <member kind="typedef">
+      <type>_Dll *</type>
+      <name>DllHandle</name>
+      <anchorfile>component__manager__impl_8h.html</anchorfile>
+      <anchor>06882ac86faa401a547bad9ebc8d88ab</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>_ComponentInfo *</type>
+      <name>ComponentInfoHandle</name>
+      <anchorfile>component__manager__impl_8h.html</anchorfile>
+      <anchor>562e42b3c4e33b7686b00943c5660569</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>_InstanceInfo *</type>
+      <name>InstanceInfoHandle</name>
+      <anchorfile>component__manager__impl_8h.html</anchorfile>
+      <anchor>9afcb7f06b83aa63497ab357acb0e322</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_ComponentInfo</name>
+    <filename>struct___component_info.html</filename>
+    <member kind="variable">
+      <type>DllHandle</type>
+      <name>declaring_library</name>
+      <anchorfile>struct___component_info.html</anchorfile>
+      <anchor>ee91883eb554a7608513a256df53bab1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>OpenComponentHandle</type>
+      <name>component</name>
+      <anchorfile>struct___component_info.html</anchorfile>
+      <anchor>1d7fe0490c89c2e3b779b0d5cd7c0168</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>OpenInstanceAllocatorHandle</type>
+      <name>instance_allocator</name>
+      <anchorfile>struct___component_info.html</anchorfile>
+      <anchor>0c7ce62640336463538b47fcf20e8b4d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>_ComponentInfo *</type>
+      <name>next</name>
+      <anchorfile>struct___component_info.html</anchorfile>
+      <anchor>10626ee06cba3c7748b45f637bd15158</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>_InstanceInfo *</type>
+      <name>instances</name>
+      <anchorfile>struct___component_info.html</anchorfile>
+      <anchor>ce49b5c15a86a477fc38c1329133cad7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>apr_pool_t *</type>
+      <name>pool</name>
+      <anchorfile>struct___component_info.html</anchorfile>
+      <anchor>dae824e259b4ddedf4cee5595c1f7d5e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_ComponentManagerImpl</name>
+    <filename>struct___component_manager_impl.html</filename>
+    <member kind="variable">
+      <type>_OpenComponentManager</type>
+      <name>cm</name>
+      <anchorfile>struct___component_manager_impl.html</anchorfile>
+      <anchor>37b51e9a35ae65099dd8557e3c5e40fa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>_Dll *</type>
+      <name>libraries</name>
+      <anchorfile>struct___component_manager_impl.html</anchorfile>
+      <anchor>d9f90409a751a006891525150a477f81</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>_ComponentInfo *</type>
+      <name>components</name>
+      <anchorfile>struct___component_manager_impl.html</anchorfile>
+      <anchor>54feb6bce34fa25ed6cb9c04ea1b1900</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>num_clients</name>
+      <anchorfile>struct___component_manager_impl.html</anchorfile>
+      <anchor>175dc9d0f0dc6b511f2d96cdfb9969ef</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>apr_pool_t *</type>
+      <name>pool</name>
+      <anchorfile>struct___component_manager_impl.html</anchorfile>
+      <anchor>ce5e4dc9fa2deb0d970d33ffda22253b</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_Dll</name>
+    <filename>struct___dll.html</filename>
+    <member kind="variable">
+      <type>apr_dso_handle_t *</type>
+      <name>descriptor</name>
+      <anchorfile>struct___dll.html</anchorfile>
+      <anchor>652ce755bc278fda3650fb900a219f27</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>path</name>
+      <anchorfile>struct___dll.html</anchorfile>
+      <anchor>0b7f8a45c52584b55a0785a415ffc865</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>_Dll *</type>
+      <name>next</name>
+      <anchorfile>struct___dll.html</anchorfile>
+      <anchor>29e5a46c3c4c83786e652a40f761eb3b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>apr_pool_t *</type>
+      <name>pool</name>
+      <anchorfile>struct___dll.html</anchorfile>
+      <anchor>958b4284a757e5aae3008e1b670d6d6e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_InstanceInfo</name>
+    <filename>struct___instance_info.html</filename>
+    <member kind="variable">
+      <type>OpenInstanceHandle</type>
+      <name>instance</name>
+      <anchorfile>struct___instance_info.html</anchorfile>
+      <anchor>19b9fe2c96bb6f05d95cb36ad97b3d82</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>ComponentInfoHandle</type>
+      <name>component_info</name>
+      <anchorfile>struct___instance_info.html</anchorfile>
+      <anchor>3833f39ccc015b3e1ac2aa6f77cf3000</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>_InstanceInfo *</type>
+      <name>next</name>
+      <anchorfile>struct___instance_info.html</anchorfile>
+      <anchor>946d99cf77f5048f4b7e580c4559efff</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>apr_pool_t *</type>
+      <name>pool</name>
+      <anchorfile>struct___instance_info.html</anchorfile>
+      <anchor>d3d7fa45a50178a3174b19698906bd7e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_OpenComponent</name>
+    <filename>struct___open_component.html</filename>
+    <member kind="variable">
+      <type>const char *(*</type>
+      <name>GetName</name>
+      <anchorfile>struct___open_component.html</anchorfile>
+      <anchor>74ddcb651e31454317fcaa352f5a766e</anchor>
+      <arglist>)()</arglist>
+    </member>
+    <member kind="variable">
+      <type>const char *(*</type>
+      <name>GetVersion</name>
+      <anchorfile>struct___open_component.html</anchorfile>
+      <anchor>2e3e09ad049c0ecab90433d52aafc8a1</anchor>
+      <arglist>)()</arglist>
+    </member>
+    <member kind="variable">
+      <type>const char *(*</type>
+      <name>GetDescription</name>
+      <anchorfile>struct___open_component.html</anchorfile>
+      <anchor>40280dad86b8acdd627aea61fb8634ce</anchor>
+      <arglist>)()</arglist>
+    </member>
+    <member kind="variable">
+      <type>const char *(*</type>
+      <name>GetVendor</name>
+      <anchorfile>struct___open_component.html</anchorfile>
+      <anchor>d582d8f4a14a7c2b2831d870f4ab904f</anchor>
+      <arglist>)()</arglist>
+    </member>
+    <member kind="variable">
+      <type>const char *(*</type>
+      <name>GetProperty</name>
+      <anchorfile>struct___open_component.html</anchorfile>
+      <anchor>0413fcbf2ace6a9d848d19f1055deba3</anchor>
+      <arglist>)(const char *key)</arglist>
+    </member>
+    <member kind="variable">
+      <type>const char **(*</type>
+      <name>ListInterfaceNames</name>
+      <anchorfile>struct___open_component.html</anchorfile>
+      <anchor>f334fd69c12034791744d89adef7a55d</anchor>
+      <arglist>)()</arglist>
+    </member>
+    <member kind="variable">
+      <type>int(*</type>
+      <name>GetInterface</name>
+      <anchorfile>struct___open_component.html</anchorfile>
+      <anchor>33af9ed6f11994294a0bba53bb3d6430</anchor>
+      <arglist>)(OpenInterfaceHandle *p_intf, const char *intf_name)</arglist>
+    </member>
+    <member kind="variable">
+      <type>int(*</type>
+      <name>Free</name>
+      <anchorfile>struct___open_component.html</anchorfile>
+      <anchor>35d56e09360a274beaaa5694d2354201</anchor>
+      <arglist>)()</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_OpenComponentManager</name>
+    <filename>struct___open_component_manager.html</filename>
+    <member kind="variable">
+      <type>int(*</type>
+      <name>GetComponent</name>
+      <anchorfile>struct___open_component_manager.html</anchorfile>
+      <anchor>4f3818a5b7e2b0b4c6e8011c5266c8ca</anchor>
+      <arglist>)(OpenComponentHandle *p_component, const char *name)</arglist>
+    </member>
+    <member kind="variable">
+      <type>int(*</type>
+      <name>CreateInstance</name>
+      <anchorfile>struct___open_component_manager.html</anchorfile>
+      <anchor>5727dd123c51ed98737aee4c511edb0c</anchor>
+      <arglist>)(OpenInstanceHandle *p_instance, const char *name)</arglist>
+    </member>
+    <member kind="variable">
+      <type>int(*</type>
+      <name>FreeInstance</name>
+      <anchorfile>struct___open_component_manager.html</anchorfile>
+      <anchor>7eae767bf05de757538237659a626e71</anchor>
+      <arglist>)(OpenInstanceHandle instance)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_OpenInstance</name>
+    <filename>struct___open_instance.html</filename>
+    <member kind="variable">
+      <type>OpenComponentHandle</type>
+      <name>intf</name>
+      <anchorfile>struct___open_instance.html</anchorfile>
+      <anchor>318fcc36a380e11f965f9f9a62cb14f0</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_OpenInstanceAllocator</name>
+    <filename>struct___open_instance_allocator.html</filename>
+    <member kind="variable">
+      <type>int(*</type>
+      <name>CreateInstance</name>
+      <anchorfile>struct___open_instance_allocator.html</anchorfile>
+      <anchor>0f79bf2952c82d996a59c0454264f4d0</anchor>
+      <arglist>)(OpenInstanceHandle *p_instance, apr_pool_t *pool)</arglist>
+    </member>
+    <member kind="variable">
+      <type>int(*</type>
+      <name>FreeInstance</name>
+      <anchorfile>struct___open_instance_allocator.html</anchorfile>
+      <anchor>bc009f16ea0899c7c0ed532409b07f26</anchor>
+      <arglist>)(OpenInstanceHandle instance)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_OpenInterface</name>
+    <filename>struct___open_interface.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>func1</name>
+      <anchorfile>struct___open_interface.html</anchorfile>
+      <anchor>e29a8bf5afa206502ccc539b1634abdb</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+</tagfile>

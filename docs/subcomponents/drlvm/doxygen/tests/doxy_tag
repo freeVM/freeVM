@@ -1,0 +1,1445 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<tagfile>
+  <compound kind="page">
+    <name>index</name>
+    <title>Testframe testing framework</title>
+    <filename>index</filename>
+    <docanchor file="index">intro_sec</docanchor>
+    <docanchor file="index">usage_sec</docanchor>
+  </compound>
+  <compound kind="file">
+    <name>testframe.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/tests/unit/framework/</path>
+    <filename>testframe_8h</filename>
+    <class kind="struct">TestDescriptor</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>NULL</name>
+      <anchorfile>testframe_8h.html</anchorfile>
+      <anchor>070d2ce7b6bb7e5c05602aa8c308d0c4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST_PASSED</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g562e15dd66cf158c98dbfec9f6afa1ae</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST_FAILED</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g8b8b91205df891e2c7837bd03795306f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST_ERROR</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g8251bcdfc5c83845e0834adf211de033</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_fail</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g0e569c2f5b0ef614a1d975f86571002c</anchor>
+      <arglist>(message)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_pass</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>gef5b812f48120f7578051888fb1e7d41</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g84a1d93f29ab6befdb4e91337a6eab55</anchor>
+      <arglist>(expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_v</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g2b68bfa27c2933a6b415116a2bd4f3f2</anchor>
+      <arglist>(expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_message</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g368e90e3dc507dc2d10bb009b4386be4</anchor>
+      <arglist>(message, expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_null</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>gce23e2358319c1cebca8a48b813b990e</anchor>
+      <arglist>(expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_null_message</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g9dea239354b5cb580b2ae89b6a7cc67e</anchor>
+      <arglist>(message, expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_not_null</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g372d8d0654ee0d7f26bb4653c787b924</anchor>
+      <arglist>(expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_not_null_message</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g6bba8466109bf8dd0e5d94356e4cd0e8</anchor>
+      <arglist>(message, expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_same</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g6dcaf70442bbb8b05010af30ed45e305</anchor>
+      <arglist>(expected, actual)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_same_v</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>gc466a0a0ae2db4031452cce7fae209fc</anchor>
+      <arglist>(expected, actual)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_same_message</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>gb9a38d2914baece1791a0e19a1e0d844</anchor>
+      <arglist>(message, expected, actual)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST_LIST_START</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g79fd5e0ead2686fc693f7d05df6ccdd2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g45feb1f37ce559e49baf8655d769ef85</anchor>
+      <arglist>(name)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST_LIST_END</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>gb351141d118f992aef0ba3ad55916814</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOG_LEVEL_ERROR</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>g742fc70e331d7e568bd893c514756a29</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOG_LEVEL_INFO</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>g2e25fe130cf710da4ad800747fdd51f3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOG_LEVEL_DEBUG</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>g130224df8c6bf22a688e3cb74a45689a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setup</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g4fc01d736fe50cf5b977f755b675f11d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>teardown</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g4adab6322a0276f34a7d656d49fc865c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>default_main</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g8a6d81f428db303c0d318435a3782db7</anchor>
+      <arglist>(int argc, char *argv[])</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>log_error</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>g9d7a4649c2fbd04ffa637cff8fdbee1b</anchor>
+      <arglist>(char *format,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>log_info</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>ge4ec226f54de9f8042c99ec446e3084c</anchor>
+      <arglist>(char *format,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>log_debug</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>g86c55909e18d18059179b0d3f43bef27</anchor>
+      <arglist>(char *format,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>log_set_level</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>gf2493e94f152a28b2ba4e3a2e2bba65d</anchor>
+      <arglist>(int level)</arglist>
+    </member>
+    <member kind="variable">
+      <type>TestDescriptor</type>
+      <name>testDescriptor</name>
+      <anchorfile>testframe_8h.html</anchorfile>
+      <anchor>d6b287d3010853d395732b93f82c2dcd</anchor>
+      <arglist>[]</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>thread_unit_test_utils.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/tests/unit/thread/utils/</path>
+    <filename>thread__unit__test__utils_8h</filename>
+    <class kind="struct">_jjobject</class>
+    <class kind="struct">_jobject</class>
+    <class kind="struct">tested_thread_sturct_t</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_NONE</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>b3535759452e9048d15824c11c553bbd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_DEAD</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>eb29b27657abf8c71c02062f07316afb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_OK</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>3efbbb06a28a2ffa8189213b6b0d82f7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_ERROR</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>c8c90ed3a352cac16ca55b8676da82df</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_SLEEPING</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>157ed4b1db59365dadffda69c5f72caf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_WAITING</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>923509ff9b1535297dc6e4911af6a694</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_IN_CRITICAL_SECTON</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>4d540c29f294b5c5e2fcbd861caaa930</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_WAITING_ON_MONITOR</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>3f469896269e5338383bab298227bac1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_WAITING_ON_WAIT</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>f91baec60b4a7b51a4a4ca1978c2dcde</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_WAITING_ON_JOIN</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>90792a08141dba2aa9e4dc7c42586100</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_RUNNING</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>908b10cfafedd059ccbe1f9b8879fad2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_PARKED</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>8fbc0f0a37c19cb5b4204eca16535623</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_ATTACHED</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>c2e3127a60c84f1afd5efc2af8499494</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_ATTACHED_TWICE</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>5f5799da11900c11b41c2e01ab1ff157</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_STEP_1</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>ef599a37ef7bb9f8a34391729fbe8681</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_DETACHED</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>0387badf10d3cf56becd05d8b1a6fa8e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_INTERRUPTED</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>8203f2d7438f4d486c5be283339d72af</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TT_PHASE_ANY</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>98e49ebfca7e2acb815d9ea7f00578ba</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TTS_INIT_COMMON_MONITOR</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>ece45c55a250a1e752d42189212fd4c4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TTS_INIT_DIFFERENT_MONITORS</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>1371f6bcd92cf15d731ee75b1ad8057e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MAX_TESTED_THREAD_NUMBER</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>8844ac9ce1797c18a6ac9b9e943411c1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MAX_TIME_TO_WAIT</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>c861fee8cbb789fbb1d79732186c9da8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MAX_OWNED_MONITORS_NMB</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>a62d9346fbc9d5f3d5392a4dea983819</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SLEEP_TIME</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>be0b7b2a0ec4b64b92585808a051e1fa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>CLICK_TIME_MSEC</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>532def780ed53cfcda3b81c091986948</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>check_tested_thread_phase</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>8d3fd46d57e218af05170f94e41843e0</anchor>
+      <arglist>(tts, phase)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>check_tested_thread_structures</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>3b4b10ba94da9cab20a8a7ee34bbec3a</anchor>
+      <arglist>(tts)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>jint(JNICALL *)</type>
+      <name>create_java_vm_func</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>2f2d72765860312de55bb7bb5187b914</anchor>
+      <arglist>(JavaVM **vm, JNIEnv **env, JavaVMInitArgs *args)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>sleep_a_click</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>4481197d3b22c97401970bd954056e10</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>test_java_thread_setup</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>d9fca2ca19979c29305eb83f0099af23</anchor>
+      <arglist>(int argc, char *argv[])</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>test_java_thread_teardown</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>e5a7b805528c96a53973262c35d7303d</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_threads_init</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>5d04f6c213c6079261c0ac6ce66c8876</anchor>
+      <arglist>(int mode)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_threads_run</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>532a754980902ebe38db097065c6f5cf</anchor>
+      <arglist>(jvmtiStartFunction run_method_param)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_threads_run_common</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>e70af9b23820bd7272a6b98022a08e96</anchor>
+      <arglist>(jvmtiStartFunction run_method_param)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_threads_run_with_different_monitors</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>cb9487893e6b2e84f25fd543b183e10d</anchor>
+      <arglist>(jvmtiStartFunction run_method_param)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_threads_run_with_jvmti_start_proc</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>46ec2da9fe820b70f5a6854d4589df23</anchor>
+      <arglist>(jvmtiStartFunction jvmti_start_proc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_os_threads_run</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>720288e8c81d90c34bd5b0d9a93b571f</anchor>
+      <arglist>(hythread_entrypoint_t run_method_param)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tested_threads_destroy</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>373c9bf28a9ff1a396e809c4da930f35</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tested_threads_stop</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>5012c195f91e73d3e8673234d723eb35</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>tested_thread_sturct_t *</type>
+      <name>get_tts</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>29e70d9add4e21f3f468b7e1fedf3249</anchor>
+      <arglist>(int tts_index)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>next_tested_thread</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>8e0ff74705cc9e1b9fa9b2feb813d853</anchor>
+      <arglist>(tested_thread_sturct_t **tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>prev_tested_thread</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>ff14a8a9bbabc507e38dcf0433db8da8</anchor>
+      <arglist>(tested_thread_sturct_t **tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>reset_tested_thread_iterator</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>7407e1b050fd8ef48e6c916234f29973</anchor>
+      <arglist>(tested_thread_sturct_t **tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>check_structure</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>03a8be013ba52b45ada32e904c514731</anchor>
+      <arglist>(tested_thread_sturct_t *tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>check_phase</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>dbb898116f33f2d4a22fe20debf0a37b</anchor>
+      <arglist>(tested_thread_sturct_t *tts, int phase)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_thread_started</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>b922ce797e262a98dd70f453c5a3228c</anchor>
+      <arglist>(tested_thread_sturct_t *tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_thread_ended</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>e620a203b95171016c2c2d44b21522c3</anchor>
+      <arglist>(tested_thread_sturct_t *tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_thread_send_stop_request</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>8e7ff18242cae0a2b5fa3479a1b766fa</anchor>
+      <arglist>(tested_thread_sturct_t *tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_thread_wait_for_stop_request</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>ceb04ddc1aeadf9ddd374b7fa7d52e7c</anchor>
+      <arglist>(tested_thread_sturct_t *tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>IDATA</type>
+      <name>tested_thread_wait_for_stop_request_timed</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>537b5b763b665e648584764d7b92cfe2</anchor>
+      <arglist>(tested_thread_sturct_t *tts, I_64 sleep_time)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_thread_wait_started</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>5b83c7fbba468ba3fe9db62726e833a2</anchor>
+      <arglist>(tested_thread_sturct_t *tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_thread_wait_running</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>deed32cee07717eba8382cd112994fa3</anchor>
+      <arglist>(tested_thread_sturct_t *tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_thread_wait_ended</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>cc00a2d48634aa53a21d612d671d7365</anchor>
+      <arglist>(tested_thread_sturct_t *tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tested_thread_wait_dead</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>ac0aee67caa63bb27cc99ea5f258d29a</anchor>
+      <arglist>(tested_thread_sturct_t *tts)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>test_thread_join</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>3267991c0bccf0fe7bb849a2ec236457</anchor>
+      <arglist>(hythread_t native_thread, int index)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>compare_threads</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>7d9232ad480dc3d15f91dc4a41983a70</anchor>
+      <arglist>(jthread *threads, int thread_nmb, int compare_from_end)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>compare_pointer_sets</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>7595b13a5d57d449ac07a4af0a156f9e</anchor>
+      <arglist>(void **set_a, void **set_b, int nmb)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>check_exception</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>b3a4b795ec146b393a696ddb8e32eff6</anchor>
+      <arglist>(jobject excn)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>set_phase</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>8af933926e8e1388f109f3283b9e9677</anchor>
+      <arglist>(tested_thread_sturct_t *tts, int phase)</arglist>
+    </member>
+    <member kind="function">
+      <type>void JNICALL</type>
+      <name>default_run_for_test</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>f8de42714fdfd249576a2edc38796903</anchor>
+      <arglist>(jvmtiEnv *jvmti_env, JNIEnv *jni_env, void *arg)</arglist>
+    </member>
+    <member kind="function">
+      <type>jthread</type>
+      <name>new_jobject_thread</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>58903aeec6601c9b32e10c05c5b10586</anchor>
+      <arglist>(JNIEnv *jni_env)</arglist>
+    </member>
+    <member kind="function">
+      <type>jobject</type>
+      <name>new_jobject_thread_death</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>9e1555363032f5bd05a6b219430f2c63</anchor>
+      <arglist>(JNIEnv *jni_env)</arglist>
+    </member>
+    <member kind="function">
+      <type>jthread</type>
+      <name>new_jobject</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>c156f2856f8107c815c5f945e0177f91</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>delete_jobject</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>060490446db681e1ec2bf8e267a0a798</anchor>
+      <arglist>(jobject obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>create_java_vm_func</type>
+      <name>test_get_java_vm_ptr</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>04968e68fa9c12b1fd42bc495f0c88a9</anchor>
+      <arglist>(void)</arglist>
+    </member>
+    <member kind="variable">
+      <type>JavaVM *</type>
+      <name>GLOBAL_VM</name>
+      <anchorfile>thread__unit__test__utils_8h.html</anchorfile>
+      <anchor>6ff6e3e74f03599052c1490e7e1f5ba4</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>unit_test.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/tests/unit/ulist/</path>
+    <filename>unit__test_8h</filename>
+    <class kind="class">Descriptor</class>
+    <class kind="class">SetupDescriptor</class>
+    <class kind="class">TeardownDescriptor</class>
+    <class kind="class">TestCaseDescriptor</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOG_DOMAIN</name>
+      <anchorfile>unit__test_8h.html</anchorfile>
+      <anchor>95a1d08c807e0aada863b5298a61d08d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST</name>
+      <anchorfile>unit__test_8h.html</anchorfile>
+      <anchor>54fefa14478497199056d57f6fdae66c</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>XTEST</name>
+      <anchorfile>unit__test_8h.html</anchorfile>
+      <anchor>69b9ce56cf0b4a045f49d803258fffa3</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SETUP</name>
+      <anchorfile>unit__test_8h.html</anchorfile>
+      <anchor>c31c3566a39a12da03a799cbdcf2c30e</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEARDOWN</name>
+      <anchorfile>unit__test_8h.html</anchorfile>
+      <anchor>8ab587d0ed66704c21d60a0635b3541c</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::ostream &amp;</type>
+      <name>operator&lt;&lt;</name>
+      <anchorfile>unit__test_8h.html</anchorfile>
+      <anchor>189e0a257aafb799a52d1563d13ed451</anchor>
+      <arglist>(std::ostream &amp;out, Descriptor *descriptor)</arglist>
+    </member>
+    <member kind="variable">
+      <type>SetupDescriptor *</type>
+      <name>setup_descriptor</name>
+      <anchorfile>unit__test_8h.html</anchorfile>
+      <anchor>10ddbf02af23c503748444d4a61c0003</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>TeardownDescriptor *</type>
+      <name>teardown_descriptor</name>
+      <anchorfile>unit__test_8h.html</anchorfile>
+      <anchor>886f577da9d35296b888edb1aeb78d19</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::list&lt; TestCaseDescriptor * &gt;</type>
+      <name>test_cases</name>
+      <anchorfile>unit__test_8h.html</anchorfile>
+      <anchor>e1dc518e7122a9799a0934286f9c2d68</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>unit_test_logger.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/tests/unit/ulist/</path>
+    <filename>unit__test__logger_8h</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>EXPAND_</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>67344d1b810047432365bec27359d53d</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>EXPAND</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>163034f672135660e04386e0812f57cc</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>__FILELINE__</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>25d6e09c9caf74488d6ebf6add2a46d0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TICK</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>c04e1397a4feea024faaa833e7d6eaad</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>fail</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>215c9d74c02676bf99f840e0d0ca5217</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>assert</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>f576bf8ffa22a44e53018c67095ffbf0</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ECHO2</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>4f158db6930098a475a38237f6416258</anchor>
+      <arglist>(x, y)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TRACE2</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>65c02d22b1faf0f8e84ced5e091eb47c</anchor>
+      <arglist>(x, y)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOG2</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>53c3ff63184383da316c2e58d7503c18</anchor>
+      <arglist>(x, y)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>INFO2</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>99801d6ee9ab0a7a979ed2d9246f4fd5</anchor>
+      <arglist>(x, y)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>WARN2</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>36cd0d3c858019a19ec2a9e895f4296e</anchor>
+      <arglist>(x, y)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ECHO</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>cdf7e238e48e10eee67f0c954a892a88</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TRACE</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>494d31903e7b0333dfa03b0778679113</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOG</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>f855c94dc540e943632089ce7496faac</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>INFO</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>b7e64333eba48090f444ec9f36fd23ef</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>WARN</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>0374cad637bd9df09182785b0c204658</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>status</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>6e27f49150e9a14580fb313cc2777e00</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>log_level</name>
+      <anchorfile>unit__test__logger_8h.html</anchorfile>
+      <anchor>b5a71c2541c377b3d5b34fdb35964c2e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>unit_test_main.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/tests/unit/ulist/</path>
+    <filename>unit__test__main_8h</filename>
+    <member kind="function" static="yes">
+      <type>static bool</type>
+      <name>begins_with</name>
+      <anchorfile>unit__test__main_8h.html</anchorfile>
+      <anchor>97bbf42bea81f6d1f4c6aad0c79320a9</anchor>
+      <arglist>(const char *str, const char *beginning)</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static void</type>
+      <name>set_log_levels_from_cmd</name>
+      <anchorfile>unit__test__main_8h.html</anchorfile>
+      <anchor>709377a23b696baf769dbac8096da43a</anchor>
+      <arglist>(int argc, char *argv[])</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>summary</name>
+      <anchorfile>unit__test__main_8h.html</anchorfile>
+      <anchor>22589c5d06fa406cb26f0059c1ce26bc</anchor>
+      <arglist>(int failed)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>run</name>
+      <anchorfile>unit__test__main_8h.html</anchorfile>
+      <anchor>8671a4739ef0330cde4139094eebc183</anchor>
+      <arglist>(int argc, char **argv)</arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>log_level</name>
+      <anchorfile>unit__test__main_8h.html</anchorfile>
+      <anchor>b5a71c2541c377b3d5b34fdb35964c2e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>status</name>
+      <anchorfile>unit__test__main_8h.html</anchorfile>
+      <anchor>6e27f49150e9a14580fb313cc2777e00</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::list&lt; TestCaseDescriptor * &gt;</type>
+      <name>test_cases</name>
+      <anchorfile>unit__test__main_8h.html</anchorfile>
+      <anchor>e1dc518e7122a9799a0934286f9c2d68</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SetupDescriptor *</type>
+      <name>setup_descriptor</name>
+      <anchorfile>unit__test__main_8h.html</anchorfile>
+      <anchor>10ddbf02af23c503748444d4a61c0003</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>TeardownDescriptor *</type>
+      <name>teardown_descriptor</name>
+      <anchorfile>unit__test__main_8h.html</anchorfile>
+      <anchor>886f577da9d35296b888edb1aeb78d19</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>testframe</name>
+    <title>Testframe testing framework</title>
+    <filename>group__testframe.html</filename>
+    <file>testframe.h</file>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST_PASSED</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g562e15dd66cf158c98dbfec9f6afa1ae</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST_FAILED</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g8b8b91205df891e2c7837bd03795306f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST_ERROR</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g8251bcdfc5c83845e0834adf211de033</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST_LIST_START</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g79fd5e0ead2686fc693f7d05df6ccdd2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g45feb1f37ce559e49baf8655d769ef85</anchor>
+      <arglist>(name)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TEST_LIST_END</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>gb351141d118f992aef0ba3ad55916814</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setup</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g4fc01d736fe50cf5b977f755b675f11d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>teardown</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g4adab6322a0276f34a7d656d49fc865c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>default_main</name>
+      <anchorfile>group__testframe.html</anchorfile>
+      <anchor>g8a6d81f428db303c0d318435a3782db7</anchor>
+      <arglist>(int argc, char *argv[])</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>assertions</name>
+    <title>Assertion checks</title>
+    <filename>group__assertions.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_fail</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g0e569c2f5b0ef614a1d975f86571002c</anchor>
+      <arglist>(message)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_pass</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>gef5b812f48120f7578051888fb1e7d41</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g84a1d93f29ab6befdb4e91337a6eab55</anchor>
+      <arglist>(expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_v</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g2b68bfa27c2933a6b415116a2bd4f3f2</anchor>
+      <arglist>(expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_message</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g368e90e3dc507dc2d10bb009b4386be4</anchor>
+      <arglist>(message, expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_null</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>gce23e2358319c1cebca8a48b813b990e</anchor>
+      <arglist>(expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_null_message</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g9dea239354b5cb580b2ae89b6a7cc67e</anchor>
+      <arglist>(message, expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_not_null</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g372d8d0654ee0d7f26bb4653c787b924</anchor>
+      <arglist>(expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_not_null_message</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g6bba8466109bf8dd0e5d94356e4cd0e8</anchor>
+      <arglist>(message, expression)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_same</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>g6dcaf70442bbb8b05010af30ed45e305</anchor>
+      <arglist>(expected, actual)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_same_v</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>gc466a0a0ae2db4031452cce7fae209fc</anchor>
+      <arglist>(expected, actual)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tf_assert_same_message</name>
+      <anchorfile>group__assertions.html</anchorfile>
+      <anchor>gb9a38d2914baece1791a0e19a1e0d844</anchor>
+      <arglist>(message, expected, actual)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
+    <name>logging</name>
+    <title>Logging functions</title>
+    <filename>group__logging.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOG_LEVEL_ERROR</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>g742fc70e331d7e568bd893c514756a29</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOG_LEVEL_INFO</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>g2e25fe130cf710da4ad800747fdd51f3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>LOG_LEVEL_DEBUG</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>g130224df8c6bf22a688e3cb74a45689a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>log_error</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>g9d7a4649c2fbd04ffa637cff8fdbee1b</anchor>
+      <arglist>(char *format,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>log_info</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>ge4ec226f54de9f8042c99ec446e3084c</anchor>
+      <arglist>(char *format,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>log_debug</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>g86c55909e18d18059179b0d3f43bef27</anchor>
+      <arglist>(char *format,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>log_set_level</name>
+      <anchorfile>group__logging.html</anchorfile>
+      <anchor>gf2493e94f152a28b2ba4e3a2e2bba65d</anchor>
+      <arglist>(int level)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_jjobject</name>
+    <filename>struct__jjobject.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>data</name>
+      <anchorfile>struct__jjobject.html</anchorfile>
+      <anchor>f8efe178cdb0a752051d4f5b5e93f3e3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>jboolean</type>
+      <name>daemon</name>
+      <anchorfile>struct__jjobject.html</anchorfile>
+      <anchor>48e1d43f62e935afa10e21d7bb06fc14</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>name</name>
+      <anchorfile>struct__jjobject.html</anchorfile>
+      <anchor>92b7ac411a759d6ef8182cc50c9f77d5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>lockword</name>
+      <anchorfile>struct__jjobject.html</anchorfile>
+      <anchor>df1167f1fe27e9123712e21d3974ee08</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_jobject</name>
+    <filename>struct__jobject.html</filename>
+    <member kind="variable">
+      <type>_jjobject *</type>
+      <name>object</name>
+      <anchorfile>struct__jobject.html</anchorfile>
+      <anchor>1998654c1bfc46e88382311f9e98bf5c</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>Descriptor</name>
+    <filename>class_descriptor.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>Descriptor</name>
+      <anchorfile>class_descriptor.html</anchorfile>
+      <anchor>3cba83133cf43da859c092a699e915e2</anchor>
+      <arglist>(void(*func)(), char *name, char *file, int line)</arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type>void(*</type>
+      <name>func</name>
+      <anchorfile>class_descriptor.html</anchorfile>
+      <anchor>c91e473da24e64bb99afc5bb70b33705</anchor>
+      <arglist>)()</arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type>char *</type>
+      <name>name</name>
+      <anchorfile>class_descriptor.html</anchorfile>
+      <anchor>151d65c84adda81d27c63b513c2ff7ae</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type>char *</type>
+      <name>file</name>
+      <anchorfile>class_descriptor.html</anchorfile>
+      <anchor>2b2100ff2b78bd1dd47fbcb0d225de1c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type>int</type>
+      <name>line</name>
+      <anchorfile>class_descriptor.html</anchorfile>
+      <anchor>6900023d0aa7e907892e634410cea127</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="friend">
+      <type>friend std::ostream &amp;</type>
+      <name>operator&lt;&lt;</name>
+      <anchorfile>class_descriptor.html</anchorfile>
+      <anchor>189e0a257aafb799a52d1563d13ed451</anchor>
+      <arglist>(std::ostream &amp;out, Descriptor *descriptor)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>SetupDescriptor</name>
+    <filename>class_setup_descriptor.html</filename>
+    <base>Descriptor</base>
+    <member kind="function">
+      <type></type>
+      <name>SetupDescriptor</name>
+      <anchorfile>class_setup_descriptor.html</anchorfile>
+      <anchor>73a630bb4945246e021db04a945afa5b</anchor>
+      <arglist>(void(*func)(), char *name, char *file, int line)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>setup</name>
+      <anchorfile>class_setup_descriptor.html</anchorfile>
+      <anchor>808a8a1ef23adc760583e9b3a26f25c9</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>TeardownDescriptor</name>
+    <filename>class_teardown_descriptor.html</filename>
+    <base>Descriptor</base>
+    <member kind="function">
+      <type></type>
+      <name>TeardownDescriptor</name>
+      <anchorfile>class_teardown_descriptor.html</anchorfile>
+      <anchor>b57b90a61dcf201766291718f810713d</anchor>
+      <arglist>(void(*func)(), char *name, char *file, int line)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>teardown</name>
+      <anchorfile>class_teardown_descriptor.html</anchorfile>
+      <anchor>db387cc1194c0db8597bbd9629f0dc9c</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>TestCaseDescriptor</name>
+    <filename>class_test_case_descriptor.html</filename>
+    <base>Descriptor</base>
+    <member kind="function">
+      <type></type>
+      <name>TestCaseDescriptor</name>
+      <anchorfile>class_test_case_descriptor.html</anchorfile>
+      <anchor>46bc2196e756405b783b6781e8fe1375</anchor>
+      <arglist>(void(*func)(), char *name, char *file, int line)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>run</name>
+      <anchorfile>class_test_case_descriptor.html</anchorfile>
+      <anchor>5145d0da728241e8b6242ea5646e4ebf</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>TestDescriptor</name>
+    <filename>struct_test_descriptor.html</filename>
+    <member kind="variable">
+      <type>char *</type>
+      <name>name</name>
+      <anchorfile>struct_test_descriptor.html</anchorfile>
+      <anchor>bfadb5423553413ad6f57b0891533c8f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int(*</type>
+      <name>func</name>
+      <anchorfile>struct_test_descriptor.html</anchorfile>
+      <anchor>80aae0ee8e663e907bd727fd286a0517</anchor>
+      <arglist>)(void)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tested_thread_sturct_t</name>
+    <filename>structtested__thread__sturct__t.html</filename>
+    <member kind="variable">
+      <type>int</type>
+      <name>my_index</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>9fab065476e9bb51fda5d5bc28d633fc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>jthread</type>
+      <name>java_thread</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>aa716aec10d70d9de96d5d8980199ffc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_t</type>
+      <name>native_thread</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>c03f50c6764a0ec26788b4064074484e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>jobject</type>
+      <name>monitor</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>cf6fe8dee24f8ec470ba3c02d9e45c30</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>jrawMonitorID</type>
+      <name>raw_monitor</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>7ef13e5d6547d0565763fa7a247e7899</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>jvmti_start_proc_arg</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>243675a33bf48f301932dcdafd2e1779</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hysem_t</type>
+      <name>started</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>096258f34f3003dfc52bbb1e89e50094</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hysem_t</type>
+      <name>running</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>5fa4b33370ebc0c3394ee782e69a1169</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hysem_t</type>
+      <name>stop_request</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>674b706fa468fba7d0fa4e1c13892aec</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hysem_t</type>
+      <name>ended</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>c6b84c8649be077511c7048dc842e8bc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>phase</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>43dab78bee12cc4b04959338ab77aa63</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>jint</type>
+      <name>peak_count</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>d40ed1ab252bf47be49e049f69c12317</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>jthread_start_proc_data</type>
+      <name>attrs</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>87e4ca404f7ca9bdc94ebb5975ad7b25</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>jclass</type>
+      <name>excn</name>
+      <anchorfile>structtested__thread__sturct__t.html</anchorfile>
+      <anchor>a508d6874155cbc4fa870338eda0e42e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+</tagfile>

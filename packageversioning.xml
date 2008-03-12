@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright 1999-2007 The Apache Software Foundation
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<document>
+
+  <properties>
+    <author email="general.AT.jakarta.DOT.apache.DOT.org">Apache Jakarta Project</author>
+    <title>Package versioning</title>
+  </properties>
+
+<body>
+
+
+<section name="Package versioning">
+
+<p>
+The <a target="_new" href='http://java.sun.com/j2se/1.4/docs/guide/versioning/spec/VersioningSpecification.html'>Java(tm) Product Versioning Specification</a> allows users to identify the exact version information of a package within a JAR. This is particularly useful when users have a number of packages, with version interdependences, from various distributions. 
+</p>
+<p>
+These four simple steps use Ant to maintain and insert the versioning information, so all JARs shipped are correctly versioned. <b>Note:</b> This is just one method, and in future releases Ant may have built in mechanisms for this task.
+</p>
+<h3>Step 1: Manually create a template manifest file.</h3>
+<p>Java versioning is implemented by attributes set within the manifest of the JAR.</p>
+<p>
+See Javasoft's documentation on: <a target="_new" href='http://java.sun.com/j2se/1.4/docs/guide/versioning/spec/VersioningSpecification.html#JARManifestFormat'>JAR Manifest Format</a>
+</p>
+<p>
+<table border="1" align="center">
+<tr><td><pre>
+Manifest-version: 1.0
+
+Name: org/apache/{Apache Package}/
+Implementation-Title: {Apache Package}
+Implementation-Version: @version@
+Implementation-Vendor:  The Apache Software Foundation
+Implementation-Vendor-Id: org.apache
+</pre>
+</td></tr>
+</table>
+</p>
+<p>
+Save this with your build.xml as a file called <b>manifest.template</b>.
+</p>
+<p>
+<b>Note:</b> The <em>{Apache Package}</em> ought be manually replaced by the package name, e.g. "log4j" or "Axis"<br/>
+<b>Note:</b> The <em>@version@</em> is a specific keyword used later in Ant filtering, and will be dynamically updated.
+</p>
+<h3>Step 2: Maintain the version in your Ant build script</h3>
+<p>
+Set and maintain the <b>${version}</b> property.
+</p>
+<p>
+<table border="1" align="center">
+<tr><td><pre>&lt;property name=&quot;version&quot; value=&quot;1-1-1&quot; /&gt;</pre></td></tr>
+</table>
+</p>
+<h3>Step 3: Create the manifest, filtering the version</h3>
+<p>
+This replaces <b>@version@</b> in <em>manifest.template</em> with <b>1-1-1</b> in <em>manifest.mf</em>.
+</p>
+<p>
+<table border="1" align="center">
+<tr><td><pre>
+&lt;target name=&quot;manifest&quot;&gt;
+    &lt;filter token=&quot;version&quot; value=&quot;${version}&quot; /&gt; 
+    &lt;copy    file=&quot;manifest.template&quot;
+        tofile=&quot;manifest.mf&quot; 
+        overwrite=&quot;true&quot;
+        filtering=&quot;true&quot; /&gt; 
+&lt;/target&gt;</pre></td></tr>
+</table>
+</p>
+<h3>Step 4: Create your JAR, setting the manifest attribute</h3>
+<p>
+This sets the <b>META-INF/manifest.mf</b> in the JAR file.
+</p>
+<p>
+<table border="1" align="center">
+<tr><td><pre>
+&lt;target name="distribution" depends="<em>...</em> manifest <em>...</em>">
+    &lt;jar jarfile=<em>...</em>
+            <b>manifest=&quot;manifest.mf&quot;</b>/&gt;
+</pre>
+</td></tr>
+</table>
+</p>
+<hr width="100%" />
+<p>
+Sample Files:   <a href="packageversioning-manifest.template">manifest.template</a>, <a href="packageversioning-build.xml">build.xml</a>
+</p>
+
+</section>
+</body>
+</document>

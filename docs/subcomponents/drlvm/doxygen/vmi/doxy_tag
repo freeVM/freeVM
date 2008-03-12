@@ -1,0 +1,457 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<tagfile>
+  <compound kind="file">
+    <name>hyvmls.h</name>
+    <path>C:/cvn_rep/source/trunk/working_classlib/modules/luni/src/main/native/include/shared/</path>
+    <filename>hyvmls_8h</filename>
+    <class kind="struct">HyVMLSFunctionTable</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_VMLS_H</name>
+      <anchorfile>hyvmls_8h.html</anchorfile>
+      <anchor>c547c63fa35565308d1c7b94df47e649</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_VMLS_MAX_KEYS</name>
+      <anchorfile>hyvmls_8h.html</anchorfile>
+      <anchor>9ac43e514d0a2dcac769db268025ec19</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_VMLS_FNTBL</name>
+      <anchorfile>hyvmls_8h.html</anchorfile>
+      <anchor>440113f65b0153599b26893933f742a6</anchor>
+      <arglist>(env)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_VMLS_GET</name>
+      <anchorfile>hyvmls_8h.html</anchorfile>
+      <anchor>f1d7ebb82b83787b7925e2cf35b19beb</anchor>
+      <arglist>(env, key)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>HY_VMLS_SET</name>
+      <anchorfile>hyvmls_8h.html</anchorfile>
+      <anchor>2f88ba3699639f210bfc3ad5ef312ad6</anchor>
+      <arglist>(env, key, value)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>vm_trace.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/vmi/src/</path>
+    <filename>vm__trace_8h</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>TRACE</name>
+      <anchorfile>vm__trace_8h.html</anchorfile>
+      <anchor>f433b05d8a466d0640f88d491e2b3339</anchor>
+      <arglist>(a)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>vmi.h</name>
+    <path>C:/cvn_rep/source/trunk/working_classlib/modules/luni/src/main/native/include/shared/</path>
+    <filename>vmi_8h</filename>
+    <class kind="struct">VMInterfaceFunctions_</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>vmi_h</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>17d02ec259e43a73dd0a10d06dc3cf95</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>USING_VMI</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>41bea1602faf2f681056380ac15ded0b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VMI_ACCESS_FROM_ENV</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>8bcd9dca7cae8ee9fdf2dfa532cc0898</anchor>
+      <arglist>(env)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VMI_ACCESS_FROM_JAVAVM</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>d1aa03cc21ff55b1ded3fe34540e08c3</anchor>
+      <arglist>(javaVM)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VMI</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>6bf656f22301da4aad9ff3602c568dfe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BOOTCLASSPATH_PROPERTY</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>2bd624cbade5ae1cbc2f70dea64e03b8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>char *</type>
+      <name>value</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>176f2db63c9780b3c2d0f6bdf3b012f7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>char void *</type>
+      <name>userData</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>1d4ba628d38c7624fd98855cce15b1ec</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>VMInterfaceFunctions_ *</type>
+      <name>VMInterface</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>945edfc12a1e3166aba839134e6e3901</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>vmiError</name>
+      <anchor>4cc26d792039ec5f28b517bd47143ad2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VMI_ERROR_NONE</name>
+      <anchor>4cc26d792039ec5f28b517bd47143ad2265b27aec0d596faaeacd168309b0fd5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VMI_ERROR_UNKNOWN</name>
+      <anchor>4cc26d792039ec5f28b517bd47143ad20dae37c3dd58da1cdac2143e8a50906d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VMI_ERROR_UNIMPLEMENTED</name>
+      <anchor>4cc26d792039ec5f28b517bd47143ad2159e00014eb4971effe39797b86e8dd1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VMI_ERROR_UNSUPPORTED_VERSION</name>
+      <anchor>4cc26d792039ec5f28b517bd47143ad2bc66efc0af92fa0ef93e040d424f3bad</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VMI_ERROR_OUT_OF_MEMORY</name>
+      <anchor>4cc26d792039ec5f28b517bd47143ad2fd2543af3ba7cafcb7c550b71561130f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VMI_ERROR_ILLEGAL_ARG</name>
+      <anchor>4cc26d792039ec5f28b517bd47143ad2e46f3141c6b202d4ad3dfbb704b94cd0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VMI_ERROR_READ_ONLY</name>
+      <anchor>4cc26d792039ec5f28b517bd47143ad29fcfee1283abc539e7f29567855cc105</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>vmiErrorEnsureWideEnum</name>
+      <anchor>4cc26d792039ec5f28b517bd47143ad29e6f0754aeb0ef78a2e4f83d2e871597</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>vmiVersion</name>
+      <anchor>976d44f638c8cc26da425e2eada706de</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VMI_VERSION_UNKNOWN</name>
+      <anchor>976d44f638c8cc26da425e2eada706de406e2c373d865add6094ecf7833d0685</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VMI_VERSION_1_0</name>
+      <anchor>976d44f638c8cc26da425e2eada706de92a591e59cb27bf7069de024ac92503b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>vmiVersionEnsureWideEnum</name>
+      <anchor>976d44f638c8cc26da425e2eada706deed2194ab5721e8d88a17536f52fbd00b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>typedef</type>
+      <name>void</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>354b1037f132054774eb26459b00deef</anchor>
+      <arglist>(JNICALL *vmiSystemPropertyIterator)(char *key</arglist>
+    </member>
+    <member kind="function">
+      <type>VMInterface *JNICALL</type>
+      <name>VMI_GetVMIFromJNIEnv</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>fcf737d9dec215b6c3edc3fa87b04579</anchor>
+      <arglist>(JNIEnv *env)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMInterface *JNICALL</type>
+      <name>VMI_GetVMIFromJavaVM</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>02ce5bf3edc696d4176a8cc7c38da108</anchor>
+      <arglist>(JavaVM *vm)</arglist>
+    </member>
+    <member kind="function">
+      <type>vmiError JNICALL</type>
+      <name>CheckVersion</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>ba6d90a8dfd683056e3edda3279c6cbd</anchor>
+      <arglist>(VMInterface *vmi, vmiVersion *version)</arglist>
+    </member>
+    <member kind="function">
+      <type>JavaVM *JNICALL</type>
+      <name>GetJavaVM</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>b9a67b0c4fd13ca880346645572e13fe</anchor>
+      <arglist>(VMInterface *vmi)</arglist>
+    </member>
+    <member kind="function">
+      <type>HyPortLibrary *JNICALL</type>
+      <name>GetPortLibrary</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>1f6ad32325eb3b1c305fdcbb0a7d2b52</anchor>
+      <arglist>(VMInterface *vmi)</arglist>
+    </member>
+    <member kind="function">
+      <type>HyVMLSFunctionTable *JNICALL</type>
+      <name>GetVMLSFunctions</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>a7c29b069b7894949ffb98bdb3eaf6b6</anchor>
+      <arglist>(VMInterface *vmi)</arglist>
+    </member>
+    <member kind="function">
+      <type>HyZipCachePool *JNICALL</type>
+      <name>GetZipCachePool</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>ec1fae66bb8f874416dd21d3d2ae202c</anchor>
+      <arglist>(VMInterface *vmi)</arglist>
+    </member>
+    <member kind="function">
+      <type>JavaVMInitArgs *JNICALL</type>
+      <name>GetInitArgs</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>d805cdab5d65c407b0117a898ae72e13</anchor>
+      <arglist>(VMInterface *vmi)</arglist>
+    </member>
+    <member kind="function">
+      <type>vmiError JNICALL</type>
+      <name>GetSystemProperty</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>d9c25134aa7b169aad2804ef2e018b01</anchor>
+      <arglist>(VMInterface *vmi, char *key, char **valuePtr)</arglist>
+    </member>
+    <member kind="function">
+      <type>vmiError JNICALL</type>
+      <name>SetSystemProperty</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>91c66ccfe8c36a51e9b0de2f63cbd40a</anchor>
+      <arglist>(VMInterface *vmi, char *key, char *value)</arglist>
+    </member>
+    <member kind="function">
+      <type>vmiError JNICALL</type>
+      <name>CountSystemProperties</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>845d1feaa562a978f7bef9b448b61349</anchor>
+      <arglist>(VMInterface *vmi, int *countPtr)</arglist>
+    </member>
+    <member kind="function">
+      <type>vmiError JNICALL</type>
+      <name>IterateSystemProperties</name>
+      <anchorfile>vmi_8h.html</anchorfile>
+      <anchor>3c76ac3c1d29c2b3be12cdf85a2eddcb</anchor>
+      <arglist>(VMInterface *vmi, vmiSystemPropertyIterator iterator, void *userData)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>HyVMLSFunctionTable</name>
+    <filename>struct_hy_v_m_l_s_function_table.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>UDATA</name>
+      <anchorfile>struct_hy_v_m_l_s_function_table.html</anchorfile>
+      <anchor>78cd956a53c00c95e2fad96624df1362</anchor>
+      <arglist>(JNICALL *HYVMLSAllocKeys)(JNIEnv *env</arglist>
+    </member>
+    <member kind="function">
+      <type>UDATA</type>
+      <name>void</name>
+      <anchorfile>struct_hy_v_m_l_s_function_table.html</anchorfile>
+      <anchor>6ccf866378177000e61259c72c5597e9</anchor>
+      <arglist>(JNICALL *HYVMLSFreeKeys)(JNIEnv *env</arglist>
+    </member>
+    <member kind="function">
+      <type>UDATA UDATA void *JNICALL *</type>
+      <name>HyVMLSGet</name>
+      <anchorfile>struct_hy_v_m_l_s_function_table.html</anchorfile>
+      <anchor>69a3177fa1e9a713ec3ed5e084773723</anchor>
+      <arglist>(JNIEnv *env, void *key)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *JNICALL *</type>
+      <name>HyVMLSSet</name>
+      <anchorfile>struct_hy_v_m_l_s_function_table.html</anchorfile>
+      <anchor>f08c54f2fcddf2aae9a4581695606826</anchor>
+      <arglist>(JNIEnv *env, void **pKey, void *value)</arglist>
+    </member>
+    <member kind="variable">
+      <type>UDATA *</type>
+      <name>pInitCount</name>
+      <anchorfile>struct_hy_v_m_l_s_function_table.html</anchorfile>
+      <anchor>24a911c08e38c05e453573bac94734a7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>UDATA UDATA *</type>
+      <name>pInitCount</name>
+      <anchorfile>struct_hy_v_m_l_s_function_table.html</anchorfile>
+      <anchor>94b89725d5f27edf83e844161d1cc442</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>VMInterfaceFunctions_</name>
+    <filename>struct_v_m_interface_functions__.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>vmiError</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>f465fef54fcee710e008fb8d33c3f0a6</anchor>
+      <arglist>(JNICALL *CheckVersion)(VMInterface *vmi</arglist>
+    </member>
+    <member kind="function">
+      <type>JavaVM *JNICALL *</type>
+      <name>GetJavaVM</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>6aa6b707766074b770c9ce97dc02aad0</anchor>
+      <arglist>(VMInterface *vmi)</arglist>
+    </member>
+    <member kind="function">
+      <type>HyPortLibrary *JNICALL *</type>
+      <name>GetPortLibrary</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>be8ac90f674c0b33885cdc6fc3eb9cfc</anchor>
+      <arglist>(VMInterface *vmi)</arglist>
+    </member>
+    <member kind="function">
+      <type>HyVMLSFunctionTable *JNICALL *</type>
+      <name>GetVMLSFunctions</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>1d184583286f8914a58852e4e2246b34</anchor>
+      <arglist>(VMInterface *vmi)</arglist>
+    </member>
+    <member kind="function">
+      <type>HyZipCachePool *JNICALL *</type>
+      <name>GetZipCachePool</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>37fac2fb6eb3f72786b8af8e9af6669d</anchor>
+      <arglist>(VMInterface *vmi)</arglist>
+    </member>
+    <member kind="function">
+      <type>JavaVMInitArgs *JNICALL *</type>
+      <name>GetInitArgs</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>f3f7da818b66a52bb74147471e974e5a</anchor>
+      <arglist>(VMInterface *vmi)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>vmiError</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>d50b5f6b645396b60128879c6836ca7f</anchor>
+      <arglist>(JNICALL *GetSystemProperty)(VMInterface *vmi</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>vmiError</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>05004a6160d19eda5e41704a1273eadb</anchor>
+      <arglist>(JNICALL *SetSystemProperty)(VMInterface *vmi</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>vmiError</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>ee52dce7c46956742b5a31929185be91</anchor>
+      <arglist>(JNICALL *CountSystemProperties)(VMInterface *vmi</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>vmiError</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>899ee993b78614ff6ee85c5906ccaeef</anchor>
+      <arglist>(JNICALL *IterateSystemProperties)(VMInterface *vmi</arglist>
+    </member>
+    <member kind="variable">
+      <type>vmiVersion *</type>
+      <name>version</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>fc074f195c9e14c670d6c9a2fe327263</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>key</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>ae667607c4eb4654e0ffe5ca0ed3eba5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char char **</type>
+      <name>valuePtr</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>788332fe9426934c6a6680cf276ecab8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>key</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>ae667607c4eb4654e0ffe5ca0ed3eba5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char char *</type>
+      <name>value</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>09db83b773a4eef760b96a9f2cbf3a2d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int *</type>
+      <name>countPtr</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>609a479c869892a8e1ff1a2e6ecfc356</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>vmiSystemPropertyIterator</type>
+      <name>iterator</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>e1c02aa25f1d397cd8f52fa244eb3867</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>vmiSystemPropertyIterator void *</type>
+      <name>userData</name>
+      <anchorfile>struct_v_m_interface_functions__.html</anchorfile>
+      <anchor>8f143bc0e981e5a07cc0096c0df340d5</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+</tagfile>
