@@ -55,7 +55,7 @@
 
   <target name="site" 
           description="generates the HTML documentation"
-          >
+          depends="check-jre">
       <taskdef name="anakia"
           classname="org.apache.velocity.anakia.AnakiaTask">
           
@@ -139,6 +139,17 @@
 
   </target>
     
+
+  <target name="check-jre">
+      <fail message="You need to generate the site using Harmony">
+          <condition>
+              <not>
+                  <equals arg1="Apache Harmony" arg2="${java.runtime.name}"/>
+              </not>
+          </condition>
+      </fail>
+  </target>
+
 </project>
 
 
