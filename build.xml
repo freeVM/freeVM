@@ -62,7 +62,7 @@ command line.  For example, to run only the luni tests:
     
     <!-- set the path root for the classlib : must be relative to the build directory -->
     <property name="external.classlib.loc" value="../working_classlib/deploy" />
-    <property name="external.drlvm.loc" value="../working_vm/build/deploy" />
+    <property name="external.drlvm.loc" value="../working_vm/deploy" />
     <property name="external.resources.loc" value="../common_resources" />
 
     <property name="external.resources" location="${external.resources.loc}" />
