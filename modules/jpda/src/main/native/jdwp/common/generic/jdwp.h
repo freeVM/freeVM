@@ -132,6 +132,8 @@ typedef enum jdwpCommand {
     JDWP_COMMAND_OR_DISABLE_COLLECTION = 7,
     JDWP_COMMAND_OR_ENABLE_COLLECTION = 8,
     JDWP_COMMAND_OR_IS_COLLECTED = 9,
+    // New commands for Java 6
+    JDWP_COMMAND_OR_REFERRING_OBJECTS = 10,
 
     /* Commands StringReference */
     JDWP_COMMAND_SR_VALUE = 1,

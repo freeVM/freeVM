@@ -91,3 +91,33 @@ using namespace CallBacks;
              *tag_ptr = tag_value;
              return JVMTI_VISIT_OBJECTS;
      }
+     
+//-----------------------------------------------------------------------------
+// Heap callbacks, used in ReferringObject command
+//-----------------------------------------------------------------------------
+
+     /**
+      * Describes a reference from an object or the VM (the referrer) 
+      * to another object (the referree) or a heap root to a referree. It 
+      * will be invoked by ReferringObject command.
+      */
+     jint JNICALL CallBacks::HeapReferenceCallback_ReferringObject
+        (jvmtiHeapReferenceKind reference_kind, 
+         const jvmtiHeapReferenceInfo* reference_info, 
+         jlong class_tag, 
+         jlong referrer_class_tag, 
+         jlong size, 
+         jlong* tag_ptr, 
+         jlong* referrer_tag_ptr, 
+         jint length, 
+         void* user_data) {
+             jlong targetObjTag = *(static_cast<jlong *>(user_data));
+             jlong *ptr = static_cast<jlong *>(user_data);
+             ptr++;
+             jlong referrerObjTag = *ptr;
+             if(*tag_ptr == targetObjTag && referrer_tag_ptr != NULL) {
+                *referrer_tag_ptr = referrerObjTag;
+             }
+            return JVMTI_VISIT_OBJECTS;
+     }
+ 

@@ -24,7 +24,7 @@
 
 namespace jdwp {
 
-     //-----------------------------------------------------------------------------
+   //-----------------------------------------------------------------------------
    // Heap callbacks, used in Instances, InstanceCounts command
    //-----------------------------------------------------------------------------
     namespace CallBacks {
@@ -78,6 +78,26 @@ namespace jdwp {
          const jchar* value, 
          jint value_length, 
          void* user_data);
+         
+        //-----------------------------------------------------------------------------
+        // Heap callbacks, used in ReferringObject command
+        //-----------------------------------------------------------------------------
+        /**
+         * Describes a reference from an object or the VM (the referrer) 
+         * to another object (the referree) or a heap root to a referree. It 
+         * will be invoked by ReferringObject command.
+         */
+        jint JNICALL HeapReferenceCallback_ReferringObject
+        (jvmtiHeapReferenceKind reference_kind, 
+          const jvmtiHeapReferenceInfo* reference_info, 
+          jlong class_tag, 
+          jlong referrer_class_tag, 
+          jlong size, 
+          jlong* tag_ptr, 
+          jlong* referrer_tag_ptr, 
+          jint length, 
+          void* user_data);
+
     } //CallBacks namespace
 } // jdwp namesoace
 #endif//_CALL_BACKS_H_

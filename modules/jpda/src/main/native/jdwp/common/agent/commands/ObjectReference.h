@@ -212,6 +212,25 @@ namespace jdwp {
 
         };//InvokeMethodHandler
 
+         //New commands for Java 6
+        // =========================================================================
+        /**
+         * The class implements the <code>ReferringObjects (10) </code>
+         * command from the <code>ObjectReference</code> command set.
+         */
+        class ReferringObjectsHandler : public SyncCommandHandler {
+        protected:
+
+            /**
+             * Executes the <code>ReferringObjects</code> JDWP command for the
+             * <code>ObjectReference</code> command set.
+             *
+             * @param jni - the JNI interface pointer
+             */
+            virtual void Execute(JNIEnv *jni) throw(AgentException);
+
+        }; // ReferringObjectsHandler class
+
     } // ObjectReference namespace
 
 } // jdwp namespace

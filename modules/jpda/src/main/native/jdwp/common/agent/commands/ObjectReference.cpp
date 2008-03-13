@@ -23,9 +23,11 @@
 #include "ObjectReference.h"
 #include "PacketParser.h"
 #include "ObjectManager.h"
+#include "CallBacks.h"
 
 using namespace jdwp;
 using namespace ObjectReference;
+using namespace CallBacks;
 
 //------------------------------------------------------------------------------
 //ReferenceTypeHandler(1)-------------------------------------------------------
@@ -880,3 +882,89 @@ ObjectReference::InvokeMethodHandler::ExecuteDeferredFunc(JNIEnv *jni)
         }
     }
 }
+
+// New commands for Java 6
+//------------------------------------------------------------------------------
+//ReferringObjectsHandler(10)---------------------------------------------------
+
+void
+ObjectReference::ReferringObjectsHandler::Execute(JNIEnv *jni) throw (AgentException)
+{
+    // Get objectID
+    jobject jvmObject = m_cmdParser->command.ReadObjectID(jni);
+    // Can be: InternalErrorException, OutOfMemoryException, JDWP_ERROR_INVALID_OBJECT
+
+    // Get maximum number of referring objects to return.
+    int maxReferrers = m_cmdParser->command.ReadInt();
+    if(maxReferrers < 0) {
+        throw AgentException(JDWP_ERROR_ILLEGAL_ARGUMENT);
+    }
+
+    // Define tag for referree object
+    jlong targetObjTag = 0xefff;
+    // Set tag for target object
+     jvmtiError err;
+    JVMTI_TRACE(err, GetJvmtiEnv()->SetTag(jvmObject, targetObjTag));
+    if (err != JVMTI_ERROR_NONE) {
+        // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY,  JVMTI_ERROR_INVALID_OBJECT
+        throw AgentException(err);
+    }
+    
+    // Define tag for referrer object
+    jlong referrerObjTag = 0xdfff;
+    jlong tags[2] = {targetObjTag, referrerObjTag};
+
+    // Initial callbacks for jvmtiHeapCallbacks
+    jvmtiHeapCallbacks hcbs;
+    memset(&hcbs, 0, sizeof(hcbs));
+    hcbs.heap_iteration_callback = NULL;
+    hcbs.heap_reference_callback = &HeapReferenceCallback_ReferringObject;
+    hcbs.primitive_field_callback = NULL;
+    hcbs.array_primitive_value_callback = NULL;
+    hcbs.string_primitive_value_callback = NULL;
+
+    //It initiates a traversal over the objects that are directly and indirectly reachable from the heap roots.
+    JVMTI_TRACE(err, GetJvmtiEnv()->FollowReferences(0, NULL,  NULL,
+         &hcbs, tags));
+    if (err != JVMTI_ERROR_NONE) {
+        // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_INVALID_CLASS
+        // JVMTI_ERROR_INVALID_OBJECT, JVMTI_ERROR_NULL_POINTER 
+        throw AgentException(err);
+    }
+
+    const jlong referrerTags[1] = {referrerObjTag};
+    jint referringObjectsNum = 0;
+    jobject * pResultObjects = 0;
+    // Return the instances that have been marked expectd tag.
+    JVMTI_TRACE(err, GetJvmtiEnv()->GetObjectsWithTags(1, referrerTags, &referringObjectsNum,
+           &pResultObjects, NULL));
+    JvmtiAutoFree afResultObjects(pResultObjects);
+
+    if (err != JVMTI_ERROR_NONE) {
+        // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_ILLEGAL_ARGUMENT 
+        // JVMTI_ERROR_ILLEGAL_ARGUMENT, JVMTI_ERROR_NULL_POINTER  
+        throw AgentException(err);
+    }
+
+    jint returnReferringObjectsNum;
+    //If maxReferrers is zero, all instances are returned.
+    if(0 == maxReferrers) {
+        returnReferringObjectsNum = referringObjectsNum;
+    }
+    else if(maxReferrers < referringObjectsNum) {
+        returnReferringObjectsNum = maxReferrers;
+    }
+    else {
+        returnReferringObjectsNum = referringObjectsNum;
+    }
+
+    // Compose reply package
+    m_cmdParser->reply.WriteInt(returnReferringObjectsNum);
+    JDWP_TRACE_DATA("ReferringObject: return objects number:" << returnReferringObjectsNum );
+
+    for(int i = 0; i < returnReferringObjectsNum; i++) {
+        m_cmdParser->reply.WriteTaggedObjectID(jni, pResultObjects[i]);
+    }
+    JDWP_TRACE_DATA("ReferringObject: tagged-objectID returned.");
+
+} //ReferringObjectsHandler::Execute()

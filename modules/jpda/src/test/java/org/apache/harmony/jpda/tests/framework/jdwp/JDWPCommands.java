@@ -78,6 +78,7 @@ public class JDWPCommands {
 
         public static final byte AllClassesWithGenericCommand = 20;
         
+        //New commands for Java 6
         public static final byte InstanceCountsCommand = 21;
     }
 
@@ -207,6 +208,9 @@ public class JDWPCommands {
         public static final byte EnableCollectionCommand = 8;
 
         public static final byte IsCollectedCommand = 9;
+        
+        //New commands for Java 6
+        public static final byte ReferringObjectsCommand = 10;
     }
 
     /**

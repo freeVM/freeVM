@@ -311,6 +311,10 @@ CommandDispatcher::CreateCommandHandler(jdwpCommandSet cmdSet, jdwpCommand cmdKi
         case JDWP_COMMAND_OR_IS_COLLECTED:
             return new ObjectReference::IsCollectedHandler();
 
+         // New commands for Java 6
+        case JDWP_COMMAND_OR_REFERRING_OBJECTS:
+            return new ObjectReference::ReferringObjectsHandler(); 
+
         }
         break;
 
