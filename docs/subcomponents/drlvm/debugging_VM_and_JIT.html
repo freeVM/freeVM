@@ -212,8 +212,7 @@ limitations under the License.
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="
-      "text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Debugging DRL Virtual Machine and JIT Compiler </title>
 </head>
   <body>
@@ -258,6 +257,7 @@ limitations under the License.
     </li>
     </ol>
 </li>
+<li><a href="#DebugJITOPT">Debugging the Jitrinio.OPT Optimizing Compiler</a></li>
 </ol>
  <h1><a id="About_This_Document" name="About_This_Document"></a>About This Document</h1>
     <p>
@@ -657,223 +657,255 @@ run &lt;your_params&gt;
         be placed in the method <code>Compiler::compile(</code>).
     </p>
     <p>
-        <span style="font-family: Courier 
-         New; font-size: 10.0pt; color: blue;">#if</span>
-        <span style="font-family: Courier New; font-size: 10.0pt;"><span style="color: blue;">
-            defined</span>(<span style=""color: black;">_DEBUG</span>) || <span style=""color: blue;">
-                defined</span>(<span style=""color: black;">JET_PROTO</span>)</span>
+        <code><span style="color: blue;">#if 
+            defined</span>(_DEBUG) || 
+                defined(JET_PROTO)</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // Turns on a short summary of all methods</span></span>
+        <code><span style="color: green;">
+            // Turns on a short summary of all methods</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            compile_flags</span> |= <span style="color: black;">DBG_TRACE_SUMM</span>;</span>
+        <code>compile_flags |= DBG_TRACE_SUMM;</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // A handy constant</span></span>
+        <code><span style="color: green;">// A handy constant</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: blue;">
-            static</span> <span style=""color: blue;">const</span> <span style=""color: blue;">unsigned</span>
-            <span style=""color: black;">TRACE_CG</span> = <span style=""color: black;">DBG_DUMP_BBS</span>
-            | <span style="color: black;">DBG_TRACE_CG</span> |</span>
+        <code>
+            static const unsigned
+            TRACE_CG = DBG_DUMP_BBS
+            | DBG_TRACE_CG |</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            DBG_TRACE_LAYOUT</span> | <span style="color: black;">DBG_TRACE_SUMM</span> |</span>
+        <code>
+            DBG_TRACE_LAYOUT | DBG_TRACE_SUMM |</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            DBG_DUMP_CODE</span>;</span>
+        <code>
+            DBG_DUMP_CODE;</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
+        <code><span style="color: green;">
             // For methods in the range (1000;15000), print out the complete code generator
-            dumps</span></span>
+            dumps</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: blue;">
-            if</span> (<span style=""color: black;">g_methodsSeen</span>&gt;1000 &amp;&amp;
-            <span style="color: black;">g_methodsSeen</span>&lt;15000) {</span>
+        <code>
+            if (g_methodsSeen&gt;1000 &amp;&amp;
+            g_methodsSeen&lt;15000) {</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            compile_flags</span> |= <span style="color: black;">TRACE_CG</span>;</span>
+        <code>
+            compile_flags |= TRACE_CG;</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;">}</span>
+        <code>}</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // For methods getSomeValue() and for all methods in class MyClass,</span></span>
+        <code><span style="color: green;">
+            // For methods getSomeValue() and for all methods in class MyClass,</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // trace enter and exit</span></span>
+        <code><span style="color: green;">
+            // trace enter and exit</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: blue;">
-            if</span> (<span style=""color: black;">NULL</span> != <span style=""color: black;">
-                strstr</span>(<span style=""color: black;">m_fname</span>, "::getSomeValue")
-            ||</span>
+        <code>
+            if (NULL != 
+                strstr(m_fname, "::getSomeValue")
+            ||</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            NULL</span> != <span style="color: black;">strstr</span>(<span style=""color: black;">m_fname</span>,
-            "MyClass::") ) {</span>
+        <code>
+            NULL != strstr(m_fname,
+            "MyClass::") ) {</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            compile_flags</span> |= <span style="color: black;">DBG_TRACE_EE</span>;</span>
+        <code>
+            compile_flags |= DBG_TRACE_EE;</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;">}</span>
+        <code>}</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // For the method crashes_some_times() in class MyClass trace every</span></span>
+        <code><span style="color: green;">
+            // For the method crashes_some_times() in class MyClass trace every</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // bytecode execution: the last bytecode in the log is the most probable</span></span>
+        <code><span style="color: green;">
+            // bytecode execution: the last bytecode in the log is the most probable</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // cause of the failure</span></span>
+        <code><span style="color: green;">
+            // cause of the failure</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: blue;">
-            if</span> (!<span style=""color: black;">strcmp</span>(<span style=""color: black;">m_fname</span>,
-            "MyClass::crashes_some_times")) {</span>
+        <code>
+            if (!strcmp(m_fname,
+            "MyClass::crashes_some_times")) {</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            compile_flags</span> |= <span style="color: black;">DBG_TRACE_EE</span>|<span style=""color: black;">DBG_TRACE_BC</span>;</span>
+        <code>
+            compile_flags |= DBG_TRACE_EE|DBG_TRACE_BC;</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;">}</span>
+        <code>}</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // Break into debugger (INT3) at the entry of the stop_at_entry() method</span></span>
+        <code><span style="color: green;">
+            // Break into debugger (INT3) at the entry of the stop_at_entry() method</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: blue;">
-            if</span> (!<span style=""color: black;">strcmp</span>(<span style=""color: black;">m_fname</span>,
-            "MyClass::stop_at_entry")) {</span>
+        <code>
+            if (!strcmp(m_fname,
+            "MyClass::stop_at_entry")) {</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            compile_flags</span> |= <span style="color: black;">DBG_BRK</span>;</span>
+        <code>
+            compile_flags |= DBG_BRK;</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;">}</span>
+        <code>}</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // Break into debugger (INT3) inside the method</span></span>
+        <code><span style="color: green;">
+            // Break into debugger (INT3) inside the method</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: blue;">
-            if</span> (!<span style=""color: black;">strcmp</span>(<span style=""color: black;">m_fname</span>,
-            "MyClass::stop_somewhere_in_the_middle")) {</span>
+        <code>
+            if (!strcmp(m_fname,
+            "MyClass::stop_somewhere_in_the_middle")) {</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            dbg_break_pc</span> = 50;</span>
+        <code>
+            dbg_break_pc = 50;</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;">}</span>
+        <code>}</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // Trace run-time support calls: unwind, getting the address of 'this', root</span></span>
+        <code><span style="color: green;">
+            // Trace run-time support calls: unwind, getting the address of 'this', root</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // set enumeration</span></span>
+        <code><span style="color: green;">
+            // set enumeration</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: blue;">
-            if</span> (!<span style=""color: black;">strcmp</span>(<span style=""color: black;">m_fname</span>,
-            "MyClass::something_wrong_with_unwind_here")) {</span>
+        <code>
+            if (!strcmp(m_fname,
+            "MyClass::something_wrong_with_unwind_here")) {</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            compile_flags</span> |= <span style="color: black;">DBG_TRACE_RT</span>;</span>
+        <code>
+            compile_flags |= DBG_TRACE_RT;</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;">}</span>
+        <code>}</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style="color: green;">
-            // By-pass run-time tracing for java/* classes</span></span>
+        <code><span style="color: green;">
+            // By-pass run-time tracing for java/* classes</span></code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: blue;">
-            if</span> (<span style=""color: black;">m_fname</span> == <span style=""color: black;">
-                strstr</span>(<span style=""color: black;">m_fname</span>, "java/")) {</span>
+        <code>
+            if (m_fname == strstr(m_fname, "java/")) {</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;"><span style=""color: black;">
-            compile_flags</span> &amp;= ~(<span style="color: black;">DBG_TRACE_EE</span>|<span
-                style="color: black;">DBG_TRACE_BC</span>);</span>
+        <code>compile_flags &amp;= ~(DBG_TRACE_EE| DBG_TRACE_BC);</code>
     </p>
     <p>
-        <span style="font-family: Courier
-         New; font-size: 10.0pt;">}</span>
+        <code>}</code>
     </p>
     <p>
-        <span style="font-family: Courier 
-         New; font-size: 10.0pt; color: blue;">#endif</span>
+        <code><span style="color: blue;">#endif</span></code>
     </p>
-    <p>
-        <a href="#top">Back to top</a>
-    </p>
-    <p>
-        <a name="*"></a>* Other brands and names are the property of their respective owners.
-    </p>
+    <p><a href="#top">Back to top</a>
+</p>
+    <h1> <a name="DebugJITOPT"></a>Debugging the Jitrino.OPT Compiler </h1>
+	<dl>
+    <dt>   You get a crash in Jitrino.OPT code. How to identify the method being
+          compiled?</dt>
+	 
+	   <dd>One of the possible ways: go up the call stack to the frame of <code>JIT_compile_method_with_params</code>
+	     method. There you can find locals with <code>methodName</code>, <code>methodTypeName</code> (Class
+	     name) and <code>methodSig</code> (Signature). </dd>
+	   <dt>How to create a compilation log for a particular method?</dt> 
+	   <dd> Use the following: 
+	   <pre> -XX:jit.any_id.filter=class_name_prefix.method_name_prefix –XX:jit.any_id.arg.log=ct,irdump </pre>
+	   <p> Note that the last IR Dumps in the log include addresses for all emitted
+            instructions. <code>0xdeadbeef</code> address means that the instruction
+            was not emitted. </p></dd>
+	   <dt>You get a crash somewhere in managed code. How to determine where
+                the execution stopped? </dt>
+	   <dd> Rerun with the following:
+	   <pre> -XX:jit.arg.log=info </pre>
+	   <p> This will generate the file <code>./log/info.log</code> that will contain lines similar
+            to: </p>
+	   <pre> &lt;24 CS_OPT. start java/lang/ThreadGroup.remove(Ljava/lang/Thread;)V byte code size=86
+	   24&gt; CS_OPT. end native code size=444 code range=[0xa5dca390,0xa5dca54c] </pre>
+	   <p> This way, you can find the interval (code range) containing the address
+            of your crash. If there is no such range, your crash is not in managed
+	     code. </p>
+	   </dd>
+	   <dt> How to stop at the beginning of the particular method that was
+                compiled by Jitrino.OPT? </dt>
+	   <dd> Use the following: 
+	     <pre>-XX:jit.any_id.filter=class_name_prefix.method_name_prefix<br>–XX:jit.any_id.arg.codegen.break=on </pre>
+	   <p><code>"int 3"</code> instruction will be generated as the first one in the
+	     method. </p></dd>
+	   
+	   <dt> How to enable some more compile-time debug checks in Jitrino.OPT? </dt>
+	   <dd> Use the following:
+	   <pre> –XX:jit.arg.codegen.verify=2 </pre>
+	 
+	   <p> Existing checks: </p>
+  
+	 <ul>
+	   <li> <code>RegAllocCheck</code> – check that there are no conflict register assignments </li>
+	   <li> Liveness verification - check that all operand uses have defs </li>
+	   <li> Location check – check that all operands has assigned physical location. </li>
+  </ul>
+	 
+	
+	   <p> Levels: </p>
+	   <ul>
+	     <li> 0 – no verification (Default in release build) </li>
+	     <li> 1 – <code>RegAllocCheck</code> and <code>Liveness</code> verification
+	       after <code>SpillGen</code>, Location
+                  check after emitter. (Default in debug build) </li>
+	     <li> 2 – the same as for level 1 + <code>RegAllocCheck</code> after <code>RegAlloc2
+	         (bp_regalloc)</code>
+                  + Liveness verification after each pass </li>
+	     </ul>
+	   <p>Thus, if you discover Liveness verification failure after <code>SpillGen</code>,
+	     rerun the test with <code>verify=2</code>, as the problem might occur at earlier
+	     stages. </p>
+	   </dd>
+	   <dt> What does such an assertion in RegAlloc mean? </dt>
+	   <pre>void Jitrino::Ia32::RegAlloc2::Opand::update(): <br>Assertion `p\spans[i].beg != 0' failed. </pre>
+	   <dd> It is not related to the register allocation itself. This means that an
+	     operand in the code may be used at a point where it is yet undefined. This
+	     is a liveness problem (see the previous question). </dd>
+	   <dt> What does such an assertion mean? (Instruction cannot be found
+                    in encoding table)</dt>
+	   <pre>void Jitrino::Ia32::Inst::assignOpcodeGroup(Jitrino::Ia32::IRManager*): <br>Assertion `opcodeGroup' failed. </pre>
+	   <dd> You may encounter other similar assertions. This means that the code
+              is trying to create an instruction that can never be emitted because
+	     it contradicts with the architecture specification. 
+	   <p> The encoding table in the encoder (<code>enc_table.cpp</code>) contains instruction
+              definitions with mnemonic and operands of exact sizes. The assertion
+	     fires when the instruction you tried to create cannot be found in the table.
+              Make sure the instruction operands have proper sizes and possible physical
+              locations (described by constrains attached to each operand). </p>
+ </dd>
+
+  </dl>
+		  <p><a href="#top">Back to top</a>
+	 <p><a name="*"></a>* Other
+        brands and names are the property of their respective owners. </p>
+
  </body>
 </html>
 
