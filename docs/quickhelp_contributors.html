@@ -223,7 +223,7 @@ limitations under the License.
                                 <p class="note">Note:</p>
                                 <p class="notetext">
       The build is evolving. If you come across a problem, double-check the
-      <a href="mailing.html">mailing list</a>:
+      <a href="mailing.html">mailing list</a> and <a href="faq.html">FAQs</a>:
       your issue may have been already discovered and resolved. Otherwise,
       you can write a new mail to ask for help and support.
     </p>
@@ -242,7 +242,7 @@ limitations under the License.
           <a href="http://ant.apache.org/">Apache Ant</a> version 1.6.5 or higher
         </li>
         <li>
-          <a href="http://subversion.tigris.org/">Subversion</a>
+          <a href="http://subversion.tigris.org/">Subversion</a> version 1.3 or higher
         </li>
         <li>
           <a href="">Java SE 5 JDK</a>
@@ -463,6 +463,8 @@ limitations under the License.
         increase the Java heap available to Ant.  We suggest setting the "ANT_OPTS" environment
         variable as ANT_OPTS='-Xms256m -Xmx512m' in the manner appropriate for your
         operating system.
+        <br />This recommendation is especially actual if you're building on Windows: 
+        otherwise Ant can crash in obscure way (e.g. with a mysterious InvocationTargetException).
       </p>
                                 <p>
         Because running Ant in the root directory builds the full JDK, it can be inconvenient
