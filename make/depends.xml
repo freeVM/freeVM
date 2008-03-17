@@ -133,6 +133,11 @@ File @{dest} has incorrect md5 checksum.
     Expected: @{md5} (or @{md5-deprecated})
     Found:    ${@{dest}.md5}
 
+Your previous download may have failed to get the entire file. Either
+delete the partial download and try again, or manually download that
+file and put it in the specified directory.
+    Recommended URL: @{src}
+
             </fail>
             <echo>Checksum verified (${@{dest}.md5.verified})</echo>
         </sequential>
