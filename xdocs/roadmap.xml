@@ -475,94 +475,10 @@
         <p>
           Another motivation of the Harmony project is to provide a
           portable implementation that is available on many
-          platforms and operating systems. Currently, our interests
-          are:
+          platforms and operating systems. See <a href="supported_platforms.html">
+          Supported Platforms</a> for a list of operating systems 
+          and architectures that HDK runs on.
         </p>
-        <table>
-          <tr>
-            <td></td>
-            <th>Windows 2000</th>
-            <th>
-              Windows <br>XP, 2003, Vista</br>
-            </th>
-            <th>
-              Linux <br>RHEL, SLES, Debian, Gentoo, Ubuntu, Fedora</br>
-            </th>
-            <th>FreeBSD</th>
-            <th>AIX</th>
-            <th>OS X</th>
-          </tr>
-          <tr>
-            <th>
-              IA32 <br>(Pentium III or better)</br>
-            </th>
-            <td>?</td>
-            <td>+</td>
-            <td>+</td>
-            <td>?</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <th>
-              x86_64 <br>(EM64T, AMD64)</br>
-            </th>
-            <td></td>
-            <td>+</td>
-            <td>+</td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <th>
-              Itanium <br>(IA64, IPF)</br>
-            </th>
-            <td></td>
-            <td>?</td>
-            <td>+</td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <th>PPC32</th>
-            <td></td>
-            <td></td>
-            <td>?</td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <th>PPC64</th>
-            <td></td>
-            <td></td>
-            <td>?</td>
-            <td></td>
-            <td>?</td>
-            <td></td>
-          </tr>
-          <tr>
-            <th>zSeries (31 bit)</th>
-            <td></td>
-            <td></td>
-            <td>?</td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </table>
-        <p>
-          <b>Legend</b>
-          <ul>
-            <li>&quot;+&quot; - Supported (sure-to-work)</li>
-            <li>&quot;?&quot; - In progress</li>
-            <li>&quot;-&quot; - Will Not Support</li>
-            <li>&quot; &quot; (empty) - N/A or Maybe</li>
-           </ul>
-        </p>
-
       </subsection>
       <subsection name="Application-Driven Project Advancement">
         <p>
