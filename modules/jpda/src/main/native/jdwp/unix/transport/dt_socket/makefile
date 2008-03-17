@@ -30,13 +30,13 @@ CFLAGS += -fpic
 CXXFLAGS += -fpic
 
 INCLUDES += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
-            -I$(COMMON)generic -Idt_socket
+            -I$(COMMON)generic -I.
 
 LDFLAGS += -lstdc++
 
 BUILDFILES = \
     $(CMNTRANS)common/LastTransportError.o \
-    $(CMNTRANS)dt_socket/SocketTransport.o 
+    $(CMNTRANS)dt_socket/SocketTransport.o
 
 MDLLIBFILES = 
 

@@ -138,8 +138,10 @@
         <!-- Build agent shared lib -->
         <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/agent" />
         
-        <!-- Build transport shared lib -->
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport" />
+        <!-- Build socket transport shared lib -->
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_socket" />
+
+        <antcall target="-build-native-windows" />
 
         <!-- copy to our local jdk skeleton -->
         <copy todir="${hy.jdk}/jre/bin" overwrite="yes">
@@ -148,6 +150,11 @@
                 <include name="*${progdb.suffix}" if="is.windows" />
             </fileset>
         </copy>
+    </target>
+
+    <target name="-build-native-windows" if="is.windows">
+        <!-- Build shared memory transport shared lib on Windows -->
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_shmem" />
     </target>
 
     <!-- internal target for local and global test run sequence -->
@@ -174,7 +181,12 @@
     <target name="clean-native">
         <echo message="Cleaning JPDA natives" />
         <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/agent" target="clean" />
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport" target="clean" />
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_socket" target="clean" />
+        <antcall target="-clean-native-windows" />
+    </target>
+
+    <target name="-clean-native-windows">
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_shmem" target="clean" />
     </target>
 
     <!-- Compile JDWP tests always with debug info included -->

@@ -14,37 +14,35 @@
 #  limitations under the License.
 
 #
-# Makefile for module jdwp - transport
+# Makefile for module jdwp - dt_shmem transport
 #
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-COMMON=..\..\common\# comment to avoid \ being treated as continuation
+COMMON=..\..\..\common\# comment to avoid \ being treated as continuation
 CMNTRANS=$(COMMON)transport\# comment to avoid \ being treated as continuation
 
-LIBBASE=dt_socket
-DLLNAME=..\$(LIBBASE).dll
+LIBBASE=dt_shmem
+DLLNAME=..\..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 INCLUDES = $(INCLUDES) \
-         -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
-         -I$(COMMON)generic -Idt_socket
+         -I$(CMNTRANS)common \
+         -I$(COMMON)generic -I.
 
 HYCFLAGS = $(HYCFLAGS) $(INCLUDES) -GX -wd4290
 
-HYLDFLAGS = $(HYLDFLAGS) -def:dt_socket\$(LIBBASE).def
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
     $(CMNTRANS)common\LastTransportError.obj \
-    $(CMNTRANS)dt_socket\SocketTransport.obj 
+    SharedMemTransport.obj
 
 VIRTFILES = 
 
 SYSLIBFILES = 
 
-MDLLIBFILES = 
-  
 DLLBASE=0x13200000
-COMMENT=/comment:"JDWP socket transport native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"JDWP shmem transport native code. (c) Copyright 2008 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

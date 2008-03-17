@@ -30,8 +30,6 @@
 #ifndef _LASTTRANSPORTERROR_H
 #define _LASTTRANSPORTERROR_H
 
-#include "SocketTransport_pd.h"
-
 /**
  * The given class is a container for message and status code of the last 
  * transport error.
