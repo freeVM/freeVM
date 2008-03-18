@@ -169,9 +169,17 @@ ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actu
 
     /* Create the shared memory transport */
     sharedMemTransport *transport = (sharedMemTransport*)(((internalEnv*)env->functions->reserved1)->alloc)(sizeof(sharedMemTransport));
+    if (NULL == transport) {
+        SetLastTranError(env, "Could not allocate transport structure", 0);
+        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
+    }
 
     /* We have successfully got our shared memory address and handle - record them for future use */
     *actualAddress = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(writeAddress));
+    if (NULL == actualAddress) {
+        SetLastTranError(env, "Could not allocate address string", 0);
+        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
+    }
     strcpy(*actualAddress, writeAddress);
     strcpy(transport->name, writeAddress);
     transport->sharedMemoryHandle = writeHandle;
@@ -188,11 +196,20 @@ ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actu
     /* TODO: Make sure all the handles created and stored here are closed later! */
     char *defaultMutexSuffix = DEFAULT_MUTEX_SUFFIX;
     char *writeMutexName = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(writeAddress) + strlen(defaultMutexSuffix) + 1);
+    if (NULL == writeMutexName) {
+        SetLastTranError(env, "Could not allocate mutex name", 0);
+        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
+    }
+
     sprintf(writeMutexName, "%s%s", writeAddress, defaultMutexSuffix);
 
     /* Create accept event */
     char *defaultAcceptEventSuffix = DEFAULT_ACCEPT_EVENT_SUFFIX;
     char *acceptEventName = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(writeAddress) + strlen(defaultAcceptEventSuffix) + 1);
+    if (NULL == acceptEventName) {
+        SetLastTranError(env, "Could not allocate accept event name", 0);
+        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
+    }
     sprintf(acceptEventName, "%s%s", writeAddress, defaultAcceptEventSuffix);
 
     HANDLE acceptEventHandle = CreateEvent(NULL, FALSE, FALSE, acceptEventName);
@@ -207,6 +224,10 @@ ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actu
     /* Create attach event */
     char *defaultAttachEventSuffix = DEFAULT_ATTACH_EVENT_SUFFIX;
     char *attachEventName = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(writeAddress) + strlen(defaultAttachEventSuffix) + 1);
+    if (NULL == attachEventName) {
+        SetLastTranError(env, "Could not allocate attach event name", 0);
+        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
+    }
     sprintf(attachEventName, "%s%s", writeAddress, defaultAttachEventSuffix);
 
     HANDLE attachEventHandle = CreateEvent(NULL, FALSE, FALSE, attachEventName);
@@ -220,6 +241,10 @@ ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actu
 
     /* Allocate the transport listener and fill in it's fields */
     sharedMemListener *listener = (sharedMemListener*)(((internalEnv*)env->functions->reserved1)->alloc)(sizeof(sharedMemListener));
+    if (NULL == listener) {
+        SetLastTranError(env, "Could not allocate listener structure", 0);
+        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
+    }
     strcpy(listener->mutexName, writeMutexName);
     strcpy(listener->acceptEventName, acceptEventName);
     strcpy(listener->attachEventName, attachEventName);
@@ -365,11 +390,19 @@ ShMemTran_Attach(jdwpTransportEnv* env, const char* address,
 
     /* Allocate the shared memory transport structure */
     sharedMemTransport *transport = (sharedMemTransport*)(((internalEnv*)env->functions->reserved1)->alloc)(sizeof(sharedMemTransport));
+    if (NULL == transport) {
+        SetLastTranError(env, "Could not allocate transport structure", 0);
+        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
+    }
     ((internalEnv*)env->functions->reserved1)->transport = transport;
     strcpy(transport->name, address);
     
     /* Read the sharedMemListener from shared memory */
     sharedMemListener* listener = (sharedMemListener*)(((internalEnv*)env->functions->reserved1)->alloc)(sizeof(sharedMemListener));
+    if (NULL == listener) {
+        SetLastTranError(env, "Could not allocate listener structure", 0);
+        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
+    }
     CopyMemory(listener, readRegion, sizeof(sharedMemListener));
     ((internalEnv*)env->functions->reserved1)->transport->listener = listener;
     char *mutexName = (char*)listener->mutexName;
@@ -560,7 +593,7 @@ jdwpTransport_OnLoad(JavaVM *vm, jdwpTransportCallback* callback,
     }
 
     internalEnv* iEnv = (internalEnv*)callback->alloc(sizeof(internalEnv));
-    if (iEnv == 0) {
+    if (NULL == iEnv) {
         return JNI_ENOMEM;
     }
     iEnv->jvm = vm;
@@ -570,7 +603,7 @@ jdwpTransport_OnLoad(JavaVM *vm, jdwpTransportCallback* callback,
     iEnv->lastError = NULL;
 
     jdwpTransportNativeInterface_* envTNI = (jdwpTransportNativeInterface_*)callback->alloc(sizeof(jdwpTransportNativeInterface_));
-    if (0 == envTNI) {
+    if (NULL == envTNI) {
         callback->free(iEnv);
         return JNI_ENOMEM;
     }
@@ -588,7 +621,7 @@ jdwpTransport_OnLoad(JavaVM *vm, jdwpTransportCallback* callback,
     envTNI->reserved1 = iEnv;
 
     _jdwpTransportEnv* resEnv = (_jdwpTransportEnv*)callback->alloc(sizeof(_jdwpTransportEnv));
-    if (0 == resEnv) {
+    if (NULL == resEnv) {
         callback->free(iEnv);
         callback->free(envTNI);
         return JNI_ENOMEM;
