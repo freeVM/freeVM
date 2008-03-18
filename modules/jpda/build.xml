@@ -185,7 +185,7 @@
         <antcall target="-clean-native-windows" />
     </target>
 
-    <target name="-clean-native-windows">
+    <target name="-clean-native-windows" if="is.windows">
         <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_shmem" target="clean" />
     </target>
 
