@@ -73,7 +73,6 @@ CreateAddressFromBase(jdwpTransportEnv* env, HANDLE *resultHandle, char resultAd
     int addressSuffixInt = 1;
     HANDLE handle = NULL;
 
-    resultAddress = "";
     while (true) {
         /* Create an incrementing number to add to the end of baseAddress to create the shared memory address */
         char addressSuffixString[5];
@@ -438,9 +437,27 @@ ShMemTran_Attach(jdwpTransportEnv* env, const char* address,
  * Clean up all the allocated memory in the internalEnv structure
  */
 static jdwpTransportError
-Cleanup(jdwpTransportEnv* env)
+CleanupTransport(jdwpTransportEnv* env)
 {
     /* TODO: close handles and free allocated structures */
+    sharedMemTransport *transport = ((internalEnv*)env->functions->reserved1)->transport;
+
+    if (NULL == transport) return JDWPTRANSPORT_ERROR_NONE;
+
+    /* Free the listener structure */
+    if (transport->listener) {
+        (((internalEnv*)env->functions->reserved1)->free)(transport->listener);
+    }
+
+    /* Close handles stored in the transport structure */
+    if (transport->mutexHandle) CloseHandle(transport->mutexHandle);
+    if (transport->acceptEventHandle) CloseHandle(transport->acceptEventHandle);
+    if (transport->attachEventHandle) CloseHandle(transport->attachEventHandle);
+    if (transport->sharedMemoryHandle) CloseHandle(transport->sharedMemoryHandle);
+
+    (((internalEnv*)env->functions->reserved1)->free)(transport);
+    ((internalEnv*)env->functions->reserved1)->transport = NULL;
+
     return JDWPTRANSPORT_ERROR_NONE;
 }
 
@@ -450,7 +467,10 @@ Cleanup(jdwpTransportEnv* env)
 static jdwpTransportError JNICALL 
 ShMemTran_StopListening(jdwpTransportEnv* env)
 {
-    return Cleanup(env);
+    /* Call isOpen to check if there is a connection - if not, just return */
+    if (!env->IsOpen()) return JDWPTRANSPORT_ERROR_NONE;
+
+    return CleanupTransport(env);
 } // ShMemTran_StopListening
 
 /**
@@ -459,9 +479,13 @@ ShMemTran_StopListening(jdwpTransportEnv* env)
 static jboolean JNICALL 
 ShMemTran_IsOpen(jdwpTransportEnv* env)
 {
-    /* TODO: return an indication of whether the shared memory stream is open */
-
-    return JNI_TRUE;
+    /* Simple check to see if transport structure and shared memory handle is initialised */
+    sharedMemTransport *transport = ((internalEnv*)env->functions->reserved1)->transport;
+    if ((transport) && (transport->sharedMemoryHandle)) {
+        return JNI_TRUE;
+    } else {
+        return JNI_FALSE;
+    }
 } // ShMemTran_IsOpen
 
 /**
@@ -470,7 +494,10 @@ ShMemTran_IsOpen(jdwpTransportEnv* env)
 static jdwpTransportError JNICALL 
 ShMemTran_Close(jdwpTransportEnv* env)
 {
-    return Cleanup(env);
+    /* Call isOpen to check if there is a connection - if not, just return */
+    if (!env->IsOpen()) return JDWPTRANSPORT_ERROR_NONE;
+
+    return CleanupTransport(env);
 } // ShMemTran_Close
 
 /**
