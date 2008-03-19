@@ -23,7 +23,7 @@
 
 include $(HY_HDK)/build/make/defines.mk
 
-COMMON=../../common/
+COMMON=../../../common/
 CMNTRANS=$(COMMON)transport/
 
 CFLAGS += -fpic
