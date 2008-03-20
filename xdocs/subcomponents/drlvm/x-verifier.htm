@@ -1,0 +1,272 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+    <title>Extension to the Harmony Verifier for stackmaptable calculation</title>
+    <link rel="stylesheet" type="text/css" media="all" href="site.css" />
+</head>
+<body>
+    <h1>
+        <a id="Top" name="Top">Extension to the Harmony Verifier for stackmaptable calculation</a>
+    </h1>
+    <h1>
+        <a id="Motivation" name="Motivation"></a>Motivation
+    </h1>
+    <p>
+        Java6 introduces a new way for verifying byte code comparing to Java5. Now class files contain stackmaptable
+        attribute which was designed to help byte code verifier. Verification of class files containing stackmaptable
+        (Java6-verification) is much simpler comparing to original verification of classes not containing this attribute 
+        (we will refer to it as "Java5-verification"). This attribute is normally inserted by Java Compiler (javac). 
+    </p>
+    <p>
+        But if some byte code instrumentor makes modification of the original code then stackmaptable inserted by 
+        javac becomes invalid. Thus instrumentor should be able to fix stackmaptable and thus there should be a tool 
+        that is able to calculate a valid stackmaptable attribute.
+    </p>
+    <h1>
+        <a id="Obstacle" name="Obstacle"></a>Obstacle
+    </h1>
+    <p>
+        Briefly, stackmaptable
+        attribute contains information about types that come to each start of liner block (to each branch target). 
+        If there are several types coming to some point then stackmaptable for this point contains a type to which all the 
+        coming types are assignable to. In particular if class A, B, and C may come to some point then stackmaptable 
+        contains their common super class.
+    </p>
+    <p>
+        An obstacle here is that at compile time javac has access
+        to all the classes referenced in the class being compiled, while dynamic instrumentors might not have access to some 
+        of the referenced classes, thus it's hard to guess which class is a common super class of A, B, and C from the example 
+        above. If we knew what specifically is modified by instrumentor and how, we could modify original stackmaptable of the 
+        class, but we would like to keep flexibility of instrumentor and not limit its modifications over the code with 
+        unnecessary constraints.
+    </p>
+    <h1>
+        <a id="Assumption" name="Assumption"></a>Assumption
+    </h1>
+    <p>
+        We assume that either original class file contained valid byte code or if it does not then it's OK for instrumented 
+        class file to contain invalid stackmaptable (so that it will be rejected by the VM later). Thus we will use data from the
+        original uninstrumented class file to calculate a new stackmaptable attribute. 
+    </p>
+
+    <h1>
+        <a id="Idea" name="Idea"></a>High level Idea of the underlying algorithm
+    </h1>
+    <p>
+        To compute stackmaptable attribute verifier uses two types of information: either it needs access to all the classes 
+        referenced in the current class (this mode is like how javac calculates stackmaps) or it needs the original class 
+        (if the current class was obtained from some original valid class by instrumentation). In the latter case it calculates 
+        new stackmap basing on the data extracted from the original class file. There are no different modes: the verifier is 
+        always operates in a "mixed" mode: it uses both data extracted from the original class file (when it exists) and try to 
+        access referenced classes.
+    </p>
+    <p>
+        The main function that computes stackmap for the given method is
+    </p>
+    <pre>
+vf_Result
+vf_recompute_stackmaptable( method_handler method, uint8 **attrBytes, char **error, void *trustedPairs )
+    </pre>
+    <p>
+	Where trustedParis (which might be 0) contains list of knowingly assignable pairs. If stackmap is recomputed in an 
+        instrumentor, referenced files are not always can be accessed at the moment of instrumentation (e.g. they could go 
+        from some URL location), so the stackmap data from original (uninstrumented) class file is used instead:
+    </p>
+    <p>
+	First the original class is going to 
+    </p>
+    <pre>
+vf_verify6_class
+    </pre>
+    <p>
+	function, that makes first step of verification: it verifies integrity of the code and checks assignability of the 
+	classes available at the moment of first verification step. It creates a list of pairs that are not loaded and need to 
+	be checked later. In a normal execution there is a second verification step, where these pairs are forcedly loaded and 
+	checked (just before execution of the class).
+    </p>
+    <p>
+	When we recompute stackmaptable for an instrumented class, the second verification step is not performed. Instead we 
+	assume that original class file was valid and consider obtained pairs as "trusted" pairs: we assume that they are 
+	properly assignable. (There is no problem in this assumption: if it was not the case then our generated stackmaptable 
+	would be invalid either and the class would be rejected by VM).
+    </p>
+    <p>
+	Once we are done with the first step Java6 verification of the original class, we go to Java5 verification of the 
+	instrumented class. We also perform just the first step of verification (i.e. we don't force loading the classes), 
+	pairs of classes to be checked are stored somewhere as well, they are not mixed with our trusted pairs and they are 
+	never used later.
+    </p>
+    <p>
+	Once we are done with Java5 verification we don't destroy its temporary data, but start to work with it. So Java5 
+	verifier creates its interim stackmaps at the same points where they are necessary according to the spec (Well, it's 
+	not quite true. For optimization purposes there are places for some of which interim stackmaps are not created, so I 
+	had to implement a flag to switch this optimization off when we are at recompute stackmap mode). 
+    </p>
+    <p>
+	By design of Harmony Java5 verifier, each stackmap contains types that are incoming for the given point as well as types that 
+	are expected by the following instructions as well as list of branches where these incoming types go further to. 
+	(We propagate incoming types in one direction only: we do add incoming types to all the branch targets, but we don't 
+	add expected types to the points which have branches to the current point)
+    </p>
+    <p>
+	Then verifier looks for a "solution": i.e. set of values for each stackmap so that we may prove that 1) each incoming 
+	type is assignable to that value 2) the value is assignable to each type expected by the following instructions and 3) 
+	the value is assignable to the values (that also belong to the solution) for the branch target stackmaps.
+    </p>
+    <p>
+	Verifier may prove assignability in three ways. Class "A" is provably assignable to class "B" if either 1) we know that 
+	"B" is an interface or a super class of A (i.e. A or B is loaded) or 2) list of trusted pairs contain (A, C), where C 
+	is provably assignable to B 3) A==B
+    </p>
+    <p>
+	There are exclusions, when verifier does not prove assignability: e.g. if there is just a single incoming type for t
+	he given stackmap, then solution contains this type and it is not checked against expected types or branches.
+    </p>
+    <p>
+	To find a solution verifier does NOT apply a brute force search. Instead constraint propagation and backtracking-like 
+	algorithms are used:
+    <br/>
+	First for each node (i.e. for each type in the resulting stackmaptable) it creates a list of types that can potentially 
+	be a solution, i.e. all types X for which there exist an incoming type I that provably assignable to X. We'll call this 
+	list as "solution candidates".
+    <br/>
+	Then we reduce the list of solution candidates by removing those candidates X for which there is an expected type E so 
+	that X is not provably assignable to E. 
+    <br/>
+	The state when all solution candidate lists contain exactly one element, will be called "SOLUTION FOUND". The state 
+	when there is an empty candidate list, will be "INCONSISTENCY FOUND"
+    </p>
+
+    <h2>
+	Definition of PROPAGATION
+    </h2>
+    <p>
+	The following procedure will be called "propagation": remove all solution candidates X such that there is a branch B 
+	with its own solution candidates B_1, ..., B_N and for each B_i X is not provably assignable to B_i
+    </p>
+
+    <h2>
+	Definition of SEARCH
+    </h2>
+    <p>
+	A recursive procedure below describes the search for a solution. First we do PROPAGATION. If solution found - global 
+	stop, we are done. If inconsistency found - "roll back" to previous recursion level. (If it was the first level, then 
+	we are in trouble: the data we had was not enough to build stackmaptable attribute).
+    </p>
+    <p>
+	Then we remember all candidate lists (to return here in case we roll back from the next recursion level), chose 
+	a list where there is more than one candidate, select a candidate there, remove all other candidates and apply SEARCH 
+	(i.e. launch the next recursion level) with reduced list of candidates. If SEARCH found a solution then it's a global 
+	stop. If it found inconsistency then restore remembered state, select another candidate from the list, and launch the 
+	next recursion level again. If there are no more candidates and solution is not yet found - roll back to the previous 
+	recursion level (if it was the first level - we are in trouble again).
+    </p>
+
+
+    <h2>
+	Dealing with dead code
+    </h2>
+    <p>
+	It's not a simple task to calculate stackmaptable attribute for the beginning of dead (unreachable) block of code.
+        Despite the code dead, it's verified by Java6 verifier (required by spec) and thus it should satisfy all instructions 
+        tat follows. Moreover dead code might be in the scope of a reachable exception handler and thus may affect stackmaptable
+        in the reachable parts of the code. So to kill the problem it's easier to modify class file rather than to build 
+        stackmaptable (which is even not always possible).
+    </p>
+    <p>
+	First, we avoid the situation when the dead code is the only intersection of two different try blocks (since their 
+        handlers may have incompatible types): for each try block that starts or ends in the dead code we reduce scope to 
+        eliminate dead code from the try block (when dead code is in the middle then it's OK).
+    <br/>
+        Next, we change the code in the dead block with NOPs followed by ATHROW.
+    <br/>
+        Finally, we build stackmaptable for the beginning of the dead block: its stack contains just a single element NULL,
+        and (to make it compatible with possible exception handlers) its locals are exactly the same as locals in the 
+        stackmaptable for the first alive instruction that follows dead code.
+    </p>
+
+    <h2>
+	Handling invokevirtual/putfield/getfield instructions
+    </h2>
+    <p>
+	Sometimes verifier has to know whether a field or a method referenced in the class is declared in the super class
+        of the current class or not. This is necessary to understand which type the instruction expects. But to answer the 
+        question we have to load ether super classes of the current class or a class where referenced member is declared.
+        class_is_extending_class method from the class interface is called to figure that out.
+    </p>
+    <p>
+	In our case we can't load additional classes, but recompute stackmap functionality works correct if 
+        class_is_extending_class always returns NULL (indicating that referenced class is not a super class of 
+        the current one). To make sure that stackmap table is correct verifier chooses the least general 
+        (i.e. least close to java.lang.Object) type among several possible for the SOLUTION.
+    </p>
+
+
+    <h1>
+        <a id="Interface" name="Interface"></a>Verifier Interface
+    </h1>
+    <pre>
+// Allocates an empty verification context for a class, 
+// to be passed back to the verifier upon verification requests.
+// Memory must be disposed by calling free_verification_context 
+// (see below).
+// @param klass - class handler
+// @return a verification context for the class
+verification_context 
+allocate_verification_context(class_handler klass);
+
+// Initializes the verification context with method's information. 
+// This function must be called before instrumenting the method.
+// The resulting context should be passed back to the verifier 
+// upon verification requests
+// @param method - method handler
+// @param[in,out] context - verification context of the 
+// method's defining class
+// @return error code 
+vf_Result 
+init_verification_context_for_method(method_handler method, verification_context context);
+
+// Recomputes the StackMapTable of a method using the verification 
+// context created and initialized prior
+// to method instrumentation
+// @param[out] attrBytes - a pointer to a newly allocated StackMapTable
+// attribute. Memory must be disposed by calling free_stackmaptable
+// (see below).
+// @param method - method handler
+// @param context - class and method verification context
+// @return error code
+vf_Result recompute_stackmaptable(uint8 **attrBytes, 
+  method_handler method, verification_context context);
+
+// Frees memory allocated for a StackMapTable attribute
+void free_stackmaptable(uint8 *attrBytes);
+
+// Frees memory allocated for a verification context
+void free_verification_context (verification_context context);
+    </pre>
+
+
+</body>
+</html>
+
+
+

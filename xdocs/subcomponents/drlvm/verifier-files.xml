@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<document>
+
+ <properties>
+  <title>Verifier directories and source files</title>
+ </properties>
+
+<body>
+<section name="Verifier directories and source files">
+<p>
+There are three basic functionalities in the verifier lib: Java5-style verification, Java6-style verification and 
+extension for recomputing stackmaptable attribute.
+</p>
+<p>
+The files are located in four folders in verifier-3363:
+base/, java5/, java6/, and x_verifier/.
+base folder contains common files, other folders contain files specific for corresponding functionalities.
+</p>
+<p>
+base/ folder contains files with "_base" in their names, with "_x" in their names as well as other classes.
+Files with _base in their names contain base functionality Java5- and Java6-specific classes 
+defined in the java5/ and java6/ folders. These files contain functions that are exactly the same for Java5 and Java6 
+verification. 
+<br/>
+Files with _x in their names contain template classes that define functions that manipulate different types of data 
+but in the same way for both Java5 and Java6 verification. Template classes extend base classes, classes in folders 
+Java5 and Java6 in their turn extend template classes.
+<br/>
+Other classes define either utility functions or contain implementations for verifier's interface functions (like ver.cpp).
+</p>
+<p>
+x_verifier/ folder contains code necessary for computing stackmaptable attribute.
+</p>
+</section>
+
+</body>
+</document>
