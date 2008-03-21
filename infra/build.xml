@@ -67,6 +67,52 @@
     </propertyset>
 
     <!-- ================================================================== 
+                         Install
+         ================================================================== -->
+
+    <target name="install" depends="-check-selected-names" />
+
+    <target name="-check-selected-names">
+
+        <property name="tmp.file" value="tmp.txt" />
+
+        <echo file="${tmp.file}">tmp.file.prop=${test.suites}</echo>
+        <loadproperties srcfile="${tmp.file}">
+            <!-- test suites list may contain spaces -->
+            <filterchain>
+                <replaceregex pattern=" " replace="" flags="g" />
+            </filterchain>
+        </loadproperties>
+
+        <length property="test.suites.names.list.length"
+                string="${test.suites.names.list}" />
+        <length property="tmp.file.prop.length" string="${tmp.file.prop}" />
+
+        <fail>
+            <condition>
+                <and>
+                    <not>
+                        <!-- if an adaptor doesn't exists 
+                             test.suites.names.list doesn't contain it -->
+                        <equals arg1="${tmp.file.prop.length}"
+                                arg2="${test.suites.names.list.length}" />
+                    </not>
+                    <not>
+                        <!-- OK when '*' was specified -->
+                        <equals arg1="${test.suites}" arg2="*" />
+                    </not>
+                </and>
+            </condition>...
+------
+ERROR: Could not found adaptor for some specified test suites
+------ 
+       Please, check the names specified by test.suites property:
+               test.suites=${test.suites}
+        </fail>
+
+        <delete file="${tmp.file}" />
+    </target>
+    <!-- ================================================================== 
                          Framework Setup Functionality
          ================================================================== -->
     <target name="-init-setup">

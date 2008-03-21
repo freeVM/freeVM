@@ -52,38 +52,13 @@
     <!-- Sets up the framework -->
     <target name="setup-framework" 
             depends="load-depends, define-tasks, 
-                        check-selected-names, reorder-suites, -delete-temporal-properties"/>
+                        reorder-suites, -delete-temporal-properties"/>
 
     <!-- Initialize the framework for test execution -->
     <target name="init-framework" 
             depends="load-depends, define-tasks, load-suites-configuration, 
                         load-parameters, -delete-temporal-properties"/>
     
-    <!-- check the names of selected test suites -->
-    <target name="check-selected-names">
-        <if>
-            <not><equals arg1="${test.suites}" arg2="*"/></not>
-        <then>
-            <for list="${test.suites}" param="suite" trim="yes">
-            <sequential>
-                <fail>
-                    <condition>
-                        <not><available 
-                            file="${adaptors.dir}/@{suite}" type="dir"/>
-                        </not>
-                    </condition>...
-------
-ERROR: Could not found adaptor for '@{suite}' test suite. 
------- 
-Please, check the names specified by test.suites property:
-        test.suites=${test.suites}
-                </fail>
-            </sequential>
-            </for>
-        </then>
-        </if>
-    </target>
-
     <!-- load information about external dependencies locations
          obtained on setup stage -->
     <target name="load-depends">
