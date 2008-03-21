@@ -70,7 +70,8 @@
                          Install
          ================================================================== -->
 
-    <target name="install" depends="-check-selected-names" />
+    <target name="install"
+            depends="fetch-depends,checkout-projects,patch-ant" />
 
     <target name="-check-selected-names">
 
@@ -112,10 +113,8 @@ ERROR: Could not found adaptor for some specified test suites
 
         <delete file="${tmp.file}" />
     </target>
-    <!-- ================================================================== 
-                         Framework Setup Functionality
-         ================================================================== -->
-    <target name="-init-setup">
+
+    <target name="-init-install">
 
         <!-- create dirs -->
         <mkdir dir="${build.dir}" />
@@ -133,10 +132,83 @@ ERROR: Could not found adaptor for some specified test suites
         </condition>
     </target>
 
+    <target name="fetch-depends" depends="-init-install,-check-selected-names">
+        <property name="download.xml" location="${scripts.dir}/download.xml" />
+
+        <!-- create empty file -->
+        <echo file="${external.resources.location}" message="" />
+
+        <!-- download framework dependencies -->
+        <subant genericantfile="${download.xml}"
+                target="download-all"
+                buildpath="${scripts.dir}"
+                inheritall="true" />
+
+        <!-- download suites dependencies -->
+        <subant genericantfile="${download.xml}"
+                target="download-all"
+                inheritall="true">
+            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
+        </subant>
+    </target>
+
+    <target name="checkout-projects"
+            depends="-init-install,-check-selected-names">
+        <property name="svn.xml" location="${scripts.dir}/svn.xml" />
+
+        <!-- download suites dependencies -->
+        <subant genericantfile="${svn.xml}"
+                target="checkout-all"
+                inheritall="true">
+            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
+        </subant>
+    </target>
+
+    <!-- Tasks to patch Ant's Bug described at: 
+         http://issues.apache.org/bugzilla/show_bug.cgi?id=30569
+        -->
+    <target name="-patch-ant-1.6.5" depends="-init-install" if="is.ant.1.6.5">
+        <property name="ant.to.patch" value="1.6.5" />
+        <property name="ant.patch.url"
+                  value="https://issues.apache.org/bugzilla/attachment.cgi?id=15681" />
+    </target>
+    <target name="-patch-ant-1.7.0" depends="-init-install" if="is.ant.1.7.0">
+        <property name="ant.to.patch" value="1.7.0" />
+        <property name="ant.patch.url"
+                  value="https://issues.apache.org/bugzilla/attachment.cgi?id=19566" />
+    </target>
+
+    <target name="patch-ant"
+            depends="-patch-ant-1.6.5,-patch-ant-1.7.0,-setup-proxy"
+            if="ant.to.patch">
+
+        <mkdir dir="${temp.files.dir}/${ant.to.patch}" />
+        <property name="ant.patch.file"
+                  location="${temp.files.dir}/${ant.to.patch}/SubAnt.java" />
+
+        <!-- FIXME: download only if required (i.e. no patch file) -->
+        <get src="${ant.patch.url}"
+             dest="${ant.patch.file}"
+             usetimestamp="true"
+             verbose="true" />
+
+        <javac srcdir="${temp.files.dir}/${ant.to.patch}"
+               destdir="${classes.dir}"
+               includesfile="${ant.patch.file}">
+            <depend targetdir="${classes.dir}/org/apache/tools/ant/taskdefs">
+                <mapper>
+                    <globmapper from="*.java" to="*.class" />
+                </mapper>
+            </depend>
+        </javac>
+    </target>
+
+    <!-- ================================================================== 
+                         Framework Setup Functionality
+         ================================================================== -->
+
     <target name="setup"
-            depends="-init-setup,
-                     fetch-depends,
-                     checkout-projects,
+            depends="-init-install,
                      create-local-configuration,
                      setup-framework,
                      -save-suites-configuration,
@@ -179,75 +251,6 @@ ERROR: Could not found adaptor for some specified test suites
 </echo>
     </target>
 
-    <target name="fetch-depends" depends="-init-setup">
-        <property name="download.xml" location="${scripts.dir}/download.xml" />
-
-        <!-- create empty file -->
-        <echo file="${external.resources.location}" message="" />
-
-        <!-- download framework dependencies -->
-        <subant genericantfile="${download.xml}"
-                target="download-all"
-                buildpath="${scripts.dir}"
-                inheritall="true" />
-
-        <!-- download suites dependencies -->
-        <subant genericantfile="${download.xml}"
-                target="download-all"
-                inheritall="true">
-            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
-        </subant>
-    </target>
-
-    <target name="checkout-projects" depends="-init-setup">
-        <property name="svn.xml" location="${scripts.dir}/svn.xml" />
-
-        <!-- download suites dependencies -->
-        <subant genericantfile="${svn.xml}"
-                target="checkout-all"
-                inheritall="true">
-            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
-        </subant>
-    </target>
-
-    <!-- Tasks to patch Ant's Bug described at: 
-         http://issues.apache.org/bugzilla/show_bug.cgi?id=30569
-        -->
-    <target name="-patch-ant-1.6.5" depends="-init-setup" if="is.ant.1.6.5">
-        <property name="ant.to.patch" value="1.6.5" />
-        <property name="ant.patch.url"
-                  value="https://issues.apache.org/bugzilla/attachment.cgi?id=15681" />
-    </target>
-    <target name="-patch-ant-1.7.0" depends="-init-setup" if="is.ant.1.7.0">
-        <property name="ant.to.patch" value="1.7.0" />
-        <property name="ant.patch.url"
-                  value="https://issues.apache.org/bugzilla/attachment.cgi?id=19566" />
-    </target>
-
-    <target name="patch-ant"
-            depends="-patch-ant-1.6.5,-patch-ant-1.7.0,-setup-proxy"
-            if="ant.to.patch">
-
-        <mkdir dir="${temp.files.dir}/${ant.to.patch}" />
-        <property name="ant.patch.file"
-                  location="${temp.files.dir}/${ant.to.patch}/SubAnt.java" />
-
-        <!-- FIXME: download only if required (i.e. no patch file) -->
-        <get src="${ant.patch.url}"
-             dest="${ant.patch.file}"
-             usetimestamp="true"
-             verbose="true" />
-
-        <javac srcdir="${temp.files.dir}/${ant.to.patch}"
-               destdir="${classes.dir}"
-               includesfile="${ant.patch.file}">
-            <depend targetdir="${classes.dir}/org/apache/tools/ant/taskdefs">
-                <mapper>
-                    <globmapper from="*.java" to="*.class" />
-                </mapper>
-            </depend>
-        </javac>
-    </target>
 
 
     <!-- ================================================================== 
