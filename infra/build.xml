@@ -122,6 +122,7 @@ ERROR: Could not found adaptor for some specified test suites
         <mkdir dir="${results.dir}" />
         <mkdir dir="${temp.files.dir}" />
         <mkdir dir="${classes.dir}" />
+        <mkdir dir="${config.dir}" />
 
         <!-- init properties -->
         <condition property="is.ant.1.6.5">
