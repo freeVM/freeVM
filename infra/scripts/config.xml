@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License. -->
+
+<project name="config" default="generate-config" basedir=".">
+
+    <target name="generate-config">
+
+        <!-- first stage: generate initial props -->
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="generate"
+                inheritall="true"
+                inheritrefs="true">
+            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
+        </subant>
+
+        <!-- second stage: re-generate properties
+             to expand required if there is a value set -->
+        <property name="all.props" location="${config.dir}/all.props" />
+        <concat destfile="${all.props}">
+            <fileset dir="${config.dir}" includes="*.properties" />
+            <filterchain>
+                <linecontainsregexp>
+                    <!-- filter out undefined props -->
+                    <regexp pattern="=[^$]" />
+                </linecontainsregexp>
+            </filterchain>
+        </concat>
+
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="re-generate"
+                inheritall="false">
+            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
+            <propertyset>
+                <propertyref name="all.props" />
+                <propertyref name="framework.local.configuration.file" />
+                <propertyset refid="global.build.parameters.id" />
+            </propertyset>
+        </subant>
+
+        <!-- third stage: extract required properties
+             to a separate file - 'required-parameters.properties'  -->
+        <!-- TODO -->
+    </target>
+
+    <!-- The target is workaround for properties cycle dependencies
+         parameters.xml -> adaptor.xml -> parameters.xml
+         TODO: need to resolve the cycle dependencies
+         -->
+    <target name="generate">
+
+        <basename file="${basedir}" property="suite.name" />
+
+        <subant genericantfile="${scripts.dir}/tmp-config.xml"
+                target="-generate-tmp-config"
+                inheritall="true"
+                inheritrefs="true"
+                buildpath="${scripts.dir}">
+        </subant>
+    </target>
+
+    <!-- The target is workaround for properties cycle dependencies
+             framework.local.properties
+              -> parameters.xml -> framework.local.properties
+         TODO: need to resolve the cycle dependencies
+         -->
+    <target name="re-generate">
+
+        <basename file="${basedir}" property="suite.name" />
+
+        <echo>Generate config for: ${suite.name}</echo>
+
+        <property file="${all.props}" />
+        <loadproperties srcfile="${framework.local.configuration.file}">
+            <filterchain>
+                <expandproperties />
+            </filterchain>
+        </loadproperties>
+
+        <echoproperties destfile="${config.dir}/${suite.name}.properties">
+            <propertyset>
+                <propertyref prefix="${suite.name}" />
+                <!--propertyset refid="global.build.parameters.id" /-->
+            </propertyset>
+        </echoproperties>
+    </target>
+
+
+</project>
+

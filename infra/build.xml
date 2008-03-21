@@ -61,6 +61,8 @@
         <propertyref name="ant.home" />
         <propertyref name="adaptors.dir" />
         <propertyref name="scripts.dir" />
+        <propertyref name="config.dir" />
+        <propertyref name="checkouts.dir" />
         <propertyref name="framework.properties.file" />
         <propertyref name="framework.implementation.file" />
         <propertyref name="test.suites.names.list" />
@@ -71,7 +73,10 @@
          ================================================================== -->
 
     <target name="install"
-            depends="fetch-depends,checkout-projects,patch-ant" />
+            depends="fetch-depends,
+                     checkout-projects,
+                     patch-ant,
+                     generate-config" />
 
     <target name="-check-selected-names">
 
@@ -122,6 +127,8 @@ ERROR: Could not found adaptor for some specified test suites
         <mkdir dir="${results.dir}" />
         <mkdir dir="${temp.files.dir}" />
         <mkdir dir="${classes.dir}" />
+
+        <delete dir="${config.dir}" />
         <mkdir dir="${config.dir}" />
 
         <!-- init properties -->
@@ -204,6 +211,17 @@ ERROR: Could not found adaptor for some specified test suites
         </javac>
     </target>
 
+    <target name="generate-config" depends="-check-selected-names">
+
+        <!-- TODO: properties generated here currently are unused
+             need to check/fix properties flow -->
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="generate-config"
+                inheritall="true"
+                inheritrefs="true"
+                buildpath="${scripts.dir}">
+        </subant>
+    </target>
     <!-- ================================================================== 
                          Framework Setup Functionality
          ================================================================== -->
