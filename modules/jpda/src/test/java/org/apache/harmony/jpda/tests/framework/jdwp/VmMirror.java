@@ -413,7 +413,7 @@ public class VmMirror {
         targetVMCapabilities.canGetInstanceInfo = replyPacket
                 .getNextValueAsBoolean();
         targetVMCapabilities.reserved17 = replyPacket.getNextValueAsBoolean();
-        targetVMCapabilities.reserved18 = replyPacket.getNextValueAsBoolean();
+        targetVMCapabilities.canGetMonitorFrameInfo = replyPacket.getNextValueAsBoolean();
         targetVMCapabilities.reserved19 = replyPacket.getNextValueAsBoolean();
         targetVMCapabilities.canGetConstantPool = replyPacket
                 .getNextValueAsBoolean();

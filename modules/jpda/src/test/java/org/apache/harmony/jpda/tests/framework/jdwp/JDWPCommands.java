@@ -253,6 +253,9 @@ public class JDWPCommands {
         public static final byte InterruptCommand = 11;
 
         public static final byte SuspendCountCommand = 12;
+
+        //New command for Java 6
+        public static final byte OwnedMonitorsStackDepthInfoCommand = 13;
     }
 
     /**

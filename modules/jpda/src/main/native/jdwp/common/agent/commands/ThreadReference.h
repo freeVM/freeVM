@@ -245,6 +245,24 @@ namespace jdwp {
 
         };//SuspendCountHandler
 
+        // New command for Java 6
+        /**
+         * The class implements the <code>OwnedMonitorsStackDepthInfo</code> command from the
+         * ThreadReference command set.
+         */
+        class OwnedMonitorsStackDepthInfoHandler : public SyncCommandHandler {
+        protected:
+
+            /**
+             * Executes the <code>OwnedMonitorsStackDepthInfo</code> JDWP command for the
+             * ThreadReference command set.
+             *
+             * @param jni - the JNI interface pointer
+             */
+            virtual void Execute(JNIEnv *jni) throw(AgentException);
+
+        };//OwnedMonitorsStackDepthInfoHandler
+
     }//ThreadReference
 
 }//jdwp

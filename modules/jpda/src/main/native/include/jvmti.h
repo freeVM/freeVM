@@ -681,7 +681,9 @@ struct ti_interface
 
     void *reserved152;
 
-    void *reserved153;
+    jvmtiError (JNICALL * GetOwnedMonitorStackDepthInfo)(jvmtiEnv* env, 
+        jthread thread, jint* monitor_info_count_ptr, 
+        jvmtiMonitorStackDepthInfo** monitor_info_ptr);
 
     jvmtiError (JNICALL * GetObjectSize) (jvmtiEnv * env,
         jobject object, jlong * size_ptr);
@@ -1110,6 +1112,12 @@ struct jvmtiEnv_struct
         const jvmtiClassDefinition * class_definitions)
     {
         return funcs->RedefineClasses (this, class_count, class_definitions);
+    }
+
+    jvmtiError GetOwnedMonitorStackDepthInfo (jthread thread, jint* monitor_info_count_ptr, 
+        jvmtiMonitorStackDepthInfo** monitor_info_ptr) 
+    { 
+        return funcs->GetOwnedMonitorStackDepthInfo(this, thread, monitor_info_count_ptr, monitor_info_ptr); 
     }
 
     jvmtiError GetObjectSize (jobject object, jlong * size_ptr)

@@ -358,6 +358,10 @@ CommandDispatcher::CreateCommandHandler(jdwpCommandSet cmdSet, jdwpCommand cmdKi
         case JDWP_COMMAND_TR_SUSPEND_COUNT:
             return new ThreadReference::SuspendCountHandler();
 
+        // New command for Java 6
+        case JDWP_COMMAND_TR_OWNED_MONITORS_STACK_DEPTH:
+            return new ThreadReference::OwnedMonitorsStackDepthInfoHandler();
+
         }//JDWP_COMMAND_SET_THREAD_REFERENCE
         break;
 

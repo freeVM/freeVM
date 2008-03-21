@@ -372,3 +372,48 @@ ThreadReference::SuspendCountHandler::Execute(JNIEnv *jni)
 }
 
 //-----------------------------------------------------------------------------
+//OwnedMonitorsStackDepthInfoHandler-------------------------------------------
+void
+ThreadReference::OwnedMonitorsStackDepthInfoHandler::Execute(JNIEnv *jni)
+    throw (AgentException)
+{
+    // Read thread id from OwnedMonitorsStackDepthInfoHandler command
+    jthread thrd = m_cmdParser->command.ReadThreadID(jni);
+    JDWP_TRACE_DATA("OwnedMonitorsStackDepthInfo: received: threadID=" << thrd);
+
+    // If the thread is not suspended, throw exception
+    if (!GetThreadManager().IsSuspended(thrd))
+        throw AgentException(JVMTI_ERROR_THREAD_NOT_SUSPENDED);
+
+    // Invoke jvmti function to attain the expected monitor data
+    jvmtiError err;
+    jint count;
+    jvmtiMonitorStackDepthInfo* pMonitorInfos;
+    JVMTI_TRACE(err, GetJvmtiEnv()->GetOwnedMonitorStackDepthInfo(thrd, &count, &pMonitorInfos));
+    if (err != JVMTI_ERROR_NONE) {
+        // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_INVALID_THREAD
+        // JVMTI_ERROR_THREAD_NOT_ALIVE, JVMTI_ERROR_NULL_POINTER 
+        throw AgentException(err);
+    }
+    
+    // Must release memeory manually
+    JvmtiAutoFree af(pMonitorInfos);
+
+    // Write monitor count to reply package
+    JDWP_TRACE_DATA("OwnedMonitorsStackDepthInfo: received: monitor count=" << count);
+    m_cmdParser->reply.WriteInt(count);
+    
+    // Write each monitor and its stack depth to reply package 
+    for (int i =0; i < count; i++){
+        // Attain monitor and its stack depth from returned data.
+        jobject monitor = pMonitorInfos[i].monitor;
+        m_cmdParser->reply.WriteTaggedObjectID(jni, monitor);
+        JDWP_TRACE_DATA("OwnedMonitorsStackDepthInfo: received: monitor object=" << monitor);
+        
+        jint stack_depth = pMonitorInfos[i].stack_depth;
+        JDWP_TRACE_DATA("OwnedMonitorsStackDepthInfo: received: monitor stack depth=" << stack_depth);
+        m_cmdParser->reply.WriteInt(stack_depth);
+    }
+}
+
+//-----------------------------------------------------------------------------

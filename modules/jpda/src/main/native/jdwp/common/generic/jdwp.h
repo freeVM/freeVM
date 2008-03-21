@@ -151,6 +151,8 @@ typedef enum jdwpCommand {
     JDWP_COMMAND_TR_STOP = 10,
     JDWP_COMMAND_TR_INTERRUPT = 11,
     JDWP_COMMAND_TR_SUSPEND_COUNT = 12,
+    // New command for Java 6
+    JDWP_COMMAND_TR_OWNED_MONITORS_STACK_DEPTH = 13,
 
     /* Commands ThreadGroupReference */
     JDWP_COMMAND_TGR_NAME = 1,

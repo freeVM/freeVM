@@ -65,7 +65,7 @@ public class Capabilities {
 
     public boolean reserved17                       = false;
 
-    public boolean reserved18                       = false;
+    public boolean canGetMonitorFrameInfo           = false;
 
     public boolean reserved19                       = false;
 

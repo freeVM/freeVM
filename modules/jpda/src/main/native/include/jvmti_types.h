@@ -873,6 +873,13 @@ extern "C"
         jlong reserved2;
     } jvmtiTimerInfo;
 
+    typedef struct
+    {
+        jobject monitor;
+        jint stack_depth;
+    } jvmtiMonitorStackDepthInfo;
+
+
     typedef enum
     {
         JVMTI_PHASE_ONLOAD = 1,
