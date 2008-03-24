@@ -22,7 +22,7 @@
 
     <target name="generate-config">
 
-        <delete dir="${config.dir}" />
+        <!--FIXME: delete dir="${config.dir}" /-->
         <mkdir dir="${config.dir}" />
 
         <!-- first stage: generate initial props -->
