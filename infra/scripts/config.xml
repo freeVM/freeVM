@@ -52,6 +52,7 @@
             <dirset dir="${adaptors.dir}" includes="${test.suites}" />
             <propertyset>
                 <propertyref name="all.props" />
+                <propertyref name="scripts.dir" />
                 <propertyref name="framework.local.configuration.file" />
                 <propertyset refid="global.build.parameters.id" />
             </propertyset>
@@ -99,19 +100,29 @@
 
         <echo>Generate config for: ${suite.name}</echo>
 
+        <!-- Load framework properties -->
+        <xmlproperty file="${scripts.dir}/parameters.xml"
+                     collapseAttributes="true"
+                     semanticAttributes="true"
+                     prefix="framework" />
+
+        <!-- Load suites properties -->
         <property file="${all.props}" />
+
+        <!-- Load local properties -->
         <loadproperties srcfile="${framework.local.configuration.file}">
             <filterchain>
                 <expandproperties />
                 <!-- workaround for windows paths: replace '\' with '/'
                      otherwise '\' is lost -->
-                <replaceregex pattern="\\" replace="/" flags="g"/>
+                <replaceregex pattern="\\" replace="/" flags="g" />
             </filterchain>
         </loadproperties>
 
         <echoproperties destfile="${config.dir}/${suite.name}.properties">
             <propertyset>
                 <propertyref prefix="${suite.name}" />
+                <propertyref prefix="framework" />
                 <!--propertyset refid="global.build.parameters.id" /-->
             </propertyset>
         </echoproperties>
