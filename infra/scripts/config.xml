@@ -17,6 +17,9 @@
 
 <project name="config" default="generate-config" basedir=".">
 
+    <!-- temporary file to store intermediate results of iteration -->
+    <property name="tmp.file" value="tmp.txt" />
+
     <target name="generate-config">
 
         <!-- first stage: generate initial props -->
@@ -53,7 +56,17 @@
 
         <!-- third stage: extract required properties
              to a separate file - 'required-parameters.properties'  -->
-        <!-- TODO -->
+        <ant antfile="${scripts.dir}/config.xml"
+             target="-gen-required-parameters"
+             inheritall="false">
+            <propertyset>
+                <propertyref name="all.props" />
+                <propertyref name="scripts.dir" />
+                <propertyref name="config.dir" />
+                <!--propertyref name="framework.local.configuration.file" /-->
+                <propertyset refid="global.build.parameters.id" />
+            </propertyset>
+        </ant>
     </target>
 
     <!-- The target is workaround for properties cycle dependencies
@@ -98,6 +111,104 @@
         </echoproperties>
     </target>
 
+    <target name="-gen-required-parameters">
 
+        <echo file="${config.dir}/required-parameters.properties">#
+# Required Parameters Settings File
+# TODO: add more words here
+
+</echo>
+
+        <property name="all.props" location="${config.dir}/all.props" />
+        <concat destfile="${all.props}">
+            <fileset dir="${config.dir}" includes="*.properties" />
+            <filterchain>
+                <linecontainsregexp>
+                    <!-- filter out undefined props -->
+                    <regexp pattern="=[^$]" />
+                </linecontainsregexp>
+            </filterchain>
+        </concat>
+
+        <property file="${all.props}" />
+
+        <propertyset id="tmp.id">
+            <propertyref regex=".+parameters\.required\..+\.description$" />
+        </propertyset>
+        <property name="tmp.str" refid="tmp.id" />
+        <echo message="${tmp.str}" file="${tmp.file}" />
+
+        <ant antfile="${scripts.dir}/config.xml"
+             target="-iterate"
+             inheritall="false">
+            <propertyset>
+                <propertyref name="scripts.dir" />
+                <propertyref name="config.dir" />
+            </propertyset>
+        </ant>
+
+        <delete file="${tmp.file}" />
+    </target>
+
+    <target name="-iterate">
+        <!-- check if next iteration should be done -->
+        <condition property="donext">
+            <length file="${tmp.file}" length="0" when="greater" />
+        </condition>
+        <ant antfile="${scripts.dir}/config.xml"
+             target="-flash-next-required-property"
+             inheritall="false">
+            <propertyset>
+                <propertyref name="donext" />
+                <propertyref name="scripts.dir" />
+                <propertyref name="config.dir" />
+            </propertyset>
+        </ant>
+    </target>
+
+    <target name="-flash-next-required-property" if="donext">
+        <loadproperties srcfile="${tmp.file}">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^([^=]+)\.description=.*"
+                                  replace="propname=\1" />
+                </tokenfilter>
+            </filterchain>
+        </loadproperties>
+        <loadproperties srcfile="${tmp.file}">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^[^=]+=[^,]+,? ?(.*)$"
+                                  replace="rest=\1" />
+                </tokenfilter>
+            </filterchain>
+        </loadproperties>
+        <echo message="${rest}" file="${tmp.file}" />
+
+        <property file="${config.dir}/all.props" />
+        <flash-property propname="${propname}" />
+
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="-iterate"
+                inheritall="false"
+                buildpath="${scripts.dir}">
+            <propertyset>
+                <propertyref name="scripts.dir" />
+                <propertyref name="config.dir" />
+            </propertyset>
+        </subant>
+
+    </target>
+
+    <macrodef name="flash-property">
+        <attribute name="propname" />
+        <sequential>
+            <echo file="${config.dir}/required-parameters.properties"
+                  append="true">
+#${@{propname}.description}
+@{propname}=${@{propname}}
+</echo>
+        </sequential>
+    </macrodef>
 </project>
 

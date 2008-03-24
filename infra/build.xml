@@ -221,6 +221,8 @@ ERROR: Could not found adaptor for some specified test suites
                 inheritrefs="true"
                 buildpath="${scripts.dir}">
         </subant>
+        
+        <!-- TODO check generated required-parameters.properties -->
     </target>
     <!-- ================================================================== 
                          Framework Setup Functionality
