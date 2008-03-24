@@ -87,11 +87,11 @@
         <isset property="is.x86_64" />
     </condition>
     <property file="${snapshot.svn.revision.file}" />
-    <property name="snapshot.results.dir"
+    <property name="revision.report.dir"
               location="${snapshot}/results/r${svn.revision}/${platform.prefix}_${platform.sufix}" />
 
     <target name="run" depends="-unzip,-gunzip,-svn.revision">
-        <mkdir dir="${snapshot.results.dir}" />
+        <mkdir dir="${revision.report.dir}" />
     </target>
 
     <!--                                                   -->
@@ -226,9 +226,9 @@
     <!-- snapshot publishers -->
     <!--                     -->
     <target name="publish-axis2_app">
-        <mkdir dir="${snapshot.results.dir}/axis2_app" />
+        <mkdir dir="${revision.report.dir}/axis2_app" />
 
-        <concat destfile="${snapshot.results.dir}/axis2_app/index.html">
+        <concat destfile="${revision.report.dir}/axis2_app/index.html">
             <header trimleading="yes" filtering="no">
                 &lt;html&gt;
             </header>
@@ -253,30 +253,30 @@
     <target name="publish-classlib-test" depends="-copy-report-files" />
 
     <target name="publish-drlvm-reg-test">
-        <mkdir dir="${snapshot.results.dir}/drlvm-reg-test" />
+        <mkdir dir="${revision.report.dir}/drlvm-reg-test" />
         <junitreport todir="${results.dir}/drlvm-reg-test">
             <fileset dir="${results.dir}/drlvm-reg-test" includes="*TEST-*.xml" />
-            <report format="frames" todir="${snapshot.results.dir}/drlvm-reg-test" />
+            <report format="frames" todir="${revision.report.dir}/drlvm-reg-test" />
         </junitreport>
         <archive-result/>
     </target>
 
     <target name="publish-drlvm-test">
-        <mkdir dir="${snapshot.results.dir}/drlvm-test" />
+        <mkdir dir="${revision.report.dir}/drlvm-test" />
         <junitreport todir="${results.dir}/drlvm-test">
             <fileset dir="${results.dir}/drlvm-test" includes="*TEST-*.xml" />
-            <report format="frames" todir="${snapshot.results.dir}/drlvm-test" />
+            <report format="frames" todir="${revision.report.dir}/drlvm-test" />
         </junitreport>
         <archive-result/>
     </target>
 
     <target name="publish-func">
 
-        <mkdir dir="${snapshot.results.dir}/func/junit" />
+        <mkdir dir="${revision.report.dir}/func/junit" />
         <touch-status-file />
 
         <!-- copy execurtion log -->
-        <concat destfile="${snapshot.results.dir}/func/index.html">
+        <concat destfile="${revision.report.dir}/func/index.html">
 
             <!-- insert link to junit report -->
             <header trimleading="yes" filtering="no">
@@ -292,13 +292,13 @@
         </concat>
 
         <!-- generate junit report only for failed tests -->
-        <junitreport todir="${snapshot.results.dir}/func">
+        <junitreport todir="${revision.report.dir}/func">
             <fileset dir="${results.dir}/func" includes="TEST*-*.xml">
                 <containsregexp expression='(errors|failures)=.[1-9]' />
                 <exclude name="TESTS-TestSuites.xml" />
             </fileset>
             <report format="frames"
-                    todir="${snapshot.results.dir}/func/junit" />
+                    todir="${revision.report.dir}/func/junit" />
         </junitreport>
 
         <archive-result />
@@ -327,10 +327,10 @@
     <target name="publish-ega" depends="-copy-report-files" />
 
     <target name="publish-eut">
-        <mkdir dir="${snapshot.results.dir}/eut" />
+        <mkdir dir="${revision.report.dir}/eut" />
 
         <!-- copy all EUT report files -->
-        <copy todir="${snapshot.results.dir}/eut">
+        <copy todir="${revision.report.dir}/eut">
             <fileset dir="${results.dir}/eut/latest"/>
         </copy>
 
@@ -339,10 +339,10 @@
     </target>
 
     <target name="publish-eut33">
-        <mkdir dir="${snapshot.results.dir}/eut33" />
+        <mkdir dir="${revision.report.dir}/eut33" />
 
         <!-- copy all EUT report files -->
-        <copy todir="${snapshot.results.dir}/eut33">
+        <copy todir="${revision.report.dir}/eut33">
             <fileset dir="${results.dir}/eut33/latest"/>
         </copy>
 
@@ -360,8 +360,8 @@
     <!-- JAPI report -->
     <target name="publish-japi">
 
-        <mkdir dir="${snapshot.results.dir}/japi" />
-        <copy todir="${snapshot.results.dir}/japi">
+        <mkdir dir="${revision.report.dir}/japi" />
+        <copy todir="${revision.report.dir}/japi">
             <fileset dir="${results.dir}/japi">
                 <include name="index.html" />
                 <include name="japi.css" />
@@ -380,23 +380,23 @@
 
     <target name="publish-stress">
 
-        <mkdir dir="${snapshot.results.dir}/stress/junit" />
+        <mkdir dir="${revision.report.dir}/stress/junit" />
 
         <copy-execution-log />
         <touch-status-file />
 
         <!-- generate junit report only for failed tests -->
-        <junitreport todir="${snapshot.results.dir}/stress">
+        <junitreport todir="${revision.report.dir}/stress">
             <fileset dir="${results.dir}/stress" includes="TEST*-*.xml">
                 <containsregexp expression='(errors|failures)=.[1-9]' />
                 <exclude name="TESTS-TestSuites.xml" />
             </fileset>
             <report format="frames"
-                    todir="${snapshot.results.dir}/stress/junit" />
+                    todir="${revision.report.dir}/stress/junit" />
         </junitreport>
 
         <!-- insert link to junit report -->
-        <replaceregexp file="${snapshot.results.dir}/stress/index.html"
+        <replaceregexp file="${revision.report.dir}/stress/index.html"
                        match="run:"
                        replace="&lt;a href=&quot;junit/index.html&quot;&gt;JUnit report for failures&lt;a&gt;&#xA;&#xA;run:" />
 
@@ -412,9 +412,9 @@
     <target name="publish-tomcat-scenario" depends="-copy-report-files" />
 
     <target name="publish-tptp">
-        <mkdir dir="${snapshot.results.dir}/tptp" />
+        <mkdir dir="${revision.report.dir}/tptp" />
 
-        <concat destfile="${snapshot.results.dir}/tptp/index.html">
+        <concat destfile="${revision.report.dir}/tptp/index.html">
             <header trimleading="yes" filtering="no">
                 &lt;html&gt;
             </header>
@@ -437,23 +437,23 @@
 
     <target name="publish-vtsvm">
 
-        <mkdir dir="${snapshot.results.dir}/vtsvm/junit" />
+        <mkdir dir="${revision.report.dir}/vtsvm/junit" />
 
         <copy-execution-log />
         <touch-status-file />
 
         <!-- generate junit report only for failed tests -->
-        <junitreport todir="${snapshot.results.dir}/vtsvm">
+        <junitreport todir="${revision.report.dir}/vtsvm">
             <fileset dir="${results.dir}/vtsvm" includes="TEST*-*.xml">
                 <containsregexp expression='(errors|failures)=.[1-9]' />
                 <exclude name="TESTS-TestSuites.xml" />
             </fileset>
             <report format="frames"
-                    todir="${snapshot.results.dir}/vtsvm/junit" />
+                    todir="${revision.report.dir}/vtsvm/junit" />
         </junitreport>
 
         <!-- insert link to junit report -->
-        <replaceregexp file="${snapshot.results.dir}/vtsvm/index.html"
+        <replaceregexp file="${revision.report.dir}/vtsvm/index.html"
                        match="run:"
                        replace="&lt;a href=&quot;junit/index.html&quot;&gt;JUnit report for failures&lt;a&gt;&#xA;&#xA;run:" />
 
@@ -474,7 +474,7 @@
 
     <macrodef name="touch-status-file">
         <sequential>
-            <echo file="${snapshot.results.dir}/${projectname}/status.txt"
+            <echo file="${revision.report.dir}/${projectname}/status.txt"
                   message="${build.status}" />
         </sequential>
     </macrodef>
@@ -482,7 +482,7 @@
     <macrodef name="copy-execution-log">
         <sequential>
             <copy file="${cc.execution.log.file}"
-                  tofile="${snapshot.results.dir}/${projectname}/index.html" />
+                  tofile="${revision.report.dir}/${projectname}/index.html" />
         </sequential>
     </macrodef>
 
@@ -501,10 +501,10 @@
             if="junit.report.dir"
             depends="-init-publisher">
 
-        <junitreport todir="${snapshot.results.dir}/${projectname}">
+        <junitreport todir="${revision.report.dir}/${projectname}">
             <fileset dir="${junit.report.dir}" includes="TEST*-*.xml" />
             <report format="frames"
-                    todir="${snapshot.results.dir}/${projectname}" />
+                    todir="${revision.report.dir}/${projectname}" />
         </junitreport>
     </target>
 
@@ -512,7 +512,7 @@
             if="report.dir"
             depends="-init-publisher">
 
-        <copy todir="${snapshot.results.dir}/${projectname}">
+        <copy todir="${revision.report.dir}/${projectname}">
             <fileset dir="${report.dir}" />
         </copy>
     </target>
@@ -526,8 +526,8 @@
     </target>
 
     <target name="-init-publisher">
-        <delete dir="${snapshot.results.dir}/${projectname}" />
-        <mkdir dir="${snapshot.results.dir}/${projectname}" />
+        <delete dir="${revision.report.dir}/${projectname}" />
+        <mkdir dir="${revision.report.dir}/${projectname}" />
         <get-report-dir suitename="${projectname}" />
     </target>
 
