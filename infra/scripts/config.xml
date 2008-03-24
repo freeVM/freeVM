@@ -100,6 +100,9 @@
         <loadproperties srcfile="${framework.local.configuration.file}">
             <filterchain>
                 <expandproperties />
+                <!-- workaround for windows paths: replace '\' with '/'
+                     otherwise '\' is lost -->
+                <replaceregex pattern="\\" replace="/" flags="g"/>
             </filterchain>
         </loadproperties>
 
