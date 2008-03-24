@@ -22,6 +22,9 @@
 
     <target name="generate-config">
 
+        <delete dir="${config.dir}" />
+        <mkdir dir="${config.dir}" />
+
         <!-- first stage: generate initial props -->
         <subant genericantfile="${scripts.dir}/config.xml"
                 target="generate"

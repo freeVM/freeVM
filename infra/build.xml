@@ -128,9 +128,6 @@ ERROR: Could not found adaptor for some specified test suites
         <mkdir dir="${temp.files.dir}" />
         <mkdir dir="${classes.dir}" />
 
-        <delete dir="${config.dir}" />
-        <mkdir dir="${config.dir}" />
-
         <!-- init properties -->
         <condition property="is.ant.1.6.5">
             <contains string="${ant.version}" substring="1.6.5" />
