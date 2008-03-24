@@ -48,7 +48,8 @@
 
         <subant genericantfile="${scripts.dir}/config.xml"
                 target="re-generate"
-                inheritall="false">
+                inheritall="false"
+                inheritrefs="true">
             <dirset dir="${adaptors.dir}" includes="${test.suites}" />
             <propertyset>
                 <propertyref name="all.props" />
