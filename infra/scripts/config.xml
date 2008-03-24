@@ -123,7 +123,7 @@
             <propertyset>
                 <propertyref prefix="${suite.name}" />
                 <propertyref prefix="framework" />
-                <!--propertyset refid="global.build.parameters.id" /-->
+                <propertyset refid="global.build.parameters.id" />
             </propertyset>
         </echoproperties>
     </target>
