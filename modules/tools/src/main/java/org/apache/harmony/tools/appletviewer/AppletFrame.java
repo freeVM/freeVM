@@ -26,6 +26,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
@@ -58,6 +60,7 @@ import javax.swing.border.Border;
 class AppletFrame extends JFrame {
     private final Applet applet;
     private final JLabel statusLabel;
+    JPanel appletPanel;
     
     private static ShutdownHandler shutdownHandler = new ShutdownHandler();
     
@@ -66,6 +69,7 @@ class AppletFrame extends JFrame {
         applet = ViewerAppletContext.loadApplet(appletInfo);
 
         applet.setPreferredSize(new Dimension(appletInfo.getWidth(), appletInfo.getHeight()));
+       
 
         shutdownHandler.addFrame(this);
         
@@ -74,9 +78,10 @@ class AppletFrame extends JFrame {
         
         // Create applet pane
         setLayout(new BorderLayout());
-        JPanel appletPanel = new JPanel();
-        appletPanel.add(applet);
-        add(appletPanel, BorderLayout.WEST);
+        appletPanel = new JPanel();
+        appletPanel.setLayout(new BorderLayout());
+        appletPanel.add(applet, BorderLayout.CENTER);
+        add(appletPanel, BorderLayout.CENTER);
         
         // Create status pane
         JPanel panel = new JPanel();
@@ -89,6 +94,14 @@ class AppletFrame extends JFrame {
         panel.add(statusLabel, BorderLayout.WEST);
         add(panel, BorderLayout.SOUTH);
         appletInfo.setStatusLabel(statusLabel);
+
+        addComponentListener(new ComponentAdapter(){
+            public void componentResized(ComponentEvent e){
+                if(e.getComponent() == AppletFrame.this){
+                    applet.setPreferredSize(new Dimension(appletPanel.getWidth(), appletPanel.getHeight()));
+                }                
+            }
+        });
 
         // Start applet and make frame visible
         // Init should be called after pack to make components displayable
