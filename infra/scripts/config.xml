@@ -126,6 +126,13 @@
                 <propertyref prefix="framework" />
                 <propertyset refid="global.build.parameters.id" />
             </propertyset>
+
+            <!-- shared parameters in simple form (used by adaptors) -->
+            <propertyset>
+                <propertyref regex="${suite.name}\.parameters\.shared" />
+                <regexpmapper from="${suite.name}\.parameters\.shared\.(.*)$"
+                              to="\1" />
+            </propertyset>
         </echoproperties>
     </target>
 
