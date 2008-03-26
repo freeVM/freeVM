@@ -262,6 +262,23 @@ namespace jdwp {
             virtual void Execute(JNIEnv *jni) throw(AgentException);
 
         };//OwnedMonitorsStackDepthInfoHandler
+        
+        /**
+         * The class implements the <code>ForceEarlyReturn</code> command from the
+         * ThreadReference command set.
+         */
+        class ForceEarlyReturnHandler : public SyncCommandHandler {
+        protected:
+
+            /**
+             * Executes the <code>ForceEarlyReturn</code> JDWP command for the
+             * ThreadReference command set.
+             *
+             * @param jni - the JNI interface pointer
+             */
+            virtual void Execute(JNIEnv *jni) throw(AgentException);
+
+        };//ForceEarlyReturnHandler
 
     }//ThreadReference
 

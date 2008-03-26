@@ -361,6 +361,9 @@ CommandDispatcher::CreateCommandHandler(jdwpCommandSet cmdSet, jdwpCommand cmdKi
         // New command for Java 6
         case JDWP_COMMAND_TR_OWNED_MONITORS_STACK_DEPTH:
             return new ThreadReference::OwnedMonitorsStackDepthInfoHandler();
+            
+        case JDWP_COMMAND_TR_FORCE_EARLY_RETURN:
+            return new ThreadReference::ForceEarlyReturnHandler();
 
         }//JDWP_COMMAND_SET_THREAD_REFERENCE
         break;

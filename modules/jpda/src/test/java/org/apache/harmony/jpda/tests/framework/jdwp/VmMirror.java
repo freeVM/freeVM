@@ -73,8 +73,10 @@ public class VmMirror {
     /**
      * Creates new VmMirror instance for given test run options.
      * 
-     * @param config test run options
-     * @param logWriter log writer
+     * @param config
+     *            test run options
+     * @param logWriter
+     *            log writer
      */
     public VmMirror(TestOptions config, LogWriter logWriter) {
         connection = null;
@@ -357,8 +359,8 @@ public class VmMirror {
 
     /**
      * Requests debuggee VM capabilities. Function parses reply packet of
-     * VirtualMachine::CapabilitiesNew command, creates and fills class Capabilities with
-     * returned info.
+     * VirtualMachine::CapabilitiesNew command, creates and fills class
+     * Capabilities with returned info.
      * 
      * @return ReplyPacket useless, already parsed reply packet.
      */
@@ -378,7 +380,7 @@ public class VmMirror {
 
         // Send packet
         ReplyPacket replyPacket = checkReply(performCommand(commandPacket));
-        
+
         targetVMCapabilities = new Capabilities();
 
         // Set capabilities
@@ -413,11 +415,13 @@ public class VmMirror {
         targetVMCapabilities.canGetInstanceInfo = replyPacket
                 .getNextValueAsBoolean();
         targetVMCapabilities.reserved17 = replyPacket.getNextValueAsBoolean();
-        targetVMCapabilities.canGetMonitorFrameInfo = replyPacket.getNextValueAsBoolean();
+        targetVMCapabilities.canGetMonitorFrameInfo = replyPacket
+                .getNextValueAsBoolean();
         targetVMCapabilities.reserved19 = replyPacket.getNextValueAsBoolean();
         targetVMCapabilities.canGetConstantPool = replyPacket
                 .getNextValueAsBoolean();
-        targetVMCapabilities.reserved21 = replyPacket.getNextValueAsBoolean();
+        targetVMCapabilities.canForceEarlyReturn = replyPacket
+                .getNextValueAsBoolean();
         targetVMCapabilities.reserved22 = replyPacket.getNextValueAsBoolean();
         targetVMCapabilities.reserved23 = replyPacket.getNextValueAsBoolean();
         targetVMCapabilities.reserved24 = replyPacket.getNextValueAsBoolean();
@@ -2121,7 +2125,7 @@ public class VmMirror {
         if (superID != 0) {
             List superClassFields = getAllFields(superID);
             for (int i = 0; i < superClassFields.size(); i++) {
-                fields.add((Field)superClassFields.toArray()[i]);
+                fields.add((Field) superClassFields.toArray()[i]);
             }
         }
 

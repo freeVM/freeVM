@@ -256,6 +256,8 @@ public class JDWPCommands {
 
         //New command for Java 6
         public static final byte OwnedMonitorsStackDepthInfoCommand = 13;
+        
+        public static final byte ForceEarlyReturnCommand = 14;
     }
 
     /**

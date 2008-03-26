@@ -373,6 +373,7 @@ ThreadReference::SuspendCountHandler::Execute(JNIEnv *jni)
 
 //-----------------------------------------------------------------------------
 //OwnedMonitorsStackDepthInfoHandler-------------------------------------------
+
 void
 ThreadReference::OwnedMonitorsStackDepthInfoHandler::Execute(JNIEnv *jni)
     throw (AgentException)
@@ -414,6 +415,103 @@ ThreadReference::OwnedMonitorsStackDepthInfoHandler::Execute(JNIEnv *jni)
         JDWP_TRACE_DATA("OwnedMonitorsStackDepthInfo: received: monitor stack depth=" << stack_depth);
         m_cmdParser->reply.WriteInt(stack_depth);
     }
+}
+
+//-----------------------------------------------------------------------------
+//ForceEarlyReturnHandler------------------------------------------------------
+
+void
+ThreadReference::ForceEarlyReturnHandler::Execute(JNIEnv *jni)
+    throw (AgentException)
+{
+    // Read thread id from ForceEarlyReturnHandler command
+    jthread thrd = m_cmdParser->command.ReadThreadID(jni);
+    JDWP_TRACE_DATA("ForceEarlyReturn Command: received: threadID = " << thrd);
+
+    // If the thread is not suspended, throw exception
+    if (!GetThreadManager().IsSuspended(thrd))
+        throw AgentException(JDWP_ERROR_THREAD_NOT_SUSPENDED);
+
+    // Attain return value type from the command
+    jdwpTaggedValue taggedValue = m_cmdParser->command.ReadValue(jni);
+    JDWP_TRACE_DATA("ForceEarlyReturn Command: received value type:" << taggedValue.tag);
+    
+    // Invoke relevant jvmti function according to return value's type
+    jvmtiError err = JVMTI_ERROR_NONE;      
+    switch(taggedValue.tag){
+        case JDWP_TAG_OBJECT:
+        case JDWP_TAG_ARRAY:
+        case JDWP_TAG_STRING:
+        case JDWP_TAG_THREAD:
+        case JDWP_TAG_THREAD_GROUP:
+        case JDWP_TAG_CLASS_LOADER:
+        case JDWP_TAG_CLASS_OBJECT:{
+            JDWP_TRACE_DATA("ForceEarlyReturn Command: jobject return value:"<< taggedValue.value.l);
+            JVMTI_TRACE(err, GetJvmtiEnv()->ForceEarlyReturnObject(thrd, taggedValue.value.l));
+            break;
+        }
+        case JDWP_TAG_BOOLEAN:
+        case JDWP_TAG_BYTE:
+        case JDWP_TAG_CHAR:
+        case JDWP_TAG_SHORT:
+        case JDWP_TAG_INT:{
+            jint ivalue = 0;
+            switch (taggedValue.tag) {
+                case JDWP_TAG_BOOLEAN:
+                    ivalue = static_cast<jint>(taggedValue.value.z);
+                    JDWP_TRACE_DATA("ForceEarlyReturn Command: value=(boolean)" << taggedValue.value.z);
+                    break;
+                case JDWP_TAG_BYTE:
+                    ivalue = static_cast<jint>(taggedValue.value.b);
+                    JDWP_TRACE_DATA("ForceEarlyReturn Command: value=(byte)" << taggedValue.value.b);
+                    break;
+                case JDWP_TAG_CHAR:
+                    ivalue = static_cast<jint>(taggedValue.value.c);
+                    JDWP_TRACE_DATA("ForceEarlyReturn Command: value=(char)" << taggedValue.value.c);
+                    break;
+                case JDWP_TAG_SHORT:
+                    ivalue = static_cast<jint>(taggedValue.value.s);
+                    JDWP_TRACE_DATA("ForceEarlyReturn Command: value=(short)" << taggedValue.value.s);
+                    break;
+                case JDWP_TAG_INT:
+                    ivalue = taggedValue.value.i;
+                    JDWP_TRACE_DATA("ForceEarlyReturn Command: value=(int)" << taggedValue.value.i);
+                    break;
+            }
+            JVMTI_TRACE(err, GetJvmtiEnv()->ForceEarlyReturnInt(thrd, ivalue));
+            break;
+        }
+        case JDWP_TAG_LONG:{
+            JDWP_TRACE_DATA("ForceEarlyReturn Command: jlong returne value:"<< taggedValue.value.j);
+            JVMTI_TRACE(err, GetJvmtiEnv()->ForceEarlyReturnLong(thrd, taggedValue.value.j));
+            break;
+        }
+        case JDWP_TAG_FLOAT:{
+            JDWP_TRACE_DATA("ForceEarlyReturn Command: jfloat return value:"<< taggedValue.value.f);
+            JVMTI_TRACE(err, GetJvmtiEnv()->ForceEarlyReturnFloat(thrd, taggedValue.value.f));
+            break;
+            
+        }
+        case JDWP_TAG_DOUBLE:{
+            JDWP_TRACE_DATA("ForceEarlyReturn Command: jdouble return value:"<< taggedValue.value.d);
+            JVMTI_TRACE(err, GetJvmtiEnv()->ForceEarlyReturnDouble(thrd, taggedValue.value.d));
+            break;
+        }
+        case JDWP_TAG_VOID:{
+            JDWP_TRACE_DATA("ForceEarlyReturn Command: void return value");
+            JVMTI_TRACE(err, GetJvmtiEnv()->ForceEarlyReturnVoid(thrd));
+            break;
+        }
+        default:{
+            JDWP_TRACE_DATA("ForceEarlyReturn Command: Value's type is not supported " << taggedValue.tag);
+            throw AgentException(JDWP_ERROR_INVALID_TAG);
+        }
+    }
+    
+    if (err != JVMTI_ERROR_NONE) {
+        throw AgentException(err);
+    }
+    JDWP_TRACE_DATA("ForceEarlyReturn Command finished.");
 }
 
 //-----------------------------------------------------------------------------

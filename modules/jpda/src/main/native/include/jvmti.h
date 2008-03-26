@@ -409,17 +409,28 @@ struct ti_interface
 
     jvmtiError (JNICALL * PopFrame) (jvmtiEnv * env, jthread thread);
 
-    void *reserved81;
+    jvmtiError (JNICALL *ForceEarlyReturnObject) (jvmtiEnv* env, 
+        jthread thread, 
+        jobject value);
 
-    void *reserved82;
+    jvmtiError (JNICALL *ForceEarlyReturnInt) (jvmtiEnv* env, 
+        jthread thread, 
+        jint value);
 
-    void *reserved83;
+    jvmtiError (JNICALL *ForceEarlyReturnLong) (jvmtiEnv* env, 
+        jthread thread, 
+        jlong value);
 
-    void *reserved84;
+    jvmtiError (JNICALL *ForceEarlyReturnFloat) (jvmtiEnv* env, 
+        jthread thread, 
+        jfloat value);
 
-    void *reserved85;
+    jvmtiError (JNICALL *ForceEarlyReturnDouble) (jvmtiEnv* env, 
+        jthread thread, 
+        jdouble value); 
 
-    void *reserved86;
+    jvmtiError (JNICALL *ForceEarlyReturnVoid) (jvmtiEnv* env, 
+        jthread thread);
 
     jvmtiError (JNICALL * RedefineClasses) (jvmtiEnv * env,
         jint class_count,
@@ -847,6 +858,36 @@ struct jvmtiEnv_struct
     jvmtiError PopFrame (jthread thread)
     {
         return funcs->PopFrame (this, thread);
+    }
+    
+    jvmtiError ForceEarlyReturnObject (jthread thread, jobject value)
+    {
+        return funcs->ForceEarlyReturnObject (this, thread, value);
+    }
+    
+    jvmtiError ForceEarlyReturnInt (jthread thread, jint value)
+    {
+        return funcs->ForceEarlyReturnInt (this, thread, value);
+    }
+
+    jvmtiError ForceEarlyReturnLong (jthread thread, jlong value)
+    {
+        return funcs->ForceEarlyReturnLong (this, thread, value);
+    }    
+
+    jvmtiError ForceEarlyReturnFloat (jthread thread, jfloat value)
+    {
+        return funcs->ForceEarlyReturnFloat (this, thread, value);
+    }
+    
+    jvmtiError ForceEarlyReturnDouble (jthread thread, jdouble value)
+    {
+        return funcs->ForceEarlyReturnDouble (this, thread, value);
+    }
+        
+    jvmtiError ForceEarlyReturnVoid (jthread thread)
+    {
+        return funcs->ForceEarlyReturnVoid (this, thread);
     }
 
     jvmtiError GetFrameLocation (jthread thread,

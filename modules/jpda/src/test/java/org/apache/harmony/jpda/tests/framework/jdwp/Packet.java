@@ -1052,6 +1052,8 @@ public class Packet {
         case JDWPConstants.Tag.SHORT_TAG:
             this.setNextValueAsShort(value.getShortValue());
             break;
+        case JDWPConstants.Tag.VOID_TAG:
+            break;
         case JDWPConstants.Tag.STRING_TAG:
         case JDWPConstants.Tag.ARRAY_TAG:
         case JDWPConstants.Tag.CLASS_LOADER_TAG:

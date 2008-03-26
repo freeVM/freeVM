@@ -71,7 +71,7 @@ public class Capabilities {
 
     public boolean canGetConstantPool               = false;
 
-    public boolean reserved21                       = false;
+    public boolean canForceEarlyReturn              = false;
 
     public boolean reserved22                       = false;
 
