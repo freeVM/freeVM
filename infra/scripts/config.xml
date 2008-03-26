@@ -128,7 +128,9 @@
             </propertyset>
 
             <!-- IMHO: the forms below may cause properties names
-                 conflicts that is hard to detect/guess
+                 conflicts that is hard to detect/guess:
+                 - simple form: without parameters.(required|shared) prefix
+                 - short  form: ${suite.name}.<simple form>
                  This is BAD and should be fixed -->
 
             <!-- required parameters in simple form (used by adaptors) -->
@@ -150,6 +152,13 @@
                 <propertyref regex="${suite.name}\.parameters\.shared" />
                 <regexpmapper from="${suite.name}\.parameters\.shared\.(.*)$"
                               to="\1" />
+            </propertyset>
+
+            <!-- shared parameters in short form (used by adaptors) -->
+            <propertyset>
+                <propertyref regex="${suite.name}\.parameters\.shared" />
+                <regexpmapper from="${suite.name}\.parameters\.shared\.(.*)$"
+                              to="${suite.name}.\1" />
             </propertyset>
         </echoproperties>
     </target>
