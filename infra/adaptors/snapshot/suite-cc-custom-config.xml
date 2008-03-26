@@ -3,7 +3,8 @@
     <!-- Keep this tag if you want to see any parameter value accessible 
          from adaptor.xml here -->
     <!-- @BT.PARAMETERS.INCLUDE@ -->
-    
+    <property file='${config.dir}/snapshot.properties'/>
+
     <!-- Tag resolved to the name of 
          the test suite this config is related to. -->
     <project name="@BT.PROJECT@" buildafterfailed="false">
