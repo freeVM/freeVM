@@ -107,7 +107,7 @@
                      semanticAttributes="true"
                      prefix="framework" />
 
-        <!-- Load suites properties -->
+        <!-- Load ALL suites properties -->
         <property file="${all.props}" />
 
         <!-- Load local properties -->
@@ -119,6 +119,12 @@
                 <replaceregex pattern="\\" replace="/" flags="g" />
             </filterchain>
         </loadproperties>
+
+        <!-- re-expand ${suite.name} parameters -->
+        <xmlproperty file="${adaptors.dir}/${suite.name}/parameters.xml"
+                     collapseAttributes="true"
+                     semanticAttributes="true"
+                     prefix="${suite.name}" />
 
         <echoproperties destfile="${config.dir}/${suite.name}.properties">
             <propertyset>
