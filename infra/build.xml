@@ -128,6 +128,8 @@ ERROR: Could not found adaptor for some specified test suites
         <mkdir dir="${results.dir}" />
         <mkdir dir="${temp.files.dir}" />
         <mkdir dir="${classes.dir}" />
+
+        <delete dir="${config.dir}" />
         <mkdir dir="${config.dir}" />
 
         <!-- init properties -->
@@ -136,6 +138,10 @@ ERROR: Could not found adaptor for some specified test suites
         </condition>
         <condition property="is.ant.1.7.0">
             <contains string="${ant.version}" substring="1.7.0" />
+        </condition>
+
+        <condition property="framework.local.config.exists">
+            <available file="${framework.local.configuration.file}" />
         </condition>
     </target>
 
@@ -224,13 +230,24 @@ ERROR: Could not found adaptor for some specified test suites
 
         <!-- TODO check generated required-parameters.properties -->
     </target>
+
+    <target name="create-local-configuration"
+            depends="-init-install"
+            unless="framework.local.config.exists">
+        <echo file="${framework.local.configuration.file}">#
+# Any BTI framework local configuration properties 
+# should be specified in this file. 
+# For more information on which parameters can be configured see
+#     ${scripts.dir}/parameters.xml
+</echo>
+    </target>
+
     <!-- ================================================================== 
                          Framework Setup Functionality
          ================================================================== -->
 
     <target name="setup"
-            depends="-init-install,
-                     setup-framework,
+            depends="setup-framework,
                      -save-suites-configuration,
                      load-required-parameters,
                      save-required-parameters" />
@@ -255,23 +272,6 @@ ERROR: Could not found adaptor for some specified test suites
             </sequential>
         </for>
     </target>
-
-    <condition property="framework.local.config.exists">
-        <available file="${framework.local.configuration.file}" />
-    </condition>
-
-    <target name="create-local-configuration"
-            unless="framework.local.config.exists">
-        <!-- create the file for local BTI configuration -->
-        <echo file="${framework.local.configuration.file}">#
-# Any BTI framework local configuration properties 
-# should be specified in this file. 
-# For more information on which parameters can be configured see
-#     ${scripts.dir}/parameters.xml
-</echo>
-    </target>
-
-
 
     <!-- ================================================================== 
                           Test Execution Functionality
