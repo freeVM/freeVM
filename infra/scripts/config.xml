@@ -127,7 +127,7 @@
                 <propertyset refid="global.build.parameters.id" />
             </propertyset>
 
-            <!-- IMHO: the simple forms below may cause properties names
+            <!-- IMHO: the forms below may cause properties names
                  conflicts that is hard to detect/guess
                  This is BAD and should be fixed -->
 
@@ -136,6 +136,13 @@
                 <propertyref regex="${suite.name}\.parameters\.required" />
                 <regexpmapper from="${suite.name}\.parameters\.required\.(.*)$"
                               to="\1" />
+            </propertyset>
+
+            <!-- required parameters in short form (used by adaptors) -->
+            <propertyset>
+                <propertyref regex="${suite.name}\.parameters\.required" />
+                <regexpmapper from="${suite.name}\.parameters\.required\.(.*)$"
+                              to="${suite.name}.\1" />
             </propertyset>
 
             <!-- shared parameters in simple form (used by adaptors) -->
