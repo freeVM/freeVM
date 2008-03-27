@@ -33,11 +33,11 @@ typedef DWORD ThreadId_t;
 #include "LastTransportError.h"
 
 #define DEFAULT_ADDRESS_NAME "sharedmem"
-#define DEFAULT_MUTEX_SUFFIX "mutex"
-#define DEFAULT_ACCEPT_EVENT_SUFFIX "acceptEvent"
-#define DEFAULT_ATTACH_EVENT_SUFFIX "attachEvent"
-#define MAX_PACKET_SIZE 267
-#define SHARED_MEM_SIZE 4096
+#define MUTEX_SUFFIX "mutex"
+#define ACCEPT_EVENT_SUFFIX "acceptEvent"
+#define ATTACH_EVENT_SUFFIX "attachEvent"
+#define INIT_MEM_SIZE 4096
+#define NAME_SIZE 75
 #define JDWP_HANDSHAKE "JDWP-Handshake"
 
 static jdwpTransportError JNICALL ShMemTran_GetCapabilities(jdwpTransportEnv* env, JDWPTransportCapabilities* capabilitiesPtr);
@@ -53,24 +53,26 @@ static jdwpTransportError JNICALL ShMemTran_GetLastError(jdwpTransportEnv* env, 
 extern "C" JNIEXPORT jint JNICALL jdwpTransport_OnLoad(JavaVM *vm, jdwpTransportCallback* callback, jint version, jdwpTransportEnv** env);
 extern "C" JNIEXPORT void JNICALL jdwpTransport_UnLoad(jdwpTransportEnv** env);
 
-typedef struct sharedMemListener_struct {
-    char mutexName[75];
-    char acceptEventName[75];
-    char attachEventName[75];
-    bool isListening;
-    bool isAccepted;
-    int acceptPid;
-    int attachPid;
-} sharedMemListener;
+/* This structure is shared between VMs */
+typedef struct SharedMemInit_struct {
+    char mutexName[NAME_SIZE];
+    char acceptEventName[NAME_SIZE];
+    char attachEventName[NAME_SIZE];
+    jboolean isListening;
+    jboolean isAccepted;
+    jint reserved1;  // TODO: not sure what this field is for
+    jint acceptPid;
+    jint reserved2;  // TODO: not sure what this field is for
+    jint attachPid;
+} SharedMemInit;
 
-typedef struct sharedMemTransport_struct {
-    char name[75];
+/* Contains VM local variables */
+typedef struct LocalMemInit_struct {
+    HANDLE initHandle;
     HANDLE mutexHandle;
     HANDLE acceptEventHandle;
-    HANDLE attachEventHandle;
-    HANDLE sharedMemoryHandle;
-    sharedMemListener* listener;
-} sharedMemTransport;
+    HANDLE attachEventHandle;    
+} LocalMemInit;
 
 struct internalEnv {
     JavaVM *jvm;                    // the JNI invocation interface, provided 
@@ -79,7 +81,7 @@ struct internalEnv {
                                     // provided by the agent 
     void (*free)(void *buffer);     // function for deallocating an area of memory, 
                                     // provided by the agent
-    sharedMemTransport *transport;  // Shared memory transport structure
+    LocalMemInit *localInit;        // Shared memory initialization structure
     LastTransportError *lastError;  // pointer to the last transport error
 };
 

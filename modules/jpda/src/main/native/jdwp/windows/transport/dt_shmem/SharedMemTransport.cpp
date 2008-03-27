@@ -89,7 +89,7 @@ CreateAddressFromBase(jdwpTransportEnv* env, HANDLE *resultHandle, char resultAd
         }
 
         /* Attempt to create the shared memory space */
-        handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, SHARED_MEM_SIZE, resultAddress);  
+        handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, INIT_MEM_SIZE, resultAddress);  
         if (NULL == handle) 
         { 
             SetLastTranError(env, "Could not create shared memory space", GetLastError());
@@ -131,8 +131,8 @@ ShMemTran_GetCapabilities(jdwpTransportEnv* env, JDWPTransportCapabilities* capa
 static jdwpTransportError JNICALL 
 ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actualAddress)
 {
-    HANDLE writeHandle;
-    char writeAddress[75];
+    HANDLE initHandle;
+    char initAddress[75];
     jdwpTransportError res;
     if ((address != NULL) && (strcmp(address, "\0") != 0)) {
         /* If an address has been specified, check it is valid */
@@ -141,11 +141,11 @@ ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actu
             return res;
         }
 
-        strcpy(writeAddress, address);
+        strcpy(initAddress, address);
 
         /* Attempt to create the shared memory space */
-        writeHandle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, SHARED_MEM_SIZE, writeAddress);  
-        if (NULL == writeHandle) 
+        initHandle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, INIT_MEM_SIZE, initAddress);  
+        if (NULL == initHandle) 
         { 
             SetLastTranError(env, "Could not create shared memory space", GetLastError());
             return JDWPTRANSPORT_ERROR_INTERNAL;
@@ -153,40 +153,39 @@ ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actu
 
         /* If the memory space already exists, return with an error */
         if (ERROR_ALREADY_EXISTS == GetLastError()) {
-            CloseHandle(writeHandle);
+            CloseHandle(initHandle);
             SetLastTranError(env, "Specified shared memory address already in use", GetLastError());
             return JDWPTRANSPORT_ERROR_INTERNAL;
         }
     } else {
         /* No address was specified at the command line, so generate one */
         char *defaultAddress = DEFAULT_ADDRESS_NAME;
-        res = CreateAddressFromBase(env, &writeHandle, writeAddress, defaultAddress);
+        res = CreateAddressFromBase(env, &initHandle, initAddress, defaultAddress);
         if (JDWPTRANSPORT_ERROR_NONE != res) {
             /* Error message will already have been set in CreateAddressFromBase() */
             return res;
         }
     }
 
-    /* Create the shared memory transport */
-    sharedMemTransport *transport = (sharedMemTransport*)(((internalEnv*)env->functions->reserved1)->alloc)(sizeof(sharedMemTransport));
-    if (NULL == transport) {
-        SetLastTranError(env, "Could not allocate transport structure", 0);
+    /* Create the shared memory localInit structure */
+    LocalMemInit *localInit = (LocalMemInit*)(((internalEnv*)env->functions->reserved1)->alloc)(sizeof(LocalMemInit));
+    if (NULL == localInit) {
+        SetLastTranError(env, "Could not allocate local init structure", 0);
         return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
     }
 
     /* We have successfully got our shared memory address and handle - record them for future use */
-    *actualAddress = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(writeAddress));
+    *actualAddress = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(initAddress));
     if (NULL == actualAddress) {
         SetLastTranError(env, "Could not allocate address string", 0);
         return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
     }
-    strcpy(*actualAddress, writeAddress);
-    strcpy(transport->name, writeAddress);
-    transport->sharedMemoryHandle = writeHandle;
+    strcpy(*actualAddress, initAddress);
+    localInit->initHandle = initHandle;
 
     /* Open the shared memory region */
-    void *writeRegion = MapViewOfFile(writeHandle, FILE_MAP_ALL_ACCESS, 0, 0, 0);                   
-    if (NULL == writeRegion) 
+    void *initRegion = MapViewOfFile(initHandle, FILE_MAP_ALL_ACCESS, 0, 0, 0);                   
+    if (NULL == initRegion) 
     { 
         SetLastTranError(env, "MapViewOfFile failed on server shared memory", GetLastError());
         return JDWPTRANSPORT_ERROR_INTERNAL;
@@ -194,23 +193,23 @@ ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actu
 
     /* Create mutex for this shared memory */
     /* TODO: Make sure all the handles created and stored here are closed later! */
-    char *defaultMutexSuffix = DEFAULT_MUTEX_SUFFIX;
-    char *writeMutexName = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(writeAddress) + strlen(defaultMutexSuffix) + 1);
-    if (NULL == writeMutexName) {
+    char *defaultMutexSuffix = MUTEX_SUFFIX;
+    char *initMutexName = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(initAddress) + strlen(defaultMutexSuffix) + 1);
+    if (NULL == initMutexName) {
         SetLastTranError(env, "Could not allocate mutex name", 0);
         return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
     }
 
-    sprintf(writeMutexName, "%s%s", writeAddress, defaultMutexSuffix);
+    sprintf(initMutexName, "%s%s", initAddress, defaultMutexSuffix);
 
     /* Create accept event */
-    char *defaultAcceptEventSuffix = DEFAULT_ACCEPT_EVENT_SUFFIX;
-    char *acceptEventName = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(writeAddress) + strlen(defaultAcceptEventSuffix) + 1);
+    char *defaultAcceptEventSuffix = ACCEPT_EVENT_SUFFIX;
+    char *acceptEventName = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(initAddress) + strlen(defaultAcceptEventSuffix) + 1);
     if (NULL == acceptEventName) {
         SetLastTranError(env, "Could not allocate accept event name", 0);
         return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
     }
-    sprintf(acceptEventName, "%s%s", writeAddress, defaultAcceptEventSuffix);
+    sprintf(acceptEventName, "%s%s", initAddress, defaultAcceptEventSuffix);
 
     HANDLE acceptEventHandle = CreateEvent(NULL, FALSE, FALSE, acceptEventName);
     if (NULL == acceptEventHandle) 
@@ -219,16 +218,16 @@ ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actu
         return JDWPTRANSPORT_ERROR_INTERNAL;
     }
 
-    transport->acceptEventHandle = acceptEventHandle;
+    localInit->acceptEventHandle = acceptEventHandle;
 
     /* Create attach event */
-    char *defaultAttachEventSuffix = DEFAULT_ATTACH_EVENT_SUFFIX;
-    char *attachEventName = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(writeAddress) + strlen(defaultAttachEventSuffix) + 1);
+    char *defaultAttachEventSuffix = ATTACH_EVENT_SUFFIX;
+    char *attachEventName = (char*)(((internalEnv*)env->functions->reserved1)->alloc)(strlen(initAddress) + strlen(defaultAttachEventSuffix) + 1);
     if (NULL == attachEventName) {
         SetLastTranError(env, "Could not allocate attach event name", 0);
         return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
     }
-    sprintf(attachEventName, "%s%s", writeAddress, defaultAttachEventSuffix);
+    sprintf(attachEventName, "%s%s", initAddress, defaultAttachEventSuffix);
 
     HANDLE attachEventHandle = CreateEvent(NULL, FALSE, FALSE, attachEventName);
     if (NULL == attachEventHandle) 
@@ -237,28 +236,11 @@ ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actu
         return JDWPTRANSPORT_ERROR_INTERNAL;
     }
 
-    transport->attachEventHandle = attachEventHandle;
-
-    /* Allocate the transport listener and fill in it's fields */
-    sharedMemListener *listener = (sharedMemListener*)(((internalEnv*)env->functions->reserved1)->alloc)(sizeof(sharedMemListener));
-    if (NULL == listener) {
-        SetLastTranError(env, "Could not allocate listener structure", 0);
-        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
-    }
-    strcpy(listener->mutexName, writeMutexName);
-    strcpy(listener->acceptEventName, acceptEventName);
-    strcpy(listener->attachEventName, attachEventName);
-    listener->isListening = true;
-    listener->isAccepted = false;
-    listener->acceptPid = 0;
-    listener->attachPid = (int)GetCurrentProcessId();
-    transport->listener = listener;
-
     /* Create the mutex */
-    HANDLE writeMutexHandle = CreateMutex(NULL, FALSE, writeMutexName);
+    HANDLE initMutexHandle = CreateMutex(NULL, FALSE, initMutexName);
 
     /* Check we successfully opened the mutex */
-    if (writeMutexHandle == NULL) 
+    if (initMutexHandle == NULL) 
     {
         SetLastTranError(env, "Unable to open mutex", GetLastError());
         return JDWPTRANSPORT_ERROR_INTERNAL;
@@ -266,34 +248,40 @@ ShMemTran_StartListening(jdwpTransportEnv* env, const char* address, char** actu
 
     /* If the mutex already exists then there has been an error */
     if (GetLastError() == ERROR_ALREADY_EXISTS) {
-        CloseHandle(writeMutexHandle);
+        CloseHandle(initMutexHandle);
         SetLastTranError(env, "Mutex already exists", GetLastError());
         return JDWPTRANSPORT_ERROR_INTERNAL;
     }
 
     /* Store the mutex name for future use */
-    transport->mutexHandle = writeMutexHandle;
+    localInit->mutexHandle = initMutexHandle;
 
-    ((internalEnv*)env->functions->reserved1)->transport = transport;
+    ((internalEnv*)env->functions->reserved1)->localInit = localInit;
 
     /* Make sure the mutex is available */
-    DWORD rc = WaitForSingleObject(writeMutexHandle, INFINITE);
+    DWORD rc = WaitForSingleObject(initMutexHandle, INFINITE);
     if (WAIT_FAILED == rc) {
         SetLastTranError(env, "Failed to acquire mutex", GetLastError());
         return JDWPTRANSPORT_ERROR_INTERNAL;
     }
 
-    /* Write the transport listener into shared memory */
-    CopyMemory(writeRegion, listener, sizeof(sharedMemListener));
+    /* Write the listener structure directly into shared memory */
+    SharedMemInit *listener = (SharedMemInit*)initRegion;
+    strcpy(listener->mutexName, initMutexName);
+    strcpy(listener->acceptEventName, acceptEventName);
+    strcpy(listener->attachEventName, attachEventName);
+    listener->isListening = JNI_TRUE;
+    listener->isAccepted = JNI_FALSE;
+    listener->acceptPid = GetCurrentProcessId();
 
     /* Release the mutex */
-    if (!ReleaseMutex(writeMutexHandle)) 
+    if (!ReleaseMutex(initMutexHandle)) 
     { 
         SetLastTranError(env, "Failed to release mutex", GetLastError());
         return JDWPTRANSPORT_ERROR_INTERNAL;
     } 
 
-    UnmapViewOfFile(writeRegion);
+    UnmapViewOfFile(initRegion);
 
     return JDWPTRANSPORT_ERROR_NONE;
 } // ShMemTran_StartListening
@@ -315,25 +303,24 @@ ShMemTran_Accept(jdwpTransportEnv* env, jlong acceptTimeout,
         return JDWPTRANSPORT_ERROR_ILLEGAL_ARGUMENT;
     }
 
-    /* Get the shared memory transport */
-    sharedMemTransport *transport = ((internalEnv*)env->functions->reserved1)->transport;
+    /* Get the LocalMemInit structure */
+    LocalMemInit *localInit = ((internalEnv*)env->functions->reserved1)->localInit;
 
     /* Wait for the attach to be signalled */
     DWORD rc;
     if (acceptTimeout != 0) {
-        rc = WaitForSingleObject(transport->attachEventHandle, (DWORD)acceptTimeout);
+        rc = WaitForSingleObject(localInit->attachEventHandle, (DWORD)acceptTimeout);
     } else {
-        rc = WaitForSingleObject(transport->attachEventHandle, INFINITE);
+        rc = WaitForSingleObject(localInit->attachEventHandle, INFINITE);
     }
-
     if (WAIT_FAILED == rc) {
         SetLastTranError(env, "Failed waiting for attach event", GetLastError());
         return JDWPTRANSPORT_ERROR_INTERNAL;
     }
 
     /* Open the shared memory region */
-    void *readRegion = MapViewOfFile(transport->sharedMemoryHandle, FILE_MAP_ALL_ACCESS, 0, 0, 0);                   
-    if (NULL == readRegion) 
+    void *initRegion = MapViewOfFile(localInit->initHandle, FILE_MAP_ALL_ACCESS, 0, 0, 0);                   
+    if (NULL == initRegion) 
     { 
         SetLastTranError(env, "MapViewOfFile failed on server shared memory", GetLastError());
         return JDWPTRANSPORT_ERROR_INTERNAL;
@@ -373,41 +360,34 @@ ShMemTran_Attach(jdwpTransportEnv* env, const char* address,
     }
 
     /* Attempt to open the shared memory space at "address" */
-    HANDLE readHandle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, address);
-    if (NULL == readHandle) 
+    HANDLE initHandle = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, address);
+    if (NULL == initHandle) 
     { 
         SetLastTranError(env, "Could not open shared memory at the specified address", GetLastError());
         return JDWPTRANSPORT_ERROR_INTERNAL;
     }
 
     /* Open the shared memory region */
-    void *readRegion = MapViewOfFile(readHandle, FILE_MAP_ALL_ACCESS, 0, 0, 0);                   
-    if (NULL == readRegion) 
+    void *initRegion = MapViewOfFile(initHandle, FILE_MAP_ALL_ACCESS, 0, 0, 0);                   
+    if (NULL == initRegion) 
     { 
         SetLastTranError(env, "MapViewOfFile failed on server shared memory", GetLastError());
         return JDWPTRANSPORT_ERROR_INTERNAL;
     }
 
-    /* Allocate the shared memory transport structure */
-    sharedMemTransport *transport = (sharedMemTransport*)(((internalEnv*)env->functions->reserved1)->alloc)(sizeof(sharedMemTransport));
-    if (NULL == transport) {
-        SetLastTranError(env, "Could not allocate transport structure", 0);
+    /* Allocate the LocalMemInit structure */
+    LocalMemInit *localInit = (LocalMemInit*)(((internalEnv*)env->functions->reserved1)->alloc)(sizeof(LocalMemInit));
+    if (NULL == localInit) {
+        SetLastTranError(env, "Could not allocate local init structure", 0);
         return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
     }
-    ((internalEnv*)env->functions->reserved1)->transport = transport;
-    strcpy(transport->name, address);
-    
-    /* Read the sharedMemListener from shared memory */
-    sharedMemListener* listener = (sharedMemListener*)(((internalEnv*)env->functions->reserved1)->alloc)(sizeof(sharedMemListener));
-    if (NULL == listener) {
-        SetLastTranError(env, "Could not allocate listener structure", 0);
-        return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
-    }
-    CopyMemory(listener, readRegion, sizeof(sharedMemListener));
-    ((internalEnv*)env->functions->reserved1)->transport->listener = listener;
-    char *mutexName = (char*)listener->mutexName;
+    ((internalEnv*)env->functions->reserved1)->localInit = localInit;
+
+    /* Access the SharedMemInit directly in shared memory */
+    SharedMemInit* listener = (SharedMemInit*)initRegion;
 
     /* Open the mutex */
+    char *mutexName = (char*)listener->mutexName;
     HANDLE mutexHandle = OpenMutex(MUTEX_ALL_ACCESS, FALSE, mutexName);
 
     /* Check we successfully opened the mutex */
@@ -417,44 +397,40 @@ ShMemTran_Attach(jdwpTransportEnv* env, const char* address,
         return JDWPTRANSPORT_ERROR_INTERNAL;
     }
 
-   /* If the mutex does not already exist then there has been an error */
-   if (GetLastError() == ERROR_FILE_NOT_FOUND) {
-       SetLastTranError(env, "Could not open existing mutex", GetLastError());
-       return JDWPTRANSPORT_ERROR_INTERNAL;
-   }
-
-   /* Store the mutex */
-   transport->mutexHandle = mutexHandle;
+    /* If the mutex does not already exist then there has been an error */
+    if (GetLastError() == ERROR_FILE_NOT_FOUND) {
+        SetLastTranError(env, "Could not open existing mutex", GetLastError());
+        return JDWPTRANSPORT_ERROR_INTERNAL;
+    }
+ 
+    /* Store the mutex */
+    localInit->mutexHandle = mutexHandle;
 
    /* TODO: Need to write something to memory here after the listener structure */
 
-   /* Open the attach event */
-   HANDLE attachEventHandle = OpenEvent(EVENT_MODIFY_STATE, FALSE, listener->attachEventName);
+    /* Open the attach event */
+    HANDLE attachEventHandle = OpenEvent(EVENT_MODIFY_STATE, FALSE, listener->attachEventName);
+    if (NULL == attachEventHandle) {
+        SetLastTranError(env, "Could not open attach event", GetLastError());
+        return JDWPTRANSPORT_ERROR_INTERNAL;
+    }
+    localInit->attachEventHandle = attachEventHandle;
 
-   if (NULL == attachEventHandle) {
-       SetLastTranError(env, "Could not open attach event", GetLastError());
-       return JDWPTRANSPORT_ERROR_INTERNAL;
-   }
+    /* Open the accept event */
+    HANDLE acceptEventHandle = OpenEvent(EVENT_ALL_ACCESS, FALSE, listener->acceptEventName);
+    if (NULL == acceptEventHandle) {
+        SetLastTranError(env, "Could not open accept event", GetLastError());
+        return JDWPTRANSPORT_ERROR_INTERNAL;
+    }
+    localInit->acceptEventHandle = acceptEventHandle;
 
-   transport->attachEventHandle = attachEventHandle;
-
-   /* Open the accept event */
-   HANDLE acceptEventHandle = OpenEvent(EVENT_ALL_ACCESS, FALSE, listener->acceptEventName);
-
-   if (NULL == acceptEventHandle) {
-       SetLastTranError(env, "Could not open accept event", GetLastError());
-       return JDWPTRANSPORT_ERROR_INTERNAL;
-   }
-
-   transport->acceptEventHandle = acceptEventHandle;
-
-   /* Trigger the attach event */
-   BOOL success = SetEvent(attachEventHandle);
-
-   if (!success) {
-       SetLastTranError(env, "Error setting attach event", GetLastError());
-       return JDWPTRANSPORT_ERROR_INTERNAL;
-   }
+    /* Trigger the attach event */
+    BOOL success = SetEvent(attachEventHandle);
+ 
+    if (!success) {
+        SetLastTranError(env, "Error setting attach event", GetLastError());
+        return JDWPTRANSPORT_ERROR_INTERNAL;
+    }
 
     /* Wait for the accept event response to be signalled */
     DWORD rc = WaitForSingleObject(acceptEventHandle, (DWORD)attachTimeout);
@@ -473,23 +449,18 @@ static jdwpTransportError
 CleanupTransport(jdwpTransportEnv* env)
 {
     /* TODO: close handles and free allocated structures */
-    sharedMemTransport *transport = ((internalEnv*)env->functions->reserved1)->transport;
+    LocalMemInit *localInit = ((internalEnv*)env->functions->reserved1)->localInit;
 
-    if (NULL == transport) return JDWPTRANSPORT_ERROR_NONE;
-
-    /* Free the listener structure */
-    if (transport->listener) {
-        (((internalEnv*)env->functions->reserved1)->free)(transport->listener);
-    }
+    if (NULL == localInit) return JDWPTRANSPORT_ERROR_NONE;
 
     /* Close handles stored in the transport structure */
-    if (transport->mutexHandle) CloseHandle(transport->mutexHandle);
-    if (transport->acceptEventHandle) CloseHandle(transport->acceptEventHandle);
-    if (transport->attachEventHandle) CloseHandle(transport->attachEventHandle);
-    if (transport->sharedMemoryHandle) CloseHandle(transport->sharedMemoryHandle);
+    if (localInit->mutexHandle) CloseHandle(localInit->mutexHandle);
+    if (localInit->acceptEventHandle) CloseHandle(localInit->acceptEventHandle);
+    if (localInit->attachEventHandle) CloseHandle(localInit->attachEventHandle);
+    if (localInit->initHandle) CloseHandle(localInit->initHandle);
 
-    (((internalEnv*)env->functions->reserved1)->free)(transport);
-    ((internalEnv*)env->functions->reserved1)->transport = NULL;
+    (((internalEnv*)env->functions->reserved1)->free)(localInit);
+    ((internalEnv*)env->functions->reserved1)->localInit = NULL;
 
     return JDWPTRANSPORT_ERROR_NONE;
 }
@@ -512,9 +483,9 @@ ShMemTran_StopListening(jdwpTransportEnv* env)
 static jboolean JNICALL 
 ShMemTran_IsOpen(jdwpTransportEnv* env)
 {
-    /* Simple check to see if transport structure and shared memory handle is initialised */
-    sharedMemTransport *transport = ((internalEnv*)env->functions->reserved1)->transport;
-    if ((transport) && (transport->sharedMemoryHandle)) {
+    /* Simple check to see if init structure and shared memory handle is initialised */
+    LocalMemInit *localInit = ((internalEnv*)env->functions->reserved1)->localInit;
+    if ((localInit) && (localInit->initHandle)) {
         return JNI_TRUE;
     } else {
         return JNI_FALSE;
@@ -599,7 +570,7 @@ jdwpTransport_OnLoad(JavaVM *vm, jdwpTransportCallback* callback,
     iEnv->jvm = vm;
     iEnv->alloc = callback->alloc;
     iEnv->free = callback->free;
-    iEnv->transport = NULL;
+    iEnv->localInit = NULL;
     iEnv->lastError = NULL;
 
     jdwpTransportNativeInterface_* envTNI = (jdwpTransportNativeInterface_*)callback->alloc(sizeof(jdwpTransportNativeInterface_));
@@ -643,5 +614,6 @@ jdwpTransport_UnLoad(jdwpTransportEnv** env)
     /* TODO: Free memory allocated in OnLoad */
     ((internalEnv*)(*env)->functions->reserved1)->free((*env)->functions->reserved1);
 } // jdwpTransport_UnLoad
+
 
 
