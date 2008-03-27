@@ -23,7 +23,7 @@
         <!-- the path to built DRLVM JVM -->
         <jvm.location value="${drlvm.parameters.shared.trunk.dir}/deploy/jdk/jre/bin/java${exe.suffix}"/>
         <!-- DRLVM build configuration (debug/release) -->
-        <build.config value="${build.config}"/>
+        <build.config value="${drlvm.parameters.optional.build.config}"/>
     </shared>
 
     <svn>
