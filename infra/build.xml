@@ -228,7 +228,7 @@ ERROR: Could not found adaptor for some specified test suites
                 buildpath="${scripts.dir}">
         </subant>
 
-        <!-- TODO check generated required-parameters.properties -->
+        <check-required-parameters />
     </target>
 
     <target name="create-local-configuration"
@@ -358,4 +358,34 @@ ERROR: Could not find ${selected.suites.configuration}. Please, do 'setup' first
         <setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
     </target>
 
+    <macrodef name="check-required-parameters">
+        <sequential>
+
+            <!-- The property is set only if there missed values
+                 for required properties -->
+            <loadfile property="required.parameters"
+                      srcfile="${required.parameters.location}">
+                <filterchain>
+                    <linecontainsregexp>
+                        <!-- find undefined and empty prop. values -->
+                        <regexp pattern="=(\$|$)" />
+                    </linecontainsregexp>
+                </filterchain>
+            </loadfile>
+
+            <fail>
+                <condition>
+                    <isset property="required.parameters" />
+                </condition>
+#
+There are unset required properties for selected suites:
+                ${test.suites.names.list}
+The list of all required properties is in:
+                ${required.parameters.location}
+Please find unset properties or empty values and specify them in:
+                ${framework.local.configuration.file}
+And rerun install
+            </fail>
+        </sequential>
+    </macrodef>
 </project>

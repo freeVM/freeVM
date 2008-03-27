@@ -68,6 +68,7 @@
                 <propertyref name="all.props" />
                 <propertyref name="scripts.dir" />
                 <propertyref name="config.dir" />
+                <propertyref name="required.parameters.location" />
                 <!--propertyref name="framework.local.configuration.file" /-->
                 <propertyset refid="global.build.parameters.id" />
             </propertyset>
@@ -171,10 +172,12 @@
 
     <target name="-gen-required-parameters">
 
-        <echo file="${config.dir}/required-parameters.properties">#
-# Required Parameters Settings File
-# TODO: add more words here
-
+        <echo file="${required.parameters.location}">#
+# Auto generated required parameters settings file
+# 
+# DON'T EDIT THIS FILE: specify all values for properties in
+#                       framework local properties file
+#
 </echo>
 
         <property name="all.props" location="${config.dir}/all.props" />
@@ -202,6 +205,7 @@
             <propertyset>
                 <propertyref name="scripts.dir" />
                 <propertyref name="config.dir" />
+                <propertyref name="required.parameters.location" />
             </propertyset>
         </ant>
 
@@ -220,6 +224,7 @@
                 <propertyref name="donext" />
                 <propertyref name="scripts.dir" />
                 <propertyref name="config.dir" />
+                <propertyref name="required.parameters.location" />
             </propertyset>
         </ant>
     </target>
@@ -253,6 +258,7 @@
             <propertyset>
                 <propertyref name="scripts.dir" />
                 <propertyref name="config.dir" />
+                <propertyref name="required.parameters.location" />
             </propertyset>
         </subant>
 
@@ -261,8 +267,7 @@
     <macrodef name="flash-property">
         <attribute name="propname" />
         <sequential>
-            <echo file="${config.dir}/required-parameters.properties"
-                  append="true">
+            <echo file="${required.parameters.location}" append="true">
 #${@{propname}.description}
 @{propname}=${@{propname}}
 </echo>
