@@ -44,15 +44,10 @@
             set of all of the parameters needed to be known by @{suite}
 
 -->
-<project name="framework-implementation" default="run" basedir=".">
+<project name="framework-implementation" basedir=".">
 
     <import file="properties.xml"/>
     <import file="cc-project.xml"/>
-
-    <!-- Sets up the framework -->
-    <target name="setup-framework" 
-            depends="load-depends, define-tasks, 
-                        reorder-suites, -delete-temporal-properties"/>
 
     <!-- Initialize the framework for test execution -->
     <target name="init-framework" 
@@ -379,82 +374,6 @@ WARNING: Suite '@{suite}' won't be launched as some of its superior
             </for>
         </sequential>
     </macrodef>
-
-    <target name="reorder-suites" depends="define-tasks, load-suites-parameters">
-        <tempfile destdir="${temp.files.dir}"
-                  property="tmp.sort.suites.file"/>
-        <!-- create temporary file used for ordering -->
-        <touch file="${tmp.sort.suites.file}"/>
-        <!-- the list to work over -->
-        <var name="tmp.list" value="${test.suites.names.list}"/>
-        <!-- remove the dependencies on unselected suites -->
-        <for list="${tmp.list}" param="suite">
-            <sequential>
-                <remove-unselected 
-                    suite="@{suite}" 
-                    selected.list="${tmp.list}"
-                    depends.list="${@{suite}.parameters.depends}"
-                    property="tmp.@{suite}.depends"
-                />
-                <!-- replace the suite parameter value -->
-                <var name="@{suite}.parameters.depends" 
-                     value="${tmp.@{suite}.depends}"/>
-            </sequential>
-        </for>
-
-        <for list="${tmp.list}" param="tmp">
-            <sequential>
-                <!-- place independent suites to the ordering file 
-                     and remove from dependent suites list (tmp.list) -->
-                <for list="${tmp.list}" param="suite">
-                    <sequential>
-                        <if>
-                            <length string="${tmp.@{suite}.depends}" 
-                                    length="0"/>
-                        <then>
-                            <echo file="${tmp.sort.suites.file}" 
-                                  append="true">
-                                  @{suite}=</echo>
-                            <!-- remove from dependent suites list -->
-                            <propertyregex 
-                                    property="tmp.list"
-                                    override="yes"
-                                    input="${tmp.list}"
-                                    regexp="\b@{suite}\b,*" replace=""
-                                    defaultValue="${tmp.list}"/>
-                        </then>
-                        </if>
-                    </sequential>
-                </for>
-                <!-- Remove non-selected dependencies -->
-                <for list="${tmp.list}" param="suite">
-                    <sequential>
-                        <remove-unselected 
-                            suite="@{suite}" 
-                            selected.list="${tmp.list}"
-                            depends.list="${tmp.@{suite}.depends}"
-                            property="tmp.@{suite}.depends"
-                        />
-                    </sequential>
-                </for>
-            </sequential>
-        </for>
-        <!-- unset temporary properties -->
-        <var name="tmp.list" unset="true"/>
-        <for list="${test.suites.names.list}" param="suite">
-            <sequential>
-                <var name="tmp.@{suite}.depends" unset="true"/>
-            </sequential>
-        </for>
-        <!-- do sort suite names -->
-        <sortlist property="test.suites.names.list" 
-                  override="yes"
-                  value="${test.suites.names.list}"
-                  orderPropertyFile="${tmp.sort.suites.file}">
-        </sortlist>
-        <log message="Sorted List of Test Suites: ${test.suites.names.list}"/>
-        <delete file="${tmp.sort.suites.file}" quiet="true" verbose="false"/>
-    </target>
 
     <!-- removes temporal properties (starting with tmp. prefix ) -->
     <target name="-delete-temporal-properties">
