@@ -3,10 +3,13 @@
 ###
 
 # Test issue: http://issues.apache.org/jira/browse/GERONIMO-3672
+# Should be fixed in Geronimo 2.1
 org/apache/geronimo/j2ee/deployment/annotation/AnnotationHelperTest # 3 fails of 6 test cases
  
-# Hangs on all platforms, requires investigation
-org/apache/geronimo/yoko/TSSConfigEditorTest # Hangs, the childest java process needs to be killed
+# Old Yoko version issue, resolved
+# http://issues.apache.org/jira/browse/HARMONY-5626
+# http://issues.apache.org/jira/browse/YOKO-289
+#org/apache/geronimo/yoko/TSSConfigEditorTest # Hangs, the childest java process needs to be killed
 
 # Errors intermittently, requires investigation
 #org/apache/geronimo/cxf/CXFHandlerResolverTest # 4 intermittent errors out of 5 test cases
