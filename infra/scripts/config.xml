@@ -18,7 +18,7 @@
 <project name="config" default="generate-config" basedir=".">
 
     <!-- temporary file to store intermediate results of iteration -->
-    <property name="tmp.file" value="tmp.txt" />
+    <property name="tmp.file" location="${scripts.dir}/tmp.txt" />
 
     <target name="generate-config">
 
@@ -73,6 +73,44 @@
                 <propertyset refid="global.build.parameters.id" />
             </propertyset>
         </ant>
+
+        <!-- fourth stage: extract depends properties
+                 to a separate file - 'selected-suites.properties'  -->
+
+        <!-- get all 'depends' suites as a list -->
+        <loadfile property="depends.suites" srcfile="${all.props}">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="[^.]+\.parameters\.depends=" />
+                </linecontainsregexp>
+                <tokenfilter>
+                    <linetokenizer />
+                    <replaceregex pattern="[^.]+\.parameters\.depends=(.+)"
+                                  replace="\1," />
+                </tokenfilter>
+                <striplinebreaks />
+            </filterchain>
+        </loadfile>
+
+        <!-- check if the suites in the list were selected -->
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="-remove-if-not-selected"
+                inheritall="true"
+                inheritrefs="true">
+            <dirset dir="${adaptors.dir}" includes="${depends.suites}" />
+        </subant>
+
+        <!-- flash the list into the file -->
+        <echo message="" file="${selected.suites.configuration}" />
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="-flash-selected"
+                inheritall="false">
+            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
+            <propertyset>
+                <propertyref name="selected.suites.configuration" />
+                <propertyref name="all.props" />
+            </propertyset>
+        </subant>
     </target>
 
     <!-- The target is workaround for properties cycle dependencies
@@ -273,5 +311,57 @@
 </echo>
         </sequential>
     </macrodef>
-</project>
 
+    <target name="-remove-if-not-selected"
+            unless="${suite.name}.was.selected"
+            depends="-check-if-selected">
+
+        <!-- Stepan: I failed to develop one regexp. for all cases
+                     so do the removal in two steps
+             If you know the better was please let me know
+        -->
+
+        <!-- remove dependency from a suite's list -->
+        <replaceregexp file="${all.props}"
+                       match="([^.]\.parameters\.depends=.*),${suite.name}(.*)"
+                       replace="\1\2"
+                       flags="g" />
+        <replaceregexp file="${all.props}"
+                       match="([^.]\.parameters\.depends=)${suite.name},?(.*)"
+                       replace="\1\2"
+                       flags="g" />
+    </target>
+
+    <target name="-check-if-selected">
+
+        <basename file="${basedir}" property="suite.name" />
+
+        <condition property="${suite.name}.was.selected">
+            <contains string="${test.suites}," substring="${suite.name}" />
+        </condition>
+    </target>
+
+    <target name="-flash-selected">
+
+        <basename file="${basedir}" property="suite.name" />
+        <property file="${all.props}" />
+
+        <set-value suite="${suite.name}" />
+
+        <echo message="${value}${line.separator}"
+              file="${selected.suites.configuration}"
+              append="true" />
+    </target>
+
+    <macrodef name="set-value">
+        <attribute name="suite" />
+        <sequential>
+            <condition property="value"
+                       value="@{suite}.parameters.depends=${@{suite}.parameters.depends}"
+                       else="@{suite}.parameters.depends=">
+                <isset property="@{suite}.parameters.depends" />
+            </condition>
+        </sequential>
+    </macrodef>
+
+</project>
