@@ -34,7 +34,7 @@
             <arg line="co ${co.target} ${svn.url} ." />
         </exec>
 
-        <exec-ant dir="${trunk.dir}" targets="make-snapshot">
+        <exec-ant dir="${trunk.dir}" targets="snapshot">
             <jvmarg line="-Xmx1000M"/> 
             <sysproperty key="target.dir" value="${target.dir}"/>
             <sysproperty key="keep.working" value="true"/>
