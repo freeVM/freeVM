@@ -27,17 +27,17 @@
     
     <target name="fetch-svn">
         <setup-svn dep="${dependency}"/>
-        <antcall target="svn-co">
+        <antcall target="svn-co" inheritAll="false">
             <propertyset>
                 <propertyref prefix="${dependency}."/>
-                <mapper type="glob" from="${dependency}.*" to="*"/>
+                <mapper type="glob" from="${dependency}.*" to="dep.*"/>
             </propertyset>
         </antcall>
     </target>
 
-    <target name="svn-co" unless="svn.dir.uptodate">
+    <target name="svn-co" unless="dep.svn.dir.uptodate">
         <exec executable="svn" failonerror="true">
-            <arg line="co -r ${svn.revision} ${svn.url} ${svn.dir}" />
+            <arg line="co -r ${dep.svn.revision} ${dep.svn.url} ${dep.svn.dir}" />
         </exec>
     </target>
 
