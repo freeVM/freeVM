@@ -55,6 +55,7 @@
                 <propertyref name="all.props" />
                 <propertyref name="scripts.dir" />
                 <propertyref name="framework.local.configuration.file" />
+                <propertyref name="external.resources.location" />
                 <propertyset refid="global.build.parameters.id" />
             </propertyset>
         </subant>
@@ -159,6 +160,13 @@
             </filterchain>
         </loadproperties>
 
+        <!-- load external dependencies -->
+        <loadproperties srcfile="${external.resources.location}">
+            <filterchain>
+                <replaceregex pattern="\\" replace="/" flags="g" />
+            </filterchain>
+        </loadproperties>
+
         <!-- re-expand ${suite.name} parameters -->
         <xmlproperty file="${adaptors.dir}/${suite.name}/parameters.xml"
                      collapseAttributes="true"
@@ -168,6 +176,7 @@
         <echoproperties destfile="${config.dir}/${suite.name}.properties">
             <propertyset>
                 <propertyref prefix="${suite.name}" />
+                <propertyref prefix="ext." />
                 <propertyref prefix="framework" />
                 <propertyset refid="global.build.parameters.id" />
             </propertyset>
