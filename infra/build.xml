@@ -246,19 +246,45 @@ ERROR: Could not found adaptor for some specified test suites
                          Framework Setup Functionality
          ================================================================== -->
 
-    <target name="setup" >
-        <!-- Currently does nothing. Will move suites' setup here -->
+    <target name="setup" depends="load-suites-configuration">
+
+        <!-- verify that all required params are set -->
+        <check-required-parameters />
+
+        <!-- get the list of installed suites -->
+        <pathconvert pathsep="," property="suites.setup.list">
+            <path>
+                <fileset dir="${config.dir}">
+                    <include name="*.properties" />
+                </fileset>
+            </path>
+            <chainedmapper>
+                <flattenmapper />
+                <globmapper from="*.properties" to="*" />
+            </chainedmapper>
+        </pathconvert>
+
+        <!-- temporary file to store intermediate results of iteration -->
+        <property name="tmp.file" location="${scripts.dir}/tmp.txt" />
+        <echo message="" file="${tmp.file}" />
+        <subant genericantfile="${scripts.dir}/setup.xml"
+                target="-setup-suite"
+                inheritall="true"
+                inheritrefs="true">
+            <dirset dir="${adaptors.dir}" includes="${suites.setup.list}" />
+        </subant>
+        <delete file="${tmp.file}" />
     </target>
 
     <!-- ================================================================== 
                           Test Execution Functionality
          ================================================================== -->
     <target name="run"
-            depends="check-setup, init-framework, init-suites, setup-suites, run-suites" />
+            depends="check-setup, init-framework, init-suites, run-suites" />
 
     <target name="run-cc"
             description="run-cc"
-            depends="check-setup, init-framework, setup-suites, check-status,
+            depends="check-setup, init-framework, check-status,
                         create-cc-configuration">
         <java jar="${ext.cc.location}/lib/cruisecontrol-launcher.jar"
               dir="${cc.work.dir}"
