@@ -200,7 +200,7 @@
             <call-to-adaptor suite="@{suite}" call="clean-suite"/>
         </sequential>
         </for>
-        <antcall target="check-status"/>
+        <!-- TODO: check status after cleanup  -->
     </target>
 
 
@@ -305,63 +305,6 @@
                 <var name="@{param}" unset="true"/>
             </sequential>
         </for>
-    </target>
-
-    <!-- check execution status -->
-    <target name="check-status">
-        <for list="${test.suites.names.list}" param="suite">
-        <sequential>
-            <if>
-                <!-- check for setup failure -->
-                <isset property="@{suite}.parameters.setup.failed"/>
-            <then>
-                <property name="has.failure" value="true"/>
-                <echo>
-------
-ERROR: Setup of Test Suite '@{suite}' FAILED.
-------
-</echo>
-            </then>
-            </if>
-            <if>
-                <!-- check for setup failure -->
-                <isset property="@{suite}.parameters.setup.skipped"/>
-            <then>
-                <property name="has.failure" value="true"/>
-                <echo>
---------
-WARNING: Setup of Test Suite '@{suite}' SKIPPED.
---------
-</echo>
-            </then>
-            </if>
-            <if>
-                <!-- check for setup failure -->
-                <isset property="@{suite}.parameters.run.skipped"/>
-            <then>
-                <property name="has.failure" value="true"/>
-                <echo>
---------
-WARNING: Execution of Test Suite '@{suite}' SKIPPED.
---------
-</echo>
-            </then>
-            </if>
-            <if>
-                <!-- check for setup failure -->
-                <isset property="@{suite}.parameters.run.failed"/>
-            <then>
-                <property name="has.failure" value="true"/>
-                <echo>
-------
-ERROR: Execution of Test Suite '@{suite}' FAILED.
-------
-</echo>
-            </then>
-            </if>
-        </sequential>
-        </for>
-        <fail message="There are Test Suites failures" if="has.failure"/>
     </target>
 
     <!-- check for the failures of the superior suites and place their
