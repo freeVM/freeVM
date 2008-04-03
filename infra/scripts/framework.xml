@@ -307,34 +307,6 @@
         </for>
     </target>
 
-    <macrodef name="remove-unselected">
-        <attribute name="suite"/>
-        <attribute name="selected.list"/>
-        <attribute name="depends.list"/>
-        <attribute name="property"/>
-        <sequential>
-            <var name="@{property}" value=""/>
-            <for list="@{depends.list}" param="depends" trim="true">
-                <sequential>
-                    <if>
-                        <contains string=",@{selected.list}," substring=",@{depends},"/>
-                    <then>
-                        <var name="@{property}" value="${@{property}},@{depends}"/>
-                        <!-- echo>    dependency '@{depends}' selected to run</echo-->
-                    </then>
-                    </if>
-                </sequential>
-            </for>
-            <!-- remove leading coma -->
-            <propertyregex 
-                    property="@{property}" 
-                    override="yes"
-                    input="${@{property}}" 
-                    regexp="^,*" replace=""
-                    defaultValue="${@{property}}"/>
-        </sequential>
-    </macrodef>
-
     <!-- check execution status -->
     <target name="check-status">
         <for list="${test.suites.names.list}" param="suite">
