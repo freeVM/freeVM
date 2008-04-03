@@ -190,55 +190,6 @@
                     load-required-parameters,
                         define-suites-ids, -delete-temporal-properties"/>
 
-    <!-- Run suites -->
-    <target name="run-suites" depends="init-suites">
-        <log message="Running the following suites: ${test.suites.names.list}."/>
-        <for list="${test.suites.names.list}" param="suite">
-        <sequential>
-            <log message="Run of '@{suite}' Test Suite."/>
-            <if>
-                <!-- check for setup failure -->
-                <or>
-                    <isset property="@{suite}.parameters.setup.failed"/>
-                    <isset property="@{suite}.parameters.setup.skipped"/>
-                </or>
-            <then>
-                <echo>
---------
-WARNING: Suite '@{suite}' won't be launched because its setup failed.
---------
-</echo>
-            </then>
-            <else>
-                <!-- check for the failures of the superior suites -->
-                <check-superior-failures
-                    suite="@{suite}"
-                    check-target="run"
-                    property="@{suite}.has.failed.superior"
-                />
-                <if>
-                    <isset property="@{suite}.has.failed.superior"/>
-                <then>
-                    <property name="@{suite}.parameters.run.skipped" value="true"/>
-                    <echo>
---------
-WARNING: Suite '@{suite}' won't be launched as some of its superior
--------- dependency suites:
-            ${@{suite}.parameters.depends}
-         failed.
-</echo>
-                </then>
-                <else>
-                    <call-to-adaptor suite="@{suite}" call="run-suite"/>
-                </else>
-                </if>
-            </else>
-            </if>
-        </sequential>
-        </for>
-        <antcall target="check-status"/>
-    </target>
-
     <!-- Clean the suites -->
     <target name="clean-suites" depends="define-tasks">
         <!-- load suites properties -->
