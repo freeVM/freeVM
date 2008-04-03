@@ -17,30 +17,43 @@
 
 <project name="setup" basedir=".">
 
-    <target name="-setup-suite" if="need.setup" depends="-init">
+    <import file="framework.xml" />
 
+    <target name="-setup-suite" if="need.setup" depends="-check-if-was-setup">
+
+        <!-- mark a suite as running -->
         <echo message="#${suite.name}#" file="${tmp.file}" append="true" />
 
-        <!-- TODO: fail only if setup of dependency failed -->
+        <!-- dependencies go first -->
         <setup-dependencies suite="${suite.name}" />
 
-        <!-- setup suite -->
-        <property file="${config.dir}/${suite.name}.properties" />
-        <ant dir="${adaptors.dir}/${suite.name}"
-             antfile="${adaptors.dir}/${suite.name}/adaptor.xml"
-             target="setup"
-             inheritAll="true">
-            <property name="suite.adaptor.dir"
-                      location="${adaptors.dir}/${suite.name}" />
-        </ant>
+        <!-- fork suite's run as a separate process. This lets the build:
+             * to import framework.xml as several adaptors use it
+             * to complete even some suites failed
+               (but fail if dependency failed. see target '-setup-dependencies')
+        -->
+        <exec-ant dir="${scripts.dir}"
+                  file="setup.xml"
+                  targets="setup"
+                  failonerror="${failonerror}"
+                  failproperty="suite.failed">
+            <sysproperty key="suite.name" value="${suite.name}" />
+            <sysproperty key="config.dir" value="${config.dir}" />
+        </exec-ant>
+
+        <!-- store suite's execution status -->
+        <echo file="${tmp.file}" append="true">
+${suite.name}=${suite.failed}
+        </echo>
     </target>
 
-    <target name="-init">
+    <target name="-check-if-was-setup">
 
         <basename file="${basedir}" property="suite.name" />
         <condition property="need.setup">
             <isfileselected file="${tmp.file}">
                 <not>
+                    <!-- find the marker to see if a suite was setup or not -->
                     <contains text="#${suite.name}#" casesensitive="yes" />
                 </not>
             </isfileselected>
@@ -77,7 +90,21 @@
             <property name="config.dir" value="${config.dir}" />
             <property name="scripts.dir" value="${scripts.dir}" />
             <property name="tmp.file" value="${tmp.file}" />
+
+            <!-- fail if dependency failed -->
+            <property name="failonerror" value="true" />
         </subant>
     </target>
 
+    <target name="setup">
+        <property file="${config.dir}/${suite.name}.properties" />
+
+        <ant dir="${adaptors.dir}/${suite.name}"
+             antfile="adaptor.xml"
+             target="setup"
+             inheritall="true">
+            <property name="suite.adaptor.dir"
+                      location="${adaptors.dir}/${suite.name}" />
+        </ant>
+    </target>
 </project>

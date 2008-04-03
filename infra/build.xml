@@ -261,7 +261,30 @@ ERROR: Could not found adaptor for some specified test suites
                 inheritrefs="true">
             <dirset dir="${adaptors.dir}" includes="${installed.suites.list}" />
         </subant>
+
+        <!-- check status: get the list of failed suites -->
+        <loadfile property="failed.list" srcfile="${tmp.file}">
+            <filterchain>
+                <linecontains>
+                    <contains value="=true" />
+                </linecontains>
+                <tokenfilter>
+                    <replaceregex pattern="([^=])=true" replace="\1" />
+                </tokenfilter>
+                <tokenfilter>
+                    <filetokenizer />
+                    <replaceregex pattern="\n" replace="," flags="gs" />
+                </tokenfilter>
+            </filterchain>
+        </loadfile>
         <delete file="${tmp.file}" />
+
+        <fail>
+            <condition>
+                <isset property="failed.list" />
+            </condition>
+            The following suites failed: ${failed.list}
+        </fail>
     </target>
 
     <!-- ================================================================== 
