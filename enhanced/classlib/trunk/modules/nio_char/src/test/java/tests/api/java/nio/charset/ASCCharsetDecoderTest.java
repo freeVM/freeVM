@@ -20,13 +20,10 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
-/**
- * test ISO-8859-1 decoder
- */
-public class ISOCharsetDecoderTest extends CharsetDecoderTest {
+public class ASCCharsetDecoderTest extends CharsetDecoderTest {
 
 	protected void setUp() throws Exception {
-		cs = Charset.forName("iso-8859-1");
+		cs = Charset.forName("ascii");
 		super.setUp();
 	}
 
@@ -39,19 +36,33 @@ public class ISOCharsetDecoderTest extends CharsetDecoderTest {
 
 	// FIXME: give up this tests
 	// public void testDefaultCharsPerByte(){
-	// assertEquals(1, decoder.averageCharsPerByte());
+	// // assertEquals(1, decoder.averageCharsPerByte());
+	// // assertEquals(1, decoder.maxCharsPerByte());
+	// assertEquals(decoder.averageCharsPerByte(), 1, 0.001);
 	// assertEquals(decoder.maxCharsPerByte(), 2, 0.001);
 	// }
 
-	ByteBuffer getUnmappedByteBuffer() throws UnsupportedEncodingException {
-		// TODO how on map?
+	ByteBuffer getUnmappedByteBuffer() {
+		// FIXME: different here
 		return null;
+		// ByteBuffer buffer = ByteBuffer.allocate(8);
+		// buffer.put((byte)-1);
+		// buffer.put(unibytes);
+		// buffer.flip();
+		// return buffer;
 
 	}
 
-	ByteBuffer getMalformedByteBuffer() throws UnsupportedEncodingException {
-		// TODO how malform
-		return null;
+	ByteBuffer getMalformedByteBuffer() {
+		// FIXME: different here
+		ByteBuffer buffer = ByteBuffer.allocate(8);
+		buffer.put((byte) -1);
+		buffer.put(getByteBuffer());
+		buffer.flip();
+		return buffer;
+
+		// TODO: how malform?
+		// return null;
 	}
 
 	ByteBuffer getExceptionByteArray() throws UnsupportedEncodingException {
