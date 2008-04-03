@@ -229,7 +229,7 @@ ERROR: Could not found adaptor for some specified test suites
                 buildpath="${scripts.dir}">
         </subant>
 
-        <check-required-parameters />
+        <antcall target="check-required-parameters" />
     </target>
 
     <target name="create-local-configuration"
@@ -247,23 +247,10 @@ ERROR: Could not found adaptor for some specified test suites
                          Framework Setup Functionality
          ================================================================== -->
 
-    <target name="setup" depends="load-suites-configuration">
-
-        <!-- verify that all required params are set -->
-        <check-required-parameters />
-
-        <!-- get the list of installed suites -->
-        <pathconvert pathsep="," property="suites.setup.list">
-            <path>
-                <fileset dir="${config.dir}">
-                    <include name="*.properties" />
-                </fileset>
-            </path>
-            <chainedmapper>
-                <flattenmapper />
-                <globmapper from="*.properties" to="*" />
-            </chainedmapper>
-        </pathconvert>
+    <target name="setup"
+            depends="check-required-parameters,
+                     -get-installed-suites,
+                     load-suites-configuration">
 
         <!-- temporary file to store intermediate results of iteration -->
         <property name="tmp.file" location="${scripts.dir}/tmp.txt" />
@@ -272,7 +259,7 @@ ERROR: Could not found adaptor for some specified test suites
                 target="-setup-suite"
                 inheritall="true"
                 inheritrefs="true">
-            <dirset dir="${adaptors.dir}" includes="${suites.setup.list}" />
+            <dirset dir="${adaptors.dir}" includes="${installed.suites.list}" />
         </subant>
         <delete file="${tmp.file}" />
     </target>
@@ -280,23 +267,10 @@ ERROR: Could not found adaptor for some specified test suites
     <!-- ================================================================== 
                           Test Execution Functionality
          ================================================================== -->
-    <target name="run" depends="load-suites-configuration">
-
-        <!-- verify that all required params are set -->
-        <check-required-parameters />
-
-        <!-- get the list of set up suites -->
-        <pathconvert pathsep="," property="suites.run.list">
-            <path>
-                <fileset dir="${config.dir}">
-                    <include name="*.properties" />
-                </fileset>
-            </path>
-            <chainedmapper>
-                <flattenmapper />
-                <globmapper from="*.properties" to="*" />
-            </chainedmapper>
-        </pathconvert>
+    <target name="run"
+            depends="check-required-parameters,
+                     -get-installed-suites,
+                     load-suites-configuration">
 
         <!-- temporary file to store intermediate results of iteration -->
         <property name="tmp.file" location="${scripts.dir}/tmp.txt" />
@@ -305,7 +279,7 @@ ERROR: Could not found adaptor for some specified test suites
                 target="-run-suite"
                 inheritall="true"
                 inheritrefs="true">
-            <dirset dir="${adaptors.dir}" includes="${suites.run.list}" />
+            <dirset dir="${adaptors.dir}" includes="${installed.suites.list}" />
             <property name="failonerror" value="false" />
         </subant>
 
@@ -409,29 +383,33 @@ ERROR: Could not find ${selected.suites.configuration}. Please, do 'setup' first
 
     <target name="distclean" description="distclean" />
 
+    <!-- ================================================================== 
+                          Common Targets
+         ================================================================== -->
+
     <target name="-setup-proxy" if="http.proxyHost">
         <setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
     </target>
 
-    <macrodef name="check-required-parameters">
-        <sequential>
+    <target name="check-required-parameters">
 
-            <!-- The property is set only if there missed values
-                 for required properties -->
-            <loadfile property="required.parameters"
-                      srcfile="${required.parameters.location}">
-                <filterchain>
-                    <linecontainsregexp>
-                        <!-- find undefined and empty prop. values -->
-                        <regexp pattern="=(\$|$)" />
-                    </linecontainsregexp>
-                </filterchain>
-            </loadfile>
+        <!-- The property is set only if there missed values
+             for required properties
+        -->
+        <loadfile property="required.parameters"
+                  srcfile="${required.parameters.location}">
+            <filterchain>
+                <linecontainsregexp>
+                    <!-- find undefined and empty prop. values -->
+                    <regexp pattern="=(\$|$)" />
+                </linecontainsregexp>
+            </filterchain>
+        </loadfile>
 
-            <fail>
-                <condition>
-                    <isset property="required.parameters" />
-                </condition>
+        <fail>
+            <condition>
+                <isset property="required.parameters" />
+            </condition>
 #
 There are unset required properties for selected suites:
                 ${test.suites.names.list}
@@ -441,6 +419,22 @@ Please find unset properties or empty values and specify them in:
                 ${framework.local.configuration.file}
 And rerun install
             </fail>
-        </sequential>
-    </macrodef>
+    </target>
+
+    <target name="-get-installed-suites">
+
+        <!-- get the list of installed suites -->
+        <pathconvert pathsep="," property="installed.suites.list">
+            <path>
+                <fileset dir="${config.dir}">
+                    <include name="*.properties" />
+                </fileset>
+            </path>
+            <chainedmapper>
+                <flattenmapper />
+                <globmapper from="*.properties" to="*" />
+            </chainedmapper>
+        </pathconvert>
+    </target>
+
 </project>
