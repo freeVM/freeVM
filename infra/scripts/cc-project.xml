@@ -68,25 +68,6 @@
 
                 <delete file="${@{suite.name}.parameters.cc.file.location}"/>
 
-                <!-- Create the property files for inclusion into the 
-                     CC-config file for @{suite.name}, and for passing
-                     them through the CC to adaptors -->
-                <var name="tmp.cc-props-file"
-                     value="${cc.work.dir}/cc-@{suite.name}.properties"/>
-                <var name="tmp.ant-props-file"
-                     value="${cc.work.dir}/@{suite.name}.properties"/>
-                <antcall target="make-property-files" inheritAll="true">
-                    <param name="suite" value="@{suite.name}"/>
-                    <param name="cc-params-file" value="${tmp.cc-props-file}"/>
-                    <param name="ant-params-file" value="${tmp.ant-props-file}"/>
-                    <propertyset>
-                        <propertyset refid="@{suite.name}.parameters.id"/>
-                        <!-- do map keys to separate the properties 
-                             need to be passed to the project -->
-                        <globmapper from="*" to="-TO-PASS-.*"/>
-                    </propertyset>
-                </antcall>
-                
                 <if><!-- check for custom configuration file -->
                     <isset property="@{suite.name}.parameters.cc.config"/>
                 <then>
@@ -152,8 +133,6 @@
                 <insert-adaptorcall
                     suite="@{suite.name}"
                     ccfile="${@{suite.name}.parameters.cc.file.location}"
-                    ccpropsfile="${tmp.cc-props-file}"
-                    antpropsfile="${tmp.ant-props-file}"
                     time="${tmp.build.day}${tmp.build.time}"
                 />
                 
@@ -172,7 +151,6 @@
                         suite="@{suite.name}"
                         ccfile="${@{suite.name}.parameters.cc.file.location}"
                         bootstrapper="${@{suite.name}.parameters.cc.bootstrapper}"
-                        antpropsfile="${tmp.ant-props-file}"
                     />
                 </then>
                 </if>
@@ -196,17 +174,13 @@
                             suite="@{suite.name}"
                             publisher="${@{suite.name}.parameters.cc.publisher}"
                             ccfile="${@{suite.name}.parameters.cc.file.location}"
-                            ccpropsfile="${tmp.cc-props-file}"
-                            antpropsfile="${tmp.ant-props-file}"
                             target="cc-publish-custom"/>
                     </then>
                     <else>
                         <insert-publisher
                             suite="@{suite.name}"
                             publisher="${scripts.dir}/publisher.xml"
-                            ccfile="${@{suite.name}.parameters.cc.file.location}"
-                            ccpropsfile="${tmp.cc-props-file}"
-                            antpropsfile="${tmp.ant-props-file}"/>
+                            ccfile="${@{suite.name}.parameters.cc.file.location}"/>
                     </else>
                     </if>
                 </then>
@@ -255,44 +229,9 @@
         </replace>
     </target>
 
-    <!-- Creates the CC properties file for specified by ${suite} project -->
-    <target name="make-property-files">
-        <propertyselector 
-            property="tmp.params.list"
-            delimiter=","
-            match="-TO-PASS-\.(.*)$"
-            select="\1"
-            override="true"
-        />
-        <sortlist 
-            property="tmp.sorted.list"
-            value="${tmp.params.list}"
-            delimiter=","
-            override="true"
-        />
-        <!-- make the file for using by ant (double \) -->
-        <echoproperties destfile="${ant-params-file}">
-            <propertyset>
-                <propertyref prefix="-TO-PASS-"/>
-                <globmapper from="-TO-PASS-.*" to="*"/>
-            </propertyset>
-        </echoproperties>
-        <!-- make the file for using by CC -->
-        <echo file="${cc-params-file}"/>
-        <for list="${tmp.sorted.list}" param="param">
-            <sequential>
-                <echo file="${cc-params-file}" 
-                      append="true">@{param}=${-TO-PASS-.@{param}}
-</echo>
-            </sequential>
-        </for>
-    </target>
-
     <macrodef name="insert-adaptorcall">
         <attribute name="suite"/>
         <attribute name="ccfile"/>
-        <attribute name="ccpropsfile"/>
-        <attribute name="antpropsfile"/>
         <attribute name="time"/>
         <sequential>
             <replace file="@{ccfile}">
@@ -304,7 +243,7 @@
                 <!-- Include the parameters known by test suite -->
                 <replacefilter 
                     token="&lt;!-- @BT.PARAMETERS.INCLUDE@ --&gt;" 
-                    value="&lt;property file='@{ccpropsfile}'/&gt;"
+                    value="&lt;property file='${config.dir}/@{suite}.properties'/&gt;"
                 />
                 <replacefilter 
                     token="&lt;!-- @BT.LISTENER@ --&gt;" 
@@ -319,7 +258,7 @@
                 @{time}target='cc-run'&gt;@NL@
                &lt;property name='suite.name' value='@{suite}'/&gt;@NL@
                &lt;property name='properties.dump.file'@NL@
-                         value='@{antpropsfile}'/&gt;@NL@
+                         value='${config.dir}/@{suite}.properties'/&gt;@NL@
            &lt;/ant&gt;@NL@"/>
             </replace>
         </sequential>
@@ -398,7 +337,6 @@
         <attribute name="suite"/>
         <attribute name="ccfile"/>
         <attribute name="bootstrapper"/>
-        <attribute name="antpropsfile"/>
         <sequential>
             <replace file="@{ccfile}">
                 <replacefilter 
@@ -413,7 +351,7 @@
                &lt;property name='suite.name' value='@{suite}'/&gt;@NL@
                &lt;property name='bootstrapper.location' value='@{bootstrapper}'/&gt;@NL@
                &lt;property name='properties.dump.file'@NL@
-                         value='@{antpropsfile}'/&gt;@NL@
+                         value='${config.dir}/@{suite}.properties'/&gt;@NL@
            &lt;/antbootstrapper&gt;@NL@
            &lt;!-- @BT.BOOTSTRAPPER@ --&gt;"/>
             </replace>
@@ -576,8 +514,6 @@ value="${@{property}}@{indent}&lt;compound includeTriggerChanges='@{top}'&gt;@{n
         <attribute name="suite"/>
         <attribute name="publisher"/>
         <attribute name="ccfile"/>
-        <attribute name="ccpropsfile"/>
-        <attribute name="antpropsfile"/>
         <attribute name="target" default="cc-publish"/>
         <sequential>
             <replace file="@{ccfile}">
@@ -589,7 +525,7 @@ value="${@{property}}@{indent}&lt;compound includeTriggerChanges='@{top}'&gt;@{n
                 <!-- Include the parameters known by test suite -->
                 <replacefilter 
                     token="&lt;!-- @BT.PARAMETERS.INCLUDE@ --&gt;" 
-                    value="&lt;property file='@{ccpropsfile}'/&gt;"
+                    value="&lt;property file='${config.dir}/@{suite}.properties'/&gt;"
                 />
                 <replacefilter 
                     token="&lt;!-- @BT.LISTENER@ --&gt;" 
@@ -606,7 +542,7 @@ value="${@{property}}@{indent}&lt;compound includeTriggerChanges='@{top}'&gt;@{n
                &lt;property name='suite.name' value='@{suite}'/&gt;@NL@
                &lt;property name='publisher.location' value='@{publisher}'/&gt;@NL@
                &lt;property name='properties.dump.file'@NL@
-                         value='@{antpropsfile}'/&gt;@NL@
+                         value='${config.dir}/@{suite}.properties'/&gt;@NL@
            &lt;/antpublisher&gt;@NL@
            &lt;!-- @BT.PUBLISHER@ --&gt;"/>
             </replace>
