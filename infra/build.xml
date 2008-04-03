@@ -62,6 +62,7 @@
         <propertyref name="adaptors.dir" />
         <propertyref name="scripts.dir" />
         <propertyref name="config.dir" />
+        <propertyref name="results.dir" />
         <propertyref name="checkouts.dir" />
         <propertyref name="framework.properties.file" />
         <propertyref name="framework.implementation.file" />
@@ -279,8 +280,59 @@ ERROR: Could not found adaptor for some specified test suites
     <!-- ================================================================== 
                           Test Execution Functionality
          ================================================================== -->
-    <target name="run"
-            depends="check-setup, init-framework, init-suites, run-suites" />
+    <target name="run" depends="load-suites-configuration">
+
+        <!-- verify that all required params are set -->
+        <check-required-parameters />
+
+        <!-- get the list of set up suites -->
+        <pathconvert pathsep="," property="suites.run.list">
+            <path>
+                <fileset dir="${config.dir}">
+                    <include name="*.properties" />
+                </fileset>
+            </path>
+            <chainedmapper>
+                <flattenmapper />
+                <globmapper from="*.properties" to="*" />
+            </chainedmapper>
+        </pathconvert>
+
+        <!-- temporary file to store intermediate results of iteration -->
+        <property name="tmp.file" location="${scripts.dir}/tmp.txt" />
+        <echo message="" file="${tmp.file}" />
+        <subant genericantfile="${scripts.dir}/run.xml"
+                target="-run-suite"
+                inheritall="true"
+                inheritrefs="true">
+            <dirset dir="${adaptors.dir}" includes="${suites.run.list}" />
+            <property name="failonerror" value="false" />
+        </subant>
+
+        <!-- check status: get the list of failed suites -->
+        <loadfile property="failed.list" srcfile="${tmp.file}">
+            <filterchain>
+                <linecontains>
+                    <contains value="=true" />
+                </linecontains>
+                <tokenfilter>
+                    <replaceregex pattern="([^=])=true" replace="\1" />
+                </tokenfilter>
+                <tokenfilter>
+                    <filetokenizer />
+                    <replaceregex pattern="\n" replace="," flags="gs" />
+                </tokenfilter>
+            </filterchain>
+        </loadfile>
+        <delete file="${tmp.file}" />
+
+        <fail>
+            <condition>
+                <isset property="failed.list" />
+            </condition>
+            The following suites failed: ${failed.list}
+        </fail>
+    </target>
 
     <target name="run-cc"
             description="run-cc"
