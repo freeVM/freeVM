@@ -175,6 +175,7 @@
 
         <echoproperties destfile="${config.dir}/${suite.name}.properties">
             <propertyset>
+                <propertyref name="suite.name" />
                 <propertyref prefix="${suite.name}" />
                 <propertyref prefix="ext." />
                 <propertyref prefix="framework" />
