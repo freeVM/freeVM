@@ -23,26 +23,3 @@ org/apache/geronimo/j2ee/deployment/annotation/AnnotationHelperTest # 3 fails of
 # fixed in XStream 1.2.2, should be fixed in Geronimo 2.1
 org/apache/geronimo/kernel/config/ConfigurationUtilTest # 1 fail out of 1 test case
 org/apache/geronimo/timer/jdbc/DerbyJDBCWorkerPersistenceTest # 3 errors out of 3 test cases
-
-# Test issue
-# Test harms editorSearchPath being run first in a testlist and then subsequent runs 
-# of other unit tests for this module in the same environment will result in NPE
-# http://issues.apache.org/jira/browse/GERONIMO-2860
-# - The problem disappeared after moving from GUT v1.2beta to v2.0.2
-#org/apache/geronimo/common/propertyeditor/PropertyEditorsTest # 2 test cases 
-
-# Test issue
-# http://issues.apache.org/jira/browse/GERONIMO-3323
-# - The problem disappeared after moving from GUT v1.2beta to v2.0.2
-#org/apache/geronimo/gjndi/binding/GBeanBindingTest # 1 fail out of 1 test case
-
-# TODO: invesigate. Fails on RI
-# http://issues.apache.org/jira/browse/GERONIMO-2055
-# - The test was present in GUT v1.2beta but disappeared in v2.0.2
-#org/apache/geronimo/directory/RunningTest # 1 error out of 1 test case
-
-# Tests issue, extend unstable AbstractThreadPooledTimerTest test, see line 37
-# Remove from exclude when start to use Harmony release build
-# - The problem disappeared after moving from GUT v1.2beta to v2.0.2
-#org/apache/geronimo/timer/TransactionalThreadPooledTimerTest # variable number of fails out of 10 test cases
-#org/apache/geronimo/timer/NontransactionalThreadPooledTimerTest # variable number of fails out of 10 test cases
