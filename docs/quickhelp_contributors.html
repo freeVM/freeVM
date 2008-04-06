@@ -420,14 +420,13 @@ limitations under the License.
       </p>
                                 <pre>$ svn co http://svn.apache.org/repos/asf/harmony/enhanced/trunk </pre>
                                 <p>
-        This command checks out a directory structure that
-        contains <code>common_resources</code>, <code>working_classlib</code>,
-        <code>working_vm</code> and <code>working_jdktools</code>
-        directories. After you populate the source trees in the next step,
-        <code>working_classlib</code>
-        will be the checkout of the class library SVN tree,
-        <code>working_vm</code> will be the checkout
-        of the DRLVM SVN tree, etc.
+        This command checks out a directory structure that contains
+        <code>common_resources</code>, <code>working_classlib</code>,
+        <code>working_vm</code> and <code>working_jdktools</code> directories.
+        The federated build command in the next step will populate the source
+        trees and build the JDK, <code>working_classlib</code> will be the
+        checkout of the class library SVN tree, <code>working_vm</code> will be
+        the checkout of the DRLVM SVN tree, etc.
       </p>
                                 <p class="note">Note</p>
                                 <p class="notetext">
@@ -683,7 +682,6 @@ Hello world!</pre>
         </body>
     </html>
 <!-- end the processing -->
-
 
 
 
