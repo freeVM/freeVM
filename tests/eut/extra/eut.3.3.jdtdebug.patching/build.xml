@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="eut.jdtdebug.patch" default="default" basedir=".">
+<description>Apply patches to Eclipse Unit Tests jdtdebug suite as workaround
+for missed Lazy Resolution functionality on x86_64 platform (HARMONY-5322)</description>
+
+    <!-- Global settings -->
+    <property file="${basedir}/properties"/>
+
+    <property name="work.dir" location="${basedir}"/>
+    <mkdir dir="${work.dir}"/>
+
+    <!-- Patches specific settings -->
+    <property name="patch.location" location="${basedir}/patch"/>
+    <patternset id="to.patch.pattern.tests">
+        <include name="**/org/eclipse/jdt/debug/test/stepping/StepIntoSelectionTests*"/>
+    </patternset>
+
+    <property name="plugin.sources.to.patch" value="eclipse/plugins/org.eclipse.sdk.tests.source_3.2.0.v20070607/src/org.eclipse.jdt.debug.tests_3.1.0/javadebugtestssrc.zip"/>
+
+    <property name="plugin.to.patch.dir" value="eclipse/plugins/org.eclipse.jdt.debug.tests_3.1.0"/>
+    <property name="plugin.to.patch" value="${plugin.to.patch.dir}/javadebugtests.jar"/>
+
+    <!-- Define architecture/platform -->
+    <condition property="arch" value="x86">
+        <and>
+            <contains string="${os.arch}" substring="86" />
+            <not>
+                <contains string="${os.arch}" substring="64" />
+            </not>
+        </and>
+    </condition>
+    <condition property="arch" value="x86_64">
+        <or>
+            <contains string="${os.arch}" substring="86_64" />
+            <contains string="${os.arch}" substring="amd64" />
+        </or>
+    </condition>
+    <condition property="is.windows">
+        <os family="windows" />
+    </condition>
+    <condition property="is.linux">
+        <and>
+            <os family="unix" />
+            <os name="linux" />
+        </and>
+    </condition>
+    <condition property="is.windows.x86">
+        <and>
+            <isset property="is.windows" />
+            <equals arg1="${arch}" arg2="x86" />
+        </and>
+    </condition>
+    <condition property="is.linux.x86">
+        <and>
+            <isset property="is.linux" />
+            <equals arg1="${arch}" arg2="x86" />
+        </and>
+    </condition>
+    <condition property="is.linux.x86_64">
+        <and>
+            <isset property="is.linux" />
+            <equals arg1="${arch}" arg2="x86_64" />
+        </and>
+    </condition>
+
+    <!--  Define arch/os -specific properties -->
+    <condition property="eclipse.filename" value="${eclipse.filename.prefix}-win32.zip">
+        <isset property="is.windows.x86" />
+    </condition>
+    <condition property="eclipse.filename" value="${eclipse.filename.prefix}-linux-gtk.tar.gz">
+        <isset property="is.linux.x86" />
+    </condition>
+    <condition property="eclipse.filename" value="${eclipse.filename.prefix}-linux-gtk-x86_64.tar.gz">
+        <isset property="is.linux.x86_64" />
+    </condition>
+
+    <condition property="eclipse.exists">
+        <available file="${work.dir}/${eclipse.filename}"/>
+    </condition>
+
+    <property
+        name="eut.filename"
+        value="eclipse-Automated-Tests-3.3.zip"/>
+
+    <condition property="eut.exists">
+        <available file="${work.dir}/${eut.filename}"/>
+    </condition>
+
+    <property
+        name="eut.tests.archive.filename"
+        value="eclipse-junit-tests-I20070625-1500.zip"/>
+     <property
+        name="eut.dir"
+        location="${work.dir}/eclipse-testing"/>
+
+    <property
+        name="eclipse.dir"
+        value="${work.dir}/eclipse"/>
+
+<!-- ======== Setup: download and unpack prerequisites (EUT and Eclipse) ======== -->
+
+    <target name="download.eclipse" unless="eclipse.exists">
+        <get src="${eclipse.location}/${eclipse.filename}" dest="${work.dir}/${eclipse.filename}" usetimestamp="true" verbose="true" />
+    </target>
+
+    <target name="download.eut" unless="eut.exists">
+        <get src="${eut.location}/${eut.filename}" dest="${work.dir}/${eut.filename}" usetimestamp="true" verbose="true" />
+    </target>
+
+    <target name="unpack.eclipse.windows" if="is.windows">
+         <unzip
+            src="${work.dir}/${eclipse.filename}"
+            dest="${work.dir}"
+            overwrite="true"/>
+    </target>
+
+    <target name="unpack.eclipse.linux" if="is.linux">
+         <untar
+            src="${work.dir}/${eclipse.filename}"
+            dest="${work.dir}"
+            compression="gzip"
+            overwrite="true"/>
+    </target>
+
+    <target name="unpack.eclipse" depends="unpack.eclipse.windows,unpack.eclipse.linux"/>
+
+    <target name="unpack.eut">
+        <unzip
+            src="${work.dir}/${eut.filename}"
+            dest="${work.dir}"
+            overwrite="true"/>
+        <unzip
+            src="${work.dir}/eclipse-testing/${eut.tests.archive.filename}"
+            dest="${work.dir}/eclipse-testing"
+            overwrite="true"/>
+    </target>
+
+    <target name="setup" depends="download.eclipse,unpack.eclipse,download.eut,unpack.eut">
+    </target>
+
+<!-- ======== Extract sources and apply patches ======== -->
+
+    <target name="extract.sources.to.patch">
+        <delete dir="${work.dir}/sources_to_patch"/>
+        <mkdir dir="${work.dir}/sources_to_patch"/>
+        <unzip
+            src="${eut.dir}/${plugin.sources.to.patch}"
+            dest="${work.dir}/sources_to_patch">
+            <patternset refid="to.patch.pattern.tests"/>
+        </unzip>
+    </target>
+
+    <target name="concat.patches">
+        <concat destfile="${work.dir}/all.patches" append="false">
+            <fileset dir="${patch.location}/tests"/>
+        </concat>
+    </target>
+
+    <target name="try.patch.sources" depends="concat.patches">
+        <delete failonerror="false">
+            <fileset dir="${work.dir}" includes="patched.tmp,patched.tmp.rej"/>
+        </delete>
+        <patch
+            dir="${work.dir}/sources_to_patch"
+            patchfile="${work.dir}/all.patches"
+            strip="0"
+            destfile="${work.dir}/patched.tmp"
+        />
+        <fail message="Patch wasn't applied successfully (see output for details)! Check that you use valid original EUT archive and the patches from ${work.dir}/patch don't interfere.">
+            <condition>
+                <available file="${work.dir}/patched.tmp.rej"/>
+            </condition>
+        </fail>
+        <delete file="${work.dir}/patched.tmp"/>
+    </target>
+
+    <target name="patch.sources" depends="concat.patches,try.patch.sources">
+        <delete dir="${work.dir}/sources_patched" failonerror="false"/>
+        <copy todir="${work.dir}/sources_patched" overwrite="true">
+            <fileset dir="${work.dir}/sources_to_patch"/>
+        </copy>
+        <patch
+            dir="${work.dir}/sources_patched"
+            patchfile="${work.dir}/all.patches"
+            strip="0"
+        />
+    </target>
+
+<!-- ======== Compile patched sources ======== -->
+
+    <target name="compile.patched.sources">
+         <fail message="The Eclipse compiler class for Ant could not be found. Please place the ECJ JAR in ANT_HOME/lib">
+            <condition>
+                <not>
+                    <available classname="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+                </not>
+            </condition>
+        </fail>
+        <property name="javac.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter" />
+        <property name="javac.source" value="1.5" />
+        <property name="javac.target" value="1.5" />
+        <property name="destdir" value="${work.dir}/classes_patched" />
+        <mkdir dir="${destdir}"/>
+        <javac compiler="${javac.compiler}"
+            srcdir="${work.dir}/sources_patched"
+            destdir="${destdir}"
+            includeAntRuntime="no">
+            <compilerarg line="" />
+            <classpath>
+                <fileset dir="${eclipse.dir}/plugins"
+                    includes="**/*.jar" />
+                <fileset dir="${eut.dir}/eclipse/plugins"
+                    includes="**/*.jar" />
+            </classpath>
+        </javac>
+    </target>
+
+<!-- ======== Pack patched files to EUT archive ======== -->
+
+    <target name="pack.patched.sources">
+        <zip
+            update="true"
+            basedir="${work.dir}/sources_patched"
+            keepcompression="true"
+            destfile="${eut.dir}/${plugin.sources.to.patch}">
+            <patternset refid="to.patch.pattern.tests"/>
+        </zip>
+    </target>
+
+    <target name="pack.patched.classes">
+        <zip
+            update="true"
+            basedir="${work.dir}/classes_patched"
+            keepcompression="true"
+            destfile="${eut.dir}/${plugin.to.patch}">
+            <patternset refid="to.patch.pattern.tests"/>
+        </zip>
+    </target>
+
+    <target name="pack.eut">
+        <zip
+            destfile="${eut.dir}/${eut.tests.archive.filename}"
+            update="false"
+            keepcompression="true">
+            <zipfileset dir="${eut.dir}/eclipse" prefix="eclipse"/>
+        </zip>
+        <delete dir="${eut.dir}/eclipse"/>
+        <delete dir="${work.dir}/patched" failonerror="false"/>
+        <mkdir dir="${work.dir}/patched"/>
+        <zip
+            destfile="${work.dir}/patched/${eut.filename}"
+            update="false"
+            duplicate="preserve"
+            keepcompression="true">
+            <zipfileset dir="${eut.dir}" excludes="runtests" prefix="eclipse-testing"/>
+            <zipfileset dir="${eut.dir}" includes="runtests" prefix="eclipse-testing" filemode="755"/>
+        </zip>
+    </target>
+
+<!-- ======== Clean work files/directories ======== -->
+
+    <target name="-clean">
+        <delete failonerror="false" includeemptydirs="true">
+            <fileset dir="${work.dir}/sources_to_patch"/>
+            <fileset dir="${work.dir}/sources_patched"/>
+            <fileset dir="${work.dir}/classes_patched"/>
+            <fileset dir="${work.dir}" includes="patched.tmp,patched.tmp.rej"/>
+            <fileset dir="${work.dir}" includes="all.patches"/>
+            <fileset dir="${eut.dir}"/>
+        </delete>
+    </target>
+
+<!-- ======== Clean work and results files/directories ======== -->
+    <target name="clean" depends="-clean">
+        <delete failonerror="false" includeemptydirs="true">
+            <fileset dir="${eclipse.dir}"/>
+            <fileset dir="${work.dir}/patched"/>
+        </delete>
+    </target>
+
+    <target name="default" depends="setup,extract.sources.to.patch,patch.sources,compile.patched.sources,pack.patched.sources,pack.patched.classes,pack.eut,-clean">
+    </target>
+
+</project>
