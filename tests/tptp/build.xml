@@ -52,6 +52,38 @@ ${JAVA_HOME}/bin/java \
 
 -->
 
+    <condition property="tptp.os" value="win">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="tptp.os" value="linux">
+        <os name="linux"/>
+    </condition>
+
+    <condition property="tptp.arch" value="em64t">
+        <or>
+            <equals arg1="x86_64" arg2="${os.arch}"/>
+            <equals arg1="amd64" arg2="${os.arch}"/>
+        </or>
+    </condition>
+
+    <condition property="tptp.arch" value="ia32">
+        <or>
+            <equals arg1="x86" arg2="${os.arch}"/>
+            <equals arg1="i386" arg2="${os.arch}"/>
+            <equals arg1="i686" arg2="${os.arch}"/>
+        </or>
+    </condition>
+
+    <condition property="tptp.arch" value="ipf">
+        <equals arg1="ia64" arg2="${os.arch}"/>
+    </condition>
+
+    <property name="work.dir" location="${basedir}"/>
+    <property name="ac.location" value="http://mirrors.cat.pdx.edu/eclipse/tptp/4.5.0/TPTP-4.5.0M5-200802170400/"/>
+    <property name="ac.filename" value="agntctrl.${tptp.os}_${tptp.arch}-TPTP-4.5.0M5.zip"/>
+    <property name="ac.home" location="${work.dir}/tptpdc"/>
+
     <!-- path to the reference runtime -->
     <property name="jvm.reference" location="${java.home}/bin/java"/>
     
@@ -71,6 +103,23 @@ ${JAVA_HOME}/bin/java \
     <!-- All arguments -->
     <property name="jvm.args" value="${tptp.options} -Dtest.param='${tested.vm.options}' -Dtest.timeout=${test.timeout} -Dconfigfile=${config.file.new} -Dtest.output=${report.dir} -Dtest.java=${tested.runtime} -Dtest.home=${test.home} -Dac.home=${ac.home} -Dtest.verbose=false -Xbootclasspath/p:${bootclasspath_jar} "/> 
       
+    <!-- ================ Setup ================ -->
+    <target name="setup"
+            depends="fetch-ac"
+            description="Download and install dependencies">
+    </target>
+
+    <target name="fetch-ac"
+            description="Download and install TPTP Agent Controller">
+        <delete dir="${ac.home}" failonerror="false"/>
+        <mkdir dir="${ac.home}"/>
+        <get src="${ac.location}/${ac.filename}"
+             dest="${work.dir}/${ac.filename}"
+             usetimestamp="true"
+             verbose="true" />
+        <unzip src="${work.dir}/${ac.filename}" dest="${ac.home}"/>
+    </target>
+
     <!-- Tests running -->     
     <target name="run" depends="compile"> 
         <!-- Clear previous results -->

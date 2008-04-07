@@ -27,6 +27,18 @@
     <property name="tptp.report"     value="${tptp.results}/tptp_report"/>      
     <property name="tptp.failed.zip" value="${tptp.results}/FailedTests.zip"/>      
 
+    <!-- Setup the TPTP profiler test suite -->
+    <target name="setup" description="Setup TPTP profiler tests."> 
+        <log message="============= Adaptor for ${suite.name}. Setup .."/>
+        <!-- call ant script of the tptp project -->
+        <ant antfile="build.xml"
+                dir="${work.dir}"
+                target="setup"
+                inheritAll="false">
+            <property name="test.home" value="${work.dir}/${tests.module}"/>
+        </ant>
+    </target>
+
     <!-- Run the TPTP profiler test suite -->
     <target name="run" description="Run TPTP profiler tests."> 
         <log message="============= Adaptor for ${suite.name}. Run .."/>
@@ -55,7 +67,6 @@
                   failproperty="tptp.tests.failed">
             <sysproperty key="test.home"         value="${work.dir}/${tests.module}"/>
             <sysproperty key="tested.runtime"    value="${tested.runtime}"/>
-            <sysproperty key="ac.home"           value="${agent.controller.home}"/>
             <sysproperty key="tptp.test.class"   value="${tptp.parameters.optional.tptp.test.class}"/>
             <sysproperty key="runner.arguments"  value="${tptp.parameters.optional.runner.arguments}"/>
             <sysproperty key="tptp.options"      value="${tptp.parameters.optional.runner.vm.options}"/>

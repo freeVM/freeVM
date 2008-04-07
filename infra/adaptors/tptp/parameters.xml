@@ -21,9 +21,6 @@
         <tested.runtime
             description="Path to Tested Runtime"
             value="${drlvm.parameters.shared.jre.dir}"/>
-        <agent.controller.home
-            description="Agent controller runtime location"
-            value=""/>
         <tptp.tests.build.home
             description="Location of the TPTP tests build"
             value=""/>
@@ -37,9 +34,12 @@
         <tested.vm.options
             description="JVM options for tested runtime"
             value=""/>
+<!-- Specify -Dtime.precision=1000000 (1000000 nanos == 1 millis) to avoid test
+failures due to nonmonotonic behavior of gettimeofday() function on some linux
+systems -->
         <runner.vm.options
-            description="Options for tests runner VM (for example, -Doutput.delete=true)"
-            value=""/>
+            description="Options for tests runner VM (for example, -Ddelete.output=false)"
+            value="-Dtime.precision=1000000"/>
         <runner.arguments
             description="These arguments will be passed to test runner"
             value=""/>
