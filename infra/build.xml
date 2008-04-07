@@ -220,8 +220,6 @@ ERROR: Could not found adaptor for some specified test suites
     <target name="generate-config"
             depends="-check-selected-names,create-local-configuration">
 
-        <!-- TODO: properties generated here currently are unused
-             need to check/fix properties flow -->
         <subant genericantfile="${scripts.dir}/config.xml"
                 target="generate-config"
                 inheritall="true"
@@ -335,9 +333,32 @@ ERROR: Could not found adaptor for some specified test suites
             description="run-cc"
             depends="check-setup,
                      -prepare-cc,
-                     init-framework,
-                     create-cc-configuration">
+                     -get-installed-suites,
+                     load-suites-configuration">
 
+        <!-- Create Main CC Configuration File -->
+        <delete file="${cc.config.file}" />
+        <copy file="${cc.config.template}" tofile="${cc.config.file}" />
+
+        <subant genericantfile="${scripts.dir}/cc-project.xml"
+                target="generate-cc-config"
+                inheritall="true"
+                inheritrefs="true">
+            <dirset dir="${adaptors.dir}" includes="${installed.suites.list}" />
+        </subant>
+
+        <!-- setup CC properties and clear last token in main config file -->
+        <replace file="${cc.config.file}">
+            <replacefilter token="@BT.ROOTDIR@" value="${root.dir}" />
+            <replacefilter token="@BT.PROPERTIES@"
+                           value="${framework.properties.file}" />
+
+            <replacetoken>@PROJECT@</replacetoken>
+            <replacevalue>
+            </replacevalue>
+        </replace>
+
+        <!-- launch Cruise Control -->
         <java jar="${ext.cc.location}/lib/cruisecontrol-launcher.jar"
               dir="${cc.work.dir}"
               fork="true">

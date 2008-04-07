@@ -18,20 +18,21 @@
 <!-- ====================================================================== 
                    Ant's script supplementing CC functionality
      ====================================================================== -->
-<project name="cc" default="create-cc-configuration" basedir=".">
+<project name="cc">
 
-    <target name="create-cc-configuration" depends="init-framework, init-suites">
-        <!-- Create Main CC Configuration File -->
-        <delete file="${cc.config.file}"/>
-        <copy file="${cc.config.template}" 
-              tofile="${cc.config.file}"/>
+    <target name="generate-cc-config">
+
+        <basename file="${basedir}" property="suite.name" />
+        <property file="${config.dir}/${suite.name}.properties" />
+
+        <create-cc-configuration suite.name="${suite.name}" />
+    </target>
+    
+    <macrodef name="create-cc-configuration">
+        <attribute name="suite.name"/>
 
         <!-- Create Project Files corresponding to selected Test Suites -->
-        <for list="${test.suites.names.list}" param="suite.name">
             <sequential>
-                <log message="==> Process CC Configuration File for '@{suite.name}'"/>
-                <!-- print-parameters suite="@{suite.name}"/ -->
-
                 <mkdir dir="${cc.log.dir}/@{suite.name}"/>
                 <property name="@{suite.name}.parameters.cc.filename"
                           value="cc-@{suite.name}-project.xml"/>
@@ -193,21 +194,7 @@
                 </replace>
 
             </sequential>
-        </for>
-
-        <!-- setup CC properties and clear last token in main config file -->
-        <replace file="${cc.config.file}">
-            <replacefilter 
-                token="@BT.ROOTDIR@" 
-                value="${root.dir}"/>
-            <replacefilter 
-                token="@BT.PROPERTIES@" 
-                value="${framework.properties.file}"/>
-
-            <replacetoken>@PROJECT@</replacetoken>
-            <replacevalue></replacevalue>
-        </replace>
-    </target>
+    </macrodef>
 
     <macrodef name="insert-adaptorcall">
         <attribute name="suite"/>
