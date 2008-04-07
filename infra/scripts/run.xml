@@ -41,6 +41,10 @@
                   failproperty="suite.failed">
             <sysproperty key="suite.name" value="${suite.name}" />
             <sysproperty key="config.dir" value="${config.dir}" />
+            
+            <!-- for defining ant-contrib's tasks -->
+            <sysproperty key="external.resources.location"
+                         value="${external.resources.location}" />
         </exec-ant>
 
         <!-- store suite's execution status -->
@@ -99,7 +103,11 @@ ${suite.name}=${suite.failed}
         </subant>
     </target>
 
-    <target name="run">
+    <target name="run" depends="define-ant-contrib">
+        <!-- FIXME: several suites depends on ant-contrib
+             but they don't explicitly add its tasks definitions
+        -->
+
         <property file="${config.dir}/${suite.name}.properties" />
 
         <ant dir="${adaptors.dir}/${suite.name}"
