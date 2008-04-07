@@ -333,8 +333,11 @@ ERROR: Could not found adaptor for some specified test suites
 
     <target name="run-cc"
             description="run-cc"
-            depends="check-setup, init-framework,
-                        create-cc-configuration">
+            depends="check-setup,
+                     -prepare-cc,
+                     init-framework,
+                     create-cc-configuration">
+
         <java jar="${ext.cc.location}/lib/cruisecontrol-launcher.jar"
               dir="${cc.work.dir}"
               fork="true">
@@ -348,6 +351,23 @@ ERROR: Could not found adaptor for some specified test suites
             <arg line="-configfile ${cc.config.file} -webapppath ${ext.cc.location}/webapps/cruisecontrol -jmxport ${framework.parameters.cc.jmxport} -webport ${framework.parameters.cc.webport}" />
             <jvmarg line="-Xmx700M" />
         </java>
+    </target>
+
+    <target name="-prepare-cc"
+            depends="define-ant-contrib,load-framework-parameters">
+        <sequential>
+            <if>
+                <istrue value="${framework.parameters.cc.doclean}" />
+                <then>
+                    <delete quiet="true" verbose="false">
+                        <fileset dir="${build.dir}/cc" includes="**/*" />
+                    </delete>
+                </then>
+            </if>
+            <mkdir dir="${cc.work.dir}" />
+            <mkdir dir="${cc.log.dir}" />
+            <touch file="${cc.execution.status.file}" />
+        </sequential>
     </target>
 
     <target name="check-setup">

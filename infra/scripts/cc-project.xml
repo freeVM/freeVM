@@ -20,27 +20,7 @@
      ====================================================================== -->
 <project name="cc" default="create-cc-configuration" basedir=".">
 
-    <!--
-                        Framework Retated Functionality
-    -->
-
-    <target name="-prepare-cc">
-        <sequential>
-        <if>
-            <istrue value="${framework.parameters.cc.doclean}"/>
-        <then>
-            <delete quiet="true" verbose="false">
-                <fileset dir="${build.dir}/cc" includes="**/*"/>
-            </delete>
-        </then>
-        </if>
-        <mkdir dir="${cc.work.dir}"/>
-        <mkdir dir="${cc.log.dir}"/>
-        <touch file="${cc.execution.status.file}"/>
-        </sequential>
-    </target>
-    
-    <target name="create-cc-configuration" depends="init-framework, init-suites, -prepare-cc">
+    <target name="create-cc-configuration" depends="init-framework, init-suites">
         <!-- Create Main CC Configuration File -->
         <delete file="${cc.config.file}"/>
         <copy file="${cc.config.template}" 
