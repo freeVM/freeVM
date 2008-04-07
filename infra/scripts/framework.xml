@@ -47,13 +47,7 @@
 <project name="framework-implementation" basedir=".">
 
     <import file="properties.xml"/>
-    <import file="cc-project.xml"/>
 
-    <!-- Initialize the framework for test execution -->
-    <target name="init-framework" 
-            depends="load-depends, define-tasks, load-suites-configuration, 
-                        load-parameters, -delete-temporal-properties"/>
-    
     <!-- load information about external dependencies locations
          obtained on setup stage -->
     <target name="load-depends">
@@ -66,11 +60,9 @@
 
     <!-- load information about test run configuration
          obtained on setup stage -->
-    <target name="load-suites-configuration" depends="define-ant-contrib">
-        <var file="${selected.suites.configuration}"/>
+    <target name="load-suites-configuration">
+        <property file="${selected.suites.configuration}"/>
     </target>
-
-    <target name="define-tasks" depends="define-ant-contrib"/>
 
     <target name="define-ant-contrib" depends="load-depends">
         <!-- plug in the ANTCONTRIB -->
@@ -79,16 +71,6 @@
                 <pathelement location="${ext.ant-contrib.location}" />
             </classpath>
         </taskdef>
-    </target>
-
-    <target name="load-suites-parameters" depends="define-tasks, define-suites-ids">
-        <!-- load suites properties -->
-        <for list="${test.suites.names.list}" param="suite">
-            <sequential>
-                <log message="Load Parameters For '@{suite}'"/>
-                <call-to-adaptor suite="@{suite}" call="import-suite"/>
-            </sequential>
-        </for>
     </target>
 
     <target name="load-framework-parameters">
@@ -102,96 +84,13 @@
         />
     </target>
 
-    <target name="load-parameters"
-            depends="load-framework-parameters, load-suites-parameters, 
-                        define-tasks">
-        <log message="Loaded Parameters:"/>
-        <print-parameters/>
-
-        <!-- all parameters with keys in extended form -->
-        <propertyset id="parameters.id">
-            <propertyref regex="[^.][^.]*\.parameters\."/>
-        </propertyset>
-
-        <!-- all parameters defined for framework -->
-        <propertyset id="framework.parameters.id">
-            <propertyref regex="framework\.parameters\."/>
-        </propertyset>
-
-        <!-- required parameters with keys in extended form -->
-        <propertyset id="required.parameters.id">
-            <propertyref regex="[^.][^.]*\.parameters\.required"/>
-        </propertyset>
-
-        <!-- required parameters with keys in simple form -->
-        <propertyset id="required.parameters.simple.id">
-            <propertyref regex="[^.]+\.parameters\.required"/>
-            <regexpmapper from="^([^.]+)\.parameters\.required\.(.*)$" to="\1.\2"/>
-        </propertyset>
-
-        <!-- shared parameters with keys in extended form -->
-        <propertyset id="shared.parameters.id">
-            <propertyref regex="[^.][^.]*\.parameters\.shared"/>
-        </propertyset>
-
-        <!-- shared parameters with keys in simple form -->
-        <propertyset id="shared.parameters.simple.id">
-            <propertyref regex="[^.][^.]*\.parameters\.shared"/>
-            <regexpmapper from="^([^.][^.]*)\.parameters\.shared\.(.*)$" to="\1.\2"/>
-        </propertyset>
-
-        <!-- resolved externals -->
-        <propertyset id="resolved.external.parameters.id">
-            <propertyref prefix="ext."/>
-        </propertyset>
-    </target>
-
-    <target name="load-required-parameters" depends="load-parameters">
+    <target name="load-required-parameters">
         <property file="${required.parameters.location}"/>
     </target>
 
-    <target name="define-suites-ids">
-        <!-- do define IDs for the parameters for each particular 
-             tets suite -->
-        <for list="${test.suites.names.list}" param="suite">
-        <sequential>
-            <propertyset id="@{suite}.parameters.id">
-                <propertyset refid="resolved.external.parameters.id"/>
-                <propertyset refid="framework.parameters.id"/>
-                <propertyset refid="global.build.parameters.id"/>
-                <!-- required parameters in the simple form -->
-                <propertyset>
-                    <propertyset refid="required.parameters.simple.id"/> 
-                    <propertyref prefix="@{suite}"/>
-                </propertyset>
-                <!-- required parameters in the simple form 
-                     without suite name -->
-                <propertyset>
-                    <propertyset refid="required.parameters.simple.id"/>
-                    <regexpmapper from="^@{suite}\.(.*)$" to="\1"/>
-                </propertyset>
-                <!-- shared parameters in any form" -->
-                <propertyset refid="shared.parameters.id"/>
-                <propertyset refid="shared.parameters.simple.id"/>
-                <!-- shared parameters in the simple form 
-                     without suite name -->
-                <propertyset>
-                    <propertyset refid="shared.parameters.simple.id"/>
-                    <regexpmapper from="^@{suite}\.(.*)$" to="\1"/>
-                </propertyset>
-            </propertyset>
-        </sequential>
-        </for>
-    </target>
-
-    <!-- do test suites initialization work before adaptors execution -->
-    <target name="init-suites" 
-                depends="init-framework, 
-                    load-required-parameters,
-                        define-suites-ids, -delete-temporal-properties"/>
-
     <!-- Clean the suites -->
-    <target name="clean-suites" depends="define-tasks">
+    <target name="clean-suites" depends="define-ant-contrib">
+        <!-- FIXME: refactor as setup & run -->
         <!-- load suites properties -->
         <for list="${test.suites.names.list}" param="suite">
         <sequential>
@@ -203,7 +102,7 @@
         <!-- TODO: check status after cleanup  -->
     </target>
 
-
+    <!-- FIXME: remove macrodef after refactoring clean-suites -->
     <macrodef name="call-to-adaptor">
         <attribute name="suite"/>
         <attribute name="call"/>
@@ -228,84 +127,11 @@
             <!-- import resulting suite's parameter values -->
             <var file="${tmp.result.file}"/>
 
-            <!-- Resolve names depending on suite's shared parameters -->
-            <resolve-parameters file="${tmp.result.file}"/>
-            
             <!-- remove the temporary objects -->
             <delete file="${tmp.result.file}" quiet="true" verbose="false"/>
             <var name="tmp.result.file" unset="true"/>
         </sequential>
     </macrodef>
-
-    <!-- Resolve the values of the parameters depending 
-         on internal adaptor's properties -->
-    <macrodef name="resolve-parameters">
-        <!-- resolve for all suites by default -->
-        <attribute name="suite" default="[^\.]*"/>
-        <!-- helper file used for names resolution -->
-        <attribute name="file"/>
-        <sequential>
-            <!-- save -->
-            <save-parameters file="@{file}" suite="@{suite}"/>
-            <!-- load -->
-            <var file="@{file}"/>
-            <!-- == reload :) -->
-        </sequential>
-    </macrodef>
-
-    <!-- Save the values of the parameters -->
-    <macrodef name="save-parameters">
-        <!-- save for specified suite -->
-        <attribute name="suite" default="[^\.]*"/>
-        <!-- file where parameters will be saved -->
-        <attribute name="file"/>
-        <sequential>
-            <echoproperties destfile="@{file}">
-                <propertyset>
-                    <propertyref regex="@{suite}\.parameters\."/>
-                </propertyset>
-            </echoproperties>
-        </sequential>
-    </macrodef>
-
-    <macrodef name="print-parameters">
-        <attribute name="suite" default="[^\.]*"/>
-        <sequential>
-            <log message="====== Parameters of @{suite} =========="/>
-            <propertyselector 
-                property="tmp.params.list"
-                delimiter=","
-                match="@{suite}\.parameters\..*"
-                override="true"
-            />
-            <sortlist 
-                property="tmp.sorted.list"
-                value="${tmp.params.list}"
-                delimiter=","
-                override="true"
-            />
-            <for list="${tmp.sorted.list}" param="param">
-                <sequential>
-                    <log message="@{param}=${@{param}}"/>
-                </sequential>
-            </for>
-        </sequential>
-    </macrodef>
-
-    <!-- removes temporal properties (starting with tmp. prefix ) -->
-    <target name="-delete-temporal-properties">
-        <propertyselector 
-            property="temp.pack.list"
-            override="true"
-            delimiter=","
-            match="^tmp\..*"
-        />
-        <for list="${temp.pack.list}" param="temp">
-            <sequential>
-                <var name="@{param}" unset="true"/>
-            </sequential>
-        </for>
-    </target>
 
     <!-- check for the failures of the superior suites and place their
          names (if any) into specified property -->

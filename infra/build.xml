@@ -443,7 +443,7 @@ ERROR: Could not find ${selected.suites.configuration}. Please, do 'setup' first
 
     <target name="clean"
             description="clean"
-            depends="init-framework, clean-suites" />
+            depends="clean-suites" />
 
     <target name="distclean" description="distclean" />
 

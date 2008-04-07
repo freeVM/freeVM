@@ -56,8 +56,6 @@ ${execution.exception}
                 <property name="${suite.name}.parameters.@{target}.failed" value="true"/>
             </catch>
             </trycatch>
-            <resolve-parameters suite="${suite.name}" file="${result.file.location}"/>
-            <save-parameters suite="${suite.name}" file="${result.file.location}"/>
         </sequential>
     </macrodef>
 
@@ -71,16 +69,6 @@ ${execution.exception}
 
     <target name="clean-suite">
         <call-target target="clean"/>
-    </target>
-
-    <!-- just load all defined parameters -->
-    <target name="import-suite">
-        <xmlproperty file="parameters.xml"
-                     collapseAttributes="true"
-                     semanticAttributes="true"
-                     prefix="${suite.name}"
-        />
-        <save-parameters suite="${suite.name}" file="${result.file.location}"/>
     </target>
 
 </project>
