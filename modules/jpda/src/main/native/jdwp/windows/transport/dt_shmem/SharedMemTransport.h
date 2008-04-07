@@ -25,9 +25,6 @@
 
 #include <windows.h>
 
-typedef CRITICAL_SECTION CriticalSection;
-typedef DWORD ThreadId_t;
-
 #include "jni.h"
 #include "jdwpTransport.h"
 #include "LastTransportError.h"

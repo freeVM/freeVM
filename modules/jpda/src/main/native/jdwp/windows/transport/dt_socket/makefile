@@ -28,7 +28,8 @@ LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 INCLUDES = $(INCLUDES) \
          -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
-         -I$(COMMON)generic -I.
+         -I$(COMMON)generic -I. \
+         -I..\common
 
 HYCFLAGS = $(HYCFLAGS) $(INCLUDES) -GX -wd4290
 

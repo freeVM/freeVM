@@ -40,7 +40,6 @@
 #include <Ws2tcpip.h>
 
 typedef CRITICAL_SECTION CriticalSection;
-typedef DWORD ThreadId_t;
 
 #include "jdwpTransport.h"
 #include "LastTransportError.h"
@@ -115,10 +114,5 @@ LeaveCriticalSendSection(jdwpTransportEnv* env)
 {
     LeaveCriticalSection(&(((internalEnv*)env->functions->reserved1)->sendLock));
 } //LeaveCriticalSendSection()
-
-static inline bool ThreadId_equal(ThreadId_t treadId1, ThreadId_t treadId2)
-{
-    return (treadId1 == treadId2);
-} // ThreadId_equal()
 
 #endif // _SOCKETTRANSPORT_PD_H

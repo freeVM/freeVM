@@ -30,7 +30,8 @@ CFLAGS += -fpic
 CXXFLAGS += -fpic
 
 INCLUDES += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
-            -I$(COMMON)generic -I.
+            -I$(COMMON)generic -I. \
+            -I../common
 
 LDFLAGS += -lstdc++
 
