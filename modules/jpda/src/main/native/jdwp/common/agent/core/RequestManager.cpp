@@ -101,6 +101,12 @@ void RequestManager::Reset(JNIEnv* jni) throw(AgentException)
             DeleteAllRequests(jni, JDWP_EVENT_METHOD_ENTRY);
             DeleteAllRequests(jni, JDWP_EVENT_METHOD_EXIT);
             DeleteAllRequests(jni, JDWP_EVENT_VM_DEATH);
+            // New events for Java 6
+            DeleteAllRequests(jni, JDWP_EVENT_METHOD_EXIT_WITH_RETURN_VALUE);   
+            DeleteAllRequests(jni, JDWP_EVENT_MONITOR_CONTENDED_ENTER); 
+            DeleteAllRequests(jni, JDWP_EVENT_MONITOR_CONTENDED_ENTERED); 
+            DeleteAllRequests(jni, JDWP_EVENT_MONITOR_WAIT);     
+            DeleteAllRequests(jni, JDWP_EVENT_MONITOR_WAITED);
         } catch (AgentException& e) {
             JDWP_INFO("JDWP error: " << e.what() << " [" << e.ErrCode() << "]");
         }
@@ -312,6 +318,22 @@ void RequestManager::ControlEvent(JNIEnv* jni,
         eventType = JVMTI_EVENT_THREAD_END;
         nullThreadForSetEventNotificationMode = true;
         break;
+    // New events for Java 6
+    case JDWP_EVENT_METHOD_EXIT_WITH_RETURN_VALUE:
+        eventType = JVMTI_EVENT_METHOD_EXIT;
+        break;
+    case JDWP_EVENT_MONITOR_CONTENDED_ENTER:
+        eventType = JVMTI_EVENT_MONITOR_CONTENDED_ENTER;
+        break;
+    case JDWP_EVENT_MONITOR_CONTENDED_ENTERED:
+        eventType = JVMTI_EVENT_MONITOR_CONTENDED_ENTERED;
+        break;
+    case JDWP_EVENT_MONITOR_WAIT:
+        eventType = JVMTI_EVENT_MONITOR_WAIT;
+        break;
+    case JDWP_EVENT_MONITOR_WAITED:
+        eventType = JVMTI_EVENT_MONITOR_WAITED;
+        break;
     default:
         return;
     }
@@ -395,6 +417,17 @@ RequestList& RequestManager::GetRequestList(jdwpEventKind kind)
         return m_methodExitRequests;
     case JDWP_EVENT_VM_DEATH:
         return m_vmDeathRequests;
+    // New events for Java 6
+    case JDWP_EVENT_METHOD_EXIT_WITH_RETURN_VALUE:
+        return m_methodExitWithReturnValueRequests;
+    case JDWP_EVENT_MONITOR_CONTENDED_ENTER:
+        return m_monitorContendedEnterRequests;
+    case JDWP_EVENT_MONITOR_CONTENDED_ENTERED:
+       return m_monitorContendedEnteredRequests;
+    case JDWP_EVENT_MONITOR_WAIT:
+        return  m_monitorWaitRequests;
+    case JDWP_EVENT_MONITOR_WAITED:
+        return m_monitorWaitedRequests;
     default:
         throw AgentException(JDWP_ERROR_INVALID_EVENT_TYPE);
     }
@@ -579,6 +612,17 @@ RequestManager::GetEventKindName(jdwpEventKind kind) const throw()
         return "METHOD_EXIT";
     case JDWP_EVENT_VM_DEATH:
         return "VM_DEATH";
+    // New events for Java 6
+    case JDWP_EVENT_METHOD_EXIT_WITH_RETURN_VALUE:
+        return "METHOD_EXIT_WITH_RETURN_VALUE";
+    case JDWP_EVENT_MONITOR_CONTENDED_ENTER:
+        return "MONITOR_CONTENDED_ENTER";
+    case JDWP_EVENT_MONITOR_CONTENDED_ENTERED:
+        return "MONITOR_CONTENDED_ENTERED";
+    case JDWP_EVENT_MONITOR_WAIT:
+        return "MONITOR_WAIT";
+    case JDWP_EVENT_MONITOR_WAITED:
+        return "MONITOR_WAITED";
     default:
         return "UNKNOWN";
     }
@@ -951,6 +995,44 @@ bool RequestManager::IsMethodExitLocation(JNIEnv* jni, EventInfo& eInfo)
     return isExit;
 }
 
+jdwpTag RequestManager::MethodReturnType(jvmtiEnv *env, jmethodID method)
+{
+    char *signature;
+    jvmtiError err;
+    JVMTI_TRACE(err, env->GetMethodName(method, NULL, &signature, NULL));
+    if(err != JVMTI_ERROR_NONE) {
+        throw AgentException(err);
+    }
+    AgentAutoFree aafSignature(signature JDWP_FILE_LINE);
+
+    string str(signature);
+    string::size_type pos = str.find_first_of(")", 0);
+    string returnType = str.substr(pos+1, 1);
+    if (returnType == "V") {
+        return JDWP_TAG_VOID;
+    } else if (returnType == "[") {
+        return JDWP_TAG_OBJECT;
+    } else if (returnType == "B") {
+        return JDWP_TAG_BYTE;
+    } else if (returnType == "C") {
+        return JDWP_TAG_CHAR;
+    }else if (returnType == "F") {
+        return  JDWP_TAG_FLOAT;
+    }else if (returnType == "D") {
+        return JDWP_TAG_DOUBLE;
+    }else if (returnType == "I") {
+        return JDWP_TAG_INT;
+    }else if (returnType == "J") {
+        return JDWP_TAG_LONG;
+    }else if (returnType == "S") {
+        return JDWP_TAG_SHORT;
+    }else if (returnType == "Z") {
+        return JDWP_TAG_BOOLEAN;
+    } else {
+        return JDWP_TAG_OBJECT;
+    }
+}
+
 // --------------------- end of combined events support -----------------------
 
 //-----------------------------------------------------------------------------
@@ -1021,7 +1103,7 @@ void JNICALL RequestManager::HandleClassPrepare(jvmtiEnv* jvmti, JNIEnv* jni,
         jthread thread, jclass cls)
 {
     JDWP_TRACE_ENTRY("HandleClassPrepare(" << jvmti << ',' << jni << ',' << thread << ',' << cls << ')');
-    
+
     bool isAgent = GetThreadManager().IsAgentThread(jni, thread);
     try {
         jvmtiError err;
@@ -1052,7 +1134,9 @@ void JNICALL RequestManager::HandleClassPrepare(jvmtiEnv* jvmti, JNIEnv* jni,
         jint eventCount = 0;
         RequestID *eventList = 0;
         jdwpSuspendPolicy sp = JDWP_SUSPEND_NONE;
+
         GetRequestManager().GenerateEvents(jni, eInfo, eventCount, eventList, sp);
+
         eInfo.thread = isAgent ? 0 : thread;
         sp = isAgent ? JDWP_SUSPEND_NONE : sp;
     
@@ -1729,11 +1813,24 @@ void JNICALL RequestManager::HandleMethodExit(jvmtiEnv* jvmti, JNIEnv* jni,
         jthread thread, jmethodID method, jboolean was_popped_by_exception,
         jvalue return_value)
 {
+    HandleMethodExitWithoutReturnValue(jvmti, jni, thread, method, was_popped_by_exception, return_value);
+    HandleMethodExitWithReturnValue(jvmti, jni, thread, method, was_popped_by_exception, return_value);
+}
+
+void JNICALL RequestManager::HandleMethodExitWithoutReturnValue(jvmtiEnv* jvmti, JNIEnv* jni,
+        jthread thread, jmethodID method, jboolean was_popped_by_exception,
+        jvalue return_value)
+{
     JDWP_TRACE_ENTRY("HandleMethodExit(" << jvmti << ',' << jni << ',' << thread
         << ',' << method << ',' << was_popped_by_exception << ',' << &return_value << ')');
 
     // must be non-agent thread
     if (GetThreadManager().IsAgentThread(jni, thread)) {
+        return;
+    }
+
+    // Method exit events are not generated if the method terminates with a thrown exception. 
+    if (was_popped_by_exception) {
         return;
     }
 
@@ -1814,6 +1911,103 @@ void JNICALL RequestManager::HandleMethodExit(jvmtiEnv* jvmti, JNIEnv* jni,
         }
     } catch (AgentException& e) {
         JDWP_INFO("JDWP error in METHOD_EXIT: " << e.what() << " [" << e.ErrCode() << "]");
+    }
+}
+
+void JNICALL RequestManager::HandleMethodExitWithReturnValue(jvmtiEnv* jvmti, JNIEnv* jni,
+        jthread thread, jmethodID method, jboolean was_popped_by_exception,
+        jvalue return_value)
+{
+    JDWP_TRACE_ENTRY("HandleMethodExitWithReturnValue(" << jvmti << ',' << jni << ',' << thread
+        << ',' << method << ',' << was_popped_by_exception << ',' << &return_value << ')');
+
+    // must be non-agent thread
+    if (GetThreadManager().IsAgentThread(jni, thread)) {
+        return;
+    }
+    // Method exit events are not generated if the method terminates with a thrown exception. 
+    if (was_popped_by_exception) {
+        return;
+    }
+
+    try {
+        jvmtiError err;
+        EventInfo eInfo;
+        memset(&eInfo, 0, sizeof(eInfo));
+        eInfo.kind = JDWP_EVENT_METHOD_EXIT_WITH_RETURN_VALUE;
+        eInfo.thread = thread;
+        CombinedEventsInfo::CombinedEventsKind combinedKind = CombinedEventsInfo::COMBINED_EVENT_METHOD_EXIT;
+
+        if (ENABLE_COMBINED_METHOD_EXIT_EVENT) {
+            // if this combined event was already prediced, ignore event
+            if (GetRequestManager().IsPredictedCombinedEvent(jni, eInfo, combinedKind)) {
+                return;
+            }
+        }
+
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodDeclaringClass(method,
+            &eInfo.cls));
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
+            &eInfo.signature, 0));
+        JvmtiAutoFree jafSignature(eInfo.signature);
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
+            &eInfo.method, &eInfo.location));
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+        JDWP_ASSERT(method == eInfo.method);
+
+#ifndef NDEBUG
+        if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
+            char* name = 0;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(eInfo.method, &name, 0, 0));
+
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("METHOD_EXIT_WITH_RETURN_VALUE event:"
+                << " class=" << JDWP_CHECK_NULL(eInfo.signature) 
+                << " method=" << JDWP_CHECK_NULL(name)
+                << " loc=" << eInfo.location
+                << " thread=" << JDWP_CHECK_NULL(info.name));
+        }
+#endif // NDEBUG
+
+        // there are no combined events to be generated after METHOD_EXIT_WITH_RETURN_VALUE event
+
+        jint eventCount = 0;
+        RequestID *eventList = 0;
+        jdwpSuspendPolicy sp = JDWP_SUSPEND_NONE;
+        GetRequestManager().GenerateEvents(jni, eInfo, eventCount, eventList, sp);
+        AgentAutoFree aafEL(eventList JDWP_FILE_LINE);
+
+        // post generated events
+        if (eventCount > 0) {
+            jdwpTypeTag typeTag = GetClassManager().GetJdwpTypeTag(eInfo.cls);
+            EventComposer *ec = new EventComposer(GetEventDispatcher().NewId(),
+                JDWP_COMMAND_SET_EVENT, JDWP_COMMAND_E_COMPOSITE, sp);
+            ec->event.WriteInt(eventCount);
+            for (jint i = 0; i < eventCount; i++) {
+                ec->event.WriteByte(JDWP_EVENT_METHOD_EXIT_WITH_RETURN_VALUE);
+                ec->event.WriteInt(eventList[i]);
+                ec->WriteThread(jni, thread);
+                ec->event.WriteLocation(jni,
+                    typeTag, eInfo.cls, method, eInfo.location);
+                ec->event.WriteValue(jni, MethodReturnType(GetJvmtiEnv(), method), return_value);
+            }
+            JDWP_TRACE_EVENT("MethodExitWithReturnValue : post set of " << eventCount << " events");
+            GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_METHOD_EXIT_WITH_RETURN_VALUE);
+        }
+    } catch (AgentException& e) {
+        JDWP_INFO("JDWP error in METHOD_EXIT_WITH_RETURN_VALUE: " << e.what() << " [" << e.ErrCode() << "]");
     }
 }
 
@@ -2206,5 +2400,312 @@ void JNICALL RequestManager::HandleFramePop(jvmtiEnv* jvmti, JNIEnv* jni,
         }
     } catch (AgentException& e) {
         JDWP_INFO("JDWP error in FRAME_POP: " << e.what() << " [" << e.ErrCode() << "]");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// New event callbacks for Java 6
+//-----------------------------------------------------------------------------
+
+void JNICALL RequestManager::HandleMonitorWait(jvmtiEnv *jvmti, JNIEnv* jni, 
+            jthread thread, jobject object, jlong timeout)
+{
+    JDWP_TRACE_ENTRY("HandleMonitorWait(" << jvmti << ',' << jni << ',' << thread << ',' << object << ',' << timeout << ')');
+    
+    bool isAgent = GetThreadManager().IsAgentThread(jni, thread);
+    try {
+        jvmtiError err;
+        EventInfo eInfo;
+        memset(&eInfo, 0, sizeof(eInfo));
+        eInfo.kind = JDWP_EVENT_MONITOR_WAIT;
+        eInfo.thread = thread;
+        jclass cls = jni->GetObjectClass(object); 
+        eInfo.cls = cls;
+
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
+            &eInfo.signature, 0));
+        JvmtiAutoFree jafSignature(eInfo.signature);
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+#ifndef NDEBUG
+        if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("MONITOR_WAIT event:"
+                << " monitor object class=" << JDWP_CHECK_NULL(eInfo.signature)
+                << " thread=" << JDWP_CHECK_NULL(info.name));
+        }
+#endif // NDEBUG
+
+         JVMTI_TRACE(err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
+            &eInfo.method, &eInfo.location));
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+        jint eventCount = 0;
+        RequestID *eventList = 0;
+        jdwpSuspendPolicy sp = JDWP_SUSPEND_NONE;
+        GetRequestManager().GenerateEvents(jni, eInfo, eventCount, eventList, sp);
+        eInfo.thread = isAgent ? 0 : thread;
+        sp = isAgent ? JDWP_SUSPEND_NONE : sp;
+    
+        AgentAutoFree aafEL(eventList JDWP_FILE_LINE);
+
+        // post generated events
+        if (eventCount > 0) {
+            jdwpTypeTag typeTag = GetClassManager().GetJdwpTypeTag(cls);
+            jint status = 0;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetClassStatus(cls, &status));
+            if (err != JVMTI_ERROR_NONE) {
+                throw AgentException(err);
+            }
+            EventComposer *ec = new EventComposer(GetEventDispatcher().NewId(),
+                JDWP_COMMAND_SET_EVENT, JDWP_COMMAND_E_COMPOSITE, sp);
+            ec->event.WriteInt(eventCount);
+            for (jint i = 0; i < eventCount; i++) {
+                ec->event.WriteByte(JDWP_EVENT_MONITOR_WAIT);
+                ec->event.WriteInt(eventList[i]);
+                ec->WriteThread(jni, thread);
+                ec->event.WriteTaggedObjectID(jni, object);
+                ec->event.WriteLocation(jni,
+                    typeTag, eInfo.cls, eInfo.method, eInfo.location);
+                ec->event.WriteLong(timeout);
+            }
+            JDWP_TRACE_EVENT("MonitorWait: post set of " << eventCount << " events");
+            GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_MONITOR_WAIT);
+        }
+    } catch (AgentException& e) {
+        JDWP_INFO("JDWP error in MONITOR_WAIT: " << e.what() << " [" << e.ErrCode() << "]");
+    }
+}
+
+void JNICALL RequestManager::HandleMonitorWaited(jvmtiEnv *jvmti, JNIEnv* jni, 
+            jthread thread, jobject object, jboolean timed_out)
+{
+    JDWP_TRACE_ENTRY("HandleMonitorWaited(" << jvmti << ',' << jni << ',' << thread << ',' << object << ',' << timed_out << ')');
+    
+    bool isAgent = GetThreadManager().IsAgentThread(jni, thread);
+    try {
+        jvmtiError err;
+        EventInfo eInfo;
+        memset(&eInfo, 0, sizeof(eInfo));
+        eInfo.kind = JDWP_EVENT_MONITOR_WAITED;
+        eInfo.thread = thread;
+        jclass cls = jni->GetObjectClass(object); 
+        eInfo.cls = cls;
+
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
+            &eInfo.signature, 0));
+        JvmtiAutoFree jafSignature(eInfo.signature);
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+#ifndef NDEBUG
+        if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("MONITOR_WAITED event:"
+                << " monitor object class=" << JDWP_CHECK_NULL(eInfo.signature)
+                << " thread=" << JDWP_CHECK_NULL(info.name));
+        }
+#endif // NDEBUG
+
+         JVMTI_TRACE(err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
+            &eInfo.method, &eInfo.location));
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+        jint eventCount = 0;
+        RequestID *eventList = 0;
+        jdwpSuspendPolicy sp = JDWP_SUSPEND_NONE;
+        GetRequestManager().GenerateEvents(jni, eInfo, eventCount, eventList, sp);
+        eInfo.thread = isAgent ? 0 : thread;
+        sp = isAgent ? JDWP_SUSPEND_NONE : sp;
+    
+        AgentAutoFree aafEL(eventList JDWP_FILE_LINE);
+
+        // post generated events
+        if (eventCount > 0) {
+            jdwpTypeTag typeTag = GetClassManager().GetJdwpTypeTag(cls);
+            jint status = 0;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetClassStatus(cls, &status));
+            if (err != JVMTI_ERROR_NONE) {
+                throw AgentException(err);
+            }
+            EventComposer *ec = new EventComposer(GetEventDispatcher().NewId(),
+                JDWP_COMMAND_SET_EVENT, JDWP_COMMAND_E_COMPOSITE, sp);
+            ec->event.WriteInt(eventCount);
+            for (jint i = 0; i < eventCount; i++) {
+                ec->event.WriteByte(JDWP_EVENT_MONITOR_WAITED);
+                ec->event.WriteInt(eventList[i]);
+                ec->WriteThread(jni, thread);
+                ec->event.WriteTaggedObjectID(jni, object);
+                ec->event.WriteLocation(jni,
+                    typeTag, eInfo.cls, eInfo.method, eInfo.location);
+                ec->event.WriteBoolean(timed_out);
+            }
+            JDWP_TRACE_EVENT("MonitorWait: post set of " << eventCount << " events");
+            GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_MONITOR_WAITED);
+        }
+    } catch (AgentException& e) {
+        JDWP_INFO("JDWP error in MONITOR_WAITED: " << e.what() << " [" << e.ErrCode() << "]");
+    }
+}
+
+void JNICALL RequestManager::HandleMonitorContendedEnter(jvmtiEnv *jvmti, JNIEnv* jni,
+            jthread thread, jobject object)
+{
+    JDWP_TRACE_ENTRY("HandleMonitorContendedEnter(" << jvmti << ',' << jni << ',' << thread << ',' << object << ')');
+    
+    bool isAgent = GetThreadManager().IsAgentThread(jni, thread);
+    try {
+        jvmtiError err;
+        EventInfo eInfo;
+        memset(&eInfo, 0, sizeof(eInfo));
+        eInfo.kind = JDWP_EVENT_MONITOR_CONTENDED_ENTER;
+        eInfo.thread = thread;
+        jclass cls = jni->GetObjectClass(object); 
+        eInfo.cls = cls;
+
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
+            &eInfo.signature, 0));
+        JvmtiAutoFree jafSignature(eInfo.signature);
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+#ifndef NDEBUG
+        if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("MONITOR_CONTENDED_ENTER event:"
+                << " monitor object class=" << JDWP_CHECK_NULL(eInfo.signature)
+                << " thread=" << JDWP_CHECK_NULL(info.name));
+        }
+#endif // NDEBUG
+
+         JVMTI_TRACE(err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
+            &eInfo.method, &eInfo.location));
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+        jint eventCount = 0;
+        RequestID *eventList = 0;
+        jdwpSuspendPolicy sp = JDWP_SUSPEND_NONE;
+        GetRequestManager().GenerateEvents(jni, eInfo, eventCount, eventList, sp);
+        eInfo.thread = isAgent ? 0 : thread;
+        sp = isAgent ? JDWP_SUSPEND_NONE : sp;
+    
+        AgentAutoFree aafEL(eventList JDWP_FILE_LINE);
+
+        // post generated events
+        if (eventCount > 0) {
+            jdwpTypeTag typeTag = GetClassManager().GetJdwpTypeTag(cls);
+            jint status = 0;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetClassStatus(cls, &status));
+            if (err != JVMTI_ERROR_NONE) {
+                throw AgentException(err);
+            }
+            EventComposer *ec = new EventComposer(GetEventDispatcher().NewId(),
+                JDWP_COMMAND_SET_EVENT, JDWP_COMMAND_E_COMPOSITE, sp);
+            ec->event.WriteInt(eventCount);
+            for (jint i = 0; i < eventCount; i++) {
+                ec->event.WriteByte(JDWP_EVENT_MONITOR_CONTENDED_ENTER);
+                ec->event.WriteInt(eventList[i]);
+                ec->WriteThread(jni, thread);
+                ec->event.WriteTaggedObjectID(jni, object);
+                ec->event.WriteLocation(jni,
+                    typeTag, eInfo.cls, eInfo.method, eInfo.location);
+            }
+            JDWP_TRACE_EVENT("MonitorContendedEnter: post set of " << eventCount << " events");
+            GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_MONITOR_CONTENDED_ENTER);
+        }
+    } catch (AgentException& e) {
+        JDWP_INFO("JDWP error in MONITOR_CONTENDED_ENTER: " << e.what() << " [" << e.ErrCode() << "]");
+    }
+
+}
+
+void JNICALL RequestManager::HandleMonitorContendedEntered(jvmtiEnv *jvmti, JNIEnv* jni,
+            jthread thread, jobject object)
+{
+    JDWP_TRACE_ENTRY("HandleMonitorContendedEntered(" << jvmti << ',' << jni << ',' << thread << ',' << object << ')');
+    
+    bool isAgent = GetThreadManager().IsAgentThread(jni, thread);
+    try {
+        jvmtiError err;
+        EventInfo eInfo;
+        memset(&eInfo, 0, sizeof(eInfo));
+        eInfo.kind = JDWP_EVENT_MONITOR_CONTENDED_ENTERED;
+        eInfo.thread = thread;
+        jclass cls = jni->GetObjectClass(object); 
+        eInfo.cls = cls;
+
+        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
+            &eInfo.signature, 0));
+        JvmtiAutoFree jafSignature(eInfo.signature);
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+#ifndef NDEBUG
+        if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
+            jvmtiThreadInfo info;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+
+            JDWP_TRACE_EVENT("MONITOR_CONTENDED_ENTERED event:"
+                << " monitor object class=" << JDWP_CHECK_NULL(eInfo.signature)
+                << " thread=" << JDWP_CHECK_NULL(info.name));
+        }
+#endif // NDEBUG
+
+         JVMTI_TRACE(err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
+            &eInfo.method, &eInfo.location));
+        if (err != JVMTI_ERROR_NONE) {
+            throw AgentException(err);
+        }
+
+        jint eventCount = 0;
+        RequestID *eventList = 0;
+        jdwpSuspendPolicy sp = JDWP_SUSPEND_NONE;
+        GetRequestManager().GenerateEvents(jni, eInfo, eventCount, eventList, sp);
+        eInfo.thread = isAgent ? 0 : thread;
+        sp = isAgent ? JDWP_SUSPEND_NONE : sp;
+    
+        AgentAutoFree aafEL(eventList JDWP_FILE_LINE);
+
+        // post generated events
+        if (eventCount > 0) {
+            jdwpTypeTag typeTag = GetClassManager().GetJdwpTypeTag(cls);
+            jint status = 0;
+            JVMTI_TRACE(err, GetJvmtiEnv()->GetClassStatus(cls, &status));
+            if (err != JVMTI_ERROR_NONE) {
+                throw AgentException(err);
+            }
+            EventComposer *ec = new EventComposer(GetEventDispatcher().NewId(),
+                JDWP_COMMAND_SET_EVENT, JDWP_COMMAND_E_COMPOSITE, sp);
+            ec->event.WriteInt(eventCount);
+            for (jint i = 0; i < eventCount; i++) {
+                ec->event.WriteByte(JDWP_EVENT_MONITOR_CONTENDED_ENTERED);
+                ec->event.WriteInt(eventList[i]);
+                ec->WriteThread(jni, thread);
+                ec->event.WriteTaggedObjectID(jni, object);
+                ec->event.WriteLocation(jni,
+                    typeTag, eInfo.cls, eInfo.method, eInfo.location);
+            }
+            JDWP_TRACE_EVENT("MonitorContendedEntered: post set of " << eventCount << " events");
+            GetEventDispatcher().PostEventSet(jni, ec, JDWP_EVENT_MONITOR_CONTENDED_ENTERED);
+        }
+    } catch (AgentException& e) {
+        JDWP_INFO("JDWP error in MONITOR_CONTENDED_ENTERED: " << e.what() << " [" << e.ErrCode() << "]");
     }
 }

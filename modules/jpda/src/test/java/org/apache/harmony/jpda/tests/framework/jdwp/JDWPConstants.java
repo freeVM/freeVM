@@ -303,6 +303,19 @@ public class JDWPConstants {
         public static final byte METHOD_ENTRY = 40;
 
         public static final byte METHOD_EXIT = 41;
+        
+        // METHOD_EXIT_WITH_RETURN_VALUE
+        // MONITOR_CONTENDED_ENTER,MONITOR_CONTENDED_ENTER
+        // MONITOR_WAIT, MONITOR_WAITED are new events for Java 6
+        public static final byte METHOD_EXIT_WITH_RETURN_VALUE = 42;
+        
+        public static final byte MONITOR_CONTENDED_ENTER = 43;
+        
+        public static final byte MONITOR_CONTENDED_ENTERED = 44;
+        
+        public static final byte MONITOR_WAIT = 45;
+        
+        public static final byte MONITOR_WAITED = 46;   
 
         public static final byte VM_INIT = 90;
 
@@ -351,6 +364,16 @@ public class JDWPConstants {
                 return "METHOD_ENTRY";
             case METHOD_EXIT:
                 return "METHOD_EXIT";
+            case METHOD_EXIT_WITH_RETURN_VALUE:
+                return "METHOD_EXIT_WITH_RETURN_VALUE";
+            case MONITOR_CONTENDED_ENTER:
+                return "MONITOR_CONTENDED_ENTER";
+            case MONITOR_CONTENDED_ENTERED:
+                return "MONITOR_CONTENDED_ENTERED";
+            case MONITOR_WAIT:
+                return "MONITOR_WAIT";
+            case MONITOR_WAITED:
+                return "MONITOR_WAITED";
             case VM_INIT:
                 return "VM_INIT";
             case VM_DEATH:

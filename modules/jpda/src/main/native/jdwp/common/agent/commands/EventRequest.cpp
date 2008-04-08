@@ -308,6 +308,22 @@ EventRequest::SetHandler::Execute(JNIEnv *jni) throw(AgentException)
                     break;
                 }
 
+            // New modifier kind  for Java 6
+            case JDWP_MODIFIER_SOURCE_NAME_MATCH:
+                {
+                    if (eventKind != JDWP_EVENT_CLASS_PREPARE )
+                    {
+                        throw IllegalArgumentException();
+                    }
+
+                    char* pattern = m_cmdParser->command.ReadStringNoFree();
+                    JDWP_ASSERT(pattern != 0);
+
+                    modifier = new SourceNameMatchModifier(pattern);
+                    JDWP_TRACE_DATA("Set: modifier=SOURCE_NAME_MATCH, classPattern=" 
+                        << JDWP_CHECK_NULL(pattern));
+                    break;
+                }
             default:
                 JDWP_TRACE_DATA("Set: bad modifier: " << modifierByte);
                 throw IllegalArgumentException();

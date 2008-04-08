@@ -125,6 +125,42 @@ public class ParsedEvent {
             return location;
         }
     }
+    
+    /**
+     * The class extends EventThread by associating it with monitor object and location.
+     */
+    private static class EventThreadMonitor extends EventThread {
+
+        private TaggedObject taggedObject;
+        private Location location;
+
+        /**
+         * A constructor.
+         * 
+         * @param suspendPolicy
+         * @param packet
+         */
+        protected EventThreadMonitor(byte suspendPolicy, Packet packet,
+                byte eventKind) {
+            super(suspendPolicy, packet, eventKind);
+            this.taggedObject = packet.getNextValueAsTaggedObject();
+            this.location = packet.getNextValueAsLocation();
+        }
+
+        /**
+         * @return Returns the location.
+         */
+        public Location getLocation() {
+            return location;
+        }
+        
+        /**
+         * @return Returns the taggedObject.
+         */
+        public TaggedObject getTaggedObject() {
+            return taggedObject;
+        }
+    }
 
     /**
      * The class implements JDWP VM_START event.
@@ -203,6 +239,109 @@ public class ParsedEvent {
          */
         private Event_METHOD_EXIT(byte suspendPolicy, Packet packet) {
             super(suspendPolicy, packet, JDWPConstants.EventKind.METHOD_EXIT);
+        }
+    }
+    
+    /**
+     * The class implements JDWP METHOD_EXIT_WITH_RETURN_VALUE event.
+     */
+    public static final class Event_METHOD_EXIT_WITH_RETURN_VALUE extends EventThreadLocation {
+
+        private Value returnValue;
+        
+        /**
+         * A constructor.
+         * 
+         * @param suspendPolicy
+         * @param packet
+         */
+        private Event_METHOD_EXIT_WITH_RETURN_VALUE(byte suspendPolicy, Packet packet) {
+            super(suspendPolicy, packet, JDWPConstants.EventKind.METHOD_EXIT_WITH_RETURN_VALUE);
+            returnValue = packet.getNextValueAsValue();
+        }
+        
+        public Value getReturnValue(){
+			return returnValue;
+        }
+    }
+    
+    /**
+     * The class implements JDWP MONITOR_CONTENDED_ENTER event.
+     */
+    public static final class Event_MONITOR_CONTENDED_ENTER extends EventThreadMonitor {
+
+        /**
+         * A constructor.
+         * 
+         * @param suspendPolicy
+         * @param packet
+         */
+        private Event_MONITOR_CONTENDED_ENTER(byte suspendPolicy, Packet packet) {
+            super(suspendPolicy, packet, JDWPConstants.EventKind.MONITOR_CONTENDED_ENTER);
+        }
+
+    }
+    
+    /**
+     * The class implements JDWP MONITOR_CONTENDED_ENTERED event.
+     */
+    public static final class Event_MONITOR_CONTENDED_ENTERED extends EventThreadMonitor {
+
+        /**
+         * A constructor.
+         * 
+         * @param suspendPolicy
+         * @param packet
+         */
+        private Event_MONITOR_CONTENDED_ENTERED(byte suspendPolicy, Packet packet) {
+            super(suspendPolicy, packet, JDWPConstants.EventKind.MONITOR_CONTENDED_ENTERED);
+        }
+
+    }
+    
+    /**
+     * The class implements JDWP METHOD_EXIT_WITH_RETURN_VALUE event.
+     */
+    public static final class Event_MONITOR_WAIT extends EventThreadMonitor {
+
+        private long timeout;
+        
+        /**
+         * A constructor.
+         * 
+         * @param suspendPolicy
+         * @param packet
+         */
+        private Event_MONITOR_WAIT(byte suspendPolicy, Packet packet) {
+            super(suspendPolicy, packet, JDWPConstants.EventKind.MONITOR_WAIT);
+            this.timeout = packet.getNextValueAsLong();
+        }
+        
+        public long getTimeout(){
+            return timeout;
+        }
+    }
+    
+    /**
+     * The class implements JDWP METHOD_EXIT_WITH_RETURN_VALUE event.
+     */
+    public static final class Event_MONITOR_WAITED extends EventThreadMonitor {
+
+        private boolean timed_out;
+        
+        /**
+         * A constructor.
+         * 
+         * @param suspendPolicy
+         * @param packet
+         */
+        private Event_MONITOR_WAITED(byte suspendPolicy, Packet packet) {
+            super(suspendPolicy, packet, JDWPConstants.EventKind.MONITOR_WAITED);
+            this.timed_out = packet.getNextValueAsBoolean();
+        }
+        
+        public boolean getTimedout(){
+            return timed_out;
         }
     }
 
@@ -533,6 +672,26 @@ public class ParsedEvent {
             }
             case JDWPConstants.EventKind.METHOD_EXIT: {
                 events[i] = new Event_METHOD_EXIT(suspendPolicy, packetCopy);
+                break;
+            }
+            case JDWPConstants.EventKind.METHOD_EXIT_WITH_RETURN_VALUE: {
+                events[i] = new Event_METHOD_EXIT_WITH_RETURN_VALUE(suspendPolicy, packetCopy);
+                break;
+            }
+            case JDWPConstants.EventKind.MONITOR_CONTENDED_ENTER: {
+                events[i] = new Event_MONITOR_CONTENDED_ENTER(suspendPolicy, packetCopy);
+                break;
+            }
+            case JDWPConstants.EventKind.MONITOR_CONTENDED_ENTERED: {
+                events[i] = new Event_MONITOR_CONTENDED_ENTERED(suspendPolicy, packetCopy);
+                break;
+            }
+            case JDWPConstants.EventKind.MONITOR_WAIT: {
+                events[i] = new Event_MONITOR_WAIT(suspendPolicy, packetCopy);
+                break;
+            }
+            case JDWPConstants.EventKind.MONITOR_WAITED: {
+                events[i] = new Event_MONITOR_WAITED(suspendPolicy, packetCopy);
                 break;
             }
             case JDWPConstants.EventKind.EXCEPTION: {

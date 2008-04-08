@@ -434,7 +434,74 @@ namespace jdwp {
         static void JNICALL HandleFramePop(jvmtiEnv* jvmti, JNIEnv* jni,
             jthread thread, jmethodID method, jboolean was_popped_by_exception);
 
+        // New event callbacks for Java 6
+        /**
+         * <code>MonitorContendedEnter</code> event callbacks.
+         *
+         * @param jvmti                    - the JVMTI interface pointer
+         * @param jni                      - the JNI interface pointer
+         * @param thread                   - the thread attempting to enter the monitor 
+         * @param object                   - the monitor object
+         */
+        static void JNICALL HandleMonitorContendedEnter(jvmtiEnv *jvmti, JNIEnv* jni,
+            jthread thread, jobject object);
+        
+        /**
+         * <code>MonitorContendedEntered</code> event callbacks.
+         *
+         * @param jvmti                    - the JVMTI interface pointer
+         * @param jni                      - the JNI interface pointer
+         * @param thread                   -  the thread entering the monitor 
+         * @param object                   - the monitor object
+         */
+        static void JNICALL HandleMonitorContendedEntered(jvmtiEnv *jvmti, JNIEnv* jni,
+            jthread thread, jobject object);
+
+        /**
+         * <code>MonitorWait</code> event callbacks.
+         *
+         * @param jvmti                    - the JVMTI interface pointer
+         * @param jni                      - the JNI interface pointer
+         * @param thread                   - the  the thread that was finished waiting 
+         * @param object                   - the monitor object
+         * @param timeout                  - the number of milliseconds the thread will wait 
+         */
+        static void JNICALL HandleMonitorWait(jvmtiEnv *jvmti, JNIEnv* jni, 
+            jthread thread, jobject object, jlong timeout);
+
+        /**
+         * <code>MonitorWaited</code> event callbacks.
+         *
+         * @param jvmti                    - the JVMTI interface pointer
+         * @param jni                      - the JNI interface pointer
+         * @param thread                   - the Java thread-generating event
+         * @param object                   - the monitor object
+         * @param timeout               - true if the monitor timed out 
+         */
+        static void JNICALL HandleMonitorWaited(jvmtiEnv *jvmti, JNIEnv* jni, 
+            jthread thread, jobject object, jboolean timed_out);
+
+
     private:
+
+        /**
+         * Get the return type of the method
+         */
+        static jdwpTag MethodReturnType(jvmtiEnv *env, jmethodID method);
+        
+        /**
+         * Generate event whose event kind is MethodExitWithReturnValue 
+         */
+        static void JNICALL HandleMethodExitWithReturnValue(jvmtiEnv* jvmti, JNIEnv* jni,
+        jthread thread, jmethodID method, jboolean was_popped_by_exception,
+        jvalue return_value);
+
+        /**
+         * Generate event whose event kind is MethodExit
+         */
+        static void JNICALL HandleMethodExitWithoutReturnValue(jvmtiEnv* jvmti, JNIEnv* jni,
+        jthread thread, jmethodID method, jboolean was_popped_by_exception,
+        jvalue return_value);
 
         /**
          * Enables/disables all appropriate events for given Breakpoint event request. 
@@ -549,6 +616,13 @@ namespace jdwp {
         RequestList m_methodEntryRequests;
         RequestList m_methodExitRequests;
         RequestList m_vmDeathRequests;
+        // New list of event request IDs for Java 6
+        RequestList m_methodExitWithReturnValueRequests;
+        RequestList m_monitorContendedEnterRequests;
+        RequestList m_monitorContendedEnteredRequests;
+        RequestList m_monitorWaitRequests;
+        RequestList m_monitorWaitedRequests;
+
 
         CombinedEventsInfoList m_combinedEventsInfoList;
     };

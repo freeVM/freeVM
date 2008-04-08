@@ -417,7 +417,7 @@ public class VmMirror {
         targetVMCapabilities.reserved17 = replyPacket.getNextValueAsBoolean();
         targetVMCapabilities.canGetMonitorFrameInfo = replyPacket
                 .getNextValueAsBoolean();
-        targetVMCapabilities.reserved19 = replyPacket.getNextValueAsBoolean();
+        targetVMCapabilities.canUseSourceNameFilters = replyPacket.getNextValueAsBoolean();
         targetVMCapabilities.canGetConstantPool = replyPacket
                 .getNextValueAsBoolean();
         targetVMCapabilities.canForceEarlyReturn = replyPacket
@@ -931,6 +931,28 @@ public class VmMirror {
         // Set event
         return setEvent(event);
     }
+    
+    /**
+     * Sets ClassPrepare event request for given source name pattern.
+     * 
+     * @param sourceNamePattern
+     *            Required source name pattern. Matches are limited to exact matches
+     *            of the given source name pattern and matches of patterns that begin
+     *            or end with '*'; for example, "*.Foo" or "java.*".
+     * @return ReplyPacket for setting request.
+     */
+    public ReplyPacket setClassPreparedForSourceNameMatch(String sourceNamePattern) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.CLASS_PREPARE;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].sourceNamePattern = sourceNamePattern; 
+        mods[0].modKind = EventMod.ModKind.SourceNameMatch;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
 
     /**
      * Sets ClassUnload event request for given class name pattern.
@@ -1005,6 +1027,176 @@ public class VmMirror {
         EventMod[] mods = new EventMod[] { new EventMod() };
         mods[0].clazz = referenceTypeID;
         mods[0].modKind = EventMod.ModKind.ClassOnly;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
+    
+    /**
+     * Set MonitorContendedEnter event request for given class's reference type
+     * 
+     * @param referenceTypeID
+     *            class referenceTypeID
+     * @return ReplyPacket for setting request
+     */
+    public ReplyPacket setMonitorContendedEnterForClassOnly(long referenceTypeID) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.MONITOR_CONTENDED_ENTER;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].clazz = referenceTypeID;
+        mods[0].modKind = EventMod.ModKind.ClassOnly;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
+
+    /**
+     * Set MonitorContendedEntered event request for given class's reference type
+     * 
+     * @param referenceTypeID
+     *            class referenceTypeID
+     * @return ReplyPacket for setting request
+     */
+    public ReplyPacket setMonitorContendedEnteredForClassOnly(long referenceTypeID) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.MONITOR_CONTENDED_ENTERED;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].clazz = referenceTypeID;
+        mods[0].modKind = EventMod.ModKind.ClassOnly;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
+    
+    /**
+     * Set MonitorWait event request for given class's reference type
+     * 
+     * @param referenceTypeID
+     *            class referenceTypeID
+     * @return ReplyPacket for setting request
+     */
+    public ReplyPacket setMonitorWaitForClassOnly(long referenceTypeID) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.MONITOR_WAIT;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].clazz = referenceTypeID;
+        mods[0].modKind = EventMod.ModKind.ClassOnly;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
+
+    /**
+     * Set MonitorWait event request for given given class name pattern.
+     * 
+     * @param classRegexp
+     *            Required class pattern. Matches are limited to exact matches
+     *            of the given class pattern and matches of patterns that begin
+     *            or end with '*'; for example, "*.Foo" or "java.*".
+     * @return ReplyPacket for setting request.
+     */
+    public ReplyPacket setMonitorWaitForClassMatch(String classRegexp) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.MONITOR_WAIT;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].classPattern = classRegexp;
+        mods[0].modKind = EventMod.ModKind.ClassMatch;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
+    
+    /**
+     * Set MonitorWait event request for classes 
+     * whose name does not match the given restricted regular expression.
+     * 
+     * @param classRegexp
+     *            Exclude class pattern. Matches are limited to exact matches
+     *            of the given class pattern and matches of patterns that begin
+     *            or end with '*'; for example, "*.Foo" or "java.*".
+     * @return ReplyPacket for setting request.
+     */
+    public ReplyPacket setMonitorWaitForClassExclude (String classRegexp) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.MONITOR_WAIT;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].classPattern = classRegexp;
+        mods[0].modKind = EventMod.ModKind.ClassExclude;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
+    
+    /**
+     * Set MonitorWaited event request for given class's reference type
+     * 
+     * @param referenceTypeID
+     *            class referenceTypeID
+     * @return ReplyPacket for setting request
+     */
+    public ReplyPacket setMonitorWaitedForClassOnly(long referenceTypeID) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.MONITOR_WAITED;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].clazz = referenceTypeID;
+        mods[0].modKind = EventMod.ModKind.ClassOnly;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
+    
+    /**
+     * Set MonitorWaited event request for given given source name pattern.
+     * 
+     * @param classRegexp
+     *            Required class pattern. Matches are limited to exact matches
+     *            of the given class pattern and matches of patterns that begin
+     *            or end with '*'; for example, "*.Foo" or "java.*".
+     * @return ReplyPacket for setting request.
+     */
+    public ReplyPacket setMonitorWaitedForClassMatch(String classRegexp) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.MONITOR_WAITED;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].classPattern = classRegexp;
+        mods[0].modKind = EventMod.ModKind.ClassMatch;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
+    
+    /**
+     * Set MonitorWaited event request for classes 
+     * whose name does not match the given restricted regular expression.
+     * 
+     * @param classRegexp
+     *            Required class pattern. Matches are limited to exact matches
+     *            of the given class pattern and matches of patterns that begin
+     *            or end with '*'; for example, "*.Foo" or "java.*".
+     * @return ReplyPacket for setting request.
+     */
+    public ReplyPacket setMonitorWaitedForClassExclude (String classRegexp) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.MONITOR_WAITED;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].classPattern = classRegexp;
+        mods[0].modKind = EventMod.ModKind.ClassExclude;
         Event event = new Event(eventKind, suspendPolicy, mods);
 
         // Set event
@@ -1098,6 +1290,10 @@ public class VmMirror {
                 // Case InstanceOnly
                 commandPacket.setNextValueAsObjectID(event.mods[i].instance);
                 break;
+            }
+            case EventMod.ModKind.SourceNameMatch: {
+                // Case SourceNameMatch 
+                commandPacket.setNextValueAsString(event.mods[i].sourceNamePattern);
             }
             }
         }
@@ -1314,6 +1510,32 @@ public class VmMirror {
     public ReplyPacket setMethodExit(String classRegexp) {
         // Prepare corresponding event
         byte eventKind = JDWPConstants.EventKind.METHOD_EXIT;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = null;
+        if (classRegexp == null) {
+            mods = new EventMod[0];
+        } else {
+            mods = new EventMod[1];
+            mods[0] = new EventMod();
+            mods[0].modKind = EventMod.ModKind.ClassMatch;
+            mods[0].classPattern = classRegexp;
+        }
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        return setEvent(event);
+    }
+    
+    /**
+     * Sets METHOD_EXIT_WITH_RETURN_VALUE event request for specified class name pattern.
+     * 
+     * @param classRegexp
+     *            class name pattern or null for no pattern
+     * 
+     * @return ReplyPacket for corresponding command
+     */
+    public ReplyPacket setMethodExitWithReturnValue(String classRegexp) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.METHOD_EXIT_WITH_RETURN_VALUE;
         byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
         EventMod[] mods = null;
         if (classRegexp == null) {

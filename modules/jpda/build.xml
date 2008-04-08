@@ -207,13 +207,19 @@
         </javac>
     </target>
 
+    <target name="copy-test-resources">
+        <copy todir="${tests.build.output}/classes" includeemptydirs="false">
+            <fileset dir="${hy.jpda.src.test.resources}"/>
+        </copy>
+    </target>
+
     <target name="prepare-exclude">
         <echo message="JPDA exclude list: ${jpda.exclude.file}" />
         <prepare-exclude-list moduleName="jpda" dir="./make"
                              result="${jpda.exclude.file}" />
     </target>
 
-    <target name="run-tests" depends="build-tests, prepare-exclude">
+    <target name="run-tests" depends="build-tests, prepare-exclude, copy-test-resources">
 
         <property name="test.jre.home" value="${hy.jdk}/jre" />
         <property name="test.jre.jvm" value="${test.jre.home}/bin/java" />

@@ -270,7 +270,13 @@ typedef enum jdwpEventKind {
     JDWP_EVENT_VM_INIT = 90,
     JDWP_EVENT_VM_START = JDWP_EVENT_VM_INIT,
     JDWP_EVENT_VM_DEATH = 99,
-    JDWP_EVENT_VM_DISCONNECTED = 100
+    JDWP_EVENT_VM_DISCONNECTED = 100,
+    // New EventKind constants for Java 6
+    JDWP_EVENT_METHOD_EXIT_WITH_RETURN_VALUE = 42,    
+    JDWP_EVENT_MONITOR_CONTENDED_ENTER = 43,    
+    JDWP_EVENT_MONITOR_CONTENDED_ENTERED = 44, 
+    JDWP_EVENT_MONITOR_WAIT = 45,    
+    JDWP_EVENT_MONITOR_WAITED = 46
 } jdwpEventKind;
 
 /* EventRequest/ModifierKind Constants */
@@ -286,7 +292,9 @@ typedef enum jdwpRequestModifier {
     JDWP_MODIFIER_EXCEPTION_ONLY = 8,
     JDWP_MODIFIER_FIELD_ONLY = 9,
     JDWP_MODIFIER_STEP = 10,
-    JDWP_MODIFIER_INSTANCE_ONLY = 11
+    JDWP_MODIFIER_INSTANCE_ONLY = 11,
+    // New ModifierKind constants for Java 6
+    JDWP_MODIFIER_SOURCE_NAME_MATCH = 12
 } jdwpRequestModifier;
 
 /* ThreadStatus Constants */

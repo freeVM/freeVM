@@ -385,6 +385,7 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         env.caps.canForceEarlyReturn =
             caps.can_force_early_return;
         caps.can_tag_objects = 1;
+        caps.can_generate_monitor_events = 1;
 
         // these caps should be added for full agent functionality
         // caps.can_suspend = 1;
@@ -407,7 +408,6 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         caps.can_get_thread_cpu_time = 0;
         caps.can_generate_all_class_hook_events = 0;
         caps.can_generate_compiled_method_load_events = 0;
-        caps.can_generate_monitor_events = 0;
         caps.can_generate_vm_object_alloc_events = 0;
         caps.can_generate_native_method_bind_events = 0;
         caps.can_generate_garbage_collection_events = 0;
@@ -441,6 +441,11 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         ecbs.SingleStep = &RequestManager::HandleSingleStep;
         ecbs.ThreadEnd = &RequestManager::HandleThreadEnd;
         ecbs.ThreadStart = &RequestManager::HandleThreadStart;
+        // New event callbacks for Java 6
+        ecbs.MonitorContendedEnter = &RequestManager::HandleMonitorContendedEnter;
+        ecbs.MonitorContendedEntered = &RequestManager::HandleMonitorContendedEntered;
+        ecbs.MonitorWait = &RequestManager::HandleMonitorWait;
+        ecbs.MonitorWaited = &RequestManager::HandleMonitorWaited;
 
         JVMTI_TRACE(err,
             jvmti->SetEventCallbacks(&ecbs, static_cast<jint>(sizeof(ecbs))));

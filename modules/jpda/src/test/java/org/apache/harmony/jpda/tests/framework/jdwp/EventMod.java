@@ -55,6 +55,9 @@ public class EventMod {
         public static final byte Step          = 10;
 
         public static final byte InstanceOnly  = 11;
+        
+        // new case for Java 6
+        public static final byte SourceNameMatch = 12;
     }
 
     public byte modKind;
@@ -68,6 +71,8 @@ public class EventMod {
     public long     clazz;
 
     public String   classPattern;
+    
+    public String   sourceNamePattern;
 
     public Location loc;
 
@@ -103,6 +108,7 @@ public class EventMod {
         // referenceTypeID
         clazz = -1;
         classPattern = new String();
+        sourceNamePattern = new String();
         loc = new Location();
         // referenceTypeID
         exceptionOrNull = -1;

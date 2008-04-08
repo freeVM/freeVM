@@ -67,7 +67,7 @@ public class Capabilities {
 
     public boolean canGetMonitorFrameInfo           = false;
 
-    public boolean reserved19                       = false;
+    public boolean canUseSourceNameFilters          = false;
 
     public boolean canGetConstantPool               = false;
 

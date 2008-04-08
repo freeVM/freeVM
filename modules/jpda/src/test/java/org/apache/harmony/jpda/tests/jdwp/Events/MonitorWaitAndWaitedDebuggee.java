@@ -16,50 +16,40 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anton V. Karnachuk
- * @version $Revision: 1.2 $
- */
-
-/**
- * Created on 07.04.2005
- */
 package org.apache.harmony.jpda.tests.jdwp.Events;
 
 import org.apache.harmony.jpda.tests.share.JPDADebuggeeSynchronizer;
 import org.apache.harmony.jpda.tests.share.SyncDebuggee;
 
-/**
- * Debuggee for ClassPrepareTest unit test.
- * Loads Class2Prepare class to trace CLASS_PREPARE event.
- */
-public class ClassPrepareDebuggee extends SyncDebuggee {
+public class MonitorWaitAndWaitedDebuggee extends SyncDebuggee {
 
-    public static void main(String[] args) {
-        runDebuggee(ClassPrepareDebuggee.class);
-    }
+    public static long TIMEOUT = 500;
 
     public void run() {
+        MonitorWaitMockMonitor monitor = new MonitorWaitMockMonitor();
+        
+        // Inform debugger to prepare for testing
         synchronizer.sendMessage(JPDADebuggeeSynchronizer.SGNL_READY);
         
-        logWriter.println("ClassPrepareDebuggee started");
-        
+        // Wait until debugger complete the event request
         synchronizer.receiveMessage(JPDADebuggeeSynchronizer.SGNL_CONTINUE);
         
         try {
-            // Test class prepare
-            logWriter.println("--> Try to load and prepare class Class2Prepare");
-            Class.forName("org.apache.harmony.jpda.tests.jdwp.Events.Class2Prepare");
-            
-            // Prepare for SourceNameMatch case
-            logWriter.println("--> Try to load and prepare SourceDebugExtensionMockClass");
-            Class.forName("org.apache.harmony.jpda.tests.jdwp.Events.SourceDebugExtensionMockClass");
-        } catch (ClassNotFoundException e) {
+            synchronized (monitor) {
+                logWriter.println("--> Tested Thread invoke wait");
+                monitor.wait(TIMEOUT);
+                logWriter.println("--> Tested Thread invoked wait");
+            }
+        } catch (Throwable e) {
             e.printStackTrace();
         }
-
-        logWriter.println("ClassPrepareDebuggee finished");
         
+        logWriter.println("--> Tested Thread finished");
     }
-    
+
+    public static void main(String[] args) {
+        runDebuggee(MonitorWaitAndWaitedDebuggee.class);
+    }
 }
+
+class MonitorWaitMockMonitor {}

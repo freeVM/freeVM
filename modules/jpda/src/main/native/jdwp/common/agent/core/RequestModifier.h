@@ -31,6 +31,7 @@
 #define _REQUEST_MODIFIER_H_
 
 #include "AgentBase.h"
+#include <vector>
 
 namespace jdwp {
 
@@ -126,6 +127,7 @@ namespace jdwp {
          * @return <code>TRUE</code>.
          */
         virtual bool Apply(JNIEnv* jni, EventInfo &eInfo) throw() {
+            JDWP_TRACE_DATA("RequestModifier.Apply is invoked.");
             return true;
         }
 
@@ -140,6 +142,7 @@ namespace jdwp {
 
         bool MatchPattern(const char *signature, const char *pattern)
             const throw();
+        
 
         jdwpRequestModifier m_kind;
 
@@ -900,6 +903,61 @@ namespace jdwp {
 
     };
 
+    // New modifier for Java 6
+    /**
+     * The class implements the <code>SourceNameMatch</code> modifier enabling the 
+     * requested events to be reported only for the reference type which have a source name 
+     * corresponding to the given pattern.
+     */
+    class SourceNameMatchModifier : public RequestModifier {
+
+    public:
+
+        /**
+         * A constructor.
+         *
+         * @param str - the source name match pattern
+         */
+        SourceNameMatchModifier(char* str)
+            : RequestModifier(JDWP_MODIFIER_SOURCE_NAME_MATCH)
+            , m_pattern(str)
+        {}
+
+        /**
+         * A destructor.
+         */
+        ~SourceNameMatchModifier() {
+            GetMemoryManager().Free(m_pattern JDWP_FILE_LINE);
+        }
+
+        /**
+         * Gets the source name match pattern.
+         *
+         * @return Zero-terminated string.
+         */
+        const char* GetPattern() const throw() {
+            return m_pattern;
+        }
+
+        /**
+         * Applies the source name match filtering for the given event.
+         *
+         * @param jni    - the JNI interface pointer
+         * @param eInfo  - the request-event information
+         *
+         * @return Returns <code>TRUE</code>, if the source name matches the given pattern.
+         */
+        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw();
+      
+
+    private:
+        bool MatchPatternSourceName(const char *sourcename, const char *pattern)
+            const ;
+        void ParseSourceDebugExtension(const string& str, vector<string>& tokens, const string& delimiters);
+
+        char* m_pattern;
+
+    };
 }
 
 #endif // _REQUEST_MODIFIER_H_
