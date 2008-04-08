@@ -215,7 +215,7 @@ limitations under the License.
    <head>
       <meta http-equiv="Content-Type"
       content="text/html; charset=UTF-8" />
-      <link href="../../site.css" rel="stylesheet" type="site/css" />
+      <link href="site.css" rel="stylesheet" type="site/css" />
       <title>
          Thread Manager Description
       </title>
@@ -287,15 +287,16 @@ limitations under the License.
             </th>
          </tr>
          <tr>
-            <td class="TableCell">
-               Initial version
-            </td>
-            <td class="TableCell">
-               Nadya Morozova, Andrey Chernyshev: document created.
-            </td>
-            <td class="TableCell">
-               June 5, 2006
-            </td>
+           <td class="TableCell"> Initial version </td>
+           <td class="TableCell"> Nadya Morozova, Andrey Chernyshev: document created. </td>
+           <td class="TableCell"> June 5, 2006 </td>
+         </tr>
+         <tr>
+           <td class="TableCell">Update 1 </td>
+           <td class="TableCell">Nadya Morozova, Pavel Rebriy: update of graphics
+             and text, Java* layer is now part of VM core, Porting component restructured,
+             all scenarios rewritten</td>
+           <td class="TableCell">March 20, 2008 </td>
          </tr>
       </table>
     
@@ -412,9 +413,8 @@ limitations under the License.
          Interfaces</a> section below.
       </p>
       <p style="text-align: center">
-         <img src="images/ThreadingSystem.gif"
-         alt="Basic layers in the thread manager" />
-      </p>
+        <img src="images/ThreadingSystem.gif"
+         alt="Basic layers in the thread manager" /> </p>
       <p class="special">
          Figure 1: Threading Subsystem
       </p>
@@ -434,8 +434,8 @@ limitations under the License.
             [<a href="#JNI_ref">3</a>] specifications
          </li>
          <li>
-            Portable implementation mostly based on the Apache Porting Layer
-            [<a href="#APR_ref">4</a>]
+            Portable implementation mostly based on DRLVM and  Apache Porting
+              Layers [<a href="#APR_ref">4</a>]
          </li>
          <li>
             Compliance with the Harmony <code>hythread</code> interface [<a
@@ -445,12 +445,12 @@ limitations under the License.
             Support for the garbage collector
          </li>
          <li>
-            Monitor optimizations specific to the just-in-time (JIT) compiler
-            supplied with DRLVM
-         </li>
+           Optimizations specific to the just-in-time (JIT) compiler
+           supplied with DRLVM
+        </li>
       </ul>
       <h2>
-         <a id="TM_in_VM" name="TM_in_VM"></a>Thread Manager in VM
+         <a id="TM_in_VM" name="TM_in_VM"></a>Thread Manager in DRLVM
       </h2>
       <p>
          Figure 2 below demonstrates the interaction of the thread manager with
@@ -460,25 +460,22 @@ limitations under the License.
          <li>
             <b>The VM core</b> to access information on object layout and for
             binding between <code>java.lang.Thread</code> objects and
-            appropriate native threads. For that, the thread manager queries
-            the <code>thread_externals.h</code> interface of the VM core.
-         </li>
+         appropriate native threads.</li>
          <li>
-            <b>The garbage collector</b> to serve thread manipulation requests
+            <b>The garbage collector</b> (GC) to serve thread manipulation requests
             for root set enumeration and garbage collection activities. GC
-            works with the native layer of the thread manager.
+            works with the native  and Java* layers of the thread manager.
          </li>
          <li>
             <b>The porting layer</b> to interact with the underlying system and
             enable <a href="#Portability">portability</a> for threading. The TM
-            native layer queries functions of the APR interfaces and the
-            apr_thread_ext interface.
+            native layer queries functions of the PORT and APR interfaces.
          </li>
          <li>
-            <b>The just-in-time compiler</b> to provide optimized threading
+            <b>The just-in-time compiler</b> (JIT) to provide optimized threading
             functions, called VM helpers, for JIT-compiled code. The thread
             manager exports this functionality via the
-            <code>thread_helpers</code> interface of the Java<a href="#*">*</a>
+            <code>thread_helpers.h</code> interface of the Java<a href="#*">*</a>
             layer.
          </li>
       </ul>
@@ -495,17 +492,19 @@ limitations under the License.
       <p>
          The thread manager code is mostly platform-independent and relies on
          the underlying porting layer to adjust to platform specifics. The
-         current TM implementation is written on top of the Apache Porting
-         Layer (APR) with certain extensions added to it. The
-         platform-dependent TM parts are the VM helpers package, which is tied
-         to the specific architecture, and the APR extensions package, which is
-         partially tied with the OS API.
+         current TM implementation is written on top of DRLVM and Apache Porting
+         Layers (APR). The
+         platform-dependent TM parts are the VM helpers' package, which is tied
+         to the specific architecture, and the porting layer extensions package,
+           which is partially tied with the OS API.
       </p>
       <p>
-         APR-based porting enables compilation of the thread manager code on
-         every platform where APR is available. The current version of the
-         thread manager supports the Linux<a href="#*">*</a> and Windows<a
-         href="#*">*</a> IA-32 platforms.
+         DRLVM-based and APR-based porting layers enable compilation of the thread
+           manager code on every platform where porting is available. The current
+           version of the thread manager supports the Linux<a href="#*">*</a> and
+           Windows<a
+         href="#*">*</a> OSes on x86 and x86_64 platforms, and Linux* OS on IA-64
+           platforms.
       </p>
       <p class="backtotop">
          <a href="#top">Back to Top</a>
@@ -534,7 +533,7 @@ limitations under the License.
       <p>
          The native interface is inspired by the Harmony <code>hythread</code>
          module. This is a low-level layer that provides Java<a
-         href="#*">*</a>-like threading functionality, such as interruption
+         href="#*">*</a>-like native threading functionality, such as interruption
          support for waiting operations (for example, <code>wait</code>, 
          <code>park</code>, <code>join</code> and <code>sleep</code>) and helps
          establish correct interaction of threads with the garbage collector.
@@ -544,11 +543,11 @@ limitations under the License.
          The native interface consists of the following function sets:
       </p>
       <p class="class">
-          <code>hythread.h</code>
+          <code>open/hythread.h</code>
       </p>
       <p>
-         Functions of the <code>hythread</code> set [<a
-         href="#hythread_ref">8</a>] responsible for:
+         Consists of functions of the <code>hythread</code> set [<a
+         href="#hythread_ref">8</a>] responsible for the following:
       </p>
       <ul>
          <li>
@@ -568,11 +567,12 @@ limitations under the License.
          </li>
       </ul>
       <p class="class">
-          <code>hythread_ext.h</code>
+          <code>open/hythread_ext.h</code>
       </p>
       <p>
-         Set of functions extending the <code>hythread</code> set responsible
-         for:
+         Includes the description of native thread structures and the set of functions
+           extending the <code>hythread</code> set
+         responsible for the following:
       </p>
       <ul>
          <li>
@@ -637,10 +637,10 @@ limitations under the License.
          The functions of the Java<a href="#*">*</a> interface take Java<a
          href="#*">*</a> objects as parameters and can be easily used to
          implement kernel classes, JNI or JVMTI function sets. The Java<a
-         href="#*">*</a> interface consists of 3 parts:
+         href="#*">*</a> interface consists of the following parts:
       </p>
       <p class="class">
-          <code>jthread.h</code>
+          <code>open/jthread.h</code>
       </p>
       <p>
          Functions supporting <code>java.lang.Object</code> and
@@ -673,7 +673,7 @@ limitations under the License.
          </li>
       </ul>
       <p class="class">
-          <code>ti_thread.h</code>
+          <code>open/ti_thread.h</code>
       </p>
       <p>
          Functions supporting various JVMTI functions and the
@@ -702,13 +702,24 @@ limitations under the License.
             Raw monitors
          </li>
       </ul>
-      <p class="class">
-          <code>thread_helpers.h</code>
+      <h3>VM core interface</h3>
+      <p class="class"><code>thread_manager.h</code> </p>
+      <p>Includes the description of thread structures and functions providing
+        accesstors to them: </p>
+      <ul>
+        <li>Accessors to Java<a href="#*">*</a> TM data </li>
+        <li>Attacher/detacher Java<a href="#*">*</a> thread. </li>
+        <li>Convertors from Java<a href="#*">*</a> to native and vise versa. </li>
+   </ul>
+      <p class="class"><code>thread_helpers.h</code>
       </p>
       <p>
-         Functions providing the stubs that help to optimize the performance
-         due to tighter TM and JIT integration.
-      </p>
+         Consists of functions providing the assembly code stubs that help to optimize
+           the performance due to tighter TM and JIT integration:</p>
+      <ul>
+        <li>Generator for Thread Local Storage (TLS) accessor </li>
+        <li>Generators for monitor functions </li>
+   </ul>
       <p class="backtotop">
          <a href="#Top">Back to Top</a>
       </p>
@@ -719,9 +730,8 @@ limitations under the License.
          The thread manager data structures are typically not exposed: external
          VM components access these structures via opaque pointers instead. The
          pointers are defined in the public header files
-         <code>hythread.h</code>, <code>hythread_ext.h</code>,
-         <code>jthread.h</code> and <code>ti_thread.h</code>. Structures
-         themselves are described in the <code>thread_private.h</code> file.
+         <code>hythread.h</code>, <code>jthread.h</code> and <code>ti_thread.h</code>.
+         Structures themselves are described in the <code>hythread_ext.h</code>, <code>and </code><code>thread_manager.h</code> files.
       </p>
       <h2>
          <a id="Thread_Control_Structure"
@@ -736,20 +746,22 @@ limitations under the License.
       <ul>
          <li>
             Function <code>hythread_attach()</code> registers the current
-            thread in the thread manager, so that threading operations can be
-            performed over this thread via the native layer.
+            native thread in the thread manager, so that threading operations can
+            be performed over this thread via the native layer.
          </li>
-         <li>
-            Function <code>jthread_attach()</code> associates the current
-            thread with the appropriate <code>java.lang.Thread</code> object,
-            so that threading operations can be performed over this thread via
-            the Java<a href="#*">*</a> layer.
-         </li>
+         <li>Function <code>hythread_detach()</code> unregisters the current native
+           thread. </li>
+         <li>Function <code>jthread_attach()</code> associates the current Java<a href="#*">*</a> thread
+           with the appropriate <code>java.lang.Thread</code> object, so that threading
+           operations can be performed over this thread via the Java<a href="#*">*</a> layer.
+        </li>
+      <li>Function <code>jthread_detach()</code> disjoins the current Java<a href="#*">*</a> thread
+        from the thread manager. </li>
       </ul>
       <p>
          Depending on the attaching function, the thread manager operates with
          two types of threads:
-      </p>
+   </p>
       <ul>
          <li>
             <em>Native thread</em> attached to the native layer of the thread
@@ -793,375 +805,8 @@ limitations under the License.
          implementation-specific and is not exposed to other components.
       </p>
       <p>
-         The following figure shows the thread control structure of a native
-         attached thread described by the type <code>HyThread</code>:
-      </p>
-      <p style="text-align: center">
-         <img border="0" src="images/NativeUnattachedThread.gif"
-         alt="Structure of a native thread not registered in TM" />
-      </p>
-      <p class="special">
-         Figure 3: Native Thread
-      </p>
-      <p>
-         The following table lists the data fields making up the thread control
-         structure of a native thread:
-      </p>
-      <table width="100%">
-         <tr>
-            <th colspan="2" class="TableHeading">
-               Data Field
-            </th>
-            <th class="TableHeading">
-               Description
-            </th>
-         </tr>
-         <tr>
-            <td colspan="3" class="TableCell">
-               <strong>Suspension</strong> 
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>IDATA</code> 
-            </td>
-            <td class="TableCell">
-               <code>suspend_request</code> 
-            </td>
-            <td class="TableCell">
-               Number of suspend requests made for this thread.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>int16</code> 
-            </td>
-            <td class="TableCell">
-               <code>suspend_disable_count</code> 
-            </td>
-            <td class="TableCell">
-               Flag indicating that the thread can safely be suspended.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hylatch_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>safe_region_event</code> 
-            </td>
-            <td class="TableCell">
-               Event used to notify interested threads when a thread enters a
-               safe region.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hysem_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>resume_event</code> 
-            </td>
-            <td class="TableCell">
-               Event used to notify a suspended thread that it needs to wake
-               up.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hythread_event_callback_proc</code> 
-            </td>
-            <td class="TableCell">
-               <code>safepoint_callback</code> 
-            </td>
-            <td class="TableCell">
-               Function to be executed at a safe point on resuming a thread.
-            </td>
-         </tr>
-         <tr>
-            <td colspan="3" class="TableCell">
-               <strong>Basic manipulation fields</strong> 
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hythread_group_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>group</code> 
-            </td>
-            <td class="TableCell">
-               Group for this thread equal to the address of the head of the
-               list of threads for this group.<br />
-                Groups are used to quickly iterate over lists of threads.
-               Examples: Java<a href="#*">*</a> threads, GC private threads.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hythread_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>next</code> 
-            </td>
-            <td class="TableCell">
-               Pointer to the next thread within the group.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hythread_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>prev</code> 
-            </td>
-            <td class="TableCell">
-               Pointer to the last thread within the group.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>apr_thread_t *</code> 
-            </td>
-            <td class="TableCell">
-               <code>os_handle</code> 
-            </td>
-            <td class="TableCell">
-               Handle to the OS thread.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>void *</code> 
-            </td>
-            <td class="TableCell">
-               <code>private_data</code> 
-            </td>
-            <td class="TableCell">
-               Placeholder for any data to be associated with this thread. The
-               Java<a href="#*">*</a> layer uses this field to store
-               Java-specific context.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>Boolean</code> 
-            </td>
-            <td class="TableCell">
-               <code>exit_request</code> 
-            </td>
-            <td class="TableCell">
-               Flag indicating that a request to exit has been received.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>IDATA</code> 
-            </td>
-            <td class="TableCell">
-               <code>exit_value</code> 
-            </td>
-            <td class="TableCell">
-               Exit value of this thread.
-            </td>
-         </tr>
-         <tr>
-            <td colspan="3" class="TableCell">
-               <strong>Synchronization support</strong> 
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hysem_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>park_event</code> 
-            </td>
-            <td class="TableCell">
-               Event for parking threads.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hysem_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>sleep_event</code> 
-            </td>
-            <td class="TableCell">
-               Event for sleeping threads.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hylatch_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>join_event</code> 
-            </td>
-            <td class="TableCell">
-               Event reserved for threads that invoke join.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hycond_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>current_condition</code> 
-            </td>
-            <td class="TableCell">
-               Current conditional variable that the thread is waiting on. Used
-               for interrupting.
-            </td>
-         </tr>
-         <tr>
-            <td colspan="3" class="TableCell">
-               <strong>State</strong> 
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>IDATA</code> 
-            </td>
-            <td class="TableCell">
-               <code>state</code> 
-            </td>
-            <td class="TableCell">
-               Thread state. Holds thread state flags as defined in the JVMTI
-               specification [<a href="#JVMTI_ref">2</a>] plus additional
-               flags.
-            </td>
-         </tr>
-         <tr>
-            <td colspan="3" class="TableCell">
-               <strong>Attributes</strong> 
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>char *</code> 
-            </td>
-            <td class="TableCell">
-               <code>name</code> 
-            </td>
-            <td class="TableCell">
-               Name of the thread, can be used for debugging.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>IDATA</code> 
-            </td>
-            <td class="TableCell">
-               <code>priority</code> 
-            </td>
-            <td class="TableCell">
-               Hint to the scheduler about thread priority.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>IDATA</code> 
-            </td>
-            <td class="TableCell">
-               <code>daemon</code> 
-            </td>
-            <td class="TableCell">
-               Checks whether this thread is a daemon.
-            </td>
-         </tr>
-         <tr>
-            <td colspan="3" class="TableCell">
-               <strong>Other</strong> 
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>IDATA</code> 
-            </td>
-            <td class="TableCell">
-               <code>thread_id</code> 
-            </td>
-            <td class="TableCell">
-               ID for this thread. The maximum number of threads is governed by
-               the size of the lock word record. See section <a
-               href="#Thin_monitors">Thin Monitors</a> for details on the lock
-               word structure.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>apr_pool_t *</code> 
-            </td>
-            <td class="TableCell">
-               <code>pool</code> 
-            </td>
-            <td class="TableCell">
-               Memory pool, where this thread is allocated.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>apr_threadattr_t *</code> 
-            </td>
-            <td class="TableCell">
-               <code>apr_attrs</code> 
-            </td>
-            <td class="TableCell">
-               APR thread attributes.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hythread_entrypoint_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>start_proc</code> 
-            </td>
-            <td class="TableCell">
-               Procedure that describes thread body to be executed.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>void *</code> 
-            </td>
-            <td class="TableCell">
-               <code>start_proc_args</code> 
-            </td>
-            <td class="TableCell">
-               Arguments to be passed to the thread body.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>void *</code> 
-            </td>
-            <td class="TableCell">
-               <code>thread_local_storage</code> 
-            </td>
-            <td class="TableCell">
-               Array representing the thread local storage.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>void *</code> 
-            </td>
-            <td class="TableCell">
-               <code>big_local_storage</code> 
-            </td>
-            <td class="TableCell">
-               Extension to the standard local storage slot.
-            </td>
-         </tr>
-      </table>
-      <p>
-         For details on thread control structures, see the
-         <code>thread_private.h</code> header file supplied with the source
-         bundle.
-      </p>
+For details on thread control structures, see <a href="DoxygenStart.html">Doxygen
+documentation</a> hosted on the website. </p>
       <p class="backtotop">
          <a href="#Top">Back to Top</a>
       </p>
@@ -1172,188 +817,18 @@ limitations under the License.
       <p>
          A thread control structure of a Java<a href="#*">*</a> thread is
          defined by the <code>JVMTIThread</code> type and holds mostly JVMTI
-         information specific to that thread, as shown in Figure 4 below.
+         information specific to that thread, as shown in Figure 3 below.
       </p>
-      <p class="special">
+      <p align="center" class="special">
          <img src="images/JavaAttached.gif"
          alt="Structure of the Java* Attached thread" />
       </p>
       <p class="special">
-         Figure 4: Java<a href="#*">*</a> Attached Thread
+         Figure 3: Java<a href="#*">*</a> Attached Thread
       </p>
       <p>
-         The following table lists the data fields making up the thread control
-         structure of a Java<a href="#*">*</a> thread:
-      </p>
-      <table width="100%">
-         <tr>
-            <th colspan="2" class="TableHeading">
-               Data Field
-            </th>
-            <th class="TableHeading">
-               Description
-            </th>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>JNIEnv *</code> 
-            </td>
-            <td class="TableCell">
-               <code>jenv</code> 
-            </td>
-            <td class="TableCell">
-               JNI environment variable associated with this Java<a
-               href="#*">*</a> thread.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>jthread</code> 
-            </td>
-            <td class="TableCell">
-               <code>thread_object</code> 
-            </td>
-            <td class="TableCell">
-               The object <code>jthread</code> associated with
-               <code>hythread_t</code>.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>hycond_t</code> 
-            </td>
-            <td class="TableCell">
-               <code>monitor_condition</code> 
-            </td>
-            <td class="TableCell">
-               Conditional variable used to wait/notify Java<a href="#*">*</a>
-               monitors.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>jthrowable</code> 
-            </td>
-            <td class="TableCell">
-               <code>stop_exception</code> 
-            </td>
-            <td class="TableCell">
-               Exception to be thrown in a stopped thread.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>jlong</code> 
-            </td>
-            <td class="TableCell">
-               <code>blocked_time</code> 
-            </td>
-            <td class="TableCell">
-               Time duration of the thread blocked on a monitor, in
-               nanoseconds.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>jlong</code> 
-            </td>
-            <td class="TableCell">
-               <code>waited_time</code> 
-            </td>
-            <td class="TableCell">
-               Time duration of the thread waiting on a monitor, in
-               nanoseconds.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>JVMTILocalStorage</code> 
-            </td>
-            <td class="TableCell">
-               <code>jvmti_local_storage</code> 
-            </td>
-            <td class="TableCell">
-               JVMTI local storage.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>jobject</code> 
-            </td>
-            <td class="TableCell">
-               <code>contended_monitor</code> 
-            </td>
-            <td class="TableCell">
-               Monitor that this thread is blocked on.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>jobject</code> 
-            </td>
-            <td class="TableCell">
-               <code>wait_monitor</code> 
-            </td>
-            <td class="TableCell">
-               Monitor that this thread is waiting on.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>jobject *</code> 
-            </td>
-            <td class="TableCell">
-               <code>owned_monitors</code> 
-            </td>
-            <td class="TableCell">
-               Monitors owned by this thread.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>int</code> 
-            </td>
-            <td class="TableCell">
-               <code>owned_monitors_nmb</code> 
-            </td>
-            <td class="TableCell">
-               The counter for the monitors owned by the thread.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>apr_pool_t *</code> 
-            </td>
-            <td class="TableCell">
-               <code>pool</code> 
-            </td>
-            <td class="TableCell">
-               APR pool for this structure.
-            </td>
-         </tr>
-         <tr>
-            <td class="TableCell">
-               <code>jobject</code> 
-            </td>
-            <td class="TableCell">
-               <code>thread_ref</code> 
-            </td>
-            <td class="TableCell">
-               Weak reference to the corresponding
-               <code>java.lang.Thread</code> instance.
-            </td>
-         </tr>
-      </table>
-      <p>
-         For details on thread control structures, see the
-         <code>thread_private.h</code> header file supplied with the source
-         bundle.
-      </p>
-      <p>
-         The data structures associated with a thread attached to a
-         <code>java.lang.Thread</code> object and for a standalone (unattached)
-         thread are shown in Figures 3 and 4 respectively.
-      </p>
+         For details on thread control structures, see <a href="DoxygenStart.html">Doxygen
+         documentation</a> hosted on the website.</p>
       <p class="backtotop">
          <a href="#Top">Back to Top</a>
       </p>
@@ -1365,14 +840,14 @@ limitations under the License.
          for example, groups of Java<a href="#*">*</a> threads and GC threads
          not visible for Java<a href="#*">*</a> applications. Each thread
          maintained by the thread manager belongs to a specific thread group,
-         as shown in Figure 5.
+         as shown in Figure 4.
       </p>
       <p style="text-align: center">
          <img src="images/thread_groups.gif"
          alt="Threads distributed into thread groups, for example a group of Java* threads and a group of GC threads" />
       </p>
       <p class="special">
-         Figure 5: Thread Groups
+         Figure 4: Thread Groups
       </p>
       <p>
          The thread manager provides a set of functions for iterating over the
@@ -1392,33 +867,32 @@ limitations under the License.
          The thread manager synchronizers are functional modules used for
          thread synchronization. Certain synchronizers have internal data
          structures associated with them, others can only delegate function
-         calls to the appropriate synchronizers provided by APR. The current
-         implementation of synchronizers within the thread manager is based on
-         two fundamental primitives: the conditional variable and the mutex, as
-         shown in Figure 6.
+         calls to the appropriate synchronizers provided by the porting layer. The
+           current implementation of synchronizers within the thread manager is based
+           on two fundamental primitives: the conditional variable and the lock,
+           as shown in Figure 5.
       </p>
       <p style="text-align: center">
          <img src="images/Synchronizer_mutex.gif"
          alt="Implementing the thread synchronizer in TM" border="0" />
       </p>
       <p class="special">
-         Figure 6: Components of the TM Synchronizer
+         Figure 5: Components of the TM Synchronizer
       </p>
       <p>
          The elements in the figure have the following meaning:
       </p>
       <ul>
-         <li>
-            The APR conditional variable and APR mutex are basic primitives
-            provided by the Apache Portable Runtime.
+         <li>The conditional variable and lock are basic primitives
+            provided by the porting layer.
          </li>
          <li>
-            The TM conditional variable and TM mutex wrap appropriate APR
+            The TM conditional variable and TM lock wrap appropriate porting
             primitives by adding the <code>wait</code> interruption support.
             These synchronizers also ensure that a thread enters the safe
             suspension mode when it is put into a <code>wait</code> state using
             the conditional variable or when the thread is blocked while
-            acquiring a mutex.
+            acquiring a lock.
          </li>
          <li>
             The <a href="#Thin_monitors">thin monitor</a> is an inflatable lock
@@ -1444,9 +918,9 @@ limitations under the License.
          </li>
       </ul>
       <p>
-         The above hierarchy is optimized for APR code re-use. Other
+         The above hierarchy is optimized for porting code re-use. Other
          implementations of the Thread Manager component are also possible and
-         can utilize a different set of APR synchronizers.
+         can utilize a different set of porting synchronizers.
       </p>
       <p class="note">
          Note
@@ -1529,7 +1003,7 @@ limitations under the License.
          border="0" />
       </p>
       <p class="special">
-         Figure 7: Lock Word Structure: Contention Bit is 0
+         Figure 6: Lock Word Structure: Contention Bit is 0
       </p>
       <ul>
          <li>
@@ -1562,7 +1036,7 @@ limitations under the License.
          src="images/inflated_lockword.gif" />
       </p>
       <p class="special">
-         Figure 8: Lock Word Structure: Contention Bit is 1
+         Figure 7: Lock Word Structure: Contention Bit is 1
       </p>
       <ul>
          <li>
@@ -1589,8 +1063,7 @@ limitations under the License.
          alt="Inflated thin monitor" border="0" />
       </p>
       <p class="special">
-         Figure 9: Thin and Fat Monitor Relationship
-      </p>
+      Figure 8: Fat Monitor</p>
       <p class="backtotop">
          <a href="#Top">Back to Top</a>
       </p>
@@ -1607,7 +1080,7 @@ limitations under the License.
          <img src="images/Lock_reservation.gif" alt="Lock reservation" />
       </p>
       <p class="special">
-         Figure 10: Acquiring a Thin Lock
+         Figure 9: Acquiring a Thin Lock
       </p>
       <p>
          First, the thread uses the reservation bit to check whether the
@@ -1653,16 +1126,15 @@ limitations under the License.
             After creating a new thread, the <code>Thread()</code> constructor
             creates a new native thread and initializes <a
             href="#Thread_Control_Structure">thread control structures</a>
-            <code>HyThread</code> and <code>JVMTIThread</code>.
+            <code>VM_thread</code> and <code>HyThread</code> as part of <code>VM_thread</code>.
          </li>
          <li>
             The user application then calls the
-            <code>java.lang.Thread.start()</code> method of kernel classes
-            within the VM core component.
+            <code>java.lang.Thread.start()</code> method.
          </li>
          <li>
-            The <code>java.lang.Thread.start()</code> method delegates the call
-            to the <code>jthread_create()</code> function of the Java<a
+            The <code>java.lang.Thread.start()</code> method executes the <code>jthread_create()</code> function
+            of the Java<a
             href="#*">*</a> layer in the thread manager via the
             <code>java.lang.VMThreadManager.start()</code> function.
          </li>
@@ -1672,43 +1144,36 @@ limitations under the License.
          </li>
          <li>
             The <code>jthread_create_with_function()</code> function calls
-            <code>hythread_create()</code> supplying <code>wrapper_proc</code>
+            <code>hythread_create_ex()</code> supplying <code>jthread_wrapper_start_proc()</code>
             as a new thread body procedure.
          </li>
          <li>
-            The <code>hythread_create()</code> function delegates the call to
-            the <code>apr_thread_create()</code> function of the APR porting
-            layer, which does the actual fork and creates a new thread. The
-            <code>wrapper_proc</code> argument is supplied as the thread body
-            at this step.
+            The <code>hythread_create_ex()</code> function executes
+            the <code>os_thread_create()</code> function of the porting
+         layer, which does the actual fork and creates a new thread. The newly created
+            thread begins to execute
+            <code>jthread_wrapper_start_proc()</code>.
          </li>
          <li>
-            The newly created thread begins to execute
-            <code>thread_start_proc()</code>, which, in its turn, runs the
-            <code>wrapper_proc()</code> function.
-         </li>
-         <li>
-            The function <code>wrapper_proc()</code> performs the required
-            registration of the new thread with other components by sending the
-            <code>vm_attach</code> event to VM core and by calling the
-            <code>jvmti_send_thread_start_end_event()</code> function, which
-            sends the <code>JVMTI_EVENT_THREAD_START</code> event.
-         </li>
-         <li>
-            The function <code>wrapper_proc()</code> calls the
+            The function <code>jthread_wrapper_start_proc()</code> performs
+            the required registration of the new thread in the thread group, allocates
+            <code>VM_thread</code> pool, creates
+             the top-level M2N frame and local handles, initiates thread stack info
+            and JNI thread environment. If needed, the function performs JVMTI callback
+            by sending the <code>JVMTI_EVENT_THREAD_START</code> event.
+</li>
+         <li>After thread initialization, the function <code>jthread_wrapper_start_proc()</code> executes
+           the
             <code>java.lang.Thead.run()</code> method, which makes the
             user-defined body of the new Java<a href="#*">*</a> thread.
-         </li>
+</li>
          <li>
-            After <code>Thread.run()</code> has finished, the thread is
-            unregistered with other components by calling the
-            <code>jvmti_send_thread_start_end_event()</code> function, which
-            sends the <code>JVMTI_EVENT_THREAD_END</code> and then the
-            <code>vm_detach</code> events.
-         </li>
+         After <code>java.lang.Thread.run()</code> has finished, the function  <code>jthread_wrapper_start_proc()</code> unsets
+         the thread in the thread group and de-allocates <code>VM_thread</code> data.
+         If needed, the function performs JVMTI callback by sending the <code>JVMTI_EVENT_THREAD_END</code> event. </li>
       </ol>
       <p>
-         The following figure illustrates the detailed sequence of thread
+         The following figures illustrate the detailed sequence of thread
          creation and completion:
       </p>
       <p style="text-align: center">
@@ -1716,15 +1181,20 @@ limitations under the License.
          src="images/ThreadCreation.gif" />
       </p>
       <p class="special">
-         Figure 11: Java<a href="#*">*</a> Thread Life Cycle
-      </p>
+         Figure 10: Java<a href="#*">*</a> Thread Life Cycle
+</p>
+      <p align="center" class="special"><img src="images/NewJavaThread.gif" width="508" height="569" /></p>
+      <p class="special">Figure 11: New Java<a href="#*">*</a> Thread 
+
+
+Life Cycle</p>
       <p class="note">
          <a id="TM.END" name="TM.END"></a>Note
       </p>
       <p class="notetext">
-         The native thread control structures (such as, <code>HyThread</code>
-         and <code>JVMTIThread</code>) are not de-allocated once the new thread
-         body is finished. The thread manager creates a weak reference for each
+         The native thread control structures, such as <code>VM_thread</code>, are
+         not de-allocated once the new thread body is finished. The thread manager
+         creates a weak reference for each
          <code>java.lang.Thread</code> object supplying its internal reference
          queue. The garbage collector places a reference into that queue when a
          specific <code>java.lang.Thread</code> object is garbage-collected.
@@ -1742,9 +1212,9 @@ limitations under the License.
          Suspension
       </h2>
       <p>
-         One of the important features that the native layer adds for APR
-         threading is <i>safe suspension</i>. This mechanism ensures that the
-         suspended thread can be safely explored by the garbage collector
+         One of the important features that the native layer adds for threading in
+           the porting layer is <i>safe suspension</i>. This mechanism ensures that
+           the suspended thread can be safely explored by the garbage collector
          during the enumeration of live references. If a thread holds some
          system-critical locks, such as the locks associated with the native
          heap memory, safe suspension can keep it running even during the
@@ -1789,26 +1259,14 @@ limitations under the License.
          The T2 thread undergoes the following:
       </p>
       <ol start="1" type="1">
-         <li>
-            Thread T2 periodically calls the <code>hythread_safe_point()</code>
-            function to designate the points of safe suspension.<br />
-             If a suspension request has been set previously for T2, this
-            method notifies the T1 thread and then waits until T1 resumes it by
-            calling <code>hythread_resume(T2)</code>.
-         </li>
-         <li>
-            When the T2 thread enters a safe region, it calls the
-            <code>hythread_suspend_ensable()</code> function, which decrements
-            the <code>suspend_disable_count</code> state flag.<br />
-             If a suspension request has been previously set for T2, T1 is
-            notified about T2 having reached a safe region.
-         </li>
-         <li>
-            When T2 leaves a safe region, it calls the
-            <code>hythread_suspend_disable()</code> function. This function
-            increments the <code>suspend_disable_count</code> state flag.
-         </li>
-      </ol>
+         <li> T2 thread marks itself with functions
+             <code>hythread_suspend_enable</code>() and <code>hythread_suspend_disable</code>()
+             in order to denote a safe region of code. T2 thread may also call <code>hythread_safe_point</code>()
+             method to denote a selected point where safe suspension is possible.</li>
+         <li> If a suspension request has been set, T2 thread reaches the end of
+           safe point and gets blocked in <code>hythread_safe_point</code>() method
+           until T1 resumes it by calling <code>hythread_resume(T2)</code>. </li>
+   </ol>
       <p>
          A typical example of the safe suspension scenario takes place when the
          garbage collector suspends a Java<a href="#*">*</a> thread to
@@ -1934,49 +1392,34 @@ limitations under the License.
          keeps the lock data. The process of locking Java<a href="#*">*</a>
          monitors is shown on Figure 16 below.
       </p>
-      <p>
-         When a synchronized section occurs in Java<a href="#*">*</a> code, the
-         following steps are taken:
-      </p>
-      <ol start="1" type="1">
-         <li>
-            The code generated by the JIT compiler calls the
-            <code>hythread_monitor_enter()</code> helper function provided by
-            the thread manager. The helper function provides a chunk of code
-            (stub) that can be in-lined by the JIT compiler directly into the
-            generated assembly code.
-         </li>
-         <li>
-            The <code>hythread_monitor_enter()</code> helper calls the
-            <code>vm_object_get_lockword_addr()</code> function of VM core
-            component to find out the physical address of the lock word within
-            the Java<a href="#*">*</a> object.
-         </li>
-         <li>
-            The helper calls the <code>thin_monitor_try_lock()</code> function
-            in order to acquire the lock associated with the object.
-         </li>
-         <li>
-            In case the lock is acquired, the helper returns. This is the fast
-            path to acquiring the Java<a href="#*">*</a> monitor. In this
-            scenario, the helper does not need to switch between Java<a
-            href="#*">*</a> and native frames and the
-            <code>thin_monitor_try_enter()</code> function is called directly
-            involving no Java<a href="#*">*</a> objects.<br />
-             Otherwise, the helper code enters a slow path by switching between
-            Java<a href="#*">*</a> and native code (see the actions of pushing
-            an M2nFrame and creating the local handle in the figure below).
-         </li>
-         <li>
-            The helper calls the <code>jthread_monitor_enter()</code> function,
-            which works with the Java<a href="#*">*</a> object as with JNI
-            code.
-         </li>
+      <p>The code generated by the JIT compiler calls the <code>gen_restore_monitor_enter()</code>
+        helper function. The helper function provides a chunk of code (stub) that
+        can be inlined by the JIT compiler directly into the generated assembly
+        code. </p>
+      <ol>
+        <li>The helper function argument is a physical address of the lock
+          word within the Java<a href="#*">*</a> object. </li>
+        <li>The first step of helper is to perform
+          a fast path of acquiring the lock associated with the object. The action
+          is the same as thread manager does in <code>hythread_thin_monitor_try_enter()</code>
+          function. </li>
+        <li>The helper tries to follow the fast path. If the lock is acquired and
+          the monitor is not contended, the helper returns. The helper does not need
+          to switch between Java<a href="#*">*</a> and
+              native frames and  operates directly involving no Java<a href="#*">*</a> objects.              </li>
+        <li>If the lock is not acquired, the helper continues by entering a slow
+          path, which switches between Java<a href="#*">*</a> and
+                native code. The slow path actions are pushing an M2nFrame and creating
+                the local handle (see in the figure below). </li>
+        <li>The helper calls the <code>jthread_monitor_enter()</code>
+          function, which works with the Java<a href="#*">*</a> object
+          as with JNI code. </li>
       </ol>
-      <p style="text-align: center">
-         <img alt="slow and fast paths to locking a Java* monitor"
-         src="images/Monitors.gif" />
+      <p>&nbsp;
       </p>
+      <p align="center">
+         <img alt="slow and fast paths to locking a Java* monitor"
+         src="images/Monitors.gif" />      </p>
       <p class="special">
          Figure 16: Locking Java<a href="#*">*</a> Monitors
       </p>
