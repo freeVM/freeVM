@@ -26,107 +26,292 @@
 
  <body>
 
-<section name="Build-Test Framework">
+<section name="Introduction">
 <p>
-    The
-    <a href="http://svn.apache.org/viewvc/harmony/enhanced/buildtest/">
-      <i>build-test framework</i></a> is a simple configuration of
-    <a href="http://cruisecontrol.sourceforge.net/"><code>CruiseControl</code></a>,
-    a framework for continuous build process. It also includes all the
-    necessary support to simplify installation.
-</p>
-
-<p>
-    Currently, the framework does the following distinct tasks, in order,
-    and only when code changes in the repository:</p>
-    <ol>
-        <li>Update the source for the class library from SVN</li>
-        <li>Get any new dependencies needed for building the class library</li>
-        <li>Build and test the class library</li>
-        <li>Update the source for the DRLVM from SVN</li>
-        <li>Get and build any new dependencies needed for DRLVM</li>
-        <li>Build and test the DRLVM</li>
-    </ol>
-</section>
-   <section name="Setup and Configuration">
-
-  <subsection name="Prerequisites"> 
-
-    <p>You need to obtain and install the same <a href="../../quickhelp_contributors.html">tools</a>, 
-    as for building the Apache Harmony
-    components.</p>
-  </subsection>
-
-  <subsection name="Setup">
-        <p>
-       Get the <code>/harmony/enhanced/buildtest/</code> part of the Apache
-       Harmony project via <code>zip</code> or <code>tgz</code> files. You also can 
-       check it out from the project Subversion repository:</p>
-
-    <pre>svn co http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk</pre>
-
-    <p>
-       With Java, Ant and SVN installed, change into the <code>buildtest/trunk</code>
-       directory and type:
-    </p>
-
-    <pre>ant setup</pre>
-
-    <p>
-       This command fetches <code>CruiseControl</code>, sets it up with the Apache Harmony
-       configuration, and checks out the software for building and testing 
-       from Apache Harmony.
+    <p class="note">Note</p>
+    <p class="notetext">
+      This document is not complete. The final version will be finalized as
+      the framework development is completed and associated feedback is recieved.
     </p>
 
     <p>
-       To run the tests successfully, you need to do the
-       following manual steps for now:
-    </p>
-
-    <ol>
-      <li>
-         Build the classlib to create the <code>deploy/jdk</code> tree in classlib, 
-         first fetching the dependencies:
-        <pre>cd cc/projects/classlib/trunk
-ant fetch-depends
-ant</pre>
-      </li>
-      <li>
-         Get the appropriate IBM J9 VM for your platform (this will go
-         away when DRLVM is good enough):
-
-         <pre>http://www-128.ibm.com/developerworks/java/jdk/harmony/index.html</pre>
-       </li>
-
+      To be part of the project and successfully contribute to it this
+      is important to know about test and release process, automation
+      for testing, available test suites and scenarios.
+      So the main target of this document is to provide a developer with all
+      required information. The information is divided into the next
+      sections:
+      <ul>
         <li>
-         Unpack the above-fetched J9 distribution into the <code>jdk</code> directory (as
-         the distro assumes it is dropped into the<code>jdk</code> directory):
-
-        <pre>cd cc/projects/classlib/trunk/deploy/jdk/
-tar zxf Harmony-vme-linux.IA32-v4.tar.gz</pre>
+          <a href="#Process">Harmony Test and Release Process</a>
         </li>
-
-    </ol>
-  </subsection>
-  <subsection name="Starting CruiseControl">
-
-    <p>
-        To start the system, type the following command in 
-        <code>buildtest/trunk</code>: 
-    </p>
-
-     <pre>ant</pre>
-
-    <p>The given command launches <code>CruiseControl</code> with the full test set. 
-    To check status, point your browser to:</p>
-
-   <pre>http://localhost:8080/</pre>
-  </subsection>
+        <li>
+          <a href="#Automation">Framework for Testing and Automation</a>
+        </li>
+        <li>
+          <a href="#Suites">Test Suites and Scenarios</a>
+        </li>
+      </ul>
+  </p>
+</p>
 </section>
- </body>
- </document>
 
+  <section name="Harmony Test and Release Process">
+    <a name="Process" />
+    <p>
+      A joint decision about a release schedule and acceptance criteria
+      is made on
+      <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.
+      Currently only
+      <a href="http://harmony.apache.org/download.cgi#Stable">milestone builds</a>
+      are released - the project has no official releases. Usually the
+      milestone builds are released on 2-3 month schedule and named using
+      the next scheme: <i>Apache Harmony 5.0M&lt;milestone number&gt;</i>.
+      Before a release date there is 1 week feature freeze period and 1
+      week code freeze period. During feature freeze new functionality,
+      big changes and code redesign are forbidden; only bugs fixes and
+      code tidy-up are allowed. During code freeze period only fixes for
+      critical/blocker issues are committed.
+    </p>
+    <p>
+      The Harmony team does its best to deliver well tested implementation.
+      As the project’s code-base consists of big number of code-lines
+      the testing became not a trivial task. So the clear testing process
+      was established, <a href="#Automation">automation for testing</a>
+      and several <a href="#Suites">test suites</a> were developed.
+    </p>
+    <p>
+      Currently the testing process consists of two testing cycles:
+      <i>integrity testing</i> and <i>snapshot testing</i>.
+      Both cycles are based on
+      <a href="#Automation">build-test framework</a>
+    </p>
+    <p>
+      <i>Integrity testing</i>
+      cycle is aimed to verify that code base is buildable and runs selected
+      number of suites to catch regressions early. The cycle works on debug
+      build. The integrity testing cycle is triggered by a developer commit
+      (i.e. when a code is updated in the source code repository).
+      Results of testing are
+      <a href="http://people.apache.org/~varlax/harmony-integrity">published</a>
+      almost immediately<br/>
+    </p>
+    <p>
+      <i>Snapshot testing</i>
+      cycle is aimed to provid tested binaries on regular basis.
+      Based on integrity testing results (i.e. the build is not broken and
+      most of tests are passing) a revision for the next snapshot is chosen.
+      When the snapshot is build it is uploaded to the web site and that in
+      turn triggers the testing cycle. For each build snapshot there
+      is a page with
+      <a href="http://people.apache.org/~mloenko/snapshot_testing/script/snapshots_summary.html">tests results summary</a>.
+      The page is updated dynamically as soon as results are ready.
+    </p>
+  </section>
 
+  <section name="Framework for Testing and Automation">
+    <a name="Automation" />
+    <p>
+      The
+      <a href="http://svn.apache.org/viewvc/harmony/enhanced/buildtest/trunk/infra">
+      <i>build-test framework</i></a>
+      is targeted to assist a developer with running different suites and
+      automation of testing process. The framework is a set of ANT scripts 
+      that provides necessary support to simplify installation, setup of
+      Harmony build, <a href="#Suites">test suites</a> and configuring
+      <a href="http://cruisecontrol.sourceforge.net/"><code>CruiseControl</code></a>.
+    </p>
+    <subsection name="Prerequisites"> 
+      <p> You need to obtain and install the same <a href="../../quickhelp_contributors.html">tools</a>, 
+        as for building the Apache Harmony components.
+      </p>
+    </subsection>
 
+    <subsection name="Setup">
+      <p> Get the infrastructure by checking it out from the project Subversion repository:</p>
 
+      <pre>svn co http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk/infra</pre>
 
+      <p>
+         With Java, Ant and SVN installed, change into the <code>infra</code>
+         directory and type:
+      </p>
+
+      <pre>ant -Dtest.suites="&lt;<i>list of suites&gt;</i>" install</pre>
+
+      <p>
+        This command fetches external dependencies (including
+        <code>CruiseControl</code>), checks out Harmony build and test suites
+        (if necessary), sets up testing environment. After <code>install</code>
+        is complete it may request to specify unset required properties
+        for selected suites. The <code>required-parameters.properties</code>
+        file contains a list of all required properties.
+        If a property has empty or unresolved value
+        then a property has to be set in <code>framework.local.properties</code>
+        file and <code>install</code> target has to be re-run.
+      </p>
+
+      <p>
+         The next step is to setup suites. (Note: the framework saves the list
+         of installed suites so the parameter <code>-Dtest.suites=...</code>
+         is not required any more) Just simply type:
+      </p>
+
+      <pre>ant setup</pre>
+
+      <p>
+        This command launches <code>setup</code> target for each installed suite.
+      </p>
+
+    </subsection>
+    <subsection name="Run">
+      <p>
+        The suites' run can be launched in two ways: by the framework or by
+        <code>CruiseControl</code> tool. If a single run is needed type:
+      </p>
+      <pre>ant run</pre>
+
+      <p>
+        The command launches <code>run</code> target for each installed suite.
+      </p>
+
+      <p>
+        In case when a continuous build and test process is required type:
+      </p>
+      <pre>ant run-cc</pre>
+
+      <p>
+        The given command launches <code>CruiseControl</code> with the full test set. 
+        To check status, point your browser to:
+      </p>
+      <pre>http://localhost:8080/</pre>
+
+    </subsection>
+
+    <subsection name="How To">
+      <p>
+        <i>TODO: add instructions for "How To" setup integrity,
+        snapshot testing, integrate a suite/scenario</i>
+     </p>
+    </subsection>
+
+  </section>
+
+  <section name="Test Suites and Scenarios">
+    <a name="Suites" />
+    <p>
+      The Harmony testing base can be divided into 2 main parts:
+      <i>suites</i> and <i>scenarios</i>.
+    </p>
+    <p>
+      A <i>test suite</i> is a collection of quite
+      simple/short test cases that is used to verify that the
+      implementation follows specified behavior.
+      The project has several own test suites as well uses 3rd party
+      (external) test suites.
+    </p>
+    <p>
+      An application <i>testing scenario</i> (or simply testing scenario)
+      is a set of actions/operations that models typical application's
+      usage/functioning.
+    </p>
+    <p class="note">Note</p>
+    <p class="notetext">
+      Most of suites/scenarios below can be run with and without build-test
+      framework. Please consult a suite's documentation for details.
+    </p>
+    <p>
+      <ul>
+        <li> Harmony suites:
+          <ul>
+            <li>
+              Class library unit tests
+            </li>
+            <li>
+              DRL VM unit and regression tests
+            </li>
+            <li>
+              Functional test suite
+            </li>
+            <li>
+              JDKTools unit tests
+            </li>
+            <li>
+              Reliability test suite
+            </li>
+            <li>
+              Stress test suite
+            </li>
+            <li>
+              VM Validation test suite
+            </li>
+          </ul>
+        </li>
+        <li> External test suites:
+          <ul>
+            <li>
+              Apache Ant 1.7.0 unit tests
+            </li>
+            <li>
+              Apache Maven unit tests
+            </li>
+            <li>
+              Eclipse unit tests.
+            </li>
+            <li>
+              Eclipse TPTP tests
+            </li>
+            <li>
+              Geronimo unit tests.
+            </li>
+            <li>
+              JUnit tests
+            </li>
+            <li>
+              Mauve test suite
+            </li>
+          </ul>
+        </li>
+        <li> Application scenarios:
+          <ul>
+            <li>
+              Apache Ant scenario
+            </li>
+            <li>
+              Apache Axis2 client-server scenario
+            </li>
+            <li>
+              Apache Struts scenario
+            </li>
+            <li>
+              Apache Tomcat scenario
+            </li>
+            <li>
+              Dacapo benchmark
+            </li>
+            <li>
+              Eclipse Geronimo application 
+            </li>
+            <li>
+              Eclipse hello world application
+            </li>
+            <li>
+              JEdit scenario
+            </li>
+            <li>
+              Jetty scenario
+            </li>
+            <li>
+              LDAP scenario
+            </li>
+            <li>
+              Scimark benchmark
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </p>
+  </section>
+
+</body>
+</document>
