@@ -53,7 +53,9 @@
             <arg line="up --ignore-externals ${co.target} ." />
         </exec>
 
-        <exec-ant dir="${trunk.dir}" javaVM="${tested.jdk}/bin/java">
+        <exec-ant dir="${trunk.dir}"
+                  targets="rebuild"
+                  javaVM="${tested.jdk}/bin/java">
             <jvmarg line="-Xmx800M -Dtarget.dir=${target.dir}"/>
             <env key="JAVA_HOME" value="${tested.jdk}"/>
             <env key="PATH" value="${my.path}"/>

@@ -42,10 +42,10 @@
         <property name="svnrevision" value="HEAD"/>
         <log message="Updating HDK workspace to revision: ${svnrevision}"/>
         <exec executable="svn" dir="${hdk.trunk.dir}" failonerror="true">
-            <arg line="update -r ${svnrevision} -N"/>
+            <arg line="update -r ${svnrevision} --ignore-externals"/>
         </exec>
         
-        <exec-ant dir="${hdk.trunk.dir}">
+        <exec-ant dir="${hdk.trunk.dir}" targets="rebuild">
             <jvmarg line="-Xmx1000M"/>
             <sysproperty key="keep.working" value="true"/>
             <sysproperty key="auto.fetch" value="true"/>
