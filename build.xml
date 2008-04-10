@@ -69,10 +69,10 @@ command line.  For example, to run only the luni tests:
 
     <property name="harmony.jdktools" location="${basedir}"/>
 
-    <property name="hy.deploy" location="${external.drlvm.loc}"/>
     <condition property="hy.deploy" value="${hy.hdk}">
         <isset property="hy.hdk"/>
     </condition>
+    <property name="hy.deploy" location="${external.drlvm.loc}"/>
 
     <property name="hy.hdk" location="${external.classlib.loc}" />
     <property name="hy.drlvm" location="${external.drlvm.loc}" />
