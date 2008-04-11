@@ -47,26 +47,14 @@
                     </or>
                 </condition>
 
-                <delete file="${@{suite.name}.parameters.cc.file.location}"/>
-
-                <if><!-- check for custom configuration file -->
-                    <isset property="@{suite.name}.parameters.cc.config"/>
-                <then>
-                    <!-- use custom -->
-                    <log message="Generating CC config on the base of custom CC config template: ${@{suite.name}.parameters.cc.config}"/>
-
-                    <copy file="${@{suite.name}.parameters.cc.config}" 
-                          tofile="${@{suite.name}.parameters.cc.file.location}"/>
-                </then>
-                <else>
-                    <!-- use custom -->
-                    <log message="Generating CC config on the base of default CC template: ${cc.project.template}"/>
-
-                    <!-- use dafault cc config template -->
-                    <copy file="${cc.project.template}" 
-                          tofile="${@{suite.name}.parameters.cc.file.location}"/>
-                </else>
-                </if>
+                <!-- copy configuration file
+                     in case of custom configuration file
+                     the property is already set
+                -->
+                <property name="@{suite.name}.parameters.cc.config"
+                          value="${cc.project.template}" />
+                <copy file="${@{suite.name}.parameters.cc.config}" 
+                      tofile="${@{suite.name}.parameters.cc.file.location}"/>
 
                 <!-- ======================================================= -->
                 <!--    Do CC-Config Template Filling (Tag Substitutions)    -->
