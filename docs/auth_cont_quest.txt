@@ -1,7 +1,7 @@
         The Apache Software Foundation
            Apache Harmony Project
      Authorized Contributor Questionnaire
-                   v1.0
+                   v1.1
 
 
 Please Note : This document and your answers are considered public information,
@@ -25,33 +25,33 @@ Part I :  Identification
 Part II:  Access to Repositories
 
   The Project is committed to producing an implementation of Java that
-  can be licensed freely under the Apache License.  To do this,
-  we wish to know what, if any, previous exposure you have had
-  to the source for any of the parts of a Java implementation
-  including virtual machines, class libraries, tooling, etc.
+  can be licensed freely under the Apache License.  To do this, we wish
+  to know what, if any, previous exposure you have had to the source for
+  any of the parts of a Java implementation including virtual machines,
+  class libraries, tooling, etc.
 
-  The following activities are not considered "accessing the
-  source code" and would not generally disqualify you from
-  committing to the related repository here at Apache Harmony
+  The following activities are not considered "accessing the source
+  code" and would not generally disqualify you from committing to the
+  related repository here at Apache Harmony
 
-    a) Having a copy of src.jar (or equivalent) on a computer as long as you
-       never viewed or edited the contents of the file.
+    a) Having a copy of src.jar (or equivalent) on a computer as long as
+       you never viewed or edited the contents of the file.
 
-    b) While running a debugger on a Java language program, having
-       had occasion to step into the source code for the implementation
-       as long as you did not attempt to understand or debug the
+    b) While running a debugger on a Java language program, having had
+       occasion to step into the source code for the implementation as
+       long as you did not attempt to understand or debug the
        implementation code itself.
 
     c) Having implemented "plug-ins" or other component software which
        interact with an implementation, but doing so only with reference
        to the published service provider interfaces.
 
-    d) Have written or executed test cases that probed the behavior
-       of an implementation as long as you did so with reference
-       only to published specifications and interfaces.
+    d) Have written or executed test cases that probed the behavior of
+       an implementation as long as you did so with reference only to
+       published specifications and interfaces.
 
-   The following is a list of the components of the project each
-   labeled with an ID (ex. JVM-1):
+   The following is a list of the components of the project each labeled
+   with an ID (ex. JVM-1):
 
      VM
      --
@@ -63,31 +63,63 @@ Part II:  Access to Repositories
 
      Classlibrary
      ------------
-     CL-1    Applet (java.applet)
+     CL-1    Applet (java.applet, javax.microedition.midlet.*,
+                     javax.microedition.xlet.*)
      CL-2    Archive (java.util.zip, java.util.jar)
      CL-3    Beans (java.beans)
      CL-4    Core (incl. lang, util, net, io, annotation, concurrent,
-                       NIO-channels, NIO-charset, text, javax.net
-                       where not covered elsewhere in list)
+                   NIO-channels, NIO-charset, text, javax.net,
+                   javax.microedition.io.*, javax.microedition.rms.*,
+                   javax.lang.rm.*, javax.microedition.rm.*,
+                   javax.microedition.fileconnection.*,
+                   javax.microedition.global.*)
      CL-5    Image IO (javax.imageio)
      CL-6    Instrument (java.lang.instrument)
      CL-7    JMX (javax.management)
      CL-8    Lang-management (java.lang.management)
      CL-9    Logging (java.util.logging)
      CL-10   Math (java.math)
-     CL-11   ORB (javax.activity, javax.rmi.*, javax.transaction.*, org.omg.*)
+     CL-11   ORB (javax.activity, javax.rmi.*, javax.transaction.*,
+                  org.omg.*)
      CL-12   Prefs (java.util.prefs)
      CL-13   Print (javax.print.*)
      CL-14   Regex (java.util.regex)
      CL-15   RMI (java.rmi.*)
      CL-16   Security (java.security.*, javax.security.*, org.ietf.jgss,
-                            javax.crypto)
+                       javax.crypto, javax.microedition.pki,
+                       javacard.security,
+                       javax.microedition.securityservice)
      CL-17   Sound (javax.sound)
      CL-18   SQL (java.sql, javax.sql.*)
-     CL-19   Swing / AWT (java.awt.*, javax.swing.*, javax.accessibility)
-     CL-20   XML (javax.xml.*, org.w3c.*, org.xml.*)
+     CL-19   User Interface (java.awt.*, javax.swing.*,
+                             javax.accessibility,
+                             javax.microedition.agui.*,
+                             javax.microedition.lcdui.*,
+                             javax.microedition.customization.*,
+                             javax.microedition.m3g.*,
+                             javax.microedition.plaf.*,
+                             javax.microedition.m2g.*)
+     CL-20   XML (javax.xml.*, org.w3c.*, org.xml.*,
+                  javax.microedition.xml.*)
      CL-21   JNDI (javax.naming.*)
+     CL-22   javaCard Extensions (javacard.*, javax.microedition.jcrmi.*,
+                                  javax.microedition.apdu.*)
+     CL-23   Mobile Media (javax.microedition.media.*,
+                           javax.microedition.broadcast.*)
+     CL-24   Mobile Extensions (javax.microedition.pim.*,
+                                javax.microedition.location.*,
+                                javax.microedition.sip.*, javax.imps.*,
+                                javax.microedition.payment.*,
+                                javax.microedition.telephony.*,
+                                javax.microedition.sensor.*,
+                                javax.microedition.contactless.*,
+                                javax.bluetooth.*, javax.obex.*,
+                                javax.serviceconnection.*,
+                                javax.wireless.messaging,
+                                javax.microedition.content.*)
+
      CL-X   other ____________________________________________
+
 
      Tools & Misc
      ------------
@@ -156,15 +188,15 @@ Part III : General Exposure
 
 
     If you have answered yes to any question above, and that implementation is
-    not available under a recognized Open Source license, you may not be an
-    contributor to the related component of Apache Harmony unless the
-    copyright owner of that implementation either:
+    not available under a recognized Open Source license compatible with the
+    Apache License v2, you may not be a contributor to the related component
+    of Apache Harmony unless the copyright owner of that implementation either:
 
      a) submits the implementation to this project under the Software Grant or
         the Corporate Contribution License Agreement (the CCLA);
 
      b) if the copyright owner is your current employer, signs a CCLA and
-       lists you as a designated employee; or
+        lists you as a designated employee; or
 
      c) if the copyright owner is not your current employer, submits
         a written authorization disclaiming any copyright or confidentiality
@@ -173,7 +205,7 @@ Part III : General Exposure
     6. For each of the components listed above, please indicate either that you
        will not be an Authorized Contributor for those components at Apache
        Harmony, or indicate how you will resolve the issue of previous
-       exposure :
+       exposure (must be one or more of (a), (b), or (c) above):
 
      _____________________________________________________________________
      _____________________________________________________________________
@@ -285,4 +317,4 @@ Print Name : ___________________________________________
       Date : ___________________________________________
 
 
-v1.0  20060622
+v1.1  20080318
