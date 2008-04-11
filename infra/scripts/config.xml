@@ -141,16 +141,11 @@
 
         <echo>Generate config for: ${suite.name}</echo>
 
-        <!-- Load framework properties -->
-        <xmlproperty file="${scripts.dir}/parameters.xml"
-                     collapseAttributes="true"
-                     semanticAttributes="true"
-                     prefix="framework" />
-
         <!-- Load ALL suites properties -->
         <property file="${all.props}" />
 
-        <!-- Load local properties -->
+        <!-- Load local properties:
+             MUST precede load of framework properties -->
         <loadproperties srcfile="${framework.local.configuration.file}">
             <filterchain>
                 <expandproperties />
@@ -159,6 +154,12 @@
                 <replaceregex pattern="\\" replace="/" flags="g" />
             </filterchain>
         </loadproperties>
+
+        <!-- Load framework properties -->
+        <xmlproperty file="${scripts.dir}/parameters.xml"
+                     collapseAttributes="true"
+                     semanticAttributes="true"
+                     prefix="framework" />
 
         <!-- load external dependencies -->
         <loadproperties srcfile="${external.resources.location}">
