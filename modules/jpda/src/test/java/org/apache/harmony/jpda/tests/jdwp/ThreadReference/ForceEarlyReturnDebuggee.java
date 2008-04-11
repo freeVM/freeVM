@@ -247,7 +247,7 @@ public class ForceEarlyReturnDebuggee extends SyncDebuggee {
                         synchronizer.sendMessage(new Double(result).toString());
                         logWriter
                                 .println(getName() + ": func_Double returned.");
-                    } else {
+                    } else if (getName().equals(THREAD_VOID)) {
                         func_Void();
                         logWriter.println(getName() + ": " + "void");
                         if (isFuncVoidBreak) {
@@ -256,6 +256,10 @@ public class ForceEarlyReturnDebuggee extends SyncDebuggee {
                             synchronizer.sendMessage("FALSE");
                         }
                         logWriter.println(getName() + ": func_Void returned.");
+                    } else {
+                        logWriter.println(getName() + ": no func is called.");
+                        synchronizer.sendMessage(JPDADebuggeeSynchronizer.SGNL_READY);
+                        synchronizer.receiveMessage("ThreadExit");
                     }
 
                     logWriter.println(getName() + ": finished");

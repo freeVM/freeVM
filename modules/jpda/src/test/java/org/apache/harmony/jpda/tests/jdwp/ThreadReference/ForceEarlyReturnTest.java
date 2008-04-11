@@ -24,6 +24,7 @@ import org.apache.harmony.jpda.tests.framework.jdwp.JDWPCommands;
 import org.apache.harmony.jpda.tests.framework.jdwp.JDWPConstants;
 import org.apache.harmony.jpda.tests.framework.jdwp.ReplyPacket;
 import org.apache.harmony.jpda.tests.framework.jdwp.Value;
+import org.apache.harmony.jpda.tests.framework.jdwp.JDWPConstants.Tag;
 import org.apache.harmony.jpda.tests.jdwp.share.JDWPSyncTestCase;
 import org.apache.harmony.jpda.tests.share.JPDADebuggeeSynchronizer;
 
@@ -226,6 +227,69 @@ public class ForceEarlyReturnTest extends JDWPSyncTestCase {
         RunTestForceEarlyReturn();
     }
 
+    /**
+     * This testcase exercises ThreadReference.ForceEarlyReturn command. <BR>
+     * At first the test starts ForceEarlyReturnDebuggee and send it the thread
+     * name through which to start a specific thread. Then the test performs the
+     * ThreadReference.ForceEarlyReturn command for the tested thread without
+     * suspending the VM. In this testcase, THREAD_NOT_SUSPENDED exception is returned.
+     */
+    public void testForceEarlyReturn_NotSuspended() {
+        thisTestName = "testForceEarlyReturn_NotSuspended";
+        testThreadName = "test";
+        expectedValue = new Value(Tag.VOID_TAG, 0);
+
+        logWriter.println("==> " + thisTestName + " for " + thisCommandName
+                + ": START...");
+        synchronizer.receiveMessage(JPDADebuggeeSynchronizer.SGNL_READY);
+
+        if (!isCapability()) {
+            logWriter
+                    .println("##WARNING: this VM dosn't possess capability: canForceEarlyReturn");
+            return;
+        }
+        // Tell debuggee to start a thread
+        synchronizer.sendMessage(testThreadName);
+
+        // Wait thread signal.
+        synchronizer.receiveMessage(JPDADebuggeeSynchronizer.SGNL_READY);
+
+        // Getting ID of the tested thread
+        logWriter.println("==> testedThreadName = " + testThreadName);
+        logWriter.println("==> Get testedThreadID...");
+        long testedThreadID = debuggeeWrapper.vmMirror
+                .getThreadID(testThreadName);
+        logWriter.println("==> Get testedThreadID is" + testedThreadID);
+
+        // Compose the ForceEarlyReturn command
+        CommandPacket forceEarlyReturnPacket = new CommandPacket(
+                JDWPCommands.ThreadReferenceCommandSet.CommandSetID,
+                JDWPCommands.ThreadReferenceCommandSet.ForceEarlyReturnCommand);
+        forceEarlyReturnPacket.setNextValueAsThreadID(testedThreadID);
+        forceEarlyReturnPacket.setNextValueAsValue(expectedValue);
+
+        // Perform the command
+        logWriter.println("==> Perform " + thisCommandName);
+        ReplyPacket forceEarlyReturnReply = debuggeeWrapper.vmMirror
+                .performCommand(forceEarlyReturnPacket);
+        forceEarlyReturnPacket = null;
+
+        short errorCode = forceEarlyReturnReply.getErrorCode();
+        if (errorCode != JDWPConstants.Error.NONE) {
+            if (errorCode == JDWPConstants.Error.THREAD_NOT_SUSPENDED) {
+                logWriter
+                        .println("=> CHECK PASSED: Expected error (THREAD_NOT_SUSPENDED) is returned");
+                synchronizer.sendMessage("ThreadExit");
+                synchronizer
+                        .sendMessage(JPDADebuggeeSynchronizer.SGNL_CONTINUE);
+                return;
+            }
+        }
+        printErrorAndFail(thisCommandName
+                + " should throw exception when VM is not suspended.");
+
+    }
+    
     public static void main(String[] args) {
         junit.textui.TestRunner.run(ForceEarlyReturnTest.class);
 

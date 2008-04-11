@@ -35,11 +35,16 @@ public class InstancesTest extends JDWPSyncTestCase {
     static int maxInstances;
 
     static final String thisCommandName = "ReferenceType.Instances command";
+    
+    static String thisTestName;
 
     static final String debuggeeSignature = "Lorg/apache/harmony/jpda/tests/jdwp/ReferenceType/InstancesDebuggee;";
 
     static final String mockClassSignature = "Lorg/apache/harmony/jpda/tests/jdwp/ReferenceType/MockClass;";
 
+    static final String stringSignature = "Ljava/lang/String;";
+
+    static final String intArraySignature = "[I";
     @Override
     protected String getDebuggeeClassName() {
         return "org.apache.harmony.jpda.tests.jdwp.ReferenceType.InstancesDebuggee";
@@ -53,8 +58,6 @@ public class InstancesTest extends JDWPSyncTestCase {
      * objects are expected ones.
      */
     private void runTestInstances() {
-        String thisTestName = "testInstances001";
-
         // check capability, relevant for this test
         logWriter.println("=> Check capability: canGetInstanceInfo");
         debuggeeWrapper.vmMirror.capabilities();
@@ -159,6 +162,7 @@ public class InstancesTest extends JDWPSyncTestCase {
      * are returned.
      */
     public void testInstances001() {
+        thisTestName = "testInstances001";
         maxInstances = 0;
         runTestInstances();
     }
@@ -171,6 +175,7 @@ public class InstancesTest extends JDWPSyncTestCase {
      * ILLEGAL_ARGUMENT exception are replied.
      */
     public void testInstances002() {
+        thisTestName = "testInstances002";
         maxInstances = -1;
         runTestInstances();
     }
@@ -184,6 +189,7 @@ public class InstancesTest extends JDWPSyncTestCase {
      * objects of this reference type, so all instances are returned.
      */
     public void testInstances003() {
+        thisTestName = "testInstances003";
         maxInstances = 20;
         runTestInstances();
     }
@@ -197,9 +203,130 @@ public class InstancesTest extends JDWPSyncTestCase {
      * objects of this reference type, so maximum number of instances are returned.
      */
     public void testInstances004() {
+        thisTestName = "testInstances004";
         maxInstances = 1;
         runTestInstances();
     }
+    
+    /**
+     * It starts InstancesDebuggee class, requests referenceTypeId for String
+     * class by VirtualMachine.ClassesBySignature command, then performs
+     * ReferenceType.Instances command and checks that returned reachable String
+     * objects are expected.
+     */
+    public void testInstances_String() {
+        String thisTestName = "testInstances_String";
+
+        // check capability, relevant for this test
+        logWriter.println("=> Check capability: canGetInstanceInfo");
+        debuggeeWrapper.vmMirror.capabilities();
+        boolean isCapability = debuggeeWrapper.vmMirror.targetVMCapabilities.canGetInstanceInfo;
+        if (!isCapability) {
+            logWriter
+                    .println("##WARNING: this VM dosn't possess capability: canGetInstanceInfo");
+            return;
+        }
+
+        logWriter.println("==> " + thisTestName + " for " + thisCommandName
+                + ": START...");
+        synchronizer.receiveMessage(JPDADebuggeeSynchronizer.SGNL_READY);
+
+        long stringRefTypeID = getClassIDBySignature(stringSignature);
+        maxInstances = 10;
+
+        logWriter.println("=> CHECK: send " + thisCommandName
+                + " and check reply for ERROR...");
+
+        CommandPacket InstancesCommand = new CommandPacket(
+                JDWPCommands.ReferenceTypeCommandSet.CommandSetID,
+                JDWPCommands.ReferenceTypeCommandSet.InstancesCommand);
+        InstancesCommand.setNextValueAsReferenceTypeID(stringRefTypeID);
+        InstancesCommand.setNextValueAsInt(maxInstances);
+
+        ReplyPacket checkedReply = debuggeeWrapper.vmMirror
+                .performCommand(InstancesCommand);
+        InstancesCommand = null;
+        checkReplyPacket(checkedReply, thisTestName);
+
+        // Get the number of instances that returned.
+        int reachableInstancesNum = checkedReply.getNextValueAsInt();
+
+        for (int i = 0; i < reachableInstancesNum; i++) {
+            // Get the tagged-objectID
+            byte tag = checkedReply.getNextValueAsByte();
+            assertEquals(thisCommandName + "returned String tag is invalid.",
+                    's', tag, null, null);
+            long objectID = checkedReply.getNextValueAsObjectID();
+            logWriter.println("=> ObjectID is: " + objectID);
+
+        }
+        logWriter.println("=> CHECK: PASSED: expected instances are returned:");
+        synchronizer.sendMessage(JPDADebuggeeSynchronizer.SGNL_CONTINUE);
+        logWriter.println("==> " + thisTestName + " for " + thisCommandName
+                + ": FINISH");
+        assertAllDataRead(checkedReply);
+
+    }
+
+    /**
+     * It starts InstancesDebuggee class, requests referenceTypeId for Array
+     * class by VirtualMachine.ClassesBySignature command, then performs
+     * ReferenceType.Instances command and checks that returned reachable Array
+     * objects are expected.
+     */
+    public void testInstances_Array() {
+        String thisTestName = "testInstances_Array";
+
+        // check capability, relevant for this test
+        logWriter.println("=> Check capability: canGetInstanceInfo");
+        debuggeeWrapper.vmMirror.capabilities();
+        boolean isCapability = debuggeeWrapper.vmMirror.targetVMCapabilities.canGetInstanceInfo;
+        if (!isCapability) {
+            logWriter
+                    .println("##WARNING: this VM dosn't possess capability: canGetInstanceInfo");
+            return;
+        }
+
+        logWriter.println("==> " + thisTestName + " for " + thisCommandName
+                + ": START...");
+        synchronizer.receiveMessage(JPDADebuggeeSynchronizer.SGNL_READY);
+
+        long intArrayRefTypeID = getClassIDBySignature(intArraySignature);
+        maxInstances = 10;
+
+        logWriter.println("=> CHECK: send " + thisCommandName
+                + " and check reply for ERROR...");
+
+        CommandPacket InstancesCommand = new CommandPacket(
+                JDWPCommands.ReferenceTypeCommandSet.CommandSetID,
+                JDWPCommands.ReferenceTypeCommandSet.InstancesCommand);
+        InstancesCommand.setNextValueAsReferenceTypeID(intArrayRefTypeID);
+        InstancesCommand.setNextValueAsInt(maxInstances);
+
+        ReplyPacket checkedReply = debuggeeWrapper.vmMirror
+                .performCommand(InstancesCommand);
+        InstancesCommand = null;
+        checkReplyPacket(checkedReply, thisTestName);
+
+        // Get the number of instances that returned.
+        int reachableInstancesNum = checkedReply.getNextValueAsInt();
+
+        for (int i = 0; i < reachableInstancesNum; i++) {
+            // Get the tagged-objectID
+            byte tag = checkedReply.getNextValueAsByte();
+            assertEquals(thisCommandName + "returned Array tag is invalid.",
+                    '[', tag, null, null);
+            long objectID = checkedReply.getNextValueAsObjectID();
+            logWriter.println("=> ObjectID is: " + objectID);
+
+        }
+        logWriter.println("=> CHECK: PASSED: expected instances are returned:");
+        synchronizer.sendMessage(JPDADebuggeeSynchronizer.SGNL_CONTINUE);
+        logWriter.println("==> " + thisTestName + " for " + thisCommandName
+                + ": FINISH");
+        assertAllDataRead(checkedReply);
+
+    }    
 
     public static void main(String[] args) {
         junit.textui.TestRunner.run(InstancesTest.class);
