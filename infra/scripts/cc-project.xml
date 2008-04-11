@@ -25,6 +25,25 @@
         <basename file="${basedir}" property="suite.name" />
         <property file="${config.dir}/${suite.name}.properties" />
 
+        <condition property="is.schedule.time">
+            <!-- workaround: ANT 1.7 XmlProperty task sets empty value -->
+            <and>
+                <isset property="framework.parameters.schedule.time" />
+                <length string="${framework.parameters.schedule.time}"
+                        when="greater"
+                        length="0" />
+            </and>
+        </condition>
+        <condition property="is.schedule.day">
+            <!-- workaround: ANT 1.7 XmlProperty task sets empty value -->
+            <and>
+                <isset property="framework.parameters.schedule.day" />
+                <length string="${framework.parameters.schedule.day}"
+                        when="greater"
+                        length="0" />
+            </and>
+        </condition>
+
         <create-cc-configuration suite.name="${suite.name}" />
     </target>
     
@@ -69,7 +88,7 @@
                            value="false"
                            else="true">
                     <and>
-                        <isset property="framework.parameters.schedule.time"/>
+                        <isset property="is.schedule.time"/>
                         <isset property="@{suite.name}.independent"/>
                     </and>
                 </condition>
@@ -86,7 +105,7 @@
                         value="time='${framework.parameters.schedule.time}' "
                         else="">
                     <and>
-                        <isset property="framework.parameters.schedule.time"/>
+                        <isset property="is.schedule.time"/>
                         <isset property="@{suite.name}.independent"/>
                     </and>
                 </condition>
@@ -95,7 +114,7 @@
                         value="day='${framework.parameters.schedule.day}' "
                         else="">
                     <and>
-                        <isset property="framework.parameters.schedule.day"/>
+                        <isset property="is.schedule.day"/>
                         <isset property="@{suite.name}.independent"/>
                     </and>
                 </condition>
@@ -227,7 +246,7 @@
             <for list="${@{suite}.parameters.depends}" param="dependency">
             <sequential>
                 <if>
-                    <isset property="framework.parameters.schedule.time"/>
+                    <isset property="is.schedule.time"/>
                 <then>
                     <!-- veto on scheduled execution before superior one -->
                     <replace file="@{ccfile}">
@@ -336,7 +355,7 @@
                 <and>
                     <isset property="@{suite}.parameters.cc.trigger"/>
                     <!-- no need in triggers in scheduled execution mode -->
-                    <not><isset property="framework.parameters.schedule.time"/></not>
+                    <not><isset property="is.schedule.time"/></not>
                 </and>
             <then>
                 <insert-trigger
