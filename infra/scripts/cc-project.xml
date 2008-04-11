@@ -53,8 +53,9 @@
                 -->
                 <property name="@{suite.name}.parameters.cc.config"
                           value="${cc.project.template}" />
-                <copy file="${@{suite.name}.parameters.cc.config}" 
-                      tofile="${@{suite.name}.parameters.cc.file.location}"/>
+                <copy file="${@{suite.name}.parameters.cc.config}"
+                      tofile="${@{suite.name}.parameters.cc.file.location}"
+                      overwrite="true" />
 
                 <!-- ======================================================= -->
                 <!--    Do CC-Config Template Filling (Tag Substitutions)    -->
