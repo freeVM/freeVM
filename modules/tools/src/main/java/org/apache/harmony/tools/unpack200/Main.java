@@ -16,7 +16,7 @@
  */
 package org.apache.harmony.tools.unpack200;
 
-import org.apache.harmony.pack200.Archive;
+import org.apache.harmony.unpack200.Archive;
 
 public class Main {
 
