@@ -81,7 +81,6 @@
                   failonerror="true"
                   failproperty="drlvm-ehwa-test.run.failed">
             <sysproperty key="hy.cfg" value="${drlvm.config}"/>
-            <sysproperty key="common.resources.loc" value="${common.resources}"/>
             <sysproperty key="eclipse.home" value="${eclipse-3.2.1.homedir}/eclipse"/>
             <sysproperty key="test.mode" 
                          value="${ehwa-api.parameters.optional.test.mode}"/>
