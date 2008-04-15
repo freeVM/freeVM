@@ -18,8 +18,11 @@
 
 package org.apache.harmony.jpda.tests.jdwp.ThreadReference;
 
+import org.apache.harmony.jpda.tests.framework.Breakpoint;
 import org.apache.harmony.jpda.tests.framework.jdwp.CommandPacket;
 import org.apache.harmony.jpda.tests.framework.jdwp.JDWPCommands;
+import org.apache.harmony.jpda.tests.framework.jdwp.JDWPConstants;
+import org.apache.harmony.jpda.tests.framework.jdwp.ParsedEvent;
 import org.apache.harmony.jpda.tests.framework.jdwp.ReplyPacket;
 import org.apache.harmony.jpda.tests.framework.jdwp.Value;
 import org.apache.harmony.jpda.tests.jdwp.share.JDWPSyncTestCase;
@@ -67,7 +70,7 @@ public class ForceEarlyReturn002Test extends JDWPSyncTestCase {
         // Tell debuggee to start a thread named THREAD_LONG
         synchronizer.sendMessage(ForceEarlyReturnDebuggee.THREAD_LONG);
 
-        // Wait until the func_Long is processing.
+        // The thread is ready
         synchronizer.receiveMessage(JPDADebuggeeSynchronizer.SGNL_READY);
 
         // Getting ID of the tested thread
@@ -78,10 +81,6 @@ public class ForceEarlyReturn002Test extends JDWPSyncTestCase {
                 .getThreadID(ForceEarlyReturnDebuggee.THREAD_LONG);
         logWriter.println("==> Get testedThreadID is" + testedThreadID);
 
-        // Suspend the VM before perform command
-        logWriter.println("==> testedThreadID = " + testedThreadID);
-        logWriter.println("==> suspend testedThread...");
-        debuggeeWrapper.vmMirror.suspendThread(testedThreadID);
 
         // Compose the ForceEarlyReturn command
         CommandPacket forceEarlyReturnPacket = new CommandPacket(

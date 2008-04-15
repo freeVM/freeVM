@@ -102,10 +102,12 @@ public class ConstantPoolTest extends JDWPSyncTestCase {
         
         try {
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(debuggeeClass));
-            int count = -1;
-            while(count != 0){
-                count = in.read(bytes,0,length);
-                count = length - count;
+            int count = 0;
+            int index = 0;
+            while(length != 0){
+                count = in.read(bytes,index,length);
+                index += count;
+                length -= count;
             }
         } catch (Exception e) {
             printErrorAndFail(thisCommandName + "has error in reading target class file!");
