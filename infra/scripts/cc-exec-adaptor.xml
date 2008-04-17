@@ -45,11 +45,16 @@
                        replace=""
                        byline="true"/>
 
+        <!-- FIXME: is this really required?
+             CruiseControl doesn't trigger the
+             build in case of failed buildstatus
+        
         <check-superior-failures
             suite="${suite.name}"
             check-target="run"
             property="failed.superiors"
         />
+        -->
         <if>
             <isset property="failed.superiors"/>
         <then>
