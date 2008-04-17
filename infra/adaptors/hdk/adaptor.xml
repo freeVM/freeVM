@@ -24,16 +24,8 @@
               value="${temp.files.dir}/cc-hdk-project.xml"/>
 
     <!-- do setup of the HDK workspace -->
-    <target name="setup" depends="-check-setup,-do-setup"/>
-    <target name="-check-setup">
-        <condition property="need.setup">
-            <not><available file="${hdk.trunk.dir}"/></not>
-        </condition>
-    </target>
-    <target name="-do-setup" if="need.setup">
-        <mkdir dir="${hdk.trunk.dir}"/>
-        <echo message="Checkout HDK trunk into ${hdk.trunk.dir}"/>
-        <svn-co url="${svn.url}" trunk="${hdk.trunk.dir}"/>
+    <target name="setup">
+        <exec-ant dir="${hdk.trunk.dir}" targets="populate-src" />
     </target>
 
     <target name="run">

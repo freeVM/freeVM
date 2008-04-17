@@ -31,6 +31,10 @@
         <hy.cfg value="debug"/>
     </shared>
 
+    <svn>
+      <hdk url="http://svn.apache.org/repos/asf/harmony/enhanced/trunk" />
+    </svn>
+
     <!-- CC specific configuration -->
     <cc>
         <usesvn refid="trunk.dir.id"/>
