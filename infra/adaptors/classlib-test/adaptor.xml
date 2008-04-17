@@ -43,8 +43,25 @@
             <format property="classlib-test.run.time" pattern="yyyyMMdd_HHmm"/>
         </tstamp>
 
+        <!-- Do clean first (even before fetch-depends) -->
+        <!-- to remove previous results                 -->
+        <ant antfile="make/build-test.xml" target="clean"
+             dir="${classlib-test.parameters.required.trunk.dir}"
+             inheritAll="false" />
+
+        <ant target="fetch-depends"
+             dir="${classlib-test.parameters.required.trunk.dir}"
+             inheritAll="false" />
+
+        <exec-ant dir="${classlib-test.parameters.required.trunk.dir}"
+                  targets="rebuild">
+            <sysproperty key="keep.working" value="true" />
+            <!-- workaround on classlib-build's InvocationTargetException -->
+            <jvmarg line="-Xmx1000M" />
+        </exec-ant>
+
         <exec-ant dir="${classlib-test.trunk.dir}"
-                  targets="fetch-depends test"
+                  targets="test"
                   failonerror="false"
                   failproperty="classlib-test.run.failed">
             <jvmarg line="-Xmx800M"/>
@@ -92,6 +109,7 @@
     <target name="-update-classlib-ws"
             if="is.snapshot"
             description="adjusts classlib-tests to snapshots revision">
+
         <loadproperties srcFile="${snapshot.svn.revision.file}" />
         <exec executable="svn"
               dir="${classlib-test.trunk.dir}"
@@ -99,23 +117,6 @@
             <arg line="-r${svn.revision}" />
             <arg line="update" />
         </exec>
-
-        <!-- Do clean first (even before fetch-depends) -->
-        <!-- to remove previous results                 -->
-        <ant antfile="make/build-test.xml" target="clean"
-             dir="${classlib-test.parameters.required.trunk.dir}"
-             inheritAll="false" />
-
-        <ant target="fetch-depends"
-             dir="${classlib-test.parameters.required.trunk.dir}"
-             inheritAll="false" />
-
-        <exec-ant dir="${classlib-test.parameters.required.trunk.dir}"
-                  targets="rebuild">
-            <sysproperty key="keep.working" value="true" />
-            <!-- workaround on classlib-build's InvocationTargetException -->
-            <jvmarg line="-Xmx1000M" />
-        </exec-ant>
     </target>
 
 </project>
