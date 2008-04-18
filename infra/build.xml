@@ -167,7 +167,10 @@ ERROR: Could not found adaptor for some specified test suites
     </target>
 
     <target name="checkout-projects"
-            depends="-init-install,-check-selected-names">
+            depends="-init-install,
+                     -check-selected-names,
+                     generate-config">
+
         <property name="svn.xml" location="${scripts.dir}/svn.xml" />
 
         <!-- download suites dependencies -->
@@ -441,9 +444,7 @@ ERROR: Could not find ${selected.suites.configuration}. Please, do 'setup' first
         </ant>
     </target>
 
-    <target name="clean"
-            description="clean"
-            depends="clean-suites" />
+    <target name="clean" description="clean" depends="clean-suites" />
 
     <target name="distclean" description="distclean" />
 

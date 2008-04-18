@@ -34,6 +34,10 @@
         <!-- default properties file -->
         <property name="props.file" value="parameters.xml" />
 
+        <basename file="${basedir}" property="subcomponent" />
+
+        <property file="${config.dir}/${subcomponent}.properties" />
+
         <xmlproperty file="${props.file}"
                      collapseAttributes="true"
                      semanticAttributes="true" />
@@ -47,8 +51,6 @@
         </propertyset>
         <property name="tmp.str" refid="tmp.id" />
         <echo message="${tmp.str}" file="${tmp.file}" />
-
-        <basename file="${basedir}" property="subcomponent" />
 
         <!-- iterate over propertyset fetching required dependencies -->
         <ant antfile="${svn.xml}" target="-iterate" inheritall="false">
@@ -119,11 +121,16 @@
     <!--                                                  -->
     <target name="-init">
 
-        <property name="dir.to.checkout" value="${checkouts.dir}/${libname}" />
+        <!-- set the directory for checkout -->
+        <condition property="dir.to.checkout"
+                   value="${checkouts.dir}/${lib.dir}"
+                   else="${checkouts.dir}/${libname}">
+            <isset property="lib.dir" />
+        </condition>
 
         <!-- get dir url -->
         <exec executable="svn" dir="${checkouts.dir}">
-            <arg line="info ${libname}" />
+            <arg line="info ${dir.to.checkout}" />
             <redirector outputproperty="dir.url" errorproperty="dev.null">
                 <outputfilterchain>
                     <linecontains>
@@ -184,7 +191,7 @@
         <echo>
 =====> Project: ${libname}
        URL:     ${svn.url}
-       Update:  ${need.to.checkout}
+       Dir:     ${dir.to.checkout}
         </echo>
 
     </target>
