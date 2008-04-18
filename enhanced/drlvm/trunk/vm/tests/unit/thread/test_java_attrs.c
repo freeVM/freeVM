@@ -16,60 +16,51 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "testframe.h"
 #include "thread_unit_test_utils.h"
 #include <jthread.h>
+#include <ti_thread.h>
 #include <open/hythread_ext.h>
-#include "thread_manager.h"
+#include "jni_types.h"
 
+int helper_hythread_get_set_priority(void);
 
 /*
- * Test jthread_get_java_thread(...)
+ * Test jthread_get_priority(...)
  */
-int test_jthread_get_java_thread(void) {
+int test_jthread_get_priority (void){
 
     tested_thread_sturct_t *tts;
-    hythread_t native_thread;
 
     // Initialize tts structures and run all tested threads
     tested_threads_run(default_run_for_test);
 
     reset_tested_thread_iterator(&tts);
     while(next_tested_thread(&tts)){
-        native_thread = jthread_get_native_thread(tts->java_thread);
-        tf_assert_same(jthread_get_java_thread(native_thread)->object, tts->java_thread->object);
+        //tf_assert(jthread_get_priority(tts->java_thread) == tts->attrs.priority);
+        tf_assert_same(jthread_set_priority(tts->java_thread, 0), TM_ERROR_NONE);
+        tf_assert(jthread_get_priority(tts->java_thread) == 0);
+        tf_assert_same(jthread_set_priority(tts->java_thread, 1), TM_ERROR_NONE);
+        tf_assert(jthread_get_priority(tts->java_thread) == 1);
+        tf_assert_same(jthread_set_priority(tts->java_thread, 2), TM_ERROR_NONE);
+        tf_assert(jthread_get_priority(tts->java_thread) == 2);
     }
 
     // Terminate all threads and clear tts structures
     tested_threads_destroy();
 
     return TEST_PASSED;
-}
+} 
 
 /*
- * Test jthread_get_native_thread(...)
+ * Test jthread_set_priority(...)
  */
-int test_jthread_get_native_thread(void) {
-
-    tested_thread_sturct_t *tts;
-    hythread_t native_thread;
-
-    // Initialize tts structures and run all tested threads
-    tested_threads_run(default_run_for_test);
-
-    reset_tested_thread_iterator(&tts);
-    while(next_tested_thread(&tts)){
-        native_thread = jthread_get_native_thread(tts->java_thread);
-        tf_assert_same(jthread_get_java_thread(native_thread)->object, tts->java_thread->object);
-    }
-
-    // Terminate all threads and clear tts structures
-    tested_threads_destroy();
-
-    return TEST_PASSED;
-}
+int test_jthread_set_priority (void){
+    return test_jthread_get_priority();
+} 
 
 TEST_LIST_START
-    TEST(test_jthread_get_java_thread)
-    TEST(test_jthread_get_native_thread)
+    TEST(test_jthread_get_priority)
+    TEST(test_jthread_set_priority)
 TEST_LIST_END;
