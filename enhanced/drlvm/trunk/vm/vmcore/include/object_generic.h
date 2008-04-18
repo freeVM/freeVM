@@ -14,42 +14,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Ilya Berezhniuk
- * @version $Revision: 1.1.2.1 $
- */
+#ifndef _OBJECT_GENERIC_H
+#define _OBJECT_GENERIC_H
 
-#ifndef _NATIVE_STACK_H_
-#define _NATIVE_STACK_H_
-
-#include "open/platform_types.h"
-#include "port_unwind.h"
-#include "jni.h"
-#include "stack_iterator.h"
-#include "vm_threads.h"
+#include "object_layout.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct {
-    jint    java_depth;
-    void*   ip;
-    void*   frame;
-    void*   stack;
-} native_frame_t;
+void
+java_lang_Object_notifyAll(jobject);
 
+jint
+java_lang_Object_wait(jobject, jlong);
 
-// If frame_array is NULL, only returns real frame count
-int walk_native_stack_registers(UnwindContext* context, Registers* pregs,
-    VM_thread* pthread, int max_depth, native_frame_t* frame_array);
+void
+java_lang_Object_notify(jobject);
 
-bool native_is_ip_stub(void* ip);
-char* native_get_stub_name(void* ip, char* buf, size_t buflen);
-const char* native_get_stub_name_nocpy(void* ip);
+void
+java_lang_Object_registerNatives(ManagedObject*);
+
+long
+generic_hashcode(ManagedObject*);
+
+/* $$$ GMJ - collides w/ a defn elsewhere
+int32
+default_hashcode(ManagedObject*);
+*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _NATIVE_STACK_H_
+#endif /* _OBJECT_GENERIC_H */

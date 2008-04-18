@@ -14,42 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Ilya Berezhniuk
- * @version $Revision: 1.1.2.1 $
- */
+#ifndef _NATIVE_UTILS
+#define _NATIVE_UTILS
 
-#ifndef _NATIVE_STACK_H_
-#define _NATIVE_STACK_H_
-
-#include "open/platform_types.h"
-#include "port_unwind.h"
+#include "Class.h"
 #include "jni.h"
-#include "stack_iterator.h"
-#include "vm_threads.h"
+struct Class;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-typedef struct {
-    jint    java_depth;
-    void*   ip;
-    void*   frame;
-    void*   stack;
-} native_frame_t;
+extern char* JavaStringToCharArray (JNIEnv*, jstring, jint*);
+/// toss this, a jni interface does the same thing ------> extern jstring CharArrayToJavaString (JNIEnv *, const char*, jsize);
 
 
-// If frame_array is NULL, only returns real frame count
-int walk_native_stack_registers(UnwindContext* context, Registers* pregs,
-    VM_thread* pthread, int max_depth, native_frame_t* frame_array);
 
-bool native_is_ip_stub(void* ip);
-char* native_get_stub_name(void* ip, char* buf, size_t buflen);
-const char* native_get_stub_name_nocpy(void* ip);
+extern Field *LookupDeclaredField (Class*, const char*);
+extern Method* LookupDeclaredMethod (Class*, const char*, const char*);
 
-#ifdef __cplusplus
-}
-#endif
 
-#endif // _NATIVE_STACK_H_
+void VerifyArray (JNIEnv* env, jarray array);
+char GetComponentSignature (JNIEnv *env, jarray array);
+
+extern jboolean IsNullRef(jobject jobj);
+#endif /* _NATIVE_UTILS */

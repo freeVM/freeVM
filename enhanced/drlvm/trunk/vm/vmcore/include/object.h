@@ -14,42 +14,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Ilya Berezhniuk
- * @version $Revision: 1.1.2.1 $
- */
+// This describes the core VM interface to generic object functionality
 
-#ifndef _NATIVE_STACK_H_
-#define _NATIVE_STACK_H_
+#ifndef _INTERFACE_OBJECT_H
+#define _INTERFACE_OBJECT_H
 
-#include "open/platform_types.h"
-#include "port_unwind.h"
-#include "jni.h"
-#include "stack_iterator.h"
-#include "vm_threads.h"
+#include "jni_types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct {
-    jint    java_depth;
-    void*   ip;
-    void*   frame;
-    void*   stack;
-} native_frame_t;
+// Return the generic hashcode for an object
+jint object_get_generic_hashcode(JNIEnv*, jobject);
+jint default_hashcode(Managed_Object_Handle obj);
 
-
-// If frame_array is NULL, only returns real frame count
-int walk_native_stack_registers(UnwindContext* context, Registers* pregs,
-    VM_thread* pthread, int max_depth, native_frame_t* frame_array);
-
-bool native_is_ip_stub(void* ip);
-char* native_get_stub_name(void* ip, char* buf, size_t buflen);
-const char* native_get_stub_name_nocpy(void* ip);
+jobject object_clone(JNIEnv*, jobject);
 
 #ifdef __cplusplus
 }
 #endif
-
-#endif // _NATIVE_STACK_H_
+#endif /* _INTERFACE_OBJECT_H */

@@ -14,42 +14,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * @author Ilya Berezhniuk
- * @version $Revision: 1.1.2.1 $
- */
+#ifndef _ROOT_SET_ENUM_INTERNAL_H_
+#define _ROOT_SET_ENUM_INTERNAL_H_
 
-#ifndef _NATIVE_STACK_H_
-#define _NATIVE_STACK_H_
-
-#include "open/platform_types.h"
-#include "port_unwind.h"
-#include "jni.h"
-#include "stack_iterator.h"
 #include "vm_threads.h"
+#include "stack_iterator.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+enum{ VM_JVMTI_THREAD_STATE_WAITING = 0x80000000 };
 
-typedef struct {
-    jint    java_depth;
-    void*   ip;
-    void*   frame;
-    void*   stack;
-} native_frame_t;
+// Functions defined in root_set_enum_common.cpp.
+VMEXPORT // temporary solution for interpreter unplug
+void vm_enumerate_root_set_single_thread_not_on_stack(VM_thread *thread);
+void vm_enumerate_root_set_single_thread_on_stack(StackIterator* si);
+void vm_enumerate_root_set_global_refs();
+void vm_enumerate_thread(VM_thread *thread);
+
+void vm_enumerate_static_fields();
+void vm_enumerate_references_to_enqueue();
+void oh_enumerate_global_handles();
+void vm_enumerate_interned_strings();
+void vm_enumerate_root_set_mon_arrays();
 
 
-// If frame_array is NULL, only returns real frame count
-int walk_native_stack_registers(UnwindContext* context, Registers* pregs,
-    VM_thread* pthread, int max_depth, native_frame_t* frame_array);
-
-bool native_is_ip_stub(void* ip);
-char* native_get_stub_name(void* ip, char* buf, size_t buflen);
-const char* native_get_stub_name_nocpy(void* ip);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif // _NATIVE_STACK_H_
+#endif // _ROOT_SET_ENUM_INTERNAL_H_
