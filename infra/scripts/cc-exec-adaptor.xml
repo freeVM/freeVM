@@ -81,7 +81,12 @@ failed to run or have been skipped:
         <record name="${cc.execution.log.file}" append="yes" action="start"/>
         <trycatch property="exception" reference="execution.exception.ref">
         <try>
+            <!-- FIXME: is this really required?
+                 CruiseControl should update ws
+
             <runtarget target="update-svn"/>
+            -->
+            
             <ant dir="${root.dir}/adaptors/${suite.name}" 
                  antfile="adaptor.xml" 
                  target="run"
