@@ -20,12 +20,33 @@
     <property name="tests.results.dir"
               value="${built.trunk.dir}/build/test_report" />
 
+    <target name="setup" />
+
     <target name="run" depends="-setup-jdktools-ws,-update-jdktools-ws">
-        <ant target="test" dir="${built.trunk.dir}">
-            <property name="exclude.interm" value="true" />
-            <property name="test.jre.home" value="${tested.jre}" />
-            <property name="hy.test.timeout" value="6000000" />
-        </ant>
+
+        <!-- Do clean first (even before rebuild) -->
+        <!-- to remove previous results           -->
+        <exec-ant targets="clean-tests" dir="${built.trunk.dir}">
+            <sysproperty key="hy.hdk"
+                         value="${jdktools-test.parameters.required.hy.hdk}" />
+        </exec-ant>
+
+        <ant target="fetch-depends"
+             dir="${built.trunk.dir}"
+             inheritAll="false" />
+
+        <exec-ant targets="rebuild" dir="${built.trunk.dir}">
+            <sysproperty key="hy.hdk"
+                         value="${jdktools-test.parameters.required.hy.hdk}" />
+        </exec-ant>
+
+        <exec-ant targets="test" dir="${built.trunk.dir}">
+            <sysproperty key="hy.hdk"
+                         value="${jdktools-test.parameters.required.hy.hdk}" />
+            <sysproperty key="exclude.interm" value="true" />
+            <sysproperty key="test.jre.home" value="${tested.jre}" />
+            <sysproperty key="hy.test.timeout" value="6000000" />
+        </exec-ant>
     </target>
 
     <!--                                                    -->
@@ -57,10 +78,6 @@
             if="is.snapshot"
             description="adjusts jdktools-tests to snapshots revision">
 
-        <!-- Do clean first (even before rebuild) -->
-        <!-- to remove previous results           -->
-        <ant target="clean-tests" dir="${built.trunk.dir}" inheritAll="false" />
-
         <loadproperties srcFile="${snapshot.svn.revision.file}" />
         <exec executable="svn"
               dir="${jdktools-test.parameters.required.hdk.trunk.dir}"
@@ -71,15 +88,6 @@
             <arg line="build.xml" />
         </exec>
 
-        <!-- FIXME: need to rebuild hdk before testing      -->
-        <!-- it is shared with hdk_by_hdk and may be broken -->
-        <exec-ant dir="${jdktools-test.parameters.required.hdk.trunk.dir}">
-            <jvmarg line="-Xmx1000M" />
-            <sysproperty key="svn.revision" value="${svn.revision}" />
-            <sysproperty key="keep.working" value="true" />
-            <sysproperty key="auto.fetch" value="true" />
-            <sysproperty key="hy.cfg" value="release" />
-        </exec-ant>
     </target>
 
 </project>

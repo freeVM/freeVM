@@ -19,16 +19,26 @@
 <parameters depends="hdk">
 
     <required>
+
+        <!-- FIXME: switch to using DRLVM by default -->
+        <hy.hdk description="Harmony HDK root dir" 
+            value="${hdk.parameters.shared.trunk.dir}/target/hdk" />
         <tested.jre description="Path to JRE under test" 
-            value="${hdk.parameters.shared.binaries.jre.dir}" />
+            value="${jdktools-test.parameters.required.hy.hdk}/jdk/jre" />
+
+        <!-- FIXME: should point to ${svn.jdktools.dir} value -->
         <built.trunk.dir description="Path to built HY JDK Tools trunk" 
-            value="${hdk.parameters.shared.jdktools.trunk.dir}" />
+            value="${checkouts.dir}/jdktools" />
     </required>
     
     <optional>
         <tested.jre.options description="Options for tested JRE" 
             value="-showversion"/>
     </optional>
+
+    <svn>
+      <jdktools url="http://svn.apache.org/repos/asf/harmony/enhanced/jdktools/trunk" />
+    </svn>
 
     <cc results="${tests.results.dir}' pattern='TEST-*.xml"/>
 
