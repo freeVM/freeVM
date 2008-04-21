@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>HowTo for Build-Test Framework</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
+
+ <body>
+
+  <section name="Short Integrity Cycle">
+    <a name="Short" />
+    <p>
+      If there is a need to establish short integrity cycle which ensures that
+      the code is compliable and basic functionality is not broken. Then such
+      cycle can be organized in pretty straightforward way. Let’s take EHWA-API
+      as test scenario and run it on DRLVM:
+    </p>
+    <p>
+      1) Install the same <a href="../../quickhelp_contributors.html">tools</a>, 
+      as for building the Apache Harmony components.
+    </p>
+    <p>
+      2) Check out the infrastructure from SVN repository:
+      <pre>svn co http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk/infra</pre>
+    </p>
+    <p>
+      3) Change directory to the infrastructure directory and create the next
+      ‘framework.local.properties’ in it
+      <pre>
+# Setup for mail notifications
+framework.parameters.usemail=<i>&lt;your_smtp_server&gt;</i>
+framework.parameters.usemail.to=<i>&lt;list_of_recipients&gt;</i>
+framework.parameters.usemail.from=<i>&lt;test_account_name&gt;</i>
+
+# Suffix for notifications' subject
+framework.parameters.usemail.subject.suffix=debug
+
+# Send notification only if suite status changes
+framework.parameters.usemail.always=false
+
+# Enable notifications for Class library and DRLVM (disabled by default)
+classlib.parameters.cc.publish=true
+drlvm.parameters.cc.publish=true
+
+# Directory to store archived results
+framework.parameters.optional.upload.dir=<i>&lt;results_dir&gt;</i>
+      </pre>
+    </p>
+    <p>
+      4) Run the following commands:
+      <pre>
+ant -Dtest.suites="classlib,drlvm,ehwa-api" install
+ant setup
+ant run-cc
+      </pre>
+    </p>
+    <p>
+      These steps launches <code>CruiseControl</code> with
+      Class library, DRLVM and EHWA-API test scenario.
+      Alerts notifications are sent to specified
+      <i>${framework.parameters.usemail.to}</i> and test results can
+      be found in <i>${framework.parameters.optional.upload.dir}</i>
+      The testing cycle is triggered by update of Class library or
+      DRLVM source code in
+      <a href="http://svn.apache.org/viewcvs.cgi/harmony/?root=Apache-SVN">SVN repository</a>.
+    </p>
+  </section>
+
+  <section name="Extended Integrity Cycle">
+    <a name="Extended" />
+    <p>
+      Let's setup integrity cycle which is targeted to catch regression early.
+      So the cycle is based on HDK and runs unit tests from Class library,
+      DRLVM and JDKTools workspaces. Also let's optimize disk space usage and
+      run unit suites in built HDK workspace (by default they are checked out
+      to a separate workspace)
+    </p>
+    <p>
+      1) Install the same <a href="../../quickhelp_contributors.html">tools</a>, 
+      as for building the Apache Harmony components.
+    </p>
+    <p>
+      2) Check out the infrastructure from SVN repository:
+      <pre>svn co http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk/infra</pre>
+    </p>
+    <p>
+      3) Change directory to the infrastructure directory and setup HDK
+      workspace first.
+      <pre>
+ant -Dtest.suites="hdk" install
+ant setup
+      </pre>
+      After that step there is HDK workspace that is used to configure/setup
+      unit tests.
+    </p>
+    <p>
+      3) Create the next ‘framework.local.properties’:
+      <pre>
+# Setup for mail notifications
+framework.parameters.usemail=<i>&lt;your_smtp_server&gt;</i>
+framework.parameters.usemail.to=<i>&lt;list_of_recipients&gt;</i>
+framework.parameters.usemail.from=<i>&lt;test_account_name&gt;</i>
+
+# Suffix for notifications' subject
+framework.parameters.usemail.subject.suffix=debug
+
+# Send notification only if suite status changes
+framework.parameters.usemail.always=false
+
+# Directory to store archived results
+framework.parameters.optional.upload.dir=<i>&lt;results_dir&gt;</i>
+
+# Unit tests depend on HDK build now (by default they depend on DRLVM)
+classlib-test.parameters.depends=hdk
+drlvm-reg-test.parameters.depends=hdk
+drlvm-test.parameters.depends=hdk
+jdktools-test.parameters.depends=hdk
+
+# Tests are run in HDK workspace against HDK's JRE 
+classlib-test.parameters.required.tested.jre=${hdk.parameters.shared.binaries.jre.dir}
+classlib-test.parameters.required.trunk.dir=${hdk.parameters.shared.classlib.trunk.dir}
+classlib-test.parameters.svn.classlib.dir=hdk/working_classlib
+
+drlvm-test.parameters.required.built.drlvm.trunk=${hdk.parameters.shared.drlvm.trunk.dir}
+drlvm-test.parameters.required.common.resources=${hdk.parameters.shared.common.resources.dir}
+drlvm-test.parameters.required.drlvm.config=debug
+
+drlvm-reg-test.parameters.required.built.drlvm.trunk=${hdk.parameters.shared.drlvm.trunk.dir}
+drlvm-reg-test.parameters.required.common.resources=${hdk.parameters.shared.common.resources.dir}
+drlvm-reg-test.parameters.required.drlvm.config=debug
+
+jdktools-test.parameters.required.built.trunk.dir=${hdk.parameters.shared.jdktools.trunk.dir}
+jdktools-test.parameters.svn.jdktools.dir=hdk/working_jdktools
+      </pre>
+    </p>
+    <p>
+      4) Run the following commands:
+      <pre>
+ant -Dtest.suites="hdk,classlib-test,drlvm-test,drlvm-reg-test,jdktools-test" install
+ant setup
+ant run-cc
+      </pre>
+    </p>
+    <p>
+      These steps launches <code>CruiseControl</code> that build HDK
+      and runs unit tests. The testing cycle is triggered by update of HDK
+      source code in
+      <a href="http://svn.apache.org/viewcvs.cgi/harmony/?root=Apache-SVN">SVN repository</a>.
+      Alerts notifications are sent to specified
+      <i>${framework.parameters.usemail.to}</i> and test results can
+      be found in <i>${framework.parameters.optional.upload.dir}</i>
+    </p>
+
+  </section>
+
+  <section name="Snapshot Cycle">
+    <a name="Snapshot" />
+    <p>
+      <i>TODO</i>.
+    </p>
+  </section>
+
+  <section name="Integrate New Suite/Scenario">
+    <a name="NewSuite" />
+    <p>
+      <i>TODO</i>.
+    </p>
+  </section>
+
+</body>
+</document>
