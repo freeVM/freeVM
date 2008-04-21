@@ -25,10 +25,7 @@
     <import file="${basedir}/make/properties.xml" />
 
     <!-- set global properties for this build. -->
-
     <property name="tests.output" location="build/test_report" />
-    <property name="hy.hdk" location="deploy" />
-    <property name="hy.jdk" location="${hy.hdk}/jdk" />
 
     <condition property="not.copy.jre">
         <isset property="test.jre.home"/>
@@ -37,7 +34,6 @@
 
     <property name="tests.build.output" location="build/tests" />
     <property name="tests.depends.jars" location="${hy.hdk}/jdk/jre/lib/boot" />
-    <property file="make/depends.properties" />
 
     <!-- this list of components to test will grow to eventually be all modules -->
     <target name="test-all"

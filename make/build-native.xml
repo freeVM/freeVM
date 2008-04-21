@@ -28,52 +28,25 @@
     <!-- import common properties -->
     <import file="${basedir}/make/properties.xml" />
 
-    <property file="make/depends.properties" />
-
-    <property name="hy.hdk" location="deploy" />
-    <property name="hy.jdk" location="deploy/jdk" />
     <property name="depends.build" location="depends/build" />
     <property name="depends.libs" location="depends/libs/${hy.platform}" />
     <property name="depends.files" location="depends/files" />
     <property name="native.lib.target" location="${hy.jdk}/lib" />
 
-    <!-- ================================= 
-          target: build
-         ================================= -->
-    <target name="build"
-        depends="-layout, build-modules" />
+    <target name="build" depends="-layout, build-modules" />
 
+    <target name="clean" depends="clean-modules, -clean-layout" />
 
-    <!-- ================================= 
-          target: clean              
-         ================================= -->
-    <target name="clean"
-        depends="clean-modules, -clean-layout" />
-
-
-    <!-- ================================= 
-          target: build-modules
-          invokes target build-native for all modules              
-         ================================= -->
     <target name="build-modules" >
     	<mkdir dir="${native.lib.target}" />
         <call-modules target="build-native" />
     </target>
 
-
-    <!-- ================================= 
-          target: clean-modules              
-          invokes target calean-native for all modules              
-         ================================= -->
     <target name="clean-modules" >
         <call-modules target="clean-native" />
     	<delete dir="${native.lib.target}" />
     </target>
 
-
-    <!-- ================================= 
-          target: -layout              
-         ================================= -->
     <target name="-layout"
         description="Construct the correct directory structure for native binaries">
 
@@ -83,9 +56,6 @@
     	<mkdir dir="${native.lib.target}"/>
     </target>
 
-    <!-- ================================= 
-          target: -clean-layout              
-         ================================= -->
     <target name="-clean-layout">
         <delete includeemptydirs="true" failonerror="false">
             <fileset dir="${hy.jdk}">
