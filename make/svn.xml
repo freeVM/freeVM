@@ -21,9 +21,24 @@
 
 <project name="svn-deps">
     
-    <!--dirname property="svn.basedir" file="${ant.file.svn-deps}"/>
-    <import file="${svn.basedir}/properties.xml"/>    
-    <property file="${svn.basedir}/depends.properties"/-->
+    <target name="svn-info" 
+        description="Sets global SVN properties of the workspace: 
+        is.svn, svn.revision and svn.info">
+        <svn-info dir="${basedir}" prefix="global"/>
+        <condition property="is.svn">
+            <isset property="global.svn.revision"/>
+        </condition>
+        <condition property="svn.revision" value="${global.svn.revision}" else="unknown">
+            <isset property="is.svn"/>
+        </condition>
+        <condition property="svn.info" 
+            value="${global.svn.repository.root} ${global.svn.revision}">
+            <isset property="is.svn"/>
+        </condition>
+        <tstamp>
+            <format property="svn.info" pattern="'Unknown revision at' dd-MMM-yyyy hh:mm aa"/>
+        </tstamp>
+    </target>
     
     <target name="fetch-svn">
         <setup-svn dep="${dependency}"/>
