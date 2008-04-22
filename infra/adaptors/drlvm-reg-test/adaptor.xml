@@ -9,42 +9,46 @@
      
          http://www.apache.org/licenses/LICENSE-2.0
      
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License. -->
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License. -->
 
 <!-- ====================================================================== 
               BT Adaptor Executing Harmony DRLVM Regression Tests
      ====================================================================== -->
 <project name="drlvm-reg-test" default="run" basedir=".">
 
-    <property name="drlvm-reg-test.results.dir" value="${results.dir}/${suite.name}"/>
+    <property name="drlvm-reg-test.results.dir"
+              value="${results.dir}/${suite.name}" />
 
     <target name="setup">
-        <mkdir dir="${results.dir}/${suite.name}"/>
+        <mkdir dir="${results.dir}/${suite.name}" />
     </target>
-    
+
     <target name="run" depends="-update">
         <!-- remove old results (they should be archived after the run) -->
         <delete quiet="true" verbose="false">
-            <fileset dir="${drlvm-reg-test.results.dir}" includes="**/*"/>
+            <fileset dir="${drlvm-reg-test.results.dir}" includes="**/*" />
         </delete>
 
         <!-- launch the tests -->
-        <exec-ant dir="${built.drlvm.trunk}" targets="reg.test" 
-            failonerror="false" failproperty="drlvm-reg-test.run.failed">
-            <sysproperty key="hy.cfg" value="${drlvm.config}"/>
-            <sysproperty key="common.resources.loc" value="${common.resources}"/>
-            <arg line="${tested.hdk.param}"/>
+        <exec-ant dir="${built.drlvm.trunk}"
+                  targets="reg.test"
+                  failonerror="false"
+                  failproperty="drlvm-reg-test.run.failed">
+            <sysproperty key="hy.cfg" value="${drlvm.config}" />
+            <sysproperty key="common.resources.loc"
+                         value="${common.resources}" />
+            <arg line="${tested.hdk.param}" />
         </exec-ant>
 
-        <fail message="There were drlvm-reg-test failures" 
-              if="drlvm-reg-test.run.failed"/>
+        <fail message="There were drlvm-reg-test failures"
+              if="drlvm-reg-test.run.failed" />
     </target>
-    
-    
+
+
     <!--                                                    -->
     <!-- Targets and properties related to snapshot testing -->
     <!--                                                    -->
@@ -53,13 +57,16 @@
                 arg2="snapshot"
                 trim="yes" />
     </condition>
-    
-    <condition property="tested.hdk.param" value="-Dtest.hdk.home=${snapshot.parameters.shared.hdk}" else="">
-        <isset property="is.snapshot"/>
+
+    <condition property="tested.hdk.param"
+               value="-Dtest.hdk.home=${snapshot.parameters.shared.hdk}"
+               else="">
+        <isset property="is.snapshot" />
     </condition>
 
-    <target name="-update" if="is.snapshot" 
-        description="adjusts tests to snapshot revision">
+    <target name="-update"
+            if="is.snapshot"
+            description="adjusts tests to snapshot revision">
         <mkdir dir="${built.drlvm.trunk}" />
         <mkdir dir="${common.resources}" />
         <loadproperties srcFile="${snapshot.svn.revision.file}" />
@@ -70,12 +77,14 @@
             <arg line="co -r${svn.revision} ${drlvm.trunk.url} ." />
         </exec>
 
-        <exec-ant dir="${built.drlvm.trunk}" targets="clean fetch-depends"
+        <exec-ant dir="${built.drlvm.trunk}"
+                  targets="clean fetch-depends"
                   failonerror="true">
-            <sysproperty key="hy.cfg" value="${drlvm.config}"/>
-            <sysproperty key="common.resources.loc" value="${common.resources}"/>
+            <sysproperty key="hy.cfg" value="${drlvm.config}" />
+            <sysproperty key="common.resources.loc"
+                         value="${common.resources}" />
         </exec-ant>
-                    
+
     </target>
 
 </project>

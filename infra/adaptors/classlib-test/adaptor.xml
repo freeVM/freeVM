@@ -9,11 +9,11 @@
      
          http://www.apache.org/licenses/LICENSE-2.0
      
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License. -->
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License. -->
 
 <!-- ====================================================================== 
                     BT Adaptor Executing CLASSLIB Unit Tests
@@ -21,26 +21,27 @@
 <project name="classlib-test" default="run" basedir=".">
 
     <property name="classlib-test.results.dir"
-              value="${results.dir}/${suite.name}"/>
+              value="${results.dir}/${suite.name}" />
 
     <!-- the default value for JRE options -->
-    <property name="jre.options" value="-showversion"/>
+    <property name="jre.options" value="-showversion" />
 
     <!-- do setup -->
     <target name="setup">
-        <mkdir dir="${classlib-test.results.dir}"/>
+        <mkdir dir="${classlib-test.results.dir}" />
     </target>
 
     <!-- do run -->
     <target name="run" depends="-update-classlib-ws">
         <!-- remove old results (they have been archived after the run) -->
         <delete quiet="true" verbose="false">
-            <fileset dir="${classlib-test.results.dir}" includes="**/*"/>
+            <fileset dir="${classlib-test.results.dir}" includes="**/*" />
         </delete>
 
         <!-- Do clean first (even before fetch-depends) -->
         <!-- to remove previous results                 -->
-        <ant antfile="make/build-test.xml" target="clean"
+        <ant antfile="make/build-test.xml"
+             target="clean"
              dir="${classlib-test.parameters.required.trunk.dir}"
              inheritAll="false" />
 
@@ -59,19 +60,16 @@
                   targets="test"
                   failonerror="false"
                   failproperty="classlib-test.run.failed">
-            <jvmarg line="-Xmx800M"/>
+            <jvmarg line="-Xmx800M" />
             <sysproperty key="test.jre.home"
-                            value="${classlib-test.tested.jre}"/>
-            <sysproperty key="tested.jre.options"
-                            value="${jre.options}"/>
-            <sysproperty key="exclude.interm"
-                            value="true"/>
-            <sysproperty key="exclude.module"
-                            value="awt,swing"/>
+                         value="${classlib-test.tested.jre}" />
+            <sysproperty key="tested.jre.options" value="${jre.options}" />
+            <sysproperty key="exclude.interm" value="true" />
+            <sysproperty key="exclude.module" value="awt,swing" />
         </exec-ant>
 
         <fail message="There were CLASSLIB Unit Test failures."
-              if="classlib-test.run.failed"/>
+              if="classlib-test.run.failed" />
     </target>
 
     <!--                                                    -->
