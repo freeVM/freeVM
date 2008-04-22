@@ -32,11 +32,6 @@
             <fileset dir="${drlvm-reg-test.results.dir}" includes="**/*"/>
         </delete>
 
-        <!-- time of the current test run -->
-        <tstamp>
-            <format property="drlvm-reg-test.run.time" pattern="yyyyMMdd_HHmm"/>
-        </tstamp>
-
         <!-- launch the tests -->
         <exec-ant dir="${built.drlvm.trunk}" targets="reg.test" 
             failonerror="false" failproperty="drlvm-reg-test.run.failed">
@@ -44,24 +39,6 @@
             <sysproperty key="common.resources.loc" value="${common.resources}"/>
             <arg line="${tested.hdk.param}"/>
         </exec-ant>
-
-        <!-- define the resulting files -->
-        <fileset id="drlvm-reg-test.results.set"
-                 dir="${built.drlvm.trunk}/build"
-                 includes="*${drlvm.config}/**/TEST-*.xml">
-            <date datetime="${drlvm-reg-test.run.time}" 
-                  pattern="yyyyMMdd_HHmm"
-                  when="after"/>
-        </fileset>
-
-        <copy todir="${drlvm-reg-test.results.dir}">
-            <fileset refid="drlvm-reg-test.results.set"/>
-            <packagemapper from="*" to="*"/>
-        </copy>
-
-        <!-- store the results in an artchive -->
-        <zip destfile="${results.dir}/${suite.name}_${drlvm-reg-test.run.time}.zip" 
-             basedir="${drlvm-reg-test.results.dir}"/>
 
         <fail message="There were drlvm-reg-test failures" 
               if="drlvm-reg-test.run.failed"/>

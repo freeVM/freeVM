@@ -38,11 +38,6 @@
             <fileset dir="${classlib-test.results.dir}" includes="**/*"/>
         </delete>
 
-        <!-- time of the current test run -->
-        <tstamp>
-            <format property="classlib-test.run.time" pattern="yyyyMMdd_HHmm"/>
-        </tstamp>
-
         <!-- Do clean first (even before fetch-depends) -->
         <!-- to remove previous results                 -->
         <ant antfile="make/build-test.xml" target="clean"
@@ -74,24 +69,6 @@
             <sysproperty key="exclude.module"
                             value="awt,swing"/>
         </exec-ant>
-
-        <!-- define the resulting files -->
-        <fileset id="classlib-test.results.set"
-                 dir="${classlib-test.trunk.dir}/build/test_report"
-                 includes="TEST-*.xml">
-            <date datetime="${classlib-test.run.time}"
-                  pattern="yyyyMMdd_HHmm"
-                  when="after"/>
-        </fileset>
-
-        <copy todir="${classlib-test.results.dir}">
-            <fileset refid="classlib-test.results.set"/>
-            <packagemapper from="*" to="*"/>
-        </copy>
-
-        <!-- store the results in an archive -->
-        <zip destfile="${results.dir}/${suite.name}_${classlib-test.run.time}.zip"
-             basedir="${classlib-test.results.dir}"/>
 
         <fail message="There were CLASSLIB Unit Test failures."
               if="classlib-test.run.failed"/>

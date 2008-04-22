@@ -32,11 +32,6 @@
             <fileset dir="${drlvm-test.results.dir}" includes="**/*"/>
         </delete>
 
-        <!-- time of the current test run -->
-        <tstamp>
-            <format property="drlvm-test.run.time" pattern="yyyyMMdd_HHmm"/>
-        </tstamp>
-
         <!-- launch the tests kernel.test -->
         <exec-ant dir="${built.drlvm.trunk}" targets="test"
                   failonerror="false" failproperty="drlvm-test.run.failed">
@@ -47,24 +42,6 @@
             <sysproperty key="run.all.tests" value="true" />
             <arg line="${tested.hdk.param}"/>
         </exec-ant>
-
-        <!-- define the resulting files -->
-        <fileset id="drlvm-test.results.set"
-                 dir="${built.drlvm.trunk}/build"
-                 includes="*${drlvm.config}/**/TEST-*.xml">
-            <date datetime="${drlvm-test.run.time}" 
-                  pattern="yyyyMMdd_HHmm"
-                  when="after"/>
-        </fileset>
-
-        <copy todir="${drlvm-test.results.dir}">
-            <fileset refid="drlvm-test.results.set"/>
-            <packagemapper from="*" to="*"/>
-        </copy>
-
-        <!-- store the results in an artchive -->
-        <zip destfile="${results.dir}/${suite.name}_${drlvm-test.run.time}.zip" 
-             basedir="${drlvm-test.results.dir}"/>
 
         <fail message="There were drlvm-test failures" 
               if="drlvm-test.run.failed"/>
