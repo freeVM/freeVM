@@ -218,9 +218,18 @@ ${exception}
             </propertyset>
         </ant>
         
-        <condition property="upload.dir" value="${framework.parameters.optional.upload.dir}">
-            <isset property="framework.parameters.optional.upload.dir"/>
+        <condition property="upload.dir"
+                   value="${framework.parameters.optional.upload.dir}">
+            <and>
+                <isset property="framework.parameters.optional.upload.dir" />
+
+                <!-- workaround: ANT 1.7 XmlProperty task sets empty value -->
+                <length string="${framework.parameters.optional.upload.dir}"
+                        when="greater"
+                        length="0" />
+            </and>
         </condition>
+
         <propertycopy property="skip.upload" from="${suite.name}.parameters.cc.skip.upload" silent="true"/>
         <runtarget target="upload-status-report"/>
         
