@@ -1733,32 +1733,36 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
          </dt>
          <dd>
             <p>
-               The current logging system is based on the Apache
-               <code>log4cxx</code> logger adapted to DRLVM needs by adding a C
-               interface and improving the C++ interface. The
-               <code>port/include/logger.h</code> header file describes the
-               pure C programmatic logger interface. The <code>clog.h</code>
-               and <code>cxxlog.h</code> header files in the same directory
+               The current logging system is based on a custom logger which
+               may be configured via
+<a href="http://java.sun.com/j2se/1.5.0/docs/guide/jni/spec/invocation.html#wp16334">JNI_CreateJavaVM</a>
+               function. The <code>port/include/logger.h</code> header file
+               describes the pure C programmatic logger interface. 
+               The <code>clog.h</code> and <code>cxxlog.h</code> header files
+               in the same directory
                contain a number of convenience macros improving effectiveness
                of the logger for C and C++ code respectively.
             </p>
             <p>
                Each logging message has a header that may include its category,
                timestamp, location, and other information. Logging messages can
-               be filtered by category and by the logging level. You can use
+               be filtered by category for each logging level. You can use
                specific command-line options to configure the logger and make
-               maximum use of its capabilities. See help message <code>ij
+               maximum use of its capabilities. See help message <code>java
                -X</code> for details on the logger command-line options.
             </p>
             <p>The current VM logging system supports internationalization,
-               so that VM can print messages in the language of the customer system.
-               To use the internationalization feature, initialize one of the <code>LC_ALL</code>,
-               <code>LC_MESSAGES</code> or <code>LANG</code> system environment variables
-               in the <code>&lt;Lang&gt;_&lt;Region&gt;.&lt;Variant&gt;</code> locale format.
-               You can find a list of localized messages for a certain locale in the
-               <code>&lt;drlvm_trunk&gt;/vm/vmcore/src/init/harmony_&lt;locale_name&gt;.properties.</code>
-               message catalogue. For a convenient set of macros for printing internationalized
-               messages, refer to the <code>cxxlog.h</code> header file.
+               so that VM can print messages in the language of the customer
+               system. To use the internationalization feature, set
+               one of the <code>LC_ALL</code>, <code>LC_MESSAGES</code> or
+               <code>LANG</code> system environment variables to the
+               <code>&lt;Lang&gt;_&lt;Region&gt;.&lt;Variant&gt;</code>
+               locale. You can find a list of localized messages for
+               a certain locale in the 
+               <code>&lt;drlvm_trunk&gt;/vm/vmcore/src/init/harmony_&lt;locale_name&gt;.properties</code>
+               message catalogue. For a convenient set of macros for printing
+               internationalized messages, refer to the <code>clog.h</code>,
+               <code>cxxlog.h</code> header files.
            </p>
            <p>A record from the message catalogue has the following structure:<br>
               <code><b>&lt;XXXX&gt;&lt;YYY&gt;=&lt;localized_message&gt;</b></code><br>
