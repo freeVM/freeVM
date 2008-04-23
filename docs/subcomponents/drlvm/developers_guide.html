@@ -889,8 +889,8 @@ limitations under the License.
          interface from each loading component, and then makes this information
          available at the initialization stage via interface queries. The
          component manager also enables instance creation for interfaces.
-         Currently, only the execution manager uses the component manager
-         loading scheme.
+         Currently, only the vm core and the execution manager use the
+         component manager loading scheme.
       </p>
       <h2>
          <a id="Package_Layout" name="Package_Layout"></a>2.4. Package Layout
@@ -1758,7 +1758,7 @@ jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
                <code>LANG</code> system environment variables to the
                <code>&lt;Lang&gt;_&lt;Region&gt;.&lt;Variant&gt;</code>
                locale. You can find a list of localized messages for
-               a certain locale in the 
+               a specific locale in the 
                <code>&lt;drlvm_trunk&gt;/vm/vmcore/src/init/harmony_&lt;locale_name&gt;.properties</code>
                message catalogue. For a convenient set of macros for printing
                internationalized messages, refer to the <code>clog.h</code>,
@@ -2324,6 +2324,10 @@ header file.<br>
       </p>
       <ol>
          <li value="0">
+            Gets the component manager instance and registers a new VM
+            instance in the component manager.
+         </li>
+         <li>
             For Linux<a href="#*">*</a> platforms, initializes the threading
             system.<br />
              No actions are performed on Windows<a href="#*">*</a> platforms.
@@ -2345,9 +2349,6 @@ header file.<br>
          </li>
          <li>
             Initializes the VM global synchronization locks.
-         </li>
-         <li>
-            Creates the component manager.
          </li>
          <li>
             Loads the garbage collector and interpreter libraries.
@@ -3702,6 +3703,7 @@ header file.<br>
         </body>
     </html>
 <!-- end the processing -->
+
 
 
 
