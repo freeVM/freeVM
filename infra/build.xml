@@ -390,7 +390,6 @@ ERROR: Could not found adaptor for some specified test suites
             </if>
             <mkdir dir="${cc.work.dir}" />
             <mkdir dir="${cc.log.dir}" />
-            <touch file="${cc.execution.status.file}" />
         </sequential>
     </target>
 

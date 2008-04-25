@@ -29,50 +29,12 @@
     <property name="suite.adaptor.dir" 
               value="${root.dir}/adaptors/${suite.name}"/>
     
-    <!-- load test suites execution statuses -->
-    <property file="${cc.execution.status.file}"/>
-
     <property name="suite.adaptor.dir" 
               value="${root.dir}/adaptors/${suite.name}"/>
     
     <!-- Called from CC to launch the test suite named ${test.suite} -->
     <target name="cc-run" depends="define-ant-contrib">
         <log message="Test Suite '${suite.name}' execution. Repository updated: ${repository.updated}"/>
-
-        <!-- clear previous status -->
-        <replaceregexp file="${cc.execution.status.file}"
-                       match="^${suite.name}\.parameters\..*$"
-                       replace=""
-                       byline="true"/>
-
-        <!-- FIXME: is this really required?
-             CruiseControl doesn't trigger the
-             build in case of failed buildstatus
-        
-        <check-superior-failures
-            suite="${suite.name}"
-            check-target="run"
-            property="failed.superiors"
-        />
-        -->
-        <if>
-            <isset property="failed.superiors"/>
-        <then>
-            <!-- write 'skipped' status -->
-            <propertyfile file="${cc.execution.status.file}"
-                          comment="${cc.execution.status.file.header}.">
-                <entry key="${suite.name}.parameters.run.skipped" value="true"/>
-            </propertyfile>
-            <echo level="warning">
-Test Suite '${suite.name}' was not executed (SKIPPED) 
-as the following preceding suites on which '${suite.name}' depends upon
-failed to run or have been skipped:
-    ${failed.superiors}
-</echo>
-            <fail message="Execution SKIPPED (failed superiors: ${failed.superiors})."/>
-
-        </then>
-        </if>
 
         <echo file="${cc.execution.log.file}" 
               message="&lt;html>&lt;body>"/>
@@ -100,11 +62,6 @@ The execution FAILED with the following exception:
 ${exception}
 </echo>
             <record name="${cc.execution.log.file}" action="stop"/>
-            <!-- write 'failed' status -->
-            <propertyfile file="${cc.execution.status.file}"
-                          comment="${cc.execution.status.file.header}.">
-                <entry key="${suite.name}.parameters.run.failed" value="true"/>
-            </propertyfile>
         </catch>
         </trycatch>
         <echo file="${cc.execution.log.file}" append="true" 

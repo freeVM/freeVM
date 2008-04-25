@@ -133,35 +133,6 @@
         </sequential>
     </macrodef>
 
-    <!-- check for the failures of the superior suites and place their
-         names (if any) into specified property -->
-    <macrodef name="check-superior-failures">
-        <attribute name="suite"/>
-        <attribute name="check-target"/>
-        <attribute name="property" default="@{suite}.has.failed.superior"/>
-        <sequential>
-            <var name="@{property}" unset="true"/>
-
-            <for list="${@{suite}.parameters.depends}" param="superior">
-            <sequential>
-                <log message="Check for '@{check-target}' failure of @{superior} = ${@{superior}.parameters.@{check-target}.failed}"/>
-                <if>
-                    <or>
-                        <istrue value="${@{superior}.parameters.@{check-target}.failed}"/>
-                        <istrue value="${@{superior}.parameters.@{check-target}.skipped}"/>
-                    </or>
-                <then>
-                    <!-- empty value as initial -->
-                    <property name="@{property}" value=""/>
-                    <var name="@{property}" value="${@{property}}@{superior} "/>
-                </then>
-                </if>
-            </sequential>
-            </for>
-            <log message="Result: @{property} = '${@{property}}'"/>
-        </sequential>
-    </macrodef>
-
     <!-- removes svn locks leaved after unsuccessful checkout or update-->
     <macrodef name="svn-cleanup">
         <attribute name="trunk"/>
