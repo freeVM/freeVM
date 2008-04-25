@@ -17,6 +17,6 @@
     <mail summary="${svn.revision.file}"/>
 
     <cc trigger="${snapshot}/${snapshot.file}"
-        bootstrapper="${suite.adaptor.dir}/adaptor.xml"
+        bootstrapper="${adaptors.dir}/snapshot/adaptor.xml"
     />
 </parameters>
