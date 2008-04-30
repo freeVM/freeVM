@@ -26,9 +26,6 @@
         <tested.jre description="Path to JRE under test" 
             value="${jdktools-test.parameters.required.hy.hdk}/jdk/jre" />
 
-        <!-- FIXME: should point to ${svn.jdktools.dir} value -->
-        <built.trunk.dir description="Path to built HY JDK Tools trunk" 
-            value="${checkouts.dir}/jdktools" />
     </required>
     
     <optional>
@@ -38,6 +35,7 @@
 
     <svn>
       <jdktools url="http://svn.apache.org/repos/asf/harmony/enhanced/jdktools/trunk" />
+      <common_resources url="http://svn.apache.org/repos/asf/harmony/enhanced/common_resources/trunk"/>
     </svn>
 
     <cc results="${tests.results.dir}' pattern='TEST-*.xml"/>

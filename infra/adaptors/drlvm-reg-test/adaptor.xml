@@ -33,16 +33,48 @@
             <fileset dir="${drlvm-reg-test.results.dir}" includes="**/*" />
         </delete>
 
+        <!-- time of the current test run -->
+        <tstamp>
+            <format property="drlvm-reg-test.run.time"
+                    pattern="yyyyMMdd_HHmm" />
+        </tstamp>
+
+        <!-- clean & fetch-depends -->
+        <exec-ant dir="${drlvm-reg-test.parameters.svn.drlvm.location}"
+                  targets="clean fetch-depends"
+                  failonerror="true">
+
+            <sysproperty key="hy.cfg" value="${drlvm.config}" />
+            <sysproperty key="common.resources.loc"
+                         value="${drlvm-reg-test.parameters.svn.common_resources.location}" />
+        </exec-ant>
+
         <!-- launch the tests -->
-        <exec-ant dir="${built.drlvm.trunk}"
+        <exec-ant dir="${drlvm-reg-test.parameters.svn.drlvm.location}"
                   targets="reg.test"
                   failonerror="false"
                   failproperty="drlvm-reg-test.run.failed">
+
             <sysproperty key="hy.cfg" value="${drlvm.config}" />
+            <sysproperty key="test.hdk.home"
+                         value="${drlvm-reg-test.parameters.required.hy.hdk}" />
             <sysproperty key="common.resources.loc"
-                         value="${common.resources}" />
-            <arg line="${tested.hdk.param}" />
+                         value="${drlvm-reg-test.parameters.svn.common_resources.location}" />
         </exec-ant>
+
+        <!-- define the resulting files -->
+        <fileset id="drlvm-reg-test.results.set"
+                 dir="${drlvm-reg-test.parameters.svn.drlvm.location}/build"
+                 includes="*${drlvm.config}/**/TEST-*.xml">
+            <date datetime="${drlvm-reg-test.run.time}"
+                  pattern="yyyyMMdd_HHmm"
+                  when="after" />
+        </fileset>
+
+        <copy todir="${drlvm-reg-test.results.dir}">
+            <fileset refid="drlvm-reg-test.results.set" />
+            <packagemapper from="*" to="*" />
+        </copy>
 
         <fail message="There were drlvm-reg-test failures"
               if="drlvm-reg-test.run.failed" />
@@ -58,33 +90,23 @@
                 trim="yes" />
     </condition>
 
-    <condition property="tested.hdk.param"
-               value="-Dtest.hdk.home=${snapshot.parameters.shared.hdk}"
-               else="">
-        <isset property="is.snapshot" />
-    </condition>
-
     <target name="-update"
             if="is.snapshot"
             description="adjusts tests to snapshot revision">
-        <mkdir dir="${built.drlvm.trunk}" />
-        <mkdir dir="${common.resources}" />
-        <loadproperties srcFile="${snapshot.svn.revision.file}" />
-        <exec executable="svn" dir="${common.resources}" failonerror="true">
-            <arg line="co -r${svn.revision} ${common.resources.url} ." />
-        </exec>
-        <exec executable="svn" dir="${built.drlvm.trunk}" failonerror="true">
-            <arg line="co -r${svn.revision} ${drlvm.trunk.url} ." />
+
+        <exec executable="svn"
+              dir="${drlvm-reg-test.parameters.svn.common_resources.location}"
+              failonerror="true">
+
+            <arg line="up -r${svn.revision} ." />
         </exec>
 
-        <exec-ant dir="${built.drlvm.trunk}"
-                  targets="clean fetch-depends"
-                  failonerror="true">
-            <sysproperty key="hy.cfg" value="${drlvm.config}" />
-            <sysproperty key="common.resources.loc"
-                         value="${common.resources}" />
-        </exec-ant>
+        <exec executable="svn"
+              dir="${drlvm-reg-test.parameters.svn.drlvm.location}"
+              failonerror="true">
 
+            <arg line="up -r${svn.revision} ." />
+        </exec>
     </target>
 
 </project>
