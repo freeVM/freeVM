@@ -192,43 +192,37 @@ next bytecode. It does the following:
 </p>
 <ol>
   <li>
-    <p>Removes all breakpoints predicted for the current thread
-      - they were used on the previous step.</p>
+    Removes all breakpoints predicted for the current thread
+      - they were used on the previous step.
     <li>
-      <p>Depending on the currently executed bytecode, predicts
-        which bytecode(s) may be executed next to it.</p>
+      Depending on the currently executed bytecode, predicts
+        which bytecode(s) may be executed next to it.
       <ol>
         <li>
-          <p>For ordinary bytecodes that don't transfer execution control the
+          For ordinary bytecodes that don't transfer execution control the
             next bytecode is the one next to the current one in the method's
-            bytecode array.</p>
+            bytecode array.
           <li>
-            <p>For bytecodes that transfer control, all of the
+            For bytecodes that transfer control, all of the
               possible target locations are counted as predicted
-              locations.</p>
+              locations.
       </ol>
 </ol>
 <p>JVMTI code doesn't try to interpret the Java state and
 determine which target location is going to take place when the bytecode is
 executed. Instead, JVMTI does the following:</p>
 <ul>
-  <ul>
     <li>
-      <p>For bytecodes like tableswitch and conditional
+      For bytecodes like tableswitch and conditional
         branches, JVMTI adds all its targets to the predicted bytecodes
-        list.</p>
-  </ul>
-</ul>
-<ul>
-  <ul>
+        list.
     <li>
-      <p>For invokestatic and invokespecial bytecodes, the
+      For invokestatic and invokespecial bytecodes, the
         target bytecode is the 1<sup>st</sup> bytecode of the method that they
-        invoke.</p>
+        invoke.
       <li>
-        <p>For invokevirtual and invokeinterface, JVMTI does
-          special handling (<a href="#invoke">see below</a>).</p>
-  </ul>
+        For invokevirtual and invokeinterface, JVMTI does
+          special handling (<a href="#invoke">see below</a>).
 </ul>
 <p>If the target method is not compiled yet, single-step
 breakpoints are added to its list of pending breakpoints in the same way as
