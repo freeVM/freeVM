@@ -43,11 +43,8 @@
         <record name="${cc.execution.log.file}" append="yes" action="start"/>
         <trycatch property="exception" reference="execution.exception.ref">
         <try>
-            <!-- FIXME: is this really required?
-                 CruiseControl should update ws
-
-            <runtarget target="update-svn"/>
-            -->
+            <check-depends suite="${suite.name}" />
+            <runtarget target="-export-svn-revision"/>
             
             <ant dir="${root.dir}/adaptors/${suite.name}" 
                  antfile="adaptor.xml" 
@@ -70,16 +67,29 @@ ${exception}
               message="&lt;/body>&lt;/html>"/>
         <fail message="${exception}" if="exception"/>
     </target>
-    
-    <target name="update-svn" if="${suite.name}.parameters.cc.usesvn" 
-        unless="${suite.name}.parameters.cc.skip.svnupdate">
-        <!-- "svnrevision" property is set by CC since v2.7.1 -->
-        <property name="svnrevision" value="HEAD"/>
-        <propertycopy property="ws" from="${suite.name}.parameters.cc.usesvn"/>
-        <svn-cleanup trunk="${ws}"/>
-        <exec executable="svn" dir="${ws}" failonerror="true">
-            <arg line="update -r ${svnrevision}"/>
-        </exec>
+
+    <macrodef name="check-depends">
+        <attribute name="suite"/>
+        <sequential>
+            <condition property="is.snapshot">
+                <contains string="${@{suite}.parameters.depends}"
+                    substring="snapshot"/>
+            </condition>
+        </sequential>
+    </macrodef>
+
+    <target name="-export-svn-revision" if="is.snapshot" >
+
+        <!-- TODO: the target should update workspaces by svn.xml -->
+        <loadproperties srcFile="${config.dir}/snapshot.properties">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="snapshot.svn.revision.file=" />
+                </linecontainsregexp>
+            </filterchain>
+        </loadproperties>
+        
+        <loadproperties srcFile="${snapshot.svn.revision.file}" />
     </target>
 
     <!-- Called from CC to launch the custom ant publisher for test suite -->
