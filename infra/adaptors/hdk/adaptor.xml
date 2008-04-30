@@ -34,7 +34,7 @@
         <property name="svnrevision" value="HEAD"/>
         <log message="Updating HDK workspace to revision: ${svnrevision}"/>
         <exec executable="svn" dir="${hdk.trunk.dir}" failonerror="true">
-            <arg line="update -r ${svnrevision} --ignore-externals"/>
+            <arg line="update -r ${svnrevision} -N"/>
         </exec>
         
         <exec-ant dir="${hdk.trunk.dir}" targets="rebuild">
