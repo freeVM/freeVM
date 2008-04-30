@@ -134,4 +134,8 @@ org.eclipse.jdt.ui.tests.LeakTestSuite
 # org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_copy
 # org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_paste
 # org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_copy
-org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_pasteIndex: efl.linux.x86
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_pasteIndex
+
+# Invalid test, see HARMONY-5747
+org.eclipse.update.tests.api.TestLocalSiteAPI.testFileParsing
+org.eclipse.update.tests.api.TestLocalSiteAPI.testBundleManifestParsing
