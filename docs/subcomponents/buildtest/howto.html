@@ -306,19 +306,21 @@ jdktools-test.parameters.depends=hdk
 
 # Tests are run in HDK workspace against HDK's JRE 
 classlib-test.parameters.required.tested.jre=${hdk.parameters.shared.binaries.jre.dir}
-classlib-test.parameters.required.trunk.dir=${hdk.parameters.shared.classlib.trunk.dir}
 classlib-test.parameters.svn.classlib.dir=hdk/working_classlib
 
-drlvm-test.parameters.required.built.drlvm.trunk=${hdk.parameters.shared.drlvm.trunk.dir}
-drlvm-test.parameters.required.common.resources=${hdk.parameters.shared.common.resources.dir}
+drlvm-test.parameters.required.hy.hdk=${hdk.parameters.shared.trunk.dir}/target/hdk
 drlvm-test.parameters.required.drlvm.config=debug
+drlvm-test.parameters.svn.drlvm.dir=hdk/working_vm
+drlvm-test.parameters.svn.common_resources.dir=hdk/common_resources
 
-drlvm-reg-test.parameters.required.built.drlvm.trunk=${hdk.parameters.shared.drlvm.trunk.dir}
-drlvm-reg-test.parameters.required.common.resources=${hdk.parameters.shared.common.resources.dir}
+drlvm-reg-test.parameters.required.hy.hdk=${hdk.parameters.shared.trunk.dir}/target/hdk
 drlvm-reg-test.parameters.required.drlvm.config=debug
+drlvm-reg-test.parameters.svn.drlvm.dir=hdk/working_vm
+drlvm-reg-test.parameters.svn.common_resources.dir=hdk/common_resources
 
-jdktools-test.parameters.required.built.trunk.dir=${hdk.parameters.shared.jdktools.trunk.dir}
+jdktools-test.parameters.required.tested.jre=${hdk.parameters.shared.binaries.jre.dir}
 jdktools-test.parameters.svn.jdktools.dir=hdk/working_jdktools
+jdktools-test.parameters.svn.common_resources.dir=hdk/common_resources
       </pre>
     </p>
                                 <p>
@@ -344,7 +346,41 @@ ant run-cc
     </h1>
                         <a name="Snapshot" />
                                 <p>
-      <i>TODO</i>.
+      Let's setup snapshot testing cycle that includes Class library, DRLVM
+      and JDKTools unit tests. The setup is pretty straightforward.
+    </p>
+                                <p>
+      1) Install the same <a href="../../quickhelp_contributors.html">tools</a>, 
+      as for building the Apache Harmony components.
+    </p>
+                                <p>
+      2) Check out the infrastructure from SVN repository:
+      <pre>svn co http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk/infra</pre>
+    </p>
+                                <p>
+      3) Change directory to the infrastructure directory.
+    </p>
+                                <p>
+      4) Copy ‘framework.local.properties’ file from snapshot adaptor' dir
+      to the root dir.
+      <pre>cp adaptors/snapshot/framework.local.properties .</pre>
+    </p>
+                                <p>
+      5) Update ‘framework.local.properties’. For example, if e-mail
+      notifications are required then set appropriate values in the file. 
+    </p>
+                                <p>
+      6) Run the following commands:
+      <pre>
+ant -Dtest.suites="snapshot,classlib-test,drlvm-test,drlvm-reg-test,jdktools-test" install
+ant setup
+ant run-cc
+      </pre>
+    </p>
+                                <p>
+      These steps launches <code>CruiseControl</code> that downloads and
+      unpacks snapshot and runs unit tests. The testing cycle is run once
+      per snapshot.
     </p>
                 <p class="backtotop"><a href="#top">Back to top</a></p>
                                         <h1>
