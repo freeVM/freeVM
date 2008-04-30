@@ -33,6 +33,12 @@
 
     <!-- do run -->
     <target name="run" depends="-update-classlib-ws">
+
+        <!-- time of the current test run -->
+        <tstamp>
+            <format property="classlib-test.run.time" pattern="yyyyMMdd_HHmm" />
+        </tstamp>
+
         <!-- remove old results (they have been archived after the run) -->
         <delete quiet="true" verbose="false">
             <fileset dir="${classlib-test.results.dir}" includes="**/*" />
@@ -42,21 +48,21 @@
         <!-- to remove previous results                 -->
         <ant antfile="make/build-test.xml"
              target="clean"
-             dir="${classlib-test.parameters.required.trunk.dir}"
+             dir="${classlib-test.parameters.svn.classlib.location}"
              inheritAll="false" />
 
         <ant target="fetch-depends"
-             dir="${classlib-test.parameters.required.trunk.dir}"
+             dir="${classlib-test.parameters.svn.classlib.location}"
              inheritAll="false" />
 
-        <exec-ant dir="${classlib-test.parameters.required.trunk.dir}"
+        <exec-ant dir="${classlib-test.parameters.svn.classlib.location}"
                   targets="rebuild">
             <sysproperty key="keep.working" value="true" />
             <!-- workaround on classlib-build's InvocationTargetException -->
             <jvmarg line="-Xmx1000M" />
         </exec-ant>
 
-        <exec-ant dir="${classlib-test.trunk.dir}"
+        <exec-ant dir="${classlib-test.parameters.svn.classlib.location}"
                   targets="test"
                   failonerror="false"
                   failproperty="classlib-test.run.failed">
@@ -67,6 +73,20 @@
             <sysproperty key="exclude.interm" value="true" />
             <sysproperty key="exclude.module" value="awt,swing" />
         </exec-ant>
+
+        <!-- define the resulting files -->
+        <fileset id="classlib-test.results.set"
+                 dir="${classlib-test.parameters.svn.classlib.location}/build/test_report"
+                 includes="TEST-*.xml">
+            <date datetime="${classlib-test.run.time}"
+                  pattern="yyyyMMdd_HHmm"
+                  when="after" />
+        </fileset>
+
+        <copy todir="${classlib-test.results.dir}">
+            <fileset refid="classlib-test.results.set" />
+            <packagemapper from="*" to="*" />
+        </copy>
 
         <fail message="There were CLASSLIB Unit Test failures."
               if="classlib-test.run.failed" />
@@ -85,12 +105,10 @@
             if="is.snapshot"
             description="adjusts classlib-tests to snapshots revision">
 
-        <loadproperties srcFile="${snapshot.svn.revision.file}" />
         <exec executable="svn"
-              dir="${classlib-test.trunk.dir}"
+              dir="${classlib-test.parameters.svn.classlib.location}"
               failonerror="true">
-            <arg line="-r${svn.revision}" />
-            <arg line="update" />
+            <arg line="up -r${svn.revision} ." />
         </exec>
     </target>
 

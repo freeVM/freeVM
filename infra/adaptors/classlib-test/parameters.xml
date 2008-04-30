@@ -22,9 +22,6 @@
         <tested.jre
             description="Path to JRE under test"
             value="${drlvm.parameters.shared.jre.dir}"/>
-        <trunk.dir
-            description="Path to CLASSLIB trunk directory"
-            value="${classlib.parameters.shared.trunk.dir}"/>
     </required>
 
     <optional>
