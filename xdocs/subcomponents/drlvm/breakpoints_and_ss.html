@@ -1,0 +1,294 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type"
+      content="text/html; charset=UTF-8" />
+      <link rel="stylesheet" type="text/css" href="../../site.css" />
+      <title>
+         Implementation of breakpoints and single step in JIT mode
+      </title>
+   </head>
+
+<body>
+<h1>Implementation of breakpoints and single step in JIT mode</h1>
+<a name="breakpoints"><h2>Breakpoints</h2></a>
+<h3>Abstract</h3>
+<p>DRLVM uses code instrumentation to set breakpoints in a
+method in the JIT mode. When JVMTI is turned on by a command line switch, only
+Jitrino.JET is used to compile methods. JET maintains one-to-one mapping
+between method bytecodes and native code instructions, so that for each
+bytecode it is possible to find the instruction starting address, and for each
+address in compiled code it is possible to determine the corresponding
+bytecode. Using this mapping you can to set a breakpoint in any point of a
+method and notify the agent when execution reaches this point.</p>
+<p>DRLVM has an abstraction layer, class VMBreakPoints, that
+allows the following interfaces to register breakpoints in the registry:
+thread-local single-stepping, breakpoints in the interpreter mode and in
+native Java code for NCAI. This way, each breakpoints interface uses its
+specific processing callback that it gives to the breakpoints registry. Each
+interface maintains a list of references to the global list of currently
+enabled breakpoints. This list has a global synchronization lock to maintain
+its integrity.</p>
+<p>Each interface has a priority, and breakpoints are processed
+in the order of interfaces' priority. Prioritizing is necessary because the
+same location may have multiple breakpoints registered by different
+interfaces. The JVMTI specification states that for the same location in the
+code, single-step events have to be sent before breakpoints event, so the
+single-step interface has a higher priority than the breakpoints
+interface.</p>
+<h3>Setting a breakpoint</h3>
+<p>To implement the JVMTI API function SetBreakpoint, DRLVM uses
+the global interface registered in the breakpoints registry and the JVMTI
+breakpoints interface. First, the code locks the list, checks if a reference
+with the same method and bytecode location has been already registered, and if
+not, adds a new one.</p>
+<p>When a new reference to a breakpoint is added, the breakpoint
+registry has to instrument the code. In the interpreter mode, it uses the
+interpreter internal function for this, and in the JIT mode, the registry uses
+JET to find out the native address for the requested bytecode. This address is
+instrumented with a single byte instruction, such as INT3 (used on Linux* OS)
+or CLI (used on Windows* OS). Instrumentation is done by remembering the byte
+that was previously in memory at the target address and then writing the
+single byte opcode into memory. Because instrumentation is done when the
+thread owns the global breakpoints lock, atomic operations are
+unnecessary.</p>
+<p>After a new reference to a breakpoint is added, the global
+breakpoints list lock is released.</p>
+<p>There is a possible situation that a method where user wants
+to set a breakpoint is not compiled yet. The method may be loaded into memory
+by the class loader, but not executed a single time, so there is no native
+code generated for it. To set a breakpoint it such a method, breakpoints
+registry adds a breakpoint to a list of pending breakpoints. Each method has a
+pointer to such a list, which is initialized with NULL. For each method after
+VM calls the compilation, and if it is successful, VM checks this list, and if
+it is not empty it performs all the instrumentation.</p>
+<h3>Clearing a breakpoint</h3>
+<p>To implement JVMTI API function ClearBreakpoint, DRLVM uses
+the same global JVMTI breakpoints interface. For that, the code locks the
+global breakpoints list and tries to find a reference to a breakpoint for the
+requested method and bytecode location. If no reference is found, an error is
+returned. If the reference is found, the code calls the breakpoints registry
+to remove it.</p>
+<p>When a reference to a breakpoint is removed, the breakpoints
+registry checks all registered interfaces and their references to find any
+other existing references to the same breakpoint. If no references are found,
+the location in the code is de-instrumented: in the interpreter mode
+breakpoints registry uses interpreter function, and in the JIT mode - by
+writing the original saved byte back to the memory to restore the original
+instruction. If the target method where breakpoint is removed has not been
+compiled yet, the breakpoint is removed from its list of pending
+breakpoints.</p>
+<p>After a reference to a breakpoint is removed, the global
+breakpoints list lock is released.</p>
+<h3>Reacting to a breakpoint</h3>
+<p>In the JIT mode when execution reaches instrumented location,
+the Java process receives a signal (exception on Windows). Signals in DRLVM
+are handled by the <a href="crash_handler.html">crash handler</a>. VM registers a signal callback for the
+breakpoint type signal so that it can react to it. This callback calls the
+breakpoints registry to process the breakpoint.</p>
+<p>The registry processes all registered interfaces in the order
+of their priority. If an interface has a registered reference to the
+breakpoint at the address where the signal has been received, the breakpoints
+registry calls this interface's callback. In this callback, normal event JVMTI
+processing is done. For each JVMTI environment that has enabled receiving
+interface-specific event type (e.g. JVMTI_BREAKPOINT or JVMIT_SINGLE_STEP),
+this environment's callback is called.</p>
+<p>Before calling the callback, the registry unlocks the global
+list of breakpoints. Unlocking is necessary because the callback executes
+arbitrary JVMTI agent code that may work for a long time (e.g. wait on a JVMTI
+raw monitor). At the same time, another thread may need to modify the
+breakpoints list, and if at the same time this thread owns the same raw
+monitor, the VM process would dead lock.</p>
+<p>After all of the interface's callbacks are called, it is
+necessary to return to executing the code of the method starting with the
+instruction that is instrumented. However, it is not possible to remove
+instrumentation from this instruction because another thread may be executing
+the same code at the same time, and with removed instrumentation the other
+thread would not receive the breakpoint signal.</p>
+<p>To execute the original instruction, JVMTI has a thread-local
+memory buffer where this instruction is copied to. To copy this instruction,
+the breakpoints registry code uses a simple disassembler, which parses a
+single instruction and determines its length. The registry copies the original
+instrumented byte and the rest of the instruction into this thread-local
+buffer and after it inserts a jump instruction to the address next to the
+instrumented instruction.</p>
+<p>NOTE: On x86_64 platforms, it is impossible to create a jump
+to a 64-bit address in the instruction's immediate operand. So instead of a
+jump, a sequence of push and ret instructions is used. It is necessary because
+no registers can be modified while executing the code emulating the original
+instruction.</p>
+<p>Certain instructions depend on their location in the memory,
+such as relative jumps and calls. These instructions are handled in a specific
+way: for relative jumps the generated code contains a jump to an absolute
+address, for calls the generated sequence consists of pushing the "return
+address", which is the original address of the instrumented call instruction,
+and jumping to the calculated absolute target address.</p>
+<p>After creating the buffer with the code emulating the
+behavior of the instrumented instruction, the breakpoints processing code
+modifies the registers' context to make the IP pointer to point to this
+buffer. With such modified registers context, the breakpoint processing code
+returns to the crash handler, which transfers execution control to the
+thread-local buffer.</p>
+<h2>Single step</h2>
+<h3>Abstract</h3>
+<p>The single-step mode implements Step In and Step Over
+commands in the debugger. In this mode, for each executed bytecode VM must
+send an event to the JVMTI agent with method and location in the method
+parameters. The agent may request to receive this event only on a specific set
+of threads or globally for all of executed threads.</p>
+<p>Single stepping in DRLVM is done with breakpoints.
+Breakpoints are set on bytecodes and after sending the event to the agent,
+breakpoints are moved to the next bytecodes. Each thread in single-step mode
+uses its own breakpoints interface to add and remove single-step breakpoints.
+These interfaces have priority of single-step, that is higher than priority of
+ordinary breakpoints.</p>
+<h3>Enabling single step</h3>
+<p>When the JVMTI agent enables the single-step mode, DRLVM
+suspends all target threads except current. If the agent enables the single
+step globally, all currently running threads are considered target threads. In
+all target threads, VM creates a thread-local single step state, which is a
+breakpoint interface registered in the breakpoints registry with type "single
+step". Presence of this single-step state means that single step is enabled in
+the thread and is often used as a flag in the code.</p>
+<p>For each thread, JVMTI code determines the execution
+position. If the thread executes Java code, the currently executed bytecode is
+the starting bytecode. If the thread executes native code, no action is taken.
+For every starting bytecode, JVMTI code determines the bytecode next to it and
+sets a breakpoint of single step type on it. These breakpoints are kept in the
+single-step state.</p>
+<p>After setting breakpoints in all threads that execute Java
+code, DRLVM resumes all threads.</p>
+<h3>Disabling single step</h3>
+<p>When the agent disables the single-step mode, threads are
+suspended as with enabling this mode. In each thread, VM uses the single step
+state to remove references to the single step breakpoints, de-allocates the
+single-step state and resumes target threads.</p>
+<h3>Processing single step</h3>
+<p>The single step breakpoints interface has its own breakpoint
+processing callback different from the callback for ordinary breakpoints. In
+this callback, VM sends single-step events to the agent's environments that
+have requested to receive such events. Environment callbacks are called in the
+same way as for other JVMTI events.</p>
+<p>If after all callbacks are called, the agent hasn't turned
+off the single-step mode in the thread, JVMTI has to continue executing to the
+next bytecode. It does the following:
+</p>
+<ol>
+  <li>
+    <p>Removes all breakpoints predicted for the current thread
+      - they were used on the previous step.</p>
+    <li>
+      <p>Depending on the currently executed bytecode, predicts
+        which bytecode(s) may be executed next to it.</p>
+      <ol>
+        <li>
+          <p>For ordinary bytecodes that don't transfer execution control the
+            next bytecode is the one next to the current one in the method's
+            bytecode array.</p>
+          <li>
+            <p>For bytecodes that transfer control, all of the
+              possible target locations are counted as predicted
+              locations.</p>
+      </ol>
+</ol>
+<p>JVMTI code doesn't try to interpret the Java state and
+determine which target location is going to take place when the bytecode is
+executed. Instead, JVMTI does the following:</p>
+<ul>
+  <ul>
+    <li>
+      <p>For bytecodes like tableswitch and conditional
+        branches, JVMTI adds all its targets to the predicted bytecodes
+        list.</p>
+  </ul>
+</ul>
+<ul>
+  <ul>
+    <li>
+      <p>For invokestatic and invokespecial bytecodes, the
+        target bytecode is the 1<sup>st</sup> bytecode of the method that they
+        invoke.</p>
+      <li>
+        <p>For invokevirtual and invokeinterface, JVMTI does
+          special handling (<a href="#invoke">see below</a>).</p>
+  </ul>
+</ul>
+<p>If the target method is not compiled yet, single-step
+breakpoints are added to its list of pending breakpoints in the same way as
+described in the <a href="#breakpoints">Breakpoints</a> section.</p>
+<p>After predicting all possible target locations JVMTI code
+sets single step breakpoints on them. When this is done, execution is returned
+back to the code breakpoints registry which in turn returns execution back to
+the java method in the way described in breakpoints section.</p>
+<h3>Transitions from Java to native and back</h3>
+<p>Native code may be a user-program native method or VM code,
+such as class loader, that calls the Java user class loader to load classes.
+When native code calls a Java method, and if a thread has the single-step mode
+enabled, the first bytecode of the Java method is counted as predicted, and VM
+code sets the single-step breakpoint there.</p>
+<p>If the single-step state is present when the execution
+returns to VM from the Java method, VM tries to find a Java method up the
+stack which has invoked the native code. It may happen implicitly with invoke
+or explicitly when compiled code calls VM to resolve a method. The bytecode
+next to the location which has called native code is counted predicted and VM
+code sets the single step breakpoint there.</p>
+<h3>Exceptions</h3>
+<p>When an exception is raised, all single-step predicted
+breakpoints are removed because execution control may not reach them. VM tries
+to find the exception handler code. If a Java exception handler is found, its
+starting IP location is counted as predicted and VM sets a single-step
+breakpoint on it. If the exception handler is not found, or a native method is
+reached in stack unwinding, no predicted breakpoint is set. Single-stepping in
+native code is not possible, and the predicted breakpoint would be set
+automatically when native code returns to Java as described in the previous
+section.</p>
+<a name="invoke"><h3>Invokevirtual and invokeinterface</h3></a>
+<p>The two bytecodes that transfer control have no fixed target
+address that could be found by analyzing the code statically. Instead, the
+target address can be found at run time. When VM sends a single-step event and
+execution is stopped on invokevirtual or invokeinterface bytecode, VM inserts
+a special single-step type breakpoint (it has a flag to make it different from
+ordinary single-step breakpoints) that doesn't trigger a single-step
+event.</p>
+<p>The location of such a breakpoint is determined in a special
+way. Compiled code for invokevirtual and invokeinterface bytecodes may be long
+and may contain several call instructions before the actual call of the target
+method. But there is a special contract with JIT that the last call inside of
+the code range that corresponds to the invoke bytecode is the actual call of
+the method. So VM tries to find this last call instruction in the code range
+and instrument it with the special type of single step breakpoint.</p>
+<p>To find this last call instruction, VM uses the same
+disassembler facility that is used for processing breakpoints. It iterates
+through all instructions of the code generated for the invoke type bytecode
+and checks whether the instruction is a call. Iteration continues until the
+whole range of code for the invoke bytecode is scanned. The last call
+encountered in this range is the one that calls the method.</p>
+<p>When a special type of single step breakpoint is hit, the
+register context contains all runtime information to find the target address.
+VM uses the call instruction argument to find the target address of the call.
+It looks up the method in the compiled methods table and if such method is
+found, counts its first bytecode as predicted. If no method is found, this
+means that the method is not compiled yet and no action is taken.</p>
+<p>Single-step breakpoints for newly compiled methods are set
+after they are compiled, at the same time when pending breakpoints are
+inserted, as described in breakpoints section. For every method that is
+compiled, its first bytecode is considered as predicted, and VM sets a
+single-step type breakpoint on it.</p></body>
+</html>
