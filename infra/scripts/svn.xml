@@ -28,6 +28,10 @@
         <propertyref name="svn.xml" />
         <propertyref name="subcomponent" />
         <propertyref name="checkouts.dir" />
+
+        <!-- store svn parameters in properties file -->
+        <propertyref name="flash.properties" />
+        <propertyref name="external.resources.location" />
     </propertyset>
 
     <target name="checkout-all">
@@ -122,11 +126,8 @@
     <target name="-init">
 
         <!-- set the directory for checkout -->
-        <condition property="dir.to.checkout"
-                   value="${checkouts.dir}/${lib.dir}"
-                   else="${checkouts.dir}/${libname}">
-            <isset property="lib.dir" />
-        </condition>
+        <property name="lib.dir" value="${libname}" />
+        <property name="dir.to.checkout" value="${checkouts.dir}/${lib.dir}" />
 
         <!-- get dir url -->
         <exec executable="svn" dir="${checkouts.dir}">
@@ -196,13 +197,22 @@
 
     </target>
 
-    <target name="-checkout-if-necessary" if="need.to.checkout" depends="-init">
+    <target name="-checkout-if-necessary"
+            if="need.to.checkout"
+            depends="-init,-flash-properties">
 
         <mkdir dir="${dir.to.checkout}" />
 
         <exec executable="svn" failonerror="true">
             <arg line="co ${svn.url} ${dir.to.checkout}" />
         </exec>
+    </target>
+
+    <target name="-flash-properties" if="flash.properties">
+        <echo file="${external.resources.location}" append="true">${subcomponent}.parameters.svn.${libname}.url=${svn.url}
+${subcomponent}.parameters.svn.${libname}.dir=${lib.dir}
+${subcomponent}.parameters.svn.${libname}.location=${dir.to.checkout}
+</echo>
     </target>
 </project>
 

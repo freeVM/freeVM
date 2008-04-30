@@ -67,6 +67,7 @@
         <propertyref name="framework.properties.file" />
         <propertyref name="framework.implementation.file" />
         <propertyref name="test.suites.names.list" />
+        <propertyref name="external.resources.location" />
     </propertyset>
 
     <!-- ================================================================== 
@@ -144,13 +145,14 @@ ERROR: Could not found adaptor for some specified test suites
         <condition property="framework.local.config.exists">
             <available file="${framework.local.configuration.file}" />
         </condition>
+
+        <!-- create empty file -->
+        <echo file="${external.resources.location}" message="" />
+
     </target>
 
     <target name="fetch-depends" depends="-init-install,-check-selected-names">
         <property name="download.xml" location="${scripts.dir}/download.xml" />
-
-        <!-- create empty file -->
-        <echo file="${external.resources.location}" message="" />
 
         <!-- download framework dependencies -->
         <subant genericantfile="${download.xml}"
@@ -222,6 +224,18 @@ ERROR: Could not found adaptor for some specified test suites
 
     <target name="generate-config"
             depends="-check-selected-names,create-local-configuration">
+
+        <!-- get SVN properties.
+             TODO: refactor - there should be better way for export
+        -->
+        <property name="svn.xml" location="${scripts.dir}/svn.xml" />
+        <subant genericantfile="${svn.xml}"
+                target="checkout-all"
+                inheritall="true">
+            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
+
+            <property name="flash.properties" value="true" />
+        </subant>
 
         <subant genericantfile="${scripts.dir}/config.xml"
                 target="generate-config"
