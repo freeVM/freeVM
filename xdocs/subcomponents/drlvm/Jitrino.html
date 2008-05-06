@@ -250,9 +250,11 @@
          </li>
          <li>
             <a href="#OPT_Architecture">Jitrino.OPT</a> optimizing compiler can
-            performs bytecode compilation with a variety of optimizations. The
+            performs bytecode compilation with a variety of optimizations 
+            [<a href="#OPT_ref">7</a>]. The
             compiler features two types of code <a href="#IR">intermediate
             representation</a> (IR): platform-independent high-level IR (HIR)
+            [<a href="#HIR_ref">8</a>] 
             and platform-dependent low-level IR (LIR). Jitrino.OPT incorporates
             an extensive set of code optimizations for each IR type. This JIT
             compiler has a distinct internal interface between the bytecode
@@ -459,7 +461,8 @@
             <p>
                The bytecode translator is responsible for converting incoming
                bytecode instructions into a high-level intermediate
-               representation. This IR is of a lower level than the bytecode
+               representation [<a href="#HIR_ref">8</a>]. 
+               This IR is of a lower level than the bytecode
                and breaks complex bytecode operations into several simple
                instructions to expose more opportunities to later high-level
                optimization phases. For example, loading an object field is
@@ -2471,6 +2474,16 @@ void optABC() {
          [<a name="Graphviz_ref" id="Graphviz_ref"></a>6] Graphviz, Graph
          Visualization Software, <a href="http://www.graphviz.org/"
          target="_blank">http://www.graphviz.org/</a>
+      </p>
+      <p>
+         [<a name="OPT_ref" id="OPT_ref"></a>7] Detailed list of optimizations
+         performed by Jitrino.OPT, <a href="http://wiki.apache.org/harmony/Jitrino_OPT"
+         target="_blank">Harmony WiKi</a>
+      </p>
+      <p>
+         [<a name="HIR_ref" id="HIR_ref"></a>8] Descriptions of High-Level IR instructions
+         of Jitrino.OPT, <a href="http://wiki.apache.org/harmony/Jitrino_OPT/opcodes"
+         target="_blank">Harmony WiKi</a>
       </p>
       <p class="backtotop">
          <a href="#Top">Back to Top</a>
