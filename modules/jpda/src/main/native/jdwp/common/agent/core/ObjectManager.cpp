@@ -249,7 +249,7 @@ void ObjectManager::DisableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) thro
             JDWP_TRACE_MAP("## DisableCollection: NewGlobalRef returned NULL");
             throw OutOfMemoryException();
         }
-        JNIEnvPtr->DeleteWeakGlobalRef(jvmObject);
+        JNIEnvPtr->DeleteWeakGlobalRef((jweak)jvmObject);
         objectIDItem->mapObjectIDItem.globalRefKind = NORMAL_GLOBAL_REF;
         objectIDItem->mapObjectIDItem.jvmObject = newGlobRef;
     } // synchronized block: objectIDTableLock
@@ -431,7 +431,7 @@ void ObjectManager::DisposeObject(JNIEnv* JNIEnvPtr, ObjectID objectID, jint ref
         if (objectIDItem->mapObjectIDItem.globalRefKind == NORMAL_GLOBAL_REF) {
             JNIEnvPtr->DeleteGlobalRef(jvmObject);
         } else {
-            JNIEnvPtr->DeleteWeakGlobalRef(jvmObject);
+            JNIEnvPtr->DeleteWeakGlobalRef((jweak)jvmObject);
         }
         objectIDItem->objectID = FREE_OBJECTID_SIGN;
         objectIDItem->nextFreeObjectIDItem = m_freeObjectIDItems[idx];
@@ -503,7 +503,7 @@ void ObjectManager::ResetObjectIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) {
                     if (objectIDItem->mapObjectIDItem.globalRefKind == NORMAL_GLOBAL_REF) {
                         JNIEnvPtr->DeleteGlobalRef(objectIDItem->mapObjectIDItem.jvmObject);
                     } else {
-                        JNIEnvPtr->DeleteWeakGlobalRef(objectIDItem->mapObjectIDItem.jvmObject);
+                        JNIEnvPtr->DeleteWeakGlobalRef((jweak)objectIDItem->mapObjectIDItem.jvmObject);
                     }
                 }
                 objectIDItem++;
@@ -643,7 +643,7 @@ void ObjectManager::ResetRefTypeIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) 
     for (size_t idx = 0; idx < HASH_TABLE_SIZE; idx++) {
         if (m_refTypeIDTable[idx]) {
             for (size_t item = 0; item < m_refTypeIDTableUsed[idx]; item++)
-                JNIEnvPtr->DeleteWeakGlobalRef(m_refTypeIDTable[idx][item]);
+                JNIEnvPtr->DeleteWeakGlobalRef((jweak)m_refTypeIDTable[idx][item]);
             GetMemoryManager().Free(m_refTypeIDTable[idx] JDWP_FILE_LINE);
             m_refTypeIDTable[idx] = NULL;
             m_refTypeIDTableUsed[idx] = m_refTypeIDTableSize[idx] = 0;
@@ -925,7 +925,7 @@ void ObjectManager::ResetFrameIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) {
                 threadFramesItem++;
                 continue;
             }
-            JNIEnvPtr->DeleteWeakGlobalRef(threadFramesItem->jvmThread);
+            JNIEnvPtr->DeleteWeakGlobalRef((jweak)threadFramesItem->jvmThread);
             threadFramesItem++;
         }
         AgentBase::GetMemoryManager().Free(m_frameIDTable JDWP_FILE_LINE);

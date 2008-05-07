@@ -30,7 +30,7 @@ CFLAGS += -fpic
 CXXFLAGS += -fpic
 
 INCLUDES += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
-            -I$(COMMON)generic -Idt_socket
+            -I$(COMMON)generic -Idt_socket -I$(HY_HDK)/include/port/unix_include
 
 LDFLAGS += -lstdc++
 
@@ -38,7 +38,7 @@ BUILDFILES = \
     $(CMNTRANS)common/LastTransportError.o \
     $(CMNTRANS)dt_socket/SocketTransport.o 
 
-MDLLIBFILES = 
+MDLLIBFILES = $(LIBPATH)libj9vmi.a $(LIBPATH)libj9prt24.so
 
 DLLNAME = ../libdt_socket.so
 

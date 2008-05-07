@@ -23,7 +23,10 @@
 // TransportManager.cpp
 //
 
+#ifndef USING_VMI
+#define USING_VMI
 #include "TransportManager.h"
+
 
 using namespace jdwp;
 
@@ -63,12 +66,13 @@ TransportManager::~TransportManager()
         GetMemoryManager().Free(m_address JDWP_FILE_LINE);
     }
     if (m_loadedLib != 0) {
-        jdwpTransport_UnLoad_Type UnloadFunc = reinterpret_cast<jdwpTransport_UnLoad_Type>
-                (GetProcAddress(m_loadedLib, unLoadDecFuncName)); 
-        if ((UnloadFunc != 0) && (m_env != 0)) {
-            (UnloadFunc) (&m_env); 
-        }
-        FreeLibrary(m_loadedLib); 
+	PORT_ACCESS_FROM_JAVAVM(GetJavaVM()); 
+        //jdwpTransport_UnLoad_Type UnloadFunc = reinterpret_cast<jdwpTransport_UnLoad_Type>
+        //        (GetProcAddress(m_loadedLib, unLoadDecFuncName)); 
+	j9sl_close_shared_library ((UDATA)m_loadedLib);
+        //if ((UnloadFunc != 0) && (m_env != 0)) {
+        //    (UnloadFunc) (&m_env); 
+        //}
     }
 } //TransportManager::~TransportManager()
 
@@ -120,8 +124,10 @@ TransportManager::Init(const char* transportName,
         throw TransportException(JDWP_ERROR_TRANSPORT_LOAD, JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
     }
 
-    jdwpTransport_OnLoad_t transportOnLoad = reinterpret_cast<jdwpTransport_OnLoad_t>
-            (GetProcAddress(m_loadedLib, onLoadDecFuncName));
+    PORT_ACCESS_FROM_JAVAVM(GetJavaVM());
+
+    jdwpTransport_OnLoad_t transportOnLoad;
+    UDATA ret = j9sl_lookup_name((UDATA)m_loadedLib, (char*) onLoadDecFuncName, (UDATA*) &transportOnLoad, "ILLIL");
     if (transportOnLoad == 0) {
         if (m_lastErrorMessage != 0) {
             GetMemoryManager().Free(m_lastErrorMessage JDWP_FILE_LINE);
@@ -133,7 +139,8 @@ TransportManager::Init(const char* transportName,
         JDWP_ERROR(onLoadDecFuncName << " function not found in " << transportName);
         throw TransportException(JDWP_ERROR_TRANSPORT_INIT, JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
     }
-    jint res = (*transportOnLoad)(GetJavaVM(), &callback, JDWPTRANSPORT_VERSION_1_0, &m_env);
+ 
+ jint res = (*transportOnLoad)(GetJavaVM(), &callback, JDWPTRANSPORT_VERSION_1_0, &m_env);
     if (res == JNI_ENOMEM) {
         if (m_lastErrorMessage != 0) {
             GetMemoryManager().Free(m_lastErrorMessage JDWP_FILE_LINE);
@@ -351,3 +358,47 @@ TransportManager::TracePacket(const char* message, const jdwpPacket* packet)
                 << " cmd=" << (int)(packet->type.cmd.cmd)); 
     } 
 } // TransportManager::TracePacket()
+
+LoadedLibraryHandler TransportManager::LoadTransport(const char* dirName, const char* transportName)
+{
+//    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
+    PORT_ACCESS_FROM_JAVAVM(GetJavaVM());
+
+    JDWP_TRACE_ENTRY("LoadTransport(" << JDWP_CHECK_NULL(dirName) << ',' << JDWP_CHECK_NULL(transportName) << ')');
+
+    JDWP_ASSERT(transportName != 0);
+    char* transportFullName = 0;
+#ifdef WIN32
+    if (dirName == 0) {
+        size_t length = strlen(transportName) + 5;
+        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
+        sprintf(transportFullName, "%s.dll", transportName);
+    } else {
+        size_t length = strlen(dirName) + strlen(transportName) + 6;
+        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
+        sprintf(transportFullName, "%s\\%s.dll", dirName, transportName);
+    }
+#else
+    if (dirName == 0) {
+        size_t length = strlen(transportName) + 7;
+        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
+        sprintf(transportFullName, "lib%s.so", transportName);
+    } else {
+        size_t length = strlen(dirName) + strlen(transportName) + 8;
+        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
+        sprintf(transportFullName, "%s/lib%s.so", dirName, transportName);
+    }
+#endif
+//    AgentAutoFree afv(transportFullName JDWP_FILE_LINE);
+    UDATA res;
+    UDATA ret = j9sl_open_shared_library(transportFullName,(UDATA *)&res, FALSE);
+    if (ret != 0) {
+	JDWP_TRACE_PROG("LoadTransport: loading library " << transportFullName << " failed (error code: " << j9error_last_error_message() << ")");
+        //JDWP_TRACE_PROG("LoadTransport: loading library " << transportFullName << " failed (error code: " << GetLastTransportError() << ")");
+    } else {
+        JDWP_TRACE_PROG("LoadTransport: transport library " << transportFullName << " loaded");
+    }
+    return (LoadedLibraryHandler)res;
+}
+
+#endif

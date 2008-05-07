@@ -20,14 +20,35 @@
  * @author Viacheslav G. Rybalov
  * @version $Revision: 1.6 $
  */
+#include "SocketTransport.h"
 #include "SocketTransport_pd.h"
-
+#include "j9thread.h"
+#define THREAD_ACCESS_FROM_ENV(jniEnv)\
+	VMInterface *threadPrivateVMI = VMI_GetVMIFromJNIEnv(jniEnv);\
+	J9PortLibrary *privatePortLibForThread = (*threadPrivateVMI)->GetPortLibrary(threadPrivateVMI);\
+	J9ThreadLibrary *privateThreadLibrary = privatePortLibForThread->port_get_thread_library(privatePortLibForThread)
 void (*LastTransportError::m_free)(void *buffer) = 0;
 
-LastTransportError::LastTransportError(const char* messagePtr, int errorStatus, 
+static inline ThreadId_t
+_GetCurrentThreadId(JNIEnv* jni)
+{
+   // THREAD_ACCESS_FROM_ENV(jni);
+    ThreadId_t tid ;
+    j9thread_attach(&tid);
+    return tid;
+} // GetCurrentThreadId()
+
+
+static inline bool ThreadId_equal(ThreadId_t treadId1, ThreadId_t treadId2)
+{
+    return (treadId1 == treadId2);
+} // ThreadId_equal()
+
+LastTransportError::LastTransportError(JNIEnv *jni, const char* messagePtr, int errorStatus, 
         void* (*alloc)(jint numBytes), void (*free)(void *buffer))
 {
-    m_treadId = GetCurrentThreadId();
+    m_jni = jni;
+    m_treadId = _GetCurrentThreadId(m_jni);
     m_lastErrorMessage = messagePtr;
     m_lastErrorMessagePrefix = "";
     m_lastErrorStatus = errorStatus;
@@ -65,14 +86,15 @@ LastTransportError::operator delete(void* address, void* (*alloc)(jint numBytes)
 jdwpTransportError
 LastTransportError::insertError(const char* messagePtr, int errorStatus)
 {
-    if (ThreadId_equal(m_treadId, GetCurrentThreadId())) {
+
+    if (ThreadId_equal(m_treadId, _GetCurrentThreadId(m_jni))) {
         m_lastErrorMessage = messagePtr;
         m_lastErrorStatus = errorStatus;
         m_lastErrorMessagePrefix = "";
     } else if (m_next != 0) {
         return m_next->insertError(messagePtr, errorStatus);
     } else {
-        m_next = new(m_alloc, m_free) LastTransportError(messagePtr, errorStatus, m_alloc, m_free);
+        m_next = new(m_alloc, m_free) LastTransportError(m_jni, messagePtr, errorStatus, m_alloc, m_free);
         if (m_next == 0) {
             return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
         }
@@ -83,7 +105,7 @@ LastTransportError::insertError(const char* messagePtr, int errorStatus)
 jdwpTransportError 
 LastTransportError::addErrorMessagePrefix(const char* prefixPtr)
 {
-    if (ThreadId_equal(m_treadId, GetCurrentThreadId())) {
+    if (ThreadId_equal(m_treadId, _GetCurrentThreadId(m_jni))) {
         m_lastErrorMessagePrefix = (prefixPtr == 0 ? "" : prefixPtr);
     } else if (m_next != 0) {
         return m_next->addErrorMessagePrefix(prefixPtr);
@@ -94,7 +116,7 @@ LastTransportError::addErrorMessagePrefix(const char* prefixPtr)
 int 
 LastTransportError::GetLastErrorStatus()
 {
-    if (ThreadId_equal(m_treadId, GetCurrentThreadId())) {
+    if (ThreadId_equal(m_treadId, _GetCurrentThreadId(m_jni))) {
         return m_lastErrorStatus;
     } else if (m_next != 0) {
         return m_next->GetLastErrorStatus();
@@ -105,7 +127,7 @@ LastTransportError::GetLastErrorStatus()
 char* 
 LastTransportError::GetLastErrorMessage() 
 {
-    if (ThreadId_equal(m_treadId, GetCurrentThreadId())) {
+    if (ThreadId_equal(m_treadId, _GetCurrentThreadId(m_jni))) {
         char buf[32];
         sprintf(buf, "%d", m_lastErrorStatus);
 

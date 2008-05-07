@@ -31,6 +31,11 @@
 #define _LASTTRANSPORTERROR_H
 
 #include "SocketTransport_pd.h"
+#include "jni.h"
+#include "jvmti.h"
+#include "j9thread.h"
+#include "jdwpTransport.h"
+typedef j9thread_t ThreadId_t;
 
 /**
  * The given class is a container for message and status code of the last 
@@ -50,7 +55,7 @@ public:
      * @param free        - the pointer to the function deallocating the memory 
      *                      area 
      */
-    LastTransportError(const char* messagePtr, int errorStatus, 
+    LastTransportError(JNIEnv *jni, const char* messagePtr, int errorStatus, 
         void* (*alloc)(jint numBytes), void (*free)(void *buffer));
 
     /**
@@ -102,6 +107,7 @@ public:
     void operator delete(void* address, void* (*alloc)(jint numBytes), void (*free)(void *buffer));
 
 private:
+    JNIEnv* m_jni;
     ThreadId_t m_treadId;             // the thread Id
     const char* m_lastErrorMessage;   // diagnostics for the last failed operation 
     const char* m_lastErrorMessagePrefix;   // diagnostics prefix for the last failed operation  

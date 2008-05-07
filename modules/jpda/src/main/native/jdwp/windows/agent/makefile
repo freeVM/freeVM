@@ -30,7 +30,7 @@ INCLUDES = $(INCLUDES) \
          -I$(CMNAGENT)commands -I$(CMNAGENT)core \
          -I$(COMMON)generic -Icore
 
-HYCFLAGS = -I..\..\..\include $(HYCFLAGS) $(INCLUDES) -GX -wd4290
+HYCFLAGS = $(HYCFLAGS) $(INCLUDES) -GX -wd4290
 
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
@@ -62,7 +62,7 @@ VIRTFILES =
 
 SYSLIBFILES = 
 
-MDLLIBFILES = 
+MDLLIBFILES =$(LIBPATH)vmi.lib $(LIBPATH)j9thr.lib $(LIBPATH)j9prt.lib 
   
 DLLBASE=0x13200000
 COMMENT=/comment:"JDWP agent native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."

@@ -82,8 +82,8 @@ ClassType::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
         // Can be: JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_NULL_POINTER
         throw AgentException(err);
     }
-    jint const JVMTI_CLASS_STATUS_PREPARED = 0x2;
-    if ( (status & JVMTI_CLASS_STATUS_PREPARED) == 0 ) {
+    // jint const JVMTI_CLASS_STATUS_PREPARED = 0x2 ;
+    if ( (status & 0x2) == 0 ) {
         throw AgentException(JDWP_ERROR_CLASS_NOT_PREPARED);
     }
 

@@ -38,6 +38,10 @@
 #include "jdwpTypes.h"
 #include "AgentMonitor.h"
 
+#if defined(ZOS)
+#include <inttypes.h>
+#endif
+
 namespace jdwp {
 
     // hash table parameters
