@@ -33,13 +33,6 @@
 #ifndef _SOCKETTRANSPORT_H
 #define _SOCKETTRANSPORT_H
 
-#include "SocketTransport_pd.h"
-#include "j9thread.h"
-//#include "jni.h"
-
-typedef j9thread_monitor_t CriticalSection;
-//typedef jobject CriticalSection;
-
 struct internalEnv {
     JavaVM *jvm;                    // the JNI invocation interface, provided 
                                     // by the agent 
@@ -47,8 +40,8 @@ struct internalEnv {
                                     // provided by the agent 
     void (*free)(void *buffer);     // the function deallocating an area of memory, 
                                     // provided by the agent
-    j9socket_t envClientSocket;         // the client socket, INVALID_SOCKET if closed
-    j9socket_t envServerSocket;         // the server socket, INVALID_SOCKET if closed
+    SOCKET envClientSocket;         // the client socket, INVALID_SOCKET if closed
+    SOCKET envServerSocket;         // the server socket, INVALID_SOCKET if closed
     LastTransportError* lastError;  // last errors
     CriticalSection readLock;       // the critical-section lock object for socket
                                     // read operations

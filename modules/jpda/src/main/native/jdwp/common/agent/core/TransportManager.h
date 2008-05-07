@@ -30,14 +30,11 @@
 #ifndef _TRANSPORT_MANAGER_H_
 #define _TRANSPORT_MANAGER_H_
 
-#include "TransportManager_pd.h"
 #include "jdwpTransport.h"
 #include "AgentBase.h"
 #include "AgentException.h"
 #include "Log.h"
-#include "vmi.h"
-#include "j9thread.h"
-#include "j9port.h"
+#include "TransportManager_pd.h"
 
 namespace jdwp {
 

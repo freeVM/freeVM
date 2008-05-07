@@ -83,6 +83,8 @@ typedef enum jdwpCommand {
     JDWP_COMMAND_VM_REDEFINE_CLASSES = 18,
     JDWP_COMMAND_VM_SET_DEFAULT_STRATUM = 19,
     JDWP_COMMAND_VM_ALL_CLASSES_WITH_GENERIC= 20,
+	//New commands for Java 6
+    JDWP_COMMAND_VM_INSTANCE_COUNTS = 21,
 
     /* Commands ReferenceType */
     JDWP_COMMAND_RT_SIGNATURE = 1,
@@ -100,6 +102,10 @@ typedef enum jdwpCommand {
     JDWP_COMMAND_RT_SIGNATURE_WITH_GENERIC = 13,
     JDWP_COMMAND_RT_FIELDS_WITH_GENERIC = 14,
     JDWP_COMMAND_RT_METHODS_WITH_GENERIC = 15,
+    //New commands for Java 6
+    JDWP_COMMAND_RT_INSTANCES = 16,
+    JDWP_COMMAND_RT_CLASS_FILE_VERSION = 17,
+    JDWP_COMMAND_RT_CONSTANT_POOL = 18,
 
     /* Commands ClassType */
     JDWP_COMMAND_CT_SUPERCLASS = 1,
@@ -126,6 +132,8 @@ typedef enum jdwpCommand {
     JDWP_COMMAND_OR_DISABLE_COLLECTION = 7,
     JDWP_COMMAND_OR_ENABLE_COLLECTION = 8,
     JDWP_COMMAND_OR_IS_COLLECTED = 9,
+    // New commands for Java 6
+    JDWP_COMMAND_OR_REFERRING_OBJECTS = 10,
 
     /* Commands StringReference */
     JDWP_COMMAND_SR_VALUE = 1,
@@ -143,6 +151,9 @@ typedef enum jdwpCommand {
     JDWP_COMMAND_TR_STOP = 10,
     JDWP_COMMAND_TR_INTERRUPT = 11,
     JDWP_COMMAND_TR_SUSPEND_COUNT = 12,
+    // New command for Java 6
+    JDWP_COMMAND_TR_OWNED_MONITORS_STACK_DEPTH = 13,
+    JDWP_COMMAND_TR_FORCE_EARLY_RETURN = 14,
 
     /* Commands ThreadGroupReference */
     JDWP_COMMAND_TGR_NAME = 1,
@@ -259,7 +270,13 @@ typedef enum jdwpEventKind {
     JDWP_EVENT_VM_INIT = 90,
     JDWP_EVENT_VM_START = JDWP_EVENT_VM_INIT,
     JDWP_EVENT_VM_DEATH = 99,
-    JDWP_EVENT_VM_DISCONNECTED = 100
+    JDWP_EVENT_VM_DISCONNECTED = 100,
+    // New EventKind constants for Java 6
+    JDWP_EVENT_METHOD_EXIT_WITH_RETURN_VALUE = 42,    
+    JDWP_EVENT_MONITOR_CONTENDED_ENTER = 43,    
+    JDWP_EVENT_MONITOR_CONTENDED_ENTERED = 44, 
+    JDWP_EVENT_MONITOR_WAIT = 45,    
+    JDWP_EVENT_MONITOR_WAITED = 46
 } jdwpEventKind;
 
 /* EventRequest/ModifierKind Constants */
@@ -275,7 +292,9 @@ typedef enum jdwpRequestModifier {
     JDWP_MODIFIER_EXCEPTION_ONLY = 8,
     JDWP_MODIFIER_FIELD_ONLY = 9,
     JDWP_MODIFIER_STEP = 10,
-    JDWP_MODIFIER_INSTANCE_ONLY = 11
+    JDWP_MODIFIER_INSTANCE_ONLY = 11,
+    // New ModifierKind constants for Java 6
+    JDWP_MODIFIER_SOURCE_NAME_MATCH = 12
 } jdwpRequestModifier;
 
 /* ThreadStatus Constants */

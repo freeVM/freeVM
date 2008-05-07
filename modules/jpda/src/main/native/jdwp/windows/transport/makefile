@@ -27,7 +27,6 @@ DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 INCLUDES = $(INCLUDES) \
-         -I$(HY_HDK)\include\port\win32_include \
          -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
          -I$(COMMON)generic -Idt_socket
 
@@ -44,7 +43,7 @@ VIRTFILES =
 
 SYSLIBFILES = 
 
-MDLLIBFILES =$(LIBPATH)vmi.lib $(LIBPATH)j9thr.lib $(LIBPATH)j9prt.lib
+MDLLIBFILES = 
   
 DLLBASE=0x13200000
 COMMENT=/comment:"JDWP socket transport native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."

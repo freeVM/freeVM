@@ -35,18 +35,16 @@
 #if defined(_WINSOCKAPI_) && !defined(_WINSOCK2API_)
 #undef _WINSOCKAPI_
 #endif
-#ifndef HY_NO_THR
-#define HY_NO_THR
 
 #include <Winsock2.h>
 #include <Ws2tcpip.h>
 
+typedef CRITICAL_SECTION CriticalSection;
+typedef DWORD ThreadId_t;
+
 #include "jdwpTransport.h"
-#include "vmi.h"
-#include "j9port.h"
 #include "LastTransportError.h"
 #include "SocketTransport.h"
-#include "jni.h"
 
 typedef int socklen_t;
 
@@ -61,5 +59,66 @@ GetLastErrorStatus()
 {
     return WSAGetLastError();
 } //GetLastErrorStatus()
-#endif // HY_NO_THR
-#endif // _SOCKETTRANSPORT_PD_Hi
+
+/**
+ * Initializes critical section lock objects.
+ */
+static inline void
+InitializeCriticalSections(jdwpTransportEnv* env)
+{
+    InitializeCriticalSection(&(((internalEnv*)env->functions->reserved1)->readLock));
+    InitializeCriticalSection(&(((internalEnv*)env->functions->reserved1)->sendLock));
+} //InitializeCriticalSections()
+
+/**
+ * Releases all resources used by critical-section lock objects.
+ */
+static inline void
+DeleteCriticalSections(jdwpTransportEnv* env)
+{
+    DeleteCriticalSection(&(((internalEnv*)env->functions->reserved1)->readLock));
+    DeleteCriticalSection(&(((internalEnv*)env->functions->reserved1)->sendLock));
+} //DeleteCriticalSections()
+
+/**
+ * Waits for ownership of the read critical-section object.
+ */
+static inline void
+EnterCriticalReadSection(jdwpTransportEnv* env)
+{
+    EnterCriticalSection(&(((internalEnv*)env->functions->reserved1)->readLock));
+} //EnterCriticalReadSection()
+
+/**
+ * Waits for ownership of the send critical-section object.
+ */
+static inline void
+EnterCriticalSendSection(jdwpTransportEnv* env)
+{
+    EnterCriticalSection(&(((internalEnv*)env->functions->reserved1)->sendLock));
+} //EnterCriticalSendSection()
+
+/**
+ * Releases ownership of the read critical-section object.
+ */
+static inline void
+LeaveCriticalReadSection(jdwpTransportEnv* env)
+{
+    LeaveCriticalSection(&(((internalEnv*)env->functions->reserved1)->readLock));
+} //LeaveCriticalReadSection()
+
+/**
+ * Releases ownership of the send critical-section object.
+ */
+static inline void
+LeaveCriticalSendSection(jdwpTransportEnv* env)
+{
+    LeaveCriticalSection(&(((internalEnv*)env->functions->reserved1)->sendLock));
+} //LeaveCriticalSendSection()
+
+static inline bool ThreadId_equal(ThreadId_t treadId1, ThreadId_t treadId2)
+{
+    return (treadId1 == treadId2);
+} // ThreadId_equal()
+
+#endif // _SOCKETTRANSPORT_PD_H

@@ -28,6 +28,8 @@ CXXFLAGS += -fpic
 INCLUDES += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
             -I$(COMMON)generic -Icore
 
+INCLUDES := -I../../../include $(INCLUDES)
+
 LDFLAGS += -lstdc++
 
 BUILDFILES = \
@@ -51,9 +53,10 @@ BUILDFILES = \
     $(CMNAGENT)core/ObjectManager.o $(CMNAGENT)core/OptionParser.o $(CMNAGENT)core/PacketDispatcher.o \
     $(CMNAGENT)core/PacketParser.o $(CMNAGENT)core/RequestManager.o $(CMNAGENT)core/RequestModifier.o \
     $(CMNAGENT)core/ThreadManager.o $(CMNAGENT)core/TransportManager.o $(CMNAGENT)core/AgentManager.o \
+    $(CMNAGENT)core/CallBacks.o \
     core/TransportManager_pd.o
 
-MDLLIBFILES = $(LIBPATH)libj9vmi.a
+MDLLIBFILES = 
 
 DLLNAME = ../libjdwp.so
 

@@ -99,4 +99,27 @@ JDWP_TRACE_PROG("StartDebugger: address=" << JDWP_CHECK_NULL(extra_argv[1]));
     CloseHandle(pi.hThread);
 }
 
+LoadedLibraryHandler TransportManager::LoadTransport(const char* dirName, const char* transportName)
+{
+    JDWP_TRACE_ENTRY("LoadTransport(" << JDWP_CHECK_NULL(dirName) << ',' << JDWP_CHECK_NULL(transportName) << ')');
 
+    JDWP_ASSERT(transportName != 0);
+    char* transportFullName = 0;
+    if (dirName == 0) {
+        size_t length = strlen(transportName) + 5;
+        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
+        sprintf(transportFullName, "%s.dll", transportName);
+    } else {
+        size_t length = strlen(dirName) + strlen(transportName) + 6;
+        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
+        sprintf(transportFullName, "%s\\%s.dll", dirName, transportName);
+    }
+    AgentAutoFree afv(transportFullName JDWP_FILE_LINE);
+    LoadedLibraryHandler res = LoadLibrary(transportFullName);
+    if (res == 0) {
+        JDWP_TRACE_PROG("LoadTransport: loading library " << transportFullName << " failed (error code: " << GetLastError() << ")");
+    } else {
+        JDWP_TRACE_PROG("LoadTransport: transport library " << transportFullName << " loaded");
+    }
+    return res;
+}

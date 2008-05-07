@@ -134,7 +134,7 @@ void TransportManager::StartDebugger(const char* command, int extra_argc, const 
         JDWP_TRACE_PROG("StartDebugger: launched: pid=" << pid);
     }
 }
-/*
+
 ProcPtr jdwp::GetProcAddress(LoadedLibraryHandler libHandler, const char* procName)
 {
     JDWP_TRACE_ENTRY("GetProcAddress(" << libHandler << ',' << JDWP_CHECK_NULL(procName) << ')');
@@ -147,7 +147,6 @@ ProcPtr jdwp::GetProcAddress(LoadedLibraryHandler libHandler, const char* procNa
     }
     return res;
 }
-
 
 bool jdwp::FreeLibrary(LoadedLibraryHandler libHandler)
 {
@@ -185,4 +184,4 @@ LoadedLibraryHandler TransportManager::LoadTransport(const char* dirName, const 
         JDWP_TRACE_PROG("LoadTransport: transport library " << transportFullName << " loaded");
     }
     return res;
-}*/
+}

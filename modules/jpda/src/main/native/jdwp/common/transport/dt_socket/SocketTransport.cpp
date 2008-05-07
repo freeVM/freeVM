@@ -28,136 +28,7 @@
  * Main module.
  */
 
-#ifndef USING_VMI
-#define USING_VMI
 #include "SocketTransport_pd.h"
-#include "j9socket.h"
-#include "j9sock.h"
-
-typedef struct PortlibPTBuffers_struct
-{
-  struct PortlibPTBuffers_struct *next;	      /**< Next per thread buffer */
-  struct PortlibPTBuffers_struct *previous;   /**< Previous per thread buffer */
-  I_32 platformErrorCode;		      /**< error code as reported by the OS */
-  I_32 portableErrorCode;		      /**< error code translated to portable format by application */
-  char *errorMessageBuffer;		      /**< last saved error message, either customized or from OS */
-  U_32 errorMessageBufferSize;		      /**< error message buffer size */
-  I_32 reportedErrorCode;		      /**< last reported error code */
-  char *reportedMessageBuffer;		      /**< last reported error message, either customized or from OS */
-  U_32 reportedMessageBufferSize;	      /**< reported message buffer size */
-  j9fdset_t fdset;			      /**< file descriptor set */
-  j9addrinfo_struct addr_info_hints;
-} PortlibPTBuffers_struct;
-
-typedef struct PortlibPTBuffers_struct *PortlibPTBuffers_t;
-
-extern void *VMCALL j9port_tls_get (struct HyPortLibrary *portLibrary);
-
-
-/**
- * Returns the error status for the last failed operation. 
- */
-static int
-GetLastErrorStatus(jdwpTransportEnv* env)
-{
-    internalEnv* ienv = (internalEnv*)env->functions->reserved1;
-    PORT_ACCESS_FROM_JAVAVM(ienv->jvm);
-    return j9error_last_error_number();
-} // GetLastErrorStatus
-
-/**
- * Retrieves the number of milliseconds, substitute for the corresponding Win32 
- * function.
- */
-static long 
-GetTickCount(jdwpTransportEnv* env)
-{
-    internalEnv* ienv = (internalEnv*)env->functions->reserved1;
-    PORT_ACCESS_FROM_JAVAVM(ienv->jvm);
-    return (long)j9time_current_time_millis();
-} // GetTickCount
-
-/**
- * Initializes critical section lock objects.
- */
-static inline void
-InitializeCriticalSections(jdwpTransportEnv* env)
-{
-    internalEnv* ienv = (internalEnv*)env->functions->reserved1;
-    j9thread_attach(NULL);
-
-    UDATA flags = 0;
-    if (j9thread_monitor_init(&(ienv->readLock), 1) != 0) {
-	printf("initial error\n");
-    }
-
-    if (j9thread_monitor_init(&(ienv->sendLock), 1) != 0) {
-	printf("initial error\n");
-    }
-    
-} //InitializeCriticalSections()
-
-/**
- * Releases all resources used by critical-section lock objects.
- */
-static inline void
-DeleteCriticalSections(jdwpTransportEnv* env)
-{
-    internalEnv* ienv = (internalEnv*)env->functions->reserved1;
-
-    j9thread_attach(NULL);
-    j9thread_monitor_destroy(ienv->readLock);
-    j9thread_monitor_destroy(ienv->sendLock);
-} //DeleteCriticalSections()
-
-/**
- * Waits for ownership of the send critical-section object.
- */
-static inline void
-EnterCriticalSendSection(jdwpTransportEnv* env)
-{
-    internalEnv* ienv = (internalEnv*)env->functions->reserved1;
-
-    j9thread_attach(NULL);
-    j9thread_monitor_enter(ienv->sendLock);
-} //EnterCriticalSendSection()
-
-/**
- * Waits for ownership of the read critical-section object.
- */
-static inline void
-EnterCriticalReadSection(jdwpTransportEnv* env)
-{
-    internalEnv* ienv = (internalEnv*)env->functions->reserved1;
-
-    j9thread_attach(NULL);
-    j9thread_monitor_enter(ienv->readLock);
-} //EnterCriticalReadSection()
-
-/**
- * Releases ownership of the read critical-section object.
- */
-static inline void
-LeaveCriticalReadSection(jdwpTransportEnv* env)
-{
-    internalEnv* ienv = (internalEnv*)env->functions->reserved1;
-
-    j9thread_attach(NULL);
-    j9thread_monitor_exit(ienv->readLock);
-} //LeaveCriticalReadSection()
-
-/**
- * Releases ownership of the send critical-section object.
- */
-static inline void
-LeaveCriticalSendSection(jdwpTransportEnv* env)
-{
-    internalEnv* ienv = (internalEnv*)env->functions->reserved1;
-
-     j9thread_attach(NULL);
-     j9thread_monitor_exit(ienv->sendLock);
-} //LeaveCriticalSendSection()
-
 
 /**
  * This function sets into internalEnv struct message and status code of last transport error
@@ -169,9 +40,7 @@ SetLastTranError(jdwpTransportEnv* env, const char* messagePtr, int errorStatus)
     if (ienv->lastError != 0) {
         ienv->lastError->insertError(messagePtr, errorStatus);
     } else {
-	JNIEnv *jni;
-	ienv->jvm->GetEnv((void **)&jni, JNI_VERSION_1_4);
-        ienv->lastError = new(ienv->alloc, ienv->free) LastTransportError(jni, messagePtr, errorStatus, ienv->alloc, ienv->free);
+        ienv->lastError = new(ienv->alloc, ienv->free) LastTransportError(messagePtr, errorStatus, ienv->alloc, ienv->free);
     }
     return;
 } // SetLastTranError
@@ -196,72 +65,13 @@ SetLastTranErrorMessagePrefix(jdwpTransportEnv* env, const char* messagePrefix)
 static const jint cycle = 1000; // wait cycle in milliseconds 
 
 /**
- * This function enable/disables socket blocking mode 
- */
-static bool 
-SetSocketBlockingMode(jdwpTransportEnv* env, j9socket_t sckt, bool isBlocked)
-{
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
-
-    jint ret = j9sock_set_nonblocking(sckt, isBlocked ? FALSE : TRUE);
-    if (ret != 0){
-	SetLastTranError(env, "socket error", GetLastErrorStatus(env));
-        return false;
-    }
-    return true;
-
-} // SetSocketBlockingMode()
-
-/**
  * This function is used to determine the read status of socket (in terms of select function).
  * The function avoids absolutely blocking select
  */
 static jdwpTransportError 
-SelectRead(jdwpTransportEnv* env, j9socket_t sckt, jlong deadline = 0) {
-    internalEnv* ienv = (internalEnv*)env->functions->reserved1;
-    PORT_ACCESS_FROM_JAVAVM(ienv->jvm);
-/*
-#ifdef WIN32
-    SOCKET socket = sckt->ipv4;
-#else
-    SOCKET socket = sckt->sock;
-#endif
-    deadline = deadline == 0 ? 1000 : deadline;
-    if (deadline >= 0) {
-        TIMEVAL tv = {(long)(deadline / 1000), (long)(deadline % 1000)};
-        fd_set fdread;
-        FD_ZERO(&fdread);
-        FD_SET(socket, &fdread);
+SelectRead(jdwpTransportEnv* env, SOCKET sckt, jlong deadline = 0) {
 
-        int ret = select((int)(socket) + 1, &fdread,NULL, NULL, &tv);
-        if (ret < 0) {
-            int err = GetLastErrorStatus(env);
-            // ignore signal interruption
-            if (err != SOCKET_ERROR_EINTR) {
-                SetLastTranError(env, "socket error", err);
-                return JDWPTRANSPORT_ERROR_IO_ERROR;
-            }
-        }
-        if ((ret > 0) && (FD_ISSET(socket, &fdread))) {
-            return JDWPTRANSPORT_ERROR_NONE; //timeout is not occurred
-        }
-    }
-    SetLastTranError(env, "timeout occurred", 0);
-    return JDWPTRANSPORT_ERROR_TIMEOUT; //timeout occurred
-*/
-    jint ret = j9sock_select_read(sckt, (I_32) deadline / 1000 , (I_32) deadline % 1000, FALSE);
-    if (ret == 1){
-	return JDWPTRANSPORT_ERROR_NONE; //timeout is not occurred
-    }
-    if (ret != J9PORT_ERROR_SOCKET_TIMEOUT){
-    	 SetLastTranError(env, "socket error", ret);
-         return JDWPTRANSPORT_ERROR_IO_ERROR;
-    }
-    SetLastTranError(env, "timeout occurred", 0);
-    return JDWPTRANSPORT_ERROR_TIMEOUT; //timeout occurred
-
-/*    jlong currentTimeout = cycle;
+    jlong currentTimeout = cycle;
     while ((deadline == 0) || ((currentTimeout = (deadline - GetTickCount())) > 0)) {
         currentTimeout = currentTimeout < cycle ? currentTimeout : cycle;
         TIMEVAL tv = {(long)(currentTimeout / 1000), (long)(currentTimeout % 1000)};
@@ -271,7 +81,7 @@ SelectRead(jdwpTransportEnv* env, j9socket_t sckt, jlong deadline = 0) {
 
         int ret = select((int)sckt + 1, &fdread, NULL, NULL, &tv);
         if (ret == SOCKET_ERROR) {
-            int err = GetLastErrorStatus(env);
+            int err = GetLastErrorStatus();
             // ignore signal interruption
             if (err != SOCKET_ERROR_EINTR) {
                 SetLastTranError(env, "socket error", err);
@@ -284,7 +94,6 @@ SelectRead(jdwpTransportEnv* env, j9socket_t sckt, jlong deadline = 0) {
     }
     SetLastTranError(env, "timeout occurred", 0);
     return JDWPTRANSPORT_ERROR_TIMEOUT; //timeout occurred
-*/
 } // SelectRead
 
 /**
@@ -292,98 +101,43 @@ SelectRead(jdwpTransportEnv* env, j9socket_t sckt, jlong deadline = 0) {
  * The function avoids absolutely blocking select
  */
 static jdwpTransportError 
-SelectSend(jdwpTransportEnv* env, j9socket_t sckt, jlong deadline = 0) {
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
+SelectSend(jdwpTransportEnv* env, SOCKET sckt, jlong deadline = 0) {
 
-    j9fdset_struct j9fdSet;
-    
-    I_32 secTime = (long)(deadline / 1000);
-    I_32 uTime = (long)(deadline % 1000);
-
-    j9timeval_struct timeval;
-
-    j9sock_fdset_zero(&j9fdSet);
-    j9sock_fdset_set(sckt,&j9fdSet);
-
-    int ret = j9sock_timeval_init(secTime,uTime,&timeval);
-
-    ret =  j9sock_select(j9sock_fdset_size(sckt),NULL,&j9fdSet,NULL,&timeval);
-
-    if (ret > 0){
-        return JDWPTRANSPORT_ERROR_NONE; //timeout is not occurred
-    }
-    if (ret != J9PORT_ERROR_SOCKET_TIMEOUT){
-    	 SetLastTranError(env, "socket error", ret);
-         return JDWPTRANSPORT_ERROR_IO_ERROR;
-    }
-    SetLastTranError(env, "timeout occurred", 0);
-    return JDWPTRANSPORT_ERROR_TIMEOUT; //timeout occurred
-
-    //jlong currentTimeout = cycle;
-
-// leave a workaround here, wait for new portlib for select APIs
-/* #ifdef WIN32
-    SOCKET socket = sckt->ipv4;
-#else
-    SOCKET socket = sckt->sock;
-#endif
-    deadline = deadline == 0 ? 100 : deadline;
-    if (deadline >= 0) {
-        TIMEVAL tv = {(long)(deadline / 1000), (long)(deadline % 1000)};
+    jlong currentTimeout = cycle;
+    while ((deadline == 0) || ((currentTimeout = (deadline - GetTickCount())) > 0)) {
+        currentTimeout = currentTimeout < cycle ? currentTimeout : cycle;
+        TIMEVAL tv = {(long)(currentTimeout / 1000), (long)(currentTimeout % 1000)};
         fd_set fdwrite;
         FD_ZERO(&fdwrite);
-        FD_SET(socket, &fdwrite);
+        FD_SET(sckt, &fdwrite);
 
-        int ret = select((int)(socket) + 1, NULL, &fdwrite, NULL, &tv);
-        if (ret < 0) {
-            int err = GetLastErrorStatus(env);
+        int ret = select((int)sckt + 1, NULL, &fdwrite, NULL, &tv);
+        if (ret == SOCKET_ERROR) {
+            int err = GetLastErrorStatus();
             // ignore signal interruption
             if (err != SOCKET_ERROR_EINTR) {
                 SetLastTranError(env, "socket error", err);
                 return JDWPTRANSPORT_ERROR_IO_ERROR;
             }
         }
-        if ((ret > 0) && (FD_ISSET(socket, &fdwrite))) {
+        if ((ret > 0) && (FD_ISSET(sckt, &fdwrite))) {
             return JDWPTRANSPORT_ERROR_NONE; //timeout is not occurred
         }
     }
     SetLastTranError(env, "timeout occurred", 0);
     return JDWPTRANSPORT_ERROR_TIMEOUT; //timeout occurred
-    */
-} // SelectSend
+} // SelectRead
 
 /**
  * This function sends data on a connected socket
  */
 static jdwpTransportError
-SendData(jdwpTransportEnv* env, j9socket_t sckt, const char* data, int dataLength, jlong deadline = 0)
+SendData(jdwpTransportEnv* env, SOCKET sckt, const char* data, int dataLength, jlong deadline = 0)
 {
     long left = dataLength;
     long off = 0;
     int ret;
 
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
-
-    // Check if block
-    while (left > 0){
-        jdwpTransportError err = SelectSend(env, sckt, deadline);
-        if (err != JDWPTRANSPORT_ERROR_NONE) {
-            return err;
-        }
-
-	ret = j9sock_write (sckt, (U_8 *)data+off, left, J9SOCK_NOFLAGS);
-	if (ret < 0){
-                SetLastTranError(env, "socket error", ret);
-                return JDWPTRANSPORT_ERROR_IO_ERROR; 
-	}
-	left -= ret;
-	off += ret;
-    }    
-    return JDWPTRANSPORT_ERROR_NONE;
-                                                                                                   
-    /*
     while (left > 0) {
         jdwpTransportError err = SelectSend(env, sckt, deadline);
         if (err != JDWPTRANSPORT_ERROR_NONE) {
@@ -391,7 +145,7 @@ SendData(jdwpTransportEnv* env, j9socket_t sckt, const char* data, int dataLengt
         }
         ret = send(sckt, (data + off), left, 0);
         if (ret == SOCKET_ERROR) {
-            int err = GetLastErrorStatus(env);
+            int err = GetLastErrorStatus();
             // ignore signal interruption
             if (err != SOCKET_ERROR_EINTR) {
                 SetLastTranError(env, "socket error", err);
@@ -401,18 +155,15 @@ SendData(jdwpTransportEnv* env, j9socket_t sckt, const char* data, int dataLengt
         left -= ret;
         off += ret;
     } //while
-    return JDWPTRANSPORT_ERROR_NONE;*/
+    return JDWPTRANSPORT_ERROR_NONE;
 } //SendData
 
 /**
  * This function receives data from a connected socket
  */
 static jdwpTransportError
-ReceiveData(jdwpTransportEnv* env, j9socket_t sckt, U_8 * buffer, int dataLength, jlong deadline = 0, int* readByte = 0)
+ReceiveData(jdwpTransportEnv* env, SOCKET sckt, char* buffer, int dataLength, jlong deadline = 0, int* readByte = 0)
 {
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
-
     long left = dataLength;
     long off = 0;
     int ret;
@@ -426,34 +177,9 @@ ReceiveData(jdwpTransportEnv* env, j9socket_t sckt, U_8 * buffer, int dataLength
         if (err != JDWPTRANSPORT_ERROR_NONE) {
             return err;
         }
-
- 	ret = j9sock_read(sckt, (U_8 *) (buffer + off), left, J9SOCK_NOFLAGS);
-
-        if (ret < 0) {
-            SetLastTranError(env, "data receiving failed", ret);
-            return JDWPTRANSPORT_ERROR_IO_ERROR;
-        }
-        if (ret == 0) {
-            SetLastTranError(env, "premature EOF", J9SOCK_NOFLAGS);
-            return JDWPTRANSPORT_ERROR_IO_ERROR;
-        }
-        left -= ret;
-        off += ret;
-        if (readByte != 0) {
-            *readByte = off;
-        }
-    } //while
-    return JDWPTRANSPORT_ERROR_NONE;
-
-/*
-    while (left > 0) {
-        jdwpTransportError err = SelectRead(env, sckt, deadline);
-        if (err != JDWPTRANSPORT_ERROR_NONE) {
-            return err;
-        }
         ret = recv(sckt, (buffer + off), left, 0);
         if (ret == SOCKET_ERROR) {
-            int err = GetLastErrorStatus(env);
+            int err = GetLastErrorStatus();
             // ignore signal interruption
             if (err != SOCKET_ERROR_EINTR) {
                 SetLastTranError(env, "data receiving failed", err);
@@ -470,35 +196,52 @@ ReceiveData(jdwpTransportEnv* env, j9socket_t sckt, U_8 * buffer, int dataLength
             *readByte = off;
         }
     } //while
-    return JDWPTRANSPORT_ERROR_NONE;*/
+    return JDWPTRANSPORT_ERROR_NONE;
 } // ReceiveData
+
+/**
+ * This function enable/disables socket blocking mode 
+ */
+static bool 
+SetSocketBlockingMode(jdwpTransportEnv* env, SOCKET sckt, bool isBlocked)
+{
+    unsigned long ul = isBlocked ? 0 : 1;
+    if (ioctlsocket(sckt, FIONBIO, &ul) == SOCKET_ERROR) {
+        SetLastTranError(env, "socket error", GetLastErrorStatus());
+        return false;
+    }
+    return true;
+} // SetSocketBlockingMode()
 
 /**
  * This function performes handshake procedure
  */
 static jdwpTransportError 
-CheckHandshaking(jdwpTransportEnv* env, j9socket_t sckt, jlong handshakeTimeout)
+CheckHandshaking(jdwpTransportEnv* env, SOCKET sckt, jlong handshakeTimeout)
 {
     const char* handshakeString = "JDWP-Handshake";
-    U_8 receivedString[14]; //length of "JDWP-Handshake"
+    char receivedString[14]; //length of "JDWP-Handshake"
+
+    jlong deadline = (handshakeTimeout == 0) ? 0 : (jlong)GetTickCount() + handshakeTimeout;
 
     jdwpTransportError err;
-    err = SendData(env, sckt, handshakeString, (int)strlen(handshakeString), handshakeTimeout);
+    err = SendData(env, sckt, handshakeString, (int)strlen(handshakeString), deadline);
     if (err != JDWPTRANSPORT_ERROR_NONE) {
         SetLastTranErrorMessagePrefix(env, "'JDWP-Handshake' sending error: ");
         return err;
     }
- 
-    err = ReceiveData(env, sckt, receivedString, (int)strlen(handshakeString), handshakeTimeout);
- 
+
+    err = ReceiveData(env, sckt, receivedString, (int)strlen(handshakeString), deadline);
     if (err != JDWPTRANSPORT_ERROR_NONE) {
         SetLastTranErrorMessagePrefix(env, "'JDWP-Handshake' receiving error: ");
         return err;
     }
+
     if (memcmp(receivedString, handshakeString, 14) != 0) {
         SetLastTranError(env, "handshake error, 'JDWP-Handshake' is not received", 0);
         return JDWPTRANSPORT_ERROR_IO_ERROR;
     }
+
     return JDWPTRANSPORT_ERROR_NONE;
 }// CheckHandshaking
 
@@ -506,53 +249,42 @@ CheckHandshaking(jdwpTransportEnv* env, j9socket_t sckt, jlong handshakeTimeout)
  * This function decodes address and populates sockaddr_in structure
  */
 static jdwpTransportError
-DecodeAddress(jdwpTransportEnv* env, const char *address, j9sockaddr_t sa, bool isServer) 
+DecodeAddress(jdwpTransportEnv* env, const char *address, struct sockaddr_in *sa, bool isServer) 
 {
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
-    char * localhost = "127.0.0.1";
-    char * anyhost = "0.0.0.0";
-//    memset(sa, 0, sizeof(struct sockaddr_in));
-//    sa->sin_family = AF_INET;
+    memset(sa, 0, sizeof(struct sockaddr_in));
+    sa->sin_family = AF_INET;
 
     if ((address == 0) || (*address == 0)) {  //empty address
-        j9sock_sockaddr(sa,  isServer ? anyhost : localhost, 0);
-//        sa->sin_addr.s_addr = isServer ? htonl(INADDR_ANY) : inet_addr("127.0.0.1");
-//        sa->sin_port = 0;
+        sa->sin_addr.s_addr = isServer ? htonl(INADDR_ANY) : inet_addr("127.0.0.1");
+        sa->sin_port = 0;
         return JDWPTRANSPORT_ERROR_NONE;
     }
 
     const char* colon = strchr(address, ':');
     if (colon == 0) {  //address is like "port"
-	j9sock_sockaddr(sa,  isServer ? anyhost : localhost,  j9sock_htons((U_16)atoi(address)));
-        //sa->sin_port = htons((u_short)atoi(address));
-        //sa->sin_addr.s_addr = isServer ? htonl(INADDR_ANY) : inet_addr("127.0.0.1");
+        sa->sin_port = htons((u_short)atoi(address));
+        sa->sin_addr.s_addr = isServer ? htonl(INADDR_ANY) : inet_addr("127.0.0.1");
     } else { //address is like "host:port"
-        //sa->sin_port = htons((u_short)atoi(colon + 1));
+        sa->sin_port = htons((u_short)atoi(colon + 1));
+
         char *hostName = (char*)(((internalEnv*)env->functions->reserved1)
             ->alloc)((jint)(colon - address + 1));
         if (hostName == 0) {
             SetLastTranError(env, "out of memory", 0);
             return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
         }
-	memcpy(hostName, address, colon - address);
+        memcpy(hostName, address, colon - address);
         hostName[colon - address] = '\0';
-	int ret = j9sock_sockaddr(sa,  hostName, j9sock_htons((U_16)atoi(colon + 1)));
-	if (ret != 0){
-                SetLastTranError(env, "unable to resolve host name", 0);
-                (((internalEnv*)env->functions->reserved1)->free)(hostName);
-                return JDWPTRANSPORT_ERROR_IO_ERROR;
-	}
-        /* sa->sin_addr.s_addr = inet_addr(hostName);
-        if (ret != 0) {
+        sa->sin_addr.s_addr = inet_addr(hostName);
+        if (sa->sin_addr.s_addr == INADDR_NONE) {
             struct hostent *host = gethostbyname(hostName);
             if (host == 0) {
                 SetLastTranError(env, "unable to resolve host name", 0);
                 (((internalEnv*)env->functions->reserved1)->free)(hostName);
                 return JDWPTRANSPORT_ERROR_IO_ERROR;
             }
-            //TODO delete this memcpy(&(sa->sin_addr), host->h_addr_list[0], host->h_length);
-        } //if*/
+            memcpy(&(sa->sin_addr), host->h_addr_list[0], host->h_length);
+        } //if
         (((internalEnv*)env->functions->reserved1)->free)(hostName);
     } //if
     return JDWPTRANSPORT_ERROR_NONE;
@@ -567,8 +299,9 @@ TCPIPSocketTran_GetCapabilities(jdwpTransportEnv* env,
 {
     memset(capabilitiesPtr, 0, sizeof(JDWPTransportCapabilities));
     capabilitiesPtr->can_timeout_attach = 1;
-    capabilitiesPtr->can_timeout_accept = 1;       
+    capabilitiesPtr->can_timeout_accept = 1;
     capabilitiesPtr->can_timeout_handshake = 1;
+
     return JDWPTRANSPORT_ERROR_NONE;
 } //TCPIPSocketTran_GetCapabilities
 
@@ -577,89 +310,46 @@ TCPIPSocketTran_GetCapabilities(jdwpTransportEnv* env,
  */
 static jdwpTransportError JNICALL 
 TCPIPSocketTran_Close(jdwpTransportEnv* env)
-{  
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
-    j9socket_t envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
-    if (envClientSocket == NULL) {
+{
+    SOCKET envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
+    if (envClientSocket == INVALID_SOCKET) {
         return JDWPTRANSPORT_ERROR_NONE;
     }
 
-    ((internalEnv*)env->functions->reserved1)->envClientSocket = NULL;
-    if (j9sock_socketIsValid(envClientSocket)==0){
-        return JDWPTRANSPORT_ERROR_NONE;
-    }
+    ((internalEnv*)env->functions->reserved1)->envClientSocket = INVALID_SOCKET;
 
     int err;
-    err = j9sock_shutdown_input(envClientSocket);
-    if (err == 0){
-	 err = j9sock_shutdown_output(envClientSocket);
-    }
-    if (err != 0) {
-        SetLastTranError(env, "shutdown socket failed", GetLastErrorStatus(env));
-        return JDWPTRANSPORT_ERROR_IO_ERROR;
-    }
-/*#ifdef WIN32
-    SOCKET socket = envClientSocket->ipv4;
-    err = closesocket(socket);
-#else
-    SOCKET socket = envClientSocket->sock;
-    err = close(socket);
-#endif*/ 
-    err = j9sock_close(&envClientSocket);
-
-    if (err != 0) {
-        SetLastTranError(env, "close socket failed", GetLastErrorStatus(env));
-        return JDWPTRANSPORT_ERROR_IO_ERROR;
-    }
-    return JDWPTRANSPORT_ERROR_NONE;
-
-/*    err = shutdown(envClientSocket, SD_BOTH);
+    err = shutdown(envClientSocket, SD_BOTH);
     if (err == SOCKET_ERROR) {
-        SetLastTranError(env, "close socket failed", GetLastErrorStatus(env));
+        SetLastTranError(env, "close socket failed", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_IO_ERROR;
     }
 
     err = closesocket(envClientSocket);
     if (err == SOCKET_ERROR) {
-        SetLastTranError(env, "close socket failed", GetLastErrorStatus(env));
+        SetLastTranError(env, "close socket failed", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_IO_ERROR;
     }
 
-    return JDWPTRANSPORT_ERROR_NONE;*/
+    return JDWPTRANSPORT_ERROR_NONE;
 } //TCPIPSocketTran_Close
 
 /**
  * This function sets socket options SO_REUSEADDR and TCP_NODELAY
  */
 static bool 
-SetSocketOptions(jdwpTransportEnv* env, j9socket_t sckt) 
+SetSocketOptions(jdwpTransportEnv* env, SOCKET sckt) 
 {
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
-
-    BOOLEAN isOn = TRUE;
-
-    if (j9sock_setopt_bool(sckt, J9_SOL_SOCKET, J9_SO_REUSEADDR, &isOn) != 0){
-        SetLastTranError(env, "setsockopt(SO_REUSEADDR) failed", GetLastErrorStatus(env));
-        return false;
-    }
-    if (j9sock_setopt_bool(sckt, J9_IPPROTO_IP, J9_TCP_NODELAY,  &isOn) != 0) {
-        SetLastTranError(env, "setsockopt(TCPNODELAY) failed", GetLastErrorStatus(env));
-        return false;
-    }
-
-    return true;
-
-/*    if (setsockopt(sckt, SOL_SOCKET, SO_REUSEADDR, (const char*)&isOn, sizeof(isOn)) == SOCKET_ERROR) {                                                              
-        SetLastTranError(env, "setsockopt(SO_REUSEADDR) failed", GetLastErrorStatus(env));
+    BOOL isOn = TRUE;
+    if (setsockopt(sckt, SOL_SOCKET, SO_REUSEADDR, (const char*)&isOn, sizeof(isOn)) == SOCKET_ERROR) {                                                              
+        SetLastTranError(env, "setsockopt(SO_REUSEADDR) failed", GetLastErrorStatus());
         return false;
     }
     if (setsockopt(sckt, IPPROTO_TCP, TCP_NODELAY, (const char*)&isOn, sizeof(isOn)) == SOCKET_ERROR) {
-        SetLastTranError(env, "setsockopt(TCPNODELAY) failed", GetLastErrorStatus(env));
+        SetLastTranError(env, "setsockopt(TCPNODELAY) failed", GetLastErrorStatus());
         return false;
     }
-    return true;*/
+    return true;
 } // SetSocketOptions()
 
 /**
@@ -669,12 +359,6 @@ static jdwpTransportError JNICALL
 TCPIPSocketTran_Attach(jdwpTransportEnv* env, const char* address,
         jlong attachTimeout, jlong handshakeTimeout)
 {
-    internalEnv *ienv = (internalEnv*)env->functions->reserved1;
-    PORT_ACCESS_FROM_JAVAVM(ienv->jvm);
-
-    j9socket_t clientSocket;  
-    j9sockaddr_struct serverSockAddr;  
-                                   
     if ((address == 0) || (*address == 0)) {
         SetLastTranError(env, "address is missing", 0);
         return JDWPTRANSPORT_ERROR_ILLEGAL_ARGUMENT;
@@ -690,27 +374,27 @@ TCPIPSocketTran_Attach(jdwpTransportEnv* env, const char* address,
         return JDWPTRANSPORT_ERROR_ILLEGAL_ARGUMENT;
     }
 
-    j9socket_t envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
-    if (envClientSocket != NULL) {
+    SOCKET envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
+    if (envClientSocket != INVALID_SOCKET) {
         SetLastTranError(env, "there is already an open connection to the debugger", 0);
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
     }
 
-    j9socket_t envServerSocket = ((internalEnv*)env->functions->reserved1)->envServerSocket;
-    if (envServerSocket != NULL) {
+    SOCKET envServerSocket = ((internalEnv*)env->functions->reserved1)->envServerSocket;
+    if (envServerSocket != INVALID_SOCKET) {
         SetLastTranError(env, "transport is currently in listen mode", 0);
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
     }
 
+    struct sockaddr_in serverSockAddr;
     jdwpTransportError res = DecodeAddress(env, address, &serverSockAddr, false);
     if (res != JDWPTRANSPORT_ERROR_NONE) {
         return res;
     }
 
-    int ret = j9sock_socket(&clientSocket,J9SOCK_AFINET, J9SOCK_STREAM, J9SOCK_DEFPROTOCOL);
-	   // socket(AF_INET, SOCK_STREAM, 0);
-    if (ret != 0) {
-        SetLastTranError(env, "unable to create socket", GetLastErrorStatus(env));
+    SOCKET clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (clientSocket == INVALID_SOCKET) {
+        SetLastTranError(env, "unable to create socket", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_IO_ERROR;
     }
     
@@ -722,49 +406,43 @@ TCPIPSocketTran_Attach(jdwpTransportEnv* env, const char* address,
         if (!SetSocketBlockingMode(env, clientSocket, true)) {
             return JDWPTRANSPORT_ERROR_IO_ERROR;
         }
-        int err = j9sock_connect(clientSocket, &serverSockAddr);
-	//int err = connect(clientSocket, (struct sockaddr *)&serverSockAddr, sizeof(serverSockAddr));
-	if (err != 0 ) {
-            SetLastTranError(env, "connection failed", GetLastErrorStatus(env));
+        int err = connect(clientSocket, (struct sockaddr *)&serverSockAddr, sizeof(serverSockAddr));
+        if (err == SOCKET_ERROR) {
+            SetLastTranError(env, "connection failed", GetLastErrorStatus());
             SetSocketBlockingMode(env, clientSocket, false);
             return JDWPTRANSPORT_ERROR_IO_ERROR;
-        }  
+        }
         if (!SetSocketBlockingMode(env, clientSocket, false)) {
             return JDWPTRANSPORT_ERROR_IO_ERROR;
-	}
+        }
     } else {
         if (!SetSocketBlockingMode(env, clientSocket, false)) {
             return JDWPTRANSPORT_ERROR_IO_ERROR;
         }
-        int err = j9sock_connect(clientSocket, &serverSockAddr);
-        if (err != 0) {
-            if (err != J9PORT_ERROR_SOCKET_WOULDBLOCK) {
-                SetLastTranError(env, "connection failed", GetLastErrorStatus(env));
+        int err = connect(clientSocket, (struct sockaddr *)&serverSockAddr, sizeof(serverSockAddr));
+        if (err == SOCKET_ERROR) {
+            if (GetLastErrorStatus() != SOCKETWOULDBLOCK) {
+                SetLastTranError(env, "connection failed", GetLastErrorStatus());
                 return JDWPTRANSPORT_ERROR_IO_ERROR;
-            } else {
-                int ret = SelectSend(env, clientSocket, handshakeTimeout);
-		if (ret == JDWPTRANSPORT_ERROR_NONE){
-			return JDWPTRANSPORT_ERROR_NONE;
-		}
-                return JDWPTRANSPORT_ERROR_IO_ERROR; 
-//TODO delele this selectWrite
-                /*fd_set fdwrite;
+            } else {  
+                fd_set fdwrite;
                 FD_ZERO(&fdwrite);
                 FD_SET(clientSocket, &fdwrite);
                 TIMEVAL tv = {(long)(attachTimeout / 1000), (long)(attachTimeout % 1000)};
 
                 int ret = select((int)clientSocket + 1, NULL, &fdwrite, NULL, &tv);
                 if (ret == SOCKET_ERROR) {
-                    SetLastTranError(env, "socket error", GetLastErrorStatus(env));
+                    SetLastTranError(env, "socket error", GetLastErrorStatus());
                     return JDWPTRANSPORT_ERROR_IO_ERROR;
                 }
                 if ((ret != 1) || !(FD_ISSET(clientSocket, &fdwrite))) {
                     SetLastTranError(env, "timeout occurred", 0);
                     return JDWPTRANSPORT_ERROR_IO_ERROR;
-                }*/
+                }
             }
         }
     }
+
     EnterCriticalSendSection(env);
     EnterCriticalReadSection(env);
     ((internalEnv*)env->functions->reserved1)->envClientSocket = clientSocket;
@@ -775,6 +453,7 @@ TCPIPSocketTran_Attach(jdwpTransportEnv* env, const char* address,
         TCPIPSocketTran_Close(env);
         return res;
     }
+
     return JDWPTRANSPORT_ERROR_NONE;
 } //TCPIPSocketTran_Attach
 
@@ -785,32 +464,28 @@ static jdwpTransportError JNICALL
 TCPIPSocketTran_StartListening(jdwpTransportEnv* env, const char* address, 
         char** actualAddress)
 {
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
-
-    j9socket_t envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
-    if (envClientSocket != NULL) {
+    SOCKET envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
+    if (envClientSocket != INVALID_SOCKET) {
         SetLastTranError(env, "there is already an open connection to the debugger", 0);
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
     }
 
-    j9socket_t envServerSocket = ((internalEnv*)env->functions->reserved1)->envServerSocket;
-    if (envServerSocket != NULL) {
+    SOCKET envServerSocket = ((internalEnv*)env->functions->reserved1)->envServerSocket;
+    if (envServerSocket != INVALID_SOCKET) {
         SetLastTranError(env, "transport is currently in listen mode", 0);
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
     }
 
     jdwpTransportError res;
-    j9sockaddr_struct serverSockAddr;
+    struct sockaddr_in serverSockAddr;
     res = DecodeAddress(env, address, &serverSockAddr, true);
     if (res != JDWPTRANSPORT_ERROR_NONE) {
         return res;
     }
 
-    j9socket_t serverSocket;
-    int ret = j9sock_socket(&serverSocket,J9SOCK_AFINET, J9SOCK_STREAM, J9SOCK_DEFPROTOCOL); //socket(AF_INET, SOCK_STREAM, 0);
-    if (ret != 0) {
-        SetLastTranError(env, "unable to create socket", GetLastErrorStatus(env));
+    SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSocket == INVALID_SOCKET) {
+        SetLastTranError(env, "unable to create socket", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_IO_ERROR;
     }
 
@@ -820,16 +495,15 @@ TCPIPSocketTran_StartListening(jdwpTransportEnv* env, const char* address,
 
     int err;
 
-    err = j9sock_bind (serverSocket, &serverSockAddr);
-    // bind(serverSocket, (struct sockaddr *)&serverSockAddr, sizeof(serverSockAddr));
-    if (err != 0 ) {
-        SetLastTranError(env, "binding to port failed", GetLastErrorStatus(env));
+    err = bind(serverSocket, (struct sockaddr *)&serverSockAddr, sizeof(serverSockAddr));
+    if (err == SOCKET_ERROR) {
+        SetLastTranError(env, "binding to port failed", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
     }
 
-    err = j9sock_listen(serverSocket, J9SOCK_MAXCONN);
-    if (err != 0) {
-        SetLastTranError(env, "listen start failed", GetLastErrorStatus(env));
+    err = listen(serverSocket, SOMAXCONN);
+    if (err == SOCKET_ERROR) {
+        SetLastTranError(env, "listen start failed", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
     }
 
@@ -839,9 +513,10 @@ TCPIPSocketTran_StartListening(jdwpTransportEnv* env, const char* address,
 
     ((internalEnv*)env->functions->reserved1)->envServerSocket = serverSocket;
 
-    err = j9sock_getsockname(serverSocket, &serverSockAddr);
-    if (err != 0) {
-        SetLastTranError(env, "socket error", GetLastErrorStatus(env));
+    socklen_t len = sizeof(serverSockAddr);
+    err = getsockname(serverSocket, (struct sockaddr *)&serverSockAddr, &len);
+    if (err == SOCKET_ERROR) {
+        SetLastTranError(env, "socket error", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
     }
 
@@ -872,8 +547,7 @@ TCPIPSocketTran_StartListening(jdwpTransportEnv* env, const char* address,
         SetLastTranError(env, "out of memory", 0);
         return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
     }
-    // print server port
-    sprintf(retAddress, "%d",j9sock_sockaddr_port(&serverSockAddr));
+    sprintf(retAddress, "%d", ntohs(serverSockAddr.sin_port));
 
     *actualAddress = retAddress;
 
@@ -886,27 +560,17 @@ TCPIPSocketTran_StartListening(jdwpTransportEnv* env, const char* address,
 static jdwpTransportError JNICALL 
 TCPIPSocketTran_StopListening(jdwpTransportEnv* env)
 {
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
-
-    j9socket_t envServerSocket = ((internalEnv*)env->functions->reserved1)->envServerSocket;
-    if (envServerSocket == NULL) {
+    SOCKET envServerSocket = ((internalEnv*)env->functions->reserved1)->envServerSocket;
+    if (envServerSocket == INVALID_SOCKET) {
         return JDWPTRANSPORT_ERROR_NONE;
     }
-/*#ifdef WIN32
-    SOCKET socket = envServerSocket->ipv4;
-    int err = closesocket(socket);
-#else
-    SOCKET socket = envServerSocket->sock;
-    int err = close(socket);
-#endif */
-    int err = j9sock_close(&envServerSocket);
-    if (err != 0) {
-        SetLastTranError(env, "close socket failed", GetLastErrorStatus(env));
+
+    if (closesocket(envServerSocket) == SOCKET_ERROR) {
+        SetLastTranError(env, "close socket failed", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_IO_ERROR;
     }
 
-    ((internalEnv*)env->functions->reserved1)->envServerSocket = NULL;
+    ((internalEnv*)env->functions->reserved1)->envServerSocket = INVALID_SOCKET;
 
     return JDWPTRANSPORT_ERROR_NONE;
 } //TCPIPSocketTran_StopListening
@@ -918,9 +582,6 @@ static jdwpTransportError JNICALL
 TCPIPSocketTran_Accept(jdwpTransportEnv* env, jlong acceptTimeout,
         jlong handshakeTimeout)
 {
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
-
     if (acceptTimeout < 0) {
         SetLastTranError(env, "acceptTimeout timeout is negative", 0);
         return JDWPTRANSPORT_ERROR_ILLEGAL_ARGUMENT;
@@ -931,43 +592,35 @@ TCPIPSocketTran_Accept(jdwpTransportEnv* env, jlong acceptTimeout,
         return JDWPTRANSPORT_ERROR_ILLEGAL_ARGUMENT;
     }
 
-    j9socket_t envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
-    if (envClientSocket != NULL) {
+    SOCKET envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
+    if (envClientSocket != INVALID_SOCKET) {
         SetLastTranError(env, "there is already an open connection to the debugger", 0);
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
     }
 
-    j9socket_t envServerSocket = ((internalEnv*)env->functions->reserved1)->envServerSocket;
-    if (envServerSocket == NULL) {
+    SOCKET envServerSocket = ((internalEnv*)env->functions->reserved1)->envServerSocket;
+    if (envServerSocket == INVALID_SOCKET) {
         SetLastTranError(env, "transport is not currently in listen mode", 0);
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
     }
 
-    j9sockaddr_struct serverSockAddr;
-/*    int res = j9sock_getpeername(envServerSocket, &serverSockAddr);
+    struct sockaddr serverSockAddr;
+    socklen_t len = sizeof(serverSockAddr);
+    int res = getsockname(envServerSocket, &serverSockAddr, &len);
     if (res == SOCKET_ERROR) {
-        SetLastTranError(env, "connection failed", GetLastErrorStatus(env));
+        SetLastTranError(env, "connection failed", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_IO_ERROR;
-    }*/
-
-    //jlong deadline = (acceptTimeout == 0) ? 0 : (jlong)GetTickCount() + acceptTimeout;
-    I_32 ret = SelectRead(env, envServerSocket, acceptTimeout);
-    //I_32 ret = j9sock_select_read(envServerSocket, (I_32)acceptTimeout/1000, (I_32)acceptTimeout%1000, TRUE);
-
-    if (ret != JDWPTRANSPORT_ERROR_NONE){
-        if (ret != J9PORT_ERROR_SOCKET_TIMEOUT){
-             SetLastTranError(env, "socket error", ret);
-             return JDWPTRANSPORT_ERROR_IO_ERROR;
-        }
-        SetLastTranError(env, "timeout occurred", 0);
-        return JDWPTRANSPORT_ERROR_TIMEOUT; //timeout occurred
     }
 
-    j9socket_t clientSocket;
-    ret = j9sock_accept(envServerSocket, &serverSockAddr, &clientSocket);
+    jlong deadline = (acceptTimeout == 0) ? 0 : (jlong)GetTickCount() + acceptTimeout;
+    jdwpTransportError err = SelectRead(env, envServerSocket, deadline);
+    if (err != JDWPTRANSPORT_ERROR_NONE) {
+        return err;
+    }
 
-    if (ret != 0) {
-        SetLastTranError(env, "socket accept failed", GetLastErrorStatus(env));
+    SOCKET clientSocket = accept(envServerSocket, &serverSockAddr, &len);
+    if (clientSocket == INVALID_SOCKET) {
+        SetLastTranError(env, "socket accept failed", GetLastErrorStatus());
         return JDWPTRANSPORT_ERROR_IO_ERROR;
     }
 
@@ -978,13 +631,15 @@ TCPIPSocketTran_Accept(jdwpTransportEnv* env, jlong acceptTimeout,
     EnterCriticalSendSection(env);
     EnterCriticalReadSection(env);
     ((internalEnv*)env->functions->reserved1)->envClientSocket = clientSocket;
-    jdwpTransportError err = CheckHandshaking(env, clientSocket, (long)handshakeTimeout);
+
+    err = CheckHandshaking(env, clientSocket, (long)handshakeTimeout);
     LeaveCriticalReadSection(env);
     LeaveCriticalSendSection(env);
     if (err != JDWPTRANSPORT_ERROR_NONE) {
         TCPIPSocketTran_Close(env);
         return err;
     }
+
     return JDWPTRANSPORT_ERROR_NONE;
 } //TCPIPSocketTran_Accept
 
@@ -994,8 +649,8 @@ TCPIPSocketTran_Accept(jdwpTransportEnv* env, jlong acceptTimeout,
 static jboolean JNICALL 
 TCPIPSocketTran_IsOpen(jdwpTransportEnv* env)
 {
-    j9socket_t envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
-    if (envClientSocket == NULL) {
+    SOCKET envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
+    if (envClientSocket == INVALID_SOCKET) {
         return JNI_FALSE;
     }
     return JNI_TRUE;
@@ -1005,15 +660,12 @@ TCPIPSocketTran_IsOpen(jdwpTransportEnv* env)
  * This function read packet
  */
 static jdwpTransportError
-ReadPacket(jdwpTransportEnv* env, j9socket_t envClientSocket, jdwpPacket* packet)
+ReadPacket(jdwpTransportEnv* env, SOCKET envClientSocket, jdwpPacket* packet)
 {
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
-
     jdwpTransportError err;
     int length;
     int readBytes = 0;
-    err = ReceiveData(env, envClientSocket, (U_8 *)&length, sizeof(jint), 0, &readBytes);
+    err = ReceiveData(env, envClientSocket, (char *)&length, sizeof(jint), 0, &readBytes);
     if (err != JDWPTRANSPORT_ERROR_NONE) {
         if (readBytes == 0) {
             packet->type.cmd.len = 0;
@@ -1021,35 +673,36 @@ ReadPacket(jdwpTransportEnv* env, j9socket_t envClientSocket, jdwpPacket* packet
         }
         return err;
     }
-    packet->type.cmd.len = (jint)j9sock_ntohl(length);
+
+    packet->type.cmd.len = (jint)ntohl(length);
     
     int id;
-    err = ReceiveData(env, envClientSocket, (U_8 *)&(id), sizeof(jint));
+    err = ReceiveData(env, envClientSocket, (char *)&(id), sizeof(jint));
     if (err != JDWPTRANSPORT_ERROR_NONE) {
         return err;
     }
 
-    packet->type.cmd.id = (jint)j9sock_ntohl(id);
+    packet->type.cmd.id = (jint)ntohl(id);
 
-    err = ReceiveData(env, envClientSocket, (U_8 *)&(packet->type.cmd.flags), sizeof(jbyte));
+    err = ReceiveData(env, envClientSocket, (char *)&(packet->type.cmd.flags), sizeof(jbyte));
     if (err != JDWPTRANSPORT_ERROR_NONE) {
         return err;
     }
 
     if (packet->type.cmd.flags & JDWPTRANSPORT_FLAGS_REPLY) {
-        int errorCode;
-        err = ReceiveData(env, envClientSocket, (U_8*)&(errorCode), sizeof(jshort));
+        u_short errorCode;
+        err = ReceiveData(env, envClientSocket, (char*)&(errorCode), sizeof(jshort));
         if (err != JDWPTRANSPORT_ERROR_NONE) {
             return err;
         }
-        packet->type.reply.errorCode = (jshort)j9sock_ntohs(errorCode); 
+        packet->type.reply.errorCode = (jshort)ntohs(errorCode); 
     } else {
-        err = ReceiveData(env, envClientSocket, (U_8*)&(packet->type.cmd.cmdSet), sizeof(jbyte));
+        err = ReceiveData(env, envClientSocket, (char*)&(packet->type.cmd.cmdSet), sizeof(jbyte));
         if (err != JDWPTRANSPORT_ERROR_NONE) {
             return err;
         }
  
-        err = ReceiveData(env, envClientSocket, (U_8*)&(packet->type.cmd.cmd), sizeof(jbyte));
+        err = ReceiveData(env, envClientSocket, (char*)&(packet->type.cmd.cmd), sizeof(jbyte));
         if (err != JDWPTRANSPORT_ERROR_NONE) {
             return err;
         }
@@ -1067,7 +720,7 @@ ReadPacket(jdwpTransportEnv* env, j9socket_t envClientSocket, jdwpPacket* packet
             SetLastTranError(env, "out of memory", 0);
             return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
         }
-        err = ReceiveData(env, envClientSocket, (U_8 *)packet->type.cmd.data, dataLength);
+        err = ReceiveData(env, envClientSocket, (char *)packet->type.cmd.data, dataLength);
         if (err != JDWPTRANSPORT_ERROR_NONE) {
             (((internalEnv*)env->functions->reserved1)->free)(packet->type.cmd.data);
             return err;
@@ -1087,8 +740,8 @@ TCPIPSocketTran_ReadPacket(jdwpTransportEnv* env, jdwpPacket* packet)
         return JDWPTRANSPORT_ERROR_ILLEGAL_ARGUMENT;
     }
 
-    j9socket_t envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
-    if (envClientSocket == NULL) {
+    SOCKET envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
+    if (envClientSocket == INVALID_SOCKET) {
         SetLastTranError(env, "there isn't an open connection to a debugger", 0);
         LeaveCriticalReadSection(env);
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE ;
@@ -1104,10 +757,8 @@ TCPIPSocketTran_ReadPacket(jdwpTransportEnv* env, jdwpPacket* packet)
  * This function implements jdwpTransportEnv::WritePacket
  */
 static jdwpTransportError 
-WritePacket(jdwpTransportEnv* env, j9socket_t envClientSocket, const jdwpPacket* packet)
+WritePacket(jdwpTransportEnv* env, SOCKET envClientSocket, const jdwpPacket* packet)
 {
-    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
-    PORT_ACCESS_FROM_JAVAVM(vm);
     int packetLength = packet->type.cmd.len;
     if (packetLength < 11) {
         SetLastTranError(env, "invalid packet length", 0);
@@ -1121,7 +772,7 @@ WritePacket(jdwpTransportEnv* env, j9socket_t envClientSocket, const jdwpPacket*
     }
 
     int dataLength = packetLength - 11;
-    packetLength = j9sock_htonl(packetLength);
+    packetLength = htonl(packetLength);
 
     jdwpTransportError err;
     err = SendData(env, envClientSocket, (char*)&packetLength, sizeof(jint));
@@ -1129,7 +780,7 @@ WritePacket(jdwpTransportEnv* env, j9socket_t envClientSocket, const jdwpPacket*
         return err;
     }
 
-    int id = j9sock_htonl (packet->type.cmd.id);
+    int id = htonl(packet->type.cmd.id);
 
     err = SendData(env, envClientSocket, (char*)&id, sizeof(jint));
     if (err != JDWPTRANSPORT_ERROR_NONE) {
@@ -1142,7 +793,7 @@ WritePacket(jdwpTransportEnv* env, j9socket_t envClientSocket, const jdwpPacket*
     }
 
     if (packet->type.cmd.flags & JDWPTRANSPORT_FLAGS_REPLY) {
-        int errorCode = htons(packet->type.reply.errorCode);
+        u_short errorCode = htons(packet->type.reply.errorCode);
         err = SendData(env, envClientSocket, (char*)&errorCode, sizeof(jshort));
         if (err != JDWPTRANSPORT_ERROR_NONE) {
             return err;
@@ -1179,10 +830,10 @@ TCPIPSocketTran_WritePacket(jdwpTransportEnv* env, const jdwpPacket* packet)
         return JDWPTRANSPORT_ERROR_ILLEGAL_ARGUMENT;
     }
 
-    j9socket_t envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
-    if (envClientSocket == NULL) {
+    SOCKET envClientSocket = ((internalEnv*)env->functions->reserved1)->envClientSocket;
+    if (envClientSocket == INVALID_SOCKET) {
         SetLastTranError(env, "there isn't an open connection to a debugger", 0);
-        //LeaveCriticalSendSection(env);
+        LeaveCriticalSendSection(env);
         return JDWPTRANSPORT_ERROR_ILLEGAL_STATE;
     }
 
@@ -1199,7 +850,6 @@ static jdwpTransportError JNICALL
 TCPIPSocketTran_GetLastError(jdwpTransportEnv* env, char** message)
 {
     *message = ((internalEnv*)env->functions->reserved1)->lastError->GetLastErrorMessage();
-
     if (*message == 0) {
         return JDWPTRANSPORT_ERROR_MSG_NOT_AVAILABLE;
     }
@@ -1225,8 +875,8 @@ jdwpTransport_OnLoad(JavaVM *vm, jdwpTransportCallback* callback,
     iEnv->alloc = callback->alloc;
     iEnv->free = callback->free;
     iEnv->lastError = 0;
-    iEnv->envClientSocket = NULL;
-    iEnv->envServerSocket = NULL;
+    iEnv->envClientSocket = INVALID_SOCKET;
+    iEnv->envServerSocket = INVALID_SOCKET;
 
     jdwpTransportNativeInterface_* envTNI = (jdwpTransportNativeInterface_*)callback
         ->alloc(sizeof(jdwpTransportNativeInterface_));
@@ -1281,4 +931,4 @@ jdwpTransport_UnLoad(jdwpTransportEnv** env)
     unLoadFree((void*)(*env)->functions);
     unLoadFree((void*)(*env));
 } //jdwpTransport_UnLoad
-#endif
+
