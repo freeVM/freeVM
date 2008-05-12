@@ -69,7 +69,8 @@
     <!-- Linux x86 by default -->
     <property name="snapshot.file" value="latest-harmony-hdk-linux-x86.tar.gz" />
 
-    <target name="setup" depends="download.snapshot" />
+    <target name="setup"
+            depends="download.snapshot,-unzip,-gunzip,-svn.revision" />
 
     <property name="downloads.url"
               value="http://people.apache.org/builds/harmony/snapshots/autotesting" />
