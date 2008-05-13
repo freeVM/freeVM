@@ -107,6 +107,10 @@
 		<mkdir dir="${punit.repository}"/>
 		<exec executable="svn" dir="${punit.repository}" failonerror="true">
 			<arg value="checkout"/>
+
+            <!-- workaround: changes after r278 are incompatible -->
+            <arg value="-r278"/>
+
 			<arg value="${punit.url}/punit"/>
 			<arg value="${punit.url}/punit.extension"/>
 		</exec>
