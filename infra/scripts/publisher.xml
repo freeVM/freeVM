@@ -122,30 +122,9 @@ WARNING: Mail notification sending for Test Suite '${suite.name}' FAILED
 ${mail.sending.exception}
 
 </echo>
-            <error-notify>
-Mail Notification Sending failed with the following message: ${mail.sending.exception}
-
-----------
-Test Suite '${suite.name}' execution status: ${mail.execution.status}
-            </error-notify>
         </catch>
         </trycatch>
     </target>
-
-    <macrodef name="error-notify">
-        <text name="text"/>
-        <sequential>
-            <mail mailhost="${mail}"
-                  tolist="${to}"
-                  bcclist="${mail.bcc}"
-                  from="${mail.from}"
-                  subject="${mail.subject.line}">
-                <message>
-@{text}
-                </message>
-            </mail>
-        </sequential>
-    </macrodef>
 
 </project>
 
