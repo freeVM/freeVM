@@ -13,7 +13,7 @@ activities in one place. This infrastructure provides the means to:
 Prepare
 -------
 
-To get HY BTI working on your system, you should have the following tools
+To get Harmony BTI working on your system, you should have the following tools
 installed:
 
   1) JDK version 1.5.0:
@@ -36,34 +36,20 @@ need C compiler. It can be either:
 Getting started
 ---------------
 
-To get started with HY BTI go through the points below. For quick start you
+To get started with Harmony BTI go through the points below. For quick start you
 can skip long explanations - just read the headers of the items and execute
 the commands started with #>
 
 
-1. Get the infrastructure from its SVN repository (located at @LINK): 
+1. Get the infrastructure from its SVN repository:
 
-    #> svn checkout -N -r HEAD @LINK
-
-Currently the link for HY BTI SVN repository is:
-    
-    https://svn.apache.org/repos/asf/harmony/enhanced/buildtest/branches/2.0
-
-It is important to use https protocol on this step: If you're running BTI on 
-your workstation for a first time, this command will initially download 
-SSL certificate from repository hosting site and ask for acceptance.
-To proceed you should accept the certificate permanently.
-
+    #> svn checkout http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk/infra
 
 2. Install the BTI: Tune environment variables in buildtest scripts 
-downloaded during the first step. And run the following command:
+downloaded during the first step, select test suites to execute and invoke
+install target. For example,
     
-    #> buildtest install
-
-
-3. Select test suites to execute and setup your test run configuration:
-
-    #> buildtest -Dtest.suites="classlib,drlvm,scimark" setup
+    #> buildtest -Dtest.suites="classlib,drlvm,scimark" install
 
 This sample configuration means: execute classlib building (test that it can
 be built), then on the base of built classlib do build of drlvm (test that it
@@ -82,10 +68,9 @@ suites on which this test suite depends in default configuration. For example
 look in adaptors/scimark/parameters.xml file: by default the scimark test
 suite depends on drlvm: if drlvm and scimark are selected for test run
 together, then scimark is always executed after drlvm and it takes JVM
-provided by drlvm as JVM to test. If drlvm test suite was not selected for
-run, then scimark's 'tested.runtime' "required" parameter won't be resolved
-and BTI will ask to provide this value by means of
-required-parameters.properties file. 
+provided by drlvm as JVM to test. If drlvm test suite is not selected for
+run, then scimark's 'tested.runtime' "required" parameter is not resolved
+and BTI asks to provide this value in 'framework.local.properties' file.
 
 drlvm test suite provides information about built JVM to other test suites
 by means of "shared" 'jvm.location' parameter. 
@@ -114,44 +99,30 @@ parameters.xml file.
 
 That's all about dependencies between the test suites.
 
-'buildtest setup' command generates required-parameters.properties file. 
+'buildtest install' command generates required-parameters.properties file. 
 It contains all of the assignments of "required" parameters. 
 If some of the "required" parameters were not evaluated, 
 BTI will report an ERROR and demand to specify the values for
-unspecified parameters. You should whether provide them directly in 
-required-parameters.properties file (this way is better for some predefined 
-values, hardcoded path to tested JVM for example) and go to next step, 
-or provide "required" to "shared" correspondence (as above) in 
-framework.local.properties file and repeat 'buildtest setup'. 
+unspecified parameters. You should provide them directly in 
+framework.local.properties file and repeat 'buildtest install'. 
 
-Note: the values provided in required-parameters.properties take precedence
-over the values provided in parameters.xml or framework.local.properties
-files. So, if you change the values of required parameters in parameters.xml,
-or in framework.local.properties file, you should delete corresponding
-required parameter from required-parameters.properties file.
+3. Setup test suites:
 
-For example of usage of the required-parameters.properties file let's look at
-the configuration containing only scimark test suite:
-'buildtest -Dtest.suite=scimark setup' command will end with demand to specify 
-the value for 'scimark.tested.runtime' "required" parameter. We just write the
-following line in required-parameters.properties file:
+    #> buildtest setup
 
-scimark.tested.runtime=/usr/bin/java
-
-and go to the next point of the usage guide.
-
+This command launches setup target for each installed suite. 
 
 4. To launch the configured test run, type the following:
 
     #> buildtest run
 
-It will execute selected test suites. BTI will execute each of the suites and
-report SUCCESS if there were no test failures and ERROR otherwise.
+It executes selected test suites. BTI executes each of the suites and
+reports SUCCESS if there are no test failures and ERROR otherwise.
 To launch continuous test run, type the following:
     
     #> buildtest run-cc
 
-It will launch CC controlled continuous test execution. There are two modes of
+It launches CC controlled continuous test execution. There are two modes of
 continuous execution: SVN modifications triggered and scheduled runs. SVN
 modifications triggered runs are executed each time SVN modification occurs.
 The SVN repositories controlled by test suites are defined by cc.usesvn*
@@ -161,7 +132,7 @@ time specified by the following properties in framework.local.properties file:
 
 framework.parameters.schedule.day=Tuesday
  - Do launch test suites execution on particular day. 
-   If this property is not defined, the test run will be launched everyday.
+   If this property is not defined, the test run is launched everyday.
 framework.parameters.schedule.time=1530
  - Do launch test suites execution at this particular time.
    Should be defined for scheduled execution mode.
