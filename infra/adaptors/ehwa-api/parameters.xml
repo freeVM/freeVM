@@ -19,16 +19,21 @@
 <parameters depends="drlvm">
     
     <required>
-        <built.drlvm.trunk 
-            description="Path to built drlvm trunk"
-            value="${drlvm.parameters.shared.trunk.dir}" />
-        <drlvm.config
-            description="The built drlvm configuration (debug/release)"
-            value="${drlvm.parameters.shared.build.config}"/>
         <tested.runtime
             description="Path to Tested Runtime"
             value="${drlvm.parameters.shared.jre.dir}"/>
     </required>
+
+    <svn>
+      <!-- take only build files from DRLVM -->
+      <ehwa-api url="http://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk/make" />
+
+      <!-- take plugin -->
+      <ehwa url="http://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk/vm/tests/ehwa" />
+ 
+      <!-- DRLVM build requires it but do we really need it for the scenario? -->
+      <common_resources url="http://svn.apache.org/repos/asf/harmony/enhanced/common_resources/trunk" />
+    </svn>
     
     <optional>
         <test.mode 

@@ -81,20 +81,33 @@
     </target>
 
     <!-- Run of the EHWA scenario -->
-    <target name="run">
+    <target name="run" depends="-update">
         <log message="============= Adaptor for ${suite.name}: Run ..." />
 
-        <exec-ant dir="${built.drlvm.trunk}"
-                  targets="ehwa.test"
-                  failonerror="true"
-                  failproperty="drlvm-ehwa-test.run.failed">
-            <sysproperty key="hy.cfg" value="${drlvm.config}" />
+        <exec-ant dir="${ehwa-api.parameters.svn.ehwa-api.location}/tests"
+                  file="ehwa-test.xml"
+                  targets="fetch-depends"
+                  failonerror="true">
+
+            <sysproperty key="common.resources.loc"
+                         value="${ehwa-api.parameters.svn.common_resources.location}" />
+        </exec-ant>
+
+        <exec-ant dir="${ehwa-api.parameters.svn.ehwa-api.location}/tests"
+                  file="ehwa-test.xml"
+                  targets="ehwa">
+
             <sysproperty key="eclipse.home"
                          value="${eclipse-3.2.1.homedir}/eclipse" />
             <sysproperty key="test.mode"
                          value="${ehwa-api.parameters.optional.test.mode}" />
             <sysproperty key="test.jre.home"
                          value="${ehwa-api.parameters.required.tested.runtime}" />
+            <sysproperty key="common.resources.loc"
+                         value="${ehwa-api.parameters.svn.common_resources.location}" />
+
+            <!-- then the path to plugin zip is ${checkouts.dir}/ehwa/ehwa.zip -->
+            <sysproperty key="test.home" value="${checkouts.dir}" />
         </exec-ant>
     </target>
 
@@ -131,6 +144,31 @@
              dest="${external.arch.dir}/${eclipse.archive}"
              usetimestamp="false"
              verbose="true" />
+    </target>
+
+    <!--                                                    -->
+    <!-- Targets and properties related to snapshot testing -->
+    <!--                                                    -->
+    <condition property="is.snapshot">
+        <equals arg1="${ehwa-api.parameters.depends}"
+                arg2="snapshot"
+                trim="yes" />
+    </condition>
+
+    <target name="-update"
+            if="is.snapshot"
+            description="adjusts tests to snapshot revision">
+
+        <exec executable="svn"
+              dir="${ehwa-api.parameters.svn.common_resources.location}"
+              failonerror="true">
+            <arg line="up -r${svn.revision} ." />
+        </exec>
+        <exec executable="svn"
+              dir="${ehwa-api.parameters.svn.ehwa-api.location}"
+              failonerror="true">
+            <arg line="up -r${svn.revision} ." />
+        </exec>
     </target>
 
 </project>
