@@ -18,12 +18,9 @@
 <parameters depends="drlvm">
 
     <required>    
-        <tested.runtime
-            description="Path to Tested Runtime"
+        <tested.jre
+            description="Path to Tested JRE"
             value="${drlvm.parameters.shared.jre.dir}"/>
-        <tptp.tests.build.home
-            description="Location of the TPTP tests build"
-            value=""/>
     </required>                 
 
     <svn>
@@ -31,33 +28,39 @@
     </svn>
 
     <optional>
-        <tested.vm.options
-            description="JVM options for tested runtime"
-            value=""/>
-<!-- Specify -Dtime.precision=1000000 (1000000 nanos == 1 millis) to avoid test
-failures due to nonmonotonic behavior of gettimeofday() function on some linux
-systems -->
-        <runner.vm.options
-            description="Options for tests runner VM (for example, -Ddelete.output=false)"
-            value="-Dtime.precision=1000000"/>
-        <runner.arguments
-            description="These arguments will be passed to test runner"
-            value=""/>
+        <test.build.home
+            description="Location of the TPTP tests build"/>
+        <test.source.home
+            description="Location of the TPTP tests sources"/>
+        <test.cvs.root
+            description="CVSROOT of TPTP tests repository"/>
+        <test.cvs.module
+            description="cvs module of TPTP tests"/>
 
-        <tptp.tests.module
-            description="TPTP tests module name"
-            value="org.eclipse.tptp.ac.testautomation"/>    
-        <tptp.test.class
-            description="Package name of TPTP tests or one test which will be run (AllStandaloneProfiling runs all JVMTI tests)"
-            value="org.eclipse.tptp.ac.testautomation.junits.AllStandaloneProfiling"/>
+        <ac.home
+            description="Location of the TPTP Agent Controller"/>
+        <ac.url
+            description="URL to download TPTP Agent Controller from"/>
+
+        <tested.vm.options
+            description="JVM options for tested runtime"/>
+        <reference.jdk
+            description="Path to reference JDK (JAVA_HOME by default)"/>
+        <runner.jre
+            description="Path to runner JRE (reference.jdk by default)"/>
+        <runner.vm.options
+            description="Options for runner VM (for example, -Ddelete.output=false)"/>
+        <runner.class
+            description="Package name of TPTP tests or one test which will be run (default is org.eclipse.tptp.ac.testautomation.junits.AllStandaloneProfiling which runs all JVMTI tests)"/>
 <!--        value="org.eclipse.tptp.ac.testautomation.junits.ThreadStandaloneProfiling"/-->
 
         <exclude.list
-            description="Exclude list file name"
-            value="exclude.list"/>
+            description="Exclude list file name (exclude.list by default)"/>
         <test.timeout
-            description="Time out for one test running"
+            description="Test execution timeout measured from last write time to the trace file (60000 by default )"
             value="600000"/>
+        <time.precision
+            description="Time precision in nanoseconds for comparing two time stamps (1000000 by default)"/>
     </optional>    
 
     <external/>

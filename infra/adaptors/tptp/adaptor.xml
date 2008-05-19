@@ -22,68 +22,38 @@
 
     <!--- Define used properties -->    
     <property name="work.dir"        value="${checkouts.dir}/tptp"/> 
-    <property name="tests.module"    value="${tptp.parameters.optional.tptp.tests.module}"/>
     <property name="tptp.results"    value="${results.dir}/${suite.name}"/>
-    <property name="tptp.report"     value="${tptp.results}/tptp_report"/>      
     <property name="tptp.failed.zip" value="${tptp.results}/FailedTests.zip"/>      
 
     <!-- Setup the TPTP profiler test suite -->
-    <target name="setup" description="Setup TPTP profiler tests."> 
+    <target name="setup"
+            depends="prepare-optional-parameters"
+            description="Setup TPTP profiler tests.">
         <log message="============= Adaptor for ${suite.name}. Setup .."/>
         <!-- call ant script of the tptp project -->
-        <ant antfile="build.xml"
-                dir="${work.dir}"
+        <ant dir="${work.dir}"
                 target="setup"
                 inheritAll="false">
-            <property name="test.home" value="${work.dir}/${tests.module}"/>
+            <propertyset refid="optional.parameters"/>
         </ant>
     </target>
 
     <!-- Run the TPTP profiler test suite -->
-    <target name="run" description="Run TPTP profiler tests."> 
+    <target name="run"
+            depends="prepare-optional-parameters"
+            description="Run TPTP profiler tests.">
         <log message="============= Adaptor for ${suite.name}. Run .."/>
-
-        <!-- make the dir to store built tests -->
-        <delete dir="${work.dir}/${tests.module}"/>
-        <mkdir dir="${work.dir}/${tests.module}"/>
-
-        <!-- Copy tests from build to build/checkouts/tptp -->
-        <copy todir="${work.dir}/${tests.module}" failonerror="true">
-            <fileset dir="${tptp.tests.build.home}/${tests.module}"/>
-        </copy>        
-
-        <!-- Copy exclude list file for updating suite's config -->
-        <copy todir="${tptp.results}" file="${work.dir}/${tptp.parameters.optional.exclude.list}"/>
-
-        <!-- Remember start time -->
-        <tstamp>
-            <format property="time.stamp" pattern="yyyy-MM-dd_hhmm" />
-        </tstamp>
 
         <!-- call ant script of the tptp project -->
         <exec-ant dir="${work.dir}"
                   targets="run"
-                  failonerror="false"
                   failproperty="tptp.tests.failed">
-            <sysproperty key="test.home"         value="${work.dir}/${tests.module}"/>
-            <sysproperty key="tested.runtime"    value="${tested.runtime}"/>
-            <sysproperty key="tptp.test.class"   value="${tptp.parameters.optional.tptp.test.class}"/>
-            <sysproperty key="runner.arguments"  value="${tptp.parameters.optional.runner.arguments}"/>
-            <sysproperty key="tptp.options"      value="${tptp.parameters.optional.runner.vm.options}"/>
-            <sysproperty key="tested.vm.options" value="${tptp.parameters.optional.tested.vm.options}"/>
-            <sysproperty key="test.timeout"      value="${tptp.parameters.optional.test.timeout}"/>
-            <sysproperty key="exclude.name"      value="${tptp.parameters.optional.exclude.list}"/>
+            <syspropertyset refid="optional.parameters"/>
+
+            <sysproperty key="tested.jre" value="${tested.jre}"/>
             <sysproperty key="results.dir"       value="${tptp.results}"/>
-            <sysproperty key="report.dir"        value="${tptp.report}"/>
             <sysproperty key="failed.zip"        value="${tptp.failed.zip}"/>
         </exec-ant>
-
-        <!-- Store recent results -->
-        <copy todir="${tptp.report}_${time.stamp}">
-            <fileset dir="${tptp.report}"/>
-        </copy>
-
-        <fail message="Some TPTP tests failed" if="tptp.tests.failed"/>
     </target>
 
     <!-- Clean TPTP profiler test suite -->
@@ -91,6 +61,36 @@
     <log message="============= Adaptor for ${suite.name}. Clean .."/>
         <delete dir="${work.dir}"/>
         <delete dir="${tptp.results}"/>
+    </target>
+
+    <target name="prepare-optional-parameters">
+        <tempfile property="optional.parameters.file"
+                  prefix="optional.parameters."
+                  suffix=".tmp.properties"/>
+
+        <echoproperties destfile="${optional.parameters.file}">
+            <propertyset>
+                <propertyref prefix="tptp.parameters.optional."/>
+                <mapper type="glob"
+                        from="tptp.parameters.optional.*"
+                        to="filtered.parameters.*"/>
+            </propertyset>
+        </echoproperties>
+
+        <loadproperties srcfile="${optional.parameters.file}">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="^[^=]+=\s*\S"/>
+                </linecontainsregexp>
+            </filterchain>
+        </loadproperties>
+
+        <delete file="${optional.parameters.file}"/>
+
+        <propertyset id="optional.parameters">
+            <propertyref prefix="filtered.parameters."/>
+            <mapper type="glob" from="filtered.parameters.*" to="*"/>
+        </propertyset>
     </target>
 
 </project>
