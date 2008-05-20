@@ -38,10 +38,11 @@
     <macrodef name="poll-modules">
         <attribute name="target" />
         <attribute name="dir" />
-        <attribute name="includes" default="**/*.xml"/>
+        <attribute name="includes" default="${build.module}/*.xml"/>
+        <attribute name="excludes" default="${exclude.module}/*.xml"/>
         <sequential>
             <subant target="@{target}">
-                <fileset dir="@{dir}" includes="@{includes}">
+                <fileset dir="@{dir}" includes="@{includes}" excludes="@{excludes}">
                     <containsregexp expression="&lt;target[^&gt;]*name=&quot;@{target}&quot;"/>
                 </fileset>
             </subant>
@@ -68,13 +69,11 @@
         <unzip src="${src}" dest="${tmp}" >
             <patternset includes="${unzip.path}"/>
         </unzip>
-        <!-- touch does not work with filesets for me though -->
         <touch>
             <fileset dir="${tmp}">
                 <patternset includes="${unzip.path}"/>
             </fileset>
         </touch>
-        <touch file="${tmp}/${unzip.path}"/>
         <move todir="${dest}" flatten="yes" failonerror="no">
             <fileset dir="${tmp}">
                 <patternset includes="${unzip.path}"/>
@@ -87,11 +86,30 @@
         <attribute name="dep" />
         <sequential>
             <dirname file="${@{dep}}" property="@{dep}.dir"/>
+            <!-- quite tricky way to detect if unzip operation is pending,
+                still not very robust ...
+                Life could be simpler if unzip supported nested mappers
+            -->
+            <basename file="${@{dep}}" property="@{dep}.basename"/>
             <basename file="${@{dep}.unzip.path}" property="@{dep}.unzip.basename"/>
+            <pathconvert property="@{dep}.matching.list" setonempty="no">
+                <path><fileset dir="${@{dep}.dir}" includes="${@{dep}.unzip.basename}"/></path>
+            </pathconvert>
+            <pathconvert property="@{dep}.uptodate.list" setonempty="no">
+                <path>
+                    <fileset dir="${@{dep}.dir}" includes="${@{dep}.unzip.basename}">
+                        <depend targetdir="${@{dep}.dir}">
+                            <mapper type="merge" to="${@{dep}.basename}"/>
+                        </depend>
+                    </fileset>
+                </path>
+            </pathconvert>
             <condition property="@{dep}.unzipped">
-                <uptodate srcfile="${@{dep}}"
-                        targetfile="${@{dep}.dir}/${@{dep}.unzip.basename}"/>
+                <equals arg1="${@{dep}.uptodate.list}" arg2="${@{dep}.matching.list}"/>
+                <!--uptodate srcfile="${@{dep}}"
+                        targetfile="${@{dep}.dir}/${@{dep}.unzip.basename}"/-->
             </condition>
+
             <antcall target="-really-unzip">
                 <param name="src" value="${@{dep}}" />
                 <param name="dest" value="${@{dep}.dir}" />
@@ -167,11 +185,11 @@ file and put it in the specified directory.
         </condition>
 ...
 
-Missing dependency.  The jar from:
+Missing dependency.  The file from:
 
   @{src}
 
-should be downloaded to:
+should be downloaded (extracted) to:
 
   @{dest}
 
