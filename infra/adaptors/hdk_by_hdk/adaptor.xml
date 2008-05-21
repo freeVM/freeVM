@@ -34,10 +34,8 @@
     </condition>
 
     <target name="setup">
-        <mkdir dir="${hdk_by_hdk.parameters.required.trunk.dir}" />
-
-        <!--FIXME: need to do checkout first
-            or add corresponding svn value to parameters.xml -->
+        <exec-ant dir="${hdk_by_hdk.parameters.svn.hdk_by_hdk.location}"
+                  targets="populate-src" />
     </target>
 
     <target name="-get-revision" if="is.snapshot">
@@ -46,19 +44,19 @@
     </target>
 
     <target name="run" depends="-get-revision">
-        <echo message="Checkout HDK trunk ${co.target} into ${hdk_by_hdk.parameters.required.trunk.dir}" />
+        <echo message="Checkout HDK trunk ${co.target} into ${hdk_by_hdk.parameters.svn.hdk_by_hdk.location}" />
         <property name="co.target" value="" />
 
         <exec executable="svn"
-              dir="${hdk_by_hdk.parameters.required.trunk.dir}"
+              dir="${hdk_by_hdk.parameters.svn.hdk_by_hdk.location}"
               failonerror="true">
-            <arg line="up --ignore-externals ${co.target} ." />
+            <arg line="up -N ${co.target} ." />
         </exec>
 
-        <exec-ant dir="${trunk.dir}"
+        <exec-ant dir="${hdk_by_hdk.parameters.svn.hdk_by_hdk.location}"
                   targets="rebuild"
                   javaVM="${tested.jdk}/bin/java">
-            <jvmarg line="-Xmx800M -Dtarget.dir=${target.dir}" />
+            <jvmarg line="-Xmx800M -Dtarget.dir=target.self-built" />
             <env key="JAVA_HOME" value="${tested.jdk}" />
             <env key="PATH" value="${my.path}" />
             <sysproperty key="keep.working" value="true" />

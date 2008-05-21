@@ -22,12 +22,11 @@
         <tested.jdk 
             description="Path to JDK under test" 
             value="${hdk.parameters.shared.binaries.jre.dir}/.." />
-        <trunk.dir 
-            description="Path to HDK trunk root directory" 
-            value="${hdk.parameters.shared.trunk.dir}" />
-        <target.dir 
-            description="Directory to store built HDK"
-            value="${hdk.parameters.shared.trunk.dir}/target.self-built" />
     </required>
+
+    <svn>
+      <hdk_by_hdk
+        url="http://svn.apache.org/repos/asf/harmony/enhanced/trunk" />
+    </svn>
 
 </parameters>
