@@ -52,11 +52,11 @@
 
     <target name="-layout" depends="-prepare-depends">
         <!-- Create the target directory structure -->
-        <mkdir dir="${hy.jdk}/jre/bin" />
-        <mkdir dir="${hy.jdk}/bin" />
+        <mkdir dir="${jdktools.deploy.dir}/jre/bin" />
+        <mkdir dir="${jdktools.deploy.dir}/bin" />
 
         <!-- Copy across the jdk/lib dependency jars -->
-        <copy todir="${hy.jdk}/lib" flatten="yes">
+        <copy todir="${jdktools.deploy.dir}/lib" flatten="yes">
             <fileset file="${ecj.jar}" />
         </copy>
     </target>
@@ -64,7 +64,7 @@
 
     <target name="-clean-layout">
         <delete includeemptydirs="true" failonerror="false">
-            <fileset dir="${hy.jdk}">
+            <fileset dir="${jdktools.deploy.dir}">
                 <exclude name="jre/bin/default/**" />
                 <exclude name="jre/bin/**" />
                 <exclude name="jre/lib/ext/**" />

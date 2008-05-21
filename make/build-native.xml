@@ -31,7 +31,7 @@
     <property name="depends.build" location="depends/build" />
     <property name="depends.libs" location="depends/libs/${hy.platform}" />
     <property name="depends.files" location="depends/files" />
-    <property name="native.lib.target" location="${hy.jdk}/lib" />
+    <property name="native.lib.target" location="${jdktools.deploy.dir}/lib" />
 
     <target name="build" depends="-layout, build-modules" />
 
@@ -51,14 +51,14 @@
         description="Construct the correct directory structure for native binaries">
 
     	<!-- Create the target directory structure -->
-        <mkdir dir="${hy.jdk}/jre/bin" />
-        <mkdir dir="${hy.jdk}/include" />
+        <mkdir dir="${jdktools.deploy.dir}/jre/bin" />
+        <mkdir dir="${jdktools.deploy.dir}/include" />
     	<mkdir dir="${native.lib.target}"/>
     </target>
 
     <target name="-clean-layout">
         <delete includeemptydirs="true" failonerror="false">
-            <fileset dir="${hy.jdk}">
+            <fileset dir="${jdktools.deploy.dir}">
                 <include name="**/bin/java${exe.suffix}" />
                 <include name="**/bin/javaw${exe.suffix}" />
                 <include name="**/bin/*${shlib.suffix}*" />

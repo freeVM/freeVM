@@ -46,9 +46,7 @@
     </condition>
     <property name="hy.deploy" location="${external.drlvm.loc}"/>
     <property name="hy.hdk" location="${external.classlib.loc}" />
-    <property name="hy.jdk" location="deploy/jdk" />
-
-    <property file="make/depends.properties" />
+    <property name="jdktools.deploy.dir" location="${jdktools.base.dir}/deploy/jdk" />
 
     <!-- set the path root for the external resources  -->
     <property name="common.resources.loc" value="${jdktools.base.dir}/../common_resources" />
@@ -65,16 +63,10 @@
     <import file="${common.resources}/make/properties.xml"/>
     <import file="${common.resources}/make/depends.xml"/>
     
-
+    <property file="${jdktools.base.dir}/make/depends.properties" />
+    
     <target name="tools-echo" depends="echo"
             description="Display the properties defined by this ant file" >
-        <echo>
-JDK tools build settigns:
-            
-  hy.cflags = ${hy.cflags}
-  hy.arch.define = ${hy.arch.define}
-            
-        </echo>
     </target>
 
 </project>

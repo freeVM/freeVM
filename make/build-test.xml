@@ -30,7 +30,7 @@
     <condition property="not.copy.jre">
         <isset property="test.jre.home"/>
     </condition>
-    <property name="test.jre.home" location="${hy.jdk}" />
+    <property name="test.jre.home" location="${jdktools.deploy.dir}" />
 
     <property name="tests.build.output" location="build/tests" />
     <property name="tests.depends.jars" location="${hy.hdk}/jdk/jre/lib/boot" />
@@ -97,17 +97,17 @@
     <target name="copy-jre" depends="copy-jre-files, chmod-jre-files" unless="not.copy.jre"/>
 
     <target name="copy-jre-files" unless="not.copy.jre">
-        <copy todir="${hy.jdk}/jre" overwrite="no">
+        <copy todir="${jdktools.deploy.dir}/jre" overwrite="no">
               <fileset dir="${hy.deploy}/jdk/jre" />
         </copy>
     </target>
 
     <target name="chmod-jre-files" if="is.unix" unless="not.copy.jre">
-        <chmod file="${hy.jdk}/jre/bin/java" perm="ugo+x" />
+        <chmod file="${jdktools.deploy.dir}/jre/bin/java" perm="ugo+x" />
     </target>
 
     <target name="clean-jre">
-        <delete dir="${hy.jdk}/jre" />
+        <delete dir="${jdktools.deploy.dir}/jre" />
     </target>
 
     <target name="process-empty" depends="-check-for-empty, -process-empty"/>

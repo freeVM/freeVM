@@ -165,24 +165,18 @@ Testing jdktools binaries...
         </ant>
     </target>
 
-
     <target name="check-depends"
             description="Report on whether the dependencies are met">
-        <ant antfile="make/depends.xml" inheritall="false" target="check">
-            <property name="external.resources" value="${external.resources}"/>
-        </ant>
+        <ant antfile="make/depends.xml" target="check"/>
     </target>
 
     <target name="fetch-depends"
         description="Fetches dependencies. Note: Some of Harmony's dependencies are licensed under terms other than the Apache License v2.">
-        <ant antfile="make/depends.xml" inheritall="false" target="download">
-            <property name="external.resources" value="${external.resources}"/>
-        </ant>
+        <ant antfile="make/depends.xml" target="fetch"/>
     </target>
 
     <target name="properties" depends="tools-echo"
-        description="Display the properties that are use in the ant build files"
-            />
+        description="Display the properties that are use in the ant build files"/>
 
 </project>
 
