@@ -348,7 +348,8 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
    
    <presetdef name="hy.javac">
        <javac target="${hy.javac.target}" source="${hy.javac.source}" 
-                compiler="${hy.javac.compiler}" debug="${hy.javac.debug}">
+                compiler="${hy.javac.compiler}" debug="${hy.javac.debug}"
+           memoryMaximumSize="${hy.javac.maxmem}">
            <compilerarg line="${build.compilerarg}" />
        </javac>
    </presetdef>
