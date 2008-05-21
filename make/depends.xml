@@ -35,12 +35,46 @@
       </filterchain>
     </loadproperties>
 
-    <macrodef name="poll-modules">
+    <macrodef name="poll-modules" 
+        description="directory-based macros for polling sub-builds">
         <attribute name="target" />
         <attribute name="dir" />
-        <attribute name="includes" default="${build.module}/*.xml"/>
-        <attribute name="excludes" default="${exclude.module}/*.xml"/>
+        <attribute name="includes" default="${build.module}"/>
+        <attribute name="excludes" default="${exclude.module}"/>
+        <attribute name="antfile" default="*.xml"/>
         <sequential>
+            <!-- convert dirset pattern to fileset pattern-->
+            <property name="@{dir}.loc" location="@{dir}"/>
+            <pathconvert property="list.@{dir}.@{target}" 
+                pathsep="${file.separator}@{antfile}," setonempty="no">
+                <path>
+                    <dirset dir="@{dir}"
+                            includes="@{includes}"
+                            excludes="@{excludes}">
+                        <exclude name=".*" />
+                    </dirset>
+                </path>
+                <map from="${@{dir}.loc}${file.separator}" to=""/>
+            </pathconvert>
+            <!-- append antfile suffix to last item in the list, if any -->
+            <condition property="poll.@{dir}.@{target}"
+                value="${list.@{dir}.@{target}}${file.separator}@{antfile}" 
+                else="">
+                <isset property="list.@{dir}.@{target}"/>
+            </condition>
+            <poll-build target="@{target}" dir="@{dir}" 
+                includes="${poll.@{dir}.@{target}}"/>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="poll-build"
+        description="plain-filter macros for polling sub-builds">
+        <attribute name="target" />
+        <attribute name="dir" />
+        <attribute name="includes" default="**/*.xml"/>
+        <attribute name="excludes" default=""/>
+        <sequential>
+            <echo message="polling @{includes}"/>
             <subant target="@{target}">
                 <fileset dir="@{dir}" includes="@{includes}" excludes="@{excludes}">
                     <containsregexp expression="&lt;target[^&gt;]*name=&quot;@{target}&quot;"/>
