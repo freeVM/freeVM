@@ -9,21 +9,22 @@
      
          http://www.apache.org/licenses/LICENSE-2.0
      
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License. -->
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License. -->
 
 <project name="hdk_by_hdk" default="run" basedir=".">
 
-    <property environment="env"/>
+    <property environment="env" />
 
     <!-- workaround: properties are case sensitive -->
     <!-- even the env. vars on OS are not          -->
     <property name="env.PATH" value="${env.Path}" />
 
-    <property name="my.path" value="${tested.jdk}/bin${path.separator}${env.PATH}"/>
+    <property name="my.path"
+              value="${tested.jdk}/bin${path.separator}${env.PATH}" />
 
     <!-- if the suite is run against snapshot -->
     <condition property="is.snapshot">
@@ -40,27 +41,28 @@
     </target>
 
     <target name="-get-revision" if="is.snapshot">
-        <property file="${snapshot.svn.revision.file}"/>
-        <property name="co.target" value="-r${svn.revision}"/>
+        <property file="${snapshot.svn.revision.file}" />
+        <property name="co.target" value="-r${svn.revision}" />
     </target>
 
     <target name="run" depends="-get-revision">
-        <echo message="Checkout HDK trunk ${co.target} into ${hdk_by_hdk.parameters.required.trunk.dir}"/>
-        <property name="co.target" value=""/>
-        
-        <exec executable="svn" dir="${hdk_by_hdk.parameters.required.trunk.dir}" 
-            failonerror="true">
+        <echo message="Checkout HDK trunk ${co.target} into ${hdk_by_hdk.parameters.required.trunk.dir}" />
+        <property name="co.target" value="" />
+
+        <exec executable="svn"
+              dir="${hdk_by_hdk.parameters.required.trunk.dir}"
+              failonerror="true">
             <arg line="up --ignore-externals ${co.target} ." />
         </exec>
 
         <exec-ant dir="${trunk.dir}"
                   targets="rebuild"
                   javaVM="${tested.jdk}/bin/java">
-            <jvmarg line="-Xmx800M -Dtarget.dir=${target.dir}"/>
-            <env key="JAVA_HOME" value="${tested.jdk}"/>
-            <env key="PATH" value="${my.path}"/>
-            <sysproperty key="keep.working" value="true"/>
-            <sysproperty key="auto.fetch" value="true"/>
+            <jvmarg line="-Xmx800M -Dtarget.dir=${target.dir}" />
+            <env key="JAVA_HOME" value="${tested.jdk}" />
+            <env key="PATH" value="${my.path}" />
+            <sysproperty key="keep.working" value="true" />
+            <sysproperty key="auto.fetch" value="true" />
         </exec-ant>
     </target>
 
