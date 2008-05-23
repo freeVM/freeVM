@@ -282,7 +282,7 @@
 
     <target name="kill.zombies" if="is.linux">
         <exec executable="killall" failonerror="false">
-            <arg line="${test.jre.home.path}/jre/bin/java" />
+            <arg line="${test.jre.home.path}/bin/java" />
         </exec>
     </target>
 
