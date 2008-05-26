@@ -47,6 +47,8 @@
                 value="${results.dir}/${suite.name}"/>
             <property name="test.jre.home"
                 value="${eut33.parameters.required.tested.runtime}"/>
+            <property name="ext.ant-contrib.location"
+                value="${ext.ant-contrib.location}" />
         </ant>
     </target>
 
@@ -100,6 +102,8 @@
                 value="${eut33.parameters.optional.tested.vm.options}"/>
             <property name="test.jre.home"
                 value="${eut33.parameters.required.tested.runtime}"/>
+             <property name="ext.ant-contrib.location"
+                 value="${ext.ant-contrib.location}" />
         </ant>
    </target>
 
