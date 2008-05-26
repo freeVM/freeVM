@@ -89,19 +89,6 @@ public final class Injected implements Serializable {
 		return MIDletSystemProperties.getProperty(key);
 	}
 	
-	/**
-	 * 
-	 * Returns an input stream for reading the specified resource.
-     *
-     * <p> The search order is described in the documentation for {@link
-     * #getResource(String)}.  </p>
-     *
-     * @param  origClass
-     * @param  name  The resource name
-     *
-     * @return  An input stream for reading the resource, or <tt>null</tt>
-     *          if the resource could not be found
-	 */
 	public static InputStream getResourceAsStream(Class origClass, String name)  {
 		return MIDletResourceLoader.getResourceAsStream(origClass, name);
 	}

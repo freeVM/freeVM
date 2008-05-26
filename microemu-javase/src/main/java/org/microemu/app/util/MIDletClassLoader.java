@@ -172,26 +172,6 @@ public class MIDletClassLoader /*extends SystemClassLoader*/ {
 //		}
 //	}
 //
-//    /**
-//     * Loads the class with the specified <a href="#name">binary name</a>.
-//     * This implementation of this method searches for classes in the
-//     * following order:
-//     *
-//     * <p><ol>
-//     *
-//     *   <li><p> Invoke {@link #findLoadedClass(String)} to check if the class
-//     *   has already been loaded.  </p></li>
-//     *
-//     *   <li><p> Invoke the {@link #findClass(String)} method to find the
-//     *   class in this class loader.  </p></li>
-//     *
-//     *   <li><p> Invoke the {@link #loadClass(String) <tt>loadClass</tt>} method
-//     *   on the parent class loader.  If the parent is <tt>null</tt> the class
-//     *   loader built-in to the virtual machine is used, instead.  </p></li>
-//     *
-//     * </ol>
-//     *
-//     */
 //	protected synchronized Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
 //		// First, check if the class has already been loaded
 //		Class result = findLoadedClass(name);

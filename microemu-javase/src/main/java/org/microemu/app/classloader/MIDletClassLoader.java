@@ -107,13 +107,6 @@ public class MIDletClassLoader extends URLClassLoader {
 		this.delegatingToParent = (clConfig.delegationType == MIDletClassLoaderConfig.DELEGATION_DELEGATING);
 	}
 
-	/**
-	 * Appends the Class Location URL to the list of URLs to search for classes
-	 * and resources.
-	 * 
-	 * @param Class
-	 *            Name
-	 */
 	public void addClassURL(String className) throws MalformedURLException {
 		String resource = getClassResourceName(className);
 		URL url = getParent().getResource(resource);
@@ -147,44 +140,6 @@ public class MIDletClassLoader extends URLClassLoader {
 		super.addURL(url);
 	}
 
-	/**
-	 * Loads the class with the specified <a href="#name">binary name</a>.
-	 * 
-	 * <p>
-	 * Search order is reverse to standard implemenation
-	 * </p>
-	 * 
-	 * This implementation of this method searches for classes in the following
-	 * order:
-	 * 
-	 * <p>
-	 * <ol>
-	 * 
-	 * <li>
-	 * <p>
-	 * Invoke {@link #findLoadedClass(String)} to check if the class has already
-	 * been loaded.
-	 * </p>
-	 * </li>
-	 * 
-	 * <li>
-	 * <p>
-	 * Invoke the {@link #findClass(String)} method to find the class in this
-	 * class loader URLs.
-	 * </p>
-	 * </li>
-	 * 
-	 * <li>
-	 * <p>
-	 * Invoke the {@link #loadClass(String) <tt>loadClass</tt>} method on the
-	 * parent class loader. If the parent is <tt>null</tt> the class loader
-	 * built-in to the virtual machine is used, instead.
-	 * </p>
-	 * </li>
-	 * 
-	 * </ol>
-	 * 
-	 */
 	protected synchronized Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
 		if (debug) {
 			Logger.debug("loadClass", name);
@@ -218,34 +173,6 @@ public class MIDletClassLoader extends URLClassLoader {
 		return result;
 	}
 
-	/**
-	 * Finds the resource with the given name. A resource is some data (images,
-	 * audio, text, etc) that can be accessed by class code in a way that is
-	 * independent of the location of the code.
-	 * 
-	 * <p>
-	 * The name of a resource is a '<tt>/</tt>'-separated path name that
-	 * identifies the resource.
-	 * 
-	 * <p>
-	 * Search order is reverse to standard implemenation
-	 * </p>
-	 * 
-	 * <p>
-	 * This method will first use {@link #findResource(String)} to find the
-	 * resource. That failing, this method will NOT invoke the parent class
-	 * loader if delegatingToParent=false.
-	 * </p>
-	 * 
-	 * @param name
-	 *            The resource name
-	 * 
-	 * @return A <tt>URL</tt> object for reading the resource, or
-	 *         <tt>null</tt> if the resource could not be found or the invoker
-	 *         doesn't have adequate privileges to get the resource.
-	 * 
-	 */
-
 	public URL getResource(final String name) {
 		try {
 			return (URL) AccessController.doPrivileged(new PrivilegedExceptionAction() {
@@ -265,9 +192,6 @@ public class MIDletClassLoader extends URLClassLoader {
 		}
 	}
 
-	/**
-	 * Allow access to resources
-	 */
 	public InputStream getResourceAsStream(String name) {
 		final URL url = getResource(name);
 		if (url == null) {
@@ -314,11 +238,6 @@ public class MIDletClassLoader extends URLClassLoader {
 		return false;
 	}
 
-	/**
-	 * Special case for classes injected to MIDlet
-	 * 
-	 * @param klass
-	 */
 	public void disableClassPreporcessing(Class klass) {
 		disableClassPreporcessing(klass.getName());
 	}

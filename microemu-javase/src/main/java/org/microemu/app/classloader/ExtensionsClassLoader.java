@@ -71,34 +71,6 @@ public class ExtensionsClassLoader extends URLClassLoader {
 		}
 	}
 	 
-	
-	/**
-	 * Finds the resource with the given name. A resource is some data (images,
-	 * audio, text, etc) that can be accessed by class code in a way that is
-	 * independent of the location of the code.
-	 * 
-	 * <p>
-	 * The name of a resource is a '<tt>/</tt>'-separated path name that
-	 * identifies the resource.
-	 * 
-	 * <p>
-	 * Search order is reverse to standard implemenation
-	 * </p>
-	 * 
-	 * <p>
-	 * This method will first use {@link #findResource(String)} to find the
-	 * resource. That failing, this method will NOT invoke the parent class
-	 * loader.
-	 * </p>
-	 * 
-	 * @param name
-	 *            The resource name
-	 * 
-	 * @return A <tt>URL</tt> object for reading the resource, or
-	 *         <tt>null</tt> if the resource could not be found or the invoker
-	 *         doesn't have adequate privileges to get the resource.
-	 * 
-	 */
 	public URL getResource(final String name) {
 		try {
 			URL url = (URL) AccessController.doPrivileged(new PrivilegedExceptionAction() {

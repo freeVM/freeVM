@@ -84,14 +84,6 @@ public class MIDletSystemProperties {
 		acc = AccessController.getContext();
 	}
 
-	/**
-	 * Gets the system property indicated by the specified key. The only
-	 * function called by MIDlet
-	 * 
-	 * @param key
-	 *            the name of the system property
-	 * @return
-	 */
 	public static String getProperty(String key) {
 		initOnce();
 		if (props.containsKey(key)) {
