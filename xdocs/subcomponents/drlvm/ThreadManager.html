@@ -551,12 +551,17 @@
       </p>
       <ul>
          <li>
-            Function <code>hythread_attach()</code> registers the current
-            native thread in the thread manager, so that threading operations can
-            be performed over this thread via the native layer.
+           Function <code>hythread_attach()</code> registers the current
+           native thread in the thread manager, so that threading operations can
+           be performed over this thread via the native layer. Calling
+           <code>hythread_attach()</code> involves call to
+           <code>port_thread_detach()</code> to register current thread in
+           the porting layer.
          </li>
          <li>Function <code>hythread_detach()</code> unregisters the current native
-           thread. </li>
+           thread. This involves call to <code>port_thread_detach()</code> to
+           unregister current thread from the porting layer.
+         </li>
          <li>Function <code>jthread_attach()</code> associates the current Java<a href="#*">*</a> thread
            with the appropriate <code>java.lang.Thread</code> object, so that threading
            operations can be performed over this thread via the Java<a href="#*">*</a> layer.
@@ -955,7 +960,7 @@ documentation</a> hosted on the website. </p>
          </li>
          <li>
             The <code>hythread_create_ex()</code> function executes
-            the <code>os_thread_create()</code> function of the porting
+            the <code>port_thread_create()</code> function of the porting
          layer, which does the actual fork and creates a new thread. The newly created
             thread begins to execute
             <code>jthread_wrapper_start_proc()</code>.
