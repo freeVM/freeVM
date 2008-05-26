@@ -27,8 +27,8 @@
 
     <licenses>
         <license>
-            <name>GNU Lesser General Public License (LGPL)</name>
-			<url>http://www.gnu.org/licenses/lgpl.html</url>
+            <name>Apache License Version 2 (ALv2)</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
     </licenses>
 
@@ -225,16 +225,6 @@
         </developer>
 
         <developer>
-            <name>Markus Heberling</name>
-            <id>tisoft</id>
-            <email>markus@heberling.net</email>
-            <organization>markus@heberling.net</organization>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
-
-        <developer>
             <name>Vlad Skarzhevskyy</name>
             <id>vlads</id>
             <email>skarzhevskyy@gmail.com</email>
@@ -261,52 +251,6 @@
    </developers>
 
    <contributors>
-        <contributor>
-            <organization>3G Lab</organization>
-            <organizationUrl>http://www.3glab.com</organizationUrl>
-        </contributor>
-
-        <contributor>
-            <name>Julian L. Hunter</name>
-        </contributor>
-
-        <contributor>
-            <name>daniel(at)angrymachine.com.ar</name>
-        </contributor>
-
-        <contributor>
-            <name>Andres Navarro</name>
-        </contributor>
-
-        <contributor>
-            <name>Christian d'Heureuse</name>
-            <organization>Inventec Informatik AG, Switzerland.</organization>
-            <roles>
-                <role>Base64Coder</role>
-            </roles>
-        </contributor>
-
-        <contributor>
-            <name>David Luscombe</name>
-            <organizationUrl>http://www.istockphoto.com/fontmonster/</organizationUrl>
-            <roles>
-                <role>Designer</role>
-            </roles>
-        </contributor>
-
-        <contributor>
-            <name>Matthew Palmer</name>
-            <roles>
-                <role>Designer</role>
-            </roles>
-        </contributor>
-
-        <contributor>
-            <name>Rushabh Doshi</name>
-            <email>radoshi@cs.stanford.edu</email>
-            <organization>Pelago, Inc</organization>
-        </contributor>
-
         <!-- template for new contributor
         <contributor>
             <name></name>
@@ -369,7 +313,7 @@
                             <Build-Time>${cctimestamp}</Build-Time>
                             <Implementation-Version>${pom.version}</Implementation-Version>
                             <SVN-Revision>${scm.revision}</SVN-Revision>
-                            <License>GNU Lesser General Public License (LGPL)</License>
+                            <License>Apache License Version 2 (ALv2)</License>
                         </manifestEntries>
                     </archive>
                 </configuration>
