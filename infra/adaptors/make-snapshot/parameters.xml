@@ -36,7 +36,7 @@
     </shared>
 
     <cc trigger="${trunk.dir}/release.properties"
-        bootstrapper="${suite.adaptor.dir}/adaptor.xml"
+        bootstrapper="${adaptors.dir}/make-snapshot/adaptor.xml"
     />
 
 </parameters>

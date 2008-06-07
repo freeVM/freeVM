@@ -19,7 +19,11 @@
 
     <!-- initial setup of the HDK workspace -->
     <target name="setup">
-        <mkdir dir="${trunk.dir}"/>
+        <mkdir dir="${trunk.dir}" />
+        <exec executable="svn" dir="${trunk.dir}" failonerror="true">
+            <arg line="co ${svn.url} ." />
+        </exec>
+        <exec-ant dir="${trunk.dir}" targets="populate-src" />
     </target>
 
     <target name="run" depends="do-build,upload"/>

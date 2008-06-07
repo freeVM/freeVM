@@ -72,8 +72,11 @@ ${exception}
         <attribute name="suite"/>
         <sequential>
             <condition property="is.snapshot">
-                <contains string="${@{suite}.parameters.depends}"
-                    substring="snapshot"/>
+                <and>
+                    <contains string="${@{suite}.parameters.depends}"
+                              substring="snapshot" />
+                    <available file="${config.dir}/snapshot.properties" />
+                </and>
             </condition>
         </sequential>
     </macrodef>
