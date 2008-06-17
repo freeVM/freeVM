@@ -29,12 +29,11 @@
     </target>
 
     <target name="run">
-        <!-- update SVN non-recursively, HDK build will do the rest -->
         <!-- "svnrevision" is supplied by CC normally -->
         <property name="svnrevision" value="HEAD"/>
         <log message="Updating HDK workspace to revision: ${svnrevision}"/>
         <exec executable="svn" dir="${hdk.trunk.dir}" failonerror="true">
-            <arg line="update -r ${svnrevision} -N"/>
+            <arg line="update -r ${svnrevision}"/>
         </exec>
         
         <exec-ant dir="${hdk.trunk.dir}" targets="rebuild">
