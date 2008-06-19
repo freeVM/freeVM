@@ -69,6 +69,9 @@
         <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/javadoc${exe.suffix}" />
         <chmod file="${jdktools.deploy.dir}/bin/javadoc${exe.suffix}" perm="ugo+x" />
 
+        <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/javap${exe.suffix}" />
+        <chmod file="${jdktools.deploy.dir}/bin/javap${exe.suffix}" perm="ugo+x" />
+
         <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/keytool${exe.suffix}" />
         <chmod file="${jdktools.deploy.dir}/bin/keytool${exe.suffix}" perm="ugo+x" />
 
@@ -105,6 +108,7 @@
         <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javac${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javah${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javadoc${progdb.suffix}" />
+        <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javap${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/keytool${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/jarsigner${progdb.suffix}" />
     	<copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/unpack200${progdb.suffix}" />
