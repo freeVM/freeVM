@@ -4,6 +4,10 @@
  * http://creativecommons.org/licenses/publicdomain
  */
 
+/*
+ * Modified in Apache Harmony.
+ */
+
 package java.util.concurrent;
 import java.util.concurrent.atomic.*;
 import java.util.*;
@@ -111,7 +115,7 @@ public class ScheduledThreadPoolExecutor
             return d;
         }
 
-        public int compareTo(Object other) {
+        public int compareTo(Delayed other) {
             if (other == this) // compare zero ONLY if same object
                 return 0;
             ScheduledFutureTask<?> x = (ScheduledFutureTask<?>)other;

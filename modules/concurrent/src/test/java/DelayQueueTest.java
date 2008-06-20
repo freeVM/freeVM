@@ -6,6 +6,10 @@
  * Pat Fisher, Mike Judd. 
  */
 
+/*
+ * Modified in Apache Harmony.
+ */
+
 import junit.framework.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -29,7 +33,7 @@ public class DelayQueueTest extends JSR166TestCase {
     static class PDelay implements Delayed { 
         int pseudodelay;
         PDelay(int i) { pseudodelay = Integer.MIN_VALUE + i; }
-        public int compareTo(Object y) {
+        public int compareTo(Delayed y) {
             int i = pseudodelay;
             int j = ((PDelay)y).pseudodelay;
             if (i < j) return -1;
@@ -74,7 +78,7 @@ public class DelayQueueTest extends JSR166TestCase {
         NanoDelay(long i) { 
             trigger = System.nanoTime() + i;
         }
-        public int compareTo(Object y) {
+        public int compareTo(Delayed y) {
             long i = trigger;
             long j = ((NanoDelay)y).trigger;
             if (i < j) return -1;

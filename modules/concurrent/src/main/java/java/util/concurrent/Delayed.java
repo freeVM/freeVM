@@ -4,6 +4,11 @@
  * http://creativecommons.org/licenses/publicdomain
  */
 
+/*
+ * Modified in Apache Harmony to comply with Java 5 signature
+ * specification.
+ */
+
 package java.util.concurrent;
 
 import java.util.*;
@@ -19,7 +24,7 @@ import java.util.*;
  * @since 1.5
  * @author Doug Lea
  */
-public interface Delayed extends Comparable {
+public interface Delayed extends Comparable<Delayed> {
 
     /**
      * Returns the delay associated with this object, in the given time unit.
