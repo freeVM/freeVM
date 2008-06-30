@@ -84,6 +84,9 @@
         <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/unpack200${exe.suffix}" />
         <chmod file="${jdktools.deploy.dir}/bin/unpack200${exe.suffix}" perm="ugo+x" />
 
+        <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/policytool${exe.suffix}" />
+        <chmod file="${jdktools.deploy.dir}/bin/policytool${exe.suffix}" perm="ugo+x" />
+
     </target>
 
     <!-- copy windows javaw executable -->
