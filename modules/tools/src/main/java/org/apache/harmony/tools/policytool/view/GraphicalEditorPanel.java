@@ -18,45 +18,76 @@
 package org.apache.harmony.tools.policytool.view;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.harmony.tools.policytool.model.GrantEntry;
+import org.apache.harmony.tools.policytool.model.KeystoreEntry;
+import org.apache.harmony.tools.policytool.model.KeystorePasswordURLEntry;
 import org.apache.harmony.tools.policytool.model.PolicyEntry;
 
 /**
- * An editor panel which provides an interface for direct editing the
- * policy text.
+ * An editor panel which provides an interface for direct editing the policy text.
  */
 public class GraphicalEditorPanel extends EditorPanel {
 
-    /** Holds the invalid policy text or null if the loaded policy
-     * text is valid.  */
-    private String invalidPolicyText;
+    /** Holds the invalid policy text or null if the loaded policy text is valid.        */
+    private String              invalidPolicyText;
 
-    /** The list of the policy text's entries or null if invalid
-     * policy text was loaded. */
-    private List< PolicyEntry > policyEntryList;
+    /** The list of the policy text's entries or null if invalid policy text was loaded. */
+    private List< PolicyEntry > policyEntryList = new ArrayList< PolicyEntry >();
 
     /**
      * Creates a new GraphicalEditorPanel.<br>
      * Sets a BorderLayout as the layout manager.
+     * @param mainFrame reference to the main frame
      */
-    public GraphicalEditorPanel() {
-        super( new BorderLayout(), true );
+    public GraphicalEditorPanel( final MainFrame mainFrame ) {
+        super( mainFrame, "Graphical editing", new BorderLayout(), true );
+
+        // buildGUI:
+        add( new ListAndEditPanel< PolicyEntry >( "Policy Entry", policyEntryList, new ListAndEditPanel.Filter< PolicyEntry > () {
+            public boolean includeEntity( final PolicyEntry entity ) {
+                return entity instanceof GrantEntry;
+            }
+        } ), BorderLayout.CENTER );
     }
 
     @Override
-	public String getPanelTitle() {
-        return "Graphical editing";
-    }
-
-    @Override
-	public void loadPolicyText( final String policyText ) {
+    public boolean loadPolicyText( final String policyText ) {
         this.invalidPolicyText = policyText;
+
+        policyEntryList = new ArrayList< PolicyEntry >();
+
+        return true;
     }
 
     @Override
-	public String getPolicyText() {
+    public String getPolicyText() {
         return invalidPolicyText;
+    }
+
+    /**
+     * Shows the keystore entry edit dialog.<br>
+     * This dialog handles both the keystore entry and the keystore password URL entries.
+     */
+    public void showKeystoreEntryEditDialog() {
+        KeystoreEntry            keystoreEntry            = null;
+        KeystorePasswordURLEntry keystorePasswordURLEntry = null;
+
+        for ( final PolicyEntry policyEntry : policyEntryList ) {
+            if ( keystoreEntry == null )
+                if ( policyEntry instanceof KeystoreEntry )
+                    keystoreEntry = (KeystoreEntry) policyEntry;
+            if ( keystorePasswordURLEntry == null )
+                if ( policyEntry instanceof KeystorePasswordURLEntry )
+                    keystorePasswordURLEntry = (KeystorePasswordURLEntry) policyEntry;
+
+            if ( keystoreEntry != null && keystorePasswordURLEntry != null )
+                break;
+        }
+
+        new KeystoreEntryEditFormDialog( mainFrame, this, keystoreEntry, keystorePasswordURLEntry, policyEntryList ).setVisible( true );
     }
 
 }

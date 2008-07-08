@@ -38,35 +38,32 @@ public class DirectTextEditorPanel extends EditorPanel {
     /**
      * Creates a new DirectTextEditorPanel.<br>
      * Sets a BorderLayout as the layout manager.
+     * @param mainFrame reference to the main frame
      */
-    public DirectTextEditorPanel() {
-        super( new BorderLayout(), false );
+    public DirectTextEditorPanel( final MainFrame mainFrame ) {
+        super( mainFrame, "Direct editing", new BorderLayout(), false );
 
         policyTextTextArea.setFont( new Font( "Courier New", Font.PLAIN, Consts.DIRECT_EDITING_FONT_SIZE ) );
 
         // We want to track changes of the document so we can ask confirmation on exit
         policyTextTextArea.getDocument().addDocumentListener( new DocumentListener() {
-                public void changedUpdate( final DocumentEvent de ) {
-                }
-                public void insertUpdate ( final DocumentEvent de ) {
-                    setHasDirty( true );
-                }
-                public void removeUpdate ( final DocumentEvent de ) {
-                    setHasDirty( true );
-                }
-            } );
+            public void changedUpdate( final DocumentEvent de ) {
+            }
+            public void insertUpdate ( final DocumentEvent de ) {
+                setHasDirty( true );
+            }
+            public void removeUpdate ( final DocumentEvent de ) {
+                setHasDirty( true );
+            }
+        } );
 
         add( new JScrollPane( policyTextTextArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS ), BorderLayout.CENTER );
     }
 
     @Override
-    public String getPanelTitle() {
-        return "Direct editing";
-    }
-
-    @Override
-    public void loadPolicyText( final String policyText ) {
+    public boolean loadPolicyText( final String policyText ) {
         policyTextTextArea.setText( policyText );
+        return true;
     }
 
     @Override

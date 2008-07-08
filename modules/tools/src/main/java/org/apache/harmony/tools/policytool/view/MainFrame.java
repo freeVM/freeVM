@@ -6,13 +6,13 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.harmony.tools.policytool.view;
@@ -20,12 +20,17 @@ package org.apache.harmony.tools.policytool.view;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 
 import org.apache.harmony.tools.policytool.Consts;
 import org.apache.harmony.tools.policytool.control.Controller;
@@ -34,6 +39,9 @@ import org.apache.harmony.tools.policytool.control.Controller;
  * This is the main frame of policytool.
  */
 public class MainFrame extends JFrame {
+
+    /** Text field to display the current policy file. */
+    private final JTextField policyFileDisplayerTextField = new JTextField();
 
     /**
      * Creates a new <code>MainFrame</code> with no initial poilcy file.
@@ -49,19 +57,19 @@ public class MainFrame extends JFrame {
     public MainFrame( final String policyFileName ) {
         super( Consts.APPLICATION_NAME );
 
-        final EditorPanel[] editorPanels = new EditorPanel[] { new GraphicalEditorPanel(), new DirectTextEditorPanel() };
+        final EditorPanel[] editorPanels = new EditorPanel[] { new GraphicalEditorPanel( this ), new DirectTextEditorPanel( this ) };
         final Controller    controller   = new Controller( this, editorPanels, policyFileName );
 
         buildGUI( controller );
 
         setLocation( Consts.MAIN_FRAME_START_POS_X, Consts.MAIN_FRAME_START_POS_X );
-        setSize( 400, 400 );
+        setSize( 500, 500 );
         setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
         addWindowListener( new WindowAdapter() {
-                public void windowClosing( final WindowEvent we ) {
-                    controller.exit();
-                }
-            } );
+            public void windowClosing( final WindowEvent we ) {
+                controller.exit();
+            }
+        } );
     }
 
     /**
@@ -70,7 +78,15 @@ public class MainFrame extends JFrame {
      */
     private void buildGUI( final Controller controller ) {
         buildMenusAndMenuBar( controller );
-        buildTabbedPane     ( controller );
+
+        final JPanel panel = new JPanel( new BorderLayout( 5, 0 ) );
+        panel.add( new JLabel( " Policy file:" ), BorderLayout.WEST );
+
+        policyFileDisplayerTextField.setEditable( false );
+        panel.add( policyFileDisplayerTextField, BorderLayout.CENTER );
+        add( panel, BorderLayout.NORTH );
+
+        buildTabbedPane( controller );
     }
 
     /**
@@ -79,22 +95,22 @@ public class MainFrame extends JFrame {
     public static enum MenuItemEnum {
         /** File menu                  */
         FILE            ( true, "File"       ),
-            /** New menu item              */
-            NEW             ( "New"              ),
-            /** Save menu item             */
-            OPEN            ( "Open"             ),
-            /** Save menu item             */
-            SAVE            ( "Save"             ),
-            /** Save as menu item          */
-            SAVE_AS         ( "Save As...", 'a'  ),
-            /** View warning log menu item */
-            VIEW_WARNING_LOG( "View Warning Log" ),
-            /** Exit menu item             */
-            EXIT            ( "Exit", 'x'        ),
-            /** KeyStore menu              */
-            KEY_STORE       ( true, "KeyStore"   ),
-            /** Edit menu item             */
-            EDIT            ( "Edit"             );
+        /** New menu item              */
+        NEW             ( "New"              ),
+        /** Save menu item             */
+        OPEN            ( "Open"             ),
+        /** Save menu item             */
+        SAVE            ( "Save"             ),
+        /** Save as menu item          */
+        SAVE_AS         ( "Save As...", 'a'  ),
+        /** View warning log menu item */
+        VIEW_WARNING_LOG( "View Warning Log" ),
+        /** Exit menu item             */
+        EXIT            ( "Exit", 'x'        ),
+        /** KeyStore menu              */
+        KEY_STORE       ( true, "KeyStore"   ),
+        /** Edit menu item             */
+        EDIT            ( "Edit"             );
 
         /** If true, then this represents a menu instead of a menu item. */
         public final boolean isMenu;
@@ -191,6 +207,19 @@ public class MainFrame extends JFrame {
         tabbedPane.addChangeListener( controller );
 
         add( tabbedPane , BorderLayout.CENTER );
+    }
+
+    /**
+     * Sets the displayed policy file.
+     * @param displayedPolicyFile displayed policy file to be set
+     */
+    public void setDisplayedPolicyFile( final File displayedPolicyFile ) {
+        try {
+            policyFileDisplayerTextField.setText( displayedPolicyFile == null ? null : displayedPolicyFile.getCanonicalPath() );
+        } catch ( final IOException ie ) {
+            // This should never happen...
+            ie.printStackTrace();
+        }
     }
 
 }

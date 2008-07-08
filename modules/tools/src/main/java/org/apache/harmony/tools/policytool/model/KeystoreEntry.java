@@ -39,6 +39,54 @@ public class KeystoreEntry extends PolicyEntry {
     /** Provider of the keystore. */
     private String provider;
 
+    /**
+     * Returns the keystore url.
+     * @return the keystore url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * Sets the keystore url.
+     * @param url keystore url to be set
+     */
+    public void setUrl( final String url ) {
+        this.url = url;
+    }
+
+    /**
+     * Returns the keystore type.
+     * @return the keystore type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets the keystore type.
+     * @param type keystore type to be set
+     */
+    public void setType( final String type ) {
+        this.type = type;
+    }
+
+    /**
+     * Returns the keystore provider.
+     * @return the keystore provider
+     */
+    public String getProvider() {
+        return provider;
+    }
+
+    /**
+     * sets the keystore provider.
+     * @param provider keystore provider to be set
+     */
+    public void setProvider( final String provider ) {
+        this.provider = provider;
+    }
+
     @Override
     public String getText() {
         final StringBuilder textBuilder = new StringBuilder( KEYWORD );

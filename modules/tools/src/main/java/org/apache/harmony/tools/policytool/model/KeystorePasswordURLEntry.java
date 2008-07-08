@@ -33,6 +33,22 @@ public class KeystorePasswordURLEntry extends PolicyEntry {
     /** URL of the keystore password. */
     private String url;
 
+    /**
+     * Returns the keystore password url.
+     * @return the keystore password url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * Sets the keystore password URL
+     * @param url the keystore password URL to be set
+     */
+    public void setUrl( final String url ) {
+        this.url = url;
+    }
+
     @Override
     public String getText() {
         return KEYWORD + " \"" + url + '\"' + TERMINATOR_CHAR;

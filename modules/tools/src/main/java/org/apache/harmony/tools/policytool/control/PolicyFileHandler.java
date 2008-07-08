@@ -58,7 +58,7 @@ public class PolicyFileHandler {
      * @param policyFile policy file whose content to be loaded
      * @return the policy text within the given policy file
      */
-    public static String loadPoilcyFile( final File policyFile ) {
+    public static String loadPolicyFile( final File policyFile ) {
         final StringBuilder policyTextBuilder = new StringBuilder();
 
         BufferedReader input = null;
@@ -68,6 +68,7 @@ public class PolicyFileHandler {
             String line;
             while ( ( line = input.readLine() ) != null )
                 policyTextBuilder.append( line ).append( LINE_SEPARATOR );
+
         } catch ( final FileNotFoundException fnfe ) {
             JOptionPane.showMessageDialog( dialogParentComponent, "The file does not exist!", "Error", JOptionPane.ERROR_MESSAGE );
             return null;

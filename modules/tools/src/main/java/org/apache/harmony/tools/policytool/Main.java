@@ -20,8 +20,8 @@ package org.apache.harmony.tools.policytool;
 import org.apache.harmony.tools.policytool.view.MainFrame;
 
 /**
- * The main class that parses command line parameters, and starts the
- * GUI if everything everything is ok.
+ * The main class that parses command line parameters, and starts the GUI if everything everything is ok.
+ * 
  */
 public class Main {
 
@@ -77,8 +77,7 @@ public class Main {
     }
 
     /**
-     * Prints an error message to the standard output followed by the
-     * program ussage.
+     * Prints an error message to the standard output followed by the program ussage.
      * @param errorMessage error message to be printed
      */
     private static void printErrorMessageAndUsage( final String errorMessage ) {

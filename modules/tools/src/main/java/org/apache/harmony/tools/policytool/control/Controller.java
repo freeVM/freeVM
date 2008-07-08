@@ -17,7 +17,6 @@
 
 package org.apache.harmony.tools.policytool.control;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -30,16 +29,17 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.apache.harmony.tools.policytool.view.EditorPanel;
+import org.apache.harmony.tools.policytool.view.GraphicalEditorPanel;
+import org.apache.harmony.tools.policytool.view.MainFrame;
 import org.apache.harmony.tools.policytool.view.MainFrame.MenuItemEnum;
 
 /**
- * The controller handles the user actions, drives the GUI and
- * connects it to the model.
+ * The controller handles the user actions, drives the GUI and connects it to the model.
  */
 public class Controller implements ChangeListener, ActionListener{
 
-    /** Reference to the main frame component.    */
-    private final Component     mainFrame;
+    /** Reference to the main frame.              */
+    private final MainFrame     mainFrame;
     /** Array of the editor panels.               */
     private final EditorPanel[] editorPanels;
     /** Reference to the active editor panel.     */
@@ -49,23 +49,26 @@ public class Controller implements ChangeListener, ActionListener{
     private JMenuItem           keystoreEditMenuItem;
 
     /** The currently edited policy file.         */
-    private File editedPolicyFile;
+    private File                editedPolicyFile;
 
     /**
      * Creates a new Controller.
-     * @param mainFrame reference to the main frame component
+     * @param mainFrame reference to the main frame
      * @param editorPanels array of the editor panels
      * @param policyFileName policy file name to be loaded initially
      */
-    public Controller( final Component mainFrame, final EditorPanel[] editorPanels, final String policyFileName ) {
+    public Controller( final MainFrame mainFrame, final EditorPanel[] editorPanels, final String policyFileName ) {
         this.mainFrame    = mainFrame;
         this.editorPanels = editorPanels;
         activeEditorPanel = editorPanels[ 0 ];
 
         PolicyFileHandler.setDialogParentComponent( mainFrame );
 
-        editedPolicyFile = new File( policyFileName );
-        activeEditorPanel.loadPolicyText( PolicyFileHandler.loadPoilcyFile( editedPolicyFile ) );
+        if ( policyFileName != null ) {
+            final File editedPolicyFile_ = new File( policyFileName );
+            if ( activeEditorPanel.loadPolicyText( PolicyFileHandler.loadPolicyFile( editedPolicyFile_ ) ) )
+                setEditedPolicyFile( editedPolicyFile_ );
+        }
     }
 
     /**
@@ -90,13 +93,28 @@ public class Controller implements ChangeListener, ActionListener{
      * There might be unsaved changes in which case confirmation will be asked.
      */
     public void exit() {
-        boolean exitOk = false;
+        if ( allowedDirtySensitiveOperation( "exit" ) )
+            System.exit( 0 );
+    }
 
+    /**
+     * Determines if a dirty sensitive operation is allowed to be executed.<br>
+     * There are operation which will throw away the edited policy text currently hold in the active editor
+     * (for example exit or load a file, or start a new).<br>
+     * This method checks whether there are unsaved changes, and if so, ask confirmation on what to do with them.<br>
+     * Finally returns true, if the dirty data can be thrown away or has been saved successfully.
+     * Returns false, if the effect of the operation (throwing away unsaved changes) is unwanted and therefore the operation is disallowed.
+     * 
+     * @param operationName name of the operation which will be included in the confirmation messages
+     * @return true, if the operation now can be performed safely; false otherwise
+     */
+    private boolean allowedDirtySensitiveOperation( final String operationName ) {
         if ( activeEditorPanel.getHasDirty() ) {
 
-            switch ( JOptionPane.showConfirmDialog( mainFrame, "There are unsaved changes. Save before exit?", "Warning", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE ) ) {
+            switch ( JOptionPane.showConfirmDialog( mainFrame, "There are unsaved changes. Save before " + operationName + "?", "Warning", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE ) ) {
 
             case JOptionPane.YES_OPTION:
+                // We chose to save file first
                 final JFileChooser fileChooser = new JFileChooser();
 
                 if ( editedPolicyFile == null ) {
@@ -105,39 +123,38 @@ public class Controller implements ChangeListener, ActionListener{
                 }
                 if ( editedPolicyFile != null ) {
                     if ( !PolicyFileHandler.savePolicyFile( editedPolicyFile, activeEditorPanel.getPolicyText() ) ) {
-                        switch ( JOptionPane.showConfirmDialog( mainFrame, "Saving failed. Do you still want to exit?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE ) ) {
+                        switch ( JOptionPane.showConfirmDialog( mainFrame, "Saving failed. Do you still want to " + operationName + "?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE ) ) {
                         case JOptionPane.YES_OPTION:
-                            exitOk = true;
-                            break;
+                            // We chose to still proceed
+                            return true;
 
                         case JOptionPane.NO_OPTION:
                         case JOptionPane.CLOSED_OPTION:
-                            // We chose not to exit. exitOk = false
-                            break;
+                            // We chose not to proceed
+                            return false;
                         }
                     } else {// Changes saved successfully
                         activeEditorPanel.setHasDirty( false );
-                        exitOk = true;
+                        mainFrame.setDisplayedPolicyFile( editedPolicyFile );
+                        return true;
                     }
                 }
                 break;
 
             case JOptionPane.NO_OPTION:
-                exitOk = true;
-                break;
+                // We chose not to save and proceed
+                return true;
 
             case JOptionPane.CANCEL_OPTION:
             case JOptionPane.CLOSED_OPTION:
-                // We chose not to exit. exitOk = false
-                break;
+                // We chose not to proceed
+                return false;
 
             }
 
-        } else
-            exitOk = true;
+        }
 
-        if ( exitOk )
-            System.exit( 0 );
+        return true;
     }
 
     /**
@@ -146,7 +163,7 @@ public class Controller implements ChangeListener, ActionListener{
      */
     public void stateChanged( final ChangeEvent ce ) {
         final EditorPanel newActiveEditorPanel = (EditorPanel) ( (JTabbedPane) ce.getSource() ).getSelectedComponent();
-
+        
         newActiveEditorPanel.loadPolicyText( activeEditorPanel.getPolicyText() );
         newActiveEditorPanel.setHasDirty   ( activeEditorPanel.getHasDirty  () );
         activeEditorPanel = newActiveEditorPanel;
@@ -162,34 +179,44 @@ public class Controller implements ChangeListener, ActionListener{
         // The action command is the ordinal of the menu item enum.
         final MenuItemEnum menuItemEnum = MenuItemEnum.values()[ Integer.parseInt( ae.getActionCommand() ) ];
 
+        File editedPolicyFile_ = null;
+
         final JFileChooser fileChooser = new JFileChooser();
         switch ( menuItemEnum ) {
 
         case NEW :
+            if ( allowedDirtySensitiveOperation( "starting new file" ) ) {
+                activeEditorPanel.loadPolicyText( null );
+                setEditedPolicyFile( null );
+            }
             break;
 
         case OPEN :
-            if ( fileChooser.showOpenDialog( mainFrame ) == JFileChooser.APPROVE_OPTION ) {
-                editedPolicyFile = fileChooser.getSelectedFile();
-                activeEditorPanel.loadPolicyText( PolicyFileHandler.loadPoilcyFile( editedPolicyFile ) );
-            }
+            if ( allowedDirtySensitiveOperation( "opening file" ) )
+                if ( fileChooser.showOpenDialog( mainFrame ) == JFileChooser.APPROVE_OPTION ) {
+                    editedPolicyFile_ = fileChooser.getSelectedFile();
+                    if ( activeEditorPanel.loadPolicyText( PolicyFileHandler.loadPolicyFile( editedPolicyFile_ ) ) )
+                        setEditedPolicyFile( editedPolicyFile_ );
+                }
             break;
 
         case SAVE :
             if ( editedPolicyFile == null ) {
                 if ( fileChooser.showSaveDialog( mainFrame ) == JFileChooser.APPROVE_OPTION )
-                    editedPolicyFile = fileChooser.getSelectedFile();
-            }
-            if ( editedPolicyFile != null )
-                if ( PolicyFileHandler.savePolicyFile( editedPolicyFile, activeEditorPanel.getPolicyText() ) )
-                    activeEditorPanel.setHasDirty( false );						
+                    editedPolicyFile_ = fileChooser.getSelectedFile();
+            } else
+                editedPolicyFile_ = editedPolicyFile;
+
+            if ( editedPolicyFile_ != null )
+                if ( PolicyFileHandler.savePolicyFile( editedPolicyFile_, activeEditorPanel.getPolicyText() ) )
+                    setEditedPolicyFile( editedPolicyFile_ );
             break;
 
         case SAVE_AS :
             if ( fileChooser.showSaveDialog( mainFrame ) == JFileChooser.APPROVE_OPTION ) {
-                editedPolicyFile = fileChooser.getSelectedFile();
-                if ( PolicyFileHandler.savePolicyFile( editedPolicyFile, activeEditorPanel.getPolicyText() ) )
-                    activeEditorPanel.setHasDirty( false );						
+                editedPolicyFile_ = fileChooser.getSelectedFile();
+                if ( PolicyFileHandler.savePolicyFile( editedPolicyFile_, activeEditorPanel.getPolicyText() ) )
+                    setEditedPolicyFile( editedPolicyFile_ );
             }
             break;
 
@@ -201,10 +228,22 @@ public class Controller implements ChangeListener, ActionListener{
             break;
 
         case EDIT :
+            if ( activeEditorPanel instanceof GraphicalEditorPanel )
+                ( (GraphicalEditorPanel) activeEditorPanel ).showKeystoreEntryEditDialog();
             break;
 
         }
 
+    }
+
+    /**
+     * Sets the edited policy file and displays its name in the main frame. Also clears the dirty flag.
+     * @param editedPolicyFile edited policy file to be set
+     */
+    private void setEditedPolicyFile( final File editedPolicyFile ) {
+        activeEditorPanel.setHasDirty( false );
+        this.editedPolicyFile = editedPolicyFile;
+        mainFrame.setDisplayedPolicyFile( editedPolicyFile );
     }
 
 }
