@@ -17,6 +17,9 @@
 
 <project name="config" default="generate-config" basedir=".">
 
+    <condition property="is.windows">
+        <os family="Windows" />
+    </condition>
     <!-- temporary file to store intermediate results of iteration -->
     <property name="tmp.file" location="${scripts.dir}/tmp.txt" />
 
@@ -217,6 +220,11 @@
                               to="${suite.name}.\1" />
             </propertyset>
         </echoproperties>
+        <antcall target="-changestring-in-windows" />
+    </target>
+
+    <target name="-changestring-in-windows" if="is.windows">
+        <replace file="${config.dir}/${suite.name}.properties" token="\:" value=":" />
     </target>
 
     <target name="-gen-required-parameters">
