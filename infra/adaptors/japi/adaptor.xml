@@ -17,6 +17,8 @@
 
 <project name="japi" default="run" basedir=".">
 
+    <target name="setup" />
+
     <target name="run">
 
         <property name="japi.report" value="${results.dir}/japi" />
