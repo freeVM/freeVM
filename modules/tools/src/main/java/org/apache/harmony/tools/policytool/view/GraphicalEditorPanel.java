@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,11 +46,18 @@ public class GraphicalEditorPanel extends EditorPanel {
         super( mainFrame, "Graphical editing", new BorderLayout(), true );
 
         // buildGUI:
-        add( new ListAndEditPanel< PolicyEntry >( "Policy Entry", policyEntryList, new ListAndEditPanel.Filter< PolicyEntry > () {
-            public boolean includeEntity( final PolicyEntry entity ) {
-                return entity instanceof GrantEntry;
+        add( new ListAndEditPanel< PolicyEntry >( "Policy entries:", "Policy Entry", policyEntryList,
+            new ListAndEditPanel.Filter< PolicyEntry > () {
+                public boolean includeEntity( final PolicyEntry entity ) {
+                    return entity instanceof GrantEntry;
+                }
+            },
+            new ListAndEditPanel.LAEFormDialogFactory< PolicyEntry > () {
+                public LAEFormDialog createFactoryForAddOrEdit( final PolicyEntry selectedEntity ) {
+                    return new GrantEntryEditFormDialog( mainFrame, GraphicalEditorPanel.this, (GrantEntry) selectedEntity, policyEntryList );
+                }
             }
-        } ), BorderLayout.CENTER );
+        ), BorderLayout.CENTER );
     }
 
     @Override

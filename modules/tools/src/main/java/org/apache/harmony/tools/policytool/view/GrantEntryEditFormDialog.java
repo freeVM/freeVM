@@ -1,0 +1,146 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.harmony.tools.policytool.view;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.util.List;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.apache.harmony.tools.policytool.model.GrantEntry;
+import org.apache.harmony.tools.policytool.model.Permission;
+import org.apache.harmony.tools.policytool.model.PolicyEntry;
+import org.apache.harmony.tools.policytool.model.Principal;
+
+/**
+ * Form dialog to view and edit the grant entries.
+ */
+public class GrantEntryEditFormDialog extends LAEFormDialog {
+
+    /** Reference to the initial editable grant entry or null, if we are creating a new one. */
+    private final GrantEntry          initialGrantEntry;
+    /** List of policy entries where to store if new entry is to be created.                 */
+    private final List< PolicyEntry > policyEntryList;
+
+    /** Holds the reference to the new granty entry in case of we are creating a new one.    */
+    private final GrantEntry          newGrantEntry;
+
+    /** Text field to view and edit the value of code base. */
+    private final JTextField codeBaseTextField = new JTextField();
+    /** Text field to view and edit the value of signed by. */
+    private final JTextField signedByTextField = new JTextField();
+
+    /**
+     * Creates a new GrantEntryEditFormDialog.
+     * @param ownerFrame reference to the owner frame
+     * @param ownerEditorPanel reference to the owner editor panel
+     * @param grantEntry reference to the editable grant entry or null, if we are creating a new one
+     * @param policyEntryList list of policy entries where to store if new entry is to be created
+     */
+    public GrantEntryEditFormDialog( final Frame ownerFrame, final EditorPanel ownerEditorPanel, final GrantEntry grantEntry, final List< PolicyEntry > policyEntryList ) {
+        super( ownerFrame, "Policy Entry", ownerEditorPanel );
+
+        this.initialGrantEntry = grantEntry;
+        this.policyEntryList   = policyEntryList;
+
+        newGrantEntry = initialGrantEntry == null ? new GrantEntry() : null;
+
+        prepareForDisplay();
+    }
+
+    @Override
+    protected void buildGUI() {
+        final JPanel panel = new JPanel( new BorderLayout( 2,15 ) );
+
+        final Box verticalBox = Box.createVerticalBox();
+
+        verticalBox.add( Box.createVerticalStrut( 10 ) );
+
+        Box hBox = Box.createHorizontalBox();
+        JLabel label = new JLabel( "CodeBase: ", JLabel.RIGHT );
+        label.setPreferredSize( new Dimension( 80, 20 ) );
+        hBox.add( label );
+        hBox.add( codeBaseTextField );
+        verticalBox.add( hBox );
+
+        verticalBox.add( Box.createVerticalStrut( 5 ) );
+
+        hBox = Box.createHorizontalBox();
+        label = new JLabel( "SignedBy: ", JLabel.RIGHT );
+        label.setPreferredSize( new Dimension( 80, 20 ) );
+        hBox.add( label );
+        hBox.add( signedByTextField );
+        verticalBox.add( hBox );
+
+        if ( initialGrantEntry != null ) {
+            codeBaseTextField.setText( initialGrantEntry.getCodeBase() );
+            signedByTextField.setText( initialGrantEntry.getSignedBy() );
+        }
+
+        panel.add( verticalBox, BorderLayout.NORTH );
+
+        // ListAndEdit component for Principals
+        panel.add( new ListAndEditPanel< Principal >( "Principals:", "Principal", ( initialGrantEntry == null ? newGrantEntry : initialGrantEntry ).getPrincipalList(),
+                new ListAndEditPanel.LAEFormDialogFactory< Principal > () {
+                    public LAEFormDialog createFactoryForAddOrEdit( final Principal selectedEntity ) {
+                        return new PrincipalEditFormDialog( GrantEntryEditFormDialog.this, ownerEditorPanel, selectedEntity, ( initialGrantEntry == null ? newGrantEntry : initialGrantEntry ).getPrincipalList() );
+                    }
+                }
+            ), BorderLayout.CENTER );
+
+        panel.add( new JLabel(), BorderLayout.SOUTH ); // To make some space between the 2 ListAndEdit components (vertical gap of the BorderLayout of the panel will be used)
+
+        add( panel, BorderLayout.NORTH );
+
+        // ListAndEdit component for Permissions
+        final ListAndEditPanel< Permission > permissionsLAE =
+            new ListAndEditPanel< Permission >( "Permissions:", "Permission", ( initialGrantEntry == null ? newGrantEntry : initialGrantEntry ).getPermissionList(),
+                new ListAndEditPanel.LAEFormDialogFactory< Permission > () {
+                    public LAEFormDialog createFactoryForAddOrEdit( final Permission selectedEntity ) {
+                        return null;
+                    }
+                }
+            );
+        permissionsLAE.overrideMnemonics( 'd', 't', 'v' );
+        add( permissionsLAE, BorderLayout.CENTER );
+    }
+
+    @Override
+    public void onOkButtonPressed() {
+        // TODO: validation
+
+        final GrantEntry grantEntry = initialGrantEntry == null ? newGrantEntry : initialGrantEntry;
+
+        grantEntry.setCodeBase( codeBaseTextField.getText() );
+        grantEntry.setSignedBy( signedByTextField.getText() );
+
+        if ( initialGrantEntry == null ) {
+            policyEntryList.add( grantEntry );
+            listModel.addElement( grantEntry );
+        } else
+            refreshVisualizationList();
+
+        finishSuccessfulEdit();
+    }
+
+}

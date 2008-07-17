@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,27 +37,27 @@ import org.apache.harmony.tools.policytool.model.PolicyEntry;
  */
 public class KeystoreEntryEditFormDialog extends BaseFormDialog {
 
-    /** Reference to the initial editable keystore entry.                       */
+    /** Reference to the initial editable keystore entry or null, if we are creating a new one. */
     private final KeystoreEntry            initialKeystoreEntry;
-    /** Reference to the initial editable keystore password URL entry.          */
+    /** Reference to the initial editable keystore password URL entry.                          */
     private final KeystorePasswordURLEntry initialKeystorePasswordURLEntry;
-    /** List of policy entries where to store if new entries are to be created. */
+    /** List of policy entries where to store if new entry is to be created.                    */
     private final List< PolicyEntry >      policyEntryList;
 
-    /** Text field to view and edit the value of keystore URL. */
-    private final JTextField keystoreURLTextField         = new JTextField( 10 );
-    /** Text field to view and edit the value of keystore type. */
-    private final JTextField keystoreTypeTextField        = new JTextField( 10 );
-    /** Text field to view and edit the value of keystore provider. */
-    private final JTextField keystoreProviderTextField    = new JTextField( 10 );
+    /** Text field to view and edit the value of keystore URL.          */
+    private final JTextField keystoreURLTextField         = new JTextField( 20 );
+    /** Text field to view and edit the value of keystore type.         */
+    private final JTextField keystoreTypeTextField        = new JTextField( 20 );
+    /** Text field to view and edit the value of keystore provider.     */
+    private final JTextField keystoreProviderTextField    = new JTextField( 20 );
     /** Text field to view and edit the value of keystore password URL. */
-    private final JTextField keystorePasswordURLTextField = new JTextField( 10 );
+    private final JTextField keystorePasswordURLTextField = new JTextField( 20 );
 
     /**
      * Creates a new KeystoreEntryEditFormDialog.
      * @param ownerFrame reference to the owner frame
      * @param ownerEditorPanel reference to the owner editor panel
-     * @param keystoreEntry reference to the editable keystore entry
+     * @param keystoreEntry reference to the editable keystore entry or null, if we are creating a new one
      * @param keystorePasswordURLEntry reference to the editable password URL entry
      * @param policyEntryList list of policy entries where to store if new entries are to be created
      */
@@ -68,15 +68,11 @@ public class KeystoreEntryEditFormDialog extends BaseFormDialog {
         this.initialKeystorePasswordURLEntry = keystorePasswordURLEntry;
         this.policyEntryList                 = policyEntryList;
 
-        buildGUI();
-        pack();
-        center();
+        prepareForDisplay();
     }
 
-    /**
-     * Builds the GUI of the dialog.
-     */
-    private void buildGUI() {
+    @Override
+    protected void buildGUI() {
         final JPanel panel = new JPanel( new GridLayout( 4, 2, 5, 10 ) );
 
         panel.add( new JLabel( "KeyStore URL:" ) );
@@ -92,13 +88,13 @@ public class KeystoreEntryEditFormDialog extends BaseFormDialog {
         panel.add( keystorePasswordURLTextField );
 
         if ( initialKeystoreEntry != null ) {
-            keystoreURLTextField     .setText( initialKeystoreEntry.getUrl     () ); 
-            keystoreTypeTextField    .setText( initialKeystoreEntry.getType    () ); 
-            keystoreProviderTextField.setText( initialKeystoreEntry.getProvider() ); 
+            keystoreURLTextField     .setText( initialKeystoreEntry.getUrl     () );
+            keystoreTypeTextField    .setText( initialKeystoreEntry.getType    () );
+            keystoreProviderTextField.setText( initialKeystoreEntry.getProvider() );
         }
 
         if ( initialKeystorePasswordURLEntry != null ) {
-            keystorePasswordURLTextField.setText( initialKeystorePasswordURLEntry.getUrl() ); 
+            keystorePasswordURLTextField.setText( initialKeystorePasswordURLEntry.getUrl() );
         }
 
         final JPanel flowPanel = new JPanel();
@@ -153,9 +149,7 @@ public class KeystoreEntryEditFormDialog extends BaseFormDialog {
             }
         }
 
-        ownerEditorPanel.setHasDirty( true );
-
-        dispose();
+        finishSuccessfulEdit();
     }
 
 }

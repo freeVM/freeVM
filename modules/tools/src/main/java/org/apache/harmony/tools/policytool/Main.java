@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ import org.apache.harmony.tools.policytool.view.MainFrame;
 
 /**
  * The main class that parses command line parameters, and starts the GUI if everything everything is ok.
- * 
+ *
  */
 public class Main {
 
@@ -30,7 +30,7 @@ public class Main {
 
     /**
      * Entry point of the program.
-     * 
+     *
      * @param arguments used to take arguments from the running environment
      */
     public static void main( final String[] arguments ) {
@@ -49,7 +49,7 @@ public class Main {
      * Currently only one option is supported:
      * <pre><code>    [-file file]</code></pre>
      * for specifying the name of a policy file to be loaded initially.
-     * 
+     *
      * @param arguments arguments taken from the running environment
      * @return true if arguments were processed successfully and launching the GUI is allowed;<br>
      *         false if there were missing or invalid arguments, or no GUI launch is needed

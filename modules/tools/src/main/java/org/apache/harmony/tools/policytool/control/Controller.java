@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -104,7 +104,7 @@ public class Controller implements ChangeListener, ActionListener{
      * This method checks whether there are unsaved changes, and if so, ask confirmation on what to do with them.<br>
      * Finally returns true, if the dirty data can be thrown away or has been saved successfully.
      * Returns false, if the effect of the operation (throwing away unsaved changes) is unwanted and therefore the operation is disallowed.
-     * 
+     *
      * @param operationName name of the operation which will be included in the confirmation messages
      * @return true, if the operation now can be performed safely; false otherwise
      */
@@ -163,7 +163,7 @@ public class Controller implements ChangeListener, ActionListener{
      */
     public void stateChanged( final ChangeEvent ce ) {
         final EditorPanel newActiveEditorPanel = (EditorPanel) ( (JTabbedPane) ce.getSource() ).getSelectedComponent();
-        
+
         newActiveEditorPanel.loadPolicyText( activeEditorPanel.getPolicyText() );
         newActiveEditorPanel.setHasDirty   ( activeEditorPanel.getHasDirty  () );
         activeEditorPanel = newActiveEditorPanel;

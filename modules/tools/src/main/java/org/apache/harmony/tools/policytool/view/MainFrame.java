@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -63,7 +63,7 @@ public class MainFrame extends JFrame {
         buildGUI( controller );
 
         setLocation( Consts.MAIN_FRAME_START_POS_X, Consts.MAIN_FRAME_START_POS_X );
-        setSize( 500, 500 );
+        setSize( Consts.MAIN_FRAME_WIDTH, Consts.MAIN_FRAME_HEIGHT );
         setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
         addWindowListener( new WindowAdapter() {
             public void windowClosing( final WindowEvent we ) {
@@ -161,7 +161,7 @@ public class MainFrame extends JFrame {
 
     /**
      * Builds the menus and the menu bar.
-     * @param controller reference to the controller 
+     * @param controller reference to the controller
      */
     private void buildMenusAndMenuBar( final Controller controller ) {
         final JMenuBar menuBar = new JMenuBar();
@@ -188,7 +188,7 @@ public class MainFrame extends JFrame {
 
     /**
      * Builds the tabbed pane containing the editor panels.
-     * @param controller reference to the controller 
+     * @param controller reference to the controller
      */
     private void buildTabbedPane( final Controller controller ) {
         final JTabbedPane   tabbedPane   = new JTabbedPane();

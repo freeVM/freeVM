@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +29,10 @@ public class Consts {
     public static final int MAIN_FRAME_START_POS_X = 200;
     /** Y coordinate of the main frame on startup. */
     public static final int MAIN_FRAME_START_POS_Y = 100;
+    /** Width of the main frame.                   */
+    public static final int MAIN_FRAME_WIDTH       = 600;
+    /** Height of the main frame.                  */
+    public static final int MAIN_FRAME_HEIGHT      = 600;
 
     /** Font size in the direct editing panel.     */
     public static final int DIRECT_EDITING_FONT_SIZE = 13;
