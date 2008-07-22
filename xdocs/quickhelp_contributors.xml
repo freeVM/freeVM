@@ -264,6 +264,12 @@
         subsequent builds, just type:
       </p>
       <source>$ ant</source>
+      <p>
+        If you have a Linux system with libstdc++.so.6 instead of libstdc++.so.5, please use the
+        <i><b>use.libstdc++6=true</b></i> option. Using the proper version of C++ Standard Library is
+        a requirement of the ICU libraries used.
+      </p>
+      <pre>$ ant -Duse.libstdc++6=true</pre>
       <p class="note">Note</p>
       <p class="notetext">
         If you choose to build from the federated build root, you may need to
