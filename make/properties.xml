@@ -198,15 +198,10 @@ Harmony platform properties:
   hy.hdk = ${hy.hdk}
 
 
-The following property is only set if the "svn-prop" target has been
+The following properties are only set if the "svn-info" target has been
 called:
 
   svn.revision = ${svn.revision}
-
-
-The following property is only set if the "svn-info" target has been
-called:
-
   svn.info = ${svn.info}
 
 Ant native properties, for information, but please use Harmony
