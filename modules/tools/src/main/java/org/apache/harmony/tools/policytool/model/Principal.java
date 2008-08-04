@@ -20,7 +20,7 @@ package org.apache.harmony.tools.policytool.model;
 /**
  * Represents a principal for the grant entries.
  */
-public class Principal {
+public class Principal implements Cloneable {
 
     /** Type of the principal. */
     private String type;
@@ -62,6 +62,17 @@ public class Principal {
     @Override
     public String toString() {
         return "Principal " + type + " \"" + name + '"';
+    }
+
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch ( final CloneNotSupportedException cnse ) {
+            // This never gonna happen.
+            cnse.printStackTrace();
+            return null;
+        }
     }
 
 }

@@ -94,11 +94,11 @@ public class PrincipalEditFormDialog extends LAEFormDialog {
             if ( initialPrincipal.getType() != null )
                 for ( int i = 0; i < DEFAULT_PRINCIPAL_TYPE_CLASS_NAMES.length; i++ )
                     if ( DEFAULT_PRINCIPAL_TYPE_CLASS_NAMES[ i ] != null && DEFAULT_PRINCIPAL_TYPE_CLASS_NAMES[ i ].equals( initialPrincipal.getType() ) ) {
-                        principalTypeComboBox .setSelectedIndex( i );
+                        principalTypeComboBox.setSelectedIndex( i );
                         break;
                     }
-            principalTypeTextField.setText( initialPrincipal.getType() );
-            principalNameTextField.setText( initialPrincipal.getName() );
+            principalTypeTextField.setText( initialPrincipal.getType() ); 
+            principalNameTextField.setText( initialPrincipal.getName() ); 
         }
 
         final JPanel flowPanel = new JPanel();
@@ -121,7 +121,7 @@ public class PrincipalEditFormDialog extends LAEFormDialog {
         } else
             refreshVisualizationList();
 
-        finishSuccessfulEdit();
+        finishSuccessfulEdit( false );
     }
 
 }

@@ -104,7 +104,7 @@ public class Controller implements ChangeListener, ActionListener{
      * This method checks whether there are unsaved changes, and if so, ask confirmation on what to do with them.<br>
      * Finally returns true, if the dirty data can be thrown away or has been saved successfully.
      * Returns false, if the effect of the operation (throwing away unsaved changes) is unwanted and therefore the operation is disallowed.
-     *
+     * 
      * @param operationName name of the operation which will be included in the confirmation messages
      * @return true, if the operation now can be performed safely; false otherwise
      */
@@ -163,7 +163,7 @@ public class Controller implements ChangeListener, ActionListener{
      */
     public void stateChanged( final ChangeEvent ce ) {
         final EditorPanel newActiveEditorPanel = (EditorPanel) ( (JTabbedPane) ce.getSource() ).getSelectedComponent();
-
+        
         newActiveEditorPanel.loadPolicyText( activeEditorPanel.getPolicyText() );
         newActiveEditorPanel.setHasDirty   ( activeEditorPanel.getHasDirty  () );
         activeEditorPanel = newActiveEditorPanel;

@@ -148,7 +148,16 @@ public abstract class BaseFormDialog extends JDialog implements ActionListener {
      * Finishes a successful edit action.
      */
     protected void finishSuccessfulEdit() {
-        ownerEditorPanel.setHasDirty( true );
+        finishSuccessfulEdit( true );
+    }
+
+    /**
+     * Finishes a successful edit action.
+     * @param setDirtyFlag tells whether dirty flag has to be set (to true)
+     */
+    protected void finishSuccessfulEdit( final boolean setDirtyFlag ) {
+        if ( setDirtyFlag )
+            ownerEditorPanel.setHasDirty( true );
         dispose();
     }
 

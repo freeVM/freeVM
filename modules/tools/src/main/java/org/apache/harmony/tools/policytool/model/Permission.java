@@ -20,7 +20,7 @@ package org.apache.harmony.tools.policytool.model;
 /**
  * Represents a principal for the grant entries.
  */
-public class Permission {
+public class Permission implements Cloneable {
 
     /** Name of the class of the permission.                   */
     private String className;
@@ -93,6 +93,17 @@ public class Permission {
      */
     public void setSignedBy( final String signedBy ) {
         this.signedBy = signedBy;
+    }
+
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch ( final CloneNotSupportedException cnse ) {
+            // This never gonna happen.
+            cnse.printStackTrace();
+            return null;
+        }
     }
 
 }

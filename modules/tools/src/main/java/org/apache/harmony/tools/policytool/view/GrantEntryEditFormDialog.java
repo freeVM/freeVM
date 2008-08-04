@@ -20,6 +20,7 @@ package org.apache.harmony.tools.policytool.view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
@@ -41,9 +42,20 @@ public class GrantEntryEditFormDialog extends LAEFormDialog {
     private final GrantEntry          initialGrantEntry;
     /** List of policy entries where to store if new entry is to be created.                 */
     private final List< PolicyEntry > policyEntryList;
-
+    
     /** Holds the reference to the new granty entry in case of we are creating a new one.    */
     private final GrantEntry          newGrantEntry;
+
+    /** A deep clone of the edited grant entry's principal list.<br>
+     * This is necessary because we have to be able to restore the original principal list
+     * (which are edited by another instance of LAEFormDialog)
+     * if cancel action is performed here on the grant entry's LAEFormDialog.                */
+    private final List< Principal >   tempPrincipalList;
+    /** A deep clone of the edited grant entry's permission list.<br>
+     * This is necessary because we have to be able to restore the original permission list
+     * (which are edited by another instance of LAEFormDialog)
+     * if cancel action is performed here on the grant entry's LAEFormDialog.                */
+    private final List< Permission >  tempPermissionList;
 
     /** Text field to view and edit the value of code base. */
     private final JTextField codeBaseTextField = new JTextField();
@@ -64,8 +76,42 @@ public class GrantEntryEditFormDialog extends LAEFormDialog {
         this.policyEntryList   = policyEntryList;
 
         newGrantEntry = initialGrantEntry == null ? new GrantEntry() : null;
+        tempPrincipalList  = deepclonePrincipalList ( ( initialGrantEntry == null ? newGrantEntry : initialGrantEntry ).getPrincipalList () );
+        tempPermissionList = deepclonePermissionList( ( initialGrantEntry == null ? newGrantEntry : initialGrantEntry ).getPermissionList() );
 
         prepareForDisplay();
+    }
+
+    /**
+     * Deepclones a principal list and returns it.<br>
+     * This method uses the <code>Object.clone()</code> clone the elements.
+     * 
+     * @param principalList principal list to be deepcloned
+     * @return a deepcloned principal list
+     */
+    private static List< Principal > deepclonePrincipalList( final List< Principal > principalList ) {
+        final List< Principal > deepclonedPrincipalList = new ArrayList< Principal >( principalList.size() );
+
+        for ( final Principal principal : principalList )
+            deepclonedPrincipalList.add( (Principal) principal.clone() );
+
+        return deepclonedPrincipalList;
+    }
+
+    /**
+     * Deepclones a permission list and returns it.<br>
+     * This method uses the <code>Object.clone()</code> clone the elements.
+     * 
+     * @param permissionList permission list to be deepcloned
+     * @return a deepcloned permission list
+     */
+    private static List< Permission > deepclonePermissionList( final List< Permission > permissionList ) {
+        final List< Permission > deepclonedPermissionList = new ArrayList< Permission >( permissionList.size() );
+
+        for ( final Permission permission : permissionList )
+            deepclonedPermissionList.add( (Permission) permission.clone() );
+
+        return deepclonedPermissionList;
     }
 
     @Override
@@ -100,10 +146,10 @@ public class GrantEntryEditFormDialog extends LAEFormDialog {
         panel.add( verticalBox, BorderLayout.NORTH );
 
         // ListAndEdit component for Principals
-        panel.add( new ListAndEditPanel< Principal >( "Principals:", "Principal", ( initialGrantEntry == null ? newGrantEntry : initialGrantEntry ).getPrincipalList(),
+        panel.add( new ListAndEditPanel< Principal >( "Principals:", "Principal", tempPrincipalList,
                 new ListAndEditPanel.LAEFormDialogFactory< Principal > () {
                     public LAEFormDialog createFactoryForAddOrEdit( final Principal selectedEntity ) {
-                        return new PrincipalEditFormDialog( GrantEntryEditFormDialog.this, ownerEditorPanel, selectedEntity, ( initialGrantEntry == null ? newGrantEntry : initialGrantEntry ).getPrincipalList() );
+                        return new PrincipalEditFormDialog( GrantEntryEditFormDialog.this, ownerEditorPanel, selectedEntity, tempPrincipalList );
                     }
                 }
             ), BorderLayout.CENTER );
@@ -114,10 +160,10 @@ public class GrantEntryEditFormDialog extends LAEFormDialog {
 
         // ListAndEdit component for Permissions
         final ListAndEditPanel< Permission > permissionsLAE =
-            new ListAndEditPanel< Permission >( "Permissions:", "Permission", ( initialGrantEntry == null ? newGrantEntry : initialGrantEntry ).getPermissionList(),
+            new ListAndEditPanel< Permission >( "Permissions:", "Permission", tempPermissionList,
                 new ListAndEditPanel.LAEFormDialogFactory< Permission > () {
                     public LAEFormDialog createFactoryForAddOrEdit( final Permission selectedEntity ) {
-                        return null;
+                        return new PermissionEditFormDialog( GrantEntryEditFormDialog.this, ownerEditorPanel, selectedEntity, tempPermissionList );
                     }
                 }
             );
@@ -131,8 +177,10 @@ public class GrantEntryEditFormDialog extends LAEFormDialog {
 
         final GrantEntry grantEntry = initialGrantEntry == null ? newGrantEntry : initialGrantEntry;
 
-        grantEntry.setCodeBase( codeBaseTextField.getText() );
-        grantEntry.setSignedBy( signedByTextField.getText() );
+        grantEntry.setCodeBase      ( codeBaseTextField.getText() );
+        grantEntry.setSignedBy      ( signedByTextField.getText() );
+        grantEntry.setPrincipalList ( tempPrincipalList           );
+        grantEntry.setPermissionList( tempPermissionList          );
 
         if ( initialGrantEntry == null ) {
             policyEntryList.add( grantEntry );

@@ -31,7 +31,7 @@ import javax.swing.JScrollPane;
 
 /**
  * The abstraction of a panel which can list entities and provide GUI components to offer and handle certain actions on the entities.<br>
- * The entities are listed in a listbox,
+ * The entities are listed in a listbox.
  * @param <EntityType> type of the entities listed on and edited by this panel
  */
 public class ListAndEditPanel< EntityType > extends JPanel implements ActionListener {

@@ -32,11 +32,13 @@ import org.apache.harmony.tools.policytool.model.PolicyEntry;
 public class GraphicalEditorPanel extends EditorPanel {
 
     /** Holds the invalid policy text or null if the loaded policy text is valid.        */
-    private String              invalidPolicyText;
+    private String                          invalidPolicyText;
 
     /** The list of the policy text's entries or null if invalid policy text was loaded. */
-    private List< PolicyEntry > policyEntryList = new ArrayList< PolicyEntry >();
+    private List< PolicyEntry >             policyEntryList = new ArrayList< PolicyEntry >();
 
+    /** ListAndEditPanel for handling the grant entries.                                 */
+    private ListAndEditPanel< PolicyEntry > grantEntryLAEPanel;
     /**
      * Creates a new GraphicalEditorPanel.<br>
      * Sets a BorderLayout as the layout manager.
@@ -45,8 +47,18 @@ public class GraphicalEditorPanel extends EditorPanel {
     public GraphicalEditorPanel( final MainFrame mainFrame ) {
         super( mainFrame, "Graphical editing", new BorderLayout(), true );
 
-        // buildGUI:
-        add( new ListAndEditPanel< PolicyEntry >( "Policy entries:", "Policy Entry", policyEntryList,
+        buildGUI();
+    }
+
+    /**
+     * Builds the graphical user interface.<br>
+     * Creates and adds a new LAE panel to this editor panel which will be responsible to handle the grant entries.
+     */
+    private void buildGUI() {
+        if ( grantEntryLAEPanel != null )
+            remove( grantEntryLAEPanel );
+
+        grantEntryLAEPanel = new ListAndEditPanel< PolicyEntry >( "Policy entries:", "Policy Entry", policyEntryList,
             new ListAndEditPanel.Filter< PolicyEntry > () {
                 public boolean includeEntity( final PolicyEntry entity ) {
                     return entity instanceof GrantEntry;
@@ -57,7 +69,9 @@ public class GraphicalEditorPanel extends EditorPanel {
                     return new GrantEntryEditFormDialog( mainFrame, GraphicalEditorPanel.this, (GrantEntry) selectedEntity, policyEntryList );
                 }
             }
-        ), BorderLayout.CENTER );
+        );
+
+        add( grantEntryLAEPanel, BorderLayout.CENTER );
     }
 
     @Override
@@ -65,6 +79,9 @@ public class GraphicalEditorPanel extends EditorPanel {
         this.invalidPolicyText = policyText;
 
         policyEntryList = new ArrayList< PolicyEntry >();
+
+        //TODO: uncomment when loadPolicyText() is implemented 
+        //buildGUI();
 
         return true;
     }
