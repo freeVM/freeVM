@@ -18,15 +18,20 @@
 package org.apache.harmony.tools.policytool.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.apache.harmony.tools.policytool.Consts;
 
 /**
  * Represents an entry which specifies some grant permission.
  */
 public class GrantEntry extends PolicyEntry {
 
-    /** Keyword of the keystore entry in the policy text. */
-    public static final String KEYWORD = "grant";
+    /** Keyword of the keystore entry in the policy text.               */
+    public static final String KEYWORD         = "grant";
+    /** Stored value of the lowercased keyword for fast policy parsing. */
+    public static final String LOWERED_KEYWORD = KEYWORD.toLowerCase();
 
     /** Code base of the grant entry.                     */
     private String codeBase;
@@ -104,13 +109,42 @@ public class GrantEntry extends PolicyEntry {
 
     @Override
     public String getText() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        final StringBuilder textBuilder = new StringBuilder( KEYWORD );
 
-    @Override
-    public void setText( final String entryText ) {
-        // TODO Auto-generated method stub
+        if ( signedBy != null && signedBy.length() > 0 )
+            textBuilder.append( " signedBy \"" ).append( signedBy ).append( '"' );
+
+        if ( codeBase != null && codeBase.length() > 0 ) {
+            if ( signedBy != null && signedBy.length() > 0 )
+                textBuilder.append( ',' );
+            textBuilder.append( " codeBase \"" ).append( codeBase ).append( '"' );
+        }
+
+        if ( principalList.isEmpty() )
+            textBuilder.append( ' ' );
+        else {
+            if ( signedBy != null && signedBy.length() > 0
+              || codeBase != null && codeBase.length() > 0 )
+                textBuilder.append( ',' );
+            textBuilder.append( Consts.NEW_LINE_STRING );
+
+            for ( final Iterator< Principal > principalIterator = principalList.iterator(); principalIterator.hasNext(); ) {
+                textBuilder.append( "      " ).append( principalIterator.next().toString() );
+                if ( principalIterator.hasNext() )
+                    textBuilder.append( ',' ).append( Consts.NEW_LINE_STRING );
+                else
+                    textBuilder.append( ' ' );
+            }
+        }
+
+        textBuilder.append( '{' ).append( Consts.NEW_LINE_STRING );
+
+        for ( final Permission permission : permissionList )
+            textBuilder.append( "\tpermission " ).append( permission.toString( Consts.NEW_LINE_STRING + "\t\t" ) ).append( TERMINATOR_CHAR ).append( Consts.NEW_LINE_STRING );
+
+        textBuilder.append( '}' ).append( TERMINATOR_CHAR );
+
+        return textBuilder.toString();
     }
 
     @Override

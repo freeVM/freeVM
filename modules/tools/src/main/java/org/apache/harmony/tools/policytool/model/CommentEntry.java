@@ -43,7 +43,10 @@ public class CommentEntry extends PolicyEntry {
         return entryText;
     }
 
-    @Override
+    /**
+     * Sets the text of the comment entry.
+     * @param entryText
+     */
     public void setText( final String entryText ) {
         this.entryText = entryText;
     }

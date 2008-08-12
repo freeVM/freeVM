@@ -21,6 +21,11 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import org.apache.harmony.tools.policytool.Consts;
+import org.apache.harmony.tools.policytool.control.InvalidPolicyTextException;
+import org.apache.harmony.tools.policytool.control.PolicyTextParser;
 import org.apache.harmony.tools.policytool.model.GrantEntry;
 import org.apache.harmony.tools.policytool.model.KeystoreEntry;
 import org.apache.harmony.tools.policytool.model.KeystorePasswordURLEntry;
@@ -35,17 +40,19 @@ public class GraphicalEditorPanel extends EditorPanel {
     private String                          invalidPolicyText;
 
     /** The list of the policy text's entries or null if invalid policy text was loaded. */
+    // TODO: if concurrent modification exception occurs, then make this list synchronized!
     private List< PolicyEntry >             policyEntryList = new ArrayList< PolicyEntry >();
 
     /** ListAndEditPanel for handling the grant entries.                                 */
     private ListAndEditPanel< PolicyEntry > grantEntryLAEPanel;
+
     /**
      * Creates a new GraphicalEditorPanel.<br>
      * Sets a BorderLayout as the layout manager.
      * @param mainFrame reference to the main frame
      */
     public GraphicalEditorPanel( final MainFrame mainFrame ) {
-        super( mainFrame, "Graphical editing", new BorderLayout(), true );
+        super( mainFrame, "Graphical editing", new BorderLayout() );
 
         buildGUI();
     }
@@ -57,6 +64,9 @@ public class GraphicalEditorPanel extends EditorPanel {
     private void buildGUI() {
         if ( grantEntryLAEPanel != null )
             remove( grantEntryLAEPanel );
+
+        if ( invalidPolicyText != null )
+            return;
 
         grantEntryLAEPanel = new ListAndEditPanel< PolicyEntry >( "Policy entries:", "Policy Entry", policyEntryList,
             new ListAndEditPanel.Filter< PolicyEntry > () {
@@ -76,19 +86,35 @@ public class GraphicalEditorPanel extends EditorPanel {
 
     @Override
     public boolean loadPolicyText( final String policyText ) {
-        this.invalidPolicyText = policyText;
 
-        policyEntryList = new ArrayList< PolicyEntry >();
+        try {
+            invalidPolicyText = null;
 
-        //TODO: uncomment when loadPolicyText() is implemented 
-        //buildGUI();
+            policyEntryList   = PolicyTextParser.parsePolicyText( policyText );
+
+        } catch ( final InvalidPolicyTextException ipte ) {
+            JOptionPane.showMessageDialog( this, new String[] { ipte.getMessage(), " ", "Graphical editor is disabled, correct the error in the direct editor or load a valid policy file." }, "Parse error!", JOptionPane.ERROR_MESSAGE );
+            invalidPolicyText = policyText;
+            policyEntryList   = new ArrayList< PolicyEntry >();
+        }
+
+        buildGUI();
 
         return true;
     }
 
     @Override
     public String getPolicyText() {
-        return invalidPolicyText;
+        if ( invalidPolicyText != null )
+            return invalidPolicyText;
+
+        final StringBuilder policyTextBuilder = new StringBuilder();
+
+        for ( final PolicyEntry policyEntry : policyEntryList ) {
+            policyTextBuilder.append( policyEntry.getText() ).append( Consts.NEW_LINE_STRING );
+        }
+
+        return policyTextBuilder.toString();
     }
 
     /**
@@ -112,6 +138,15 @@ public class GraphicalEditorPanel extends EditorPanel {
         }
 
         new KeystoreEntryEditFormDialog( mainFrame, this, keystoreEntry, keystorePasswordURLEntry, policyEntryList ).setVisible( true );
+    }
+
+    /**
+     * We don't want to support graphical keystore edit if the loaded policy text is invalid.
+     * @return true if the loaded policy text is valid; false otherwise
+     */
+    @Override
+    public boolean supportsGraphicalKeystoreEdit() {
+        return invalidPolicyText == null;
     }
 
 }

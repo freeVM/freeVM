@@ -42,7 +42,7 @@ public class GrantEntryEditFormDialog extends LAEFormDialog {
     private final GrantEntry          initialGrantEntry;
     /** List of policy entries where to store if new entry is to be created.                 */
     private final List< PolicyEntry > policyEntryList;
-    
+
     /** Holds the reference to the new granty entry in case of we are creating a new one.    */
     private final GrantEntry          newGrantEntry;
 
@@ -185,8 +185,7 @@ public class GrantEntryEditFormDialog extends LAEFormDialog {
         if ( initialGrantEntry == null ) {
             policyEntryList.add( grantEntry );
             listModel.addElement( grantEntry );
-        } else
-            refreshVisualizationList();
+        }
 
         finishSuccessfulEdit();
     }

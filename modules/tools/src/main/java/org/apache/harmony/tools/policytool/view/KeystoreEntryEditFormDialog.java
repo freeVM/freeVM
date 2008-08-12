@@ -94,7 +94,7 @@ public class KeystoreEntryEditFormDialog extends BaseFormDialog {
         }
 
         if ( initialKeystorePasswordURLEntry != null ) {
-            keystorePasswordURLTextField.setText( initialKeystorePasswordURLEntry.getUrl() ); 
+            keystorePasswordURLTextField.setText( initialKeystorePasswordURLEntry.getUrl() );
         }
 
         final JPanel flowPanel = new JPanel();

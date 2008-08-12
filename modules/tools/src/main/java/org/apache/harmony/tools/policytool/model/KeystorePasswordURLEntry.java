@@ -27,8 +27,10 @@ package org.apache.harmony.tools.policytool.model;
  */
 public class KeystorePasswordURLEntry extends PolicyEntry {
 
-    /** Keyword of the keystore password URL entry in the policy text. */
-    public static final String KEYWORD = "keystorePasswordURL";
+    /** Keyword of the keystore password URL entry in the policy text.  */
+    public static final String KEYWORD         = "keystorePasswordURL";
+    /** Stored value of the lowercased keyword for fast policy parsing. */
+    public static final String LOWERED_KEYWORD = KEYWORD.toLowerCase();
 
     /** URL of the keystore password. */
     private String url;
@@ -52,11 +54,6 @@ public class KeystorePasswordURLEntry extends PolicyEntry {
     @Override
     public String getText() {
         return KEYWORD + " \"" + url + '\"' + TERMINATOR_CHAR;
-    }
-
-    @Override
-    public void setText( final String entryText ) {
-        // TODO Auto-generated method stub
     }
 
 }

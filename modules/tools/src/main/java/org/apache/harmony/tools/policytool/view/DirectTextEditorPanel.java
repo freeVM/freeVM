@@ -18,7 +18,6 @@
 package org.apache.harmony.tools.policytool.view;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -41,9 +40,10 @@ public class DirectTextEditorPanel extends EditorPanel {
      * @param mainFrame reference to the main frame
      */
     public DirectTextEditorPanel( final MainFrame mainFrame ) {
-        super( mainFrame, "Direct editing", new BorderLayout(), false );
+        super( mainFrame, "Direct editing", new BorderLayout() );
 
-        policyTextTextArea.setFont( new Font( "Courier New", Font.PLAIN, Consts.DIRECT_EDITING_FONT_SIZE ) );
+        policyTextTextArea.setFont( Consts.DIRECT_EDITING_FONT );
+        policyTextTextArea.setTabSize( Consts.DIRECT_EDITING_TAB_SIZE );
 
         // We want to track changes of the document so we can ask confirmation on exit
         policyTextTextArea.getDocument().addDocumentListener( new DocumentListener() {

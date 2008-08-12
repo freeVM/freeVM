@@ -39,6 +39,18 @@ public abstract class EditorPanel extends JPanel {
 
     /**
      * Creates a new EditorPanel.<br>
+     * Calls the other constructor with an additional <code>supportsGraphicalKeystoreEdit=false</code>.
+     * @param mainFrame reference to the main frame
+     * @param panelTitle the title of the panel
+     * @param layoutManager layout manager to be used
+     * @param supportsGraphicalKeystoreEdit true if this editor panel supports graphical keystore edit; false otherwise
+     */
+    public EditorPanel( final MainFrame mainFrame, final String panelTitle, final LayoutManager layoutManager ) {
+        this( mainFrame, panelTitle, layoutManager, false );
+    }
+
+    /**
+     * Creates a new EditorPanel.<br>
      * Awaits a layout manager to be sent to the super class.
      * @param mainFrame reference to the main frame
      * @param panelTitle the title of the panel

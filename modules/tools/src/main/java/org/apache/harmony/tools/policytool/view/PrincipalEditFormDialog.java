@@ -97,8 +97,8 @@ public class PrincipalEditFormDialog extends LAEFormDialog {
                         principalTypeComboBox.setSelectedIndex( i );
                         break;
                     }
-            principalTypeTextField.setText( initialPrincipal.getType() ); 
-            principalNameTextField.setText( initialPrincipal.getName() ); 
+            principalTypeTextField.setText( initialPrincipal.getType() );
+            principalNameTextField.setText( initialPrincipal.getName() );
         }
 
         final JPanel flowPanel = new JPanel();
@@ -109,6 +109,7 @@ public class PrincipalEditFormDialog extends LAEFormDialog {
     @Override
     public void onOkButtonPressed() {
         // TODO: validation
+        // Class name and target name are mandatory!
 
         final Principal principal = initialPrincipal == null ? new Principal() : initialPrincipal;
 
@@ -118,8 +119,7 @@ public class PrincipalEditFormDialog extends LAEFormDialog {
         if ( initialPrincipal == null ) {
             principalList.add( principal );
             listModel.addElement( principal );
-        } else
-            refreshVisualizationList();
+        }
 
         finishSuccessfulEdit( false );
     }

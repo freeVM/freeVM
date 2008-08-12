@@ -17,6 +17,8 @@
 
 package org.apache.harmony.tools.policytool;
 
+import java.awt.Font;
+
 /**
  * Holds general and application-wide constants.
  */
@@ -36,5 +38,12 @@ public class Consts {
 
     /** Font size in the direct editing panel.     */
     public static final int DIRECT_EDITING_FONT_SIZE = 13;
+    /** Font in the direct editing panel.          */
+    public static final Font DIRECT_EDITING_FONT     = new Font( "Courier New", Font.PLAIN, Consts.DIRECT_EDITING_FONT_SIZE );
+    /** Tab size in the direct editing panel.      */
+    public static final int DIRECT_EDITING_TAB_SIZE  = 4;
+
+    /** Proper line separator for the running operating system. */
+    public static final String NEW_LINE_STRING = System.getProperty( "line.separator" );
 
 }

@@ -163,7 +163,7 @@ public class Controller implements ChangeListener, ActionListener{
      */
     public void stateChanged( final ChangeEvent ce ) {
         final EditorPanel newActiveEditorPanel = (EditorPanel) ( (JTabbedPane) ce.getSource() ).getSelectedComponent();
-        
+
         newActiveEditorPanel.loadPolicyText( activeEditorPanel.getPolicyText() );
         newActiveEditorPanel.setHasDirty   ( activeEditorPanel.getHasDirty  () );
         activeEditorPanel = newActiveEditorPanel;

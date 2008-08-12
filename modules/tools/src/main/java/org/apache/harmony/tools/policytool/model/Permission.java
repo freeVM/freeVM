@@ -96,11 +96,34 @@ public class Permission implements Cloneable {
     }
 
     @Override
+    public String toString() {
+        return toString( "" );
+    }
+
+    /**
+     * Returns a string representation of the permission.
+     * @param signedByPartPrefix string to be put before the signedBy part; omitted if signedBy is missing
+     * @return a string representation of the permission
+     */
+    public String toString( final String signedByPartPrefix ) {
+        final StringBuilder stringBuilder = new StringBuilder( className );
+
+        if ( targetName != null && targetName.length() > 0 )
+            stringBuilder.append( " \"" ).append( targetName ).append( '"' );;
+        if ( actions != null && actions.length() > 0 )
+            stringBuilder.append( ", \"" ).append( actions ).append( '"');
+        if ( signedBy != null && signedBy.length() > 0 )
+            stringBuilder.append( "," ).append( signedByPartPrefix ).append( "signedBy \"" ).append( signedBy ).append( '"' );
+
+        return stringBuilder.toString();
+    }
+
+    @Override
     public Object clone() {
         try {
             return super.clone();
         } catch ( final CloneNotSupportedException cnse ) {
-            // This never gonna happen.
+            // This' never gonna happen.
             cnse.printStackTrace();
             return null;
         }

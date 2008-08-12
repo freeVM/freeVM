@@ -61,7 +61,7 @@ public class Principal implements Cloneable {
 
     @Override
     public String toString() {
-        return "Principal " + type + " \"" + name + '"';
+        return "principal " + type + " \"" + name + '"';
     }
 
     @Override
@@ -69,7 +69,7 @@ public class Principal implements Cloneable {
         try {
             return super.clone();
         } catch ( final CloneNotSupportedException cnse ) {
-            // This never gonna happen.
+            // This is never going to happen.
             cnse.printStackTrace();
             return null;
         }

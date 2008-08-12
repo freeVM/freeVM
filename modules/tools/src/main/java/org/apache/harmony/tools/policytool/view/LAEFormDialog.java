@@ -64,6 +64,12 @@ public abstract class LAEFormDialog extends BaseFormDialog {
         this.listModel                = listModel;
     }
 
+    @Override
+    protected void finishSuccessfulEdit( final boolean setDirtyFlag ) {
+        refreshVisualizationList();
+        super.finishSuccessfulEdit( setDirtyFlag );
+    }
+
     /**
      * Refreshes the visualization list.<br>
      * Should be called if the entities of the list might have changed but the list model was not modified.

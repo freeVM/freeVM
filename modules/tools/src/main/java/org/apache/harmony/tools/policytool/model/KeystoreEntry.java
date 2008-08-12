@@ -29,8 +29,10 @@ package org.apache.harmony.tools.policytool.model;
  */
 public class KeystoreEntry extends PolicyEntry {
 
-    /** Keyword of the keystore entry in the policy text. */
-    public static final String KEYWORD = "keystore";
+    /** Keyword of the keystore entry in the policy text.               */
+    public static final String KEYWORD         = "keystore";
+    /** Stored value of the lowercased keyword for fast policy parsing. */
+    public static final String LOWERED_KEYWORD = KEYWORD.toLowerCase();
 
     /** URL of the keystore.      */
     private String url;
@@ -90,37 +92,21 @@ public class KeystoreEntry extends PolicyEntry {
     @Override
     public String getText() {
         final StringBuilder textBuilder = new StringBuilder( KEYWORD );
-        boolean firstParamAdded = false;
 
-        if ( url != null ) {
+        if ( url != null && url.length() > 0 ) {
             textBuilder.append( " \"" ).append( url ).append( '"' );
-            firstParamAdded = true;
-        }
 
-        if ( type != null ) {
-            if ( firstParamAdded )
-                textBuilder.append( ',' );
-            else
-                firstParamAdded = true;
-            textBuilder.append( " \"" ).append( type ).append( '"' );
-        }
+            if ( type != null && type.length() > 0 ) {
+                textBuilder.append( ", \"" ).append( type ).append( '"' );
 
-        if ( provider != null ) {
-            if ( firstParamAdded )
-                textBuilder.append( ',' );
-            else
-                firstParamAdded = true;
-            textBuilder.append( " \"" ).append( provider ).append( '"' );
+                if ( provider != null && provider.length() > 0 )
+                    textBuilder.append( ", \"" ).append( provider ).append( '"' );
+            }
         }
 
         textBuilder.append( TERMINATOR_CHAR );
 
         return textBuilder.toString();
-    }
-
-    @Override
-    public void setText( final String entryText ) {
-        // TODO Auto-generated method stub
     }
 
 }

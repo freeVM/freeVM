@@ -26,15 +26,10 @@ public abstract class PolicyEntry {
     public static final char TERMINATOR_CHAR = ';';
 
     /**
-     * Returns the policy entry text.
+     * Returns the policy entry text.<br>
+     * Should not contain a line separator in the end but <code>TERMINATOR_CHAR</code> must be included.
      * @return the policy entry text
      */
     public abstract String getText();
-
-    /**
-     * Sets the policy entry text.
-     * @param entryText policy entry text to be set
-     */
-    public abstract void setText( final String entryText );
 
 }

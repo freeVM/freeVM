@@ -18,6 +18,7 @@
 package org.apache.harmony.tools.policytool.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -35,6 +36,9 @@ import javax.swing.JScrollPane;
  * @param <EntityType> type of the entities listed on and edited by this panel
  */
 public class ListAndEditPanel< EntityType > extends JPanel implements ActionListener {
+
+    /** Preferred dimension of the component listing the entities. */
+    private static final Dimension PREFERRED_LIST_COMPONENT_SIZE = new Dimension( 310, 150 );
 
     /** Model of the list component displaying the entities. */
     private final DefaultListModel listModel           = new DefaultListModel();
@@ -140,7 +144,9 @@ public class ListAndEditPanel< EntityType > extends JPanel implements ActionList
 
         add( buttonsPanel, BorderLayout.NORTH );
 
-        add( new JScrollPane( entityListComponent ), BorderLayout.CENTER );
+        final JScrollPane scrollPane =  new JScrollPane( entityListComponent );
+        scrollPane.setPreferredSize( PREFERRED_LIST_COMPONENT_SIZE );
+        add( scrollPane, BorderLayout.CENTER );
 
         setBorder( BorderFactory.createTitledBorder( panelTitle ) );
     }

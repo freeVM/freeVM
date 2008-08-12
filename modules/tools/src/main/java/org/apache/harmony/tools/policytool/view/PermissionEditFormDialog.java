@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -114,7 +115,7 @@ public class PermissionEditFormDialog extends LAEFormDialog {
      * Creates a new PermissionEditFormDialog.
      * @param ownerDialog reference to the owner dialog
      * @param ownerEditorPanel reference to the owner editor panel
-     * @param permission reference to the editable permission or null, if we are creating a new one 
+     * @param permission reference to the editable permission or null, if we are creating a new one
      * @param permissionList list of permissions where to store if new permission is to be created
      */
     public PermissionEditFormDialog( final Dialog ownerDialog, final EditorPanel ownerEditorPanel, final Permission permission, final List< Permission > permissionList ) {
@@ -186,6 +187,40 @@ public class PermissionEditFormDialog extends LAEFormDialog {
         panel.add( new JLabel( "Signed By:" ) );
         panel.add( signedByTextField );
 
+        if ( initialPermission != null ) {
+            // Should we choose anything in the permission type combo box?
+            if ( initialPermission.getClassName() != null )
+                for ( int i = 0; i < DEFAULT_PERMISSION_TYPE_CLASS_NAMES.length; i++ )
+                    if ( DEFAULT_PERMISSION_TYPE_CLASS_NAMES[ i ] != null && DEFAULT_PERMISSION_TYPE_CLASS_NAMES[ i ].equals( initialPermission.getClassName() ) ) {
+                        permissionTypeComboBox.setSelectedIndex( i );
+                        break;
+                    }
+            permissionTypeTextField.setText( initialPermission.getClassName() );
+
+            final String[][] targetNameActions = permissionTypeTargetNamesActionsMap.get( DEFAULT_PERMISSION_TYPE_NAMES[ permissionTypeComboBox.getSelectedIndex() ] );
+            final String[]   targetNames       = targetNameActions[ 0 ];
+            final String[]   actions           = targetNameActions[ 1 ];
+
+            // Should we choose anything in the target name combo box?
+            if ( initialPermission.getTargetName() != null && targetNames != null )
+                for ( int i = 0; i < targetNames.length; i++ )
+                    if ( targetNames[ i ].equals( initialPermission.getTargetName() ) ) {
+                        targetNameComboBox.setSelectedIndex( i+1 ); // +1 for the constant "Target Name:" item
+                        break;
+                    }
+            targetNameTextField.setText( initialPermission.getTargetName() );
+
+            // Should we choose anything in the actions combo box?
+            if ( initialPermission.getActions() != null && actions != null )
+                for ( int i = 0; i < actions.length; i++ )
+                    if ( actions[ i ].equals( initialPermission.getActions() ) ) {
+                        actionsComboBox.setSelectedIndex( i ); // +1 for the constant "Actions:" item
+                        break;
+                    }
+            actionsTextField.setText( initialPermission.getActions() );
+
+            signedByTextField.setText( initialPermission.getSignedBy() );
+        }
 
 
         final JPanel flowPanel = new JPanel();
@@ -196,8 +231,24 @@ public class PermissionEditFormDialog extends LAEFormDialog {
     @Override
     public void onOkButtonPressed() {
         // TODO: validation
-        // TODO Auto-generated method stub
+        if ( permissionTypeTextField.getText().length() == 0 || targetNameTextField.isEnabled() && targetNameTextField.getText().length() == 0 ) {
+            JOptionPane.showMessageDialog( this, "Permission and target name must have a value!", "Error", JOptionPane.ERROR_MESSAGE );
+            return;
+        }
 
+        final Permission permission = initialPermission == null ? new Permission() : initialPermission;
+
+        permission.setClassName ( permissionTypeTextField.getText() );
+        permission.setTargetName( targetNameTextField    .getText() );
+        permission.setActions   ( actionsTextField       .getText() );
+        permission.setSignedBy  ( signedByTextField      .getText() );
+
+        if ( initialPermission == null ) {
+            permissionList.add( permission );
+            listModel.addElement( permission );
+        }
+
+        finishSuccessfulEdit( false );
     }
 
 }
