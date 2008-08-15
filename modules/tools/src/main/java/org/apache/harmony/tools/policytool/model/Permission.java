@@ -109,7 +109,7 @@ public class Permission implements Cloneable {
         final StringBuilder stringBuilder = new StringBuilder( className );
 
         if ( targetName != null && targetName.length() > 0 )
-            stringBuilder.append( " \"" ).append( targetName ).append( '"' );;
+            stringBuilder.append( " \"" ).append( targetName ).append( '"' );
         if ( actions != null && actions.length() > 0 )
             stringBuilder.append( ", \"" ).append( actions ).append( '"');
         if ( signedBy != null && signedBy.length() > 0 )

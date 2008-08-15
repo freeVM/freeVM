@@ -151,9 +151,13 @@ public class GrantEntry extends PolicyEntry {
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
 
-        if ( codeBase != null )
-            stringBuilder.append( "CodeBase \"" ).append( codeBase ).append( '"');
-        if ( signedBy != null )
+        stringBuilder.append( " CodeBase " );
+        if ( codeBase != null && codeBase.length() > 0 )
+            stringBuilder.append( '"' ).append( codeBase ).append( '"' );
+        else
+            stringBuilder.append( "<ALL>" );
+
+        if ( signedBy != null && signedBy.length() > 0 )
             stringBuilder.append( stringBuilder.length() > 0 ? ", " : "" ).append( "SignedBy \"" ).append( signedBy ).append( '"' );
 
         for ( final Principal principal : principalList )
