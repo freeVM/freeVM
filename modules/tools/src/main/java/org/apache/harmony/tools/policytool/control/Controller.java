@@ -31,12 +31,16 @@ import javax.swing.event.ChangeListener;
 import org.apache.harmony.tools.policytool.view.EditorPanel;
 import org.apache.harmony.tools.policytool.view.GraphicalEditorPanel;
 import org.apache.harmony.tools.policytool.view.MainFrame;
+import org.apache.harmony.tools.policytool.view.WarningLogDialog;
 import org.apache.harmony.tools.policytool.view.MainFrame.MenuItemEnum;
 
 /**
  * The controller handles the user actions, drives the GUI and connects it to the model.
  */
 public class Controller implements ChangeListener, ActionListener{
+
+    /** Thee warning log dialog. */
+    private static WarningLogDialog warningLogDialog;
 
     /** Reference to the main frame.              */
     private final MainFrame     mainFrame;
@@ -52,6 +56,22 @@ public class Controller implements ChangeListener, ActionListener{
     private File                editedPolicyFile;
 
     /**
+     * Logs an error message to the warning/error log.
+     * @param errorMessage error message to be logged
+     */
+    public static void logError( final String errorMessage ) {
+        warningLogDialog.addMessage( "Error: " + errorMessage );
+    }
+
+    /**
+     * Logs a warning message to the warning/error log.
+     * @param warningMessage warning message to be logged
+     */
+    public static void logWarning( final String warningMessage ) {
+        warningLogDialog.addMessage( "Warning: " + warningMessage );
+    }
+
+    /**
      * Creates a new Controller.
      * @param mainFrame reference to the main frame
      * @param editorPanels array of the editor panels
@@ -60,6 +80,7 @@ public class Controller implements ChangeListener, ActionListener{
     public Controller( final MainFrame mainFrame, final EditorPanel[] editorPanels, final String policyFileName ) {
         this.mainFrame    = mainFrame;
         this.editorPanels = editorPanels;
+        warningLogDialog  = new WarningLogDialog( mainFrame );
         activeEditorPanel = editorPanels[ 0 ];
 
         PolicyFileHandler.setDialogParentComponent( mainFrame );
@@ -101,7 +122,7 @@ public class Controller implements ChangeListener, ActionListener{
      * Determines if a dirty sensitive operation is allowed to be executed.<br>
      * There are operation which will throw away the edited policy text currently hold in the active editor
      * (for example exit or load a file, or start a new).<br>
-     * This method checks whether there are unsaved changes, and if so, ask confirmation on what to do with them.<br>
+     * This method checks whether there are unsaved changes, and if so, asks confirmation on what to do with them.<br>
      * Finally returns true, if the dirty data can be thrown away or has been saved successfully.
      * Returns false, if the effect of the operation (throwing away unsaved changes) is unwanted and therefore the operation is disallowed.
      * 
@@ -186,7 +207,7 @@ public class Controller implements ChangeListener, ActionListener{
 
         case NEW :
             if ( allowedDirtySensitiveOperation( "starting new file" ) ) {
-                activeEditorPanel.loadPolicyText( null );
+                activeEditorPanel.loadPolicyText( "" );
                 setEditedPolicyFile( null );
             }
             break;
@@ -221,6 +242,7 @@ public class Controller implements ChangeListener, ActionListener{
             break;
 
         case VIEW_WARNING_LOG :
+            warningLogDialog.setVisible( true );
             break;
 
         case EXIT :

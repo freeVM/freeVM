@@ -363,7 +363,7 @@ public class PolicyTextParser {
                         if ( peekNextNonWhiteSpaceChar( signedByIndices[ 1 ] ) != PolicyEntry.TERMINATOR_CHAR )
                             throw new InvalidPolicyTextException( "Was expecting semicolon but found something else!" );
                         else
-                            newIndex = skipWhiteSpaces( newIndex ) + 1;
+                            newIndex = skipWhiteSpaces( signedByIndices[ 1 ] ) + 1;
                     }
                     else
                         newIndex = skipWhiteSpaces( newIndex ) + 1;

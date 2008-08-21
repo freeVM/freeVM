@@ -75,8 +75,12 @@ public abstract class LAEFormDialog extends BaseFormDialog {
      * Should be called if the entities of the list might have changed but the list model was not modified.
      */
     public void refreshVisualizationList() {
-        visualizationJListforLAE.revalidate();
-        visualizationJListforLAE.repaint();
+        final Object newTempItem = new String();
+        // There is a bug if we edit an item, we change it in a way that its toString() method will return a very long string
+        // (long as it won't fit in the displayed width), its string will be truncated (ended with "..."), and no scrollbars will be displayed
+        // The addElement() operation causes to recalculate the viewport size.
+        listModel.addElement   ( newTempItem );
+        listModel.removeElement( newTempItem );
     }
 
 }

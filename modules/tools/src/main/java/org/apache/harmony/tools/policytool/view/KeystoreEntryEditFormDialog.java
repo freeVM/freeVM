@@ -20,13 +20,17 @@ package org.apache.harmony.tools.policytool.view;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.apache.harmony.tools.policytool.control.Controller;
 import org.apache.harmony.tools.policytool.model.CommentEntry;
 import org.apache.harmony.tools.policytool.model.KeystoreEntry;
 import org.apache.harmony.tools.policytool.model.KeystorePasswordURLEntry;
@@ -104,7 +108,52 @@ public class KeystoreEntryEditFormDialog extends BaseFormDialog {
 
     @Override
     public void onOkButtonPressed() {
-        // TODO: validation
+        // validation
+        final StringBuilder errorStringBuilder = new StringBuilder( NOT_ALLOWED_QUOTATION_MARKS_MESSAGE );
+        boolean validationFails = false;
+        if ( keystoreURLTextField.getText().indexOf( '"' ) >= 0 ) {
+            validationFails = true;
+            errorStringBuilder.append( "Keystore URL" );
+        }
+        if ( keystoreTypeTextField.getText().indexOf( '"' ) >= 0 ) {
+            errorStringBuilder.append( validationFails ? ", Keystore Type" : "Keystore Type" );
+            validationFails = true;
+        }
+        if ( keystoreProviderTextField.getText().indexOf( '"' ) >= 0 ) {
+            errorStringBuilder.append( validationFails ? ", Keystore Provider" : "Keystore Provider" );
+            validationFails = true;
+        }
+        if ( keystorePasswordURLTextField.getText().indexOf( '"' ) >= 0 ) {
+            errorStringBuilder.append( validationFails ? ", Keystore Password URL" : "Keystore Password URL" );
+            validationFails = true;
+        }
+
+        if ( !validationFails && keystoreURLTextField.getText().length() > 0 ) {
+            try {
+                new URL( keystoreURLTextField.getText() );
+            } catch ( final MalformedURLException mue ) {
+                validationFails = true;
+                errorStringBuilder.setLength( 0 );
+                errorStringBuilder.append( "Keystore URL contains a malformed URL: " + mue.getMessage() );
+            }
+        }
+
+        if ( !validationFails && keystorePasswordURLTextField.getText().length() > 0 ) {
+            try {
+                new URL( keystorePasswordURLTextField.getText() );
+            } catch ( final MalformedURLException mue ) {
+                validationFails = true;
+                errorStringBuilder.setLength( 0 );
+                errorStringBuilder.append( "Keystore Password URL contains a malformed URL: " + mue.getMessage() );
+            }
+        }
+
+        if ( validationFails ) {
+            Controller.logError( errorStringBuilder.toString() );
+            JOptionPane.showMessageDialog( this, errorStringBuilder.toString(), "Error!", JOptionPane.ERROR_MESSAGE );
+            return;
+        }
+        // validation end
 
         final KeystoreEntry keystoreEntry = initialKeystoreEntry == null ? new KeystoreEntry() : initialKeystoreEntry;
 

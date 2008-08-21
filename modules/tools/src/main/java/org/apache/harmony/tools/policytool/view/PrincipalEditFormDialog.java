@@ -26,10 +26,12 @@ import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.apache.harmony.tools.policytool.control.Controller;
 import org.apache.harmony.tools.policytool.model.Principal;
 
 /**
@@ -108,8 +110,27 @@ public class PrincipalEditFormDialog extends LAEFormDialog {
 
     @Override
     public void onOkButtonPressed() {
-        // TODO: validation
-        // Class name and target name are mandatory!
+        // validation
+        final StringBuilder errorStringBuilder = new StringBuilder( NOT_ALLOWED_QUOTATION_MARKS_MESSAGE );
+        boolean validationFails = false;
+        if ( principalNameTextField.getText().indexOf( '"' ) >= 0 ) {
+            validationFails = true;
+            errorStringBuilder.append( "Principal Name" );
+        }
+
+        if ( !validationFails )
+            if ( principalTypeTextField.getText().length() == 0 || principalNameTextField.getText().length() == 0 ) {
+                validationFails = true;
+                errorStringBuilder.setLength( 0 );
+                errorStringBuilder.append( "Principal Type and Principal Name must have a value!" );
+            }
+
+        if ( validationFails ) {
+            Controller.logError( errorStringBuilder.toString() );
+            JOptionPane.showMessageDialog( this, errorStringBuilder.toString(), "Error!", JOptionPane.ERROR_MESSAGE );
+            return;
+        }
+        // validation end
 
         final Principal principal = initialPrincipal == null ? new Principal() : initialPrincipal;
 

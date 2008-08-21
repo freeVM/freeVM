@@ -22,7 +22,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -56,6 +58,12 @@ public class MainFrame extends JFrame {
      */
     public MainFrame( final String policyFileName ) {
         super( Consts.APPLICATION_NAME );
+
+        // I set icon image before controller, because controller creates WarningLogDialog passign main frame as owner,
+        // and icon image is inherited. This way Warning Log Dialog will have the same icon.
+        final URL apahceIconURL = MainFrame.class.getResource( "apache.gif" );
+        if ( apahceIconURL != null )
+            setIconImage( new ImageIcon( apahceIconURL ).getImage() );
 
         final EditorPanel[] editorPanels = new EditorPanel[] { new GraphicalEditorPanel( this ), new DirectTextEditorPanel( this ) };
         final Controller    controller   = new Controller( this, editorPanels, policyFileName );

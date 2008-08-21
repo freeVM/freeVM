@@ -33,6 +33,9 @@ import javax.swing.JPanel;
  */
 public abstract class BaseFormDialog extends JDialog implements ActionListener {
 
+    /** Error message for not allowed quotation marks. */
+    public static final String NOT_ALLOWED_QUOTATION_MARKS_MESSAGE = "The following fields may not contain quotation marks: ";
+
     /** Reference to the owner window.    */
     protected final Window      ownerWindow;
 
@@ -130,7 +133,7 @@ public abstract class BaseFormDialog extends JDialog implements ActionListener {
     }
 
     /**
-     * Handles the action events of the dialog's ok and cancel button.
+     * Handles the action events of the dialog's ok and cancel buttons.
      */
     public void actionPerformed( final ActionEvent ae ) {
         if ( ae.getSource() == okButton )

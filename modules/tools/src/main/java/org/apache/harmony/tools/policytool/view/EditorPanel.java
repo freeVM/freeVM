@@ -43,7 +43,6 @@ public abstract class EditorPanel extends JPanel {
      * @param mainFrame reference to the main frame
      * @param panelTitle the title of the panel
      * @param layoutManager layout manager to be used
-     * @param supportsGraphicalKeystoreEdit true if this editor panel supports graphical keystore edit; false otherwise
      */
     public EditorPanel( final MainFrame mainFrame, final String panelTitle, final LayoutManager layoutManager ) {
         this( mainFrame, panelTitle, layoutManager, false );

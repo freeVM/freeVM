@@ -20,14 +20,18 @@ package org.apache.harmony.tools.policytool.view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.apache.harmony.tools.policytool.control.Controller;
 import org.apache.harmony.tools.policytool.model.GrantEntry;
 import org.apache.harmony.tools.policytool.model.Permission;
 import org.apache.harmony.tools.policytool.model.PolicyEntry;
@@ -173,7 +177,34 @@ public class GrantEntryEditFormDialog extends LAEFormDialog {
 
     @Override
     public void onOkButtonPressed() {
-        // TODO: validation
+        // validation
+        final StringBuilder errorStringBuilder = new StringBuilder( NOT_ALLOWED_QUOTATION_MARKS_MESSAGE );
+        boolean validationFails = false;
+        if ( codeBaseTextField.getText().indexOf( '"' ) >= 0 ) {
+            validationFails = true;
+            errorStringBuilder.append( "codeBase" );
+        }
+        if ( signedByTextField.getText().indexOf( '"' ) >= 0 ) {
+            validationFails = true;
+            errorStringBuilder.append( validationFails ? ", signedBy" : "signedBy" );
+        }
+
+        if ( !validationFails && codeBaseTextField.getText().length() > 0 ) {
+            try {
+                new URL( codeBaseTextField.getText() );
+            } catch ( final MalformedURLException mue ) {
+                validationFails = true;
+                errorStringBuilder.setLength( 0 );
+                errorStringBuilder.append( "CodeBase contains a malformed URL: " + mue.getMessage() );
+            }
+        }
+
+        if ( validationFails ) {
+            Controller.logError( errorStringBuilder.toString() );
+            JOptionPane.showMessageDialog( this, errorStringBuilder.toString(), "Error!", JOptionPane.ERROR_MESSAGE );
+            return;
+        }
+        // validation end
 
         final GrantEntry grantEntry = initialGrantEntry == null ? newGrantEntry : initialGrantEntry;
 

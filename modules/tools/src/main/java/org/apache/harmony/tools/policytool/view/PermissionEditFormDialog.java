@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.apache.harmony.tools.policytool.control.Controller;
 import org.apache.harmony.tools.policytool.model.Permission;
 
 /**
@@ -230,11 +231,35 @@ public class PermissionEditFormDialog extends LAEFormDialog {
 
     @Override
     public void onOkButtonPressed() {
-        // TODO: validation
-        if ( permissionTypeTextField.getText().length() == 0 || targetNameTextField.isEnabled() && targetNameTextField.getText().length() == 0 ) {
-            JOptionPane.showMessageDialog( this, "Permission and target name must have a value!", "Error", JOptionPane.ERROR_MESSAGE );
+        // validation
+        final StringBuilder errorStringBuilder = new StringBuilder( NOT_ALLOWED_QUOTATION_MARKS_MESSAGE );
+        boolean validationFails = false;
+        if ( targetNameTextField.getText().indexOf( '"' ) >= 0 ) {
+            validationFails = true;
+            errorStringBuilder.append( "Target Name" );
+        }
+        if ( actionsTextField.getText().indexOf( '"' ) >= 0 ) {
+            errorStringBuilder.append( validationFails ? ", Actions" : "Actions" );
+            validationFails = true;
+        }
+        if ( signedByTextField.getText().indexOf( '"' ) >= 0 ) {
+            errorStringBuilder.append( validationFails ? ", Signed By" : "Signed By" );
+            validationFails = true;
+        }
+
+        if ( !validationFails )
+            if ( permissionTypeTextField.getText().length() == 0 || targetNameTextField.isEnabled() && targetNameTextField.getText().length() == 0 ) {
+                validationFails = true;
+                errorStringBuilder.setLength( 0 );
+                errorStringBuilder.append( "Permission and target name must have a value!" );
+            }
+
+        if ( validationFails ) {
+            Controller.logError( errorStringBuilder.toString() );
+            JOptionPane.showMessageDialog( this, errorStringBuilder.toString(), "Error!", JOptionPane.ERROR_MESSAGE );
             return;
         }
+        // validation end
 
         final Permission permission = initialPermission == null ? new Permission() : initialPermission;
 

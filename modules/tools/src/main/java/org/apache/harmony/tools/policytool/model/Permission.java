@@ -113,7 +113,7 @@ public class Permission implements Cloneable {
         if ( actions != null && actions.length() > 0 )
             stringBuilder.append( ", \"" ).append( actions ).append( '"');
         if ( signedBy != null && signedBy.length() > 0 )
-            stringBuilder.append( "," ).append( signedByPartPrefix ).append( "signedBy \"" ).append( signedBy ).append( '"' );
+            stringBuilder.append( ", " ).append( signedByPartPrefix ).append( "signedBy \"" ).append( signedBy ).append( '"' );
 
         return stringBuilder.toString();
     }

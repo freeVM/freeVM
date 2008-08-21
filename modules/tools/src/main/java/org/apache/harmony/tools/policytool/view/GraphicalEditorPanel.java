@@ -24,6 +24,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import org.apache.harmony.tools.policytool.Consts;
+import org.apache.harmony.tools.policytool.control.Controller;
 import org.apache.harmony.tools.policytool.control.InvalidPolicyTextException;
 import org.apache.harmony.tools.policytool.control.PolicyTextParser;
 import org.apache.harmony.tools.policytool.model.GrantEntry;
@@ -93,6 +94,7 @@ public class GraphicalEditorPanel extends EditorPanel {
             policyEntryList   = PolicyTextParser.parsePolicyText( policyText );
 
         } catch ( final InvalidPolicyTextException ipte ) {
+            Controller.logError( ipte.getMessage() );
             JOptionPane.showMessageDialog( this, new String[] { ipte.getMessage(), " ", "Graphical editor is disabled, correct the error in the direct editor or load a valid policy file." }, "Parse error!", JOptionPane.ERROR_MESSAGE );
             invalidPolicyText = policyText;
             policyEntryList   = new ArrayList< PolicyEntry >();
