@@ -31,6 +31,7 @@
 
 #include <unistd.h>
 #include <errno.h>
+#include <string.h>
 #include "TransportManager_pd.h"
 #include "TransportManager.h"
 

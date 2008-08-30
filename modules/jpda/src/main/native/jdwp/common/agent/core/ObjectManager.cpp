@@ -24,6 +24,8 @@
 // ObjectManager.cpp - implementation of 'class ObjectManager :public AgentBase'
 // Provide mapping between JDWP IDs and corresponding JVMTI, JNI data types
 
+#include <string.h>
+
 #include "jni.h"
 #include "jvmti.h"
 #include "jdwp.h"

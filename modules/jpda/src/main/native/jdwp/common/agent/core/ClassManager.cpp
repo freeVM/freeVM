@@ -22,6 +22,8 @@
  */
 // ClassManager.cpp
 
+#include <string.h>
+
 #include "jni.h"
 
 #include "ClassManager.h"
