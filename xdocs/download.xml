@@ -647,24 +647,13 @@
   <a name="verify"/>
   <subsection name="Verify the integrity of the files">
     <p>
-      It is important that you verify the integrity of the files you downloaded by
-      using either the MD5 or SHA checksum listed alongside each download.
-    </p>
-
-    <p>
-      You can confirm the expected MD5 checksum using a program called <code>md5</code>
-      or <code>md5sum</code> which included in many Linux distributions.  It is also
-      available as part of
-      <a href="http://www.gnu.org/software/textutils/textutils.html">GNU Textutils</a>.
-      Windows users can get binary md5 programs from
-      <a href="http://www.fourmilab.ch/md5/">here</a>,
-      <a href="http://www.pc-tools.net/win32/freeware/console/">here</a>, or
-      <a href="http://www.slavasoft.com/fsum/">here</a>.
-    </p>
-    
-    <p>
-      Alternatively you can confirm the expected SHA checksum using a program called
-      <code>sha1</code> or <code>sha1sum</code> also included in many Linux distributions. 
+      It is essential that you verify the integrity of the distribution files
+      against the associated PGP signatures (.asc), MD5 checksums (.md5) or SHA 
+      checksums (.sha). To verify the PGP signatures, you'll need the 
+      <a href="http://www.apache.org/dist/harmony/KEYS">Apache Harmony KEYS</a>.
+      For more information on why we sign our releases and how to verify them, please
+      read <a href="http://www.apache.org/info/verification.html"><i>Verifying Apache 
+      Software Foundation Releases</i></a>.
     </p>
   </subsection>
 
