@@ -69,12 +69,17 @@
     <property name="hy.test.timeout" value="900000" />
     <property name="hy.test.vmargs" value="" />
 
-    <condition property="hy.libstdc++.suffix" value=".libstdc++6">
+    <condition property="hy.platform.suffix" value=".libstdc++6">
         <isset property="use.libstdc++6"/>
     </condition>
-    <property name="hy.libstdc++.suffix" value="" />
+    <condition property="hy.platform.suffix" value=".7x">
+        <!-- matches would be better but debian stable has ant 1.6.5
+             and matches was only added to 1.7.0 and above -->
+        <contains substring="7." string="${os.version}"/>
+    </condition>
+    <property name="hy.platform.suffix" value="" />
     <property name="hy.platform.variant"
-              value="${hy.platform}${hy.libstdc++.suffix}" />
+              value="${hy.platform}${hy.platform.suffix}" />
 
     <condition property="png.home" value="/usr/local">
         <isset property="is.freebsd"/>
