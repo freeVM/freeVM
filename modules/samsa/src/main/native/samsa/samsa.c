@@ -135,7 +135,7 @@ int main (int argc, char **argv, char **envp)
         return 2;
     }
     
-    fullExePath = (char *) malloc(strlen(jdkRoot) + strlen(EXE_POSTFIX) + 1);
+    fullExePath = (char *) malloc(strlen(jdkRoot) + strlen(WEXE_POSTFIX) + 1);
     
     strcpy(fullExePath, jdkRoot);
     
