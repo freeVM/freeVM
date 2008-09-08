@@ -118,7 +118,7 @@ int main (int argc, char **argv, char **envp)
 //    printf("tool name = %s\n", toolName);
     
     if (toolName == NULL) { 
-        fprintf(stderr, "Uknown tool name %s\n", argv[0]);
+        fprintf(stderr, "Unknown tool name %s\n", argv[0]);
         return 1;
     }
     
