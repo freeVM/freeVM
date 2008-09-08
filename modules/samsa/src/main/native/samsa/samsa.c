@@ -455,7 +455,7 @@ char *getExeDir() {
 /***********************************************************************
  *  getToolData()
  * 
- *  Read the jdk/bin/data/<toolname>.data file and 
+ *  Read the jdk/bin/data/<toolname>.dat file and 
  *  return the list of jars needed for this tool
  *  Format : 
  *  ToolJar = <jar1name>
