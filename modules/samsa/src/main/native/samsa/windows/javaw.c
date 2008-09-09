@@ -18,9 +18,11 @@
 #include <windows.h>
 #include <stdio.h>
 
-#define WEXE_POSTFIX        "\\jre\\bin\\javaw.exe\" "
+#define JDK_WEXE_POSTFIX        "\\jre\\bin\\javaw.exe\" "
+#define JRE_WEXE_POSTFIX        "\\bin\\javaw.exe\" "
 
-char *getJDKRoot();
+char *getRoot();
+int isJRERoot(const char*);
 
 int WINAPI
 WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
@@ -29,12 +31,17 @@ WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     PROCESS_INFORMATION procInfo;
     STARTUPINFO startInfo;
     DWORD res = 0;
-    char *jdkRoot = getJDKRoot();
+    char *root = getRoot();
+    int isJRE = isJRERoot(root);
     
-    char *exePath = (char *)malloc((strlen(jdkRoot)+strlen(WEXE_POSTFIX)+strlen(lpCmdLine)+2)*sizeof(char));
+    char *exePath = (char *)malloc((strlen(root)
+                                    +strlen(isJRE 
+                                            ? JRE_WEXE_POSTFIX 
+                                            : JDK_WEXE_POSTFIX)
+                                    +strlen(lpCmdLine)+2)*sizeof(char));
     exePath[0] = '\"';
-    strcpy(exePath+1, jdkRoot);
-    strcat(exePath, WEXE_POSTFIX);
+    strcpy(exePath+1, root);
+    strcat(exePath, isJRE ? JRE_WEXE_POSTFIX : JDK_WEXE_POSTFIX);
     strcat(exePath, lpCmdLine);
     
     // create child process
