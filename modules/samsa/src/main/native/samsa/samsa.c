@@ -421,7 +421,7 @@ char *getExeDir() {
 #if defined(LINUX)
     char buffer[PATH_MAX + 1];
     
-    int size = readlink ("/proc/self/exe", buffer, sizeof(buffer)-1);
+    int size = readlink ("/proc/self/exe", buffer, sizeof(buffer)-2);
     
     buffer[size+1] = '\0';
 #elif defined(FREEBSD)
