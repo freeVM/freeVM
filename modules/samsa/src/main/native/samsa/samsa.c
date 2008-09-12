@@ -151,7 +151,7 @@ int main (int argc, char **argv, char **envp)
     pToolData = getToolData(toolName, root);
        
     if (pToolData == NULL) { 
-        fprintf(stderr, "Unable to get tool data for %s");
+        fprintf(stderr, "Unable to get tool data for %s", toolName);
         return 2;
     }
     
@@ -491,12 +491,13 @@ TOOLDATA *getToolData(const char *toolName, const char *root) {
     char value[256];
     int count = 0;
     char *temp = NULL;
-    TOOLDATA *pToolData = (TOOLDATA *) malloc(sizeof(TOOLDATA));
+    TOOLDATA *pToolData = NULL;
             
     if (toolName == NULL || root == NULL) { 
         return NULL;
     }
-   
+
+    pToolData = (TOOLDATA *) malloc(sizeof(TOOLDATA));
     if (pToolData == NULL) { 
         return NULL;
     }
@@ -511,6 +512,7 @@ TOOLDATA *getToolData(const char *toolName, const char *root) {
             + strlen(".dat") + 1);
                 
     if (temp == NULL) { 
+        free(pToolData);
         return NULL;
     }
     
