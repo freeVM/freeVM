@@ -16,27 +16,26 @@
  */
 
 package java.beans.beancontext;
-@SuppressWarnings("unchecked")
-public class BeanContextServiceRevokedEvent extends BeanContextEvent {
 
-    private static final long serialVersionUID = -1295543154724961754L;
+import java.util.Iterator;
+@SuppressWarnings("unchecked")
+public class BeanContextServiceAvailableEvent extends BeanContextEvent {
+
+    private static final long serialVersionUID = -5333985775656400778L;
 
     /**
      * @serial
      */
     protected Class serviceClass;
 
-    /**
-     * @serial
-     */
-    private boolean invalidateRefs;
-
-    public BeanContextServiceRevokedEvent(BeanContextServices bcs, Class sc,
-            boolean invalidate) {
-
+    public BeanContextServiceAvailableEvent(BeanContextServices bcs, Class sc) {
         super(bcs);
         this.serviceClass = sc;
-        this.invalidateRefs = invalidate;        
+    }
+
+    public Iterator getCurrentServiceSelectors() {
+        return ((BeanContextServices) super.source)
+                .getCurrentServiceSelectors(serviceClass);
     }
 
     public Class getServiceClass() {
@@ -44,14 +43,6 @@ public class BeanContextServiceRevokedEvent extends BeanContextEvent {
     }
 
     public BeanContextServices getSourceAsBeanContextServices() {
-        return (BeanContextServices) super.getBeanContext();
-    }
-
-    public boolean isCurrentServiceInvalidNow() {
-        return this.invalidateRefs;
-    }
-
-    public boolean isServiceClass(Class service) {        
-        return serviceClass.equals(service);
+        return (BeanContextServices) super.source;
     }
 }

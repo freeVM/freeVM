@@ -16,42 +16,35 @@
  */
 
 package java.beans.beancontext;
-@SuppressWarnings("unchecked")
-public class BeanContextServiceRevokedEvent extends BeanContextEvent {
 
-    private static final long serialVersionUID = -1295543154724961754L;
+import java.util.EventObject;
 
+public abstract class BeanContextEvent extends EventObject {
+
+    private static final long serialVersionUID = 7267998073569045052L;
+    
     /**
      * @serial
      */
-    protected Class serviceClass;
+    protected BeanContext propagatedFrom;
 
-    /**
-     * @serial
-     */
-    private boolean invalidateRefs;
-
-    public BeanContextServiceRevokedEvent(BeanContextServices bcs, Class sc,
-            boolean invalidate) {
-
-        super(bcs);
-        this.serviceClass = sc;
-        this.invalidateRefs = invalidate;        
+    protected BeanContextEvent(BeanContext bc) {
+        super(bc);
     }
 
-    public Class getServiceClass() {
-        return this.serviceClass;
+    public BeanContext getBeanContext() {
+        return (BeanContext) super.getSource();
     }
 
-    public BeanContextServices getSourceAsBeanContextServices() {
-        return (BeanContextServices) super.getBeanContext();
+    public synchronized BeanContext getPropagatedFrom() {
+        return this.propagatedFrom;
     }
 
-    public boolean isCurrentServiceInvalidNow() {
-        return this.invalidateRefs;
+    public synchronized boolean isPropagated() {
+        return (this.propagatedFrom != null);
     }
 
-    public boolean isServiceClass(Class service) {        
-        return serviceClass.equals(service);
+    public synchronized void setPropagatedFrom(BeanContext bc) {
+        this.propagatedFrom = bc;
     }
 }
