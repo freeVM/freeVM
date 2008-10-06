@@ -72,20 +72,20 @@
         <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/javap${exe.suffix}" />
         <chmod file="${jdktools.deploy.dir}/bin/javap${exe.suffix}" perm="ugo+x" />
 
-        <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/keytool${exe.suffix}" />
-        <chmod file="${jdktools.deploy.dir}/bin/keytool${exe.suffix}" perm="ugo+x" />
-
         <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/jarsigner${exe.suffix}" />
         <chmod file="${jdktools.deploy.dir}/bin/jarsigner${exe.suffix}" perm="ugo+x" />
 
         <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/appletviewer${exe.suffix}" />
         <chmod file="${jdktools.deploy.dir}/bin/appletviewer${exe.suffix}" perm="ugo+x" />
 
-        <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/unpack200${exe.suffix}" />
-        <chmod file="${jdktools.deploy.dir}/bin/unpack200${exe.suffix}" perm="ugo+x" />
+        <copy file="${hy.samsa.exe}" tofile="${jretools.deploy.dir}/bin/keytool${exe.suffix}" />
+        <chmod file="${jretools.deploy.dir}/bin/keytool${exe.suffix}" perm="ugo+x" />
 
-        <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/policytool${exe.suffix}" />
-        <chmod file="${jdktools.deploy.dir}/bin/policytool${exe.suffix}" perm="ugo+x" />
+        <copy file="${hy.samsa.exe}" tofile="${jretools.deploy.dir}/bin/unpack200${exe.suffix}" />
+        <chmod file="${jretools.deploy.dir}/bin/unpack200${exe.suffix}" perm="ugo+x" />
+
+        <copy file="${hy.samsa.exe}" tofile="${jretools.deploy.dir}/bin/policytool${exe.suffix}" />
+        <chmod file="${jretools.deploy.dir}/bin/policytool${exe.suffix}" perm="ugo+x" />
 
     </target>
 
@@ -112,9 +112,10 @@
         <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javah${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javadoc${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javap${progdb.suffix}" />
-        <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/keytool${progdb.suffix}" />
         <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/jarsigner${progdb.suffix}" />
-    	<copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/unpack200${progdb.suffix}" />
+    	<copy file="${hy.samsa.progdb}" tofile="${jretools.deploy.dir}/bin/unpack200${progdb.suffix}" />
+        <copy file="${hy.samsa.progdb}" tofile="${jretools.deploy.dir}/bin/keytool${progdb.suffix}" />
+        <copy file="${hy.samsa.progdb}" tofile="${jretools.deploy.dir}/bin/policytool${progdb.suffix}" />
 
     </target>
 
@@ -177,16 +178,16 @@
 	    <arg line="" />
         </exec>
 
-        <echo message="Run jdk/bin/keytool -help in ${hy.tests.reports}"/>
+        <echo message="Run jdk/jre/bin/keytool -help in ${hy.tests.reports}"/>
         <exec failonerror="true"
-	        executable="${test.jre.home}/../bin/keytool${exe.suffix}"
+	        executable="${test.jre.home}/bin/keytool${exe.suffix}"
 	        dir="${hy.tests.reports}">
 	    <arg line="-help" />
         </exec>
 
-        <echo message="Run jdk/bin/unpack200 in ${hy.tests.reports}"/>
+        <echo message="Run jdk/jre/bin/unpack200 in ${hy.tests.reports}"/>
         <exec failonerror="true"
-	        executable="${test.jre.home}/../bin/unpack200${exe.suffix}"
+	        executable="${test.jre.home}/bin/unpack200${exe.suffix}"
 	        dir="${hy.tests.reports}">
 	    <arg line="" />
         </exec>

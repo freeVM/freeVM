@@ -47,6 +47,7 @@
     <property name="hy.deploy" location="${external.drlvm.loc}"/>
     <property name="hy.hdk" location="${external.classlib.loc}" />
     <property name="jdktools.deploy.dir" location="${jdktools.base.dir}/deploy/jdk" />
+    <property name="jretools.deploy.dir" location="${jdktools.base.dir}/deploy/jdk/jre" />
 
     <!-- set the path root for the external resources  -->
     <property name="common.resources.loc" value="${jdktools.base.dir}/../common_resources" />

@@ -35,7 +35,8 @@
 #endif
 
 #define TOOL_JAR      "tools.jar"
-#define CLASS_PREFIX  "org.apache.harmony.tools."
+#define JRE_CLASS_PREFIX  "org.apache.harmony.jretools."
+#define JDK_CLASS_PREFIX  "org.apache.harmony.tools."
 #define CLASS_POSTFIX ".Main"
 
 #if defined(WIN32)
@@ -213,9 +214,11 @@ int main (int argc, char **argv, char **envp)
         myArgv[newIndex++] = "-cp";
         myArgv[newIndex++] = classpath;
 
-        buffer = (char *) malloc(strlen(CLASS_PREFIX) + strlen(toolName) + strlen(CLASS_POSTFIX) + 1);
+        buffer =
+          (char *) malloc(strlen(isJRE ? JRE_CLASS_PREFIX : JDK_CLASS_PREFIX)
+                          + strlen(toolName) + strlen(CLASS_POSTFIX) + 1);
     
-        strcpy(buffer, CLASS_PREFIX);
+        strcpy(buffer, isJRE ? JRE_CLASS_PREFIX : JDK_CLASS_PREFIX);
         strcat(buffer, toolName);
         strcat(buffer, CLASS_POSTFIX);
         
