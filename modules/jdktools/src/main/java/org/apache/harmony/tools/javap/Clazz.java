@@ -20,6 +20,7 @@ package org.apache.harmony.tools.javap;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.apache.harmony.tools.ClassProvider;
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.AccessFlags;
 import org.apache.bcel.classfile.Attribute;

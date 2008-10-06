@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-//import org.apache.harmony.tools.javap.ClassProvider;
+import org.apache.harmony.tools.ClassProvider;
 
 /**
  * This is a tool that allows you to disassemble class files.
