@@ -209,7 +209,7 @@
         </p>
         <ul>
           <li>
-            <code>appletviewer, jarsigner, javac (via the Eclipse compiler), javah, keytool</code>
+            <code>appletviewer, jarsigner, javac (via the Eclipse compiler), javah, javap, keytool, policytool, unpack200</code>
         </li>
         </ul>
         
@@ -218,19 +218,19 @@
         </p>
         <ul>
           <li>
-            <code>javadoc, apt,  jar, jdb, javap, extcheck</code>
+            <code>javadoc, apt,  jar, jdb, extcheck</code>
         </li>
         <li>
-            <code>policytool, kinit, klist, ktab</code>
+            <code>kinit, klist, ktab, native2ascii</code>
         </li>
         <li>
-            <code>native2ascii,rmic, rmiregistry, rmid, serialver</code>
+            <code>rmic, rmiregistry, rmid, serialver</code>
         </li>
         <li>
             <code>tnameserv, idlj, orbd, servertool</code>
         </li>
         <li>
-            <code>pack200, unpack200</code> (<i>in progress</i>)
+            <code>pack200</code> (<i>in progress</i>)
         </li>
         <li>
             <code>htmlconverter, javaws</code>
