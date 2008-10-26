@@ -34,7 +34,6 @@
 #include <dlfcn.h>
 #endif
 
-#define TOOL_JAR      "tools.jar"
 #define JRE_CLASS_PREFIX  "org.apache.harmony.jretools."
 #define JDK_CLASS_PREFIX  "org.apache.harmony.tools."
 #define CLASS_POSTFIX ".Main"
@@ -46,9 +45,15 @@
 #define JDK_WEXE_POSTFIX    "\\jre\\bin\\javaw.exe"
 #define JRE_EXE_POSTFIX     "\\bin\\java.exe"
 #define JRE_WEXE_POSTFIX    "\\bin\\javaw.exe"
-#define JRE_TEST_FILE       "\\bin\\harmony.properties"
+#define JRE_TEST_PREFIX     "\\jre\\bin"
 #define LIB_POSTFIX         "\\lib\\"
+#define JRE_LIB_POSTFIX     "\\jre\\lib\\"
+#define DATA_POSTFIX        "\\bin\\data\\"
+#define JRE_DATA_POSTFIX    "\\jre\\bin\\data\\"
+#define TOOL_JAR            "\\lib\\tools.jar"
+#define JRE_TOOL_JAR        "\\jre\\lib\\tools.jar"
 #define CLASSPATH_SEP       ";"
+#define EXE_SUFFIX          ".exe"
 #else
 #define PATH_SEPARATOR_CHAR '/'
 #define PATH_SEPARATOR      "/"
@@ -56,9 +61,15 @@
 #define JDK_WEXE_POSTFIX    "/jre/bin/javaw"
 #define JRE_EXE_POSTFIX     "/bin/java"
 #define JRE_WEXE_POSTFIX    "/bin/javaw"
-#define JRE_TEST_FILE       "/bin/harmony.properties"
+#define JRE_TEST_PREFIX     "/jre/bin"
 #define LIB_POSTFIX         "/lib/"
+#define JRE_LIB_POSTFIX     "/jre/lib/"
+#define DATA_POSTFIX        "/bin/data/"
+#define JRE_DATA_POSTFIX    "/jre/bin/data/"
+#define TOOL_JAR            "/lib/tools.jar"
+#define JRE_TOOL_JAR        "/jre/lib/tools.jar"
 #define CLASSPATH_SEP       ":"
+#define EXE_SUFFIX          ""
 #endif
 
 typedef struct ToolData {
@@ -69,8 +80,9 @@ typedef struct ToolData {
 char     *cleanToolName(const char *);
 char     *getExeDir();
 char     *getRoot();
-TOOLDATA *getToolData(const char *, const char *);
-int isJRERoot(const char*);
+TOOLDATA *getToolData(const char *, const char *, int toolType);
+int getToolType(const char*, const char*);
+char* jarFile(const char*, const char*);
 
 /**
  *  main
@@ -109,7 +121,7 @@ int main (int argc, char **argv, char **envp)
     TOOLDATA *pToolData = (TOOLDATA *) malloc(sizeof(TOOLDATA));
     
     int isJavaw = 0;
-    int isJRE = 0;
+    int toolType = 0; /* 0 = JRE tool, 1 = JDK tool, 2 = JRE tool in jdk/bin */
 
     /*
      *  get the root and the construct invocation path for exe
@@ -139,9 +151,9 @@ int main (int argc, char **argv, char **envp)
     
     isJavaw = strcmp(toolName, "javaw") == 0;
 
-    isJRE = isJRERoot(root);
-    if (isJRE == -1) {
-        fprintf(stderr, "Unable to determine type of JDK/JRE\n");
+    toolType = getToolType(root, toolName);
+    if (toolType == -1) {
+        fprintf(stderr, "Unable to determine type (JDK/JRE) of tool\n");
         return 1;
     }
       
@@ -149,10 +161,9 @@ int main (int argc, char **argv, char **envp)
      *  get the 'tool data' - right now, this is just the jars
      *  specificly needed by this tool
      */
-    pToolData = getToolData(toolName, root);
+    pToolData = getToolData(toolName, root, toolType);
        
     if (pToolData == NULL) { 
-        fprintf(stderr, "Unable to get tool data for %s", toolName);
         return 2;
     }
     
@@ -164,9 +175,9 @@ int main (int argc, char **argv, char **envp)
      * If we're javaw then we need to javaw to command line
      */
     if (isJavaw) {
-        strcat(fullExePath, isJRE ? JRE_WEXE_POSTFIX : JDK_WEXE_POSTFIX);
+        strcat(fullExePath, toolType ? JDK_WEXE_POSTFIX : JRE_WEXE_POSTFIX);
     } else {
-        strcat(fullExePath, isJRE ? JRE_EXE_POSTFIX : JDK_EXE_POSTFIX);
+        strcat(fullExePath, toolType ? JDK_EXE_POSTFIX : JRE_EXE_POSTFIX);
     }
     
     /*
@@ -190,8 +201,8 @@ int main (int argc, char **argv, char **envp)
                 myArgv[newIndex++] = argv[i] + 2;
             }
         }
-     
-        size = (strlen(root) + strlen(LIB_POSTFIX)) * pToolData->numJars +
+
+        size = strlen(root) * pToolData->numJars +
                    strlen(CLASSPATH_SEP) * (pToolData->numJars - 1) + 1;
 
         for (i = 0; i < pToolData->numJars; i++) { 
@@ -201,13 +212,11 @@ int main (int argc, char **argv, char **envp)
         classpath = (char *) malloc(size * sizeof(char));
 
         strcpy(classpath, root);
-        strcat(classpath, LIB_POSTFIX);
         strcat(classpath, pToolData->jarList[0]);
 
         for (i = 1; i < pToolData->numJars; i++) { 
             strcat(classpath, CLASSPATH_SEP);
             strcat(classpath, root);
-            strcat(classpath, LIB_POSTFIX);
             strcat(classpath, pToolData->jarList[i]);
         }
  
@@ -215,10 +224,10 @@ int main (int argc, char **argv, char **envp)
         myArgv[newIndex++] = classpath;
 
         buffer =
-          (char *) malloc(strlen(isJRE ? JRE_CLASS_PREFIX : JDK_CLASS_PREFIX)
+          (char *) malloc(strlen(toolType==1 ? JDK_CLASS_PREFIX : JRE_CLASS_PREFIX)
                           + strlen(toolName) + strlen(CLASS_POSTFIX) + 1);
     
-        strcpy(buffer, isJRE ? JRE_CLASS_PREFIX : JDK_CLASS_PREFIX);
+        strcpy(buffer, toolType==1 ? JDK_CLASS_PREFIX : JRE_CLASS_PREFIX);
         strcat(buffer, toolName);
         strcat(buffer, CLASS_POSTFIX);
         
@@ -476,18 +485,20 @@ char *getExeDir() {
 }
 
 /***********************************************************************
- *  getToolData()
+ *  getToolData(const char* toolName, const char* root, int toolType)
  * 
  *  Read the bin/data/<toolname>.dat file and 
  *  return the list of jars needed for this tool
  *  Format : 
- *  ToolJar = <jar1name>
- *  ToolJar = <jar2name>
- *  ToolJar = <jar3name>
+ *  JDKToolJar = <jdkjar1name>
+ *  JDKToolJar = <jdkjar2name>
+ *  JREToolJar = <jrejar1name>
+ *  JREToolJar = <jrejar2name>
  * 
+ *  Obviously, JRE tools should not reference any JDK jars.
  *  If the data file doesn't exist, it will return tools.jar
  */
-TOOLDATA *getToolData(const char *toolName, const char *root) { 
+TOOLDATA *getToolData(const char *toolName, const char *root, int toolType) { 
     
     FILE *fp = NULL;
     char key[256];
@@ -497,11 +508,14 @@ TOOLDATA *getToolData(const char *toolName, const char *root) {
     TOOLDATA *pToolData = NULL;
             
     if (toolName == NULL || root == NULL) { 
+        fprintf(stderr, "Unable to get tool data for %s", toolName);
         return NULL;
     }
 
     pToolData = (TOOLDATA *) malloc(sizeof(TOOLDATA));
     if (pToolData == NULL) { 
+        fprintf(stderr,
+                "Unable to get tool data for %s: out of memory", toolName);
         return NULL;
     }
     
@@ -510,57 +524,94 @@ TOOLDATA *getToolData(const char *toolName, const char *root) {
    /*
     *  assumes that the data files are in bin/data with a ".dat" extension
     */ 
-    temp = (char *) malloc(strlen(root) + strlen(PATH_SEPARATOR) + strlen("bin") 
-            + strlen(PATH_SEPARATOR) + strlen("data") + strlen(PATH_SEPARATOR) + strlen(toolName) 
-            + strlen(".dat") + 1);
+    temp = (char *) malloc(strlen(root) 
+                           + strlen(toolType==2
+                                    ? JRE_DATA_POSTFIX 
+                                    : DATA_POSTFIX)
+                           + strlen(toolName) 
+                           + strlen(".dat") + 1);
                 
     if (temp == NULL) { 
+        fprintf(stderr,
+                "Unable to get tool data for %s: out of memory", toolName);
         free(pToolData);
         return NULL;
     }
     
     strcpy(temp, root);
-    strcat(temp, PATH_SEPARATOR);
-    strcat(temp, "bin");
-    strcat(temp, PATH_SEPARATOR);
-    strcat(temp, "data");
-    strcat(temp, PATH_SEPARATOR);
+    strcat(temp, toolType==2 ? JRE_DATA_POSTFIX : DATA_POSTFIX);
     strcat(temp, toolName);
     strcat(temp, ".dat");
     
     //printf("tool data file = %s\n", temp);
     
     fp = fopen(temp, "r");
+    free(temp);
  
     if (fp) {
-        while (EOF != (count= fscanf(fp, "%s = %s\n", key, value))) {
+        while (EOF != (count = fscanf(fp, "%s = %s\n", key, value))) {
             // printf("count = %d : %s = %s\n", count, key, value);
+            
+            if (count != 2)
+                continue;
 
-            if (count == 2 && !strcmp("ToolJar", key)) {
+            if (!strcmp("JREToolJar", key)) {
                 pToolData->jarList = (char **) realloc(pToolData->jarList, (pToolData->numJars + 1) * sizeof(char *));
-                pToolData->jarList[pToolData->numJars++] = strdup(value);
+                pToolData->jarList[pToolData->numJars] =
+                    jarFile(toolType ? JRE_LIB_POSTFIX : LIB_POSTFIX, value);
+                if (pToolData->jarList[pToolData->numJars] == NULL) {
+                    fprintf(stderr,
+                            "Unable to get tool data for %s: out of memory",
+                            toolName);
+                    free(pToolData);
+                    return NULL;
+                }                    
+                pToolData->numJars++;
+            } else if (!strcmp("JDKToolJar", key) ) {
+                if (toolType != 1) {
+                    fprintf(stderr,
+                            "Invalid tool data for %s: jre tool using jdk jar",
+                            toolName);
+                    free(pToolData);
+                    return NULL;
+                }
+                pToolData->jarList = (char **) realloc(pToolData->jarList, (pToolData->numJars + 1) * sizeof(char *));
+                pToolData->jarList[pToolData->numJars] =
+                    jarFile(LIB_POSTFIX, value);
+                if (pToolData->jarList[pToolData->numJars] == NULL) {
+                    fprintf(stderr,
+                            "Unable to get tool data for %s: out of memory",
+                            toolName);
+                    free(pToolData);
+                    return NULL;
+                }                    
+                pToolData->numJars++;
             }
         }
         
         fclose(fp);
+    } else {
+        if (toolType == 0 || toolType == 1) {
+            pToolData->jarList = (char **) realloc(pToolData->jarList, (pToolData->numJars + 1) * sizeof(char *));
+            pToolData->jarList[pToolData->numJars++] = TOOL_JAR;
+        }
+        if (toolType) {
+            pToolData->jarList = (char **) realloc(pToolData->jarList, (pToolData->numJars + 1) * sizeof(char *));
+            pToolData->jarList[pToolData->numJars++] = JRE_TOOL_JAR;
+        }
     }
-    else {        
-        pToolData->jarList = (char **) realloc(pToolData->jarList,  (pToolData->numJars + 1) * sizeof(char *));
-        pToolData->jarList[pToolData->numJars++] = TOOL_JAR;
-    }
-    
-    free(temp);
     
     return pToolData;
 }
 
 
 /*****************************************************************
- * isJRERoot(const char* root)
+ * getToolType(const char* root, const char* toolName)
  * 
- *  returns 1 if root is the jre root
+ *  returns 0 if this is a jre too1 in the jre/bin, 1 if this is a jdk
+ *          tool in the jdk/bin, and 2 if this is a jre tool in the jdk/bin
  */
-int isJRERoot(const char* root) {
+int getToolType(const char* root, const char* toolName) {
 
     char *temp = NULL;
 #if defined(WIN32)
@@ -570,23 +621,59 @@ int isJRERoot(const char* root) {
     int rc;
 #endif
 
-    temp = (char *) malloc(strlen(root) + strlen(JRE_TEST_FILE) + 1);
+    temp = (char *) malloc(strlen(root) + strlen(JRE_TEST_PREFIX) +
+                           1 + strlen(toolName) + strlen(EXE_SUFFIX) +
+                           1);
                 
     if (temp == NULL) { 
         return -1;
     }
     
     strcpy(temp, root);
-    strcat(temp, JRE_TEST_FILE);
+    strcat(temp, JRE_TEST_PREFIX);
     
 #if defined(WIN32)
     result = GetFileAttributes((LPCTSTR) temp);
+    if (result == 0xFFFFFFFF) {
+      free(temp);
+      return 0;
+    }
+
+#else
+    rc = lstat(temp, &statbuf);
+    if (rc == -1) {
+      free(temp);
+      return 0;
+    }
+#endif
+
+    strcat(temp, PATH_SEPARATOR);
+    strcat(temp, toolName);
+
+#if defined(WIN32)
+    strcat(temp, EXE_SUFFIX);
+    result = GetFileAttributes((LPCTSTR) temp);
     free(temp);
-    return result == 0xFFFFFFFF ? 0 : 1;
+    return result == 0xFFFFFFFF ? 1 : 2;
 #else
     rc = lstat(temp, &statbuf);
     free(temp);
-    return rc == -1 ? 0 : 1;
+    return rc == -1 ? 1 : 2;
 #endif
+
 }
 
+/*****************************************************************
+ * lib_jar(const char* jarName)
+ * 
+ *  returns a pointer to the jar file name
+ */
+char* jarFile(const char* path, const char* jarName) {
+    char* jarPath = (char*) malloc(strlen(path) + strlen(jarName) + 1);
+    if (jarPath == NULL) {
+        return NULL;
+    }
+    strcpy(jarPath, path);
+    strcat(jarPath, jarName);
+    return jarPath;
+}

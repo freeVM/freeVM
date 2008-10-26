@@ -78,6 +78,18 @@
         <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/appletviewer${exe.suffix}" />
         <chmod file="${jdktools.deploy.dir}/bin/appletviewer${exe.suffix}" perm="ugo+x" />
 
+        <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/keytool${exe.suffix}" />
+        <chmod file="${jdktools.deploy.dir}/bin/keytool${exe.suffix}" perm="ugo+x" />
+
+        <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/unpack200${exe.suffix}" />
+        <chmod file="${jdktools.deploy.dir}/bin/unpack200${exe.suffix}" perm="ugo+x" />
+
+        <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/pack200${exe.suffix}" />
+        <chmod file="${jdktools.deploy.dir}/bin/pack200${exe.suffix}" perm="ugo+x" />
+
+        <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/policytool${exe.suffix}" />
+        <chmod file="${jdktools.deploy.dir}/bin/policytool${exe.suffix}" perm="ugo+x" />
+
         <copy file="${hy.samsa.exe}" tofile="${jretools.deploy.dir}/bin/keytool${exe.suffix}" />
         <chmod file="${jretools.deploy.dir}/bin/keytool${exe.suffix}" perm="ugo+x" />
 
