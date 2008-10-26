@@ -90,7 +90,7 @@ class JSHelper {
         buf.append("\n-mdproviderclass <class>\t class name of cryptographic ");
         buf.append("service provider for work with message digests");
         
-        buf.append("\n-mdprovidername <name>\t\t message digest provider name");
+        buf.append("\n-mdprovidername <name>\t\t message digest provider name\n");
         
         Logger.getLogger(JSParameters.loggerName).info(buf.toString());
     }
