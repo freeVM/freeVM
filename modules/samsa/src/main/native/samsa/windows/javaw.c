@@ -17,9 +17,11 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 #define JDK_WEXE_POSTFIX        "\\jre\\bin\\javaw.exe\" "
 #define JRE_WEXE_POSTFIX        "\\bin\\javaw.exe\" "
+#define JRE_TEST_FILE       "\\bin\\harmony.properties"
 
 char *getRoot();
 int isJRERoot(const char*);
@@ -64,4 +66,39 @@ WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     CloseHandle(procInfo.hThread);
 
     return (int)res;
+}
+
+/*****************************************************************
+ * isJRERoot(const char* root)
+ * 
+ *  returns 1 if root is the jre root
+ */
+int isJRERoot(const char* root) {
+
+    char *temp = NULL;
+#if defined(WIN32)
+    DWORD result;
+#else
+    struct stat statbuf;
+    int rc;
+#endif
+
+    temp = (char *) malloc(strlen(root) + strlen(JRE_TEST_FILE) + 1);
+                
+    if (temp == NULL) { 
+        return -1;
+    }
+    
+    strcpy(temp, root);
+    strcat(temp, JRE_TEST_FILE);
+    
+#if defined(WIN32)
+    result = GetFileAttributes((LPCTSTR) temp);
+    free(temp);
+    return result == 0xFFFFFFFF ? 0 : 1;
+#else
+    rc = lstat(temp, &statbuf);
+    free(temp);
+    return rc == -1 ? 0 : 1;
+#endif
 }
