@@ -61,7 +61,7 @@ import java.util.*;
  * @param <E> the type of elements held in this collection
  */
 public class CopyOnWriteArraySet<E> extends AbstractSet<E>
-        implements Cloneable, java.io.Serializable {
+        implements java.io.Serializable {
     private static final long serialVersionUID = 5457747651344034263L;
 
     private final CopyOnWriteArrayList<E> al;

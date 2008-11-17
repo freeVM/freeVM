@@ -69,7 +69,7 @@ import java.io.ObjectOutputStream;
  * @param <V> the type of mapped values 
  */
 public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
-        implements ConcurrentMap<K, V>, Cloneable, Serializable {
+        implements ConcurrentMap<K, V>, Serializable {
     private static final long serialVersionUID = 7249069246763182397L;
 
     /*
@@ -919,26 +919,6 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V>
             segments[i].clear();
     }
 
-
-    /**
-     * Returns a shallow copy of this
-     * <tt>ConcurrentHashMap</tt> instance: the keys and
-     * values themselves are not cloned.
-     *
-     * @return a shallow copy of this map.
-     */
-    public Object clone() {
-        // We cannot call super.clone, since it would share final
-        // segments array, and there's no way to reassign finals.
-
-        float lf = segments[0].loadFactor;
-        int segs = segments.length;
-        int cap = (int)(size() / lf);
-        if (cap < segs) cap = segs;
-        ConcurrentHashMap<K,V> t = new ConcurrentHashMap<K,V>(cap, lf, segs);
-        t.putAll(this);
-        return t;
-    }
 
     /**
      * Returns a set view of the keys contained in this map.  The set is
