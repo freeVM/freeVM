@@ -219,7 +219,7 @@ public class Clazz {
             result.append(n);
 
             for (Enumeration e = methods.elements(); e.hasMoreElements();) {
-                result.append(((ClazzMethod) e.nextElement()).toString());
+                result.append(((ClazzMethod) e.nextElement()).toAlternativeString());
             }
         }
 
