@@ -17,19 +17,17 @@
 
 package javax.net.ssl;
 
-import java.util.Enumeration;
+import java.security.BasicPermission;
 
-public interface SSLSessionContext {
-    @SuppressWarnings("unchecked")
-    public Enumeration getIds();
+public final class SSLPermission extends BasicPermission {
 
-    public SSLSession getSession(byte[] sessionId);
+    private static final long serialVersionUID = -3456898025505876775L;
 
-    public int getSessionCacheSize();
+    public SSLPermission(String name) {
+        super(name);
+    }
 
-    public int getSessionTimeout();
-
-    public void setSessionCacheSize(int size) throws IllegalArgumentException;
-
-    public void setSessionTimeout(int seconds) throws IllegalArgumentException;
+    public SSLPermission(String name, String actions) {
+        super(name, actions);
+    }
 }

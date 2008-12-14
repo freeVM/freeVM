@@ -17,19 +17,20 @@
 
 package javax.net.ssl;
 
-import java.util.Enumeration;
+import java.security.Principal;
 
-public interface SSLSessionContext {
-    @SuppressWarnings("unchecked")
-    public Enumeration getIds();
+public abstract class X509ExtendedKeyManager implements X509KeyManager {
 
-    public SSLSession getSession(byte[] sessionId);
+    protected X509ExtendedKeyManager() {
+        super();
+    }
 
-    public int getSessionCacheSize();
+    public String chooseEngineClientAlias(String[] keyType, Principal[] issuers, SSLEngine engine) {
+        return null;
+    }
 
-    public int getSessionTimeout();
+    public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine engine) {
+        return null;
+    }
 
-    public void setSessionCacheSize(int size) throws IllegalArgumentException;
-
-    public void setSessionTimeout(int seconds) throws IllegalArgumentException;
 }

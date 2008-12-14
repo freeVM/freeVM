@@ -17,19 +17,22 @@
 
 package javax.net.ssl;
 
-import java.util.Enumeration;
+import java.net.Socket;
+import java.security.Principal;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 
-public interface SSLSessionContext {
-    @SuppressWarnings("unchecked")
-    public Enumeration getIds();
+public interface X509KeyManager extends KeyManager {
 
-    public SSLSession getSession(byte[] sessionId);
+    public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket);
 
-    public int getSessionCacheSize();
+    public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket);
 
-    public int getSessionTimeout();
+    public X509Certificate[] getCertificateChain(String alias);
 
-    public void setSessionCacheSize(int size) throws IllegalArgumentException;
+    public String[] getClientAliases(String keyType, Principal[] issuers);
 
-    public void setSessionTimeout(int seconds) throws IllegalArgumentException;
+    public String[] getServerAliases(String keyType, Principal[] issuers);
+
+    public PrivateKey getPrivateKey(String alias);
 }

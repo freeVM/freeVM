@@ -17,19 +17,12 @@
 
 package javax.net.ssl;
 
-import java.util.Enumeration;
+import java.util.EventListener;
 
-public interface SSLSessionContext {
-    @SuppressWarnings("unchecked")
-    public Enumeration getIds();
+public interface SSLSessionBindingListener extends EventListener {
 
-    public SSLSession getSession(byte[] sessionId);
+    public void valueBound(SSLSessionBindingEvent event);
 
-    public int getSessionCacheSize();
+    public void valueUnbound(SSLSessionBindingEvent event);
 
-    public int getSessionTimeout();
-
-    public void setSessionCacheSize(int size) throws IllegalArgumentException;
-
-    public void setSessionTimeout(int seconds) throws IllegalArgumentException;
 }

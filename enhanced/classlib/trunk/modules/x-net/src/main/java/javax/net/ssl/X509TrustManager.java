@@ -17,19 +17,16 @@
 
 package javax.net.ssl;
 
-import java.util.Enumeration;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
-public interface SSLSessionContext {
-    @SuppressWarnings("unchecked")
-    public Enumeration getIds();
+public interface X509TrustManager extends TrustManager {
 
-    public SSLSession getSession(byte[] sessionId);
+    public void checkClientTrusted(X509Certificate[] chain, String authType)
+            throws CertificateException;
 
-    public int getSessionCacheSize();
+    public void checkServerTrusted(X509Certificate[] chain, String authType)
+            throws CertificateException;
 
-    public int getSessionTimeout();
-
-    public void setSessionCacheSize(int size) throws IllegalArgumentException;
-
-    public void setSessionTimeout(int seconds) throws IllegalArgumentException;
+    public X509Certificate[] getAcceptedIssuers();
 }

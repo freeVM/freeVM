@@ -17,19 +17,11 @@
 
 package javax.net.ssl;
 
-import java.util.Enumeration;
+public class SSLProtocolException extends SSLException {
 
-public interface SSLSessionContext {
-    @SuppressWarnings("unchecked")
-    public Enumeration getIds();
+    private static final long serialVersionUID = 5445067063799134928L;
 
-    public SSLSession getSession(byte[] sessionId);
-
-    public int getSessionCacheSize();
-
-    public int getSessionTimeout();
-
-    public void setSessionCacheSize(int size) throws IllegalArgumentException;
-
-    public void setSessionTimeout(int seconds) throws IllegalArgumentException;
+    public SSLProtocolException(String reason) {
+        super(reason);
+    }
 }

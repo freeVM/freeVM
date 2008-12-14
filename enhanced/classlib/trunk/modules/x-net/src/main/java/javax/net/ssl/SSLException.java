@@ -17,19 +17,22 @@
 
 package javax.net.ssl;
 
-import java.util.Enumeration;
+import java.io.IOException;
 
-public interface SSLSessionContext {
-    @SuppressWarnings("unchecked")
-    public Enumeration getIds();
+public class SSLException extends IOException {
+    private static final long serialVersionUID = 4511006460650708967L;
 
-    public SSLSession getSession(byte[] sessionId);
+    public SSLException(String reason) {
+        super(reason);
+    }
 
-    public int getSessionCacheSize();
+    public SSLException(String message, Throwable cause) {
+        super(message);
+        super.initCause(cause);
+    }
 
-    public int getSessionTimeout();
-
-    public void setSessionCacheSize(int size) throws IllegalArgumentException;
-
-    public void setSessionTimeout(int seconds) throws IllegalArgumentException;
+    public SSLException(Throwable cause) {
+        super(cause == null ? null : cause.toString());
+        super.initCause(cause);
+    }
 }
