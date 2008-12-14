@@ -17,39 +17,26 @@
 
 package org.apache.harmony.xnet.provider.jsse;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 /**
- * This is a application data output stream used in SSLSocket
- * implementation.
- * The written bytes are encrypted, packed into the records,
- * and then sent to the peer host.
+ * This interface represents the ability of the
+ * classes to provide the chunks of data.
  */
-public class SSLSocketOutputStream extends OutputStream {
+public interface DataStream {
 
-    private SSLSocketImpl owner;
+    /**
+     * Checks if there is data to be read.
+     * @return true if there is the input data in the stream,
+     * false otherwise
+     */
+    public boolean hasData();
 
-    protected SSLSocketOutputStream(SSLSocketImpl owner) {
-        this.owner = owner;
-    }
-
-    private byte[] bytik = new byte[1];
-
-    @Override
-    public void write(int b) throws IOException {
-        bytik[0] = (byte) (b & 0xFF);
-        owner.writeAppData(bytik, 0, 1);
-    }
-
-    @Override
-    public void write(byte[] b) throws IOException {
-        owner.writeAppData(b, 0, b.length);
-    }
-
-    @Override
-    public void write(byte[] b, int off, int len) throws IOException {
-        owner.writeAppData(b, off, len);
-    }
+    /**
+     * Retrieves the data of specified length from the stream.
+     * If the data size in the stream is less than specified length,
+     * method returns all the data contained in the stream.
+     * @return byte array containing the demanded data.
+     */
+    public byte[] getData(int length);
 
 }
+

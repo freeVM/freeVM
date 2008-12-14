@@ -17,39 +17,33 @@
 
 package org.apache.harmony.xnet.provider.jsse;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 /**
- * This is a application data output stream used in SSLSocket
- * implementation.
- * The written bytes are encrypted, packed into the records,
- * and then sent to the peer host.
+ * This class incapsulates the constants determining the
+ * types of SSL/TLS record's content data.
+ * Constant values are taken according to the TLS v1 specification
+ * (http://www.ietf.org/rfc/rfc2246.txt).
  */
-public class SSLSocketOutputStream extends OutputStream {
+public class ContentType {
 
-    private SSLSocketImpl owner;
+    /**
+     * Identifies change cipher spec message
+     */
+    protected static final byte CHANGE_CIPHER_SPEC = 20;
 
-    protected SSLSocketOutputStream(SSLSocketImpl owner) {
-        this.owner = owner;
-    }
+    /**
+     * Identifies alert message
+     */
+    protected static final byte ALERT = 21;
 
-    private byte[] bytik = new byte[1];
+    /**
+     * Identifies handshake message
+     */
+    protected static final byte HANDSHAKE = 22;
 
-    @Override
-    public void write(int b) throws IOException {
-        bytik[0] = (byte) (b & 0xFF);
-        owner.writeAppData(bytik, 0, 1);
-    }
-
-    @Override
-    public void write(byte[] b) throws IOException {
-        owner.writeAppData(b, 0, b.length);
-    }
-
-    @Override
-    public void write(byte[] b, int off, int len) throws IOException {
-        owner.writeAppData(b, off, len);
-    }
+    /**
+     * Identifies application data message
+     */
+    protected static final byte APPLICATION_DATA = 23;
 
 }
+

@@ -17,62 +17,58 @@
 
 package org.apache.harmony.xnet.provider.jsse;
 
-import org.apache.harmony.xnet.provider.jsse.Message;
+import org.apache.harmony.xnet.provider.jsse.AlertException;
 
-import java.io.IOException;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
 
 /**
  * 
- * Represents server hello done message
- * @see TLS 1.0 spec., 7.4.5. Server hello done
- * (http://www.ietf.org/rfc/rfc2246.txt)
- * 
+ * Base class for handshake messages
  */
-public class ServerHelloDone extends Message {
-
-    /**
-     * Creates outbound message
-     *
-     */
-    public ServerHelloDone() {    
-    }
+public abstract class Message {
     
-    /**
-     * Creates inbound message
-     * @param in
-     * @param length
-     * @throws IOException
+    /*
+     * Message length
      */
-    public ServerHelloDone(HandshakeIODataStream in, int length)
-            throws IOException {
-        if (length != 0) {
-            fatalAlert(AlertProtocol.DECODE_ERROR, "DECODE ERROR: incorrect ServerHelloDone");
-        }
-    }
-
-    /**
-     * Sends message
-     * @param out
-     */
-    @Override
-    public void send(HandshakeIODataStream out) {
-    }
-    
-    /**
-     * Returns message length
-     * @return
-     */
-    @Override
-    public int length() {
-        return 0;
-    }
+    protected int length;
     
     /**
      * Returns message type 
      * @return
      */
-    @Override
-    public int getType() {
-        return Handshake.SERVER_HELLO_DONE;
+    abstract int getType();
+    
+    /**
+     * Returns message length
+     * @return
+     */
+    public int length() {
+        return length;
+    }
+    
+    /**
+     * Sends message
+     * @param out
+     */
+    abstract void send(HandshakeIODataStream out);
+    
+    /**
+     * Sends fatal alert
+     * @param description
+     * @param reason
+     */
+    protected void fatalAlert(byte description, String reason) {
+        throw new AlertException(description, new SSLHandshakeException(reason));
+    }
+    
+    /**
+     * Sends fatal alert
+     * @param description
+     * @param reason
+     * @param cause
+     */
+    protected void fatalAlert(byte description, String reason, Throwable cause) {
+        throw new AlertException(description, new SSLException(reason, cause));
     }
 }
