@@ -15,35 +15,37 @@
  *  limitations under the License.
  */
 
-package javax.net;
+package javax.net.ssl;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
+import java.security.cert.CertPathParameters;
 
 /**
- * Default implementation of {@link javax.net.ServerSocketFactory}
+ * Container for {@link CertPathParameters}.
+ * 
+ * @since 1.5
  */
-final class DefaultServerSocketFactory extends ServerSocketFactory {
+public class CertPathTrustManagerParameters implements ManagerFactoryParameters {
 
-    DefaultServerSocketFactory() {
-        super();
+    private final CertPathParameters param;
+
+    /**
+     * Constructs an instance by cloning the parameters passed.
+     * 
+     * @param parameters the parameters to wrap
+     * 
+     * @throws NullPointerException if {@code parameters} is {@code null}
+     */
+    public CertPathTrustManagerParameters(CertPathParameters parameters) {
+        param = (CertPathParameters) parameters.clone();
     }
 
-    @Override
-    public ServerSocket createServerSocket(int port) throws IOException {
-        return new ServerSocket(port);
-    }
-
-    @Override
-    public ServerSocket createServerSocket(int port, int backlog) throws IOException {
-        return new ServerSocket(port, backlog);
-    }
-
-    @Override
-    public ServerSocket createServerSocket(int port, int backlog, InetAddress iAddress)
-            throws IOException {
-        return new ServerSocket(port, backlog, iAddress);
+    /**
+     * The parameters contained within.
+     * 
+     * @return a cloned instance of the parameters
+     */
+    public CertPathParameters getParameters() {
+        return (CertPathParameters) param.clone();
     }
 
 }

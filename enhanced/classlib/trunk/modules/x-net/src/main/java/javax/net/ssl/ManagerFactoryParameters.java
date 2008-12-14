@@ -15,35 +15,12 @@
  *  limitations under the License.
  */
 
-package javax.net;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
+package javax.net.ssl;
 
 /**
- * Default implementation of {@link javax.net.ServerSocketFactory}
+ * Common interface for passing parameters to manager factory objects.
+ * 
+ * @since 1.4
  */
-final class DefaultServerSocketFactory extends ServerSocketFactory {
-
-    DefaultServerSocketFactory() {
-        super();
-    }
-
-    @Override
-    public ServerSocket createServerSocket(int port) throws IOException {
-        return new ServerSocket(port);
-    }
-
-    @Override
-    public ServerSocket createServerSocket(int port, int backlog) throws IOException {
-        return new ServerSocket(port, backlog);
-    }
-
-    @Override
-    public ServerSocket createServerSocket(int port, int backlog, InetAddress iAddress)
-            throws IOException {
-        return new ServerSocket(port, backlog, iAddress);
-    }
-
+public interface ManagerFactoryParameters {
 }
