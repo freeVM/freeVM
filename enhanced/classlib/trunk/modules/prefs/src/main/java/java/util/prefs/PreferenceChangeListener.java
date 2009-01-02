@@ -14,40 +14,27 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.prefs.tests.java.util.prefs;
+package java.util.prefs;
 
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
-import java.util.prefs.Preferences;
-
-import junit.framework.TestCase;
+import java.util.EventListener;
 
 /**
+ * This interface is used to handle preferences change event. Implementation 
+ * of this interface can be installed by <code>Preferences</code> instance.
  * 
+ * @see Preferences
+ * @see PreferenceChangeEvent
+ *
+ * 
+ * @since 1.4
  */
-public class PreferenceChangeListenerTest extends TestCase {
+public interface PreferenceChangeListener extends EventListener {
 
-    PreferenceChangeListener l;
-
-    /*
-     * @see TestCase#setUp()
+    /**
+     * This method gets invoked whenever some preference is added, deleted or updated.
+     * 
+     * @param pce the event instance which describes the changed Preferences instance and
+     *            preferences value.
      */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        l = new PreferenceChangeListenerImpl();
-    }
-
-    public void testPreferenceChange() {
-        l.preferenceChange(new PreferenceChangeEvent(Preferences.userRoot(),
-                "", ""));
-    }
-
-    public static class PreferenceChangeListenerImpl implements
-    PreferenceChangeListener {
-        public void preferenceChange(PreferenceChangeEvent pce) {
-        }
-
-    }
-
+    void preferenceChange (PreferenceChangeEvent pce);
 }

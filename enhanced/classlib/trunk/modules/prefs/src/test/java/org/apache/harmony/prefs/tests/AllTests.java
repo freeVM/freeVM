@@ -14,40 +14,26 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.prefs.tests.java.util.prefs;
+package org.apache.harmony.prefs.tests;
 
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
-import java.util.prefs.Preferences;
-
-import junit.framework.TestCase;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
+ * Test suite that includes all tests for the Prefs project.
  * 
  */
-public class PreferenceChangeListenerTest extends TestCase {
+public class AllTests {
 
-    PreferenceChangeListener l;
-
-    /*
-     * @see TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        l = new PreferenceChangeListenerImpl();
+    public static void main(String[] args) {
+        junit.textui.TestRunner.run(AllTests.suite());
     }
 
-    public void testPreferenceChange() {
-        l.preferenceChange(new PreferenceChangeEvent(Preferences.userRoot(),
-                "", ""));
+    public static Test suite() {
+        TestSuite suite = new TestSuite("All Prefs test suites");
+        // $JUnit-BEGIN$
+        suite.addTest(org.apache.harmony.prefs.tests.java.util.prefs.AllTests.suite());
+        // $JUnit-END$
+        return suite;
     }
-
-    public static class PreferenceChangeListenerImpl implements
-    PreferenceChangeListener {
-        public void preferenceChange(PreferenceChangeEvent pce) {
-        }
-
-    }
-
 }

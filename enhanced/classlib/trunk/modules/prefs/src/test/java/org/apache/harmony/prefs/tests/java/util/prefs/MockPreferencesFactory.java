@@ -16,38 +16,27 @@
 
 package org.apache.harmony.prefs.tests.java.util.prefs;
 
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
-
-import junit.framework.TestCase;
+import java.util.prefs.PreferencesFactory;
 
 /**
  * 
  */
-public class PreferenceChangeListenerTest extends TestCase {
+public class MockPreferencesFactory implements PreferencesFactory {
+    static MockAbstractPreferences userRoot = new MockAbstractPreferences(null,
+    "");
 
-    PreferenceChangeListener l;
+    static MockAbstractPreferences systemRoot = new MockAbstractPreferences(
+            null, "");
 
-    /*
-     * @see TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        l = new PreferenceChangeListenerImpl();
+    public MockPreferencesFactory() {
     }
 
-    public void testPreferenceChange() {
-        l.preferenceChange(new PreferenceChangeEvent(Preferences.userRoot(),
-                "", ""));
+    public Preferences userRoot() {
+        return userRoot;
     }
 
-    public static class PreferenceChangeListenerImpl implements
-    PreferenceChangeListener {
-        public void preferenceChange(PreferenceChangeEvent pce) {
-        }
-
+    public Preferences systemRoot() {
+        return systemRoot;
     }
-
 }

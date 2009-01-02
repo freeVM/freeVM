@@ -14,40 +14,29 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.prefs.tests.java.util.prefs;
-
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
-import java.util.prefs.Preferences;
-
-import junit.framework.TestCase;
+package java.util.prefs;
 
 /**
+ * This interface is used by {@link Preferences} class as factory class to create Preferences
+ * instance. This interface can be implemented and installed to replace the default preferences
+ * implementation.
  * 
+ * @see java.util.prefs.Preferences
+ * 
+ * @since 1.4
  */
-public class PreferenceChangeListenerTest extends TestCase {
-
-    PreferenceChangeListener l;
-
-    /*
-     * @see TestCase#setUp()
+public interface PreferencesFactory {
+    /**
+     * Returns the root of the preferences hierarchy for the calling user context.
+     * 
+     * @return The user root preferences node.
      */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        l = new PreferenceChangeListenerImpl();
-    }
+    Preferences userRoot();
 
-    public void testPreferenceChange() {
-        l.preferenceChange(new PreferenceChangeEvent(Preferences.userRoot(),
-                "", ""));
-    }
-
-    public static class PreferenceChangeListenerImpl implements
-    PreferenceChangeListener {
-        public void preferenceChange(PreferenceChangeEvent pce) {
-        }
-
-    }
-
+    /**
+     * Returns the root of the system preferences hierarchy.
+     * 
+     * @return The root of the system preferences hierarchy.
+     */
+    Preferences systemRoot();
 }
