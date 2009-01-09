@@ -358,7 +358,11 @@ public class DefaultCodeFileParser
 
 	protected ConstantNum32 parseConstant_Num32(byte tag)
 	throws IOException, CodeFileFormatException, NumberFormatException {
-
+		if(tag==CPTags.CONSTANT_Float) {
+			ConstantNum32 c = new ConstantNum32(tag);
+			c.setBytes(Float.floatToIntBits(parseNumber().floatValue()));
+			return c;
+		}
 		ConstantNum32 c = new ConstantNum32(tag);
 		c.setBytes(parseNumber().intValue());
 		return c;
@@ -368,7 +372,12 @@ public class DefaultCodeFileParser
 	throws IOException, CodeFileFormatException, NumberFormatException {
 
 		ConstantNum64 c = new ConstantNum64(tag);
-		long l = Double.doubleToLongBits(parseNumber().doubleValue());
+		long l = 0L;
+		if(tag==CPTags.CONSTANT_Long) {
+			l = parseNumber().longValue();
+		} else {
+			l = Double.doubleToLongBits(parseNumber().doubleValue());
+		}
 		c.setLowBytes((int) l);
 		c.setHighBytes((int) (l >> 32));
 		return c;
