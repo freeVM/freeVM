@@ -34,6 +34,7 @@ public class Main {
         boolean quiet = false;
         String logFileName = null;
         boolean gzip = true;
+        int segmentLimit = -2;
 
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--help") || args[i].equals("-help")
@@ -55,6 +56,8 @@ public class Main {
             } else if(args[i].equals("-V") || args[i].equals("--version")) {
                 printVersion();
                 return;
+            } else if(args[i].equals("-S") || args[i].equals("--segment-limit")) {
+                segmentLimit = Integer.parseInt(args[++i]);
             } else {
                 outputFileName = args[i];
                 if(args.length > i + 1) {
@@ -70,6 +73,9 @@ public class Main {
         JarInputStream inputStream = new JarInputStream(new FileInputStream(inputFileName));
         OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFileName));
         Archive archive = new Archive(inputStream, outputStream, gzip);
+        if(segmentLimit > -2) {
+            archive.setSegmentLimit(segmentLimit);
+        }
         archive.pack();
     }
 
@@ -88,7 +94,7 @@ public class Main {
 //        System.out.println("  -G, --strip-debug               remove debugging attributes while packing");
 //        System.out.println("  -O, --no-keep-file-order        do not transmit file ordering information");
 //        System.out.println("  --keep-file-order               (default) preserve input file ordering");
-//        System.out.println("  -S{N}, --segment-limit={N}      output segment limit (default N=1Mb)");
+        System.out.println("  -S{N}, --segment-limit={N}      output segment limit (default N=1Mb)");
 //        System.out.println("  -E{N}, --effort={N}             packing effort (default N=5)");
 //        System.out.println("  -H{h}, --deflate-hint={h}       transmit deflate hint: true, false, or keep (default)");
 //        System.out.println("  -m{V}, --modification-time={V}  transmit modtimes: latest or keep (default)");
