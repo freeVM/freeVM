@@ -36,6 +36,6 @@ public class Main {
 
     public static int compile(String[] args, PrintWriter out, PrintWriter err) {
         org.apache.harmony.tools.javac.Main hyMain = new org.apache.harmony.tools.javac.Main();
-        return hyMain.compile(args, out, err) ? 0 : 1;
+        return hyMain.compile(args, out, err);
     }
 }
