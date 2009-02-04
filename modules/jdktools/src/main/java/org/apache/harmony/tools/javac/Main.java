@@ -26,11 +26,17 @@ import org.apache.harmony.tools.toolutils.Util;
  */
 public final class Main {
 
+    // javac tool return codes
+    public static final int RC_SUCCESS = 0;
+    public static final int RC_COMPILE_ERROR = 1;
+    public static final int RC_USAGE_ERROR = 2;
+
     /*
      * Command-line tool invokes this method.
      */
     public static void main(String[] args) {
-        new Main().compile(args);
+        int rc = new Main().compile(args);
+        System.exit(rc);
     }
 
     /**
@@ -45,9 +51,9 @@ public final class Main {
      * 
      * @param args
      *            the arguments passed through to the compiler
-     * @return true on compilation success, false on failure
+     * @return a return code as defined by this class
      */
-    public boolean compile(String[] args) {
+    public int compile(String[] args) {
 
         return compile(args,Util.getDefaultWriter(System.out), Util.getDefaultWriter(System.err));
     }
@@ -61,21 +67,22 @@ public final class Main {
      *            get the output from System.out
      * @param err
      *            get the output from System.err
-     * @return true on compilation success, false on failure
+     * @return a return code as defined by this class
      */
-    public boolean compile(String[] args, PrintWriter out, PrintWriter err) {
+    public int compile(String[] args, PrintWriter out, PrintWriter err) {
 
         /* Give me something to do */
         if (args == null || args.length == 0) {
             new Compiler(out, err).printUsage();
-            return false;
+            return RC_USAGE_ERROR;
         }
 
         /* Add in the base class library code to compile against */
         String[] newArgs = addBootclasspath(args);
 
         /* Invoke the compiler */
-        return Compiler.main(newArgs, out, err);
+        boolean success = Compiler.main(newArgs, out, err);
+        return success ? RC_SUCCESS : RC_COMPILE_ERROR;
     }
 
     /*
