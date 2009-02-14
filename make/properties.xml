@@ -69,8 +69,8 @@
     <property name="hy.test.timeout" value="900000" />
     <property name="hy.test.vmargs" value="" />
 
-    <condition property="hy.platform.suffix" value=".libstdc++6">
-        <isset property="use.libstdc++6"/>
+    <condition property="hy.platform.suffix" value=".libstdc++5">
+        <isset property="use.libstdc++5"/>
     </condition>
     <condition property="hy.platform.suffix" value=".7x">
         <!-- matches would be better but debian stable has ant 1.6.5
