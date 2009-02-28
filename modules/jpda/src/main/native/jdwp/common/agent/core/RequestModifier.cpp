@@ -22,6 +22,8 @@
  */
 // RequestModifier.cpp
 
+#include <string.h>
+
 #include "RequestModifier.h"
 
 using namespace jdwp;

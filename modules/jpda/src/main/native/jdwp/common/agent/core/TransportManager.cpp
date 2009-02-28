@@ -23,6 +23,8 @@
 // TransportManager.cpp
 //
 
+#include <string.h>
+
 #include "TransportManager.h"
 
 using namespace jdwp;

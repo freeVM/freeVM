@@ -1,0 +1,7 @@
+LIBRARY	dt_shmem
+
+SECTIONS
+	.data	READ WRITE
+	.text	EXECUTE READ
+
+EXPORTS

@@ -50,7 +50,6 @@
 
 typedef pthread_mutex_t CriticalSection;
 typedef int SOCKET;
-typedef pthread_t ThreadId_t;
 
 #include "jdwpTransport.h"
 #include "LastTransportError.h"
@@ -160,17 +159,5 @@ LeaveCriticalSendSection(jdwpTransportEnv* env)
 {
     pthread_mutex_unlock(&(((internalEnv*)env->functions->reserved1)->sendLock));
 }
-
-static inline ThreadId_t 
-GetCurrentThreadId()
-{
-    return pthread_self();
-} // GetCurrentThreadId()
-
-static inline bool 
-ThreadId_equal(ThreadId_t treadId1, ThreadId_t treadId2)
-{
-    return pthread_equal(treadId1, treadId2) != 0 ? true : false;
-} // ThreadId_equal()
 
 #endif //_SOCKETTRANSPORT_PD_H

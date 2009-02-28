@@ -22,6 +22,7 @@
  */
 // AgentEventRequest.cpp
 
+#include <string.h>
 #include "AgentEventRequest.h"
 #include "RequestManager.h"
 #include "Log.h"

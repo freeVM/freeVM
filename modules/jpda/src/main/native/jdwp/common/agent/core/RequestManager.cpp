@@ -22,6 +22,8 @@
  */
 // RequestManager.cpp
 
+#include <string.h>
+
 #include "RequestManager.h"
 #include "ThreadManager.h"
 #include "EventDispatcher.h"

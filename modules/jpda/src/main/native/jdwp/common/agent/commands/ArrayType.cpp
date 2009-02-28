@@ -20,6 +20,7 @@
  * @author Viacheslav G. Rybalov
  * @version $Revision: 1.8 $
  */
+#include <string.h>
 #include "ArrayType.h"
 #include "PacketParser.h"
 #include "ClassManager.h"

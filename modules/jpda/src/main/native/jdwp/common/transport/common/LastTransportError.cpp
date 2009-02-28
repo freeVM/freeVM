@@ -20,7 +20,7 @@
  * @author Viacheslav G. Rybalov
  * @version $Revision: 1.6 $
  */
-#include "SocketTransport_pd.h"
+#include "LastTransportError.h"
 
 void (*LastTransportError::m_free)(void *buffer) = 0;
 

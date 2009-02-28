@@ -22,6 +22,7 @@
  */
 // Agent.cpp
 
+#include <string.h>
 #include <cstdlib>
 #include <cstdio>
 

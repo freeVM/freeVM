@@ -21,6 +21,8 @@
  * @version $Revision: 1.18 $
  */
 
+#include <string.h>
+
 #include "CommandHandler.h"
 #include "PacketParser.h"
 #include "ThreadManager.h"

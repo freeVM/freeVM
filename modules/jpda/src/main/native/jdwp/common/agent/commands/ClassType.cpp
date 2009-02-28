@@ -20,6 +20,8 @@
  * @author Viacheslav G. Rybalov, Anton V. Karnachuk
  * @version $Revision: 1.25 $
  */
+#include <string.h>
+
 #include "ClassType.h"
 
 #include "PacketParser.h"
