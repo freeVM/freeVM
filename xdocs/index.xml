@@ -79,6 +79,34 @@
     </section>
     <section name="Harmony News">
       <dl>
+        <dt>Apache Harmony 5.0 M9 available for download!</dt>
+        <dd>
+          The Apache Harmony team are pleased to announce the immediate
+          availability of Apache Harmony 5.0M9.
+          <p/>
+
+          Apache Harmony 5.0M9 is the latest stable build containing
+          <a href="http://tinyurl.com/d6tu7w">numerous bug fixes</a>
+          and enhancements including:
+          <ul>
+              <li>performance: across multiple areas, including class library improvements
+                  and JIT compiler global propagation optimizations, integer MUL/DIV/REM
+                  strength reduction, and so on.</li>
+              <li>pack200: a new implementation of the JSR-200 compression technology
+                  for Java bytecodes.</li>
+              <li>porting work: in the class libraries for AIX and zOS operating systems.</li>
+              <li>bug fixing: focus on our test case enhancements, and on passing the
+                  Eclipse Test Suite.</li>
+          </ul>
+          <p/>
+
+          Source code and binary builds are available from the project
+          <a href="http://harmony.apache.org/download.cgi">download site</a>.
+          Please send feedback to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+          (<i>2009-04-15</i>)
+        </dd>
+
         <dt>Apache Harmony 5.0 M8 now available</dt>
         <dd>
           The Apache Harmony team are pleased to announce the immediate
@@ -123,35 +151,6 @@
           Please send your feedback to
           <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
           (<i>2008-08-28</i>)
-        </dd>
-        
-        <dt>Jikes RVM 3.0 + Apache Harmony!</dt>
-        <dd>
-          Ian Rogers recently announced exciting news of support for Harmony
-          class libraries running on the Jikes RVM:<p/> 
-          <i> 
-            "We are pleased to announce the release of Jikes RVM 3.0, an
-            open-source meta-circular JVM written in Java.  A new feature of
-            the release is initial support for Apache Harmony's class library."
-          </i><p/>
-          See the full announcement and details of how to combine the two projects
-          in <a href="http://markmail.org/message/5rehnbf2qj5xhiob">Ian's
-          mailing list posting</a>.
-          (<i>2008-08-27</i>)
-        </dd>
-
-        <dt>Microemulator code contribution</dt>
-        <dd>
-          Apache Harmony has broadened it's scope of code implementing the Java
-          platform APIs with the acceptance of a substantial code contribution
-          from the authors of Microemulator.
-          <p/>
-          Microemulator is a pure Java implementation of Java ME APIs in Java SE.  With
-          the emulator code it becomes possible to run MIDlet (MIDP/CLDC) based
-          applications as a standalone Java application or as web browser applet.
-          <p/>
-          Thanks to Bartek, Vlad, and Michael for this contribution to Apache Harmony!
-          (<i>2008-06-09</i>)
         </dd>
 
       </dl>
