@@ -18,15 +18,14 @@
 package java.lang.annotation;
 
 /**
- * Defines a meta-annotation for determining the scope of retention for an
- * annotation. If the retention annotation is not set {@code
- * RetentionPolicy.CLASS} is used as default retention.
+ * Defines a meta-annotation for determining what {@link ElementType}s an
+ * annotation can be applied to.
  *
  * @since 1.5
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface Retention {
-    RetentionPolicy value();
+public @interface Target {
+    ElementType[] value();
 }

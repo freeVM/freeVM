@@ -18,15 +18,43 @@
 package java.lang.annotation;
 
 /**
- * Defines a meta-annotation for determining the scope of retention for an
- * annotation. If the retention annotation is not set {@code
- * RetentionPolicy.CLASS} is used as default retention.
+ * Defines an enumeration for Java program elements. It is used in conjunction
+ * with the {@link Target} meta-annotation to restrict the use of an annotation
+ * to certain program elements.
  *
  * @since 1.5
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface Retention {
-    RetentionPolicy value();
+public enum ElementType {
+    /**
+     * Class, interface or enum declaration.
+     */
+    TYPE,
+    /**
+     * Field declaration.
+     */
+    FIELD,
+    /**
+     * Method declaration.
+     */
+    METHOD,
+    /**
+     * Parameter declaration.
+     */
+    PARAMETER,
+    /**
+     * Constructor declaration.
+     */
+    CONSTRUCTOR,
+    /**
+     * Local variable declaration.
+     */
+    LOCAL_VARIABLE,
+    /**
+     * Annotation type declaration.
+     */
+    ANNOTATION_TYPE,
+    /**
+     * Package declaration.
+     */
+    PACKAGE
 }

@@ -18,15 +18,25 @@
 package java.lang.annotation;
 
 /**
- * Defines a meta-annotation for determining the scope of retention for an
- * annotation. If the retention annotation is not set {@code
- * RetentionPolicy.CLASS} is used as default retention.
+ * Defines an enumeration for annotation retention policies. Used in conjunction
+ * with the {@link Retention} annotation to specify an annotation's time-to-live
+ * in the overall development life cycle.
  *
  * @since 1.5
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface Retention {
-    RetentionPolicy value();
+public enum RetentionPolicy {
+    /**
+     * Annotation is only available in the source code.
+     */
+    SOURCE,
+    /**
+     * Annotation is available in the source code and in the class file, but not
+     * at runtime. This is the default policy.
+     */
+    CLASS,
+    /**
+     * Annotation is available in the source code, the class file and is
+     * available at runtime.
+     */
+    RUNTIME
 }
