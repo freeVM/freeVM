@@ -17,35 +17,29 @@
 
 package java.util.zip;
 
-import java.io.IOException;
-
 /**
- * This runtime exception is thrown by {@code ZipFile} and {@code
- * ZipInputStream} when the file or stream is not a valid ZIP file.
- * 
- * @see ZipFile
- * @see ZipInputStream
+ * {@code DataFormatException} is used to indicate an error in the format of a
+ * particular data stream which is to be uncompressed.
  */
-public class ZipException extends IOException {
+public class DataFormatException extends Exception {
 
-    private static final long serialVersionUID = 8000196834066748623L;
+    private static final long serialVersionUID = 2219632870893641452L;
 
     /**
-     * Constructs a new {@code ZipException} instance.
+     * Constructs a new {@code DataFormatException} instance.
      */
-    public ZipException() {
+    public DataFormatException() {
         super();
     }
 
     /**
-     * Constructs a new {@code ZipException} instance with the specified
+     * Constructs a new {@code DataFormatException} instance with the specified
      * message.
      *
      * @param detailMessage
      *            the detail message for the exception.
      */
-    public ZipException(String detailMessage) {
+    public DataFormatException(String detailMessage) {
         super(detailMessage);
     }
-
 }
