@@ -75,7 +75,10 @@
     <condition property="hy.platform.suffix" value=".7x">
         <!-- matches would be better but debian stable has ant 1.6.5
              and matches was only added to 1.7.0 and above -->
-        <contains substring="7." string="${os.version}"/>
+        <and>
+            <equals arg1="FreeBSD" arg2="${os.name}" casesensitive="false" /> 
+            <contains substring="7." string="${os.version}"/>
+        </and>
     </condition>
     <property name="hy.platform.suffix" value="" />
     <property name="hy.platform.variant"
