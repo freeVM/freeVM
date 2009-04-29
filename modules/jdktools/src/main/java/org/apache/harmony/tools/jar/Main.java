@@ -56,6 +56,7 @@ public class Main {
      */
     public static void main(String args[]) throws Exception {
         if (args.length == 0) {
+            // No options specified - just print usage string
             usage();
             return;
         }
@@ -65,6 +66,7 @@ public class Main {
             args[0] = args[0].substring(1);
         }
 
+        // Check for expected/unexpected options
         switch (args[0].charAt(0)) {
         case 'c':
             createJar(args);
@@ -86,33 +88,36 @@ public class Main {
             usage();
             return;
         }
-
-        // Need to parse -J option too - the launcher should handle this, no?
     }
 
     /**
      * Creates a jar file with the specified arguments
      */
     private static void createJar(String[] args) {
+        System.out.println("Error: Jar creation not yet implemented");
     }
 
     /**
      * Updates a jar file with the specified arguments
      */
     private static void updateJar(String[] args) {
+        System.out.println("Error: Jar update not yet implemented");
     }
 
     /**
      * Extracts a jar file with the specified arguments
      */
     private static void extractJar(String[] args) {
+        System.out.println("Error: Jar extraction not yet implemented");
     }
 
     /**
      * Lists contents of jar file with the specified arguments
      */
-    private static void listJar(String[] args) throws Exception{
+    private static void listJar(String[] args) throws Exception {
         boolean verboseFlag = false, fileFlag = false;
+
+        // Check for expected and unexpected flags
         for (int i=1; i<args[0].length(); i++) {
             switch (args[0].charAt(i)) {
             case 'v':
@@ -128,6 +133,7 @@ public class Main {
         }
 
         if (fileFlag && args.length<2) {
+            // Options specify 'f' but there is no filename present
             System.out.println("Error: No file name specified for 'f' option");
             return;
         }
@@ -138,15 +144,15 @@ public class Main {
             if (verboseFlag) System.out.println("Reading input from stdin");
             zis = new ZipInputStream(System.in);
         } else {
+            // Read from the specified file
             if (verboseFlag) System.out.println("Reading jar file: "+args[1]);
             zis = new ZipInputStream(new FileInputStream(new File(args[1])));
         }
 
-        if (verboseFlag) System.out.println("Listing files:");
-
+        // Read the zip entries - format and print their data
         ZipEntry ze;
+        if (verboseFlag) System.out.println("Listing files:");        
         while ((ze = zis.getNextEntry()) != null) {
-            //System.out.println(ze.getCompressedSize()+" "+ze.getSize()+" "+ze.getTime()+" "+ze.getName());
             Date date = new Date(ze.getTime());
             DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyy");
             String formattedDate = dateFormat.format(date);
@@ -160,6 +166,7 @@ public class Main {
      * Indexes a jar file with the specified arguments
      */
     private static void indexJar(String[] args) {
+        System.out.println("Error: Jar indexing not yet implemented");
     }
 
 }
