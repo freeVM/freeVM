@@ -18,28 +18,20 @@
 package java.io;
 
 /**
- * The top level class for character conversion exceptions.
+ * An interface for filtering {@link File} objects based on their names
+ * or other information.
+ *
+ * @see File#listFiles(FileFilter)
  */
-public class CharConversionException extends IOException {
-
-    private static final long serialVersionUID = -8680016352018427031L;
+public abstract interface FileFilter {
 
     /**
-     * Constructs a new {@code CharConversionException} with its stack trace
-     * filled in.
-     */
-    public CharConversionException() {
-        super();
-    }
-
-    /**
-     * Constructs a new {@code CharConversionException} with its stack trace and
-     * detail message filled in.
+     * Indicating whether a specific file should be included in a pathname list.
      * 
-     * @param detailMessage
-     *            the detail message for this exception.
+     * @param pathname
+     *            the abstract file to check.
+     * @return {@code true} if the file should be included, {@code false}
+     *         otherwise.
      */
-    public CharConversionException(String detailMessage) {
-        super(detailMessage);
-    }
+    public abstract boolean accept(File pathname);
 }
