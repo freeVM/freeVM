@@ -19,6 +19,7 @@ package org.apache.harmony.tools.jar;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -107,10 +108,75 @@ public class Main {
     /**
      * Extracts a jar file with the specified arguments
      */
-    private static void extractJar(String[] args) {
-        System.out.println("Error: Jar extraction not yet implemented");
-    }
+    private static void extractJar(String[] args) throws Exception {
+        boolean verboseFlag = false, fileFlag = false;
 
+        // Check for expected and unexpected flags
+        for (int i=1; i<args[0].length(); i++) {
+            switch (args[0].charAt(i)) {
+            case 'v':
+                verboseFlag = true;
+                break;
+            case 'f':
+                fileFlag = true;
+                break;
+            default:
+                System.out.println("Error: Illegal option for -x: '"+args[0].charAt(i)+"'");
+                return;
+            }
+        }
+
+        if (fileFlag && args.length<2) {
+            // Options specify 'f' but there is no filename present
+            System.out.println("Error: No file name specified for 'f' option");
+            return;
+        }
+    	
+    	ZipInputStream zis;
+        if (!fileFlag) {
+            // Read from stdin
+            if (verboseFlag) System.out.println("Reading input from stdin");
+            zis = new ZipInputStream(System.in);
+        } else {
+            // Read from the specified file
+            if (verboseFlag) System.out.println("Reading jar file: "+args[1]);
+            zis = new ZipInputStream(new FileInputStream(new File(args[1])));
+        }
+
+        // Read the zip entries - format and print their data
+        ZipEntry ze;
+        String workingDir = System.getProperty("user.dir");
+        
+        while ((ze = zis.getNextEntry()) != null) {
+        	if (ze.isDirectory()) {
+        		// create a new directory of the same name
+       			File newDir = new File(ze.getName());
+    			if (! newDir.exists()) {
+    				newDir.mkdirs();        				
+    			}
+    	        if (verboseFlag) {
+    	        	System.out.println("created: " + ze.getName());
+    	        }
+        	} else {
+        		// extract the file to the appropriate directory
+        		File f = new File(workingDir + File.separator + ze.getName());
+        		f.createNewFile();
+        		FileOutputStream fos = new FileOutputStream(f);
+        		int i;
+        		while ((i = zis.read()) != -1) {
+        			fos.write(i);
+        		}
+            	fos.close();
+            	if (verboseFlag) {
+            		System.out.println("inflated: " + ze.getName());
+            	}
+        	}           
+            zis.closeEntry();
+        }
+
+        zis.close();
+    }
+    	
     /**
      * Lists contents of jar file with the specified arguments
      */
