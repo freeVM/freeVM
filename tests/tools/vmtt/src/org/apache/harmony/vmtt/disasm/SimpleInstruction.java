@@ -132,6 +132,9 @@ public class SimpleInstruction extends Instruction {
 		for (int i = 0; i < operands.size(); i++) {
 			str.append(" " + operandAt(i).toString());
 		}
+		for (int i= 0; i < operands.size(); i++) {
+			str.append(" " + operandAt(i).operandCommentString());
+		}
 		return str.toString();
 	}
 }

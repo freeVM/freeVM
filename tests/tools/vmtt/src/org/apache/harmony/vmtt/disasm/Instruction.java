@@ -31,7 +31,7 @@ import org.apache.harmony.vmtt.ccode.CodeFileFormatException;
  */
 
 public abstract class Instruction {
-	
+
 	protected int opcode = -1;
 	protected String mnemonic = null;
 	protected Vector operands = new Vector();
@@ -39,11 +39,11 @@ public abstract class Instruction {
 	public int getOpcode() {
 		return opcode;
 	}
-	
+
 	public String getMnemonic() {
 		return mnemonic;
 	}
-	
+
 	public Operand operandAt(int i)
 		throws ArrayIndexOutOfBoundsException {
 		return (Operand) operands.elementAt(i);
@@ -52,19 +52,19 @@ public abstract class Instruction {
 	public int getOperandsCount() {
 		return operands.size();
 	}
-	
+
 	public void setOpcode(int c) {
 		opcode = c;
 	}
-	
+
 	public void setMnemonic(String m) {
 		mnemonic = m;
 	}
-	
+
 	public void addOperand(Operand op) {
 		operands.add(op);
 	}
-	
+
 	public void setOperands(Operand[] ops) {
 		if (ops == null) {
 			throw new NullPointerException();
@@ -74,12 +74,16 @@ public abstract class Instruction {
 			operands.add(ops[i]);
 		}
 	}
-	
+
 	public abstract int read(DataInputStream stream, int cp)
 		throws IOException, EOFException;
-	
+
 	public abstract void parse(StreamTokenizer st, DataOutputStream dos)
 	    throws IOException, CodeFileFormatException;
 
     public abstract String toString();
+
+    public String operandCommentString() {
+    	return "";
+    }
 }

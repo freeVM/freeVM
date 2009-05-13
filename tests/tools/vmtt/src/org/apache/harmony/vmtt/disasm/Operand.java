@@ -71,8 +71,20 @@ public class Operand {
 		        return "#" + (operand_value.byteValue() & 0xFF);
 		    }
 		    //return "#" + str;
-		    return "#" + str + "  // " + Utils.refToValue(DefaultCodeFileGenerator.classFile, "#" + str); 
+		    return "#" + str; 
 		}
 		return str; 
+	}
+	
+	public String operandCommentString() {
+		String str = operand_value.toString(); 
+		if (operand_type == OT_REF) {
+		    if (getSize() == 1) {
+		        return "";
+		    }
+		    //return comment
+		    return "  // " + Utils.refToValue(DefaultCodeFileGenerator.classFile, "#" + str); 
+		}
+		return ""; 
 	}
 }
