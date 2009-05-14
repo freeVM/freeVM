@@ -462,8 +462,8 @@ char *getExeDir() {
     if (dladdr( (const void*)&main, &info) == 0) {
         return NULL;
     }
-    strncpy(buffer, info.dli_fname, PATH_MAX+1);
-    buffer[PATH_MAX+1] = '\0';
+    strncpy(buffer, info.dli_fname, PATH_MAX);
+    buffer[PATH_MAX] = '\0';
 
 #elif defined(WIN32)
     char buffer[512];
