@@ -1816,7 +1816,7 @@ CDSM="config/config_dox_setup.mak"
 
 chmod -w $CDSD $CDSM
 
-roster.sh
+./roster.sh
 echo "$PGMNAME:  Compile configuration:                $CFGH"
 echo "$PGMNAME:  Code build steps:                     $CBSD"
 echo "                                                  $CBSM"
