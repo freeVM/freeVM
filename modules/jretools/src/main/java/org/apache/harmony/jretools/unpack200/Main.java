@@ -18,6 +18,9 @@ package org.apache.harmony.jretools.unpack200;
 
 import org.apache.harmony.unpack200.Archive;
 
+/**
+ * Main class for the unpack200 command line tool
+ */
 public class Main {
 
     public static void main(String args[]) throws Exception {
