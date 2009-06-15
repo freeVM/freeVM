@@ -164,10 +164,26 @@
 
         <echo message="Run jdk/bin/java -version in ${hy.tests.reports}"/>
         <exec failonerror="true"
-	        executable="${test.jre.home}/../bin/java${exe.suffix}"
-	        dir="${hy.tests.reports}">
+	      executable="${test.jre.home}/../bin/java${exe.suffix}"
+	      dir="${hy.tests.reports}"
+              outputproperty="java.out.text">
 	    <arg line="-version" />
         </exec>
+        <fail message="java -version should contain a copyright statement">
+            <condition>
+                <not>
+                    <contains string="${java.out.text}"
+                              substring="Copyright 1991"/>
+                </not>
+            </condition>
+        </fail>
+        <fail message="java -version should contain svn revision information">
+            <condition>
+                <not>
+                    <contains string="${java.out.text}" substring="svn = r"/>
+                </not>
+            </condition>
+        </fail>
 
         <echo message="Run jdk/bin/javac -version in ${hy.tests.reports}"/>
         <exec failonerror="true"
