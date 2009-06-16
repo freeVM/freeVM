@@ -33,7 +33,7 @@ INCLUDES += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
             -I$(COMMON)generic -I. \
             -I../common
 
-LDFLAGS += -lstdc++
+LDFLAGS += $(STDCLIBS)
 
 BUILDFILES = \
     $(CMNTRANS)common/LastTransportError.o \
