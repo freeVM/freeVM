@@ -41,13 +41,16 @@
     </fileset>
 
     <target name="fetch-depends">
-        <fetch dep="jdt"/>
+        <fetch dep="jdt.jdi.jar"/>
+        <fetch dep="jdt.jdimodel.jar"/>
         <fetch dep="icu"/>
     </target>
 
     <target name="check-depends">
-        <check-one-file src="${jdt.url}" dest="${jdt.jdi.jar}" />
-        <check-one-file src="${jdt.url}" dest="${jdt.jdimodel.jar}" />
+        <check-one-file src="${jdt.jdi.jar.url}"
+                        dest="${jdt.jdi.jar}" />
+        <check-one-file src="${jdt.jdimodel.jar.url}"
+                        dest="${jdt.jdimodel.jar}" />
         <check-one-file src="${icu.url}" dest="${icu.jar}" />
     </target>
 

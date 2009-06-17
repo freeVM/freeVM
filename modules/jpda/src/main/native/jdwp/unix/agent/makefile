@@ -30,7 +30,7 @@ INCLUDES += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
 
 INCLUDES := -I../../../include $(INCLUDES)
 
-LDFLAGS += -lstdc++
+LDFLAGS += $(STDCLIBS)
 
 BUILDFILES = \
     $(CMNAGENT)commands/ArrayReference.o \

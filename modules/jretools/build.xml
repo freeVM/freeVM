@@ -40,16 +40,7 @@
         </or>
     </fileset>
     
-    <target name="check-depends">
-        <check-one-file src="${jdt.url}" dest="${jdt.jdi.jar}" />
-    </target>
-    
-    <target name="fetch-depends">
-        <fetch dep="jdt"/>
-    </target>
-
-
-    <target name="build" depends="check-depends, build-java, copy-resources, build-jar" />
+    <target name="build" depends="build-java, copy-resources, build-jar" />
     <target name="build-java" depends="compile-java, copy-resources, build-jar" />
     <target name="build-native" />
 

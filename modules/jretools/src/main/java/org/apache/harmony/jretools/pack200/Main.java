@@ -23,41 +23,94 @@ import java.io.OutputStream;
 import java.util.jar.JarInputStream;
 
 import org.apache.harmony.pack200.Archive;
+import org.apache.harmony.pack200.PackingOptions;
 
+/**
+ * Main class for the pack200 command line tool.
+ */
 public class Main {
 
     public static void main(String args[]) throws Exception {
+        // TODO: -f isn't implemented here yet
 
         String inputFileName = null;
         String outputFileName = null;
-        boolean verbose = false;
-        boolean quiet = false;
-        String logFileName = null;
-        boolean gzip = true;
-        int segmentLimit = -2;
+        PackingOptions options = new PackingOptions();
 
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--help") || args[i].equals("-help")
                     || args[i].equals("-h") || args[i].equals("-?")) {
                 printHelp();
                 return;
-            } else if(args[i].equals("-g") || args[i].equals("--no-gzip")) {
-                gzip = false;
-            } else if(args[i].equals("--gzip")) {
-                gzip = true;
-            }  else if(args[i].equals("-v") || args[i].equals("--verbose")) {
-                verbose = true;
-                quiet = false;
-            } else if(args[i].equals("-q") || args[i].equals("--quiet")) {
-                quiet = true;
-                verbose = false;
-            } else if(args[i].startsWith("-l")) {
-                logFileName = args[i].substring(2);
             } else if(args[i].equals("-V") || args[i].equals("--version")) {
                 printVersion();
                 return;
-            } else if(args[i].equals("-S") || args[i].equals("--segment-limit")) {
-                segmentLimit = Integer.parseInt(args[++i]);
+            } else if(args[i].equals("-g") || args[i].equals("--no-gzip")) {
+                options.setGzip(false);
+            } else if(args[i].equals("--gzip")) {
+                options.setGzip(true);
+            } else if(args[i].equals("-G") || args[i].equals("--strip-debug")) {
+                options.setStripDebug(true);
+            } else if(args[i].equals("-O") || args[i].equals("--no-keep-file-order")) {
+                options.setKeepFileOrder(false);
+            } else if(args[i].equals("--keep-file-order")) {
+                options.setKeepFileOrder(true);
+            } else if(args[i].startsWith("-S")) {
+                options.setSegmentLimit(Integer.parseInt(args[i].substring(2)));
+            } else if (args[i].startsWith("--segment-limit=")) {
+                options.setSegmentLimit(Integer.parseInt(args[i].substring(16)));
+            } else if(args[i].startsWith("-E")) {
+                options.setEffort(Integer.parseInt(args[i].substring(2)));
+            } else if(args[i].startsWith("--effort=")) {
+                options.setEffort(Integer.parseInt(args[i].substring(10)));
+            } else if(args[i].startsWith("-H")) {
+                options.setDeflateHint(args[i].substring(2));
+            } else if(args[i].startsWith("--deflate-hint=")) {
+                options.setDeflateHint(args[i].substring(15));
+            } else if(args[i].startsWith("-m")) {
+                options.setModificationTime(args[i].substring(2));
+            } else if(args[i].startsWith("--modification-time=")) {
+                options.setModificationTime(args[i].substring(19));
+            } else if(args[i].startsWith("-P")) {
+                options.addPassFile(args[i].substring(2));
+            } else if(args[i].startsWith("--pass-file=")) {
+                options.addPassFile(args[i].substring(12));
+            } else if(args[i].startsWith("-U")) {
+                options.setUnknownAttributeAction(args[i].substring(2));
+            } else if (args[i].startsWith("--unknown-attribute=")) {
+                options.setUnknownAttributeAction(args[i].substring(20));
+            } else if(args[i].startsWith("-C")) {
+                String[] nameEqualsAction = args[i].substring(2).split("=");
+                options.addClassAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
+            } else if(args[i].startsWith("--class-attribute=")) {
+                String[] nameEqualsAction = args[i].substring(18).split("=");
+                options.addClassAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
+            } else if(args[i].startsWith("-F")) {
+                String[] nameEqualsAction = args[i].substring(2).split("=");
+                options.addFieldAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
+            } else if(args[i].startsWith("--field-attribute=")) {
+                String[] nameEqualsAction = args[i].substring(18).split("=");
+                options.addFieldAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
+            } else if(args[i].startsWith("-M")) {
+                String[] nameEqualsAction = args[i].substring(2).split("=");
+                options.addMethodAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
+            } else if(args[i].startsWith("--method-attribute=")) {
+                String[] nameEqualsAction = args[i].substring(19).split("=");
+                options.addMethodAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
+            } else if(args[i].startsWith("-D")) {
+                String[] nameEqualsAction = args[i].substring(2).split("=");
+                options.addCodeAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
+            } else if(args[i].startsWith("--code-attribute=")) {
+                String[] nameEqualsAction = args[i].substring(17).split("=");
+                options.addCodeAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
+            } else if(args[i].equals("-v") || args[i].equals("--verbose")) {
+                options.setVerbose(true);
+                options.setQuiet(false);
+            } else if(args[i].equals("-q") || args[i].equals("--quiet")) {
+                options.setQuiet(true);
+                options.setVerbose(false);
+            } else if(args[i].startsWith("-l")) {
+                options.setLogFile(args[i].substring(2));
             } else {
                 outputFileName = args[i];
                 if(args.length > i + 1) {
@@ -72,10 +125,7 @@ public class Main {
         }
         JarInputStream inputStream = new JarInputStream(new FileInputStream(inputFileName));
         OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFileName));
-        Archive archive = new Archive(inputStream, outputStream, gzip);
-        if(segmentLimit > -2) {
-            archive.setSegmentLimit(segmentLimit);
-        }
+        Archive archive = new Archive(inputStream, outputStream, options);
         archive.pack();
     }
 
@@ -85,42 +135,41 @@ public class Main {
     }
 
     private static void printHelp() {
-        // TODO: Support all the options
         System.out.println("Usage:  pack200 [-opt... | --option=value]... x.pack[.gz] y.jar");
         System.out.println();
         System.out.println("Packing Options");
         System.out.println("  -g, --no-gzip                   output a plain *.pack file with no zipping");
         System.out.println("  --gzip                          (default) post-process the pack output with gzip");
-//        System.out.println("  -G, --strip-debug               remove debugging attributes while packing");
-//        System.out.println("  -O, --no-keep-file-order        do not transmit file ordering information");
-//        System.out.println("  --keep-file-order               (default) preserve input file ordering");
+        System.out.println("  -G, --strip-debug               remove debugging attributes while packing");
+        System.out.println("  -O, --no-keep-file-order        do not transmit file ordering information");
+        System.out.println("  --keep-file-order               (default) preserve input file ordering");
         System.out.println("  -S{N}, --segment-limit={N}      output segment limit (default N=1Mb)");
-//        System.out.println("  -E{N}, --effort={N}             packing effort (default N=5)");
-//        System.out.println("  -H{h}, --deflate-hint={h}       transmit deflate hint: true, false, or keep (default)");
-//        System.out.println("  -m{V}, --modification-time={V}  transmit modtimes: latest or keep (default)");
-//        System.out.println("  -P{F}, --pass-file={F}          transmit the given input element(s) uncompressed");
-//        System.out.println("  -U{a}, --unknown-attribute={a}  unknown attribute action: error, strip, or pass (default)");
-//        System.out.println("  -C{N}={L}, --class-attribute={N}={L}  (user-defined attribute)");
-//        System.out.println("  -F{N}={L}, --field-attribute={N}={L}  (user-defined attribute)");
-//        System.out.println("  -M{N}={L}, --method-attribute={N}={L} (user-defined attribute)");
-//        System.out.println("  -D{N}={L}, --code-attribute={N}={L}   (user-defined attribute)");
-//        System.out.println("  -f{F}, --config-file={F}        read file F for Pack200.Packer properties");
-//        System.out.println("  -v, --verbose                   increase program verbosity");
-//        System.out.println("  -q, --quiet                     set verbosity to lowest level");
-//        System.out.println("  -l{F}, --log-file={F}           output to the given log file, or '-' for System.out");
+        System.out.println("  -E{N}, --effort={N}             packing effort (default N=5)");
+        System.out.println("  -H{h}, --deflate-hint={h}       transmit deflate hint: true, false, or keep (default)");
+        System.out.println("  -m{V}, --modification-time={V}  transmit modtimes: latest or keep (default)");
+        System.out.println("  -P{F}, --pass-file={F}          transmit the given input element(s) uncompressed");
+        System.out.println("  -U{a}, --unknown-attribute={a}  unknown attribute action: error, strip, or pass (default)");
+        System.out.println("  -C{N}={L}, --class-attribute={N}={L}  (user-defined attribute)");
+        System.out.println("  -F{N}={L}, --field-attribute={N}={L}  (user-defined attribute)");
+        System.out.println("  -M{N}={L}, --method-attribute={N}={L} (user-defined attribute)");
+        System.out.println("  -D{N}={L}, --code-attribute={N}={L}   (user-defined attribute)");
+        System.out.println("  -f{F}, --config-file={F}        read file F for Pack200.Packer properties");
+        System.out.println("  -v, --verbose                   increase program verbosity");
+        System.out.println("  -q, --quiet                     set verbosity to lowest level");
+        System.out.println("  -l{F}, --log-file={F}           output to the given log file, or '-' for System.out");
         System.out.println("  -?, -h, --help                  print this message");
         System.out.println("  -V, --version                   print program version");
-//        System.out.println("  -J{X}                           pass option X to underlying Java VM");
-//        System.out.println("");
-//        System.out.println("Notes:");
-//        System.out.println("  The -P, -C, -F, -M, and -D options accumulate.");
-//        System.out.println("  Example attribute definition:  -C SourceFile=RUH .");
-//        System.out.println("  Config. file properties are defined by the Pack200 API.");
-//        System.out.println("  For meaning of -S, -E, -H-, -m, -U values, see Pack200 API.");
-//        System.out.println("  Layout definitions (like RUH) are defined by JSR 200.");
-//        System.out.println("");
-//        System.out.println("Repacking mode updates the JAR file with a pack/unpack cycle:");
-//        System.out.println("    pack200 [-r|--repack] [-opt | --option=value]... [repackedy.jar] y.jar");
+        System.out.println("  -J{X}                           pass option X to underlying Java VM");
+        System.out.println("");
+        System.out.println("Notes:");
+        System.out.println("  The -P, -C, -F, -M, and -D options accumulate.");
+        System.out.println("  Example attribute definition:  -C SourceFile=RUH .");
+        System.out.println("  Config. file properties are defined by the Pack200 API.");
+        System.out.println("  For meaning of -S, -E, -H-, -m, -U values, see Pack200 API.");
+        System.out.println("  Layout definitions (like RUH) are defined by JSR 200.");
+        System.out.println("");
+        System.out.println("Repacking mode updates the JAR file with a pack/unpack cycle:");
+        System.out.println("    pack200 [-r|--repack] [-opt | --option=value]... [repackedy.jar] y.jar");
     }
 
     private static void printVersion() {

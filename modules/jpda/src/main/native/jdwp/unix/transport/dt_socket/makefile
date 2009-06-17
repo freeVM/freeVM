@@ -33,7 +33,7 @@ INCLUDES += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
             -I$(COMMON)generic -I. \
             -I../common
 
-LDFLAGS += -lstdc++
+LDFLAGS += $(STDCLIBS)
 
 BUILDFILES = \
     $(CMNTRANS)common/LastTransportError.o \
@@ -41,6 +41,6 @@ BUILDFILES = \
 
 MDLLIBFILES = 
 
-DLLNAME = ../libdt_socket.so
+DLLNAME = ../../libdt_socket.so
 
 include $(HY_HDK)/build/make/rules.mk
