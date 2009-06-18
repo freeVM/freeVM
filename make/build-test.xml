@@ -19,7 +19,7 @@
 
 <project name="jdktools-test" default="test-all" basedir="..">
 
-    <description> Tests for classlib package</description>
+    <description>Tests for classlib package</description>
 
     <!-- import common properties -->
     <import file="${basedir}/make/properties.xml" />
@@ -37,8 +37,10 @@
 
     <!-- this list of components to test will grow to eventually be all modules -->
     <target name="test-all"
-        depends="clean-tests-output, test-modules, process-empty, gen-report, check-test-result">
-    </target>
+        depends="clean-tests-output, test-modules, process-test-output" />
+
+    <target name="process-test-output"
+            depends="process-empty, gen-report, check-test-result" />
 
     <target name="clean" depends="clean-tests-output, clean-tests, clean-jre" />
 

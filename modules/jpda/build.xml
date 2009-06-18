@@ -23,6 +23,8 @@
     <property name="tests.build.output" location="${basedir}/../../build/tests" />
     <import file="../../make/properties.xml" />
 
+    <property name="tests.output" location="../../build/test_report" />
+
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
     
@@ -232,7 +234,7 @@
         <echo message="  Debugger JVM=${test.debugger.jvm}" />
         <echo message="  Debuggee JVM=${test.debuggee.jvm}" />
 
-        <mkdir dir="${hy.tests.reports}" />
+        <mkdir dir="${tests.output}" />
 
         <junit fork="yes"
                        forkmode="${hy.test.forkmode}"
@@ -241,7 +243,7 @@
                        errorproperty="test.errors"
                        failureproperty="test.failures"
                        showoutput="off"
-                       dir="${hy.tests.reports}"
+                       dir="${tests.output}"
                        jvm="${test.debugger.jvm}">
 
             <!-- JVM arguments for debugger process -->
@@ -257,10 +259,10 @@
 
             <formatter type="xml" />
 
-            <test name="${test.case}" todir="${hy.tests.reports}" if="test.case" />
+            <test name="${test.case}" todir="${tests.output}" if="test.case" />
 
             <!-- short running tests-->
-            <batchtest todir="${hy.tests.reports}" haltonfailure="off" unless="test.case">
+            <batchtest todir="${tests.output}" haltonfailure="off" unless="test.case">
 
                 <fileset dir="${hy.jpda.src.test}">
                     <!-- if ${test.case}     -->
@@ -276,7 +278,7 @@
             </batchtest>
 
             <!-- long running tests-->
-            <batchtest todir="${hy.tests.reports}" haltonfailure="off" unless="test.case">
+            <batchtest todir="${tests.output}" haltonfailure="off" unless="test.case">
                 <fileset dir="${hy.jpda.src.test}">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
@@ -295,12 +297,12 @@
     </target>
 
     <target name="touch-failures-file" if="test.failures">
-        <echo file="${hy.tests.reports}/test.failures"
+        <echo file="${tests.output}/test.failures"
             append="true">jpda${line.separator}</echo>
     </target>
 
     <target name="touch-errors-file" if="test.errors">
-        <echo file="${hy.tests.reports}/test.errors"
+        <echo file="${tests.output}/test.errors"
             append="true">jpda${line.separator}</echo>
     </target>
 
