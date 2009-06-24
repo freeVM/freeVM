@@ -119,14 +119,34 @@ public class Main {
                 break;
             }
         }
-        if(inputFileName == null || outputFileName == null) {
+
+        pack(inputFileName, outputFileName, options);
+    }
+
+    private static void pack(String inputFileName, String outputFileName,
+            PackingOptions options) throws Exception {
+        if (inputFileName == null || outputFileName == null) {
             printUsage();
             return;
         }
-        JarInputStream inputStream = new JarInputStream(new FileInputStream(inputFileName));
-        OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFileName));
+
+        if (options.isGzip() && !outputFileName.endsWith(".gz")) {
+            printErrorMessage("To write a *.pack file, specify --no-gzip: "
+                    + outputFileName);
+            printUsage();
+            return;
+        }
+
+        JarInputStream inputStream = new JarInputStream(new FileInputStream(
+                inputFileName));
+        OutputStream outputStream = new BufferedOutputStream(
+                new FileOutputStream(outputFileName));
         Archive archive = new Archive(inputStream, outputStream, options);
         archive.pack();
+    }
+
+    private static void printErrorMessage(String mesg) {
+        System.out.println("Error: " + mesg);
     }
 
     private static void printUsage() {
