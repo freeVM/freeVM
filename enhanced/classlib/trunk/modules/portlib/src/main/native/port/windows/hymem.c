@@ -21,24 +21,20 @@
  * @ingroup Port
  * @brief Memory Utilities
  */
-
 #undef CDEV_CURRENT_FUNCTION
 
 /* 
  * This file contains code for the portability library memory management.
  */
-#include <stdlib.h>
-#include <string.h>
+
+#include <windows.h>
 #include "hyport.h"
 #include "portpriv.h"
 #include "hyportpg.h"
 #include "ut_hyprt.h"
 
-#if defined(DEBUG_MALLOC_FREE_LEAK)
-#include <stdio.h>
-static UDATA DEBUG_TOTAL_ALLOCATED_MEMORY = 0;
-#endif
-
+#define ROUND_TO(granularity, number) ((number) + \
+                                       (((number) % (granularity)) ? ((granularity) - ((number) % (granularity))) : 0))
 
 #define CDEV_CURRENT_FUNCTION hymem_allocate_memory
 /**
@@ -58,37 +54,13 @@ void *VMCALL
 hymem_allocate_memory (struct HyPortLibrary *portLibrary, UDATA byteAmount)
 {
   void *pointer = NULL;
-  void *mem;
 
   Trc_PRT_mem_hymem_allocate_memory_Entry (byteAmount);
-#if defined(DEBUG_MALLOC_FREE_LEAK)
   if (byteAmount == 0)
-    {                           /* prevent malloc from failing causing allocate to return null */
+    {				/* prevent GlobalLock from failing causing allocate to return null */
       byteAmount = 1;
     }
-  DEBUG_TOTAL_ALLOCATED_MEMORY += byteAmount;
-  portLibrary->tty_printf (portLibrary,
-                           "\nallocate of %u bytes (new total is %u bytes)\n",
-                           byteAmount, DEBUG_TOTAL_ALLOCATED_MEMORY);
-  mem = (void *) malloc (byteAmount + sizeof (UDATA));
-#if defined(HYS390)
-  mem = (void *) (((UDATA) mem) & 0x7FFFFFFF);
-#endif /* HYS390 */
-  *((UDATA *) mem) = byteAmount;
-  pointer = ((UDATA) mem + sizeof (UDATA));
-#else
-  if (byteAmount == 0)
-    {                           /* prevent malloc from failing causing allocate to return null */
-      byteAmount = 1;
-    }
-
-  pointer = malloc (byteAmount);
-#if defined(HYS390)
-  pointer = (void *) (((UDATA) pointer) & 0x7FFFFFFF);
-#endif /* HYS390 */
-#endif
-
-
+  pointer = HeapAlloc (PPG_mem_heap, 0, byteAmount);
   Trc_PRT_mem_hymem_allocate_memory_Exit (pointer);
   return pointer;
 }
@@ -106,20 +78,7 @@ void VMCALL
 hymem_free_memory (struct HyPortLibrary *portLibrary, void *memoryPointer)
 {
   Trc_PRT_mem_hymem_free_memory_Entry (memoryPointer);
-#if defined(DEBUG_MALLOC_FREE_LEAK)
-  DEBUG_TOTAL_ALLOCATED_MEMORY -=
-    *((UDATA *) ((UDATA) memoryPointer - sizeof (UDATA)));
-  portLibrary->tty_printf (portLibrary,
-                           "\nfree of %u bytes (new total is %u bytes)\n",
-                           *((UDATA *) ((UDATA) memoryPointer -
-                                        sizeof (UDATA))),
-                           DEBUG_TOTAL_ALLOCATED_MEMORY);
-  free ((void *) ((UDATA) memoryPointer - sizeof (UDATA)));
-#else
-  free (memoryPointer);
-#endif
-
-
+  HeapFree (PPG_mem_heap, 0, memoryPointer);
   Trc_PRT_mem_hymem_free_memory_Exit ();
 }
 
@@ -141,17 +100,12 @@ hymem_free_memory (struct HyPortLibrary *portLibrary, void *memoryPointer)
  */
 void *VMCALL
 hymem_reallocate_memory (struct HyPortLibrary *portLibrary,
-                         void *memoryPointer, UDATA byteAmount)
+			 void *memoryPointer, UDATA byteAmount)
 {
   void *ptr = NULL;
 
   Trc_PRT_mem_hymem_reallocate_memory_Entry (memoryPointer, byteAmount);
-
-  ptr = realloc (memoryPointer, byteAmount);
-#if defined(HYS390)
-  ptr = (void *) (((UDATA) ptr) & 0x7FFFFFFF);
-#endif
-
+  ptr = HeapReAlloc (PPG_mem_heap, 0, memoryPointer, byteAmount);
   Trc_PRT_mem_hymem_reallocate_memory_Exit (ptr);
   return ptr;
 }
@@ -162,8 +116,8 @@ hymem_reallocate_memory (struct HyPortLibrary *portLibrary,
 /**
  * PortLibrary shutdown.
  *
- * This function is called during shutdown of the portLibrary.  Any resources that were created by @ref hymem_startup
- * should be destroyed here.
+ * This function is called during shutdown of the portLibrary.  Any resources that
+ * were created by @ref hymem_startup should be destroyed here.
  *
  * @param[in] portLibrary The port library
  *
@@ -173,8 +127,14 @@ hymem_reallocate_memory (struct HyPortLibrary *portLibrary,
 void VMCALL
 hymem_shutdown (struct HyPortLibrary *portLibrary)
 {
-  portLibrary->mem_free_memory (portLibrary, portLibrary->portGlobals);
-  portLibrary->portGlobals = NULL;
+  if (NULL != portLibrary->portGlobals)
+    {
+      HANDLE memHeap = GetProcessHeap ();
+
+      /* has to be cleaned up with HeapFree since hymem_startup allocated it with HeapAlloc */
+      HeapFree (memHeap, 0, portLibrary->portGlobals);
+      portLibrary->portGlobals = NULL;
+    }
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -190,9 +150,8 @@ hymem_shutdown (struct HyPortLibrary *portLibrary)
  * @param[in] portLibrary The port library
  * @param[in] portGlobalSize Size of the global data structure to allocate
  *
- * @return 0 on success, negative error code on failure.  Error code values returned are
- * \arg HYPORT_ERROR_STARTUP_MEM
- *.
+ * @return 0 on success, negative error code on failure.  Error code values returned are \arg HYPORT_ERROR_STARTUP_MEM
+ *
  * @note Must allocate portGlobals.
  * @note Most implementations will just allocate portGlobals.
  *
@@ -201,14 +160,16 @@ hymem_shutdown (struct HyPortLibrary *portLibrary)
 I_32 VMCALL
 hymem_startup (struct HyPortLibrary *portLibrary, UDATA portGlobalSize)
 {
-  portLibrary->portGlobals =
-    portLibrary->mem_allocate_memory (portLibrary, portGlobalSize);
+  HANDLE memHeap = GetProcessHeap ();
+  /* done as a HeapAlloc because hymem_allocate_memory requires portGlobals to be initialized */
+  portLibrary->portGlobals = HeapAlloc (memHeap, 0, portGlobalSize);
   if (!portLibrary->portGlobals)
     {
       return HYPORT_ERROR_STARTUP_MEM;
     }
   memset (portLibrary->portGlobals, 0, portGlobalSize);
 
+  PPG_mem_heap = memHeap;
   return 0;
 }
 
@@ -230,7 +191,7 @@ hymem_startup (struct HyPortLibrary *portLibrary, UDATA portGlobalSize)
  */
 void *VMCALL
 hymem_allocate_memory_callSite (struct HyPortLibrary *portLibrary,
-                                UDATA byteAmount, const char *callSite)
+				UDATA byteAmount, const char *callSite)
 {
   void *ptr = NULL;
 
@@ -255,7 +216,8 @@ hymem_allocate_memory_callSite (struct HyPortLibrary *portLibrary,
 void *VMCALL
 hymem_allocate_portLibrary (UDATA byteAmount)
 {
-  return (void *) malloc (byteAmount);
+  HANDLE memHeap = GetProcessHeap ();
+  return HeapAlloc (memHeap, 0, byteAmount);
 }
 
 #undef CDEV_CURRENT_FUNCTION
@@ -271,7 +233,8 @@ hymem_allocate_portLibrary (UDATA byteAmount)
 void VMCALL
 hymem_deallocate_portLibrary (void *memoryPointer)
 {
-  free (memoryPointer);
+  HANDLE memHeap = GetProcessHeap ();
+  HeapFree (memHeap, 0, memoryPointer);
 }
 
 #undef CDEV_CURRENT_FUNCTION

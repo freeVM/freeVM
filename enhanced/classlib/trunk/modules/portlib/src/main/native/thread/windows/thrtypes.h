@@ -17,10 +17,12 @@
 
 #if !defined(THRTYPES_H)
 #define THRTYPES_H
+
 #if defined(__cplusplus)
 extern "C"
 {
 #endif
+
 #include "hythread.h"
   typedef struct HyThread
   {
@@ -40,8 +42,9 @@ extern "C"
     MUTEX mutex;
     UDATA stacksize;
     UDATA *tos;
-    void *jumpBuffer;
   } HyThread;
+
+
   typedef struct HyThreadMonitor
   {
     UDATA count;
@@ -62,19 +65,26 @@ extern "C"
     struct HyThread *blocking;
     MUTEX mutex;
   } HyThreadMonitor;
+
+
   typedef struct HyThreadMonitorPool
   {
     struct HyThreadMonitorPool *next;
     struct HyThreadMonitor *next_free;
     struct HyThreadMonitor entries[64];
   } HyThreadMonitorPool;
+
 #define MONITOR_POOL_SIZE  64
+
+
   typedef struct HyThreadGlobal
   {
     struct HyThreadGlobal *next;
     char *name;
     UDATA data;
   } HyThreadGlobal;
+
+
   typedef struct HyThreadLibrary
   {
     UDATA spinlock;
@@ -96,20 +106,26 @@ extern "C"
     struct HyPool *monitor_tracing_pool;
     struct HyPool *thread_tracing_pool;
   } HyThreadLibrary;
+
 #define HYTHREAD_LIB_FLAG_JLMHST_ENABLED  0x10000
 #define HYTHREAD_LIB_FLAG_JLM_ENABLED  0x4000
 #define HYTHREAD_LIB_FLAG_JLM_ENABLED_ALL  0x1C000
 #define HYTHREAD_LIB_FLAG_JLM_HAS_BEEN_ENABLED  0x20000
 #define HYTHREAD_LIB_FLAG_JLMTS_ENABLED  0x8000
+
   typedef struct HySemaphore
   {
     OSSEMAPHORE sem;
   } HySemaphore;
+
 #define STACK_DEFAULT_SIZE  0x8000
 #define FREE_TAG ((UDATA)-1)
+
   typedef struct HyThreadMonitorPool *hythread_monitor_pool_t;
   typedef struct HyThreadLibrary *hythread_library_t;
+
 #if defined(__cplusplus)
 }
 #endif
-#endif                          /* THRTYPES_H */
+
+#endif				/* THRTYPES_H */
