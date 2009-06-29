@@ -17,12 +17,14 @@
 package org.apache.harmony.jretools.pack200;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
 
-import org.apache.harmony.pack200.Archive;
 import org.apache.harmony.pack200.PackingOptions;
 
 /**
@@ -38,91 +40,115 @@ public class Main {
         PackingOptions options = new PackingOptions();
 
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equals("--help") || args[i].equals("-help")
-                    || args[i].equals("-h") || args[i].equals("-?")) {
+            if ("--help".equals(args[i]) || "-help".equals(args[i])
+                    || "-h".equals(args[i]) || "-?".equals(args[i])) {
                 printHelp();
                 return;
-            } else if(args[i].equals("-V") || args[i].equals("--version")) {
+            } else if ("-V".equals(args[i]) || "--version".equals(args[i])) {
                 printVersion();
                 return;
-            } else if(args[i].equals("-g") || args[i].equals("--no-gzip")) {
+            } else if ("-g".equals(args[i]) || "--no-gzip".equals(args[i])) {
                 options.setGzip(false);
-            } else if(args[i].equals("--gzip")) {
+            } else if ("--gzip".equals(args[i])) {
                 options.setGzip(true);
-            } else if(args[i].equals("-G") || args[i].equals("--strip-debug")) {
+            } else if ("-G".equals(args[i]) || "--strip-debug".equals(args[i])) {
                 options.setStripDebug(true);
-            } else if(args[i].equals("-O") || args[i].equals("--no-keep-file-order")) {
+            } else if ("-O".equals(args[i])
+                    || "--no-keep-file-order".equals(args[i])) {
                 options.setKeepFileOrder(false);
-            } else if(args[i].equals("--keep-file-order")) {
+            } else if ("--keep-file-order".equals(args[i])) {
                 options.setKeepFileOrder(true);
-            } else if(args[i].startsWith("-S")) {
+            } else if (args[i].startsWith("-S")) {
                 options.setSegmentLimit(Integer.parseInt(args[i].substring(2)));
             } else if (args[i].startsWith("--segment-limit=")) {
-                options.setSegmentLimit(Integer.parseInt(args[i].substring(16)));
-            } else if(args[i].startsWith("-E")) {
+                options
+                        .setSegmentLimit(Integer
+                                .parseInt(args[i].substring(16)));
+            } else if (args[i].startsWith("-E")) {
                 options.setEffort(Integer.parseInt(args[i].substring(2)));
-            } else if(args[i].startsWith("--effort=")) {
+            } else if (args[i].startsWith("--effort=")) {
                 options.setEffort(Integer.parseInt(args[i].substring(10)));
-            } else if(args[i].startsWith("-H")) {
+            } else if (args[i].startsWith("-H")) {
                 options.setDeflateHint(args[i].substring(2));
-            } else if(args[i].startsWith("--deflate-hint=")) {
+            } else if (args[i].startsWith("--deflate-hint=")) {
                 options.setDeflateHint(args[i].substring(15));
-            } else if(args[i].startsWith("-m")) {
+            } else if (args[i].startsWith("-m")) {
                 options.setModificationTime(args[i].substring(2));
-            } else if(args[i].startsWith("--modification-time=")) {
+            } else if (args[i].startsWith("--modification-time=")) {
                 options.setModificationTime(args[i].substring(19));
-            } else if(args[i].startsWith("-P")) {
+            } else if (args[i].startsWith("-P")) {
                 options.addPassFile(args[i].substring(2));
-            } else if(args[i].startsWith("--pass-file=")) {
+            } else if (args[i].startsWith("--pass-file=")) {
                 options.addPassFile(args[i].substring(12));
-            } else if(args[i].startsWith("-U")) {
+            } else if (args[i].startsWith("-U")) {
                 options.setUnknownAttributeAction(args[i].substring(2));
             } else if (args[i].startsWith("--unknown-attribute=")) {
                 options.setUnknownAttributeAction(args[i].substring(20));
-            } else if(args[i].startsWith("-C")) {
+            } else if (args[i].startsWith("-C")) {
                 String[] nameEqualsAction = args[i].substring(2).split("=");
-                options.addClassAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("--class-attribute=")) {
+                options.addClassAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("--class-attribute=")) {
                 String[] nameEqualsAction = args[i].substring(18).split("=");
-                options.addClassAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("-F")) {
+                options.addClassAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("-F")) {
                 String[] nameEqualsAction = args[i].substring(2).split("=");
-                options.addFieldAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("--field-attribute=")) {
+                options.addFieldAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("--field-attribute=")) {
                 String[] nameEqualsAction = args[i].substring(18).split("=");
-                options.addFieldAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("-M")) {
+                options.addFieldAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("-M")) {
                 String[] nameEqualsAction = args[i].substring(2).split("=");
-                options.addMethodAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("--method-attribute=")) {
+                options.addMethodAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("--method-attribute=")) {
                 String[] nameEqualsAction = args[i].substring(19).split("=");
-                options.addMethodAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("-D")) {
+                options.addMethodAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("-D")) {
                 String[] nameEqualsAction = args[i].substring(2).split("=");
-                options.addCodeAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("--code-attribute=")) {
+                options.addCodeAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("--code-attribute=")) {
                 String[] nameEqualsAction = args[i].substring(17).split("=");
-                options.addCodeAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].equals("-v") || args[i].equals("--verbose")) {
+                options.addCodeAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if ("-v".equals(args[i]) || "--verbose".equals(args[i])) {
                 options.setVerbose(true);
                 options.setQuiet(false);
-            } else if(args[i].equals("-q") || args[i].equals("--quiet")) {
+            } else if ("-q".equals(args[i]) || "--quiet".equals(args[i])) {
                 options.setQuiet(true);
                 options.setVerbose(false);
-            } else if(args[i].startsWith("-l")) {
+            } else if (args[i].startsWith("-l")) {
                 options.setLogFile(args[i].substring(2));
+            } else if ("-r".equals(args[i]) || "--repack".equals(args[i])) {
+                options.setRepack(true);
             } else {
                 outputFileName = args[i];
-                if(args.length > i + 1) {
-                    inputFileName = args[i+1];
+                if (args.length > i + 1) {
+                    if (args.length == i + 2) {
+                        inputFileName = args[++i];
+                    } else {
+                        printUsage();
+                        return;
+                    }
                 }
-                break;
             }
         }
 
-        pack(inputFileName, outputFileName, options);
+        if (options.isRepack()) {
+            repack(inputFileName, outputFileName, options);
+        } else {
+            pack(inputFileName, outputFileName, options);
+        }
     }
 
+    /*
+     * Pack input stream of jar file into output stream
+     */
     private static void pack(String inputFileName, String outputFileName,
             PackingOptions options) throws Exception {
         if (inputFileName == null || outputFileName == null) {
@@ -141,8 +167,39 @@ public class Main {
                 inputFileName));
         OutputStream outputStream = new BufferedOutputStream(
                 new FileOutputStream(outputFileName));
-        Archive archive = new Archive(inputStream, outputStream, options);
+        org.apache.harmony.pack200.Archive archive = new org.apache.harmony.pack200.Archive(
+                inputStream, outputStream, options);
         archive.pack();
+    }
+
+    /*
+     * Repack input stream of jar file into output stream of jar file
+     */
+    private static void repack(String inputFileName, String outputFileName,
+            PackingOptions options) throws Exception {
+        if (outputFileName == null) {
+            printUsage();
+            return;
+        }
+
+        if (inputFileName == null) {
+            inputFileName = outputFileName;
+        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JarInputStream jarInputStream = new JarInputStream(new FileInputStream(
+                inputFileName));
+        org.apache.harmony.pack200.Archive packer = new org.apache.harmony.pack200.Archive(
+                jarInputStream, outputStream, options);
+        packer.pack();
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(
+                outputStream.toByteArray());
+        JarOutputStream jarOutputStream = new JarOutputStream(
+                new FileOutputStream(outputFileName));
+        org.apache.harmony.unpack200.Archive unpacker = new org.apache.harmony.unpack200.Archive(
+                inputStream, jarOutputStream);
+        unpacker.unpack();
     }
 
     private static void printErrorMessage(String mesg) {
