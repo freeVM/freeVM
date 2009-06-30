@@ -21,7 +21,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.Properties;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
@@ -33,8 +36,6 @@ import org.apache.harmony.pack200.PackingOptions;
 public class Main {
 
     public static void main(String args[]) throws Exception {
-        // TODO: -f isn't implemented here yet
-
         String inputFileName = null;
         String outputFileName = null;
         PackingOptions options = new PackingOptions();
@@ -126,6 +127,19 @@ public class Main {
                 options.setLogFile(args[i].substring(2));
             } else if ("-r".equals(args[i]) || "--repack".equals(args[i])) {
                 options.setRepack(true);
+            } else if (args[i].startsWith("-f")) {
+                String packPropertyFileName = args[i].substring(2);
+                if (packPropertyFileName.length() > 0) {
+                } else if (i + 1 < args.length) {
+                    packPropertyFileName = args[++i];
+                } else {
+                    printErrorMessage("Bad argument: -f ?");
+                    printUsage();
+                    return;
+                }
+                loadPackProperties(packPropertyFileName, options);
+            } else if (args[i].startsWith("--config-file=")) {
+                loadPackProperties(args[i].substring(14), options);
             } else {
                 outputFileName = args[i];
                 if (args.length > i + 1) {
@@ -143,6 +157,35 @@ public class Main {
             repack(inputFileName, outputFileName, options);
         } else {
             pack(inputFileName, outputFileName, options);
+        }
+    }
+
+    /*
+     * Load properties for packing
+     */
+    private static void loadPackProperties(String packPropertyFileName,
+            PackingOptions options) throws IOException {
+        Properties packProperties = new Properties();
+        packProperties.load(new FileInputStream(packPropertyFileName));
+        Enumeration<?> enums = packProperties.propertyNames();
+        String propretyName, propretyValue;
+        while (enums.hasMoreElements()) {
+            propretyName = (String) enums.nextElement();
+            propretyValue = packProperties.getProperty(propretyName);
+
+            if ("deflate.hint".equals(propretyName)) {
+                options.setDeflateHint(propretyValue);
+            } else if ("effort".equals(propretyName)) {
+                options.setEffort(Integer.parseInt(propretyValue));
+            } else if ("keep.file.order".equals(propretyName)) {
+                options.setKeepFileOrder(Boolean.getBoolean(propretyValue));
+            } else if ("modification.time".equals(propretyName)) {
+                options.setModificationTime(propretyName);
+            } else if ("segment.limit".equals(propretyName)) {
+                options.setSegmentLimit(Integer.parseInt(propretyValue));
+            } else if ("unknown.attribute".equals(propretyName)) {
+                options.setUnknownAttributeAction(propretyValue);
+            }
         }
     }
 
