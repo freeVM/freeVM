@@ -124,18 +124,31 @@ public class Main {
                 options.setQuiet(true);
                 options.setVerbose(false);
             } else if (args[i].startsWith("-l")) {
-                options.setLogFile(args[i].substring(2));
+                String logFileName = args[i].substring(2);
+                if (logFileName.length() == 0) {
+                    if (i + 1 < args.length) {
+                        logFileName = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -l ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                options.setLogFile(logFileName);
+            } else if (args[i].startsWith("--log-file=")) {
+                options.setLogFile(args[i].substring(11));
             } else if ("-r".equals(args[i]) || "--repack".equals(args[i])) {
                 options.setRepack(true);
             } else if (args[i].startsWith("-f")) {
                 String packPropertyFileName = args[i].substring(2);
-                if (packPropertyFileName.length() > 0) {
-                } else if (i + 1 < args.length) {
-                    packPropertyFileName = args[++i];
-                } else {
-                    printErrorMessage("Bad argument: -f ?");
-                    printUsage();
-                    return;
+                if (packPropertyFileName.length() == 0) {
+                    if (i + 1 < args.length) {
+                        packPropertyFileName = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -f ?");
+                        printUsage();
+                        return;
+                    }
                 }
                 loadPackProperties(packPropertyFileName, options);
             } else if (args[i].startsWith("--config-file=")) {
