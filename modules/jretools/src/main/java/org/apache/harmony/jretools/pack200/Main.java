@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.jar.JarInputStream;
+import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 
 import org.apache.harmony.pack200.PackingOptions;
@@ -318,12 +318,11 @@ public class Main {
             return;
         }
 
-        JarInputStream inputStream = new JarInputStream(new FileInputStream(
-                inputFileName));
+        JarFile jarFile = new JarFile(inputFileName);
         OutputStream outputStream = new BufferedOutputStream(
                 new FileOutputStream(outputFileName));
         org.apache.harmony.pack200.Archive archive = new org.apache.harmony.pack200.Archive(
-                inputStream, outputStream, options);
+                jarFile, outputStream, options);
         archive.pack();
     }
 
@@ -341,19 +340,27 @@ public class Main {
             inputFileName = outputFileName;
         }
 
+        // packing
+        JarFile jarFile = new JarFile(inputFileName);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        JarInputStream jarInputStream = new JarInputStream(new FileInputStream(
-                inputFileName));
         org.apache.harmony.pack200.Archive packer = new org.apache.harmony.pack200.Archive(
-                jarInputStream, outputStream, options);
+                jarFile, outputStream, options);
         packer.pack();
 
+        // unpacking
         ByteArrayInputStream inputStream = new ByteArrayInputStream(
                 outputStream.toByteArray());
         JarOutputStream jarOutputStream = new JarOutputStream(
                 new FileOutputStream(outputFileName));
         org.apache.harmony.unpack200.Archive unpacker = new org.apache.harmony.unpack200.Archive(
                 inputStream, jarOutputStream);
+        unpacker.setVerbose(options.isVerbose());
+        unpacker.setQuiet(options.isQuiet());
+        String deflateHint = options.getDeflateHint();
+        if(!"keep".equals(deflateHint)) {
+            unpacker.setDeflateHint("true".equals(deflateHint));
+        }
+        //TODO: log file config should be handled
         unpacker.unpack();
     }
 
