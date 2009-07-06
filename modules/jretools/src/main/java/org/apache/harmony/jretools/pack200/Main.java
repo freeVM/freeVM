@@ -356,9 +356,9 @@ public class Main {
                 inputStream, jarOutputStream);
         unpacker.setVerbose(options.isVerbose());
         unpacker.setQuiet(options.isQuiet());
-        String deflateHint = options.getDeflateHint();
-        if(!"keep".equals(deflateHint)) {
-            unpacker.setDeflateHint("true".equals(deflateHint));
+        // set deflate_hint option
+        if (!options.isKeepDeflateHint()) {
+            unpacker.setDeflateHint("true".equals(options.getDeflateHint()));
         }
         //TODO: log file config should be handled
         unpacker.unpack();
