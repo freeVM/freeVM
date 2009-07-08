@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
 import org.apache.harmony.pack200.PackingOptions;
@@ -279,10 +280,10 @@ public class Main {
             PackingOptions options) throws IOException {
         Properties packProperties = new Properties();
         packProperties.load(new FileInputStream(packPropertyFileName));
-        Enumeration<?> enums = packProperties.propertyNames();
+        Enumeration propertyNames = packProperties.propertyNames();
         String propretyName, propretyValue;
-        while (enums.hasMoreElements()) {
-            propretyName = (String) enums.nextElement();
+        while (propertyNames.hasMoreElements()) {
+            propretyName = (String) propertyNames.nextElement();
             propretyValue = packProperties.getProperty(propretyName);
 
             if ("deflate.hint".equals(propretyName)) {
@@ -341,10 +342,16 @@ public class Main {
         }
 
         // packing
-        JarFile jarFile = new JarFile(inputFileName);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        org.apache.harmony.pack200.Archive packer = new org.apache.harmony.pack200.Archive(
-                jarFile, outputStream, options);
+        org.apache.harmony.pack200.Archive packer;
+        // this is a workround for compatibility with RI
+        if (0 == options.getEffort()) {
+            packer = new org.apache.harmony.pack200.Archive(new JarInputStream(
+                    new FileInputStream(inputFileName)), outputStream, options);
+        } else {
+            packer = new org.apache.harmony.pack200.Archive(new JarFile(
+                    inputFileName), outputStream, options);
+        }
         packer.pack();
 
         // unpacking
@@ -360,7 +367,11 @@ public class Main {
         if (!options.isKeepDeflateHint()) {
             unpacker.setDeflateHint("true".equals(options.getDeflateHint()));
         }
-        //TODO: log file config should be handled
+        // set log file
+        String logFile = options.getLogFile();
+        if(logFile != null) {
+            unpacker.setLogFile(logFile, true);
+        }
         unpacker.unpack();
     }
 
