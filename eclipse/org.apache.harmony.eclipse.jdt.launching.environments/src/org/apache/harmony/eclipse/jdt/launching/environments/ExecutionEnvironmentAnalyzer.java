@@ -48,13 +48,15 @@ public class ExecutionEnvironmentAnalyzer implements
 
         String javaVersion = vm2.getJavaVersion();
         if (javaVersion == null) {
-            Activator.getDefault().log("VM does not report version string");
+            Activator.getDefault().log(
+                    "VM does not report version string : " + vm.getName());
             return new CompatibleEnvironment[0];
         }
 
         // Select is a subset of SE runtimes that are 1.5 or above
-        if (javaVersion.startsWith("1.7") || javaVersion.startsWith("1.6")
-                || javaVersion.startsWith("1.5")) {
+        boolean perfectMatch = javaVersion.startsWith("Harmony-Select-1.0");
+        if (perfectMatch || javaVersion.startsWith("1.7")
+                || javaVersion.startsWith("1.6") || javaVersion.startsWith("1.5")) {
 
             IExecutionEnvironmentsManager manager = JavaRuntime
                     .getExecutionEnvironmentsManager();
@@ -62,8 +64,7 @@ public class ExecutionEnvironmentAnalyzer implements
             if (env != null) {
                 CompatibleEnvironment[] result = new CompatibleEnvironment[1];
                 // SE is not a perfect match
-                // TODO: figure out how we detect a real Select runtime
-                result[0] = new CompatibleEnvironment(env, false);
+                result[0] = new CompatibleEnvironment(env, perfectMatch);
                 return result;
             }
         }
