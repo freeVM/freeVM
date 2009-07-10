@@ -30,16 +30,25 @@ import org.eclipse.jdt.launching.environments.IExecutionEnvironmentsManager;
 public class ExecutionEnvironmentAnalyzer implements
         IExecutionEnvironmentAnalyzerDelegate {
 
+    /**
+     * Analyzes the given vm install and returns a collection of compatible
+     * Select execution environments, possibly empty.
+     * 
+     * For Select we may match on a subset of SE installs.
+     */
     public CompatibleEnvironment[] analyze(IVMInstall vm, IProgressMonitor monitor)
             throws CoreException {
 
         // Get the Java version string from the VM
-        if (!(vm instanceof IVMInstall2))
+        if (!(vm instanceof IVMInstall2)) {
+            Activator.getDefault().log("VM is not a v2 installation : " + vm.getName());
             return new CompatibleEnvironment[0];
+        }
         IVMInstall2 vm2 = (IVMInstall2) vm;
 
         String javaVersion = vm2.getJavaVersion();
         if (javaVersion == null) {
+            Activator.getDefault().log("VM does not report version string");
             return new CompatibleEnvironment[0];
         }
 
@@ -52,6 +61,8 @@ public class ExecutionEnvironmentAnalyzer implements
             IExecutionEnvironment env = manager.getEnvironment("Harmony-Select-1.0");
             if (env != null) {
                 CompatibleEnvironment[] result = new CompatibleEnvironment[1];
+                // SE is not a perfect match
+                // TODO: figure out how we detect a real Select runtime
                 result[0] = new CompatibleEnvironment(env, false);
                 return result;
             }

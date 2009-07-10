@@ -37,14 +37,22 @@ public class AccessRuleParticipant implements IAccessRuleParticipant {
 
     static String[] packages = null;
 
+    /**
+     * Returns an array of access rules to be applied to the specified runtime
+     * libraries and execution environment in the context of the given project.
+     * 
+     * An array of access rules is returned for each library specified by
+     * libraries.
+     */
     public IAccessRule[][] getAccessRules(IExecutionEnvironment environment,
             IVMInstall vm, LibraryLocation[] libraries, IJavaProject project) {
 
-        // Read list of packages
+        // Read list of packages in our definition
         if (packages == null) {
             try {
                 packages = getPackages();
             } catch (IOException e) {
+                Activator.getDefault().log("Unable to read package definition", e);
                 return new IAccessRule[0][];
             }
         }
@@ -66,9 +74,15 @@ public class AccessRuleParticipant implements IAccessRuleParticipant {
         for (int i = 0; i < allRules.length; i++) {
             allRules[i] = packageRules;
         }
+
         return allRules;
     }
 
+    /*
+     * Read the list of packages that make up the execution environment from a resource file.
+     * 
+     * Ignores blank lines and lines that start with a #. 
+     */
     private String[] getPackages() throws IOException {
         InputStream is = this.getClass().getResourceAsStream("/Harmony-Select-1.0");
         BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
@@ -76,9 +90,9 @@ public class AccessRuleParticipant implements IAccessRuleParticipant {
         ArrayList<String> pkgs = new ArrayList<String>(50);
         String line = br.readLine();
         while (line != null) {
-            line = line.trim();
-            if (line.length() != 0 && line.charAt(0) != '#') {
-                pkgs.add(line + "/*");
+            String trimLine = line.trim();
+            if (trimLine.length() != 0 && line.charAt(0) != '#') {
+                pkgs.add(trimLine + "/*");
             }
             line = br.readLine();
         }
