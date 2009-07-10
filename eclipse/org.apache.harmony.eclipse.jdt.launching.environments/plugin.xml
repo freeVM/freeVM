@@ -6,9 +6,10 @@
        point="org.eclipse.jdt.launching.executionEnvironments">
 
    <environment
-       description="Apache Harmony Select"
-       id="Harmony-Select-1.0"
-       ruleParticipant="org.apache.harmony.eclipse.jdt.launching.environments.AccessRuleParticipant"/>
+         description="Apache Harmony Select"
+         id="Harmony-Select-1.0"
+         profileProperties="/Harmony-Select-1.0-profile.properties"
+         ruleParticipant="org.apache.harmony.eclipse.jdt.launching.environments.AccessRuleParticipant"/>
 
    <analyzer
        class="org.apache.harmony.eclipse.jdt.launching.environments.ExecutionEnvironmentAnalyzer"
