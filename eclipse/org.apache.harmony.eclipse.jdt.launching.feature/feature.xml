@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.apache.harmony.eclipse.jdt.launching.feature"
-      label="Harmony JRE support"
-      version="1.2">
+      label="Harmony Runtime Support"
+      version="1.3"
+      provider-name="Apache Software Foundation">
 
    <description url="http://harmony.apache.org">
-      This feature provides support for Apache Harmony JREs in Eclipse.
+      This feature provides support for Apache Harmony Runtimes in Eclipse.
    </description>
 
    <copyright>
-      Copyright (c) 2000, 2007 The Apache Software Foundation or its
+      Copyright (c) 2000, 2009 The Apache Software Foundation or its
 licensors, as applicable.
    </copyright>
 
@@ -230,6 +231,13 @@ licensors, as applicable.
          id="org.apache.harmony.eclipse.jdt.launching"
          download-size="50"
          install-size="50"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.harmony.eclipse.jdt.launching.environments"
+         download-size="10"
+         install-size="10"
          version="0.0.0"
          unpack="false"/>
 
