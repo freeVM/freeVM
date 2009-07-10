@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+
+<plugin>
+   <extension
+       point="org.eclipse.jdt.launching.executionEnvironments">
+
+   <environment
+       description="Apache Harmony Select"
+       id="Harmony-Select-1.0"
+       ruleParticipant="org.apache.harmony.eclipse.jdt.launching.environments.AccessRuleParticipant"/>
+
+   <analyzer
+       class="org.apache.harmony.eclipse.jdt.launching.environments.ExecutionEnvironmentAnalyzer"
+       id="org.apache.harmony.eclipse.jdt.launching.environments.eeAnalyzer"/>
+
+   </extension>
+
+</plugin>
