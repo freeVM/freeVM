@@ -924,8 +924,6 @@ ThreadManager::Join(JNIEnv *jni, jthread thread)
 bool
 ThreadManager::IsAgentThread(JNIEnv *jni, jthread thread)
 {
-    //JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsAgentThread(%p,%d)", jni, thread));
-
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
     bool ret_value = false;
@@ -1001,8 +999,6 @@ ThreadManager::HasStepped(JNIEnv *jni, jthread thread) {
 jint
 ThreadManager::GetSuspendCount(JNIEnv *jni, jthread thread)
 {
-    //JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "GetSuspendCount(%p,%d)", jni, thread));
-
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
     jint ret_value = 0;
@@ -1022,8 +1018,6 @@ ThreadManager::GetSuspendCount(JNIEnv *jni, jthread thread)
 bool
 ThreadManager::IsSuspendedOnEvent(JNIEnv *jni, jthread thrd)
 {
-    //JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsSuspendedOnEvent(" << thrd << ')'));
-
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
     bool ret_value = false;
@@ -1043,8 +1037,6 @@ ThreadManager::IsSuspendedOnEvent(JNIEnv *jni, jthread thrd)
 bool
 ThreadManager::IsSuspended(jthread thrd)
 {
-    //JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsSuspended(" << thrd << ')'));
-
     jint thread_state;
     jvmtiError err;
     JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadState(thrd, &thread_state));

@@ -75,8 +75,6 @@ TransportManager::~TransportManager()
         if (ret != 0) {
 	        ret = hysl_lookup_name(m_loadedLib, "jdwpTransport_UnLoad", (UDATA*) &UnloadFunc, "VL");
         }
-	    //	reinterpret_cast<jdwpTransport_UnLoad_Type>
-        //        (GetProcAddress(m_loadedLib, unLoadDecFuncName)); 
         if ((UnloadFunc != 0) && (m_env != 0)) {
             (UnloadFunc) (&m_env); 
 		}
@@ -223,18 +221,6 @@ TransportManager::PrepareConnection(const char* address, bool isServer,
     if (err != JDWPTRANSPORT_ERROR_NONE) {
         return CheckReturnStatus(err);
     }
-
-    /*
-	if ((connectTimeout != 0) && isServer && (!capabilities.can_timeout_accept)) {
-        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Warning: transport does not support accept timeout"));
-    }
-    if ((connectTimeout != 0) && (!isServer) && (!capabilities.can_timeout_attach)) {
-        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Warning: transport does not support attach timeout"));
-    }
-    if ((handshakeTimeout != 0) && (!capabilities.can_timeout_handshake)) {
-        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Warning: transport does not support handshake timeout"));
-    }
-	*/
 
 	// only print error message when all of handshake, accept and attach timeout can not be used.
     if ((handshakeTimeout != 0) && (!capabilities.can_timeout_handshake) && (connectTimeout != 0)) {
@@ -462,7 +448,6 @@ TransportManager::TracePacket(const char* message, const jdwpPacket* packet)
 
 LoadedLibraryHandler TransportManager::LoadTransport(const char* dirName, const char* transportName)
 {
-//    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
     PORT_ACCESS_FROM_JAVAVM(GetJavaVM());
 
     JDWP_CHECK_NULL(dirName); JDWP_CHECK_NULL(transportName);
@@ -492,13 +477,12 @@ LoadedLibraryHandler TransportManager::LoadTransport(const char* dirName, const 
         hystr_printf(privatePortLibrary, transportFullName, length, "%s/lib%s.so", dirName, transportName);
     }
 #endif
-//    AgentAutoFree afv(transportFullName JDWP_FILE_LINE);
+
     UDATA res;
     UDATA ret = hysl_open_shared_library(transportFullName,&res, FALSE);
 
     if (ret != 0) {
-	JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "LoadTransport: loading library %s failed: %s)", transportFullName, hyerror_last_error_message()));
-        //JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "LoadTransport: loading library " << transportFullName << " failed (error code: " << GetLastTransportError() << ")"));
+        JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "LoadTransport: loading library %s failed: %s)", transportFullName, hyerror_last_error_message()));
         res = 0;
     } else {
         JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "LoadTransport: transport library %s loaded", transportFullName));

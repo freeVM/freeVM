@@ -193,7 +193,6 @@ StackFrame::SetValuesHandler::Execute(JNIEnv *jni)
         jint slot = m_cmdParser->command.ReadInt();
         jdwpTaggedValue taggedValue = m_cmdParser->command.ReadValue(jni);
         JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: slot#%d: taggedValue=%d", i, taggedValue.tag));
-//        jdwpTag sigbyte = taggedValue.tag;
         jvmtiError err = JVMTI_ERROR_NONE;
         switch (taggedValue.tag) {
             case JDWP_TAG_BOOLEAN:

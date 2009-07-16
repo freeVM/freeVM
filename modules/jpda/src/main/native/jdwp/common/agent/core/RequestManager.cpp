@@ -1075,24 +1075,6 @@ EventComposer* RequestManager::CombineEvents(JNIEnv* jni,
     return ec;
 }
 
-// Unused method
-/*bool RequestManager::IsMethodEntryLocation(JNIEnv* jni, EventInfo& eInfo) 
-   
-{
-    jvmtiError err;
-    jlocation start_location;
-    jlocation end_location;
-    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetMethodLocation(eInfo.method, &start_location, &end_location));
-    if (err != JVMTI_ERROR_NONE) {
-        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Error calling GetMethodLocation: %d", err));
-        return false;
-    }    
-    bool isEntry = (start_location == eInfo.location);
-    JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "IsMethodEntryLocation: isEntry=%s, location=%lld, start=%lld, end=%lld",
-                     (isEntry?"TRUE":"FALSE"), eInfo.location, start_location, end_location));
-    return isEntry;
-}*/
-
 bool RequestManager::IsMethodExitLocation(JNIEnv* jni, EventInfo& eInfo) 
    
 {
@@ -1762,8 +1744,6 @@ void JNICALL RequestManager::HandleException(jvmtiEnv* jvmti, JNIEnv* jni,
     if (exceptionRequest != 0) {
         GetRequestManager().DeleteRequest(jni, exceptionRequest);
     }
-  /*  JVMTI_TRACE(LOG_DEBUG, err, jvmti->SetEventNotificationMode(
-         JVMTI_ENABLE , JVMTI_EVENT_BREAKPOINT, thread));*/
 }
 
 void JNICALL RequestManager::HandleMethodEntry(jvmtiEnv* jvmti, JNIEnv* jni,

@@ -465,16 +465,6 @@ VirtualMachine::ExitHandler::Execute(JNIEnv *jni)
     exit(static_cast<int>(exitCode));
 
     return JDWP_ERROR_NONE;
-/*
-    // another variant is to call System.exit()
-    ClassManager &clsMgr = AgentBase::GetClassManager();
-    jclass klass = clsMgr.GetSystemClass();
-    jmethodID methodID = jni->GetStaticMethodID(klass, "exit", "(I)V");
-    clsMgr.CheckOnException(jni);
-
-    jni->CallStaticVoidMethod(klass, methodID, exitCode);
-    clsMgr.CheckOnException(jni);
-*/
 }
 
 //-----------------------------------------------------------------------------

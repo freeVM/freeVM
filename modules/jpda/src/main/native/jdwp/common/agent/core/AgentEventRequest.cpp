@@ -188,14 +188,11 @@ jint StepRequest::GetCurrentLine()
     stratum = ( default_stratum == NULL || strlen(default_stratum) == 0 ) ?
                 tok : default_stratum;
 
-    // printf("Looking for equivalent of java line %d in stratum %s\n",
-    //        lineNumber, stratum);
     while( ( tok = strtok(NULL, "\n") ) ) {
         if (strlen(tok) >= 2) {
             while (tok[0] == '*' && tok[1] == 'S' && tok[2] == ' ') {
                 tok++; tok++;
                 while (tok[0] == ' ' && tok[0] != 0) tok++; // skip spaces
-                // printf("stratum = '%s'\n", tok);
                 if (strcmp(stratum, tok) == 0) {
                     // this is the stratum that is required
                     tok = strtok(NULL, "\n");
@@ -241,7 +238,6 @@ jint StepRequest::GetCurrentLine()
                                     }
                                 }
                             } while (tok[0] != '*');
-                            // puts("No match in stratum line table");
                             return -1;
                         }
                         tok = strtok(NULL, "\n");

@@ -221,21 +221,6 @@ void InputPacketParser::ReadBigEndianData(void* data, int len) {
     m_position += len;
 }
 
-/*void InputPacketParser::ReadRawData(void* data, int len) {
-    JDWP_ASSERT(IsPacketInitialized());
-
-    if (m_position+len>m_packet.type.cmd.len-JDWP_MIN_PACKET_LENGTH) {
-        AgentException ex(JDWP_ERROR_INTERNAL);
-        THROW(ex);
-    }
-  
-    memcpy(data, &m_packet.type.cmd.data[m_position], len);
-    
-    m_position += len;
-}*/
-
-
-
 jbyte InputPacketParser::ReadByte() {
     jbyte data = 0;
     ReadBigEndianData(&data, sizeof(jbyte));

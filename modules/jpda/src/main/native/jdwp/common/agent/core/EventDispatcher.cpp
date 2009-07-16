@@ -42,11 +42,6 @@ void EventDispatcher::Run(JNIEnv* jni) {
     JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Run(%p)", jni));
 
     MonitorAutoLock malCM(m_completeMonitor JDWP_FILE_LINE);
-    /*if (GetExceptionManager().GetLastException() != NULL) {
-        AgentException aex = GetExceptionManager().GetLastException();
-        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Exception in EventDispatcher synchronization: %s", aex.GetExceptionMessage(jni)));
-        return;
-    }*/
     
     while (!m_stopFlag) {
         EventComposer *ec;

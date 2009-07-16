@@ -32,8 +32,6 @@ AgentMonitor::AgentMonitor(const char* name) {
 AgentMonitor::~AgentMonitor() {
     jvmtiError err;
     JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->DestroyRawMonitor(m_monitor));
-    // check for error only in debug mode
-    //JDWP_ASSERT(err==JVMTI_ERROR_NONE);
 }
 
 void AgentMonitor::Enter() const {

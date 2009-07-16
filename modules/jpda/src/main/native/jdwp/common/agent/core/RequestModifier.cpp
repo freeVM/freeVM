@@ -122,13 +122,11 @@ bool SourceNameMatchModifier::Apply(JNIEnv* jni, EventInfo &eInfo)
                         // skip spaces
                         while (tok[0] == ' ' && tok[0] != 0) tok++;
                         if (tok[0] == 0) break;
-                        //printf("plus name = '%s'\n", tok);
                         if (MatchPatternSourceName(tok, m_pattern)) {
                             return true;
                         }
                         tok = strtok(NULL, "\n");
                         if (tok == NULL) return false;
-                        //printf("full name = '%s'\n", tok);
                         if (MatchPatternSourceName(tok, m_pattern)) {
                             return true;
                         }
@@ -140,7 +138,6 @@ bool SourceNameMatchModifier::Apply(JNIEnv* jni, EventInfo &eInfo)
                         // skip spaces
                         while (tok[0] == ' ' && tok[0] != 0) tok++;
                         if (tok[0] == 0) break;
-                        //printf("file name = '%s'\n", tok);
                         if (MatchPatternSourceName(tok, m_pattern)) {
                             return true;
                         }

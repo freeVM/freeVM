@@ -374,42 +374,6 @@ int ObjectManager::EnableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) {
     return JDWP_ERROR_NONE;
 } // EnableCollection()
 
-/*jboolean ObjectManager::IsCollectionDisabled(ObjectID objectID) {
-    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsCollectionDisabled(%lld)", objectID));
-
-    // decode object ID
-    size_t idx = (size_t)objectID & HASH_TABLE_MSK;
-    objectID = objectID >> HASH_TABLE_IDX;
-
-    //JDWP_ASSERT(m_objectIDTable != &m_DummyObjectIDTable);
-
-    // check decoded object ID
-    if (objectID <= 0 || objectID > m_maxAllocatedObjectID[idx]) {
-        // It is DEBUGGER ERROR: request for ObjectID which was never allocated
-        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## IsCollectionDisabled: invalid object ID: %lld", objectID));
-	AgentException ex(JDWP_ERROR_INVALID_OBJECT);
-	THROW(ex);
-    }
-
-    jboolean result;
-    { // synchronized block: objectIDTableLock
-    MonitorAutoLock objectIDTableLock(m_objectIDTableMonitor JDWP_FILE_LINE);
-    ObjectIDItem* objectIDItem = m_objectIDTable[idx] + objectID - 1;
-    if ( objectIDItem->objectID == FREE_OBJECTID_SIGN ) {
-        // It is DEBUGGER ERROR: Corresponding jobject is DISPOSED
-        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## IsCollectionDisabled: corresponding jobject has been disposed: %lld", objectID));
-	AgentException ex(JDWP_ERROR_INVALID_OBJECT);
-	THROW(ex);
-    }
-    result = JNI_FALSE;
-    if (objectIDItem->mapObjectIDItem.globalRefKind != WEAK_GLOBAL_REF) {
-        result = JNI_TRUE;
-    }
-    } // synchronized block: objectIDTableLock
-
-    return result;
-} // IsCollectionDisabled() */
-
 jboolean ObjectManager::IsCollected(JNIEnv* JNIEnvPtr, ObjectID objectID) {
     JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsCollected(%p,%lld)", JNIEnvPtr, objectID));
 

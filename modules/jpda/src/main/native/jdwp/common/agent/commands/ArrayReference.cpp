@@ -465,16 +465,6 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni)
                 jni->SetObjectArrayElement(static_cast<jobjectArray>(arrayObject), firstIndex + i, objArrayElement);
                 jthrowable ex = jni->ExceptionOccurred();
                 
-                // don't check for particular exception
-                /*
-                jclass exClass = jni->FindClass("java/lang/ArrayStoreException");
-                JDWP_ASSERT(exClass != 0);
-                if((ex != 0) && (jni->IsInstanceOf(ex, exClass) == JNI_TRUE)) {
-                    jni->ExceptionClear();
-                    throw AgentException(JDWP_ERROR_INVALID_ARRAY);
-                }
-                */
-
                 // indicate error if any exception occured
                 if (ex != 0) {
                     jni->ExceptionClear();

@@ -506,12 +506,6 @@ TCPIPSocketTran_Close(jdwpTransportEnv* env)
     if (err == 0){
 	 err = hysock_shutdown_output(envClientSocket);
     }
-
-    // it seems no necessary to check if the stream is really closed
-    // if (err != 0) {
-    //    SetLastTranError(env, "shutdown socket failed", GetLastErrorStatus(env));
-    //    return JDWPTRANSPORT_ERROR_IO_ERROR;
-    // }
     
     err = hysock_close(&envClientSocket);
     if (err != 0) {
@@ -607,7 +601,7 @@ TCPIPSocketTran_Attach(jdwpTransportEnv* env, const char* address,
             return JDWPTRANSPORT_ERROR_IO_ERROR;
         }
         int err = hysock_connect(clientSocket, &serverSockAddr);
-	//int err = connect(clientSocket, (struct sockaddr *)&serverSockAddr, sizeof(serverSockAddr));
+
 	if (err != 0 ) {
             SetLastTranError(env, "connection failed", GetLastErrorStatus(env));
             SetSocketBlockingMode(env, clientSocket, false);
