@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin
- * @version $Revision: 1.5.2.1 $
- */
-
 /**
  * @file
  * CommandDispatcher.h
@@ -72,8 +66,7 @@ namespace jdwp {
          *
          * @see CommandParser
          */
-        void ExecCommand(JNIEnv* jni, CommandParser *cmdParser)
-            throw(AgentException);
+        int ExecCommand(JNIEnv* jni, CommandParser *cmdParser);
 
         /**
          * Returns the name corresponding to the given JDWP command set.
@@ -97,8 +90,7 @@ namespace jdwp {
 
     private:
 
-        static CommandHandler* CreateCommandHandler(jdwpCommandSet cmdSet, jdwpCommand cmdKind)
-            throw (NotImplementedException, OutOfMemoryException);
+        static CommandHandler* CreateCommandHandler(jdwpCommandSet cmdSet, jdwpCommand cmdKind);
 
     };//class CommandDispatcher
 

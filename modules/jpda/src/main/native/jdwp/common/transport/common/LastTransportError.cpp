@@ -16,18 +16,41 @@
  *  limitations under the License.
  */
 
-/**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.6 $
- */
+#ifndef USING_VMI
+#define USING_VMI
+#endif
+
 #include "LastTransportError.h"
+#include "hyport.h"
+#include "vmi.h"
+#include "hythread.h"
+
+#include <string.h>
 
 void (*LastTransportError::m_free)(void *buffer) = 0;
 
-LastTransportError::LastTransportError(const char* messagePtr, int errorStatus, 
+static inline ThreadId_t
+_GetCurrentThreadId(JavaVM *jvm)
+{
+    ThreadId_t tid;
+#ifdef HY_NO_THR
+    THREAD_ACCESS_FROM_JAVAVM(jvm);
+#endif /* HY_NO_THR */
+    hythread_attach(&tid);
+    return tid;
+} // GetCurrentThreadId()
+
+
+static inline bool ThreadId_equal(ThreadId_t treadId1, ThreadId_t treadId2)
+{
+    return (treadId1 == treadId2);
+} // ThreadId_equal()
+
+LastTransportError::LastTransportError(JavaVM *jvm, const char* messagePtr, int errorStatus, 
         void* (*alloc)(jint numBytes), void (*free)(void *buffer))
 {
-    m_treadId = GetCurrentThreadId();
+    m_jvm = jvm;
+    m_treadId = _GetCurrentThreadId(m_jvm);
     m_lastErrorMessage = messagePtr;
     m_lastErrorMessagePrefix = "";
     m_lastErrorStatus = errorStatus;
@@ -65,14 +88,15 @@ LastTransportError::operator delete(void* address, void* (*alloc)(jint numBytes)
 jdwpTransportError
 LastTransportError::insertError(const char* messagePtr, int errorStatus)
 {
-    if (ThreadId_equal(m_treadId, GetCurrentThreadId())) {
+
+    if (ThreadId_equal(m_treadId, _GetCurrentThreadId(m_jvm))) {
         m_lastErrorMessage = messagePtr;
         m_lastErrorStatus = errorStatus;
         m_lastErrorMessagePrefix = "";
     } else if (m_next != 0) {
         return m_next->insertError(messagePtr, errorStatus);
     } else {
-        m_next = new(m_alloc, m_free) LastTransportError(messagePtr, errorStatus, m_alloc, m_free);
+        m_next = new(m_alloc, m_free) LastTransportError(m_jvm, messagePtr, errorStatus, m_alloc, m_free);
         if (m_next == 0) {
             return JDWPTRANSPORT_ERROR_OUT_OF_MEMORY;
         }
@@ -83,7 +107,7 @@ LastTransportError::insertError(const char* messagePtr, int errorStatus)
 jdwpTransportError 
 LastTransportError::addErrorMessagePrefix(const char* prefixPtr)
 {
-    if (ThreadId_equal(m_treadId, GetCurrentThreadId())) {
+    if (ThreadId_equal(m_treadId, _GetCurrentThreadId(m_jvm))) {
         m_lastErrorMessagePrefix = (prefixPtr == 0 ? "" : prefixPtr);
     } else if (m_next != 0) {
         return m_next->addErrorMessagePrefix(prefixPtr);
@@ -94,7 +118,7 @@ LastTransportError::addErrorMessagePrefix(const char* prefixPtr)
 int 
 LastTransportError::GetLastErrorStatus()
 {
-    if (ThreadId_equal(m_treadId, GetCurrentThreadId())) {
+    if (ThreadId_equal(m_treadId, _GetCurrentThreadId(m_jvm))) {
         return m_lastErrorStatus;
     } else if (m_next != 0) {
         return m_next->GetLastErrorStatus();
@@ -105,9 +129,11 @@ LastTransportError::GetLastErrorStatus()
 char* 
 LastTransportError::GetLastErrorMessage() 
 {
-    if (ThreadId_equal(m_treadId, GetCurrentThreadId())) {
+    PORT_ACCESS_FROM_JAVAVM(m_jvm);
+
+    if (ThreadId_equal(m_treadId, _GetCurrentThreadId(m_jvm))) {
         char buf[32];
-        sprintf(buf, "%d", m_lastErrorStatus);
+        hystr_printf(privatePortLibrary, buf, 32, "%d", m_lastErrorStatus);
 
         size_t strLength = (m_lastErrorStatus == 0) ? 
             strlen(m_lastErrorMessagePrefix) + strlen(m_lastErrorMessage) + 1 :
@@ -119,9 +145,9 @@ LastTransportError::GetLastErrorMessage()
         }
 
         if (m_lastErrorStatus == 0) {
-            sprintf(message, "%s%s", m_lastErrorMessagePrefix, m_lastErrorMessage);
+            hystr_printf(privatePortLibrary, message, (U_32)strLength, "%s%s", m_lastErrorMessagePrefix, m_lastErrorMessage);
         } else {
-            sprintf(message, "%s%s (error code: %s)", m_lastErrorMessagePrefix, m_lastErrorMessage, buf);
+            hystr_printf(privatePortLibrary, message, (U_32)strLength, "%s%s (error code: %s)", m_lastErrorMessagePrefix, m_lastErrorMessage, buf);
         }
         return message;
 

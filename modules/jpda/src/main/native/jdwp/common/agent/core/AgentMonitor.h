@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.6.2.1 $
- */
-
 /**
  * @file
  * AgentMonitor.h
@@ -52,39 +46,39 @@ namespace jdwp {
          *
          * @param name - monitor name
          */
-        AgentMonitor(const char* name) throw(AgentException);
+        AgentMonitor(const char* name);
 
         /**
          * Destructs the JVMTI raw monitor.
          */
-        ~AgentMonitor() throw(AgentException);
+        ~AgentMonitor();
 
         /**
          * Locks the JVMTI raw monitor.
          */
-        void Enter() const throw(AgentException);
+        void Enter() const;
 
         /**
          * Suspends the current thread for the given time-out.
          *
          * @param timeout - wait time-out
          */
-        void Wait(jlong timeout = 0) const throw(AgentException);
+        void Wait(jlong timeout = 0) const;
 
         /**
          * Notifies the suspended thread waiting on the given monitor.
          */
-        void Notify() const throw(AgentException);
+        void Notify() const;
 
         /**
          * Notifies all suspended threads waiting on the given monitor.
          */
-        void NotifyAll() const throw(AgentException);
+        void NotifyAll() const;
 
         /**
          * Unlocks the JVMTI raw monitor.
          */
-        void Exit() const throw(AgentException);
+        void Exit() const;
 
     private:
         jrawMonitorID m_monitor;
@@ -107,7 +101,9 @@ namespace jdwp {
          */
         MonitorAutoLock(AgentMonitor &monitor
             JDWP_FILE_LINE_PAR) : m_lock(monitor) JDWP_FILE_LINE_INI {
-            JDWP_TRACE_EX(LOG_KIND_MON, m_file, m_line, "Enter: " << &m_lock);
+#ifndef NDEBUG
+            JDWP_TRACE(LOG_DEBUG, (LOG_KIND_MON, m_file, m_line, "Enter: %p", &m_lock));
+#endif // NDEBUG
             m_lock.Enter();
         }
 
@@ -118,7 +114,9 @@ namespace jdwp {
          */
         MonitorAutoLock(AgentMonitor *monitor
             JDWP_FILE_LINE_PAR) : m_lock(*monitor) JDWP_FILE_LINE_INI {
-            JDWP_TRACE_EX(LOG_KIND_MON, m_file, m_line, "Enter: " << &m_lock);
+#ifndef NDEBUG
+            JDWP_TRACE(LOG_DEBUG, (LOG_KIND_MON, m_file, m_line, "Enter: %p", &m_lock));
+#endif // NDEBUG
             m_lock.Enter();
         }
 
@@ -126,7 +124,9 @@ namespace jdwp {
          * The destructor unlocks the agent monitor.
          */
         ~MonitorAutoLock() {
-            JDWP_TRACE_EX(LOG_KIND_MON, m_file, m_line, "Exit : " << &m_lock);
+#ifndef NDEBUG
+            JDWP_TRACE(LOG_DEBUG, (LOG_KIND_MON, m_file, m_line, "Exit : %p", &m_lock));
+#endif // NDEBUG
             m_lock.Exit();
         }
 

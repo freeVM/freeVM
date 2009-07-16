@@ -43,6 +43,8 @@ VIRTFILES =
 
 SYSLIBFILES = 
 
+MDLLIBFILES = $(LIBPATH)vmi.lib $(LIBPATH)hythr$(HY_LINKLIB_SUFFIX)
+
 DLLBASE=0x13200000
 COMMENT=/comment:"JDWP shmem transport native code. (c) Copyright 2008 The Apache Software Foundation or its licensors, as applicable."
 

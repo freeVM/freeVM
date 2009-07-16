@@ -14,13 +14,23 @@
 #  limitations under the License.
 
 #
-# Makefile for module jdwp - dt_socket transport
+# Makefile for module jdwp - socket transport
 #
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
 COMMON=..\..\..\common\# comment to avoid \ being treated as continuation
 CMNTRANS=$(COMMON)transport\# comment to avoid \ being treated as continuation
+
+!IF "$(HY_OS)-$(HY_ARCH)" == "windows-x86_64" 
+WARNING_LEVEL=W0
+PLATFORM_64=-DHYX86_64 -Oi -DWIN64 -D_WIN64 -D_AMD64_=1
+CPU=AMD64
+HYCOMMONCFLAGS = -GS- -EHs-c- /wd4530 $(HYCOMMONCFLAGS)
+!ELSE
+WARNING_LEVEL=WX
+HYCOMMONCFLAGS = -GS -GX $(HYCOMMONCFLAGS)
+!ENDIF
 
 LIBBASE=dt_socket
 DLLNAME=..\..\$(LIBBASE).dll
@@ -31,21 +41,24 @@ INCLUDES = $(INCLUDES) \
          -I$(COMMON)generic -I. \
          -I..\common
 
-HYCFLAGS = $(HYCFLAGS) $(INCLUDES) -GX -wd4290
+HYCFLAGS = -I..\..\..\..\include $(HYCFLAGS) $(INCLUDES) -GX -wd4290
 
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
     $(CMNTRANS)common\LastTransportError.obj \
-    $(CMNTRANS)dt_socket\SocketTransport.obj 
+    $(CMNTRANS)dt_socket\SocketTransport.obj \
+    SocketTransport_pd.obj
 
-VIRTFILES = 
+HYRCFLAGS = -I..\..\..\..\include
+
+VIRTFILES = dt_socket.res
 
 SYSLIBFILES = 
 
-MDLLIBFILES = 
+MDLLIBFILES = $(LIBPATH)vmi.lib $(LIBPATH)hythr$(HY_LINKLIB_SUFFIX)
   
 DLLBASE=0x13200000
-COMMENT=/comment:"JDWP socket transport native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"JDWP socket transport native code. (c) Copyright 2005 - 2009 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

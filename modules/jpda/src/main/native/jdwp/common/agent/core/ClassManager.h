@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.10.2.1 $
- */
-
 /**
  * @file
  * ClassManager.h
@@ -32,6 +26,7 @@
 #define _CLASS_MANAGER_H_
 
 #include "AgentBase.h"
+#include "ExceptionManager.h"
 
 namespace jdwp {
 
@@ -45,12 +40,12 @@ namespace jdwp {
         /**
          * A constructor.
          */
-        ClassManager() throw();
+        ClassManager();
 
         /**
          * A destructor.
          */
-        ~ClassManager() throw() {}
+        ~ClassManager() {}
 
         /**
          * Initializes the class manager.
@@ -62,28 +57,28 @@ namespace jdwp {
          *
          * @param jni - the JNI interface pointer
          */
-        void Init(JNIEnv *jni) throw(AgentException);
+        int Init(JNIEnv *jni);
 
         /**
          * Cleanups the class manager.
          *
          * @param jni - the JNI interface pointer
          */
-        void Clean(JNIEnv *jni) throw();
+        void Clean(JNIEnv *jni);
 
         /**
          * Resets the class manager.
          *
          * @param jni - the JNI interface pointer
          */
-        void Reset(JNIEnv *jni) throw() { }
+        void Reset(JNIEnv *jni) { }
 
         /**
          * Gets an instance of the <code>java.lang.Class</code> class.
          *
          * @return Returns  the <code>java.lang.Class</code> jclass.
          */
-        jclass GetClassClass() const throw() {
+        jclass GetClassClass() const {
             return m_classClass;
         }
 
@@ -92,7 +87,7 @@ namespace jdwp {
          *
          * @return Returns the <code>java.lang.Thread</code> jclass.
          */
-        jclass GetThreadClass() const throw() {
+        jclass GetThreadClass() const {
             return m_threadClass;
         }
 
@@ -101,7 +96,7 @@ namespace jdwp {
          *
          * @return Returns the <code>java.lang.ThreadGroup</code> jclass.
          */
-        jclass GetThreadGroupClass() const throw() {
+        jclass GetThreadGroupClass() const {
             return m_threadGroupClass;
         }
 
@@ -110,7 +105,7 @@ namespace jdwp {
          *
          * @return Returns the <code>java.lang.String</code> jclass.
          */
-        jclass GetStringClass() const throw() {
+        jclass GetStringClass() const {
             return m_stringClass;
         }
 
@@ -119,7 +114,7 @@ namespace jdwp {
          * 
          * @return Returns the <code>java.lang.ClassLoader</code> jclass.
          */
-        jclass GetClassLoaderClass() const throw() {
+        jclass GetClassLoaderClass() const {
             return m_classLoaderClass;
         }
 
@@ -128,7 +123,7 @@ namespace jdwp {
          *
          * @return Returns the <code>java.lang.OutOfMemoryError</code> jclass.
          */
-        jclass GetOOMEClass() const throw() {
+        jclass GetOOMEClass() const {
             return m_OOMEClass;
         }
 
@@ -137,7 +132,7 @@ namespace jdwp {
          *
          * @return Returns the <code>java.lang.System</code> jclass.
          */
-        jclass GetSystemClass() const throw() {
+        jclass GetSystemClass() const {
             return m_systemClass;
         }
 
@@ -147,7 +142,7 @@ namespace jdwp {
          *
          * @param jni - the JNI interface pointer
          */
-        void CheckOnException(JNIEnv *jni) const throw(AgentException);
+        int CheckOnException(JNIEnv *jni) const;
 
         /**
          * Returns system property from the Java class <code>java.lang.System</code> 
@@ -161,8 +156,7 @@ namespace jdwp {
          *
          * @return Returns - the Java system property.
          */
-        char* GetProperty(JNIEnv *jni, const char *str) const
-            throw(AgentException);
+        char* GetProperty(JNIEnv *jni, const char *str) const;
 
         /**
          * Returns the class name corresponding to the given signature.
@@ -173,7 +167,7 @@ namespace jdwp {
          *
          * @return Returns the class name corresponding to the given signature.
          */
-        char* GetClassName(const char *signature) const throw(AgentException);
+        char* GetClassName(const char *signature) const;
 
         /**
          * Gets the Java class corresponding to the given name.
@@ -184,8 +178,7 @@ namespace jdwp {
          *
          * @return Returns the Java class for the given name.
          */
-        jclass GetClassForName(JNIEnv *jni, const char *name, jobject loader) const
-            throw(AgentException);
+        jclass GetClassForName(JNIEnv *jni, const char *name, jobject loader) const;
 
         /**
          * Checks whether the given object is the instance of the 
@@ -197,7 +190,7 @@ namespace jdwp {
          * @return <code>TRUE</code> if the object is the instance of 
          *         <code>java.lang.Class</code>, otherwise <code>FALSE</code>.
          */
-        jboolean IsClass(JNIEnv *jni, jobject object) const throw() {
+        jboolean IsClass(JNIEnv *jni, jobject object) const {
             return jni->IsInstanceOf(object, m_classClass);
         }
 
@@ -211,7 +204,7 @@ namespace jdwp {
          * @return <code>TRUE</code> if the object is the instance of 
          *         <code>java.lang.Thread</code>, otherwise <code>FALSE</code>.
          */
-        jboolean IsThread(JNIEnv *jni, jobject object) const throw() {
+        jboolean IsThread(JNIEnv *jni, jobject object) const {
             return jni->IsInstanceOf(object, m_threadClass);
         }
 
@@ -225,7 +218,7 @@ namespace jdwp {
          * @return <code>TRUE</code> if the object is the instance of 
          *         <code>java.lang.ThreadGroup</code>, otherwise <code>FALSE</code>.
          */
-        jboolean IsThreadGroup(JNIEnv *jni, jobject object) const throw() {
+        jboolean IsThreadGroup(JNIEnv *jni, jobject object) const {
             return jni->IsInstanceOf(object, m_threadGroupClass);
         }
 
@@ -239,7 +232,7 @@ namespace jdwp {
          * @return <code>TRUE</code> if the object is the instance of 
          *         <code>java.lang.String</code>, otherwise <code>FALSE</code>.
          */
-        jboolean IsString(JNIEnv *jni, jobject object) const throw() {
+        jboolean IsString(JNIEnv *jni, jobject object) const {
             return jni->IsInstanceOf(object, m_stringClass);
         }
 
@@ -253,7 +246,7 @@ namespace jdwp {
          * @return <code>TRUE<code> if the object is the instance of 
          *         <code>java.lang.ClassLoader</code>, otherwise <code>FALSE</code>.
          */
-        jboolean IsClassLoader(JNIEnv *jni, jobject object) const throw() {
+        jboolean IsClassLoader(JNIEnv *jni, jobject object) const {
             return jni->IsInstanceOf(object, m_classLoaderClass);
         }
 
@@ -267,7 +260,7 @@ namespace jdwp {
          *         otherwise <code>FALSE</code>.
          */
         jboolean IsArray(JNIEnv *jni, jobject object) const
-            throw(AgentException);
+           ;
 
         /**
          * Gets the JDWP tag of the given Java object.
@@ -278,7 +271,7 @@ namespace jdwp {
          * @return Returns the JDWP tag of the Java object.
          */
         jdwpTag GetJdwpTag(JNIEnv *jni, jobject object) const
-            throw(AgentException);
+           ;
 
         /** 
          * Gets jdwpTag indicated by the specified signature.
@@ -291,7 +284,7 @@ namespace jdwp {
          *         such as JDWP_TAG_BYTE, JDWP_TAG_OBJECT and so on, or 
          *         JDWP_TAG_NONE, if the passed signature is incorrect.
          */
-        jdwpTag GetJdwpTagFromSignature(const char* signature) const throw();
+        jdwpTag GetJdwpTagFromSignature(const char* signature) const;
 
         /**
          * Checks whether the given class is the Java array.
@@ -301,7 +294,7 @@ namespace jdwp {
          * @return <code>TRUE</code> if the given class is the array, 
          *         otherwise <code>FALSE</code>.
          */
-        jboolean IsArrayType(jclass klass) const throw(AgentException);
+        jboolean IsArrayType(jclass klass) const;
 
         /**
          * Checks whether the given class is the Java interface.
@@ -311,7 +304,7 @@ namespace jdwp {
          * @return <code>TRUE</code> if the given class is the interface, 
          *         otherwise <code>FALSE</code>.
          */
-        jboolean IsInterfaceType(jclass klass) const throw(AgentException);
+        jboolean IsInterfaceType(jclass klass) const;
 
         /**
          * Gets the JDWP type tag of the given Java class.
@@ -320,8 +313,7 @@ namespace jdwp {
          *
          * @return Returns the JDWP type tag of the Java class.
          */
-        jdwpTypeTag GetJdwpTypeTag(jclass klass) const
-            throw (AgentException);
+        jdwpTypeTag GetJdwpTypeTag(jclass klass) const;
 
         /**
          * Checks the given object value.
@@ -333,7 +325,7 @@ namespace jdwp {
          * @return <code>TRUE</code> if the given value fits the field type.
          */
         jboolean IsObjectValueFitsFieldType(JNIEnv *jni, jobject objectValue, const char* fieldSignature)
-            const throw(AgentException);
+            const;
 
     private:
 

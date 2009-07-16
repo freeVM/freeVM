@@ -15,22 +15,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.3 $
- */
-// RequestModifier.cpp
+#include "RequestModifier.h"
 
 #include <string.h>
-
-#include "RequestModifier.h"
 
 using namespace jdwp;
 
 // match signature with pattern omitting first 'L' and last ";"
 bool RequestModifier::MatchPattern(const char *signature, const char *pattern)
-    const throw()
+    const
 {
     if (signature == 0) {
         return false;
@@ -54,55 +47,118 @@ bool RequestModifier::MatchPattern(const char *signature, const char *pattern)
     }
 }
 
-bool SourceNameMatchModifier::Apply(JNIEnv* jni, EventInfo &eInfo) throw()
+bool SourceNameMatchModifier::Apply(JNIEnv* jni, EventInfo &eInfo)
 {
     JDWP_ASSERT(eInfo.cls != 0);
     jclass jvmClass = eInfo.cls;
-    try {
-        char* sourceDebugExtension = 0;
-        char* sourceFileName = 0;
-        jvmtiError err;
-        // Get source name determined by SourceDebugExtension
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetSourceDebugExtension(jvmClass,
-            &sourceDebugExtension));
 
-        if (err != JVMTI_ERROR_NONE) {
-            // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY,JVMTI_ERROR_ABSENT_INFORMATION,
-            // JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_NULL_POINTER
-            if(err == JVMTI_ERROR_ABSENT_INFORMATION) {                   
-                // SourceDebugExtension is absent, get source name from SourceFile
-                JVMTI_TRACE(err, GetJvmtiEnv()->GetSourceFileName(jvmClass,
-                    &sourceFileName));
+    char* sourceDebugExtension = 0;
+    char* sourceFileName = 0;
+    jvmtiError err;
+    // Get source name determined by SourceDebugExtension
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetSourceDebugExtension(jvmClass,
+        &sourceDebugExtension));
 
-                if (err != JVMTI_ERROR_NONE) {
-                    // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_ABSENT_INFORMATION,
-                    // JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_NULL_POINTER
-                    throw AgentException(err);
-                 }
-                 JvmtiAutoFree autoFreeFieldName(sourceFileName);
-                 return MatchPatternSourceName(sourceFileName, m_pattern);
-                 } else { 
-                    throw AgentException(err);
-                 }
+    if (err != JVMTI_ERROR_NONE) {
+        // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY,JVMTI_ERROR_ABSENT_INFORMATION,
+        // JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_NULL_POINTER
+        if(err == JVMTI_ERROR_ABSENT_INFORMATION) {                   
+            // SourceDebugExtension is absent, get source name from SourceFile
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetSourceFileName(jvmClass,
+                &sourceFileName));
+
+            if (err != JVMTI_ERROR_NONE) {
+                // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_ABSENT_INFORMATION,
+                // JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_NULL_POINTER
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "JDWP error in SourceNameMatchModifier.Apply calling GetSourceFileName: %d", err));
+                return false;
             }
-            JvmtiAutoFree autoFreeDebugExtension(sourceDebugExtension);            
-          
-            string str(sourceDebugExtension);
-            JDWP_TRACE_DATA("JDWP sourceDebugExtension: " << str);
-            vector<string> tokens;
-            ParseSourceDebugExtension(str, tokens, "\n");
-            return MatchPatternSourceName(tokens[1].c_str(), m_pattern);
-    } catch (AgentException& e) {
-        JDWP_TRACE_DATA("JDWP error in SourceNameMatchModifier.Apply: " << e.what() << " [" << e.ErrCode() << "]");
-        return false;
+            JvmtiAutoFree autoFreeFieldName(sourceFileName);
+            bool result =  MatchPatternSourceName(sourceFileName, m_pattern);
+
+            if(!result) {
+                // replace '.' with '/' to be matched with signature
+                for (char* p = m_pattern; *p != '\0'; p++) {
+                    if (*p == '.') {
+                        *p = '/';
+                    }
+                }
+                JDWP_ASSERT(eInfo.signature != 0);
+                return MatchPattern(eInfo.signature, m_pattern);
+            } else {
+                return true;
+            }
+         } else { 
+             JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "JDWP error in SourceNameMatchModifier.Apply calling GetSourceDebugExtension: %d", err));
+             return false;
+         }
     }
+    JvmtiAutoFree autoFreeDebugExtension(sourceDebugExtension);            
+      
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "JDWP sourceDebugExtension: %s", sourceDebugExtension));
+
+    // We want to get the 2nd token here, split by '\n'
+    char *tok = NULL;
+    tok = strtok(sourceDebugExtension, "\n"); // 1st token
+    if (tok == NULL) return false;
+    tok = strtok(NULL, "\n");
+    if (tok == NULL) return false;
+    if (MatchPatternSourceName(tok, m_pattern)) return true;
+    while(tok = strtok(NULL, "\n")) {
+        if (strlen(tok) >= 2) {
+            if (tok[0] == '*' && tok[1] == 'F' && tok[2] == '\0') {
+                tok = strtok(NULL, "\n");
+                if (tok == NULL) return false;
+                while (tok[0] != '*') {
+                    if (tok[0] == '+') {
+                        //format: + 1 HelloWorld.java\npath/HelloWorld.java
+                        // skip plus
+                        tok++;
+                        // skip spaces
+                        while (tok[0] == ' ' && tok[0] != 0) tok++;
+                        // skip int
+                        while (tok[0] >= '0' && tok[0] <= '9'
+                               && tok[0] != 0) tok++;
+                        // skip spaces
+                        while (tok[0] == ' ' && tok[0] != 0) tok++;
+                        if (tok[0] == 0) break;
+                        //printf("plus name = '%s'\n", tok);
+                        if (MatchPatternSourceName(tok, m_pattern)) {
+                            return true;
+                        }
+                        tok = strtok(NULL, "\n");
+                        if (tok == NULL) return false;
+                        //printf("full name = '%s'\n", tok);
+                        if (MatchPatternSourceName(tok, m_pattern)) {
+                            return true;
+                        }
+                    } else if (tok[0] >= '0' && tok[0] <= '9') {
+                        // format: 1 HelloWorld.java
+                        // skip the int
+                        while (tok[0] >= '0' && tok[0] <= '9'
+                               && tok[0] != 0) tok++;
+                        // skip spaces
+                        while (tok[0] == ' ' && tok[0] != 0) tok++;
+                        if (tok[0] == 0) break;
+                        //printf("file name = '%s'\n", tok);
+                        if (MatchPatternSourceName(tok, m_pattern)) {
+                            return true;
+                        }
+                    }
+                    tok = strtok(NULL, "\n");
+                    if (tok == NULL) return false;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 // match source name with pattern
 bool SourceNameMatchModifier::MatchPatternSourceName(const char *sourcename, const char *pattern)
     const 
 {
-    JDWP_TRACE_DATA("JDWP in SourceNameMatchModifier::MatchPatternSourceName");
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "JDWP in SourceNameMatchModifier::MatchPatternSourceName(%s, %s)", sourcename, pattern));
    if(sourcename == 0) {
         return false;
     }
@@ -123,14 +179,4 @@ bool SourceNameMatchModifier::MatchPatternSourceName(const char *sourcename, con
     }
 }
 
-// parse SourceDebugExtension by "\n" delimiter
-void SourceNameMatchModifier::ParseSourceDebugExtension(const string& str, vector<string>& tokens, const string& delimiters)
-{
-    string::size_type lastPos = str.find_first_not_of(delimiters, 0);
-    string::size_type pos = str.find_first_of(delimiters, lastPos);
-    while (string::npos != pos || string::npos != lastPos) {
-        tokens.push_back(str.substr(lastPos, pos - lastPos));
-        lastPos = str.find_first_not_of(delimiters, pos);
-        pos = str.find_first_of(delimiters, lastPos);
-    }
-}
+

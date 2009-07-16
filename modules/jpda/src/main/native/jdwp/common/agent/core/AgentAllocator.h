@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.5.2.1 $
- */
-
 /**
  * @file
  * AgentAllocator.h
@@ -29,8 +23,6 @@
 
 #ifndef _AGENT_ALLOCATOR_H_
 #define _AGENT_ALLOCATOR_H_
-
-#include <memory>
 
 namespace jdwp {
 
@@ -61,13 +53,13 @@ namespace jdwp {
         /**
          * A constructor.
          */
-        AgentAllocator() throw() { }
+        AgentAllocator() { }
 
         /**
          * A copy constructor.
          */
         template <class U>
-        AgentAllocator(const AgentAllocator<U> &copy) throw() { }
+        AgentAllocator(const AgentAllocator<U> &copy) { }
 
         pointer allocate(size_t n, const void* = 0) {
             return reinterpret_cast<pointer>(

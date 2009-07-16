@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin, Viacheslav G. Rybalov
- * @version $Revision: 1.16.2.1 $
- */
-
 /**
  * @file
  * CommandHandler.h
@@ -37,9 +31,13 @@
 #include "AgentException.h"
 #include "AgentMonitor.h"
 
+#include <string.h>
+
 namespace jdwp {
 
     class CommandParser;
+
+    class AsyncCommandHandler;
 
     /**
      * A command handler is an object responsible for executing a
@@ -84,7 +82,7 @@ namespace jdwp {
          * @exception The implementations of the given interface may throw
          *            <code>AgentException</code>.
          */
-        virtual void Run(JNIEnv *jni, CommandParser *cmd) throw (AgentException) = 0;
+        virtual int Run(JNIEnv *jni, CommandParser *cmd) { return JDWP_ERROR_NONE; };
 
         /**
          * Retuns the internal <code>CommandParser</code> instance.
@@ -99,7 +97,7 @@ namespace jdwp {
          * @return Returns <code>TRUE</code> if JDWP-commands are executed
          *         synchronously, otherwise <code>FALSE</code>.
          */
-        virtual bool IsSynchronous() = 0;
+        virtual bool IsSynchronous() {return true;};
 
     protected:
         CommandParser *m_cmdParser;
@@ -116,7 +114,7 @@ namespace jdwp {
          * @exception The implementations of the given interface
          * may throw AgentException.         
          */
-        virtual void Execute(JNIEnv* jni) throw (AgentException) = 0;
+        virtual int Execute(JNIEnv* jni) { return JDWP_ERROR_NONE; };
 
         /**
          * Makes up reply with error based on the <code>AgentException<code> 
@@ -143,7 +141,7 @@ namespace jdwp {
          * @exception If the reply to the given command can not be sent,
          * TransportException is thrown.
          */
-        virtual void Run(JNIEnv *jni, CommandParser *cmd) throw (AgentException);
+        virtual int Run(JNIEnv *jni, CommandParser *cmd);
 
         /**
          * Identifies if the command handler does execution synchronously.
@@ -156,11 +154,81 @@ namespace jdwp {
 
 
     /**
+     * Worker thread for executing asynchronous commands
+     */
+    class WorkerThread : public AgentBase
+    {
+
+    public:
+
+	WorkerThread(JNIEnv* jni);
+
+	~WorkerThread();
+
+	/**
+	 * Add asynchronous command request
+	 */
+	void AddRequest(AsyncCommandHandler* handler);
+
+	/**
+	 * Remove asynchronous command request
+	 */
+	AsyncCommandHandler* RemoveRequest();
+
+    protected:
+
+        static void JNICALL StartExecution(jvmtiEnv* jvmti_env, JNIEnv* jni_env, void* arg);
+
+    private:
+
+	/**
+	 * Helper class as node of request chain
+	 */
+	class HandlerNode {
+	public:
+	    HandlerNode() {
+		m_handler = 0;
+		m_next = 0;
+	    };
+
+	    ~HandlerNode() {
+		m_handler = 0;
+		m_next = 0;
+	    }
+
+	    AsyncCommandHandler* m_handler;
+
+	    HandlerNode* m_next;
+	};
+
+	/**
+	 * The agent thread
+	 */
+	jthread m_agentThread;
+
+	/**
+	 * Head of the request chain. Requests consumed from the head.
+	 */
+	HandlerNode* m_head;
+
+	/**
+	 * Tail of the request chain. New request added to the tail.
+	 */
+	HandlerNode* m_tail;
+
+	/**
+	 * Monitor for the request chain.
+	 */
+	AgentMonitor *m_requestListMonitor;
+    };
+
+    /**
      * Base class for asynchronous command handlers.
      */
     class AsyncCommandHandler : public CommandHandler
     {
     public:
+
         ~AsyncCommandHandler();
 
         /**
@@ -178,7 +246,7 @@ namespace jdwp {
          * @exception <code>InternalErrorException</code> is thrown in any 
          * other cases.
          */
-        virtual void Run(JNIEnv *jni, CommandParser *cmd) throw (AgentException);
+        virtual int Run(JNIEnv *jni, CommandParser *cmd);
 
         /**
          * Identifies if the command handler does execution synchronously.
@@ -200,7 +268,6 @@ namespace jdwp {
          */
         virtual void Destroy() {delete this;}
 
-    protected:
         /**
          * The given method is passed as a parameter to the 
          * <code>RunAgentThread()</code> method of the 
@@ -211,6 +278,10 @@ namespace jdwp {
          * object is released.
          */
         static void JNICALL StartExecution(jvmtiEnv* jvmti_env, JNIEnv* jni_env, void* arg);
+
+    protected:
+
+	static WorkerThread* worker;
 
     };//class AsyncCommandHandler
 
@@ -235,7 +306,7 @@ namespace jdwp {
          * Does not delete the given asynchronous command after execution.
          * <code>ThreadManager</code> or <code>EventHandler</code> deletes it.
          */
-        virtual void Destroy() {}
+        virtual void Destroy();
 
         /**
          * Returns method invocation options.
@@ -284,17 +355,28 @@ namespace jdwp {
          */
         void ExecuteDeferredInvoke(JNIEnv *jni);
 
+        /**
+         * Retrieve a class object from a fully-qualified name, or 0 if the class cannot be found.
+         *
+         * @param klass the class loaded by the same classloader with target class
+         * @param name the full-qualified name of target calss
+         *
+         * @return a class object from a fully-qualified name, or 0 if the class cannot be found.
+         *
+         */
+        jclass FindClass(jclass cls, char *name);
+
     protected:
         
         /**
          * Initiates deferred invocation and waits for its completion.
          */
-        void WaitDeferredInvocation(JNIEnv *jni);
+        int WaitDeferredInvocation(JNIEnv *jni);
 
         /**
          * The function to execute in deferred method invocation.
          */
-        virtual void ExecuteDeferredFunc(JNIEnv *jni) = 0;
+        virtual void ExecuteDeferredFunc(JNIEnv *jni) {};
 
         /**
          * Calculates number of arguments for the given method signature.
@@ -305,7 +387,7 @@ namespace jdwp {
          * Checks if provided method arguments are valid for the given method
          * signature.
          */
-        jboolean IsArgValid(JNIEnv *jni, jint index, jdwpTaggedValue value, char* methodSig) throw(AgentException);
+        jboolean IsArgValid(JNIEnv *jni, jclass cls, jint index, jdwpTaggedValue value, char* methodSig);
 
         /**
          * The error occurred in method invocation.

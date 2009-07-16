@@ -17,11 +17,6 @@
  */
 
 /**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.6.2.1 $
- */
-
-/**
  * @file
  * TransportManager_pd.h
  *
@@ -34,17 +29,6 @@
 
 #include <dlfcn.h>
 #include <unistd.h>
-
-namespace jdwp {
-
-    typedef void* LoadedLibraryHandler;
-
-    typedef void (*ProcPtr)();
-
-    ProcPtr GetProcAddress(LoadedLibraryHandler libHandler, const char* procName);
-
-    bool FreeLibrary(LoadedLibraryHandler libHandler);
-
-}//jdwp
+#include "hyport.h"
 
 #endif // _TRANSPORT_MANAGER_PD_H_

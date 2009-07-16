@@ -17,11 +17,6 @@
  */
 
 /**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.7.2.1 $
- */
-
-/**
  * @file
  * SocketTransport_pd.h
  *
@@ -39,11 +34,12 @@
 #include <Winsock2.h>
 #include <Ws2tcpip.h>
 
-typedef CRITICAL_SECTION CriticalSection;
-
 #include "jdwpTransport.h"
+#include "vmi.h"
+#include "hyport.h"
 #include "LastTransportError.h"
 #include "SocketTransport.h"
+#include "jni.h"
 
 typedef int socklen_t;
 
@@ -58,61 +54,4 @@ GetLastErrorStatus()
 {
     return WSAGetLastError();
 } //GetLastErrorStatus()
-
-/**
- * Initializes critical section lock objects.
- */
-static inline void
-InitializeCriticalSections(jdwpTransportEnv* env)
-{
-    InitializeCriticalSection(&(((internalEnv*)env->functions->reserved1)->readLock));
-    InitializeCriticalSection(&(((internalEnv*)env->functions->reserved1)->sendLock));
-} //InitializeCriticalSections()
-
-/**
- * Releases all resources used by critical-section lock objects.
- */
-static inline void
-DeleteCriticalSections(jdwpTransportEnv* env)
-{
-    DeleteCriticalSection(&(((internalEnv*)env->functions->reserved1)->readLock));
-    DeleteCriticalSection(&(((internalEnv*)env->functions->reserved1)->sendLock));
-} //DeleteCriticalSections()
-
-/**
- * Waits for ownership of the read critical-section object.
- */
-static inline void
-EnterCriticalReadSection(jdwpTransportEnv* env)
-{
-    EnterCriticalSection(&(((internalEnv*)env->functions->reserved1)->readLock));
-} //EnterCriticalReadSection()
-
-/**
- * Waits for ownership of the send critical-section object.
- */
-static inline void
-EnterCriticalSendSection(jdwpTransportEnv* env)
-{
-    EnterCriticalSection(&(((internalEnv*)env->functions->reserved1)->sendLock));
-} //EnterCriticalSendSection()
-
-/**
- * Releases ownership of the read critical-section object.
- */
-static inline void
-LeaveCriticalReadSection(jdwpTransportEnv* env)
-{
-    LeaveCriticalSection(&(((internalEnv*)env->functions->reserved1)->readLock));
-} //LeaveCriticalReadSection()
-
-/**
- * Releases ownership of the send critical-section object.
- */
-static inline void
-LeaveCriticalSendSection(jdwpTransportEnv* env)
-{
-    LeaveCriticalSection(&(((internalEnv*)env->functions->reserved1)->sendLock));
-} //LeaveCriticalSendSection()
-
-#endif // _SOCKETTRANSPORT_PD_H
+#endif // _SOCKETTRANSPORT_PD_Hi

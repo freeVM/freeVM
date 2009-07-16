@@ -15,11 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin
- * @version $Revision: 1.22 $
- */
 #include "PacketDispatcher.h"
 #include "TransportManager.h"
 #include "AgentException.h"
@@ -29,12 +24,13 @@
 #include "ClassManager.h"
 #include "RequestManager.h"
 #include "OptionParser.h"
+#include "ExceptionManager.h"
 
 using namespace jdwp;
 
 //-----------------------------------------------------------------------------
 
-PacketDispatcher::PacketDispatcher() throw()
+PacketDispatcher::PacketDispatcher()
     :AgentBase()
 {
     m_isProcessed = false;
@@ -46,34 +42,28 @@ PacketDispatcher::PacketDispatcher() throw()
 //-----------------------------------------------------------------------------
 
 void
-PacketDispatcher::Init(JNIEnv *jni) throw(AgentException)
+PacketDispatcher::Init(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Init(" << jni << ")");
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Init(%p)", jni));
 
     m_completionMonitor = new AgentMonitor("_agent_Packet_Dispatcher_completion");
     m_executionMonitor = new AgentMonitor("_agent_Packet_Dispatcher_execution");
 }
 
-void
-PacketDispatcher::Start(JNIEnv *jni) throw(AgentException)
+int
+PacketDispatcher::Start(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Start(" << jni << ")");
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Start(%p)", jni));
 
     JDWP_ASSERT(!m_isProcessed);
 
-    try
-    {
-        m_threadObject = jni->NewGlobalRef(GetThreadManager().RunAgentThread(jni, StartFunction, this,
-            JVMTI_THREAD_MAX_PRIORITY, "_jdwp_PacketDispatcher"));
+    jthread thread = GetThreadManager().RunAgentThread(jni, StartFunction, this,
+                                         JVMTI_THREAD_MAX_PRIORITY, "_jdwp_PacketDispatcher");
+    if (thread == 0) {
+        return JDWP_ERROR_INTERNAL;
     }
-    catch (const AgentException& e)
-    {
-        JDWP_ASSERT(e.ErrCode() != JDWP_ERROR_NULL_POINTER);
-        JDWP_ASSERT(e.ErrCode() != JDWP_ERROR_INVALID_PRIORITY);
-
-        throw e;
-    }
-
+    m_threadObject = jni->NewGlobalRef(thread);
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -81,161 +71,142 @@ PacketDispatcher::Start(JNIEnv *jni) throw(AgentException)
 void
 PacketDispatcher::Run(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Run(" << jni << ")");
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Run(%p)", jni));
 
-    try {
-        MonitorAutoLock lock(m_completionMonitor JDWP_FILE_LINE);
-        TransportManager &transport = GetTransportManager();
-        
-        try
-        {
-            // run multiplle sessions in a loop
-            for (; ;)
-            {
-                // connect for new session
-                JDWP_TRACE_PROG("Run: start new session");
-                try
-                {
-                    transport.Connect();
-                }
-                catch (const TransportException& e)
-                {
-                    JDWP_TRACE_PROG("Run: Exception in connection: "
-                                    << e.what() << " [" << e.ErrCode() 
-                                    << "/" << e.TransportErrorCode() << "]");
-                    if (!IsDead()) {
-                        JDWP_DIE(e.what() << " [" << e.ErrCode() << "/"
-                                    << e.TransportErrorCode() << "]: " 
-                                    << GetTransportManager().GetLastTransportError());
-                    }
-                    break;
-                }
-        
-                // start session and execute commands
-                try
-                {
-                    // inform that new session started
-                    GetEventDispatcher().NewSession();
-        
-                    // add internal request for automatic VMDeath event with no modifiers
-                    GetRequestManager().AddInternalRequest(jni,
-                        new AgentEventRequest(JDWP_EVENT_VM_DEATH, JDWP_SUSPEND_NONE));
-        
-                    // release events
-                    GetEventDispatcher().ReleaseEvents();
-        
-                    // read and execute commands
-                    m_isProcessed = true;
-                    while (m_isProcessed)
-                    {
-                        // read command
-                        try {
-                            JDWP_TRACE_PROG("Run: handle next command");
-                            m_cmdParser.ReadCommand();
-                            if (m_cmdParser.command.GetLength() == 0)
-                            break;
-                        }
-                        catch (const TransportException& e)
-                        {
-                            JDWP_TRACE_PROG("Run: Exception in reading command: " 
-                                << e.what() << " [" << e.ErrCode() 
-                                << "/" << e.TransportErrorCode() << "]");
-                            if (m_isProcessed && !IsDead())
-                            {
-                                char* msg = GetTransportManager().GetLastTransportError();
-                                AgentAutoFree af(msg JDWP_FILE_LINE);
-        
-                                if (e.TransportErrorCode() == JDWPTRANSPORT_ERROR_OUT_OF_MEMORY) {
-                                    JDWP_DIE(e.what() << " [" << e.ErrCode() << "/"
-                                                << e.TransportErrorCode() << "]: " << msg);
-                                } else {
-                                    JDWP_ERROR(e.what() << " [" << e.ErrCode() << "/"
-                                                << e.TransportErrorCode() << "]: " << msg);
-                                }
-                            }
-                            break;
-                        }
-        
-                        // execute command and prevent from reset while execution
-                        {
-                            MonitorAutoLock lock(m_executionMonitor JDWP_FILE_LINE);
-                            m_cmdDispatcher.ExecCommand(jni, &m_cmdParser);
-                        }
-                    }
-                }
-                catch (const AgentException& e)
-                {
-                    JDWP_TRACE_PROG("Run: Exception in executing command: "
-                                    << e.what() << " [" << e.ErrCode() << "]");
-                    if (!IsDead()) {
-                        JDWP_ERROR(e.what() << " [" << e.ErrCode() << "]");
-                    }
-                }
-        
-                // reset all modules after session finished
-                JDWP_TRACE_PROG("Run: reset session");
-                ResetAll(jni);
-        
-                // no more sessions if VMDeath event occured
-                if (IsDead()) {
-                    JDWP_TRACE_PROG("Run: VM is dead -> shutdown");
-                    break;
-                }
-        
-                // no more sessions in attach mode
-                if (!GetOptionParser().GetServer()) {
-                    JDWP_TRACE_PROG("Run: attach mode -> shutdown");
-                    break;
-                }
-            }
-        }
-        catch (const AgentException& e)
-        {
-            JDWP_TRACE_PROG("Run: Exception in PacketDispatcher: "
-                            << e.what() << " [" << e.ErrCode() << "]");
+    int ret;
+    MonitorAutoLock lock(m_completionMonitor JDWP_FILE_LINE);
+    TransportManager &transport = GetTransportManager();
+    
+    // run multiplle sessions in a loop
+    for (; ;)
+    {
+        // connect for new session
+        JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Run: start new session"));
+        ret = transport.Connect();
+        if (ret != JDWP_ERROR_NONE) {
+            AgentException aex = GetExceptionManager().GetLastException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Run: Exception in connection: %s", aex.GetExceptionMessage(jni)));
             if (!IsDead()) {
-                JDWP_DIE(e.what() << " [" << e.ErrCode() << "]"); 
+                JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Run: Exception in connection: %s", aex.GetExceptionMessage(jni)));
+                /* In server case, attempt to reaccept while the VM is alive */
+                if (AgentBase::GetOptionParser().GetServer()) {
+                    ret = ResetAll(jni);
+                    if (ret != JDWP_ERROR_NONE) {
+                        AgentException aex = GetExceptionManager().GetLastException();
+                        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error calling ResetAll(): %s", aex.GetExceptionMessage(jni)));
+                        if (!IsDead()) {                                            
+                            ::exit(1);
+                        }
+                        break;
+                    }
+                    continue;
+                }
+                ::exit(1);
+            }
+            break;
+        }
+
+        // inform that new session started
+        GetEventDispatcher().NewSession();
+
+        // add internal request for automatic VMDeath event with no modifiers
+        ret = GetRequestManager().AddInternalRequest(jni,
+            new AgentEventRequest(JDWP_EVENT_VM_DEATH, JDWP_SUSPEND_NONE));
+        if (ret != JDWP_ERROR_NONE) {
+            AgentException aex = GetExceptionManager().GetLastException();
+             if (!IsDead()) {
+                JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Run: Exception in executing command: %s", aex.GetExceptionMessage(jni)));
+            }
+            goto reset;
+        }
+
+        // start session and execute commands
+        // release events
+        GetEventDispatcher().ReleaseEvents();
+
+        // read and execute commands
+        m_isProcessed = true;
+        while (m_isProcessed)
+        {
+            // read command
+            JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Run: handle next command"));
+            int ret = m_cmdParser.ReadCommand();
+            if (ret != JDWP_ERROR_NONE) {
+                if (m_isProcessed && !IsDead()) {
+                    AgentException aex = GetExceptionManager().GetLastException();
+                    JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Run: Exception in reading command: %s", aex.GetExceptionMessage(jni)));
+                    if (aex.ErrCode() == JDWP_ERROR_OUT_OF_MEMORY
+                         || aex.TransportErrCode() == JDWPTRANSPORT_ERROR_OUT_OF_MEMORY) {  
+                        ::exit(1);
+                    }
+                }
+                break;
+            }
+
+            if (m_cmdParser.command.GetLength() == 0)
+                break;
+
+            // execute command and prevent from reset while execution
+            {
+                MonitorAutoLock lock(m_executionMonitor JDWP_FILE_LINE);
+                ret = m_cmdDispatcher.ExecCommand(jni, &m_cmdParser);
+                if (ret != JDWP_ERROR_NONE) {
+                    AgentException aex = GetExceptionManager().GetLastException();
+                    JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Run: Exception in executing command: %s", aex.GetExceptionMessage(jni)));
+                    break;
+                }
             }
         }
-        
-        // stop also EventDispatcher thread
-        try 
-        {
-            JDWP_TRACE_PROG("Run: stop EventDispatcher");
-            GetEventDispatcher().Stop(jni);
+
+reset:
+        // reset all modules after session finished
+        JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Run: reset session"));
+        ResetAll(jni);
+        if (ret != JDWP_ERROR_NONE) {
+            AgentException aex = GetExceptionManager().GetLastException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error calling ResetAll(): %s", aex.GetExceptionMessage(jni)));
+            if (!IsDead()) {                                            
+                ::exit(1);
+            }
+            break;
         }
-        catch (const AgentException& e)
-        {
-            // just report an error, cannot do anything else
-            JDWP_ERROR("Exception in stopping EventDispatcher: "
-                            << e.what() << " [" << e.ErrCode() << "]");
+
+        // no more sessions if VMDeath event occured
+        if (IsDead()) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Run: VM is dead -> shutdown"));
+            break;
         }
+
+        // no more sessions in attach mode
+        if (!GetOptionParser().GetServer()) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Run: attach mode -> shutdown"));
+            break;
+        }
+    }
+    
+    // stop also EventDispatcher thread
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Run: stop EventDispatcher"));
+    GetEventDispatcher().Stop(jni);
 
         // release completion monitor and wait forever until VM kills this thread
         // TODO: remove this workaround to prevent from resource leak
 	// This is the old completion mechanism fixed in HARMONY-5019
 //        m_completionMonitor->Wait(0);
-    }
-    catch (const AgentException& e)
-    {
-        // just report an error, cannot do anything else
-        JDWP_ERROR("Exception in PacketDispatcher synchronization: "
-                        << e.what() << " [" << e.ErrCode() << "]");
-    }
+
 }
 
 //-----------------------------------------------------------------------------
 
 void 
-PacketDispatcher::Stop(JNIEnv *jni) throw(AgentException)
+PacketDispatcher::Stop(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Stop()");
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Stop()"));
 
     // cause thread loop to break
     m_isProcessed = false;
     
     // close transport first, but not while executing current command
-    JDWP_TRACE_PROG("Stop: close agent connection");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Stop: close agent connection"));
     if (m_executionMonitor != 0) {
         MonitorAutoLock lock(m_executionMonitor JDWP_FILE_LINE);
         GetTransportManager().Clean();
@@ -253,11 +224,11 @@ PacketDispatcher::Stop(JNIEnv *jni) throw(AgentException)
 }
 
 void 
-PacketDispatcher::Clean(JNIEnv *jni) throw(AgentException)
+PacketDispatcher::Clean(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Clean(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Clean(%p)", jni));
 
-    JDWP_TRACE_PROG("Clean: clean internal data");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Clean: clean internal data"));
 
     // do not delete m_completionMonitor because thread is waiting on it
     // TODO: remove this workaround to prevent from resource leak
@@ -274,34 +245,43 @@ PacketDispatcher::Clean(JNIEnv *jni) throw(AgentException)
 }
 
 void 
-PacketDispatcher::Reset(JNIEnv *jni) throw(AgentException)
+PacketDispatcher::Reset(JNIEnv *jni)
 { 
-    JDWP_TRACE_ENTRY("Reset(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Reset(%p)", jni));
 
     // cause thread loop to break
-    JDWP_TRACE_PROG("Reset: reset session");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Reset: reset session"));
     m_isProcessed = false; 
 }
 
-void 
-PacketDispatcher::ResetAll(JNIEnv *jni) throw(AgentException)
+int 
+PacketDispatcher::ResetAll(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("ResetAll(" << jni << ")");
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "ResetAll(%p)", jni));
 
     // reset all modules, but not while executing current command 
     if (m_executionMonitor != 0) {
         MonitorAutoLock lock(m_executionMonitor JDWP_FILE_LINE);
 
-        JDWP_TRACE_PROG("ResetAll: reset all modules");
+        JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "ResetAll: reset all modules"));
 
-        GetThreadManager().Reset(jni);
+        int ret;
+        m_cmdParser.Reset(jni);
+        ret = GetThreadManager().Reset(jni);
+        JDWP_CHECK_RETURN(ret);
+
         GetRequestManager().Reset(jni);
         GetEventDispatcher().Reset(jni);
-        GetTransportManager().Reset();
+
+        ret = GetTransportManager().Reset();
+        JDWP_CHECK_RETURN(ret);
+
         GetPacketDispatcher().Reset(jni);
         GetClassManager().Reset(jni);
         GetObjectManager().Reset(jni);
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -309,7 +289,7 @@ PacketDispatcher::ResetAll(JNIEnv *jni) throw(AgentException)
 void JNICALL
 PacketDispatcher::StartFunction(jvmtiEnv* jvmti_env, JNIEnv* jni, void* arg)
 {
-    JDWP_TRACE_ENTRY("StartFunction(" << jvmti_env << "," << jni << "," << arg << ")");
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "StartFunction(%p,%p,%p)", jvmti_env, jni, arg));
 
     (reinterpret_cast<PacketDispatcher *>(arg))->Run(jni);
 }

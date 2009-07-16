@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin
- * @version $Revision: 1.4.2.1 $
- */
-
 /**
  * @file
  * ThreadGroupReference.h
@@ -54,7 +48,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//NameHandler
 
@@ -71,7 +65,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//ParentHandler
 
@@ -88,7 +82,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//ChildrenHandler
 

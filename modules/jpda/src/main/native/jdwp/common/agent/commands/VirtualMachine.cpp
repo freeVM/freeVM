@@ -15,13 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin
- * @version $Revision: 1.23.2.2 $
- */
-#include <string.h>
-
 #include "jvmti.h"
 #include "jdwp.h"
 
@@ -34,6 +27,13 @@
 #include "EventDispatcher.h"
 #include "TransportManager.h"
 #include "CallBacks.h"
+#include "ExceptionManager.h"
+
+
+#include "vmi.h"
+#include "hyport.h"
+
+#include <string.h>
 
 using namespace jdwp;
 using namespace VirtualMachine;
@@ -42,8 +42,8 @@ using namespace CallBacks;
 //-----------------------------------------------------------------------------
 //VersionHandler---------------------------------------------------------------
 
-void
-VirtualMachine::VersionHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::VersionHandler::Execute(JNIEnv *jni) 
 {
     ClassManager &clsMgr = AgentBase::GetClassManager();
 
@@ -69,37 +69,32 @@ VirtualMachine::VersionHandler::Execute(JNIEnv *jni) throw(AgentException)
     char *description = reinterpret_cast<char*>
         (AgentBase::GetMemoryManager().Allocate(descriptionSize JDWP_FILE_LINE));
     AgentAutoFree dobj_description(description JDWP_FILE_LINE);
-    sprintf(description, pattern,
-        (javaVersion == 0) ? unknown : javaVersion,
-        (javaVmName == 0) ? unknown : javaVmName,
-        (javaVmInfo == 0) ? unknown : javaVmInfo,
-        (javaVmVersion == 0) ? unknown : javaVmVersion);
 
-    JDWP_TRACE_DATA("Version: send: "
-        << ", description=" << JDWP_CHECK_NULL(description)
-        << ", jdwpMajor=" << JDWP_VERSION_MAJOR
-        << ", jdwpMinor=" << JDWP_VERSION_MINOR
-        << ", vmVersion=" << JDWP_CHECK_NULL(javaVersion)
-        << ", vmVersion=" << JDWP_CHECK_NULL(javaVmName)
+    PORT_ACCESS_FROM_ENV(jni);
+    hystr_printf(privatePortLibrary, description, (U_32)descriptionSize, pattern, (javaVersion == 0) ? unknown : javaVersion,
+        (javaVmName == 0) ? unknown : javaVmName, (javaVmInfo == 0) ? unknown : javaVmInfo, (javaVmVersion == 0) ? unknown : javaVmVersion);
 
-    );
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Version: send: description=%s, jdwpMajor=%d, jdwpMinor=%d, vmVersion=%s, vmName=%s",
+                    JDWP_CHECK_NULL(description), JDWP_VERSION_MAJOR, JDWP_VERSION_MINOR,
+                    JDWP_CHECK_NULL(javaVersion), JDWP_CHECK_NULL(javaVmName)));
 
     m_cmdParser->reply.WriteString(description);
     m_cmdParser->reply.WriteInt(JDWP_VERSION_MAJOR);
     m_cmdParser->reply.WriteInt(JDWP_VERSION_MINOR);
     m_cmdParser->reply.WriteString(javaVersion);
     m_cmdParser->reply.WriteString(javaVmName);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //ClassesBySignatureHandler----------------------------------------------------
 
-void
-VirtualMachine::ClassesBySignatureHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::ClassesBySignatureHandler::Execute(JNIEnv *jni) 
 {
     const char *signature = m_cmdParser->command.ReadString();
-    JDWP_TRACE_DATA("ClassesBySignature: received: "
-        << "signature=" << JDWP_CHECK_NULL(signature));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ClassesBySignature: received: signature=%s", JDWP_CHECK_NULL(signature)));
 
     jint classCount = 0;
     jclass* classes = 0;
@@ -107,11 +102,16 @@ VirtualMachine::ClassesBySignatureHandler::Execute(JNIEnv *jni) throw(AgentExcep
     jvmtiEnv* jvmti = AgentBase::GetJvmtiEnv();
 
     jvmtiError err;
-    JVMTI_TRACE(err, jvmti->GetLoadedClasses(&classCount, &classes));
+    AgentBase::GetJniEnv()->PushLocalFrame(100);
+
+    JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetLoadedClasses(&classCount, &classes));
     JvmtiAutoFree dobj(classes);
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE) {
+        AgentException e(err);
+        JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
     int i;
     int count = 0;
@@ -120,22 +120,25 @@ VirtualMachine::ClassesBySignatureHandler::Execute(JNIEnv *jni) throw(AgentExcep
         if (IsSignatureMatch(classes[i], signature)) {
             classes[count] = classes[i];
             count++;
-        }
+        } 
     }
+
     size_t classCountPos = m_cmdParser->reply.GetPosition();
     m_cmdParser->reply.WriteInt(count);
-    JDWP_TRACE_DATA("ClassesBySignature: classes=" << count);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ClassesBySignature: classes=%d", count));
     
     int notIncludedClasses = 0;
-    for (i = 0; i < count; i++)
+    for (i = count - 1; i >= 0; i --)
     {
         jdwpTypeTag refTypeTag = GetClassManager().GetJdwpTypeTag(classes[i]);
 
         jint status;
-        JVMTI_TRACE(err, jvmti->GetClassStatus(classes[i], &status));
-        if (err != JVMTI_ERROR_NONE)
-            throw AgentException(err);
-
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetClassStatus(classes[i], &status));
+        if (err != JVMTI_ERROR_NONE){
+            AgentException e(err);
+            JDWP_SET_EXCEPTION(e);
+            return err;
+        }
         if (status == JVMTI_CLASS_STATUS_ARRAY) {
            status = 0;
         } else {
@@ -149,19 +152,19 @@ VirtualMachine::ClassesBySignatureHandler::Execute(JNIEnv *jni) throw(AgentExcep
                 }
             }
         }
-        m_cmdParser->reply.WriteByte(refTypeTag);
+        m_cmdParser->reply.WriteByte((jbyte)refTypeTag);
         m_cmdParser->reply.WriteReferenceTypeID(jni, classes[i]);
         m_cmdParser->reply.WriteInt(status);
+
+
 #ifndef NDEBUG
         if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {    
             jvmtiError err;
             char* signature = 0;
-            JVMTI_TRACE(err, jvmti->GetClassSignature(classes[i], &signature, 0));
+            JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetClassSignature(classes[i], &signature, 0));
             JvmtiAutoFree afcs(signature);
-            JDWP_TRACE_DATA("ClassesBySignature: class#=" << i
-                << ", refTypeID=" << classes[i]
-                << ", status=" << status
-                << ", signature=" << JDWP_CHECK_NULL(signature));
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ClassesBySignature: class#=%d, refTypeID=%p, status=%d, signature=%s", 
+                            i, classes[i], status, JDWP_CHECK_NULL(signature)));
         }
 #endif
     }
@@ -174,21 +177,26 @@ VirtualMachine::ClassesBySignatureHandler::Execute(JNIEnv *jni) throw(AgentExcep
         m_cmdParser->reply.SetPosition(currentPos);
         m_cmdParser->reply.SetLength(currentLength);
     }
+
+    AgentBase::GetJniEnv()->PopLocalFrame(NULL);
+
+    return JDWP_ERROR_NONE;
 }
 
 bool
 VirtualMachine::ClassesBySignatureHandler::IsSignatureMatch(jclass klass,
                                                             const char *signature)
-                                                            throw(AgentException)
 {
     char* sign = 0;
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(klass, &sign, 0));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(klass, &sign, 0));
     JvmtiAutoFree dobj(sign);
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE){
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "GetClassSignature failed with error %d on signature %s", err, signature));
+        return false;
+    }
 
     return strcmp(signature, sign) == 0;
 }
@@ -196,22 +204,27 @@ VirtualMachine::ClassesBySignatureHandler::IsSignatureMatch(jclass klass,
 //-----------------------------------------------------------------------------
 //AllClassesHandler------------------------------------------------------------
 
-void
-VirtualMachine::AllClassesHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::AllClassesHandler::Execute(JNIEnv *jni) 
 {
     jint classCount = 0;
     jclass* classes = 0;
 
     jvmtiEnv* jvmti = AgentBase::GetJvmtiEnv();
     jvmtiError err;
-    JVMTI_TRACE(err, jvmti->GetLoadedClasses(&classCount, &classes));
+
+    AgentBase::GetJniEnv()->PushLocalFrame(100);
+    JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetLoadedClasses(&classCount, &classes));
 
     JvmtiAutoFree dobj(classes);
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE){
+        AgentException e(err);
+        JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
-    JDWP_TRACE_DATA("AllClasses: classes=" << classCount);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "AllClasses: classes=%d", classCount));
     size_t classCountPos = m_cmdParser->reply.GetPosition();
     m_cmdParser->reply.WriteInt(classCount);
 
@@ -229,30 +242,40 @@ VirtualMachine::AllClassesHandler::Execute(JNIEnv *jni) throw(AgentException)
         m_cmdParser->reply.SetPosition(currentPos);
         m_cmdParser->reply.SetLength(currentLength);
     }
+
+    AgentBase::GetJniEnv()->PopLocalFrame(NULL);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 
 int
 VirtualMachine::AllClassesHandler::Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti,
-        jclass klass) throw (AgentException)
+        jclass klass) 
 {
     jdwpTypeTag refTypeTag = GetClassManager().GetJdwpTypeTag(klass);
 
     char* signature = 0;
 
     jvmtiError err;
-    JVMTI_TRACE(err, jvmti->GetClassSignature(klass, &signature, 0));
+    JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetClassSignature(klass, &signature, 0));
 
     JvmtiAutoFree dobj(signature);
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE){
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
     jint status;
-    JVMTI_TRACE(err, jvmti->GetClassStatus(klass, &status));
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetClassStatus(klass, &status));
+    if (err != JVMTI_ERROR_NONE){
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
     // According to JVMTI spec ClassStatus flag for arrays and primitive classes must be zero
     if (status == JVMTI_CLASS_STATUS_ARRAY || status == JVMTI_CLASS_STATUS_PRIMITIVE) {
@@ -262,7 +285,7 @@ VirtualMachine::AllClassesHandler::Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti,
         return 1;
     }
 
-    m_cmdParser->reply.WriteByte(refTypeTag);
+    m_cmdParser->reply.WriteByte((jbyte)refTypeTag);
     m_cmdParser->reply.WriteReferenceTypeID(jni, klass);
     m_cmdParser->reply.WriteString(signature);
     m_cmdParser->reply.WriteInt(status);
@@ -273,25 +296,27 @@ VirtualMachine::AllClassesHandler::Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti,
 //-----------------------------------------------------------------------------
 //AllThreadHandler-------------------------------------------------------------
 
-void
+int
 VirtualMachine::AllThreadsHandler::Execute(JNIEnv *jni)
-    throw(AgentException)
 {
     jint totalThreadsCount, threadsCount;
     jthread* threads = 0;
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetAllThreads(&totalThreadsCount, &threads));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetAllThreads(&totalThreadsCount, &threads));
 
     JvmtiAutoFree dobj(threads);
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE){
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
     threadsCount = 0;
     ThreadManager& thrdMgr = GetThreadManager();
 
-    JDWP_TRACE_DATA("AllThreads: threads=" << totalThreadsCount);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "AllThreads: threads=%d", totalThreadsCount));
 
     int i;
     for (i = 0; i < totalThreadsCount; i++)
@@ -301,11 +326,10 @@ VirtualMachine::AllThreadsHandler::Execute(JNIEnv *jni)
         if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
             jvmtiThreadInfo info;
             info.name = 0;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(threads[i], &info));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(threads[i], &info));
             JvmtiAutoFree jafInfoName(info.name);
-            JDWP_TRACE_DATA("AllThreads: thread#=" << i 
-                << ", name=" << JDWP_CHECK_NULL(info.name)
-                << ", isAgent=" << (thrdMgr.IsAgentThread(jni, threads[i])));
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "AllThreads: thread#=%d, name=%s, isAgent=%s", 
+                            i, JDWP_CHECK_NULL(info.name), (thrdMgr.IsAgentThread(jni, threads[i])?"TRUE":"FALSE")));
         }
 #endif
 
@@ -321,27 +345,31 @@ VirtualMachine::AllThreadsHandler::Execute(JNIEnv *jni)
     {
         m_cmdParser->reply.WriteThreadID(jni, threads[i]);
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //TopLevelThreadGroupsHandler--------------------------------------------------
 
-void
+int
 VirtualMachine::TopLevelThreadGroupsHandler::Execute(JNIEnv *jni)
-    throw(AgentException)
 {
     jint groupCount;
     jthreadGroup* groups = 0;
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetTopThreadGroups(&groupCount, &groups));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetTopThreadGroups(&groupCount, &groups));
 
     JvmtiAutoFree dobj(groups);
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE){
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
-    JDWP_TRACE_DATA("TopLevelThreadGroup: send: groupCount=" << groupCount);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "TopLevelThreadGroup: send: groupCount=%d", groupCount));
     m_cmdParser->reply.WriteInt(groupCount);
     for (jint i = 0; i < groupCount; i++) {
 
@@ -349,82 +377,94 @@ VirtualMachine::TopLevelThreadGroupsHandler::Execute(JNIEnv *jni)
         if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
             jvmtiThreadGroupInfo info;
             info.name = 0;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadGroupInfo(groups[i], &info));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadGroupInfo(groups[i], &info));
             JvmtiAutoFree jafInfoName(info.name);
         
-            JDWP_TRACE_DATA("TopLevelThreadGroup: send: group#" << i 
-                << ", groupID=" << groups[i]
-                << ", name=" << JDWP_CHECK_NULL(info.name));
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "TopLevelThreadGroup: send: group#%d, groupID=%p, name=%s", 
+                            i, groups[i], JDWP_CHECK_NULL(info.name)));
         }
 #endif
 
         m_cmdParser->reply.WriteThreadGroupID(jni, groups[i]);
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //DisposeHandler---------------------------------------------------------------
 
-void
-VirtualMachine::DisposeHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::DisposeHandler::Execute(JNIEnv *jni) 
 {
-    JDWP_TRACE_DATA("Dispose: write reply");
-    m_cmdParser->WriteReply(jni);
-    JDWP_TRACE_DATA("Dispose: reset agent");
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Dispose: write reply"));
+    int ret = m_cmdParser->WriteReply(jni);
+    JDWP_CHECK_RETURN(ret);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Dispose: reset agent"));
     GetPacketDispatcher().Reset(jni);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //IDSizesHandler---------------------------------------------------------------
 
-void
-VirtualMachine::IDSizesHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::IDSizesHandler::Execute(JNIEnv *jni) 
 {
     m_cmdParser->reply.WriteInt(FIELD_ID_SIZE);
     m_cmdParser->reply.WriteInt(METHOD_ID_SIZE);
     m_cmdParser->reply.WriteInt(OBJECT_ID_SIZE);
     m_cmdParser->reply.WriteInt(REFERENCE_TYPE_ID_SIZE);
     m_cmdParser->reply.WriteInt(FRAME_ID_SIZE);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //SuspendHandler---------------------------------------------------------------
 
-void
-VirtualMachine::SuspendHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::SuspendHandler::Execute(JNIEnv *jni) 
 {
-    JDWP_TRACE_DATA("Suspend: suspendAll");
-    GetThreadManager().SuspendAll(jni);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Suspend: suspendAll"));
+    int ret = GetThreadManager().SuspendAll(jni);
+    return ret;
 }
 
 //-----------------------------------------------------------------------------
 //ResumedHandler---------------------------------------------------------------
 
-void
-VirtualMachine::ResumeHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::ResumeHandler::Execute(JNIEnv *jni) 
 {
-    JDWP_TRACE_DATA("Resume: resumeAll");
-    GetThreadManager().ResumeAll(jni);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Resume: resumeAll"));
+    int ret = GetThreadManager().ResumeAll(jni);
+
+    return ret;
 }
 
 //-----------------------------------------------------------------------------
 //ExitHandler------------------------------------------------------------------
 
-void
-VirtualMachine::ExitHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::ExitHandler::Execute(JNIEnv *jni) 
 {
     jint exitCode = m_cmdParser->command.ReadInt();
-    JDWP_TRACE_DATA("Exit: received: exitCode=" << exitCode);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Exit: received: exitCode=%d", exitCode));
 
-    JDWP_TRACE_DATA("Exit: write reply");
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Exit: write reply"));
+    // No need to check return code here as we will exit the process immediately
     m_cmdParser->WriteReply(jni);
 
-    JDWP_TRACE_DATA("Exit: reset agent");
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Exit: reset agent"));
+    // No need to check return code here as we will exit the process immediately
     GetTransportManager().Reset();
     
-    JDWP_TRACE_DATA("Exit: terminate process");
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Exit: terminate process"));
     exit(static_cast<int>(exitCode));
 
+    return JDWP_ERROR_NONE;
 /*
     // another variant is to call System.exit()
     ClassManager &clsMgr = AgentBase::GetClassManager();
@@ -440,15 +480,17 @@ VirtualMachine::ExitHandler::Execute(JNIEnv *jni) throw(AgentException)
 //-----------------------------------------------------------------------------
 //CreateStringHandler----------------------------------------------------------
 
-void
-VirtualMachine::CreateStringHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::CreateStringHandler::Execute(JNIEnv *jni) 
 {
     const char *utf = m_cmdParser->command.ReadString();
-    JDWP_TRACE_DATA("CreateString: received: string=" << JDWP_CHECK_NULL(utf));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "CreateString: received: string=%s", JDWP_CHECK_NULL(utf)));
     jstring str = jni->NewStringUTF(utf);
 
-    JDWP_TRACE_DATA("CreateString: send: objectID=" << str);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "CreateString: send: objectID=%p", str));
     m_cmdParser->reply.WriteObjectID(jni, str);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -459,9 +501,8 @@ inline static jboolean IsAdded(int value)
     return (value == 1) ? JNI_TRUE : JNI_FALSE;
 }
 
-void
+int
 VirtualMachine::CapabilitiesHandler::Execute(JNIEnv *jni)
-    throw(AgentException)
 {
     jdwpCapabilities caps = GetCapabilities();
 
@@ -472,6 +513,8 @@ VirtualMachine::CapabilitiesHandler::Execute(JNIEnv *jni)
     m_cmdParser->reply.WriteBoolean(IsAdded(caps.canGetOwnedMonitorInfo));
     m_cmdParser->reply.WriteBoolean(IsAdded(caps.canGetCurrentContendedMonitor));
     m_cmdParser->reply.WriteBoolean(IsAdded(caps.canGetMonitorInfo));
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -479,7 +522,7 @@ VirtualMachine::CapabilitiesHandler::Execute(JNIEnv *jni)
 
 void
 VirtualMachine::ClassPathsHandler::WritePathStrings(char *str,
-        char pathSeparator) throw(AgentException)
+        char pathSeparator)
 {
     if (str == 0) {
         m_cmdParser->reply.WriteInt(1);
@@ -510,8 +553,8 @@ VirtualMachine::ClassPathsHandler::WritePathStrings(char *str,
     }
 }
 
-void
-VirtualMachine::ClassPathsHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::ClassPathsHandler::Execute(JNIEnv *jni) 
 {
     ClassManager &clsMgr = AgentBase::GetClassManager();
 
@@ -536,66 +579,68 @@ VirtualMachine::ClassPathsHandler::Execute(JNIEnv *jni) throw(AgentException)
     char pathSeparator =
         (pathSeparatorString == 0) ? ';' : pathSeparatorString[0];
 
-    JDWP_TRACE_DATA("ClassPaths: baseDir="
-        << JDWP_CHECK_NULL(baseDir));
-    JDWP_TRACE_DATA("ClassPaths: pathSeparatorString="
-        << JDWP_CHECK_NULL(pathSeparatorString));
-    JDWP_TRACE_DATA("ClassPaths: classPaths="
-        << JDWP_CHECK_NULL(classPaths));
-    JDWP_TRACE_DATA("ClassPaths: bootClassPaths="
-        << JDWP_CHECK_NULL(bootClassPaths));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ClassPaths: baseDir=%s", JDWP_CHECK_NULL(baseDir)));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ClassPaths: pathSeparatorString=%s", JDWP_CHECK_NULL(pathSeparatorString)));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ClassPaths: classPaths=%s", JDWP_CHECK_NULL(classPaths)));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ClassPaths: bootClassPaths=%s", JDWP_CHECK_NULL(bootClassPaths)));
 
     m_cmdParser->reply.WriteString(baseDir);
     WritePathStrings(classPaths, pathSeparator);
     WritePathStrings(bootClassPaths, pathSeparator);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //DisposeObjectsHandler--------------------------------------------------------
 
-void
-VirtualMachine::DisposeObjectsHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::DisposeObjectsHandler::Execute(JNIEnv *jni) 
 {
     jint refCount;
     ObjectID objectID;
     jint objCount = m_cmdParser->command.ReadInt();
-    JDWP_TRACE_DATA("DisposeObjects: dispose: objects=" << objCount);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "DisposeObjects: dispose: objects=%d", objCount));
     for (jint i = 0; i < objCount; i++)
     {
         objectID = m_cmdParser->command.ReadRawObjectID();
         refCount = m_cmdParser->command.ReadInt();
         GetObjectManager().DisposeObject(jni, objectID, refCount);
-        JDWP_TRACE_DATA("DisposeObjects: object#=" << i 
-            << ", objectID=" << objectID);
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "DisposeObjects: object#=%d, objectID=%p", i, objectID));
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //HoldEventsHandler------------------------------------------------------------
 
-void
-VirtualMachine::HoldEventsHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::HoldEventsHandler::Execute(JNIEnv *jni) 
 {
-    JDWP_TRACE_DATA("HoldEvents: hold events");
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "HoldEvents: hold events"));
     GetEventDispatcher().HoldEvents();
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //ReleaseEventsHandler---------------------------------------------------------
 
-void
-VirtualMachine::ReleaseEventsHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::ReleaseEventsHandler::Execute(JNIEnv *jni) 
 {
-    JDWP_TRACE_DATA("ReleaseEvents: release events");
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReleaseEvents: release events"));
     GetEventDispatcher().ReleaseEvents();
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //CapabilitiesNewHandler-------------------------------------------------------
 
-void
+int
 VirtualMachine::CapabilitiesNewHandler::Execute(JNIEnv *jni)
-    throw(AgentException)
 {
     jdwpCapabilities caps = GetCapabilities();
 
@@ -627,6 +672,8 @@ VirtualMachine::CapabilitiesNewHandler::Execute(JNIEnv *jni)
     for (int i = 0; i < 11; i++){
         m_cmdParser->reply.WriteBoolean(JNI_FALSE);
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -634,8 +681,8 @@ VirtualMachine::CapabilitiesNewHandler::Execute(JNIEnv *jni)
 
 class DAgentAutoFree {
 public:
-    DAgentAutoFree(unsigned char **ptr, size_t count) throw() : m_ptr(ptr) {m_count = count;}
-    ~DAgentAutoFree() throw()
+    DAgentAutoFree(unsigned char **ptr, size_t count) : m_ptr(ptr) {m_count = count;}
+    ~DAgentAutoFree()
     {
         MemoryManager &mm = AgentBase::GetMemoryManager();
         if (m_ptr != 0)
@@ -657,13 +704,13 @@ private:
     unsigned char **m_ptr;
 };
 
-void
-VirtualMachine::RedefineClassesHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::RedefineClassesHandler::Execute(JNIEnv *jni) 
 {
     MemoryManager &mm = GetMemoryManager();
 
     jint classCount = m_cmdParser->command.ReadInt();
-    JDWP_TRACE_DATA("RedefineClasses: received: classCount=" << classCount);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "RedefineClasses: received: classCount=%d", classCount));
 
     jvmtiClassDefinition *classDefs =
         reinterpret_cast<jvmtiClassDefinition *>(mm.Allocate(sizeof(jvmtiClassDefinition)*classCount JDWP_FILE_LINE));
@@ -678,7 +725,7 @@ VirtualMachine::RedefineClassesHandler::Execute(JNIEnv *jni) throw(AgentExceptio
 
         DAgentAutoFree dobjDefs(bytes, classCount);
 
-        JDWP_TRACE_DATA("RedefineClasses: classes" << classCount);
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "RedefineClasses: classes=%d", classCount));
         for (i = 0; i < classCount; i++)
         {
             classDefs[i].klass = m_cmdParser->command.ReadReferenceTypeID(jni);
@@ -692,34 +739,39 @@ VirtualMachine::RedefineClassesHandler::Execute(JNIEnv *jni) throw(AgentExceptio
             if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {    
                 jvmtiError err;
                 char* signature = 0;
-                JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(classDefs[i].klass, &signature, 0));
+                JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(classDefs[i].klass, &signature, 0));
                 JvmtiAutoFree afcs(signature);
-                JDWP_TRACE_DATA("RedefineClasses: class#=" << i
-                    << ", refTypeID=" << classDefs[i].klass
-                    << ", class_byte_count=" << classDefs[i].class_byte_count 
-                    << ", signature=" << JDWP_CHECK_NULL(signature));
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "RedefineClasses: class#=%d, refTypeID=%p, class_byte_count=%d, signature=%s", 
+                                i, classDefs[i].klass, classDefs[i].class_byte_count, JDWP_CHECK_NULL(signature)));
             }
 #endif
         }
 
         jvmtiError err;
-        JVMTI_TRACE(err, GetJvmtiEnv()->RedefineClasses(classCount, classDefs));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->RedefineClasses(classCount, classDefs));
 
-        if (err != JVMTI_ERROR_NONE)
-            throw AgentException(err);
+        if (err != JVMTI_ERROR_NONE){
+            AgentException e(err);
+		    JDWP_SET_EXCEPTION(e);
+            return err;
+        }
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //SetDefaultStratumHandler-----------------------------------------------------
 
-void
-VirtualMachine::SetDefaultStratumHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::SetDefaultStratumHandler::Execute(JNIEnv *jni)
 {
-    // Note. The SetDefaultStratum handler is not implemented
-    // here because JDWP specs are not clear about this command.
-    JDWP_TRACE_DATA("SetDefaultStratumHandler: not implemented");
-    throw AgentException(JDWP_ERROR_NOT_IMPLEMENTED);
+    JDWP_TRACE(LOG_RELEASE, (LOG_FUNC_FL, "SetDefaultStratumHandler(%p)", jni));
+
+    char *stratum = m_cmdParser->command.ReadStringNoFree();
+    AgentBase::SetDefaultStratum(stratum);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -727,7 +779,7 @@ VirtualMachine::SetDefaultStratumHandler::Execute(JNIEnv *jni) throw(AgentExcept
 
 int
 VirtualMachine::AllClassesWithGenericHandler::Compose41Class(JNIEnv *jni_env,
-            jvmtiEnv* jvmti, jclass klass) throw (AgentException)
+            jvmtiEnv* jvmti, jclass klass) 
 {
     jdwpTypeTag refTypeTag = GetClassManager().GetJdwpTypeTag(klass);
 
@@ -735,18 +787,24 @@ VirtualMachine::AllClassesWithGenericHandler::Compose41Class(JNIEnv *jni_env,
     char* generic = 0;
 
     jvmtiError err;
-    JVMTI_TRACE(err, jvmti->GetClassSignature(klass, &signature, &generic));
+    JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetClassSignature(klass, &signature, &generic));
 
     JvmtiAutoFree dobjs(signature);
     JvmtiAutoFree dobjg(generic);
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE){
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
     jint status;
-    JVMTI_TRACE(err, jvmti->GetClassStatus(klass, &status));
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetClassStatus(klass, &status));
+    if (err != JVMTI_ERROR_NONE){
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
     // According to JVMTI spec ClassStatus flag for arrays and primitive classes must be zero
     if (status == JVMTI_CLASS_STATUS_ARRAY || status == JVMTI_CLASS_STATUS_PRIMITIVE) {
@@ -756,7 +814,7 @@ VirtualMachine::AllClassesWithGenericHandler::Compose41Class(JNIEnv *jni_env,
         return 1;
     }
 
-    m_cmdParser->reply.WriteByte(refTypeTag);
+    m_cmdParser->reply.WriteByte((jbyte)refTypeTag);
     m_cmdParser->reply.WriteReferenceTypeID(jni_env, klass);
     m_cmdParser->reply.WriteString(signature);
 
@@ -766,9 +824,8 @@ VirtualMachine::AllClassesWithGenericHandler::Compose41Class(JNIEnv *jni_env,
         m_cmdParser->reply.WriteString("");
 
     m_cmdParser->reply.WriteInt(status);
-    JDWP_TRACE_DATA("AllClassesWithGeneric: typeTag=" << refTypeTag << ", refTypeID="
-         << klass << ", signature=" << JDWP_CHECK_NULL(signature) << ", generic=" 
-         << JDWP_CHECK_NULL(generic) << ", status=" << status);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "AllClassesWithGeneric: typeTag=%d, refTypeID=%p, signature=%s, generic=%s, status=%d", 
+                    refTypeTag, klass, JDWP_CHECK_NULL(signature), JDWP_CHECK_NULL(generic), status));
 
     return 0;
 }
@@ -777,26 +834,27 @@ VirtualMachine::AllClassesWithGenericHandler::Compose41Class(JNIEnv *jni_env,
 //-----------------------------------------------------------------------------
 //InstanceCountsHandler-------------------------------------------------
 
-void
-VirtualMachine::InstanceCountsHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+VirtualMachine::InstanceCountsHandler::Execute(JNIEnv *jni) 
 {
     jint refTypesCount = m_cmdParser->command.ReadInt();
     // Illegal argument
     if(refTypesCount < 0) {
-        throw AgentException(JDWP_ERROR_ILLEGAL_ARGUMENT);
+        AgentException e(JDWP_ERROR_ILLEGAL_ARGUMENT);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_ILLEGAL_ARGUMENT;
     }
 
     m_cmdParser->reply.WriteInt(refTypesCount);
-    JDWP_TRACE_DATA("InstanceCounts: return the number of counts that follow:" << refTypesCount);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "InstanceCounts: return the number of counts that follow:%d", refTypesCount));
 
     // Number of reference types equals zero
     if(0 == refTypesCount) {
-        return;
+        return JDWP_ERROR_NONE;
     }
 
     jclass jvmClass;
     jvmtiError err;
-    char* signature = 0;
     // Tag is used to mark object which is reported in FollowReferences
     jlong tag_value = 0xffff;
     jlong tags[1] = {tag_value};
@@ -808,9 +866,9 @@ VirtualMachine::InstanceCountsHandler::Execute(JNIEnv *jni) throw(AgentException
     memset(&hcbs, 0, sizeof(hcbs));
     hcbs.heap_iteration_callback = NULL;
     hcbs.heap_reference_callback = &HeapReferenceCallback;
-    hcbs.primitive_field_callback = &PrimitiveFieldCallback;
-    hcbs.array_primitive_value_callback = &ArrayPrimitiveValueCallback;
-    hcbs.string_primitive_value_callback = &StringPrimitiveValueCallback;
+    hcbs.primitive_field_callback = NULL;
+    hcbs.array_primitive_value_callback = NULL;
+    hcbs.string_primitive_value_callback = NULL;
 
     for(int i = 0; i < refTypesCount;i++) {
          jvmClass = m_cmdParser->command.ReadReferenceTypeID(jni);
@@ -818,38 +876,57 @@ VirtualMachine::InstanceCountsHandler::Execute(JNIEnv *jni) throw(AgentException
         // JDWP_ERROR_INVALID_CLASS, JDWP_ERROR_INVALID_OBJECT
 #ifndef NDEBUG
         if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
+            char* signature = 0;
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
             JvmtiAutoFree afcs(signature);
-            JDWP_TRACE_DATA("SourceDebugExtension: received: refTypeID=" << jvmClass
-                << ", classSignature=" << JDWP_CHECK_NULL(signature));
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "InstanceCounts: received: refTypeID=%p, classSignature=%s", jvmClass, JDWP_CHECK_NULL(signature)));
         }
 #endif
         
         //It initiates a traversal over the objects that are directly and indirectly reachable from the heap roots.
-        JVMTI_TRACE(err, GetJvmtiEnv()->FollowReferences(0, jvmClass,  NULL,
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->FollowReferences(0, jvmClass,  NULL,
              &hcbs, &tag_value));
         if (err != JVMTI_ERROR_NONE) {
             // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_INVALID_CLASS
             // JVMTI_ERROR_INVALID_OBJECT, JVMTI_ERROR_NULL_POINTER 
-            throw AgentException(err);
+            AgentException e(err);
+		    JDWP_SET_EXCEPTION(e);
+            return err;
         }
 
+        jobject *pResultObjects = 0;
+
         // Return the instances that have been marked expected tag_value tag.
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetObjectsWithTags(1, tags, &reachableInstancesNum,
-            NULL, NULL));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetObjectsWithTags(1, tags, &reachableInstancesNum,
+            &pResultObjects, NULL));
+		JvmtiAutoFree afResultObjects(pResultObjects);
   
         if (err != JVMTI_ERROR_NONE) {
             // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_ILLEGAL_ARGUMENT 
             // JVMTI_ERROR_ILLEGAL_ARGUMENT, JVMTI_ERROR_NULL_POINTER  
-            throw AgentException(err);
+            AgentException e(err);
+		    JDWP_SET_EXCEPTION(e);
+            return err;
         }
 
         m_cmdParser->reply.WriteLong(reachableInstancesNum);
-        JDWP_TRACE_DATA("InstanceCounts: return the number of instances for the corresponding  reference type:"
-            << reachableInstancesNum);
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "InstanceCounts: return the number of instances for the corresponding  reference type:%d",
+                        reachableInstancesNum));
+	   //Set objects tags back to 0 
+       for(int i = 0; i < reachableInstancesNum; i++) {
+          JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->SetTag(pResultObjects[i], 0));
+          jni->DeleteLocalRef(pResultObjects[i]);
+          if (err != JVMTI_ERROR_NONE) {
+              AgentException e(err);
+	          JDWP_SET_EXCEPTION(e);
+              return err;
+          }
+        }
         // tag_value is changed to indicate instances of other types 
         tags[0] = ++tag_value;
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------

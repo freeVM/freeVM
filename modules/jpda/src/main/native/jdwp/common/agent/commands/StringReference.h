@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Anton V. Karnachuk
- * @version $Revision: 1.5.2.1 $
- */
-
 /**
  * @file
  * StringReference.h
@@ -64,7 +58,7 @@ namespace jdwp {
              *                      <code>INVALID_STRING</code>, 
              *                      <code>INVALID_OBJECT</code>, <code>VM_DEAD</code>.
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; //ValueHandler
 

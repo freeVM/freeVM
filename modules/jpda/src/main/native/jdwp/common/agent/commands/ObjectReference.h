@@ -17,11 +17,6 @@
  */
 
 /**
- * @author Anatoly F. Bondarenko, Viacheslav G. Rybalov
- * @version $Revision: 1.7.2.1 $
- */
-
-/**
  * @file
  * ObjectReference.h
  *
@@ -57,7 +52,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // ReferenceTypeHandler class
 
@@ -75,7 +70,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // GetValuesHandler class
 
@@ -93,7 +88,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // SetValuesHandler class
 
@@ -111,7 +106,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // MonitorInfoHandler class
 
@@ -129,7 +124,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // DisableCollectionHandler class
 
@@ -147,7 +142,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // EnableCollectionHandler class
 
@@ -165,7 +160,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // IsCollectedHandler class
 
@@ -199,7 +194,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         private:
             jclass m_clazz;
@@ -227,7 +222,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // ReferringObjectsHandler class
 

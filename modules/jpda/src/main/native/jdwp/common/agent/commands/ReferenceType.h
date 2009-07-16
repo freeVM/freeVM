@@ -17,11 +17,6 @@
  */
 
 /**
- * @author Anatoly F. Bondarenko
- * @version $Revision: 1.5.2.1 $
- */
-
-/**
  * @file
  * ReferenceType.h
  *
@@ -63,7 +58,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         protected:
 
@@ -89,7 +84,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // ClassLoaderHandler class
 
@@ -107,7 +102,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer.
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // ModifiersHandler class
 
@@ -133,7 +128,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         protected:
         /**
@@ -165,7 +160,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer.
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         protected:
         /**
@@ -189,7 +184,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // GetValuesHandler class
 
@@ -207,7 +202,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer.
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // SourceFileHandler class
 
@@ -225,7 +220,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // NestedTypesHandler class
 
@@ -243,7 +238,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // StatusHandler class
 
@@ -261,7 +256,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // InterfacesHandler class
 
@@ -279,7 +274,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer.
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // ClassObjectHandler class
 
@@ -297,7 +292,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         }; // SourceDebugExtensionHandler class
 
@@ -361,7 +356,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
         };// InstancesHandler class
 
     // =========================================================================
@@ -378,7 +373,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
         };// ClassFileVersionHandler class
 
     // =========================================================================
@@ -395,7 +390,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
         };//ConstantPoolHandler class
 
    // =========================================================================

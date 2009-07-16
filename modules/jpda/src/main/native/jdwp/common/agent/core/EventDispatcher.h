@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.11.2.1 $
- */
-
 /**
  * @file
  * EventDispatcher.h
@@ -32,21 +26,18 @@
 #ifndef _EVENT_DISPATCHER_H_
 #define _EVENT_DISPATCHER_H_
 
-#include <queue>
-
+#include "Util.h"
 #include "jni.h"
 #include "jvmti.h"
 #include "jdwp.h"
 
 #include "AgentBase.h"
 #include "AgentMonitor.h"
-#include "AgentAllocator.h"
 #include "PacketParser.h"
 #include "CommandHandler.h"
 
 
 namespace jdwp {
-
     /**
      * The given class provides a separate thread that dispatches all event packets, 
      * suspends threads on events and performs deferred method invocation.
@@ -61,13 +52,13 @@ namespace jdwp {
          * 
          * @param limit - maximum even queue length
          */
-        EventDispatcher(size_t limit = 1024) throw();
+        EventDispatcher(size_t limit = 1024);
 
         /**
          * A destructor.
          * Destroys the given instance.
          */
-        ~EventDispatcher() throw() {}
+        ~EventDispatcher() {}
 
         /**
          * Initializes this events before starting the thread.
@@ -76,7 +67,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Init(JNIEnv *jni) throw(AgentException);
+        void Init(JNIEnv *jni);
 
         /**
          * Starts the given thread.
@@ -85,7 +76,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Start(JNIEnv *jni) throw(AgentException);
+        int Start(JNIEnv *jni);
 
         /**
          * Resets all data.
@@ -94,7 +85,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Reset(JNIEnv *jni) throw(AgentException);
+        void Reset(JNIEnv *jni);
 
         /**
          * Stops the given thread.
@@ -103,7 +94,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Stop(JNIEnv *jni) throw(AgentException);
+        void Stop(JNIEnv *jni);
 
         /**
          * Cleans all data after thread completion.
@@ -112,33 +103,33 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Clean(JNIEnv *jni) throw(AgentException);
+        void Clean(JNIEnv *jni);
 
         /**
          * Turns on the flag to hold all events.
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void HoldEvents() throw(AgentException);
+        void HoldEvents();
 
         /**
          * Turns off the flag to hold all events.
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void ReleaseEvents() throw(AgentException);
+        void ReleaseEvents();
 
         /**
          * Informs that new session started.
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void NewSession() throw(AgentException);
+        void NewSession();
 
         /**
          * Generates new ID for the event packet.
          */
-        jint NewId() throw() { return m_idCount++; }
+        jint NewId() { return m_idCount++; }
 
         /**
          * Sends the event packet and suspends thread(s) according to suspend 
@@ -150,8 +141,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void PostEventSet(JNIEnv *jni, EventComposer *ec, jdwpEventKind eventKind)
-            throw(AgentException);
+        void PostEventSet(JNIEnv *jni, EventComposer *ec, jdwpEventKind eventKind);
 
         /**
          * Suspends thread(s) after method invocation according to invocation 
@@ -162,8 +152,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void PostInvokeSuspend(JNIEnv *jni, SpecialAsyncCommandHandler* handler)
-            throw(AgentException);
+        int PostInvokeSuspend(JNIEnv *jni, SpecialAsyncCommandHandler* handler);
 
         /**
          * Executes all handlers of methods that should be invoked on the 
@@ -174,8 +163,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void ExecuteInvokeMethodHandlers(JNIEnv *jni, jthread thread) 
-            throw(AgentException);
+        void ExecuteInvokeMethodHandlers(JNIEnv *jni, jthread thread);
 
     protected:
 
@@ -205,13 +193,14 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void SuspendOnEvent(JNIEnv* jni, EventComposer *ec) throw(AgentException);
+        int SuspendOnEvent(JNIEnv* jni, EventComposer *ec);
 
         /**
          * Event queue type.
          */
-        typedef queue<EventComposer*,
-            deque<EventComposer*, AgentAllocator<EventComposer*> > > EventQueue;
+        //typedef queue<EventComposer*,
+        //    deque<EventComposer*, AgentAllocator<EventComposer*> > > EventQueue;
+        typedef JDWPQueue EventQueue;
 
         /**
          * Event queue with event packets to be sent.

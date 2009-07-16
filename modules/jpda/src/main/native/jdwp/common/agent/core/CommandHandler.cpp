@@ -15,18 +15,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin, Viacheslav G. Rybalov
- * @version $Revision: 1.18 $
- */
-
-#include <string.h>
-
 #include "CommandHandler.h"
 #include "PacketParser.h"
 #include "ThreadManager.h"
+#include "ClassManager.h"
 #include "EventDispatcher.h"
+#include "ExceptionManager.h"
 
 using namespace jdwp;
 
@@ -40,24 +34,98 @@ void CommandHandler::ComposeError(const AgentException &e)
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-void SyncCommandHandler::Run(JNIEnv *jni_env, CommandParser *cmd) throw(AgentException)
+int SyncCommandHandler::Run(JNIEnv *jni_env, CommandParser *cmd)
 {
-    JDWP_TRACE_ENTRY("Sync::Run(" << jni_env << ',' << cmd << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Sync::Run(%p,%p)", jni_env, cmd));
+    static int count = 0;
+    int ret = 0;
+
+    if (count == 0) {
+        GetJniEnv()->PushLocalFrame(100);
+    }
 
     m_cmdParser = cmd;
-    try
-    {
-        Execute(jni_env);
-    }
-    catch (const AgentException& e)
-    {
-        ComposeError(e);
+    ret = Execute(jni_env);
+    if (ret != JDWP_ERROR_NONE) {
+        AgentException aex = GetExceptionManager().GetLastException();
+        ComposeError(aex);
     }
     
     if (cmd->reply.IsPacketInitialized())
     {
-        cmd->WriteReply(jni_env);
+        ret = cmd->WriteReply(jni_env);
+        JDWP_CHECK_RETURN(ret);
+
     }
+
+    count++;
+    if (count >= 30) {
+        GetJniEnv()->PopLocalFrame(NULL);
+        count = 0;
+    }
+
+    return JDWP_ERROR_NONE;
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+WorkerThread* AsyncCommandHandler::worker = 0;
+
+static bool isWorkerInitialized = false;
+
+WorkerThread::WorkerThread(JNIEnv* jni) {
+    m_head = 0;
+    m_tail = 0;
+    m_requestListMonitor = new AgentMonitor("_jdwp_CommandHandler_requestListMonitor");
+
+    m_agentThread = GetThreadManager().RunAgentThread(jni, StartExecution, NULL,
+						      JVMTI_THREAD_MAX_PRIORITY, "_jdwp_AsyncCommandHandler_Worker");
+}
+
+WorkerThread::~WorkerThread() {
+
+}
+
+void JNICALL
+WorkerThread::StartExecution(jvmtiEnv* jvmti_env, JNIEnv* jni_env, void* arg)
+{
+    AsyncCommandHandler::StartExecution(jvmti_env, jni_env, arg);
+}
+
+void WorkerThread::AddRequest(AsyncCommandHandler* handler) {
+    MonitorAutoLock lock(m_requestListMonitor JDWP_FILE_LINE);
+    HandlerNode* node = new HandlerNode();
+    node->m_next = 0;
+    node->m_handler = handler;
+    if (m_tail != 0) {
+	m_tail->m_next = node;
+    }
+    m_tail = node;
+    if (m_head == 0) {
+	m_head = m_tail;
+    }
+    m_requestListMonitor->NotifyAll();
+}
+
+AsyncCommandHandler* WorkerThread::RemoveRequest() {
+    MonitorAutoLock lock(m_requestListMonitor JDWP_FILE_LINE);
+
+    while (m_head == 0) {
+	m_requestListMonitor->Wait();
+    }
+
+    HandlerNode* node = m_head;
+    AsyncCommandHandler* handler = m_head->m_handler;
+    if (m_head == m_tail) {
+	m_tail = 0;
+    }
+
+    m_head = m_head->m_next;
+
+    delete node;
+
+    return handler;
 }
 
 //-----------------------------------------------------------------------------
@@ -77,24 +145,21 @@ const char* AsyncCommandHandler::GetThreadName() {
 
 //-----------------------------------------------------------------------------
 
-void AsyncCommandHandler::Run(JNIEnv *jni_env, CommandParser *cmd) throw(AgentException)
+int AsyncCommandHandler::Run(JNIEnv *jni_env, CommandParser *cmd)
 {
-    JDWP_TRACE_ENTRY("Async::Run(" << jni_env << ',' << cmd << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Async::Run(%p,%p)", jni_env, cmd));
 
     m_cmdParser = new CommandParser();
     cmd->MoveData(jni_env, m_cmdParser);
-    try
-    {
-        GetThreadManager().RunAgentThread(jni_env, StartExecution, this,
-            JVMTI_THREAD_MAX_PRIORITY, GetThreadName());
-    }
-    catch (const AgentException& e)
-    {
-        JDWP_ASSERT(e.ErrCode() != JDWP_ERROR_NULL_POINTER);
-        JDWP_ASSERT(e.ErrCode() != JDWP_ERROR_INVALID_PRIORITY);
 
-        throw e;
+    if (worker == 0) {
+        worker = new WorkerThread(jni_env);
+        isWorkerInitialized = true;
     }
+
+    worker->AddRequest(this);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -102,39 +167,57 @@ void AsyncCommandHandler::Run(JNIEnv *jni_env, CommandParser *cmd) throw(AgentEx
 void JNICALL
 AsyncCommandHandler::StartExecution(jvmtiEnv* jvmti_env, JNIEnv* jni_env, void* arg)
 {
-    JDWP_TRACE_ENTRY("Async::StartExecution(" << jvmti_env << ',' << jni_env << ',' << arg << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Async::StartExecution(%p,%p,%p)", jvmti_env, jni_env, arg));
 
-    AsyncCommandHandler *handler = reinterpret_cast<AsyncCommandHandler *>(arg);
+    static int count = 0;
+    int ret = 0;
 
-    try 
-    {
-        handler->Execute(jni_env);
-    }
-    catch (const AgentException &e)
-    {
-        handler->ComposeError(e);
-    }
-
-    try {
-        if (handler->m_cmdParser->reply.IsPacketInitialized())
-        {
-            JDWP_TRACE_CMD("send reply");
-            handler->m_cmdParser->WriteReply(jni_env);
+    while (true) {
+        if (!isWorkerInitialized) {
+            continue;
         }
+	AsyncCommandHandler* handler = worker->RemoveRequest();
 
-        JDWP_TRACE_CMD("Removing command handler: "
-            << handler->m_cmdParser->command.GetCommandSet() << "/"
-            << handler->m_cmdParser->command.GetCommand());
+    if (count == 0) {
+        GetJniEnv()->PushLocalFrame(100);
+    }
 
-        handler->Destroy();
-    
-    } catch (const AgentException &e) {
-        // cannot report error in async thread, just print warning message
-        JDWP_INFO("JDWP error in asynchronous command: " << e.what() << " [" << e.ErrCode() << "]");
+    ret = handler->Execute(jni_env);
+    if (ret != JDWP_ERROR_NONE) {
+        AgentException aex = GetExceptionManager().GetLastException();
+        handler->ComposeError(aex);
+    }
+
+    if (handler->m_cmdParser->reply.IsPacketInitialized())
+    {
+        JDWP_TRACE(LOG_RELEASE, (LOG_CMD_FL, "send reply"));
+        ret = handler->m_cmdParser->WriteReply(jni_env);
+        if (ret != JDWP_ERROR_NONE) {
+            // cannot report error in async thread, just print warning message
+            AgentException aex = GetExceptionManager().GetLastException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error in asynchronous command: %s", aex.GetExceptionMessage(jni_env)));
+        }
+    }
+
+    JDWP_TRACE(LOG_RELEASE, (LOG_CMD_FL, "Removing command handler: %d/%d",
+           handler->m_cmdParser->command.GetCommandSet(),
+           handler->m_cmdParser->command.GetCommand()));
+
+    count++;
+    if (count >= 30) {
+        GetJniEnv()->PopLocalFrame(NULL);
+        count = 0;
+    }
+
     }
 }
 
 //-----------------------------------------------------------------------------
+void SpecialAsyncCommandHandler::Destroy() {
+}
+
+//-----------------------------------------------------------------------------
+
 
 SpecialAsyncCommandHandler::SpecialAsyncCommandHandler()
 {
@@ -149,16 +232,18 @@ SpecialAsyncCommandHandler::~SpecialAsyncCommandHandler()
 
 void SpecialAsyncCommandHandler::ExecuteDeferredInvoke(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Async::ExecuteDeferredInvoke(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Async::ExecuteDeferredInvoke(%p)", jni));
     ExecuteDeferredFunc(jni);
 }
 
-void SpecialAsyncCommandHandler::WaitDeferredInvocation(JNIEnv *jni)
+int SpecialAsyncCommandHandler::WaitDeferredInvocation(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Async::WaitDeferredInvocation(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Async::WaitDeferredInvocation(%p)", jni));
 
-    GetThreadManager().RegisterInvokeHandler(jni, this);
-    GetEventDispatcher().PostInvokeSuspend(jni, this);
+    int ret = GetThreadManager().RegisterInvokeHandler(jni, this);
+    JDWP_CHECK_RETURN(ret);
+    ret = GetEventDispatcher().PostInvokeSuspend(jni, this);
+    return ret;
 }
 
 //-----------------------------------------------------------------------------
@@ -168,7 +253,7 @@ void SpecialAsyncCommandHandler::WaitDeferredInvocation(JNIEnv *jni)
  */
 jint SpecialAsyncCommandHandler::getArgsNumber(char* sig)
 {
-    JDWP_TRACE_ENTRY("Async::getArgsNumber(" << JDWP_CHECK_NULL(sig) << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Async::getArgsNumber(%s)", JDWP_CHECK_NULL(sig)));
 
     if (sig == 0) return 0;
 
@@ -181,7 +266,7 @@ jint SpecialAsyncCommandHandler::getArgsNumber(char* sig)
         }
         argsCount++;
     }
-    JDWP_TRACE_DATA("getArgsNumber: sig=" << sig << ", args=" << argsCount);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "getArgsNumber: sig=%s, args=%d", sig, argsCount));
 
     return argsCount;
 }
@@ -191,7 +276,7 @@ jint SpecialAsyncCommandHandler::getArgsNumber(char* sig)
  */
 jdwpTag SpecialAsyncCommandHandler::getTag(jint index, char* sig)
 {
-    JDWP_TRACE_ENTRY("Async::getArgsNumber(" << index << ',' << JDWP_CHECK_NULL(sig) << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Async::getArgsNumber(%d,%s)", index, JDWP_CHECK_NULL(sig)));
 
     if (sig == 0) return JDWP_TAG_NONE;
 
@@ -216,7 +301,7 @@ jdwpTag SpecialAsyncCommandHandler::getTag(jint index, char* sig)
  */
 bool SpecialAsyncCommandHandler::getClassNameArg(jint index, char* sig, char* name)
 {
-    JDWP_TRACE_ENTRY("Async::getArgsNumber(" << index << ',' << JDWP_CHECK_NULL(sig) << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Async::getArgsNumber(%d,%s)", index, JDWP_CHECK_NULL(sig)));
 
     if (sig == 0) return false;
 
@@ -277,16 +362,14 @@ bool SpecialAsyncCommandHandler::getClassNameArg(jint index, char* sig, char* na
  * @return JNI_FALSE in case of any mismatch or error
  */
 jboolean
-SpecialAsyncCommandHandler::IsArgValid(JNIEnv *jni, jint index,
+SpecialAsyncCommandHandler::IsArgValid(JNIEnv *jni, jclass klass, jint index,
                                        jdwpTaggedValue value, char* sig)
-                                       throw(AgentException)
 {
-    JDWP_TRACE_ENTRY("IsArgValid(" << jni << ',' << index 
-        << ',' << (int)value.tag << ',' << JDWP_CHECK_NULL(sig) << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsArgValid(%p,%d,%d,%s)", jni, index, (int)value.tag, JDWP_CHECK_NULL(sig)));
 
     jdwpTag argTag = getTag(index, sig);
 
-    JDWP_TRACE_DATA("IsArgValid: index=" << index << ", value.tag=" << value.tag << ", argTag=" << argTag);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsArgValid: index=%d, value.tag=%d, argTag=%d", index, value.tag, argTag));
 
     switch (value.tag) {
         case JDWP_TAG_BOOLEAN:
@@ -298,14 +381,14 @@ SpecialAsyncCommandHandler::IsArgValid(JNIEnv *jni, jint index,
         case JDWP_TAG_FLOAT:
         case JDWP_TAG_DOUBLE:
             if (value.tag != argTag) {
-                JDWP_TRACE_DATA("IsArgValid: mismatched primitive type tag: index=" << index << ", value.tag=" << value.tag << ", argTag=" << argTag);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsArgValid: mismatched primitive type tag: index=%d, value.tag=%d, argTag=%d", index, value.tag, argTag));
                 return JNI_FALSE;
             } else {
                 return JNI_TRUE;
             }
         case JDWP_TAG_ARRAY:
             if ('[' != argTag) {
-                JDWP_TRACE_DATA("IsArgValid: mismatched array type tag: index=" << index << ", value.tag=" << value.tag << ", argTag=" << argTag);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsArgValid: mismatched array type tag: index=%d, value.tag=%d, argTag=%d", index, value.tag, argTag));
                 return JNI_FALSE;
             }
             break;
@@ -316,30 +399,72 @@ SpecialAsyncCommandHandler::IsArgValid(JNIEnv *jni, jint index,
         case JDWP_TAG_CLASS_LOADER:
         case JDWP_TAG_CLASS_OBJECT:
             if ('L' != argTag) {
-                JDWP_TRACE_DATA("IsArgValid: mismatched reference type tag: index=" << index << ", value.tag=" << value.tag << ", argTag=" << argTag);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsArgValid: mismatched reference type tag: index=%d, value.tag=%d, argTag=%d", index, value.tag, argTag));
                 return JNI_FALSE;
             }
             break;
         default: 
-            JDWP_TRACE_DATA("IsArgValid: unknown value type tag: index=" << index << ", value.tag=" << value.tag << ", argTag=" << argTag);
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsArgValid: unknown value type tag: index=%d, value.tag=%d, argTag=%d", index, value.tag, argTag));
             return JNI_FALSE;
     }
     char* name = reinterpret_cast<char*>(GetMemoryManager().Allocate(strlen(sig) JDWP_FILE_LINE));
     AgentAutoFree afv(name JDWP_FILE_LINE);
     if (!getClassNameArg(index, sig, name)) {
-        JDWP_TRACE_DATA("IsArgValid: bad class name: index=" << index << ", class=" << JDWP_CHECK_NULL(name));
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsArgValid: bad class name: index=%d, class=%s", index, JDWP_CHECK_NULL(name)));
         return JNI_FALSE;
     }
-    jclass cls = jni->FindClass(name);
-    if (jni->ExceptionCheck() == JNI_TRUE) {
-        jni->ExceptionClear();
-        JDWP_TRACE_DATA("IsArgValid: unknown class name: index=" << index << ", class=" << JDWP_CHECK_NULL(name));
+    // Since jni->FindClass method can't find the required class due to classloader restrications.
+    // The class in method signautre should be found by the same classloader, which loaded the
+    // class of the method.
+    jclass cls = FindClass(klass, name);
+    if (cls == 0) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsArgValid: unknown class name: index=%d, class=%s", index, JDWP_CHECK_NULL(name)));
         return JNI_FALSE;
     }
     if (!jni->IsInstanceOf(value.value.l, cls)) {
-        JDWP_TRACE_DATA("IsArgValid: unmatched class: index=" << index << ", class=" << JDWP_CHECK_NULL(name));
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsArgValid: unmatched class: index=%d, class=%s", index, JDWP_CHECK_NULL(name)));
         return JNI_FALSE;
     }
-    JDWP_TRACE_DATA("IsArgValid: matched class: index=" << index << ", class=" << JDWP_CHECK_NULL(name));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsArgValid: matched class: index=%d, class=%s", index, JDWP_CHECK_NULL(name)));
     return JNI_TRUE;
 }
+
+/**
+ * Retrieve a class object from a fully-qualified name, or 0 if the class cannot be found.
+ *
+ * @return a class object from a fully-qualified name, or 0 if the class cannot be found. 
+ */
+jclass SpecialAsyncCommandHandler::FindClass(jclass klass, char *name)
+{	
+    if(name == 0) {
+       return 0;
+    }
+    int len = strlen(name);
+    char* signature = (char*)GetMemoryManager().Allocate(len + 1 JDWP_FILE_LINE);
+    // replace '/' to '.'
+    for (int i = 0; i < len; ++i) {
+	if (name[i] == '/') {
+	    signature[i] = '.';
+	} else {
+	    signature[i] = name[i];
+	}
+    }
+    signature[len] = 0;
+
+    jvmtiEnv* jvmti = AgentBase::GetJvmtiEnv();
+
+    jvmtiError err;
+    jobject classLoader;
+
+    JVMTI_TRACE(LOG_RELEASE, err, jvmti->GetClassLoader(klass, &classLoader));
+
+    if (err != JVMTI_ERROR_NONE) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error calling GetClassLoader()"));
+        return 0;
+    }
+
+    jclass cls = AgentBase::GetClassManager().GetClassForName(AgentBase::GetJniEnv(), signature, classLoader);
+    GetMemoryManager().Free(signature JDWP_FILE_LINE);
+    return cls;
+}
+

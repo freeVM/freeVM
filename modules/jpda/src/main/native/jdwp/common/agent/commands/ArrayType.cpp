@@ -15,21 +15,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.8 $
- */
-#include <string.h>
 #include "ArrayType.h"
 #include "PacketParser.h"
 #include "ClassManager.h"
+#include "ExceptionManager.h"
+
+
+#include <string.h>
 
 using namespace jdwp;
 using namespace ArrayType;
 
-void
-ArrayType::NewInstanceHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+ArrayType::NewInstanceHandler::Execute(JNIEnv *jni) 
 {
     jclass cls = m_cmdParser->command.ReadReferenceTypeID(jni);
     jint length = m_cmdParser->command.ReadInt();
@@ -37,62 +35,67 @@ ArrayType::NewInstanceHandler::Execute(JNIEnv *jni) throw(AgentException)
     JDWP_ASSERT(cls != 0);
     char* signature = 0;
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(cls, &signature, 0));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(cls, &signature, 0));
     JvmtiAutoFree afv1(signature);
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
     }
 
-    JDWP_TRACE_DATA("NewInstance: received: refTypeID=" << cls
-        << ", length=" << length
-        << ", signature=" << JDWP_CHECK_NULL(signature));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: received: refTypeID=%p, length=%d, signature=%s",
+                    cls,  length, JDWP_CHECK_NULL(signature)));
 
     if ((signature == 0) || (strlen(signature) < 2)) {
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        AgentException e(JDWP_ERROR_INVALID_OBJECT);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_OBJECT;
     }
     if(signature[0] != '[') {
-        throw AgentException(JDWP_ERROR_INVALID_ARRAY);
+        AgentException e(JDWP_ERROR_INVALID_ARRAY);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_ARRAY;
     }
 
     jarray arr = 0;
     switch (signature[1]) {
         case 'Z': {
-            JDWP_TRACE_DATA("NewInstance: new boolean array");
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: new boolean array"));
             arr = jni->NewBooleanArray(length);
             break;
         }
         case 'B': {
-            JDWP_TRACE_DATA("NewInstance: new byte array");
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: new byte array"));
             arr = jni->NewByteArray(length);
             break;
         }
         case 'C': {
-            JDWP_TRACE_DATA("NewInstance: new char array");
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: new char array"));
             arr = jni->NewCharArray(length);
             break;
         }
         case 'S': {
-            JDWP_TRACE_DATA("NewInstance: new short array");
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: new short array"));
             arr = jni->NewShortArray(length);
             break;
         }
         case 'I': {
-            JDWP_TRACE_DATA("NewInstance: new int array");
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: new int array"));
             arr = jni->NewIntArray(length);
             break;
         }
         case 'J': {
-            JDWP_TRACE_DATA("NewInstance: new long array");
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: new long array"));
             arr = jni->NewLongArray(length);
             break;
         }
         case 'F': {
             arr = jni->NewFloatArray(length);
-            JDWP_TRACE_DATA("NewInstance: new float array");
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: new float array"));
             break;
         }
         case 'D': {
-            JDWP_TRACE_DATA("NewInstance: new double array");
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: new double array"));
             arr = jni->NewDoubleArray(length);
             break;
         }
@@ -101,29 +104,39 @@ ArrayType::NewInstanceHandler::Execute(JNIEnv *jni) throw(AgentException)
             char* name = GetClassManager().GetClassName(&signature[1]);
             JvmtiAutoFree jafn(name);
             jobject loader;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetClassLoader(cls, &loader));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassLoader(cls, &loader));
             if (err != JVMTI_ERROR_NONE) {
-                throw AgentException(err);
+                AgentException e(err);
+		        JDWP_SET_EXCEPTION(e);
+                return err;
             }
             jclass elementClass =
                 GetClassManager().GetClassForName(jni, name, loader);
-            JDWP_TRACE_DATA("NewInstance: new object array: "
-                "class=" << JDWP_CHECK_NULL(name));
+            if (elementClass == 0) {
+                AgentException ex(JDWP_ERROR_INTERNAL);
+                JDWP_SET_EXCEPTION(ex);
+                return JDWP_ERROR_INTERNAL;
+            }
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: new object array: %s", JDWP_CHECK_NULL(name)));
             arr = jni->NewObjectArray(length, elementClass, 0);
             break;
         }
         default:
-            JDWP_TRACE_DATA("NewInstance: bad type signature: "
-                << JDWP_CHECK_NULL(signature));
-            throw AgentException(JDWP_ERROR_INVALID_ARRAY);
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: bad type signature: %s", JDWP_CHECK_NULL(signature)));
+            AgentException e(JDWP_ERROR_INVALID_ARRAY);
+			JDWP_SET_EXCEPTION(e);
+            return JDWP_ERROR_INVALID_ARRAY;
     }
     GetClassManager().CheckOnException(jni);
     if (arr == 0) {
-        throw AgentException(JDWP_ERROR_OUT_OF_MEMORY);
+        AgentException e(JDWP_ERROR_OUT_OF_MEMORY);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_OUT_OF_MEMORY;
     }
 
-    JDWP_TRACE_DATA("NewInstance: send: tag=" << JDWP_TAG_ARRAY
-                << ", newArray=" << arr);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: send: tag=%s, newArray=%p", JDWP_TAG_ARRAY, arr));
     m_cmdParser->reply.WriteByte(JDWP_TAG_ARRAY);
     m_cmdParser->reply.WriteArrayID(jni, arr);
+
+    return JDWP_ERROR_NONE;
 }

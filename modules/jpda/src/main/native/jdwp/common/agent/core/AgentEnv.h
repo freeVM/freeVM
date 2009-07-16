@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.4.2.1 $
- */
-
 /**
  * @file
  * AgentEnv.h
@@ -47,6 +41,7 @@ namespace jdwp {
     class EventDispatcher;
     class RequestManager;
     class AgentManager;
+    class ExceptionManager;
 
     /**
      * Agent-environment structure containing all objects participating in
@@ -65,6 +60,7 @@ namespace jdwp {
         PacketDispatcher *packetDispatcher;
         EventDispatcher *eventDispatcher;
         RequestManager *requestManager;
+	ExceptionManager *exceptionManager;
 
         jvmtiEnv *jvmti;
         JavaVM *jvm;

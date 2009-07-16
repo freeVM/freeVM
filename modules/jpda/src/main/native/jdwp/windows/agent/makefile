@@ -22,6 +22,16 @@
 COMMON=..\..\common\# comment to avoid \ being treated as continuation
 CMNAGENT=$(COMMON)agent\# comment to avoid \ being treated as continuation
 
+!IF "$(HY_OS)-$(HY_ARCH)" == "windows-x86_64" 
+WARNING_LEVEL=W0
+PLATFORM_64=-DHYX86_64 -Oi -DWIN64 -D_WIN64 -D_AMD64_=1
+CPU=AMD64
+HYCOMMONCFLAGS = -GS- -EHs-c- /wd4530 $(HYCOMMONCFLAGS)
+!ELSE
+WARNING_LEVEL=WX
+HYCOMMONCFLAGS = -GS -GX $(HYCOMMONCFLAGS)
+!ENDIF
+
 LIBBASE=jdwp
 DLLNAME=..\$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
@@ -55,16 +65,18 @@ BUILDFILES = \
     $(CMNAGENT)core\ObjectManager.obj $(CMNAGENT)core\OptionParser.obj $(CMNAGENT)core\PacketDispatcher.obj \
     $(CMNAGENT)core\PacketParser.obj $(CMNAGENT)core\RequestManager.obj $(CMNAGENT)core\RequestModifier.obj \
     $(CMNAGENT)core\ThreadManager.obj $(CMNAGENT)core\TransportManager.obj $(CMNAGENT)core\AgentManager.obj \
-    $(CMNAGENT)core\CallBacks.obj \
+    $(CMNAGENT)core\CallBacks.obj $(CMNAGENT)core\ExceptionManager.obj\
     core\TransportManager_pd.obj
 
-VIRTFILES = 
+HYRCFLAGS = -I../../../include
+
+VIRTFILES = jdwp.res
 
 SYSLIBFILES = 
 
-MDLLIBFILES = 
+MDLLIBFILES = $(LIBPATH)vmi.lib $(LIBPATH)hythr$(HY_LINKLIB_SUFFIX)
   
 DLLBASE=0x13200000
-COMMENT=/comment:"JDWP agent native code. (c) Copyright 2005 - 2006 The Apache Software Foundation or its licensors, as applicable."
+COMMENT=/comment:"JDWP agent native code. (c) Copyright 2005 - 2009 The Apache Software Foundation or its licensors, as applicable."
 
 !include <$(HY_HDK)\build\make\rules.mak>

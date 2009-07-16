@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.7.2.1 $
- */
-
 /**
  * @file
  * AgentEventRequest.h
@@ -30,8 +24,10 @@
 #ifndef _AGENT_EVENT_REQUEST_H_
 #define _AGENT_EVENT_REQUEST_H_
 
+#include "memory.h"
 #include "AgentBase.h"
 #include "RequestModifier.h"
+#include "ExceptionManager.h"
 
 namespace jdwp {
 
@@ -55,26 +51,26 @@ namespace jdwp {
             jdwpEventKind kind,
             jdwpSuspendPolicy suspend,
             jint modCount = 0
-        ) throw(AgentException);
+        );
 
         /**
          * A destructor.
          */
-        virtual ~AgentEventRequest() throw();
+        virtual ~AgentEventRequest();
 
         /**
          * Assigns request ID.
          *
          * @param id - request ID
          */
-        void SetRequestId(RequestID id) throw() { m_requestId = id; }
+        void SetRequestId(RequestID id) { m_requestId = id; }
 
         /**
          * Assigns expiration flag of the event request.
          *
          * @param flag - expire flag
          */
-        void SetExpired(bool flag) throw() { m_isExpired = flag; }
+        void SetExpired(bool flag) { m_isExpired = flag; }
 
         /**
          * Assigns a new modifier at the given location in the list of modifiers.
@@ -82,7 +78,7 @@ namespace jdwp {
          * @param modifier - pointer to modifier
          * @param i        - index of place in the array of modifiers
          */
-        virtual void AddModifier(RequestModifier* modifier, jint i) throw() {
+        virtual void AddModifier(RequestModifier* modifier, jint i) {
             JDWP_ASSERT(i < m_modifierCount);
             m_modifiers[i] = modifier;
         }
@@ -90,35 +86,35 @@ namespace jdwp {
         /**
          * Returns request ID.
          */
-        RequestID GetRequestId() const throw() {
+        RequestID GetRequestId() const {
             return m_requestId;
         }
 
         /**
          * Returns event kind of this request.
          */
-        jdwpEventKind GetEventKind() const throw() {
+        jdwpEventKind GetEventKind() const {
             return m_eventKind;
         }
 
         /**
          * Returns suspend policy of this request.
          */
-        jdwpSuspendPolicy GetSuspendPolicy() const throw() {
+        jdwpSuspendPolicy GetSuspendPolicy() const {
             return m_suspendPolicy;
         }
 
         /**
          * Returns number of modifiers of this event request.
          */
-        jint GetModifierCount() const throw() {
+        jint GetModifierCount() const {
             return m_modifierCount;
         }
 
         /**
          * Returns whether this event request is expired.
          */
-        bool IsExpired() const throw() {
+        bool IsExpired() const {
             return m_isExpired;
         }
 
@@ -137,23 +133,22 @@ namespace jdwp {
          * @param jni   - the JNI interface pointer
          * @param eInfo - event information
          */
-        virtual bool ApplyModifiers(JNIEnv* jni, EventInfo &eInfo)
-            throw(AgentException);
+        virtual bool ApplyModifiers(JNIEnv* jni, EventInfo &eInfo);
 
         /**
          * Gets the Java thread from the corresponding ThreadOnly modifier.
          */
-        virtual jthread GetThread() const throw();
+        virtual jthread GetThread() const;
 
         /**
          * Gets the FieldOnly modifier from the saved list of modifiers.
          */
-        FieldOnlyModifier* GetField() const throw();
+        FieldOnlyModifier* GetField() const;
 
         /**
          * Gets the LocationOnly modifier from the saved list of modifiers.
          */
-        LocationOnlyModifier* GetLocation() const throw();
+        LocationOnlyModifier* GetLocation() const;
 
     protected:
 
@@ -184,7 +179,7 @@ namespace jdwp {
          * @param modCount - number of modifiers
          */
         StepRequest(jdwpSuspendPolicy suspend, jint modCount)
-          throw(AgentException) :
+          :
             AgentEventRequest(JDWP_EVENT_SINGLE_STEP, suspend, modCount),
             m_thread(0),
             m_size(0),
@@ -200,14 +195,14 @@ namespace jdwp {
         /**
          * A destructor.
          */
-        ~StepRequest() throw();
+        ~StepRequest();
 
         /**
          * Handles step on frame pop event.
          *
          * @param jni - the JNI interface pointer
          */
-        void OnFramePop(JNIEnv *jni) throw(AgentException);
+        int OnFramePop(JNIEnv *jni);
 
         /**
          * Handles step on method-entry event.
@@ -215,8 +210,7 @@ namespace jdwp {
          * @param jni   - the JNI interface pointer
          * @param eInfo - event information
          */
-        void OnMethodEntry(JNIEnv *jni, EventInfo &eInfo)
-            throw(AgentException);
+        void OnMethodEntry(JNIEnv *jni, EventInfo &eInfo);
 
         /**
          * Initializes step event request.
@@ -225,19 +219,19 @@ namespace jdwp {
          * @param size   - step size
          * @param depth  - step depth
          */
-        void Init(JNIEnv* jni, jthread thread, jint size, jint depth)
-            throw(AgentException);
+        int Init(JNIEnv* jni, jthread thread, jint size, jint depth)
+           ;
 
         /**
          * Applies accompanied modifiers for filtering the given event.
          */
         bool ApplyModifiers(JNIEnv* jni, EventInfo &eInfo)
-            throw(AgentException);
+           ;
 
         /**
          * Gets the associated Java thread.
          */
-        jthread GetThread() const throw() {
+        jthread GetThread() const {
             return m_thread;
         }
 
@@ -246,7 +240,7 @@ namespace jdwp {
          *
          * @exception AgentException is thrown, if any error occurs.
          */
-        void Restore() throw(AgentException);
+        int Restore();
 
     private:
 
@@ -255,14 +249,14 @@ namespace jdwp {
          *
          * @return Java integer (jint).
          */
-        jint GetCurrentLine() throw();
+        jint GetCurrentLine();
 
         /**
          * Enables or disables single step event generation in the target VM.
          *
          * @param enable - boolean value for the step event notification mode
          */
-        void ControlSingleStep(bool enable) throw();
+        void ControlSingleStep(bool enable);
 
         /**
          * Checks whether at least one modifier can be applied.
@@ -270,7 +264,7 @@ namespace jdwp {
          * @param jni   - the JNI interface pointer
          * @param eInfo - event-request descriptor
          */
-        bool IsClassApplicable(JNIEnv* jni, EventInfo &eInfo) throw();
+        bool IsClassApplicable(JNIEnv* jni, EventInfo &eInfo);
 
         jthread m_thread;
         jint m_size;

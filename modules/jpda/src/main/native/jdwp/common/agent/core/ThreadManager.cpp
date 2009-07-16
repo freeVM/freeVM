@@ -15,23 +15,38 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin, Pavel N. Vyssotski
- * @version $Revision: 1.32.2.1 $
- */
-#include <algorithm>
-
-#include "Log.h"
 #include "ThreadManager.h"
+#include "Log.h"
 #include "ClassManager.h"
 #include "ObjectManager.h"
 #include "EventDispatcher.h"
 #include "RequestManager.h"
+#include "ExceptionManager.h"
 
 using namespace jdwp;
 
 namespace jdwp {
+
+    /**
+     * Contains information about Java threads only
+     */
+    class JavaThreadInfo : public AgentBase{
+    public:
+        jthread m_thread;
+        bool    m_hasStepped;
+        JavaThreadInfo(JNIEnv *jni, jthread thrd)
+        {
+            m_thread = jni->NewGlobalRef(thrd);
+            if (m_thread == 0) {
+                JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Unable to allocate new global ref for JavaThreadInfo"));
+            }
+            m_hasStepped = false;
+        }
+        void Clean(JNIEnv *jni)
+        {
+            jni->DeleteGlobalRef(m_thread);
+        }
+    };
 
     /**
      * The structure containing thread information about
@@ -67,6 +82,11 @@ namespace jdwp {
         bool    m_isOnEvent;
 
         /**
+         * Whether thread is alive
+         */
+        bool    m_isAlive;
+
+        /**
          * A constructor.
          * Creates new instance.
          * @param jni the JNI interface pointer.
@@ -75,14 +95,16 @@ namespace jdwp {
          * @param isOnEvent on event thread suspension.
          */
         ThreadInfo(JNIEnv *jni, jthread thrd, bool isAgentThrd = false, bool isOnEvent = false)
-            throw (OutOfMemoryException)
         {
             m_thread = jni->NewGlobalRef(thrd);
-            if (m_thread == 0) throw OutOfMemoryException();
+            if (m_thread == 0) {
+                JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Unable to allocate new global ref for ThreadInfo"));
+            }
             m_isAgentThread = isAgentThrd;
             m_isOnEvent = isOnEvent;
             m_suspendCount = 0;
             m_threadName = 0;
+            m_isAlive = 1;
         }
 
         /**
@@ -108,10 +130,34 @@ namespace jdwp {
     void FindThreadInfo(JNIEnv *jni, ThreadInfoList *thrdInfoList, jthread thread,
         ThreadInfoList::iterator &result)
     {
-        for (result = thrdInfoList->begin(); result != thrdInfoList->end(); result++) {
-            if (*result != 0 && 
-                    jni->IsSameObject((*result)->m_thread, thread) == JNI_TRUE)
+        for (; result.hasNext();) {
+            ThreadInfo* element= result.getNext();
+            if (element != 0 && 
+                    jni->IsSameObject((element)->m_thread, thread) == JNI_TRUE){
+		    // TODO revert this JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "FindThreadInfo : agent thread=%p, name=%s, oldCount=%d, isOnEvent=%d", (element)->m_thread, JDWP_CHECK_NULL(((element)->m_thread)->m_threadName), ((element)->m_thread)->m_suspendCount, ((element)->m_thread)->m_isOnEvent));
                 break;
+            }
+        }
+    }
+
+    /**
+     * Looks for corresponding Java thread info in the Java thread 
+     * info list 
+     * @param jni - the JNI interface pointer
+     * @param javathrdInfoList - pointer to the Java thread info 
+     *                         list
+     * @param thread - the Java thread
+     * @param result - iterator for the Java thread info list
+     */
+    void FindJavaThreadInfo(JNIEnv *jni, JavaThreadInfoList *javathrdInfoList, jthread thread,
+        JavaThreadInfoList::iterator &result)
+    {
+        for (; result.hasNext();) {
+            JavaThreadInfo* element= result.getNext();
+            if (element != 0 && 
+                    jni->IsSameObject((element)->m_thread, thread) == JNI_TRUE){
+                break;
+            }
         }
     }
 
@@ -122,20 +168,23 @@ namespace jdwp {
 
 ThreadManager::~ThreadManager()
 {
-    JDWP_ASSERT(m_thrdmgrMonitor == 0);
-    JDWP_ASSERT(m_execMonitor == 0);
+    /* FIXME - Temporary comment out for to avoid shutdown crash
+    JDWP_ASSERT(m_thrdmgrMonitor == 0);    
+    JDWP_ASSERT(m_execMonitor == 0);*/
 }
         
 //-----------------------------------------------------------------------------
 
 void
-ThreadManager::Init(JNIEnv *jni) throw()
+ThreadManager::Init(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Init(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Init(%p)", jni));
 
+    JDWP_ASSERT(m_javathrdmgrMonitor == 0);
     JDWP_ASSERT(m_thrdmgrMonitor == 0);
 
     m_execMonitor = new AgentMonitor("_jdwp_ThreadManager_execMonitor");
+    m_javathrdmgrMonitor = new AgentMonitor("_jdwp_ThreadManager_javathrdmgrMonitor");
     m_thrdmgrMonitor = new AgentMonitor("_jdwp_ThreadManager_thrdmgrMonitor");
     
     m_stepMonitor = new AgentMonitor("_jdwp_ThreadManager_stepMonitor");
@@ -148,10 +197,11 @@ ThreadManager::Init(JNIEnv *jni) throw()
 //-----------------------------------------------------------------------------
 
 void
-ThreadManager::Clean(JNIEnv *jni) throw()
+ThreadManager::Clean(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Clean(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Clean(%p)", jni));
 
+    /* Temporarily commented out to workaround shutdown crash
     if(m_execMonitor !=0) {
         delete m_execMonitor;
         m_execMonitor = 0;
@@ -160,7 +210,7 @@ ThreadManager::Clean(JNIEnv *jni) throw()
     if(m_thrdmgrMonitor != 0) {
         delete m_thrdmgrMonitor;
         m_thrdmgrMonitor = 0;
-    }
+    }*/
 
     if (m_stepMonitor != 0) {
         delete m_stepMonitor;
@@ -175,10 +225,10 @@ ThreadManager::Clean(JNIEnv *jni) throw()
 
 //-----------------------------------------------------------------------------
 
-void
-ThreadManager::Reset(JNIEnv *jni) throw(AgentException)
+int
+ThreadManager::Reset(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Reset(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Reset(%p)", jni));
 
     // delete not yet started but registered handlers for method invoke
     if (m_execMonitor != 0) {
@@ -189,7 +239,8 @@ ThreadManager::Reset(JNIEnv *jni) throw(AgentException)
     // resume all not internal threads and remove them from list
     if (m_thrdmgrMonitor != 0) {
         MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
-        ClearThreadList(jni);
+        int ret = ClearThreadList(jni);
+        JDWP_CHECK_RETURN(ret);
     }
 
     // reset flags and thread variable that are used in PopFrames process
@@ -198,39 +249,73 @@ ThreadManager::Reset(JNIEnv *jni) throw(AgentException)
         m_popFramesMonitorReleased = false;
         m_popFramesThread = 0;
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 
-void
+int
 ThreadManager::ClearThreadList(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("ClearThreadList(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "ClearThreadList(%p)", jni));
 
-    for (ThreadInfoList::iterator iter = m_threadInfoList.begin(); iter != m_threadInfoList.end(); iter++) {
-        if (*iter == 0) continue;
-        if (!(*iter)->m_isAgentThread) {
-            JDWP_TRACE_THREAD("Reset: resume thread=" << (*iter)->m_thread 
-                << ", name=" << JDWP_CHECK_NULL((*iter)->m_threadName));
+    jthread packetDispatcher;
+    jthread eventDispatcher;
+    
+    for (ThreadInfoList::iterator iter = m_threadInfoList.begin(); iter.hasNext();) {
+        ThreadInfo* element = iter.getNext();
+        if (element == NULL) continue;
+        if (!(element)->m_isAgentThread) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "Reset: resume thread=%p, name=%s", (element)->m_thread, JDWP_CHECK_NULL((element)->m_threadName)));
             // resume thread
-            GetObjectManager().DeleteFrameIDs(jni, (*iter)->m_thread);
+            GetObjectManager().DeleteFrameIDs(jni, (element)->m_thread);
             jvmtiError err;
-            JVMTI_TRACE(err, GetJvmtiEnv()->ResumeThread((*iter)->m_thread));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->ResumeThread((element)->m_thread));
             // remove from list and destroy
-            (*iter)->Clean(jni);
-            delete *iter;
-            *iter = 0;
+            iter.remove();
+            (element)->Clean(jni);
+            delete element;
+            element = NULL;
+        } else {
+            // get thread name 
+            jvmtiError err;
+            jvmtiThreadInfo info;
+
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo((element)->m_thread, &info));
+            JvmtiAutoFree jafInfoName(info.name);
+            if (err != JVMTI_ERROR_NONE) {
+                AgentException ex(err);
+                JDWP_SET_EXCEPTION(ex);
+                return err;
+            }
+            char* threadName = info.name;
+            
+            // determine whether this agent thread should be retained
+            if( strcmp( threadName, "_jdwp_PacketDispatcher") == 0){
+                JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "find packet dispatcher thread=%p, name=%s", (element)->m_thread, JDWP_CHECK_NULL((element)->m_threadName)));
+                packetDispatcher = (element)->m_thread;
+            }else if (  strcmp( threadName, "_jdwp_EventDispatcher") == 0){
+                JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "find event dispatcher thread=%p, name=%s", (element)->m_thread, JDWP_CHECK_NULL((element)->m_threadName)));
+                eventDispatcher = (element)->m_thread;
+            }
         }
     }
     m_threadInfoList.clear();
+    
+    // Background agent threads should be added back to the list
+    AddThread(jni, packetDispatcher, true);
+    AddThread(jni, eventDispatcher, true);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 
 void
-ThreadManager::ClearExecList(JNIEnv* jni) throw()
+ThreadManager::ClearExecList(JNIEnv* jni)
 {
-    JDWP_TRACE_ENTRY("ClearExecList(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "ClearExecList(%p)", jni));
 
     while (!m_execList.empty()) {
         SpecialAsyncCommandHandler* handler = m_execList.back();
@@ -245,21 +330,21 @@ jthread
 ThreadManager::RunAgentThread(JNIEnv *jni, jvmtiStartFunction proc,
                                 const void *arg, jint priority,
                                 const char *name, jthread thread) 
-                                throw(AgentException)
+                               
 {
-    JDWP_TRACE_ENTRY("RunAgentThread(" << jni << ',' << proc 
-            << ',' << arg << ',' << priority 
-                        << ',' << JDWP_CHECK_NULL(name) << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "RunAgentThread(%p,%p,%p,%d,%s,%p)", jni, proc, arg, priority, JDWP_CHECK_NULL(name), thread));
 
     if (thread == 0) {
         thread = CreateAgentThread(jni, name);
     }
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->RunAgentThread(thread, proc, arg, priority));
-
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->RunAgentThread(thread, proc, arg, priority));
+    if (err != JVMTI_ERROR_NONE) {
+    	AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+    	return 0;
+    }
 
     return thread;
 }
@@ -267,10 +352,9 @@ ThreadManager::RunAgentThread(JNIEnv *jni, jvmtiStartFunction proc,
 //-----------------------------------------------------------------------------
 
 jthread
-ThreadManager::CreateAgentThread(JNIEnv *jni, const char *name) throw(AgentException)
+ThreadManager::CreateAgentThread(JNIEnv *jni, const char *name)
 {
-    JDWP_TRACE_ENTRY("CreateAgentThread(" << jni 
-                        << ',' << JDWP_CHECK_NULL(name) << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "CreateAgentThread(%p,%s)", jni, JDWP_CHECK_NULL(name)));
 
     jthread thrd;
     ClassManager &clsMgr = GetClassManager();
@@ -305,28 +389,28 @@ ThreadManager::CreateAgentThread(JNIEnv *jni, const char *name) throw(AgentExcep
 
 ThreadInfo* 
 ThreadManager::AddThread(JNIEnv *jni, jthread thread, bool isAgentThread, bool isOnEvent)
-    throw(AgentException)
+   
 {
-    JDWP_TRACE_ENTRY("AddThread(" << jni << ',' << thread 
-        << ',' << isAgentThread << ',' << isOnEvent << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "AddThread(%p,%p,%s,%s)", jni, thread, (isAgentThread?"TRUE":"FALSE"), (isOnEvent?"TRUE":"FALSE")));
 
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
-    ThreadInfoList::iterator place = m_threadInfoList.end();
-    ThreadInfoList::iterator result;
-    for (result = m_threadInfoList.begin(); 
-                               result != m_threadInfoList.end(); result++) {
-        if (*result == 0) {
+    jint place = -1,found = -1;
+    ThreadInfoList::iterator result = m_threadInfoList.begin();
+    for (;result.hasNext();) {
+        ThreadInfo* element = result.getNext();
+        if (element == NULL) {
             // save pointer to empty slot
-            place = result;
-        } else if (jni->IsSameObject((*result)->m_thread, thread) == JNI_TRUE) {
+            place = result.getIndex();
+        } else if (jni->IsSameObject((element)->m_thread, thread) == JNI_TRUE) {
+            found = result.getIndex();
             // thread found
             break;
         }
     }
 
     // not found
-    if  (result == m_threadInfoList.end())
+    if  (found == -1)
     {
         ThreadInfo *thrdinf = new ThreadInfo(jni, thread, isAgentThread, isOnEvent);
 
@@ -336,19 +420,16 @@ ThreadManager::AddThread(JNIEnv *jni, jthread thread, bool isAgentThread, bool i
             jvmtiError err;
             jvmtiThreadInfo info;
 
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
-            if (err != JVMTI_ERROR_NONE)
-                throw AgentException(err);
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+            if (err == JVMTI_ERROR_NONE) {
+                thrdinf->m_threadName = info.name;
+                JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "AddThread: add thread=%p, name=%s", thread, JDWP_CHECK_NULL(thrdinf->m_threadName)));
+            }
+        }        
+#endif // NDEBUG        
 
-            thrdinf->m_threadName = info.name;
-        }
-#endif // NDEBUG
-
-        JDWP_TRACE_THREAD("AddThread: add thread=" << thread 
-            << ", name=" << JDWP_CHECK_NULL(thrdinf->m_threadName));
-
-        if (place != m_threadInfoList.end()) {
-            *place = thrdinf;
+        if (place !=-1) {
+            m_threadInfoList.insert(place,thrdinf);
         } else {
             m_threadInfoList.push_back(thrdinf);
         }
@@ -356,51 +437,195 @@ ThreadManager::AddThread(JNIEnv *jni, jthread thread, bool isAgentThread, bool i
         return thrdinf;
     }
 
-    return *result;
+    return result.getCurrent();
 }
+
+//----------------------------------------------------------------------------
+
+void ThreadManager::RemoveThread(JNIEnv *jni, jthread thread) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "RemoveThread(%p,%p)", jni, thread));
+
+    MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
+
+    ThreadInfoList::iterator result = m_threadInfoList.begin();
+    for (;result.hasNext();) {
+        ThreadInfo* element = result.getNext();
+	if (element != NULL && jni->IsSameObject((element)->m_thread, thread) == JNI_TRUE) {
+	    // thread found, remove from list and destroy
+	    m_threadInfoList.remove(result.getIndex());
+	    (element)->Clean(jni);
+	    delete element;
+	    element = 0;
+	    JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "RemoveThread: add thread=%p", thread));
+	    break;
+	}
+    }
+}
+
 
 //-----------------------------------------------------------------------------
 
-void
-ThreadManager::InternalSuspend(JNIEnv *jni, jthread thread, bool ignoreInternal, bool isOnEvent) 
-    throw(AgentException)
+/**
+ * Add a Java thread to the internal Java thread info list
+ * @param jni - the JNI interface pointer
+ * @param thread - the Java thread to add
+ * 
+ * @return JavaThreadInfo* - the Java thread info structure 
+ *                          created for this thread
+ */
+JavaThreadInfo* 
+ThreadManager::AddJavaThread(JNIEnv *jni, jthread thread)
+   
 {
-    JDWP_TRACE_ENTRY("InternalSuspend(" << jni << ',' << thread 
-        << ',' << ignoreInternal << ',' << isOnEvent << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "AddJavaThread(%p,%p)", jni, thread));
 
-    // find thread
-    ThreadInfoList::iterator place = m_threadInfoList.end();
-    ThreadInfoList::iterator result;
-    for (result = m_threadInfoList.begin(); 
-                               result != m_threadInfoList.end(); result++) {
-        if (*result == 0) {
+    MonitorAutoLock lock(m_javathrdmgrMonitor JDWP_FILE_LINE);
+
+    jint place = -1,found = -1;
+    JavaThreadInfoList::iterator result = m_javaThreadInfoList.begin();
+    for (;result.hasNext();) {
+        JavaThreadInfo* element = result.getNext();
+        if (element == NULL) {
             // save pointer to empty slot
-            place = result;
-        } else if (jni->IsSameObject((*result)->m_thread, thread) == JNI_TRUE) {
+            place = result.getIndex();
+        } else if (jni->IsSameObject((element)->m_thread, thread) == JNI_TRUE) {
+            found = result.getIndex();
             // thread found
             break;
         }
     }
-    
-    if  (result == m_threadInfoList.end())
+
+    // not found
+    if  (found == -1)
+    {
+        JavaThreadInfo *thrdinf = new JavaThreadInfo(jni, thread);
+
+#ifndef NDEBUG
+        // save thread name for debugging purpose
+        if (JDWP_TRACE_ENABLED(LOG_KIND_THREAD)) {
+            jvmtiError err;
+            jvmtiThreadInfo info;
+
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+            JvmtiAutoFree jafInfoName(info.name);
+            if (err == JVMTI_ERROR_NONE) {
+                JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "AddJavaThread: add thread=%p, name=%s", thread, JDWP_CHECK_NULL(info.name)));
+            }
+        }        
+#endif // NDEBUG        
+
+        if (place !=-1) {
+            m_javaThreadInfoList.insert(place,thrdinf);
+        } else {
+            m_javaThreadInfoList.push_back(thrdinf);
+        }
+
+        return thrdinf;
+    }
+
+    return result.getCurrent();
+}
+
+
+//----------------------------------------------------------------------------
+
+/**
+ * Remove a Java thread from the list 
+ *  
+ * @param jni - the JNI interface pointer 
+ * @param thread - the Java thread to remove 
+ */
+
+void ThreadManager::RemoveJavaThread(JNIEnv *jni, jthread thread) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "RemoveJavaThread(%p,%p)", jni, thread));
+
+    MonitorAutoLock lock(m_javathrdmgrMonitor JDWP_FILE_LINE);
+
+    JavaThreadInfoList::iterator result = m_javaThreadInfoList.begin();
+    for (;result.hasNext();) {
+        JavaThreadInfo* element = result.getNext();
+        if (element != NULL && jni->IsSameObject((element)->m_thread, thread) == JNI_TRUE) {
+            // thread found, remove from list and destroy
+            m_javaThreadInfoList.remove(result.getIndex());
+            (element)->Clean(jni);
+    	    delete element;
+    	    element = 0;
+    	    JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "RemoveJavaThread: add thread=%p", thread));
+    	    break;
+    	}
+    }
+}
+
+
+//-----------------------------------------------------------------------------
+
+int
+ThreadManager::InternalSuspend(JNIEnv *jni, jthread thread, bool ignoreInternal, bool isOnEvent) 
+   
+{
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "InternalSuspend(%p,%p,%s,%s)", jni, thread, (ignoreInternal?"TRUE":"FALSE"), (isOnEvent?"TRUE":"FALSE")));
+
+    // find thread
+    jint place = -1,found = -1;
+    ThreadInfoList::iterator result = m_threadInfoList.begin();
+    for (;result.hasNext(); ){
+	ThreadInfo* element = result.getNext();
+
+        if (element == NULL) {
+            // save pointer to empty slot
+            place = result.getIndex();
+        } else if (jni->IsSameObject((element)->m_thread, thread) == JNI_TRUE) {
+	    found = result.getIndex();
+            // thread found
+            break;
+        }
+    }
+
+    if  (found == -1)
     {
         // not in list -> suspend and add to list
         jvmtiError err;
 
-        JVMTI_TRACE(err, GetJvmtiEnv()->SuspendThread(thread));
+    	jvmtiThreadInfo jvmtiInfo;
+    
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &jvmtiInfo));
+        JvmtiAutoFree jafInfoName(jvmtiInfo.name);
+    	if (err != JVMTI_ERROR_NONE) {
+            AgentException ex(err);
+            JDWP_SET_EXCEPTION(ex);
+            return err;
+        }
+
+        // ignore agent threads for AsyncCommandHandler
+        if (strncmp(jvmtiInfo.name, "_jdwp_", 6) == 0) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "InternalSuspend: ignore agent thread=%p, name=%s",
+                       thread, jvmtiInfo.name));
+            return JDWP_ERROR_NONE;
+        }
+
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->SuspendThread(thread));
 
         JDWP_ASSERT(err != JVMTI_ERROR_THREAD_SUSPENDED);
 
-        if (err != JVMTI_ERROR_NONE)
-            throw AgentException(err);
+        if (err != JVMTI_ERROR_NONE && err != JVMTI_ERROR_THREAD_NOT_ALIVE){
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "InternalSuspend: suspend error: %d", err));
+            AgentException ex(err);
+            JDWP_SET_EXCEPTION(ex);
+            return err;
+        }
 
         // add thread
         ThreadInfo *thrdinf = new ThreadInfo(jni, thread, false, isOnEvent);
         thrdinf->m_suspendCount = 1 ;
-        if (place != m_threadInfoList.end()) {
-            *place = thrdinf;
+
+        if (err == JVMTI_ERROR_THREAD_NOT_ALIVE){
+            thrdinf->m_isAlive = 0 ;
+        }
+
+        if (place != -1) {
+           m_threadInfoList.insert(place,thrdinf);
         } else {
-            m_threadInfoList.push_back(thrdinf);
+           m_threadInfoList.push_back(thrdinf);
         }
 
 #ifndef NDEBUG
@@ -409,119 +634,126 @@ ThreadManager::InternalSuspend(JNIEnv *jni, jthread thread, bool ignoreInternal,
             jvmtiError err;
             jvmtiThreadInfo info;
 
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
-            if (err != JVMTI_ERROR_NONE)
-                throw AgentException(err);
-
-            thrdinf->m_threadName = info.name;
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+//            JvmtiAutoFree jafInfoName(info.name);
+            if (err == JVMTI_ERROR_NONE) {
+                thrdinf->m_threadName = info.name;
+            }
         }
 #endif // NDEBUG
 
-        JDWP_TRACE_THREAD("InternalSuspend: suspend thread=" << thread 
-            << ", name=" << JDWP_CHECK_NULL(thrdinf->m_threadName)
-            << ", oldCount=" << thrdinf->m_suspendCount
-            << ", isOnEvent=" << thrdinf->m_isOnEvent);
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "InternalSuspend: suspend thread=%p, name=%s, oldCount=%d, isOnEvent=%s", 
+                          thread, JDWP_CHECK_NULL(thrdinf->m_threadName), thrdinf->m_suspendCount, (thrdinf->m_isOnEvent?"TRUE":"FALSE")));
 
-    } else if ((*result)->m_isAgentThread) {
+    } else if ((m_threadInfoList.getIndexof(found))->m_isAgentThread) {
         // agent thread -> error (if not ignored)
-        JDWP_TRACE_THREAD("InternalSuspend: ignore agent thread=" << thread 
-            << ", name=" << JDWP_CHECK_NULL((*result)->m_threadName)
-            << ", oldCount=" << (*result)->m_suspendCount
-            << ", isOnEvent=" << (*result)->m_isOnEvent);
+	ThreadInfo* element = m_threadInfoList.getIndexof(found);
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "InternalSuspend: ignore agent thread=%p, name=%s, oldCount=%d, isOnEvent=%s",
+                          thread, JDWP_CHECK_NULL((element)->m_threadName), (element)->m_suspendCount, ((element)->m_isOnEvent?"TRUE":"FALSE")));
         if (!ignoreInternal) {
-            throw AgentException(JVMTI_ERROR_INVALID_THREAD);
+            AgentException ex(JVMTI_ERROR_INVALID_THREAD);
+            JDWP_SET_EXCEPTION(ex);
+            return JVMTI_ERROR_INVALID_THREAD;
         }
     } else {
         // already in list -> just increase suspend count
-        JDWP_TRACE_THREAD("InternalSuspend: increase count thread=" << thread 
-            << ", name=" << JDWP_CHECK_NULL((*result)->m_threadName)
-            << ", oldCount=" << (*result)->m_suspendCount
-            << ", isOnEvent=" << (*result)->m_isOnEvent);
-        JDWP_ASSERT((*result)->m_suspendCount > 0);
-        (*result)->m_suspendCount++;
+	ThreadInfo* element = m_threadInfoList.getIndexof(found);
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "InternalSuspend: increase count thread=%p, name=%s, oldCount=%d, isOnEvent=%s",
+                          thread, JDWP_CHECK_NULL((element)->m_threadName), element->m_suspendCount, ((element)->m_isOnEvent?"TRUE":"FALSE")));
+        JDWP_ASSERT((element)->m_suspendCount > 0);
+        (element)->m_suspendCount++;
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 
-void
-ThreadManager::Suspend(JNIEnv *jni, jthread thread, bool isOnEvent) throw(AgentException)
+int
+ThreadManager::Suspend(JNIEnv *jni, jthread thread, bool isOnEvent)
 {
-    JDWP_TRACE_ENTRY("Suspend(" << jni << ',' << thread << '.' << isOnEvent << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Suspend(%p,%p,%s)", jni, thread, (isOnEvent?"TRUE":"FALSE")));
 
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
-    InternalSuspend(jni, thread, false, isOnEvent);
+    int ret = InternalSuspend(jni, thread, false, isOnEvent);
+    return ret;
 }
 
 //-----------------------------------------------------------------------------
 
-void
-ThreadManager::InternalResume(JNIEnv *jni, jthread thread, bool ignoreInternal) throw(AgentException)
+int
+ThreadManager::InternalResume(JNIEnv *jni, jthread thread, bool ignoreInternal)
 {
-    JDWP_TRACE_ENTRY("InternalResume(" << jni << ',' << thread << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "InternalResume(%p,%p)", jni, thread));
 
-    ThreadInfoList::iterator result;
+    ThreadInfoList::iterator result= m_threadInfoList.begin();
     FindThreadInfo(jni, &m_threadInfoList, thread, result);
-    
-    if  (result == m_threadInfoList.end()) {
-        // thread not yet suspended -> ignore
-    } else if ((*result)->m_isAgentThread) {
+    if  (!result.hasCurrent()) {
+        return JDWP_ERROR_NONE;
+    }
+    ThreadInfo* info = result.getCurrent();
+    if (info->m_isAgentThread) {
         // agent thread -> error (if not ignored)
-        JDWP_TRACE_THREAD("InternalResume: ignore agent thread=" << thread 
-            << ", name=" << JDWP_CHECK_NULL((*result)->m_threadName)
-            << ", oldCount=" << (*result)->m_suspendCount
-            << ", isOnEvent=" << (*result)->m_isOnEvent);
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "InternalResume: ignore agent thread=%p, name=%s, oldCount=%d, isOnEvent=%s",
+                          thread, JDWP_CHECK_NULL((info)->m_threadName), (info)->m_suspendCount, ((info)->m_isOnEvent?"TRUE":"FALSE")));
         if (!ignoreInternal) {
-            throw AgentException(JVMTI_ERROR_INVALID_THREAD);
+            AgentException ex(JVMTI_ERROR_INVALID_THREAD);
+            JDWP_SET_EXCEPTION(ex);
+            return JVMTI_ERROR_INVALID_THREAD;
         }
-    } else if ((*result)->m_suspendCount == 1) {
-        // count == 1 -> resume thread
+    } else if (info->m_suspendCount == 1) {
+        // count == 1 -> resume thread if it is alive
         GetObjectManager().DeleteFrameIDs(jni, thread);
+        if (info->m_isAlive == 1 ){
+             jvmtiError err;
+             JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->ResumeThread(thread));   
+     	     JDWP_ASSERT(err != JVMTI_ERROR_THREAD_NOT_SUSPENDED);
 
-        jvmtiError err;
-        JVMTI_TRACE(err, GetJvmtiEnv()->ResumeThread(thread));
+             if (err != JVMTI_ERROR_NONE) {
+                 AgentException ex(err);
+                 JDWP_SET_EXCEPTION(ex);
+                 return err;
+             }
+        }
 
-        JDWP_ASSERT(err != JVMTI_ERROR_THREAD_NOT_SUSPENDED);
 
-        if (err != JVMTI_ERROR_NONE)
-            throw AgentException(err);
-
-        JDWP_TRACE_THREAD("InternalResume: resume thread=" << thread 
-            << ", name=" << JDWP_CHECK_NULL((*result)->m_threadName)
-            << ", oldCount=" << (*result)->m_suspendCount
-            << ", isOnEvent=" << (*result)->m_isOnEvent);
-
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "InternalResume: resume thread=%p, name=%s, oldCount=%d, isOnEvent=%s, isAlive=%s",
+                          thread, JDWP_CHECK_NULL((info)->m_threadName), (info)->m_suspendCount, ((info)->m_isOnEvent?"TRUE":"FALSE"), 
+                          ((info)->m_isAlive?"TRUE":"FALSE")));
+            
         // remove from list and destroy
-        (*result)->Clean(jni);
-        delete *result;
-        *result = 0;
+        m_threadInfoList.remove(result.getIndex());
+        (info)->Clean(jni);
+        delete info;
+        info = 0;
     } else {
         // count > 1 -> just decrease count
-        JDWP_TRACE_THREAD("InternalResume: decrease count thread=" << thread 
-            << ", name=" << JDWP_CHECK_NULL((*result)->m_threadName)
-            << ", oldCount=" << (*result)->m_suspendCount
-            << ", isOnEvent=" << (*result)->m_isOnEvent);
-        (*result)->m_suspendCount--;
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "InternalResume: decrease count thread=%p, name=%s, oldCount=%d, isOnEvent=%s",
+                          thread, JDWP_CHECK_NULL((info)->m_threadName), (info)->m_suspendCount, ((info)->m_isOnEvent?"TRUE":"FALSE")));
+        (info)->m_suspendCount--;
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 
-void
-ThreadManager::Resume(JNIEnv *jni, jthread thread) throw(AgentException)
+int
+ThreadManager::Resume(JNIEnv *jni, jthread thread)
 {
-    JDWP_TRACE_ENTRY("Resume(" << jni << ',' << thread << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Resume(%p,%p)", jni, thread));
 
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
-    InternalResume(jni, thread, false);
+    int ret = InternalResume(jni, thread, false);
+    return ret;
 }
 
 //-----------------------------------------------------------------------------
 
-void
-ThreadManager::SuspendAll(JNIEnv *jni, jthread threadOnEvent) throw(AgentException)
+int
+ThreadManager::SuspendAll(JNIEnv *jni, jthread threadOnEvent)
 {
-    JDWP_TRACE_ENTRY("SuspendAll(" << jni << ',' << threadOnEvent << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "SuspendAll(%p,%p)", jni, threadOnEvent));
 
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
@@ -529,23 +761,24 @@ ThreadManager::SuspendAll(JNIEnv *jni, jthread threadOnEvent) throw(AgentExcepti
     jthread *threads = 0;
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetAllThreads(&count, &threads));
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetAllThreads(&count, &threads));
+    if (err != JVMTI_ERROR_NONE) {
+        AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+        return err;
+    }
+
     JvmtiAutoFree dobj(threads);
 
     for (jint i = 0; i < count; i++)
     {
         JDWP_ASSERT(threads[i] != 0);
-        try
+        // suspend thread (ignoring internal)
+        bool isOnEvent = (threadOnEvent != 0 && jni->IsSameObject(threadOnEvent, threads[i]));
+        int ret = InternalSuspend(jni, threads[i], true, isOnEvent);
+        if (ret != JDWP_ERROR_NONE)
         {
-            // suspend thread (ignoring internal)
-            bool isOnEvent = (threadOnEvent != 0 && jni->IsSameObject(threadOnEvent, threads[i]));
-            InternalSuspend(jni, threads[i], true, isOnEvent);
-        }
-        catch (const AgentException &e)
-        {
-            jvmtiError errTemp = (jvmtiError)e.ErrCode();
+            jvmtiError errTemp = (jvmtiError)ret;
 
             JDWP_ASSERT(errTemp != JVMTI_ERROR_THREAD_NOT_SUSPENDED);
 
@@ -553,108 +786,119 @@ ThreadManager::SuspendAll(JNIEnv *jni, jthread threadOnEvent) throw(AgentExcepti
                 errTemp != JVMTI_ERROR_THREAD_NOT_ALIVE &&
                 errTemp != JVMTI_ERROR_INVALID_THREAD)
             {
-                err = errTemp;
+                return errTemp;
             }
         }
     }
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 
-void
-ThreadManager::ResumeAll(JNIEnv *jni) throw(AgentException)
+int
+ThreadManager::ResumeAll(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("ResumeAll(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "ResumeAll(%p)", jni));
 
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
     // resume all not internal threads and remove from list
-    for (ThreadInfoList::iterator iter = m_threadInfoList.begin(); iter != m_threadInfoList.end(); iter++) {
+    for (ThreadInfoList::iterator iter = m_threadInfoList.begin(); iter.hasNext();) {
+	
+        ThreadInfo* element = iter.getNext();
+	
+        if (element == NULL) continue;
 
-        if (*iter == 0) continue;
-
-        if (!(*iter)->m_isAgentThread) {
+        if (!(element)->m_isAgentThread) {
             // check suspend count
-            JDWP_ASSERT((*iter)->m_suspendCount > 0);
-            if ((*iter)->m_suspendCount == 1) {
-
+            JDWP_ASSERT((element)->m_suspendCount > 0);
+            if ((element)->m_suspendCount == 1) {
                 // resume application thread
-                JDWP_TRACE_THREAD("ResumeAll: resume thread=" << (*iter)->m_thread 
-                    << ", name=" << JDWP_CHECK_NULL((*iter)->m_threadName)
-                    << ", oldCount=" << (*iter)->m_suspendCount
-                    << ", isOnEvent=" << (*iter)->m_isOnEvent);
+                JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "ResumeAll: resume thread=%p, name=%s, oldCount=%d, isOnEvent=%s, isAlive=%s",
+                          (element)->m_thread, JDWP_CHECK_NULL((element)->m_threadName), (element)->m_suspendCount, 
+                           ((element)->m_isOnEvent?"TRUE":"FALSE"), ((element)->m_isAlive?"TRUE":"FALSE")));
+                    
 
                 // destroy stack frame IDs
-                GetObjectManager().DeleteFrameIDs(jni, (*iter)->m_thread);
+                GetObjectManager().DeleteFrameIDs(jni, (element)->m_thread);
 
                 // resume thread
-                jvmtiError err;
-                JVMTI_TRACE(err, GetJvmtiEnv()->ResumeThread((*iter)->m_thread));
-
-                JDWP_ASSERT(err != JVMTI_ERROR_THREAD_NOT_SUSPENDED);
-                JDWP_ASSERT(err != JVMTI_ERROR_INVALID_TYPESTATE);
-                JDWP_ASSERT(err != JVMTI_ERROR_INVALID_THREAD);
-                JDWP_ASSERT(err != JVMTI_ERROR_THREAD_NOT_ALIVE);
-
-                if (err != JVMTI_ERROR_NONE)
-                    throw AgentException(err);
-
+                // resume thread if it is still alive
+                if ((element)->m_isAlive == 1 ){
+                    jvmtiError err;
+                    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->ResumeThread((element)->m_thread));
+                
+                    JDWP_ASSERT(err != JVMTI_ERROR_THREAD_NOT_SUSPENDED);
+                    JDWP_ASSERT(err != JVMTI_ERROR_INVALID_TYPESTATE);
+                    JDWP_ASSERT(err != JVMTI_ERROR_INVALID_THREAD);
+                    JDWP_ASSERT(err != JVMTI_ERROR_THREAD_NOT_ALIVE);
+                    if (err != JVMTI_ERROR_NONE) {
+                        AgentException ex(err);
+                        JDWP_SET_EXCEPTION(ex);
+                        return err;
+                    }
+                }
                 // remove from list and destroy
-                (*iter)->Clean(jni);
-                delete *iter;
-                *iter = 0;
+                (element)->Clean(jni);
+                // set the slot to null
+                m_threadInfoList.insertNULL(iter.getIndex());
+                delete element;
             } else {
                 // just decrease suspend count
-                JDWP_TRACE_THREAD("ResumeAll: decrease count thread=" << (*iter)->m_thread 
-                    << ", name=" << JDWP_CHECK_NULL((*iter)->m_threadName)
-                    << ", oldCount=" << (*iter)->m_suspendCount
-                    << ", isOnEvent=" << (*iter)->m_isOnEvent);
-                (*iter)->m_suspendCount--;
+                JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "ResumeAll: decrease count thread=%p, name=%s, oldCount=%d, isOnEvent=%s",
+                          (element)->m_thread, JDWP_CHECK_NULL((element)->m_threadName), (element)->m_suspendCount, 
+                           ((element)->m_isOnEvent?"TRUE":"FALSE")));
+                (element)->m_suspendCount--;
             }
         } else {
             // ignore agent thread
-            JDWP_TRACE_THREAD("ResumeAll: ignore agent thread=" << (*iter)->m_thread 
-                << ", name=" << JDWP_CHECK_NULL((*iter)->m_threadName)
-                << ", oldCount=" << (*iter)->m_suspendCount
-                << ", isOnEvent=" << (*iter)->m_isOnEvent);
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "ResumeAll: ignore agent thread=%p, name=%s, oldCount=%d, isOnEvent=%s",
+                          (element)->m_thread, JDWP_CHECK_NULL((element)->m_threadName), (element)->m_suspendCount, 
+                          ((element)->m_isOnEvent?"TRUE":"FALSE")));
         }
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 
-void
-ThreadManager::Interrupt(JNIEnv *jni, jthread thread) throw(AgentException)
+int
+ThreadManager::Interrupt(JNIEnv *jni, jthread thread)
 {
-    JDWP_TRACE_ENTRY("Interrupt(" << jni << ',' << thread << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Interrupt(%p,%p)", jni, thread));
 
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->InterruptThread(thread));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->InterruptThread(thread));
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE) {
+        AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+    }
+    return err;
 }
 
 //-----------------------------------------------------------------------------
 
-void
+int
 ThreadManager::Stop(JNIEnv *jni, jthread thread, jobject throwable)
-                        throw(AgentException)
+                       
 {
-    JDWP_TRACE_ENTRY("Stop(" << jni << ',' << thread << ',' << throwable << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Stop(%p,%p,%p)", jni, thread, throwable));
 
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->StopThread(thread, throwable));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->StopThread(thread, throwable));
     
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE) {
+        AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+    }
+    return err;
 }
 
 //-----------------------------------------------------------------------------
@@ -662,7 +906,7 @@ ThreadManager::Stop(JNIEnv *jni, jthread thread, jobject throwable)
 void
 ThreadManager::Join(JNIEnv *jni, jthread thread)
 {
-    JDWP_TRACE_ENTRY("Join(" << jni << ',' << thread << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Join(%p,%p)", jni, thread));
 
     ClassManager &clsMgr = GetClassManager();
     jclass threadClass = clsMgr.GetThreadClass();
@@ -680,20 +924,76 @@ ThreadManager::Join(JNIEnv *jni, jthread thread)
 bool
 ThreadManager::IsAgentThread(JNIEnv *jni, jthread thread)
 {
-    //JDWP_TRACE_ENTRY("IsAgentThread(" << jni << ',' << thread << ')');
+    //JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsAgentThread(%p,%d)", jni, thread));
 
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
     bool ret_value = false;
 
-    ThreadInfoList::iterator result;
+    ThreadInfoList::iterator result = m_threadInfoList.begin();
     FindThreadInfo(jni, &m_threadInfoList, thread, result);
-    
+
     // found
-    if  (result != m_threadInfoList.end())
-        ret_value = (*result)->m_isAgentThread;
+    if  (result.hasCurrent())
+        ret_value = (result.getCurrent())->m_isAgentThread;
 
     return ret_value;
+}
+
+//-----------------------------------------------------------------------------
+
+/**
+ * Set a boolean for the specified thread indicating if the last 
+ * action was a single step 
+ *  
+ * @param jni - the JNI interface pointer
+ * @param thread - the Java thread
+ * @param hasStepped - indicates if the last action was a single 
+ *                   step
+ */
+void 
+ThreadManager::SetHasStepped(JNIEnv *jni, jthread thread, bool hasStepped) {
+    MonitorAutoLock lock(m_javathrdmgrMonitor JDWP_FILE_LINE);
+    JavaThreadInfoList::iterator result = m_javaThreadInfoList.begin();
+    FindJavaThreadInfo(jni, &m_javaThreadInfoList, thread, result);
+
+    jvmtiThreadInfo info;
+    jvmtiError err;
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+    JvmtiAutoFree jafInfoName(info.name);
+
+    // If we have found a matching entry, set it's value
+    if  (result.hasCurrent()) {
+            (result.getCurrent())->m_hasStepped = hasStepped;
+    }
+}
+
+/**
+ * Return an indication of whether the last action on the 
+ * specified Java thread was a single step. 
+ *  
+ * @param jni - the JNI interface pointer
+ * @param thread - the Java thread to query
+ * 
+ * @return bool - indicates if the last action was a single step
+ */
+bool 
+ThreadManager::HasStepped(JNIEnv *jni, jthread thread) {
+    MonitorAutoLock lock(m_javathrdmgrMonitor JDWP_FILE_LINE);
+    JavaThreadInfoList::iterator result = m_javaThreadInfoList.begin();
+    FindJavaThreadInfo(jni, &m_javaThreadInfoList, thread, result);
+
+    jvmtiThreadInfo info;
+    jvmtiError err;
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &info));
+    JvmtiAutoFree jafInfoName(info.name);
+
+    // If we have found a matching entry, return it's value
+    if  (result.hasCurrent()) {
+            return (result.getCurrent())->m_hasStepped;
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -701,18 +1001,18 @@ ThreadManager::IsAgentThread(JNIEnv *jni, jthread thread)
 jint
 ThreadManager::GetSuspendCount(JNIEnv *jni, jthread thread)
 {
-    //JDWP_TRACE_ENTRY("GetSuspendCount(" << jni << ',' << thread << ')');
+    //JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "GetSuspendCount(%p,%d)", jni, thread));
 
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
     jint ret_value = 0;
 
-    ThreadInfoList::iterator result;
+    ThreadInfoList::iterator result = m_threadInfoList.begin();
     FindThreadInfo(jni, &m_threadInfoList, thread, result);
     
     // found
-    if  (result != m_threadInfoList.end())
-        ret_value = (*result)->m_suspendCount;
+    if  (result.hasCurrent())
+        ret_value = (result.getCurrent())->m_suspendCount;
 
     return ret_value;
 }
@@ -720,20 +1020,20 @@ ThreadManager::GetSuspendCount(JNIEnv *jni, jthread thread)
 //-----------------------------------------------------------------------------
 
 bool
-ThreadManager::IsSuspendedOnEvent(JNIEnv *jni, jthread thrd) throw (AgentException)
+ThreadManager::IsSuspendedOnEvent(JNIEnv *jni, jthread thrd)
 {
-    //JDWP_TRACE_ENTRY("IsSuspendedOnEvent(" << thrd << ')');
+    //JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsSuspendedOnEvent(" << thrd << ')'));
 
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
     bool ret_value = false;
 
-    ThreadInfoList::iterator result;
+    ThreadInfoList::iterator result = m_threadInfoList.begin();
     FindThreadInfo(jni, &m_threadInfoList, thrd, result);
     
     // found
-    if  (result != m_threadInfoList.end())
-        ret_value = (*result)->m_isOnEvent;
+    if  (result.hasCurrent())
+        ret_value = (result.getCurrent())->m_isOnEvent;
 
     return ret_value;
 }
@@ -741,72 +1041,133 @@ ThreadManager::IsSuspendedOnEvent(JNIEnv *jni, jthread thrd) throw (AgentExcepti
 //-----------------------------------------------------------------------------
 
 bool
-ThreadManager::IsSuspended(jthread thrd) throw (AgentException)
+ThreadManager::IsSuspended(jthread thrd)
 {
-    //JDWP_TRACE_ENTRY("IsSuspended(" << thrd << ')');
-
-    MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
+    //JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsSuspended(" << thrd << ')'));
 
     jint thread_state;
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadState(thrd, &thread_state));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadState(thrd, &thread_state));
 
     JDWP_ASSERT(err != JVMTI_ERROR_NULL_POINTER);
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error calling GetThreadState: %d", err));
+        return false;
+    }
 
     return (thread_state & JVMTI_THREAD_STATE_SUSPENDED) != 0;
 }
 
 //-----------------------------------------------------------------------------
 
-void 
-ThreadManager::RegisterInvokeHandler(JNIEnv *jni, SpecialAsyncCommandHandler* handler)
-    throw (AgentException)
+int
+ThreadManager::CheckThreadStatus(JNIEnv *jni, jthread thrd)
 {
-    JDWP_TRACE_ENTRY("RegisterInvokeHandler(" << jni << ',' << handler << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "CheckThreadStatus(%p)", thrd));
+    // check the thread status
+    MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
+	
+    // check whether the reference is a thread reference
+    jclass threadClass = GetClassManager().GetThreadClass();
+    if( !jni->IsInstanceOf(thrd, threadClass) )
+    {
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "## CheckThreadStatus: thread reference is not a valid thread reference "));
+        AgentException ex(JVMTI_ERROR_INVALID_THREAD);
+        JDWP_SET_EXCEPTION(ex);
+        return JVMTI_ERROR_INVALID_THREAD;
+    }
+    
+	// check in the suspend thread list
+    bool isSuspened = false;
+    ThreadInfoList::iterator result = m_threadInfoList.begin();
+    FindThreadInfo(jni, &m_threadInfoList, thrd, result);
+    // not found
+    if  (!result.hasCurrent())
+    {
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "## CheckThreadStatus: thread is not in suspended thread list: %p", thrd));
+        AgentException ex(JVMTI_ERROR_THREAD_NOT_SUSPENDED);
+        JDWP_SET_EXCEPTION(ex);
+        return JVMTI_ERROR_THREAD_NOT_SUSPENDED;
+    }
+
+    jint thread_state;
+    jvmtiError err;
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadState(thrd, &thread_state));
+
+    if (err != JVMTI_ERROR_NONE) {
+        AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+        return err;
+    }
+
+    JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "CheckThreadStatus: check thread status: %d", thread_state));
+    if( thread_state & JVMTI_THREAD_STATE_TERMINATED) {
+        AgentException ex(JVMTI_ERROR_INVALID_THREAD);
+        JDWP_SET_EXCEPTION(ex);
+        return JVMTI_ERROR_INVALID_THREAD;
+    }
+
+    if( !(thread_state & JVMTI_THREAD_STATE_SUSPENDED) ) {
+        AgentException ex(JVMTI_ERROR_THREAD_NOT_SUSPENDED);
+        JDWP_SET_EXCEPTION(ex);
+        return JVMTI_ERROR_THREAD_NOT_SUSPENDED;
+    }
+
+    return JDWP_ERROR_NONE;
+}
+
+//-----------------------------------------------------------------------------
+
+int 
+ThreadManager::RegisterInvokeHandler(JNIEnv *jni, SpecialAsyncCommandHandler* handler)
+   
+{
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "RegisterInvokeHandler(%p,%p)", jni, handler));
 
     JDWP_ASSERT(handler->GetThread() != 0);
 
     // check if thread is suspended on event
     MonitorAutoLock lock(m_thrdmgrMonitor JDWP_FILE_LINE);
 
-    ThreadInfoList::iterator result;
+    ThreadInfoList::iterator result = m_threadInfoList.begin();
     FindThreadInfo(jni, &m_threadInfoList, handler->GetThread(), result);
 
-    if  (result == m_threadInfoList.end() || !(*result)->m_isOnEvent)
-        throw AgentException(JDWP_ERROR_THREAD_NOT_SUSPENDED);
+    if  (!result.hasCurrent() || !(result.getCurrent())->m_isOnEvent) {
+        AgentException ex(JDWP_ERROR_THREAD_NOT_SUSPENDED);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_THREAD_NOT_SUSPENDED;
+    }
 
-    JDWP_TRACE_THREAD("RegisterInvokeHandler: handler=" << handler
-        << ", thread=" << (*result)->m_thread 
-        << ", name=" << JDWP_CHECK_NULL((*result)->m_threadName)
-        << ", options=" << handler->GetOptions());
+    ThreadInfo* info = result.getCurrent();
+    JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "RegisterInvokeHandler: handler=%p, thread=%p, name=%s, options=%d",
+                      handler, (info)->m_thread, JDWP_CHECK_NULL((info)->m_threadName), handler->GetOptions()));
 
     {
         MonitorAutoLock lock(m_execMonitor JDWP_FILE_LINE);
         m_execList.push_back(handler);
     }
 
+    int ret;
     if ((handler->GetOptions() & JDWP_INVOKE_SINGLE_THREADED) == 0) {
-        JDWP_TRACE_THREAD("RegisterInvokeHandler -- resume all before method invoke: thread=" 
-            << handler->GetThread());
-        ResumeAll(jni);
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "RegisterInvokeHandler -- resume all before method invoke: thread=%p", handler->GetThread()));
+        ret = ResumeAll(jni);
     } else {
-        JDWP_TRACE_THREAD("RegisterInvokeHandler -- resume before method invoke: thread=" 
-            << handler->GetThread());
-        Resume(jni, handler->GetThread());
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "RegisterInvokeHandler -- resume before method invoke: thread=%p", handler->GetThread()));
+        ret = Resume(jni, handler->GetThread());
     }
+
+    return ret;
 }
 
 SpecialAsyncCommandHandler*
 ThreadManager::FindInvokeHandler(JNIEnv* jni, jthread thread)
-    throw (AgentException)
+   
 {
-    JDWP_TRACE_ENTRY("FindInvokeHandler(" << jni << ',' << thread << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "FindInvokeHandler(%p,%p)", jni, thread));
 
     MonitorAutoLock lock(m_execMonitor JDWP_FILE_LINE);
-    for (ExecListIterator i = m_execList.begin(); i != m_execList.end(); i++) {
-        SpecialAsyncCommandHandler* handler = *i;
+    for (ExecListIterator i = m_execList.begin(); i.hasNext();) {
+        SpecialAsyncCommandHandler* handler = i.getNext();
         if (jni->IsSameObject(thread, handler->GetThread())) {
             m_execList.erase(i);
             return handler;
@@ -826,25 +1187,24 @@ jboolean ThreadManager::IsPopFramesProcess(JNIEnv* jni, jthread thread)
 
 void ThreadManager::HandleInternalSingleStep(JNIEnv* jni, jthread thread, 
     jmethodID method, jlocation location) 
-    throw(AgentException)
+   
 {
-    JDWP_TRACE_ENTRY("HandleInternalSingleStep(" << jni << ',' << thread << ',' 
-        << method << ',' << location << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "HandleInternalSingleStep(%p,%p,&p,%lld)", jni, thread, method, location));
 
-    char* threadName = 0;
+    //char* threadName = 0;
     char* methodName = 0;
 #ifndef NDEBUG
     if (JDWP_TRACE_ENABLED(LOG_KIND_THREAD)) {
         jvmtiError err;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(method, &methodName, 0, 0));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetMethodName(method, &methodName, 0, 0));
         
         // don't invoke GetThreadInfo() because it may issue extra STEP events
         // jvmtiThreadInfo threadInfo;
-        // JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
+        // JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
         // threadName = threadInfo.name;
     }
 #endif // NDEBUG
-    JvmtiAutoFree threadNameAutoFree(threadName);
+    //JvmtiAutoFree threadNameAutoFree(threadName);
     JvmtiAutoFree methodNameAutoFree(methodName);
 
     {
@@ -855,38 +1215,35 @@ void ThreadManager::HandleInternalSingleStep(JNIEnv* jni, jthread thread,
             m_popFramesMonitorReleased = true;
             m_popFramesMonitor->NotifyAll();
 
-            JDWP_TRACE_THREAD("HandleInternalSingleStep: thread on suspention point:"
-                // << " thread=" << JDWP_CHECK_NULL(threadName) 
-                << " thread=" << thread 
-                << ",method=" << JDWP_CHECK_NULL(methodName) 
-                << ",location=" << location);    
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "HandleInternalSingleStep: thread on suspention point: thread=%p, method=%s, location=%lld",
+                              thread, JDWP_CHECK_NULL(methodName), location));
         }
         // wait for suspend on suspention point
         m_stepMonitorReleased = false;
         while (!m_stepMonitorReleased) {
             m_stepMonitor->Wait();
         }
-        JDWP_TRACE_THREAD("HandleInternalSingleStep: thread resumed:"
-            // << " thread=" << JDWP_CHECK_NULL(threadName) 
-            << " thread=" << thread 
-            << ",method=" << JDWP_CHECK_NULL(methodName) 
-            << ",location=" << location);    
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "HandleInternalSingleStep: thread resumed: thread=%p, method=%s, location=%lld",
+                              thread, JDWP_CHECK_NULL(methodName), location));
     }
 
     // execute registered MethodInvoke hadlers if needed
     GetEventDispatcher().ExecuteInvokeMethodHandlers(jni, thread);
 }
 
-void ThreadManager::PerformPopFrames(JNIEnv* jni, jint framesToPop, jthread thread) 
-    throw(AgentException)
+int ThreadManager::PerformPopFrames(JNIEnv* jni, jint framesToPop, jthread thread) 
+   
 {
-    JDWP_TRACE_ENTRY("PerformPopFrames(" << jni << ',' << framesToPop << ',' << thread << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "PerformPopFrames(%p,%d,%p)", jni, framesToPop, thread));
 
     MonitorAutoLock thrdmgrMonitorLock(m_thrdmgrMonitor JDWP_FILE_LINE);
-    
+    int ret;
+
     // thread should be suspended
     if (!GetThreadManager().IsSuspended(thread)) {
-        throw AgentException(JDWP_ERROR_THREAD_NOT_SUSPENDED);
+        AgentException ex(JDWP_ERROR_THREAD_NOT_SUSPENDED);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_THREAD_NOT_SUSPENDED;
     }
 
     // The following check is disabled, because JVMTI and JDWP specifications 
@@ -903,11 +1260,10 @@ void ThreadManager::PerformPopFrames(JNIEnv* jni, jint framesToPop, jthread thre
 #ifndef NDEBUG
         if (JDWP_TRACE_ENABLED(LOG_KIND_THREAD)) {
             jvmtiThreadInfo threadInfo;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
             threadName = threadInfo.name;
         }
 #endif // NDEBUG
-    JvmtiAutoFree af(threadName);
     
     // The following check is just for sure.
     // This algorithm supposes that there are no invoke method handlers registered.
@@ -915,93 +1271,105 @@ void ThreadManager::PerformPopFrames(JNIEnv* jni, jint framesToPop, jthread thre
     {
         MonitorAutoLock lockExecList(m_execMonitor JDWP_FILE_LINE);
         if (!m_execList.empty()) {
-            throw AgentException(JDWP_ERROR_THREAD_NOT_SUSPENDED);
+            AgentException ex(JDWP_ERROR_THREAD_NOT_SUSPENDED);
+            JDWP_SET_EXCEPTION(ex);
+            return JDWP_ERROR_THREAD_NOT_SUSPENDED;
         }
     }
 
     jint frameCount;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetFrameCount(thread, &frameCount));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetFrameCount(thread, &frameCount));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+        return err;
     }
     if (frameCount <= framesToPop) {
-        throw AgentException(JDWP_ERROR_INVALID_FRAMEID);
+        AgentException ex(JDWP_ERROR_INVALID_FRAMEID);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_INVALID_FRAMEID;
     }
 
     // if there is native frame, pop frame can't be performed
-    CheckNativeFrameExistence(thread, framesToPop);
+    ret = CheckNativeFrameExistence(thread, framesToPop);
+    JDWP_CHECK_RETURN(ret);
 
     MonitorAutoLock popFramesMonitorLock(m_popFramesMonitor JDWP_FILE_LINE);
-    try {
-        m_popFramesThread = thread;
+    m_popFramesThread = thread;
 
-        // enabling step request on thread where PopFrame command is performed
-        JDWP_TRACE_THREAD("PerformPopFrames: enable internal step: thread=" 
-            << JDWP_CHECK_NULL(threadName));
-        GetRequestManager().EnableInternalStepRequest(jni, m_popFramesThread);
+    // enabling step request on thread where PopFrame command is performed
+    JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "PerformPopFrames: enable internal step: thread=%s", JDWP_CHECK_NULL(threadName)));
+    ret = GetRequestManager().EnableInternalStepRequest(jni, m_popFramesThread);
+    JDWP_CHECK_RETURN(ret);
 
-        // cycle where topmost frames are popped one after one
-        for (int i = 0; i < framesToPop; i++) {
-            // pop topmost frame, thread is already suspended on event
-            JDWP_TRACE_THREAD("PerformPopFrames: pop: frame#=" << i 
-                << ", thread=" << JDWP_CHECK_NULL(threadName));
-            JVMTI_TRACE(err, GetJvmtiEnv()->PopFrame(m_popFramesThread));
-            if (err != JVMTI_ERROR_NONE) {
-                throw AgentException(err);
-            }
-
-            // resume thread
-            JDWP_TRACE_THREAD("PerformPopFrames: resume: thread=" 
-                << JDWP_CHECK_NULL(threadName));
-            JVMTI_TRACE(err, GetJvmtiEnv()->ResumeThread(m_popFramesThread));
-            JDWP_ASSERT(err != JVMTI_ERROR_THREAD_NOT_SUSPENDED);
-            if (err != JVMTI_ERROR_NONE)
-                throw AgentException(err);
-            
-            // wait for thread to achieve suspention point in InternalSingleStep handler
-            JDWP_TRACE_THREAD("PerformPopFrames: wait for step: thread=" 
-                << JDWP_CHECK_NULL(threadName));
-            m_popFramesMonitorReleased = false;
-            while (!m_popFramesMonitorReleased) {
-                m_popFramesMonitor->Wait();
-            }
-            
-            {
-                // suspend thread on suspention point
-                MonitorAutoLock stepMonitorLock(m_stepMonitor JDWP_FILE_LINE);
-                JDWP_TRACE_THREAD("PerformPopFrames: suspend: thread=" 
-                    << JDWP_CHECK_NULL(threadName));
-                JVMTI_TRACE(err, GetJvmtiEnv()->SuspendThread(m_popFramesThread));
-                JDWP_ASSERT(err != JVMTI_ERROR_THREAD_SUSPENDED);
-                if (err != JVMTI_ERROR_NONE)
-                    throw AgentException(err);
-
-                // notify suspended thread on suspention point
-                m_stepMonitorReleased = true;
-                m_stepMonitor->NotifyAll();
-                JDWP_TRACE_THREAD("PerformPopFrames: notify: thread=" 
-                    << JDWP_CHECK_NULL(threadName));
-            }
+    // cycle where topmost frames are popped one after one
+    for (int i = 0; i < framesToPop; i++) {
+        // pop topmost frame, thread is already suspended on event
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "PerformPopFrames: pop: frame#=%d, thread=%s", i, JDWP_CHECK_NULL(threadName)));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->PopFrame(m_popFramesThread));
+        if (err != JVMTI_ERROR_NONE) {
+            AgentException ex(err);
+            JDWP_SET_EXCEPTION(ex);
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "PerformPopFrames: disable internal step: thread=%s", JDWP_CHECK_NULL(threadName)));
+            GetRequestManager().DisableInternalStepRequest(jni, m_popFramesThread);
+            m_popFramesThread = 0;
+            return err;
         }
-        GetObjectManager().DeleteFrameIDs(jni, m_popFramesThread);
+
+        // resume thread
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "PerformPopFrames: resume: thread=%s", JDWP_CHECK_NULL(threadName)));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->ResumeThread(m_popFramesThread));
+        JDWP_ASSERT(err != JVMTI_ERROR_THREAD_NOT_SUSPENDED);
+        if (err != JVMTI_ERROR_NONE) {
+            AgentException ex(err);
+            JDWP_SET_EXCEPTION(ex);
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "PerformPopFrames: disable internal step: thread=%s", JDWP_CHECK_NULL(threadName)));
+            GetRequestManager().DisableInternalStepRequest(jni, m_popFramesThread);
+            m_popFramesThread = 0;
+            return err;
+        }
         
-        JDWP_TRACE_THREAD("PerformPopFrames: disable internal step: thread=" 
-            << JDWP_CHECK_NULL(threadName));
-        GetRequestManager().DisableInternalStepRequest(jni, m_popFramesThread);
-        
-        m_popFramesThread = 0;
-    } catch (AgentException& e) {
-        JDWP_INFO("JDWP error: " << e.what() << " [" << e.ErrCode() << "]");
-        JDWP_TRACE_THREAD("PerformPopFrames: disable internal step: thread=" 
-            << JDWP_CHECK_NULL(threadName));
-        GetRequestManager().DisableInternalStepRequest(jni, m_popFramesThread);
-        m_popFramesThread = 0;
-        throw(e);
+        // wait for thread to achieve suspention point in InternalSingleStep handler
+        JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "PerformPopFrames: wait for step: thread=%s", JDWP_CHECK_NULL(threadName)));
+        m_popFramesMonitorReleased = false;
+        while (!m_popFramesMonitorReleased) {
+            m_popFramesMonitor->Wait();
+        }
+
+        {
+            // suspend thread on suspention point
+            MonitorAutoLock stepMonitorLock(m_stepMonitor JDWP_FILE_LINE);
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "PerformPopFrames: suspend: thread=%s", JDWP_CHECK_NULL(threadName)));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->SuspendThread(m_popFramesThread));
+            JDWP_ASSERT(err != JVMTI_ERROR_THREAD_SUSPENDED);
+            if (err != JVMTI_ERROR_NONE) {
+                AgentException ex(err);
+                JDWP_SET_EXCEPTION(ex);
+                JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "PerformPopFrames: disable internal step: thread=%s", JDWP_CHECK_NULL(threadName)));
+                GetRequestManager().DisableInternalStepRequest(jni, m_popFramesThread);
+                m_popFramesThread = 0;
+                return err;
+            }
+    
+            // notify suspended thread on suspention point
+            m_stepMonitorReleased = true;
+            m_stepMonitor->NotifyAll();
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "PerformPopFrames: notify: thread=%s", JDWP_CHECK_NULL(threadName)));
+        }
+
     }
+    GetObjectManager().DeleteFrameIDs(jni, m_popFramesThread);
+    
+    JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "PerformPopFrames: disable internal step: thread=%s", JDWP_CHECK_NULL(threadName)));
+    ret = GetRequestManager().DisableInternalStepRequest(jni, m_popFramesThread);        
+    m_popFramesThread = 0;
+    JDWP_CHECK_RETURN(ret);
+
+    return JDWP_ERROR_NONE;
 }
 
-void ThreadManager::CheckNativeFrameExistence(jthread thread, jint framesToPop) 
-    throw(AgentException)
+int ThreadManager::CheckNativeFrameExistence(jthread thread, jint framesToPop) 
+   
 {
     jvmtiFrameInfo* frames = static_cast<jvmtiFrameInfo*>
         (GetMemoryManager().Allocate((framesToPop+1) 
@@ -1012,12 +1380,14 @@ void ThreadManager::CheckNativeFrameExistence(jthread thread, jint framesToPop)
     jvmtiError err;
     // check (framesToPop+1) frames, because both the called 
     // and calling methods must be non-native
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetStackTrace(thread, 0, 
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetStackTrace(thread, 0, 
         (framesToPop+1), frames, &count));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+        return err;
     }
-    JDWP_TRACE_THREAD("CheckNativeFrameExistence: FramesToCheck=" << count);
+    JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "CheckNativeFrameExistence: FramesToCheck=%d", count));
     
     jboolean isNative = false;
     for (int i = 0; i < count; i++) {
@@ -1030,28 +1400,29 @@ void ThreadManager::CheckNativeFrameExistence(jthread thread, jint framesToPop)
 #ifndef NDEBUG
         if (JDWP_TRACE_ENABLED(LOG_KIND_THREAD)) {
             jclass clazz = 0;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(methodID, &methodName, 0, 0));
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodDeclaringClass(methodID, &clazz));
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(clazz, &classSignature, 0));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetMethodName(methodID, &methodName, 0, 0));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetMethodDeclaringClass(methodID, &clazz));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(clazz, &classSignature, 0));
             
-            JDWP_TRACE_THREAD("CheckNativeFrameExistence: method=" 
-                << JDWP_CHECK_NULL(methodName) 
-                << ", class=" << JDWP_CHECK_NULL(classSignature));
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "CheckNativeFrameExistence: method=%s, class=%s", JDWP_CHECK_NULL(methodName), JDWP_CHECK_NULL(classSignature)));
         }
 #endif // NDEBUG
 
         JvmtiAutoFree methodNameAutoFree(methodName);
         JvmtiAutoFree classSignatureAutoFree(classSignature);
-        JVMTI_TRACE(err, GetJvmtiEnv()->IsMethodNative(methodID, &isNative));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->IsMethodNative(methodID, &isNative));
         if (err != JVMTI_ERROR_NONE) {
-            throw AgentException(err);
+            AgentException ex(err);
+            JDWP_SET_EXCEPTION(ex);
+            return err;
         }
         if (isNative) {
-            JDWP_TRACE_THREAD("CheckNativeFrameExistence: method=" 
-                << JDWP_CHECK_NULL(methodName) 
-                << ", class=" << JDWP_CHECK_NULL(classSignature) 
-                << " is native");
-            throw AgentException(JDWP_ERROR_NATIVE_METHOD);
+            JDWP_TRACE(LOG_RELEASE, (LOG_THREAD_FL, "CheckNativeFrameExistence: method=%s, class=%s is native", JDWP_CHECK_NULL(methodName), JDWP_CHECK_NULL(classSignature)));
+            AgentException ex(JDWP_ERROR_NATIVE_METHOD);
+            JDWP_SET_EXCEPTION(ex);
+            return JDWP_ERROR_NATIVE_METHOD;
         }
     }
+
+    return JDWP_ERROR_NONE;
 }

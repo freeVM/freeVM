@@ -17,23 +17,20 @@
  */
 
 /**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.9.2.1 $
- */
-#ifndef _LOG_H_
-#define _LOG_H_
-
-#include <sstream>
-#include "LogManager.h"
-
-/**
  * @file
  * Log.h
  *
  * Macros in the given file provide functionality for tracing
- * program execution in a debug mode except INFO and ERROR,
- * which work in a release mode as well as in a debug one.
+ * program execution in a debug mode except INFO, SIMPLE and 
+ * ERROR, which work in a release mode as well as in a debug 
+ * one. 
  */
+
+#ifndef _LOG_H_
+#define _LOG_H_
+
+#include <stdarg.h>
+#include "LogManager.h"
 
 /**
  * Safe null-checking method for passing a string as a parameter.
@@ -41,114 +38,80 @@
 #define JDWP_CHECK_NULL(str) ( (str)==0 ? "(null)" : (str) )
 
 /**
- * Traces messages using the corresponding method of a log manager.
+ * Macro definition for assertion checking in JDWP agent code.
  */
-#define JDWP_MESSAGE(method, message) { \
-    std::ostringstream _oss; \
-    _oss << message; \
-    AgentBase::GetLogManager().method(_oss.str(), __FILE__, __LINE__); \
-}
+#ifdef NDEBUG
+ #define JDWP_ASSERT(assert)
+#else // !NDEBUG
+ #define JDWP_ASSERT(assert) { \
+    if (!(assert)) { \
+        JDWP_TRACE(LOG_DEBUG, (LOG_ERROR_FL, "assert \"%s\" failed", #assert)); \
+        ::exit(1); \
+    } \
+ }
+#endif // !NDEBUG
+
 
 /**
- * Traces INFO kind of the messages.
+ * Defines to indicate the current levels of tracing available. 
+ *  LOG_RELEASE indicates tracepoints that will be executed when
+ * building in both release and debug configuration. 
+ *  LOG_DEBUG indicates tracepoints that will be executed when 
+ * building in debug configuration only. 
  */
-#define JDWP_INFO(message) JDWP_MESSAGE(Info, message)
+#define LOG_RELEASE JDWP_TRACE_RELEASE
+#define LOG_DEBUG JDWP_TRACE_DEBUG
 
 /**
- * Traces ERROR kind of the messages.
+ * Macros to check if the specified kind of tracing is enabled.
+ *  
+ * 2 versions - one takes just the kind of tracing, the other 
+ * can take a variable argument list as specified to the 
+ * JDWP_TRACE macro.
  */
-#define JDWP_ERROR(message) JDWP_MESSAGE(Error, message)
+ #define JDWP_TRACE_ENABLED(kind) AgentBase::GetLogManager().TraceEnabled(kind, __FILE__, __LINE__, "")
+ #define JDWP_TRACE_ENABLED_VAARGS(args) AgentBase::GetLogManager().TraceEnabled args
 
 /**
- * Traces messages of a specific kind. The macro is empty in a release mode.
+ * Trace JVMTI calls - has format 
+ *  JVMTI_TRACE(level, err, function_call)
+ * where 
+ *  level - the tracing level, either LOG_RELEASE or LOG_DEBUG
+ *  err - the variable to store the return code in
+ *  function_call - the function call to execute
  */
-#define JDWP_TRACE(kind, message) JDWP_TRACE_EX(kind, __FILE__, __LINE__, message)
-
-#define JDWP_TRACE_CMD(message) JDWP_TRACE(LOG_KIND_CMD, message)
-#define JDWP_TRACE_EVENT(message) JDWP_TRACE(LOG_KIND_EVENT, message)
-#define JDWP_TRACE_PACKET(message) JDWP_TRACE(LOG_KIND_PACKET, message)
-#define JDWP_TRACE_THREAD(message) JDWP_TRACE(LOG_KIND_THREAD, message)
-#define JDWP_TRACE_DATA(message) JDWP_TRACE(LOG_KIND_DATA, message)
-#define JDWP_TRACE_MEMORY(message) JDWP_TRACE(LOG_KIND_MEMORY, message)
-#define JDWP_TRACE_MAP(message) JDWP_TRACE(LOG_KIND_MAP, message)
-#define JDWP_TRACE_JVMTI(message) JDWP_TRACE(LOG_KIND_JVMTI, message)
-#define JDWP_TRACE_FUNC(message) JDWP_TRACE(LOG_KIND_FUNC, message)
-#define JDWP_TRACE_MON(message) JDWP_TRACE(LOG_KIND_MON, message)
-#define JDWP_TRACE_UTIL(message) JDWP_TRACE(LOG_KIND_UTIL, message)
-#define JDWP_TRACE_PROG(message) JDWP_TRACE(LOG_KIND_PROG, message)
-
-/**
- * Traces the JVMTI kind of the messages.
- */
-#define JVMTI_TRACE(err, function_call) { \
-    JDWP_TRACE_JVMTI(">> " #function_call); \
+#define JVMTI_TRACE(level, err, function_call) { \
+    JDWP_TRACE(level, (LOG_JVMTI_FL, ">> %s", #function_call)); \
     err = function_call; \
-    JDWP_TRACE_JVMTI("<< " #function_call "=" << err); \
+    JDWP_TRACE(level, (LOG_JVMTI_FL, "<< %s=%d", #function_call, err)); \
 }
 
 /**
- * Prints the message and terminates the program execution.
- */
-#define JDWP_DIE(message) { \
-    JDWP_ERROR(message); \
-    exit(1); \
-}
+* Macros providing trace for JDWP agent code 
+*  
+* Tracepoints are of the format: 
+*  JDWP_TRACE(level, (kind, file, line, format, tokens));
+* where 
+*  level - either LOG_RELEASE or LOG_DEBUG
+*  kind - the type of trace, e.g. LOG_KIND_EVENT
+*  file - the file name
+*  line - the line number
+*  format - the format string, e.g. "Hello %s"
+*  tokens - the tokens to be parsed into the format string,
+*           e.g."World"
+*/
+#define _JDWP_TRACE(args) if (JDWP_TRACE_ENABLED_VAARGS(args)) AgentBase::GetLogManager().Trace args
+#define _JDWP_TRACE_ENTRY(args) JdwpTraceEntry _tre args
 
 #ifdef NDEBUG
+#define JDWP_TRACE_DEBUG(func, args)
+#else
+#define JDWP_TRACE_DEBUG(func, args) func(args)
+#endif
+#define JDWP_TRACE_RELEASE(func, args) func(args)
 
-/**
- * The given macros are empty in a release mode.
- */
-#define JDWP_LOG(message)
-#define JDWP_TRACE_EX(kind, file, line, message)
-#define JDWP_TRACE_ENTRY(message)
-#define JDWP_ASSERT(assert)
-#define JDWP_TRACE_ENABLED(kind) false
-
-#define JDWP_FILE_LINE
-#define JDWP_FILE_LINE_PAR
-#define JDWP_FILE_LINE_INI
-#define JDWP_FILE_LINE_MPAR
-#define JDWP_FILE_LINE_DECL
-
-#else // !NDEBUG
-
-/**
- * Traces LOG kind of the messages.
- */
-#define JDWP_LOG(message) JDWP_MESSAGE(Log, message)
-
-/**
- * Traces messages of a specific kind.
- */
-#define JDWP_TRACE_EX(kind, file, line, message){ \
-    std::ostringstream _oss; \
-    _oss << message; \
-    AgentBase::GetLogManager().Trace(_oss.str(), file, line, kind); \
-}
-
-/**
- * Traces the function kind of the messages.
- */
-#define JDWP_TRACE_ENTRY(message) \
-    std::ostringstream _ose; \
-    _ose << message; \
-    JdwpTraceEntry _tre(_ose, __FILE__, __LINE__, LOG_KIND_FUNC);
-
-/**
- * Verifies the expression and terminates the program execution, if it
- * is <code>FALSE</code>.
- */
-#define JDWP_ASSERT(assert) { \
-    if (!(assert)) { \
-        JDWP_DIE("assert \"" #assert "\" failed"); \
-    } \
-}
-
-/**
- * Checks whether a specific kind of messages is enabled for logging.
- */
-#define JDWP_TRACE_ENABLED(kind) AgentBase::GetLogManager().TraceEnabled(__FILE__, __LINE__, kind)
+#define JDWP_TRACE(level, args) level(_JDWP_TRACE, args)
+#define JDWP_TRACE_ENTRY(level, args) level(_JDWP_TRACE_ENTRY, args)
 
 /**
  * The following macros provide placement for file and line parameters in a debug mode1.
@@ -159,6 +122,27 @@
 #define JDWP_FILE_LINE_MPAR , m_file, m_line
 #define JDWP_FILE_LINE_DECL const char* m_file; int m_line;
 
-#endif // NDEBUG
+/**
+ * Utility defines for kind, file, line in the JDWP_TRACE macros 
+ * above.
+ */
+#define LOG_CMD_FL LOG_KIND_CMD, __FILE__, __LINE__
+#define LOG_EVENT_FL LOG_KIND_EVENT, __FILE__, __LINE__
+#define LOG_PACKET_FL LOG_KIND_PACKET, __FILE__, __LINE__
+#define LOG_THREAD_FL LOG_KIND_THREAD, __FILE__, __LINE__
+#define LOG_DATA_FL LOG_KIND_DATA, __FILE__, __LINE__
+#define LOG_MEMORY_FL LOG_KIND_MEMORY, __FILE__, __LINE__
+#define LOG_MAP_FL LOG_KIND_MAP, __FILE__, __LINE__
+#define LOG_JVMTI_FL LOG_KIND_JVMTI, __FILE__, __LINE__
+#define LOG_FUNC_FL LOG_KIND_FUNC, __FILE__, __LINE__
+#define LOG_MON_FL LOG_KIND_MON, __FILE__, __LINE__
+#define LOG_UTIL_FL LOG_KIND_UTIL, __FILE__, __LINE__
+#define LOG_PROG_FL LOG_KIND_PROG, __FILE__, __LINE__
+#define LOG_LOG_FL LOG_KIND_LOG, __FILE__, __LINE__
+#define LOG_INFO_FL LOG_KIND_INFO, __FILE__, __LINE__
+#define LOG_ERROR_FL LOG_KIND_ERROR, __FILE__, __LINE__
+#define LOG_SIMPLE_FL LOG_KIND_SIMPLE, __FILE__, __LINE__
+#define LOG_NUM_FL LOG_KIND_NUM, __FILE__, __LINE__
+
 
 #endif // _LOG_H_

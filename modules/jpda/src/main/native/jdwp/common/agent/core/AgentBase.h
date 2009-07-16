@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.8.2.1 $
- */
-
 /**
  * @file
  * AgentBase.h
@@ -30,10 +24,10 @@
 #ifndef _AGENT_BASE_H_
 #define _AGENT_BASE_H_
 
-#include <cstdio>
-#include <cstdlib>
-#include <sstream>
-
+#include <vector>
+#include <queue>
+#include <stdarg.h>
+#include <stdlib.h>
 #include "AgentEnv.h"
 #include "MemoryManager.h"
 #include "Log.h"
@@ -43,9 +37,8 @@
 #else
 #define CHECK_ENV(env) { \
     if (env == 0) { \
-        std::fprintf(stderr, \
-            "Bad environment: "# env"=%p\n", env); \
-        std::exit(1); \
+        JDWP_TRACE(LOG_DEBUG, (LOG_ERROR_FL, "Bad environment: env=%p", env)); \
+        ::exit(1); \
     } \
 }
 #endif // NDEBUG
@@ -55,9 +48,8 @@
 #else
 #define CHECK_ENV_PTR(env, ptr) { \
     if (env == 0 || env->ptr == 0) { \
-        std::fprintf(stderr, \
-            "Bad environment: "# env"=%p, "# ptr"=%p\n", env, env->ptr); \
-        std::exit(1); \
+        JDWP_TRACE(LOG_DEBUG, (LOG_ERROR_FL, "Bad environment: env=%p, ptr=%p", env, env->ptr)); \
+        ::exit(1); \
     } \
 }
 #endif // NDEBUG
@@ -125,28 +117,42 @@ namespace jdwp {
         /**
          * A constructor.
          */
-        AgentBase() throw() {}
+        AgentBase() {}
 
         /**
          * Stores agent environment in the agent base.
          *
          * @param env - the pointer to the agent environment
          */
-        static void SetAgentEnv(AgentEnv *env) throw() {
+        static void SetAgentEnv(AgentEnv *env) {
             m_agentEnv = env;
         }
 
         /**
          * Gets agent environment from the agent base.
          */
-        static AgentEnv* GetAgentEnv() throw() {
+        static AgentEnv* GetAgentEnv() {
             return m_agentEnv;
+        }
+
+        /**
+         * Sets the default stratum.
+         */
+        static void SetDefaultStratum(char *stratum) {
+            m_defaultStratum = stratum;
+        }
+
+        /**
+         * Gets the default stratum.
+         */
+        static char* GetDefaultStratum() {
+            return m_defaultStratum;
         }
 
         /**
          * Gets the memory manager reference from the agent base.
          */
-        static MemoryManager& GetMemoryManager() throw() {
+        static MemoryManager& GetMemoryManager() {
             CHECK_ENV_PTR(m_agentEnv, memoryManager);
             return *m_agentEnv->memoryManager;
         }
@@ -154,7 +160,7 @@ namespace jdwp {
         /**
          * Gets a log manager reference from the agent base.
          */
-        static LogManager& GetLogManager() throw() {
+        static LogManager& GetLogManager() {
             CHECK_ENV_PTR(m_agentEnv, logManager);
             return *m_agentEnv->logManager;
         }
@@ -162,7 +168,7 @@ namespace jdwp {
         /**
          * Gets the option-parser reference from the agent base.
          */
-        static OptionParser& GetOptionParser() throw() {
+        static OptionParser& GetOptionParser() {
             CHECK_ENV_PTR(m_agentEnv, optionParser);
             return *m_agentEnv->optionParser;
         }
@@ -170,7 +176,7 @@ namespace jdwp {
         /**
          * Gets the thread-manager reference from the agent base.
          */
-        static ThreadManager& GetThreadManager() throw() {
+        static ThreadManager& GetThreadManager() {
             CHECK_ENV_PTR(m_agentEnv, threadManager);
             return *m_agentEnv->threadManager;
         }
@@ -178,7 +184,7 @@ namespace jdwp {
         /**
          * Gets the transport-manager reference from the agent base.
          */
-        static TransportManager& GetTransportManager() throw() {
+        static TransportManager& GetTransportManager() {
             CHECK_ENV_PTR(m_agentEnv, transportManager);
             return *m_agentEnv->transportManager;
         }
@@ -186,7 +192,7 @@ namespace jdwp {
         /**
          * Gets the object-manager reference from the agent base.
          */
-        static ObjectManager& GetObjectManager() throw() {
+        static ObjectManager& GetObjectManager() {
             CHECK_ENV_PTR(m_agentEnv, objectManager);
             return *m_agentEnv->objectManager;
         }
@@ -194,7 +200,7 @@ namespace jdwp {
         /**
          * Gets the class-manager reference from the agent base.
          */
-        static ClassManager& GetClassManager() throw() {
+        static ClassManager& GetClassManager() {
             CHECK_ENV_PTR(m_agentEnv, classManager);
             return *m_agentEnv->classManager;
         }
@@ -202,7 +208,7 @@ namespace jdwp {
         /**
          * Gets the packet-dispatcher reference from the agent base.
          */
-        static PacketDispatcher& GetPacketDispatcher() throw() {
+        static PacketDispatcher& GetPacketDispatcher() {
             CHECK_ENV_PTR(m_agentEnv, packetDispatcher);
             return *m_agentEnv->packetDispatcher;
         }
@@ -210,7 +216,7 @@ namespace jdwp {
         /**
          * Gets the event-dispatcher reference from the agent base.
          */
-        static EventDispatcher& GetEventDispatcher() throw() {
+        static EventDispatcher& GetEventDispatcher() {
             CHECK_ENV_PTR(m_agentEnv, eventDispatcher);
             return *m_agentEnv->eventDispatcher;
         }
@@ -218,7 +224,7 @@ namespace jdwp {
         /**
          * Gets the request-manager reference from the agent base.
          */
-        static RequestManager& GetRequestManager() throw() {
+        static RequestManager& GetRequestManager() {
             CHECK_ENV_PTR(m_agentEnv, requestManager);
             return *m_agentEnv->requestManager;
         }
@@ -226,15 +232,24 @@ namespace jdwp {
         /**
          * Gets the agent-manager reference from the agent base.
          */
-        static AgentManager& GetAgentManager() throw() {
+        static AgentManager& GetAgentManager() {
             CHECK_ENV_PTR(m_agentEnv, agentManager);
             return *m_agentEnv->agentManager;
+        }
+
+
+        /**
+         * Gets the exception-manager reference from the agent base.
+         */
+        static ExceptionManager& GetExceptionManager() {
+            CHECK_ENV_PTR(m_agentEnv, exceptionManager);
+            return *m_agentEnv->exceptionManager;
         }
 
         /**
          * Gets the pointer to JVMTI environment from the agent base.
          */
-        static jvmtiEnv* GetJvmtiEnv() throw() {
+        static jvmtiEnv* GetJvmtiEnv() {
             CHECK_ENV_PTR(m_agentEnv, jvmti);
             return m_agentEnv->jvmti;
         }
@@ -242,7 +257,7 @@ namespace jdwp {
         /**
          * Gets the pointer to the target VM from the agent base.
          */
-        static JavaVM* GetJavaVM() throw() {
+        static JavaVM* GetJavaVM() {
             CHECK_ENV_PTR(m_agentEnv, jvm);
             return m_agentEnv->jvm;
         }
@@ -250,7 +265,7 @@ namespace jdwp {
         /**
          * Gets the pointer to JNI environment from the agent base.
          */
-        static JNIEnv* GetJniEnv() throw() {
+        static JNIEnv* GetJniEnv() {
             JNIEnv *jniEnv = 0;
             CHECK_ENV_PTR(m_agentEnv, jvm);
             (m_agentEnv->jvm)->GetEnv((void **)&jniEnv, JNI_VERSION_1_4);
@@ -260,7 +275,7 @@ namespace jdwp {
         /**
          * Gets JDWP capabilities from the agent base.
          */
-        static jdwpCapabilities& GetCapabilities() throw() {
+        static jdwpCapabilities& GetCapabilities() {
             CHECK_ENV(m_agentEnv);
             return m_agentEnv->caps;
         }
@@ -268,7 +283,7 @@ namespace jdwp {
         /**
          * Gets a dead status of the agent.
          */
-        static bool IsDead() throw() {
+        static bool IsDead() {
             CHECK_ENV(m_agentEnv);
             return m_agentEnv->isDead;
         }
@@ -276,7 +291,7 @@ namespace jdwp {
         /**
          * Sets a dead status to the agent.
          */
-        static void SetIsDead(bool isDead) throw() {
+        static void SetIsDead(bool isDead) {
             CHECK_ENV(m_agentEnv);
             m_agentEnv->isDead = isDead;
         }
@@ -290,6 +305,7 @@ namespace jdwp {
         }
 
         static AgentEnv *m_agentEnv;
+        static char *m_defaultStratum;
     };
 
     inline void* Allocatable::operator new(size_t size) {
@@ -322,17 +338,16 @@ namespace jdwp {
          * A constructor.
          * A pointer to the JVMTI memory is saved here.
          */
-        JvmtiAutoFree(void* ptr) throw() : m_ptr(ptr) { }
+        JvmtiAutoFree(void* ptr) : m_ptr(ptr) { }
 
         /**
          * A destructor.
          * The saved pointer to the JVMTI memory is freed here.
          */
-        ~JvmtiAutoFree() throw() {
+        ~JvmtiAutoFree() {
             if (m_ptr != 0) {
-                jvmtiError err;
-                JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->
-                    Deallocate(reinterpret_cast<unsigned char*>(m_ptr)));
+                jvmtiError err = AgentBase::GetJvmtiEnv()->
+                    Deallocate(reinterpret_cast<unsigned char*>(m_ptr));
                 JDWP_ASSERT(err==JVMTI_ERROR_NONE);
             }
         }
@@ -360,13 +375,13 @@ namespace jdwp {
          * A constructor.
          * A pointer to the agent memory is saved here.
          */
-        AgentAutoFree(void* ptr JDWP_FILE_LINE_PAR) throw() : m_ptr(ptr) JDWP_FILE_LINE_INI { }
+        AgentAutoFree(void* ptr JDWP_FILE_LINE_PAR) : m_ptr(ptr) JDWP_FILE_LINE_INI { }
 
         /**
          * A destructor.
          * The saved pointer to the agent memory is freed here.
          */
-        ~AgentAutoFree() throw() {
+        ~AgentAutoFree() {
             if (m_ptr != 0) {
                 AgentBase::GetMemoryManager().Free(m_ptr JDWP_FILE_LINE_MPAR);
             }
@@ -383,8 +398,6 @@ namespace jdwp {
         void* m_ptr;
     };
 
-#ifndef NDEBUG
-    
     /**
      * The given class is used in the debug mode only for tracing entry/exit of 
      * agent functions.
@@ -397,9 +410,13 @@ namespace jdwp {
          * A constructor.
          * Traces method entry in the log.
          */
-        JdwpTraceEntry(std::ostringstream& os, const char* file, int line, int kind)
-            : m_stream(os), m_file(file), m_line(line), m_kind(kind) {
-            AgentBase::GetLogManager().Trace(">> " + m_stream.str(), m_file, m_line, m_kind);
+        JdwpTraceEntry(int kind, const char* file, int line, const char* format, ...)
+            : m_file(file), m_line(line), m_kind(kind), m_format(format) {
+            if (JDWP_TRACE_ENABLED_VAARGS((m_kind, m_file, m_line, m_format))) {
+                va_start(m_args, format);            
+                AgentBase::GetLogManager().TraceEnterv(kind, file, line, format, m_args);
+                va_end(m_args);
+            }
         }
 
         /**
@@ -407,17 +424,18 @@ namespace jdwp {
          * Traces method exit in the log.
          */
         ~JdwpTraceEntry() {
-            AgentBase::GetLogManager().Trace("<< " + m_stream.str(), m_file, m_line, m_kind);
+            if (JDWP_TRACE_ENABLED_VAARGS((m_kind, m_file, m_line, m_format))) {
+                AgentBase::GetLogManager().TraceExit(m_kind, m_file, m_line, m_format);
+            }
         }
 
     private:
-        std::ostringstream& m_stream;
         const char* m_file;
         int         m_line;
         int         m_kind;
+        const char* m_format;
+        va_list     m_args;
     };
-#endif // NDEBUG
-
 } // namespace jdwp
 
 #endif // _AGENT_BASE_H_

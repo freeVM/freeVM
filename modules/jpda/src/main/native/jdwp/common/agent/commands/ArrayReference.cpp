@@ -15,93 +15,102 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.12 $
- */
-#include <string.h>
 #include "ArrayReference.h"
 #include "PacketParser.h"
 #include "ClassManager.h"
+#include "ExceptionManager.h"
+
+
+#include <string.h>
 
 using namespace jdwp;
 using namespace ArrayReference;
 
-void
-ArrayReference::LengthHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+ArrayReference::LengthHandler::Execute(JNIEnv *jni) 
 {
     jarray arrayObject = (jarray)m_cmdParser->command.ReadArrayID(jni);
     if (arrayObject == 0) {
-        JDWP_TRACE_DATA("Length: null array: arrayID=" << arrayObject);
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Length: null array: arrayID=%p", arrayObject));
+        AgentException e(JDWP_ERROR_INVALID_OBJECT);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_OBJECT;
     }
     jclass arrObjClass = jni->GetObjectClass(arrayObject);
 #ifndef NDEBUG 
     if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
         char* signature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(arrObjClass, &signature, 0));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(arrObjClass, &signature, 0));
         JvmtiAutoFree afs(signature);
-        JDWP_TRACE_DATA("Length: arrayID=" << arrayObject
-            << ", classSignature=" << JDWP_CHECK_NULL(signature));
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Length: arrayID=%p, classSignature=%s", arrayObject, JDWP_CHECK_NULL(signature)));
     }
 #endif
     JDWP_ASSERT(arrObjClass != 0);
     jboolean is_array_class;
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->IsArrayClass(arrObjClass, &is_array_class));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->IsArrayClass(arrObjClass, &is_array_class));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
     }
     if (is_array_class != JNI_TRUE) {
-        throw AgentException(JDWP_ERROR_INVALID_ARRAY);
+        AgentException e(JDWP_ERROR_INVALID_ARRAY);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_ARRAY;
     }
 
     jsize length = jni->GetArrayLength(arrayObject);
-    JDWP_TRACE_DATA("Length: send: length=" << length);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Length: send: length=%d", length));
     m_cmdParser->reply.WriteInt(length);
-    
+
+    return JDWP_ERROR_NONE;
 }
 
-void
-ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) 
 {
     jarray arrayObject = m_cmdParser->command.ReadArrayID(jni);
     jint firstIndex = m_cmdParser->command.ReadInt();
     jint length = m_cmdParser->command.ReadInt();
 
-    JDWP_TRACE_DATA("GetValues: received: arrayID=" << arrayObject
-        << ", firstIndex=" << firstIndex 
-        << ", length=" << length)
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: received: arrayID=%p, firstIndex=%d, length=%d", arrayObject, firstIndex, length));
 
     jclass arrObjClass = jni->GetObjectClass(arrayObject);
     JDWP_ASSERT(arrObjClass != 0);
 
     char* signature = 0;
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(arrObjClass,
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(arrObjClass,
         &signature, 0));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
     }
     JvmtiAutoFree afv1(signature);
     if(signature[0] != '[') {
-        throw AgentException(JDWP_ERROR_INVALID_ARRAY);
+        AgentException e(JDWP_ERROR_INVALID_ARRAY);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_ARRAY;
     }
     jsize arrLength = jni->GetArrayLength(arrayObject);
     JDWP_ASSERT(arrLength >= 0);
     if ( (firstIndex < 0) || (firstIndex >= arrLength) ) {
-        throw AgentException(JDWP_ERROR_INVALID_INDEX);
+        AgentException e(JDWP_ERROR_INVALID_INDEX);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_INDEX;
     }
     if ( length == -1 ) {
         length = arrLength - firstIndex;
     }
     if ( (length < 0 ) || (firstIndex + length > arrLength) ) {
-        throw AgentException(JDWP_ERROR_INVALID_LENGTH);
+        AgentException e(JDWP_ERROR_INVALID_LENGTH);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_LENGTH;
     }
-    JDWP_TRACE_DATA("GetValues: values=" << length 
-        << ", signature=" << JDWP_CHECK_NULL(signature));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: values=%d, signature=%s", length, JDWP_CHECK_NULL(signature)));
     jvalue value;
     ClassManager& classManager = AgentBase::GetClassManager();
     switch (signature[1]) {
@@ -109,7 +118,7 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
             m_cmdParser->reply.WriteByte(JDWP_TAG_BOOLEAN);
             m_cmdParser->reply.WriteInt(length);
             if ( length == 0 ) {
-                return;
+                return JDWP_ERROR_NONE;
             }
             jboolean* bufferArray = reinterpret_cast<jboolean*>(AgentBase::GetMemoryManager()
                     .Allocate(sizeof(jboolean)*length JDWP_FILE_LINE));
@@ -119,17 +128,16 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                         
             for (int i = 0; i < length; i++) {
                 value.z = bufferArray[i];
-                JDWP_TRACE_DATA("GetValues: send: index=" << i
-                    << ", value=(boolean)" << value.z);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: send: index=%d, value=(boolean)%d", i, value.z));
                 m_cmdParser->reply.WriteUntaggedValue(jni, JDWP_TAG_BOOLEAN, value);
             }
-            return;
+            return JDWP_ERROR_NONE;
         }
         case 'B': {
             m_cmdParser->reply.WriteByte(JDWP_TAG_BYTE);
             m_cmdParser->reply.WriteInt(length);
             if ( length == 0 ) {
-                return;
+                return JDWP_ERROR_NONE;
             }
             jbyte* bufferArray = reinterpret_cast<jbyte*>(AgentBase::GetMemoryManager()
                     .Allocate(sizeof(jbyte)*length JDWP_FILE_LINE));
@@ -139,17 +147,16 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                         
             for (int i = 0; i < length; i++) {
                 value.b = bufferArray[i];
-                JDWP_TRACE_DATA("GetValues: send: index=" << i
-                    << ", value=(byte)" << value.b);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: send: index=%d, value=(byte)%d", i, value.b));
                 m_cmdParser->reply.WriteUntaggedValue(jni, JDWP_TAG_BYTE, value);
             }
-            return;
+            return JDWP_ERROR_NONE;
         }
         case 'C': {
             m_cmdParser->reply.WriteByte(JDWP_TAG_CHAR);
             m_cmdParser->reply.WriteInt(length);
             if ( length == 0 ) {
-                return;
+                return JDWP_ERROR_NONE;
             }
             jchar* bufferArray = reinterpret_cast<jchar*>(AgentBase::GetMemoryManager()
                     .Allocate(sizeof(jchar)*length JDWP_FILE_LINE));
@@ -159,17 +166,16 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                         
             for (int i = 0; i < length; i++) {
                 value.c = bufferArray[i];
-                JDWP_TRACE_DATA("GetValues: send: index=" << i
-                    << ", value=(char)" << value.c);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: send: index=%d, value=(char)%d", i, value.c));
                 m_cmdParser->reply.WriteUntaggedValue(jni, JDWP_TAG_CHAR, value);
             }
-            return;
+            return JDWP_ERROR_NONE;
         }
         case 'S': {
             m_cmdParser->reply.WriteByte(JDWP_TAG_SHORT);
             m_cmdParser->reply.WriteInt(length);
             if ( length == 0 ) {
-                return;
+                return JDWP_ERROR_NONE;
             }
             jshort* bufferArray = reinterpret_cast<jshort*>(AgentBase::GetMemoryManager()
                     .Allocate(sizeof(jshort)*length JDWP_FILE_LINE));
@@ -179,17 +185,16 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                         
             for (int i = 0; i < length; i++) {
                 value.s = bufferArray[i];
-                JDWP_TRACE_DATA("GetValues: send: index=" << i
-                    << ", value=(short)" << value.s);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: send: index=%d, value=(short)%d", i, value.s));
                 m_cmdParser->reply.WriteUntaggedValue(jni, JDWP_TAG_SHORT, value);
             }
-            return;
+            return JDWP_ERROR_NONE;
         }
         case 'I': {
             m_cmdParser->reply.WriteByte(JDWP_TAG_INT);
             m_cmdParser->reply.WriteInt(length);
             if ( length == 0 ) {
-                return;
+                return JDWP_ERROR_NONE;
             }
             jint* bufferArray = reinterpret_cast<jint*>(AgentBase::GetMemoryManager()
                     .Allocate(sizeof(jint)*length JDWP_FILE_LINE));
@@ -199,17 +204,16 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                         
             for (int i = 0; i < length; i++) {
                 value.i = bufferArray[i];
-                JDWP_TRACE_DATA("GetValues: send: index=" << i
-                    << ", value=(int)" << value.i);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: send: index=%d, value=(int)%d", i, value.i));
                 m_cmdParser->reply.WriteUntaggedValue(jni, JDWP_TAG_INT, value);
             }
-            return;
+            return JDWP_ERROR_NONE;
         }
         case 'J': {
             m_cmdParser->reply.WriteByte(JDWP_TAG_LONG);
             m_cmdParser->reply.WriteInt(length);
             if ( length == 0 ) {
-                return;
+                return JDWP_ERROR_NONE;
             }
             jlong* bufferArray = reinterpret_cast<jlong*>(AgentBase::GetMemoryManager()
                     .Allocate(sizeof(jlong)*length JDWP_FILE_LINE));
@@ -219,17 +223,16 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                        
             for (int i = 0; i < length; i++) {
                 value.j = bufferArray[i];
-                JDWP_TRACE_DATA("GetValues: send: index=" << i
-                    << ", value=(long)" << value.j);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: send: index=%d, value=(long)%lld", i, value.j));
                 m_cmdParser->reply.WriteUntaggedValue(jni, JDWP_TAG_LONG, value);
             }
-            return;
+            return JDWP_ERROR_NONE;
         }
         case 'F': {
             m_cmdParser->reply.WriteByte(JDWP_TAG_FLOAT);
             m_cmdParser->reply.WriteInt(length);
             if ( length == 0 ) {
-                return;
+                return JDWP_ERROR_NONE;
             }
             jfloat* bufferArray = reinterpret_cast<jfloat*>(AgentBase::GetMemoryManager()
                     .Allocate(sizeof(jfloat)*length JDWP_FILE_LINE));
@@ -239,17 +242,16 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                         
             for (int i = 0; i < length; i++) {
                 value.f = bufferArray[i];
-                JDWP_TRACE_DATA("GetValues: send: index=" << i
-                    << ", value=(float)" << value.f);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: send: index=%d, value=(float)%f", i, value.f));
                 m_cmdParser->reply.WriteUntaggedValue(jni, JDWP_TAG_FLOAT, value);
             }
-            return;
+            return JDWP_ERROR_NONE;
         }
         case 'D': {
             m_cmdParser->reply.WriteByte(JDWP_TAG_DOUBLE);
             m_cmdParser->reply.WriteInt(length);
             if ( length == 0 ) {
-                return;
+                return JDWP_ERROR_NONE;
             }
             jdouble* bufferArray = reinterpret_cast<jdouble*>(AgentBase::GetMemoryManager()
                     .Allocate(sizeof(jdouble)*length JDWP_FILE_LINE));
@@ -259,11 +261,10 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                         
             for (int i = 0; i < length; i++) {
                 value.d = bufferArray[i];
-                JDWP_TRACE_DATA("GetValues: send: index=" << i
-                    << ", value=(double)" << value.d);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: send: index=%d, value=(double)%Lf", i, value.d));
                 m_cmdParser->reply.WriteUntaggedValue(jni, JDWP_TAG_DOUBLE, value);
             }
-            return;
+            return JDWP_ERROR_NONE;
         }
         case '[':
             m_cmdParser->reply.WriteByte(JDWP_TAG_ARRAY);
@@ -272,71 +273,81 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
             m_cmdParser->reply.WriteByte(JDWP_TAG_OBJECT);
             break;
         default:
-            JDWP_TRACE_DATA("GetValues: bad type signature: " << JDWP_CHECK_NULL(signature));
-            throw AgentException(JDWP_ERROR_INVALID_ARRAY);
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: bad type signature: %s", JDWP_CHECK_NULL(signature)));
+            AgentException e(JDWP_ERROR_INVALID_ARRAY);
+			JDWP_SET_EXCEPTION(e);
+            return JDWP_ERROR_INVALID_ARRAY;
     }
     m_cmdParser->reply.WriteInt(length);
 
-    JDWP_TRACE_DATA("GetValues: send: length=" << length);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: send: length=%d", length));
     for (int i = 0; i < length; i++) {
         jobject objArrayElement = jni->GetObjectArrayElement(static_cast<jobjectArray>(arrayObject), firstIndex + i);
         classManager.CheckOnException(jni);
 
         jdwpTag tag = classManager.GetJdwpTag(jni, objArrayElement);
 
-        JDWP_TRACE_DATA("GetValues: send: index=" << i 
-            << ", tag=" << tag 
-            << ", value=(object)" << objArrayElement);
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: send: index=%d, tag=%d, value=(object)%p", i, tag, objArrayElement));
 
-        m_cmdParser->reply.WriteByte(tag);
+        m_cmdParser->reply.WriteByte((jbyte)tag);
         m_cmdParser->reply.WriteObjectID(jni, objArrayElement);
     }
 
+    return JDWP_ERROR_NONE;
 }
 
-void
-ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) 
 {
     jarray arrayObject = m_cmdParser->command.ReadArrayID(jni);
     jint firstIndex = m_cmdParser->command.ReadInt();
     jint values = m_cmdParser->command.ReadInt();
 
-    JDWP_TRACE_DATA("GetValues: received: arrayID=" << arrayObject
-        << ", firstIndex=" << firstIndex 
-        << ", values=" << values)
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: received: arrayID=%p, firstIndex=%d, values=%d", arrayObject, firstIndex, values));
 
     if (arrayObject == 0) {
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        AgentException e(JDWP_ERROR_INVALID_OBJECT);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_OBJECT;
     }
     if ((firstIndex < 0) || (values < 0)) {
-        throw AgentException(JDWP_ERROR_ILLEGAL_ARGUMENT);
+        AgentException e(JDWP_ERROR_ILLEGAL_ARGUMENT);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_ILLEGAL_ARGUMENT;
     }
     jclass arrObjClass = jni->GetObjectClass(arrayObject);
     JDWP_ASSERT(arrObjClass != 0);
     char* signature = 0;
     char* generic = 0;
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(arrObjClass,
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(arrObjClass,
         &signature, &generic));
     JvmtiAutoFree afv1(signature);
     JvmtiAutoFree afv2(generic);
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
     }
     if ((signature == 0) || (strlen(signature) < 2)) {
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        AgentException e(JDWP_ERROR_INVALID_OBJECT);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_OBJECT;
     }
     if(signature[0] != '[') {
-        throw AgentException(JDWP_ERROR_INVALID_ARRAY);
+        AgentException e(JDWP_ERROR_INVALID_ARRAY);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_ARRAY;
     }
     jsize arrLength = jni->GetArrayLength(arrayObject);
     JDWP_ASSERT(arrLength >= 0);
     if (firstIndex + values > arrLength) {
-        throw AgentException(JDWP_ERROR_INVALID_LENGTH);
+        AgentException e(JDWP_ERROR_INVALID_LENGTH);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_LENGTH;
     }
 
-    JDWP_TRACE_DATA("SetValues: values=" << values << ", signature=" 
-        << JDWP_CHECK_NULL(signature) << ", generic=" << JDWP_CHECK_NULL(generic));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: values=%d, signature=%s, generic=%s", values, JDWP_CHECK_NULL(signature), JDWP_CHECK_NULL(generic)));
 
     jvalue value;
     switch (signature[1]) {
@@ -346,8 +357,7 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
             AgentAutoFree scavenger(bufferArray JDWP_FILE_LINE);
             for (int i = 0; i < values; i++) {
                 value = m_cmdParser->command.ReadUntaggedValue(jni, JDWP_TAG_BOOLEAN);
-                JDWP_TRACE_DATA("SetValues: set: index=" << i
-                    << ", value=(boolean)" << value.z);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set: index=%d, value=(boolean)%d", i, value.z));
                 bufferArray[i] = value.z;
             }
             jni->SetBooleanArrayRegion(static_cast<jbooleanArray>(arrayObject), firstIndex, values, bufferArray);
@@ -360,8 +370,7 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                         
             for (int i = 0; i < values; i++) {
                 value = m_cmdParser->command.ReadUntaggedValue(jni, JDWP_TAG_BYTE);
-                JDWP_TRACE_DATA("SetValues: set: index=" << i
-                    << ", value=(byte)" << value.b);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set: index=%d, value=(byte)%d", i, value.b));
                 bufferArray[i] = value.b;
             }
             jni->SetByteArrayRegion(static_cast<jbyteArray>(arrayObject), firstIndex, values, bufferArray);
@@ -374,8 +383,7 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                         
             for (int i = 0; i < values; i++) {
                 value = m_cmdParser->command.ReadUntaggedValue(jni, JDWP_TAG_CHAR);
-                JDWP_TRACE_DATA("SetValues: set: index=" << i
-                    << ", value=(char)" << value.c);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set: index=%d, value=(char)%d", i, value.c));
                 bufferArray[i] = value.c;
             }
             jni->SetCharArrayRegion(static_cast<jcharArray>(arrayObject), firstIndex, values, bufferArray);
@@ -388,8 +396,7 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
             
             for (int i = 0; i < values; i++) {
                 value = m_cmdParser->command.ReadUntaggedValue(jni, JDWP_TAG_SHORT);
-                JDWP_TRACE_DATA("SetValues: set: index=" << i
-                    << ", value=(short)" << value.s);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set: index=%d, value=(short)%d", i, value.s));
                 bufferArray[i] = value.s;
             }
             jni->SetShortArrayRegion(static_cast<jshortArray>(arrayObject), firstIndex, values, bufferArray);
@@ -402,8 +409,7 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
             
             for (int i = 0; i < values; i++) {
                 value = m_cmdParser->command.ReadUntaggedValue(jni, JDWP_TAG_INT);
-                JDWP_TRACE_DATA("SetValues: set: index=" << i
-                    << ", value=(int)" << value.i);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set: index=%d, value=(int)%d", i, value.i));
                 bufferArray[i] = value.i;
             }
             jni->SetIntArrayRegion(static_cast<jintArray>(arrayObject), firstIndex, values, bufferArray);
@@ -416,8 +422,7 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
             
             for (int i = 0; i < values; i++) {
                 value = m_cmdParser->command.ReadUntaggedValue(jni, JDWP_TAG_LONG);
-                JDWP_TRACE_DATA("SetValues: set: index=" << i
-                    << ", value=(long)" << value.j);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set: index=%d, value=(long)%lld", i, value.j));
                 bufferArray[i] = value.j;
             }
             jni->SetLongArrayRegion(static_cast<jlongArray>(arrayObject), firstIndex, values, bufferArray);
@@ -430,8 +435,7 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
             
             for (int i = 0; i < values; i++) {
                 value = m_cmdParser->command.ReadUntaggedValue(jni, JDWP_TAG_FLOAT);
-                JDWP_TRACE_DATA("SetValues: set: index=" << i
-                    << ", value=(float)" << value.f);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set: index=%d, value=(float)%f", i, value.f));
                 bufferArray[i] = value.f;
             }
             jni->SetFloatArrayRegion(static_cast<jfloatArray>(arrayObject), firstIndex, values, bufferArray);
@@ -444,8 +448,7 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
             
             for (int i = 0; i < values; i++) {
                 value = m_cmdParser->command.ReadUntaggedValue(jni, JDWP_TAG_DOUBLE);
-                JDWP_TRACE_DATA("SetValues: set: index=" << i
-                    << ", value=(double)" << value.d);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set: index=%d, value=(dounle)%Lf", i, value.d));
                 bufferArray[i] = value.d;
             }
             jni->SetDoubleArrayRegion(static_cast<jdoubleArray>(arrayObject), firstIndex, values, bufferArray);
@@ -457,8 +460,7 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                 value = m_cmdParser->command.ReadUntaggedValue(jni, JDWP_TAG_OBJECT);
                 jobject objArrayElement = value.l;
 
-                JDWP_TRACE_DATA("SetValues: set: index=" << i
-                    << ", value=(object)" << value.l);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set: index=%d, value=(object)%p", i, value.l));
                 
                 jni->SetObjectArrayElement(static_cast<jobjectArray>(arrayObject), firstIndex + i, objArrayElement);
                 jthrowable ex = jni->ExceptionOccurred();
@@ -476,14 +478,18 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
                 // indicate error if any exception occured
                 if (ex != 0) {
                     jni->ExceptionClear();
-                    throw AgentException(JDWP_ERROR_INVALID_ARRAY);
+                    AgentException e(JDWP_ERROR_INVALID_ARRAY);
+					JDWP_SET_EXCEPTION(e);
+                    return JDWP_ERROR_INVALID_ARRAY;
                 }
             }
             break;
         }
         default:
-            JDWP_TRACE_DATA("SetValues: bad type signature: " << JDWP_CHECK_NULL(signature));
-            throw AgentException(JDWP_ERROR_INVALID_ARRAY);
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: bad type signature: %s", JDWP_CHECK_NULL(signature)));
+            AgentException e(JDWP_ERROR_INVALID_ARRAY);
+			JDWP_SET_EXCEPTION(e);
+            return JDWP_ERROR_INVALID_ARRAY;
     }           
 
     // check if exception occured
@@ -493,7 +499,11 @@ ArrayReference::SetValuesHandler::Execute(JNIEnv *jni) throw(AgentException)
         // indicate error if any exception occured
         if (ex != 0) {
             jni->ExceptionClear();
-            throw AgentException(JDWP_ERROR_INVALID_ARRAY);
+            AgentException e(JDWP_ERROR_INVALID_ARRAY);
+			JDWP_SET_EXCEPTION(e);
+            return JDWP_ERROR_INVALID_ARRAY;
         }
     }
+
+    return JDWP_ERROR_NONE;
 }

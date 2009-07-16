@@ -15,21 +15,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.10 $
- */
-// TransportManager_pd.cpp
-//
-
 /**
  * This header file includes platform depended definitions for types, 
  * constants, include statements and functions for Win32 platform.
  */
 
-#include "TransportManager_pd.h"
+// Windows Header Files:
+#include <windows.h>
+
 #include "TransportManager.h"
+#include "ExceptionManager.h"
 #include <process.h>
 
 using namespace jdwp;
@@ -46,22 +41,22 @@ using namespace jdwp;
 
 const char TransportManager::pathSeparator = ';';
 
-void TransportManager::StartDebugger(const char* command, int extra_argc, const char* extra_argv[]) throw(AgentException)
+int TransportManager::StartDebugger(const char* command, int extra_argc, const char* extra_argv[])
 {
-    JDWP_TRACE_ENTRY("StartDebugger(" << JDWP_CHECK_NULL(command) << ',' << extra_argc << ',' << extra_argv << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "StartDebugger(%s,%d,%p)", JDWP_CHECK_NULL(command), extra_argc, extra_argv));
 
-JDWP_TRACE_PROG("StartDebugger: transport=" << JDWP_CHECK_NULL(extra_argv[0]));
-JDWP_TRACE_PROG("StartDebugger: address=" << JDWP_CHECK_NULL(extra_argv[1]));
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "StartDebugger: transport=%s", JDWP_CHECK_NULL(extra_argv[0])));
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "StartDebugger: address=%s", JDWP_CHECK_NULL(extra_argv[1])));
 
     // append extra arguments to command line
 
-    int cmd_len = strlen(command);
+    int cmd_len = (int)strlen(command);
     int extra_len = 0;
     int i;
 
     for (i = 0; i < extra_argc; i++) {
          if (extra_argv[i] != 0) {
-             extra_len += strlen(extra_argv[i]) + 1;
+             extra_len += (int)strlen(extra_argv[i]) + 1;
          }
     }
 
@@ -85,41 +80,22 @@ JDWP_TRACE_PROG("StartDebugger: address=" << JDWP_CHECK_NULL(extra_argv[1]));
     si.cb = sizeof(si);
     ZeroMemory(&pi, sizeof(pi));
 
-    JDWP_TRACE_PROG("StartDebugger: launch: cmd=" << JDWP_CHECK_NULL(cmd));
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "StartDebugger: launch: cmd=%s", JDWP_CHECK_NULL(cmd)));
 
     if(!CreateProcess(NULL, const_cast<LPSTR>(cmd), NULL, NULL, 
             TRUE, NULL, NULL, NULL, &si, &pi)) {
-        JDWP_ERROR("Failed to launch debugger process: error=" << GetLastError());
-        throw AgentException(JDWP_ERROR_INTERNAL);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Failed to launch debugger process: error=%d", GetLastError()));
+        AgentException ex = AgentException(JDWP_ERROR_INTERNAL);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_INTERNAL;
     }
 
-    JDWP_TRACE_PROG("StartDebugger: launched: pid=" << pi.dwProcessId);
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "StartDebugger: launched: pid=%d", pi.dwProcessId));
 
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
+
+    return JDWP_ERROR_NONE;
 }
 
-LoadedLibraryHandler TransportManager::LoadTransport(const char* dirName, const char* transportName)
-{
-    JDWP_TRACE_ENTRY("LoadTransport(" << JDWP_CHECK_NULL(dirName) << ',' << JDWP_CHECK_NULL(transportName) << ')');
 
-    JDWP_ASSERT(transportName != 0);
-    char* transportFullName = 0;
-    if (dirName == 0) {
-        size_t length = strlen(transportName) + 5;
-        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
-        sprintf(transportFullName, "%s.dll", transportName);
-    } else {
-        size_t length = strlen(dirName) + strlen(transportName) + 6;
-        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
-        sprintf(transportFullName, "%s\\%s.dll", dirName, transportName);
-    }
-    AgentAutoFree afv(transportFullName JDWP_FILE_LINE);
-    LoadedLibraryHandler res = LoadLibrary(transportFullName);
-    if (res == 0) {
-        JDWP_TRACE_PROG("LoadTransport: loading library " << transportFullName << " failed (error code: " << GetLastError() << ")");
-    } else {
-        JDWP_TRACE_PROG("LoadTransport: transport library " << transportFullName << " loaded");
-    }
-    return res;
-}

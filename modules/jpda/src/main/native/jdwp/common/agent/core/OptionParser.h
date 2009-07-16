@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.8.2.1 $
- */
-
 /**
  * @file
  * OptionParser.h
@@ -33,6 +27,7 @@
 #define _OPTION_PARSER_H_
 
 #include "AgentBase.h"
+#include "ExceptionManager.h"
 
 namespace jdwp {
 
@@ -47,24 +42,24 @@ namespace jdwp {
         /**
          * A constructor.
          */
-        OptionParser() throw();
+        OptionParser();
 
         /**
          * A destructor.
          */
-        ~OptionParser() throw();
+        ~OptionParser();
 
         /**
          * Parses the input string containing the arguments passed to the agent.
          *
          * @param str - the string containing agent arguments
          */
-        void Parse(const char* str) throw(AgentException);
+        int Parse(const char* str);
 
         /**
          * Returns a number of parsed options.
          */
-        int GetOptionCount() const throw() {
+        int GetOptionCount() const {
             return m_optionCount;
         }
 
@@ -75,30 +70,44 @@ namespace jdwp {
          * @param name  - the option name
          * @param value - the option value
          */
-        void GetOptionByIndex(int i, const char *&name, const char *&value)
-                const throw(InvalidIndexException) {
+#ifndef NDEBUG
+        int GetOptionByIndex(int i, const char *&name, const char *&value)
+                const {
             if (i < m_optionCount) {
                 name = m_options[i].name;
                 value = m_options[i].value;
+                return JDWP_ERROR_NONE;
             } else {
-                throw InvalidIndexException();
+                AgentException ex(JDWP_ERROR_INVALID_INDEX);
+                JDWP_SET_EXCEPTION(ex);
+                return JDWP_ERROR_INVALID_INDEX;
             }
         }
+#endif /* NDEBUG */
 
         /**
          * Looks for an option with the given name.
          *
          * @param name - the option name
          */
-        const char *FindOptionValue(const char *name) const throw();
+        const char *FindOptionValue(const char *name) const;
 
         /**
          * Returns a value for the agent's <code>help</code> option.
          *
          * @return Boolean.
          */
-        bool GetHelp() const throw() {
+        bool GetHelp() const {
             return m_help;
+        }
+
+        /**
+         * Returns a value for the agent's <code>version</code> option.
+         *
+         * @return Boolean.
+         */
+        bool GetVersion() const {
+            return m_version;
         }
 
         /**
@@ -106,7 +115,7 @@ namespace jdwp {
          *
          * @return Boolean.
          */
-        bool GetSuspend() const throw() {
+        bool GetSuspend() const {
             return m_suspend;
         }
 
@@ -115,7 +124,7 @@ namespace jdwp {
          *
          * @return Boolean.
          */
-        bool GetServer() const throw() {
+        bool GetServer() const {
             return m_server;
         }
 
@@ -124,7 +133,7 @@ namespace jdwp {
          *
          * @return Boolean.
          */
-        bool GetOnuncaught() const throw() {
+        bool GetOnuncaught() const {
             return m_onuncaught;
         }
 
@@ -133,7 +142,7 @@ namespace jdwp {
          *
          * @return Java long value.
          */
-        jlong GetTimeout() const throw() {
+        jlong GetTimeout() const {
             return m_timeout;
         }
 
@@ -142,7 +151,7 @@ namespace jdwp {
          *
          * @return Zero-terminated string.
          */
-        const char *GetTransport() const throw() {
+        const char *GetTransport() const {
             return m_transport;
         }
 
@@ -151,7 +160,7 @@ namespace jdwp {
          *
          * @return Zero-terminated string.
          */
-        const char *GetAddress() const throw() {
+        const char *GetAddress() const {
             return m_address;
         }
 
@@ -160,7 +169,7 @@ namespace jdwp {
          *
          * @return Zero-terminated string.
          */
-        const char *GetLog() const throw() {
+        const char *GetLog() const {
             return m_log;
         }
 
@@ -169,7 +178,7 @@ namespace jdwp {
          *
          * @return Zero-terminated string.
          */
-        const char *GetTraceKindFilter() const throw() {
+        const char *GetTraceKindFilter() const {
             return m_kindFilter;
         }
 
@@ -178,7 +187,7 @@ namespace jdwp {
          *
          * @return Zero-terminated string.
          */
-        const char *GetTraceSrcFilter() const throw() {
+        const char *GetTraceSrcFilter() const {
             return m_srcFilter;
         }
 
@@ -187,7 +196,7 @@ namespace jdwp {
          *
          * @return Zero-terminated string.
          */
-        const char *GetOnthrow() const throw() {
+        const char *GetOnthrow() const {
             return m_onthrow;
         }
 
@@ -196,7 +205,7 @@ namespace jdwp {
          *
          * @return Zero-terminated string.
          */
-        const char *GetLaunch() const throw() {
+        const char *GetLaunch() const {
             return m_launch;
         }
 
@@ -211,19 +220,27 @@ namespace jdwp {
         };
 
         /**
-         * The helper converting string to boolean.
+         * Checks if the input string is "y" or "n"
          *
          * @param str - the input null-terminated string
          *
          * @exception IllegalArgumentException.
          */
-        bool AsciiToBool(const char *str) throw(IllegalArgumentException);
+        bool IsValidBool(const char *str);
+
+        /**
+         * The helper converting string to boolean.
+         *
+         * @param str - the input null-terminated string
+         */
+        bool AsciiToBool(const char *str);
 
         int m_optionCount;
         char *m_optionString;
         Option *m_options;
 
         bool m_help;
+        bool m_version;
         bool m_suspend;
         bool m_server;
         bool m_onuncaught;

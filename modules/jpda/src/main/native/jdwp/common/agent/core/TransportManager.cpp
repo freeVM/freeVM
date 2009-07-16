@@ -16,16 +16,13 @@
  *  limitations under the License.
  */
 
-/**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.14 $
- */
-// TransportManager.cpp
-//
-
-#include <string.h>
+#ifndef USING_VMI
+#define USING_VMI
 
 #include "TransportManager.h"
+#include "ExceptionManager.h"
+
+#include <string.h>
 
 using namespace jdwp;
 
@@ -57,35 +54,52 @@ TransportManager::TransportManager() : AgentBase()
     m_isServer = true;
     m_lastErrorMessage = 0;
     m_isConnected = false;
+    m_isCleaned = false;
 } //TransportManager::TransportManager()
 
 TransportManager::~TransportManager()
 {
+#if defined(WIN32) || defined(WIN64)
+    if (m_sendMonitor !=0) {
+        delete m_sendMonitor;
+        m_sendMonitor = 0;
+    }
+#endif
     if (m_address != 0) {
         GetMemoryManager().Free(m_address JDWP_FILE_LINE);
     }
     if (m_loadedLib != 0) {
-        jdwpTransport_UnLoad_Type UnloadFunc = reinterpret_cast<jdwpTransport_UnLoad_Type>
-                (GetProcAddress(m_loadedLib, unLoadDecFuncName)); 
+	    PORT_ACCESS_FROM_JAVAVM(GetJavaVM()); 
+        jdwpTransport_UnLoad_Type UnloadFunc = 0;
+		UDATA ret = hysl_lookup_name(m_loadedLib, (const char*) unLoadDecFuncName, (UDATA*) &UnloadFunc, "VL");
+        if (ret != 0) {
+	        ret = hysl_lookup_name(m_loadedLib, "jdwpTransport_UnLoad", (UDATA*) &UnloadFunc, "VL");
+        }
+	    //	reinterpret_cast<jdwpTransport_UnLoad_Type>
+        //        (GetProcAddress(m_loadedLib, unLoadDecFuncName)); 
         if ((UnloadFunc != 0) && (m_env != 0)) {
             (UnloadFunc) (&m_env); 
-        }
-        FreeLibrary(m_loadedLib); 
+		}
+		hysl_close_shared_library (m_loadedLib);
     }
 } //TransportManager::~TransportManager()
 
-void 
+int 
 TransportManager::Init(const char* transportName, 
-                const char* libPath) throw(TransportException)
+                const char* libPath)
 {
-    JDWP_TRACE_ENTRY("Init(" << JDWP_CHECK_NULL(transportName) << ',' << JDWP_CHECK_NULL(libPath) << ')');
+    JDWP_CHECK_NULL(transportName);
+    JDWP_CHECK_NULL(libPath);
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Init(%s,%s)", transportName, libPath));
 
-    JDWP_TRACE_PROG("Init: transport=" << JDWP_CHECK_NULL(transportName )
-        << ", libPath=" << JDWP_CHECK_NULL(libPath));
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Init: transport=%s, libPath=%s", transportName, libPath));
 
     JDWP_ASSERT(m_loadedLib == 0);
+    PORT_ACCESS_FROM_JAVAVM(GetJavaVM());
     m_isConnected = false;
-
+#if defined(WIN32) || defined(WIN64)
+    m_sendMonitor = new AgentMonitor("_jdwp_send_waitMonitor");
+#endif
     m_transportName = transportName;
     const char* begin = libPath;
     do {
@@ -117,13 +131,19 @@ TransportManager::Init(const char* transportName,
         }
         size_t length = strlen("Loading of  failed") + strlen(transportName) + 1;
         m_lastErrorMessage = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
-        sprintf(m_lastErrorMessage, "Loading of %s failed", transportName);
-        JDWP_ERROR("Loading of " << transportName << " failed");
-        throw TransportException(JDWP_ERROR_TRANSPORT_LOAD, JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
+        hystr_printf(privatePortLibrary, m_lastErrorMessage, (U_32)length, "Loading of %s failed", transportName);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, m_lastErrorMessage));
+        AgentException ex(JDWP_ERROR_TRANSPORT_LOAD,
+						   JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_TRANSPORT_LOAD;
     }
 
-    jdwpTransport_OnLoad_t transportOnLoad = reinterpret_cast<jdwpTransport_OnLoad_t>
-            (GetProcAddress(m_loadedLib, onLoadDecFuncName));
+    jdwpTransport_OnLoad_t transportOnLoad;
+    UDATA ret = hysl_lookup_name(m_loadedLib, (char*) onLoadDecFuncName, (UDATA*) &transportOnLoad, "ILLIL");
+    if (ret != 0) {
+	ret = hysl_lookup_name(m_loadedLib, "jdwpTransport_OnLoad", (UDATA*) &transportOnLoad, "ILLIL");
+    }
     if (transportOnLoad == 0) {
         if (m_lastErrorMessage != 0) {
             GetMemoryManager().Free(m_lastErrorMessage JDWP_FILE_LINE);
@@ -131,10 +151,14 @@ TransportManager::Init(const char* transportName,
         size_t length = strlen(" function not found in ") + strlen(transportName)
             + strlen(onLoadDecFuncName) + 1;
         m_lastErrorMessage = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
-        sprintf(m_lastErrorMessage, "%s function not found in %s", onLoadDecFuncName, transportName);
-        JDWP_ERROR(onLoadDecFuncName << " function not found in " << transportName);
-        throw TransportException(JDWP_ERROR_TRANSPORT_INIT, JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
+        hystr_printf(privatePortLibrary, m_lastErrorMessage, (U_32)length, "%s function not found in %s", onLoadDecFuncName, transportName);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, m_lastErrorMessage));
+        AgentException ex(JDWP_ERROR_TRANSPORT_INIT,
+						   JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_TRANSPORT_INIT;
     }
+ 
     jint res = (*transportOnLoad)(GetJavaVM(), &callback, JDWPTRANSPORT_VERSION_1_0, &m_env);
     if (res == JNI_ENOMEM) {
         if (m_lastErrorMessage != 0) {
@@ -142,17 +166,22 @@ TransportManager::Init(const char* transportName,
         }
         size_t length = strlen("Out of memory");
         m_lastErrorMessage = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
-        sprintf(m_lastErrorMessage, "Out of memeory");
-        throw TransportException(JDWP_ERROR_OUT_OF_MEMORY);
+        hystr_printf(privatePortLibrary, m_lastErrorMessage, (U_32)length, "Out of memeory");
+        AgentException ex(JDWP_ERROR_OUT_OF_MEMORY);
+    	JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_OUT_OF_MEMORY;
     } else if (res != JNI_OK) {
         if (m_lastErrorMessage != 0) {
             GetMemoryManager().Free(m_lastErrorMessage JDWP_FILE_LINE);
         }
         size_t length = strlen("Invoking of  failed") + strlen(onLoadDecFuncName) + 1;
         m_lastErrorMessage = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
-        sprintf(m_lastErrorMessage, "Invoking of %s failed", onLoadDecFuncName);
-        JDWP_ERROR("Invoking of " << onLoadDecFuncName << " failed");
-        throw TransportException(JDWP_ERROR_TRANSPORT_INIT, JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
+        hystr_printf(privatePortLibrary, m_lastErrorMessage, (U_32)length, "Invoking of %s failed", onLoadDecFuncName);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, m_lastErrorMessage));
+        AgentException ex(JDWP_ERROR_TRANSPORT_INIT,
+						   JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_TRANSPORT_INIT;
     }
     if (m_env == 0) {
         if (m_lastErrorMessage != 0) {
@@ -160,24 +189,26 @@ TransportManager::Init(const char* transportName,
         }
         size_t length = strlen("Transport provided invalid environment");
         m_lastErrorMessage = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
-        sprintf(m_lastErrorMessage, "Transport provided invalid environment");
-        JDWP_ERROR("Transport provided invalid environment");
-        throw TransportException(JDWP_ERROR_TRANSPORT_INIT, JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
+        hystr_printf(privatePortLibrary, m_lastErrorMessage, (U_32)length, "Transport provided invalid environment");
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, m_lastErrorMessage));
+        AgentException ex(JDWP_ERROR_TRANSPORT_INIT,
+						   JDWPTRANSPORT_ERROR_NONE, m_lastErrorMessage);
+    	JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_TRANSPORT_INIT;
     }
 
+    return JDWP_ERROR_NONE;
 } // TransportManager::Init()
 
-void 
+int 
 TransportManager::PrepareConnection(const char* address, bool isServer, 
-                jlong connectTimeout, jlong handshakeTimeout) throw(TransportException)
+                jlong connectTimeout, jlong handshakeTimeout)
 {
-    JDWP_TRACE_ENTRY("PrepareConnection(" << JDWP_CHECK_NULL(address) << ',' << isServer 
-        << ',' << connectTimeout << ',' << handshakeTimeout << ')');
+    JDWP_CHECK_NULL(address);
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "PrepareConnection(%s,%s,%lld,%lld)", address, (isServer?"TRUE":"FALSE"), connectTimeout, handshakeTimeout));
     
-    JDWP_TRACE_PROG("PrepareConnection: address=" << JDWP_CHECK_NULL(address) 
-        << " connectTimeout=" << connectTimeout 
-        << " handshakeTimeout=" << handshakeTimeout 
-        << " isServer=" << isServer);
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "PrepareConnection: address=%s isServer=%s connectTimeout=%lld handshakeTimeout=%lld",
+                    address, (isServer?"TRUE":"FALSE"), connectTimeout, handshakeTimeout));
 
     JDWP_ASSERT((m_loadedLib != 0) && (!m_ConnectionPrepared));
 
@@ -189,22 +220,37 @@ TransportManager::PrepareConnection(const char* address, bool isServer,
 
     JDWPTransportCapabilities capabilities;
     jdwpTransportError err = m_env->GetCapabilities(&capabilities);
-    CheckReturnStatus(err);
-    if ((connectTimeout != 0) && isServer && (!capabilities.can_timeout_accept)) {
-        JDWP_INFO("Warning: transport does not support accept timeout");
+    if (err != JDWPTRANSPORT_ERROR_NONE) {
+        return CheckReturnStatus(err);
+    }
+
+    /*
+	if ((connectTimeout != 0) && isServer && (!capabilities.can_timeout_accept)) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Warning: transport does not support accept timeout"));
     }
     if ((connectTimeout != 0) && (!isServer) && (!capabilities.can_timeout_attach)) {
-        JDWP_INFO("Warning: transport does not support attach timeout");
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Warning: transport does not support attach timeout"));
     }
     if ((handshakeTimeout != 0) && (!capabilities.can_timeout_handshake)) {
-        JDWP_INFO("Warning: transport does not support handshake timeout");
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Warning: transport does not support handshake timeout"));
+    }
+	*/
+
+	// only print error message when all of handshake, accept and attach timeout can not be used.
+    if ((handshakeTimeout != 0) && (!capabilities.can_timeout_handshake) && (connectTimeout != 0)) {
+        if ((isServer && (!capabilities.can_timeout_accept)) || ((!isServer) && (!capabilities.can_timeout_attach))) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Warning: transport does not support timeouts"));
+        }
     }
 
     if (isServer) {
         err = m_env->StartListening(address, &m_address); 
-        CheckReturnStatus(err);
-        JDWP_INFO("transport is listening on " << m_address);
-        JDWP_TRACE_PROG("PrepareConnection: listening on " << m_address);
+        if (err != JDWPTRANSPORT_ERROR_NONE) {
+            return CheckReturnStatus(err);
+        }
+
+        JDWP_TRACE(LOG_RELEASE, (LOG_SIMPLE_FL, "Listening for transport %s at address: %s", m_transportName, m_address));
+        JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "PrepareConnection: listening on %s", m_address));
     } else {
         m_address = static_cast<char *>(GetMemoryManager().Allocate(strlen(address) + 1 JDWP_FILE_LINE));
         strcpy(m_address, address);
@@ -212,84 +258,145 @@ TransportManager::PrepareConnection(const char* address, bool isServer,
 
     m_ConnectionPrepared = true;
 
+    return JDWP_ERROR_NONE;
 } // TransportManager::PrepareConnection()
 
-void 
-TransportManager::Connect() throw(TransportException)
+int 
+TransportManager::Connect()
 {
     if (m_isConnected) {
-        return;
+        return JDWP_ERROR_NONE;
     }
 
-    JDWP_TRACE_PROG("Connect: isServer=" << m_isServer);
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Connect: isServer=%s", (m_isServer?"TRUE":"FALSE")));
     JDWP_ASSERT(m_ConnectionPrepared);
     jdwpTransportError err;
     if (m_isServer) {
-        err = m_env->Accept(m_connectTimeout, m_handshakeTimeout);
-        CheckReturnStatus(err);
+        if (strcmp("dt_shmem", m_transportName)) {
+            err = m_env->Accept(m_connectTimeout, m_handshakeTimeout);
+            if (err != JDWPTRANSPORT_ERROR_NONE) {
+                return CheckReturnStatus(err);
+            }
+        } else {
+            /*
+             * Work around: because Accept can't be interrupted by StopListening
+             * when use "dt_shmem", we use loop instead of blocking at Accept
+             */
+            jlong timeout = 100;
+            jlong total = m_connectTimeout;
+            while (m_connectTimeout == 0 || total > 0) {
+                if (m_isCleaned) {
+                    AgentException ex(JDWP_ERROR_TRANSPORT_INIT, JDWPTRANSPORT_ERROR_NONE, "Connection failed");
+                    JDWP_SET_EXCEPTION(ex);
+                    return JDWP_ERROR_TRANSPORT_INIT;
+                }
+
+                err = m_env->Accept(timeout, m_handshakeTimeout);
+
+                if (err == JDWPTRANSPORT_ERROR_NONE) {
+                    break;
+                }
+
+                if (err != JDWPTRANSPORT_ERROR_TIMEOUT) {
+                    return CheckReturnStatus(err);
+                }
+
+                total -= timeout;
+            }
+            if (err != JDWPTRANSPORT_ERROR_NONE) {
+                return CheckReturnStatus(err);
+            }
+        }
     } else {
         err = m_env->Attach(m_address, m_connectTimeout, m_handshakeTimeout);
-        CheckReturnStatus(err);
+        if (err != JDWPTRANSPORT_ERROR_NONE) {
+            return CheckReturnStatus(err);
+        }
     }
     m_isConnected = true;
-    JDWP_TRACE_PROG("Connect: connection established");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Connect: connection established"));
+    return JDWP_ERROR_NONE;
 } // TransportManager::Connect()
 
-void 
-TransportManager::Launch(const char* command) throw(AgentException)
+int 
+TransportManager::Launch(const char* command)
 {
-    JDWP_TRACE_PROG("Launch: " << JDWP_CHECK_NULL(command));
+    JDWP_CHECK_NULL(command);
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Launch: %s", command));
     JDWP_ASSERT(m_ConnectionPrepared);
     const char* extra_argv[2];
     extra_argv[0] = m_transportName;
     extra_argv[1] = m_address;
-    StartDebugger(command, 2, extra_argv);
-    Connect();
+    int ret = StartDebugger(command, 2, extra_argv);
+    JDWP_CHECK_RETURN(ret);
+    ret = Connect();
+    return ret;
 } // TransportManager::Launch()
 
-void 
-TransportManager::Read(jdwpPacket* packet) throw(TransportException)
+int 
+TransportManager::Read(jdwpPacket* packet)
 {
     JDWP_ASSERT(m_ConnectionPrepared);
-    JDWP_TRACE_PACKET("read packet");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PACKET_FL, "read packet"));
     jdwpTransportError err = m_env->ReadPacket(packet);
-    CheckReturnStatus(err);
+    if (err != JDWPTRANSPORT_ERROR_NONE) {
+        return CheckReturnStatus(err);
+    }
     TracePacket("rcvt", packet);
+    return JDWP_ERROR_NONE;
 } // TransportManager::Read()
 
-void 
-TransportManager::Write(const jdwpPacket *packet) throw(TransportException)
+int 
+TransportManager::Write(const jdwpPacket *packet)
 {
     JDWP_ASSERT(m_ConnectionPrepared);
-    JDWP_TRACE_PACKET("send packet");
-    jdwpTransportError err = m_env->WritePacket(packet);
-    CheckReturnStatus(err);
+    JDWP_TRACE(LOG_RELEASE, (LOG_PACKET_FL, "send packet"));
+    jdwpTransportError err;
+#if defined(WIN32) || defined(WIN64)
+    // work around: prevent different threads from sending data at the same time.
+    // This enables Harmony jdwp to work with RI dt_shmem.dll
+    {
+    MonitorAutoLock lock(m_sendMonitor JDWP_FILE_LINE);
+#endif
+    err = m_env->WritePacket(packet);
+#if defined(WIN32) || defined(WIN64)
+    }
+#endif
+    if (err != JDWPTRANSPORT_ERROR_NONE) {
+        return CheckReturnStatus(err);
+    }
     TracePacket("sent", packet);
+    return JDWP_ERROR_NONE;
 } // TransportManager::Write()
 
-void 
-TransportManager::Reset() throw(TransportException)
+int 
+TransportManager::Reset()
 {
-    JDWP_TRACE_PROG("Reset: close connection");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Reset: close connection"));
     if(m_env != 0) {
         JDWP_ASSERT(m_ConnectionPrepared);
         jdwpTransportError err = m_env->Close();
-        CheckReturnStatus(err);
+        if (err != JDWPTRANSPORT_ERROR_NONE) {
+            return CheckReturnStatus(err);
+        }
     }
     m_isConnected = false;
-    JDWP_TRACE_PROG("Reset: connection closed");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Reset: connection closed"));
+    return JDWP_ERROR_NONE;
 } // TransportManager::Reset()
 
 
 void 
-TransportManager::Clean() throw(TransportException)
+TransportManager::Clean()
 {
-    JDWP_TRACE_PROG("Clean: close connection and stop listening");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Clean: close connection and stop listening"));
     if (m_env != 0) {
         m_env->Close();
         m_env->StopListening();
     }
-    JDWP_TRACE_PROG("Clean: connection closed and listening stopped");
+
+    m_isCleaned = true;
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Clean: connection closed and listening stopped"));
 } // TransportManager::Clean()
 
 bool 
@@ -307,7 +414,7 @@ TransportManager::IsOpen()
 } // TransportManager::IsOpen()
 
 char* 
-TransportManager::GetLastTransportError() throw(TransportException)
+TransportManager::GetLastTransportError()
 {
     char* lastErrorMessage = 0;
     if (m_lastErrorMessage != 0) {
@@ -317,39 +424,86 @@ TransportManager::GetLastTransportError() throw(TransportException)
         JDWP_ASSERT(m_env != 0);
         m_env->GetLastError(&lastErrorMessage);
     }
-    JDWP_TRACE_PROG("GetLastTransportError: " << JDWP_CHECK_NULL(lastErrorMessage));
+    JDWP_CHECK_NULL(lastErrorMessage);
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "GetLastTransportError: %s", lastErrorMessage));
     return lastErrorMessage;
 } // TransportManager::GetLastTransportError()
 
-void 
-TransportManager::CheckReturnStatus(jdwpTransportError err) throw(TransportException)
+/**
+ * Returns JDWP_ERROR_NONE if there is no error, an error value 
+ * otherwise 
+ */
+int
+TransportManager::CheckReturnStatus(jdwpTransportError err)
 {
-    if (err == JDWPTRANSPORT_ERROR_NONE) {
-        return;
-    }
     if (err == JDWPTRANSPORT_ERROR_OUT_OF_MEMORY) {
-        throw TransportException(JDWP_ERROR_OUT_OF_MEMORY, JDWPTRANSPORT_ERROR_OUT_OF_MEMORY);
+        AgentException ex(JDWP_ERROR_OUT_OF_MEMORY, JDWPTRANSPORT_ERROR_OUT_OF_MEMORY);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_OUT_OF_MEMORY;
     }
     char* lastErrorMessage = GetLastTransportError();
-    // AgentBase::GetMemoryManager().Free(lastErrorMessage JDWP_FILE_LINE);
-    throw TransportException(JDWP_ERROR_TRANSPORT_INIT, err, lastErrorMessage);
+    AgentException ex(JDWP_ERROR_TRANSPORT_INIT, err, lastErrorMessage);
+    JDWP_SET_EXCEPTION(ex);
+    return JDWP_ERROR_TRANSPORT_INIT;
 } // TransportManager::CheckReturnStatus()
 
 inline void 
 TransportManager::TracePacket(const char* message, const jdwpPacket* packet) 
 { 
     if (packet->type.cmd.flags & JDWPTRANSPORT_FLAGS_REPLY) { 
-        JDWP_TRACE_PACKET(message 
-                <<" length=" << packet->type.cmd.len 
-                << " Id=" << packet->type.cmd.id 
-                << " flag=REPLY" 
-                << " errorCode=" << (short)(packet->type.reply.errorCode));
+        JDWP_TRACE(LOG_RELEASE, (LOG_PACKET_FL, "%s length=%d id=%d flag=REPLY errorCode=%d",
+                          message, packet->type.cmd.len, packet->type.cmd.id, (short)(packet->type.reply.errorCode)));
     } else { 
-        JDWP_TRACE_PACKET(message 
-                <<" length=" << packet->type.cmd.len 
-                << " Id=" << packet->type.cmd.id 
-                << " flag=NONE"
-                << " cmdSet=" << (int)(packet->type.cmd.cmdSet) 
-                << " cmd=" << (int)(packet->type.cmd.cmd)); 
+        JDWP_TRACE(LOG_RELEASE, (LOG_PACKET_FL, "%s length=%d id=%d flag=NONE cmdSet=%d cmd=%d",
+                          message, packet->type.cmd.len, packet->type.cmd.id, (int)(packet->type.cmd.cmdSet), (int)(packet->type.cmd.cmd)));
+
     } 
 } // TransportManager::TracePacket()
+
+LoadedLibraryHandler TransportManager::LoadTransport(const char* dirName, const char* transportName)
+{
+//    JavaVM *vm = ((internalEnv*)env->functions->reserved1)->jvm;
+    PORT_ACCESS_FROM_JAVAVM(GetJavaVM());
+
+    JDWP_CHECK_NULL(dirName); JDWP_CHECK_NULL(transportName);
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "LoadTransport(%s,%s)", dirName, transportName));
+
+    JDWP_ASSERT(transportName != 0);
+    char* transportFullName = 0;
+
+#ifdef WIN32
+    if (dirName == 0) {
+        size_t length = strlen(transportName) + 5;
+        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
+        hystr_printf(privatePortLibrary, transportFullName, (U_32)length, "%s.dll", transportName);
+    } else {
+        size_t length = strlen(dirName) + strlen(transportName) + 6;
+        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
+        hystr_printf(privatePortLibrary, transportFullName, (U_32)length, "%s\\%s.dll", dirName, transportName);
+    }
+#else
+    if (dirName == 0) {
+        size_t length = strlen(transportName) + 7;
+        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
+        hystr_printf(privatePortLibrary, transportFullName, length, "lib%s.so", transportName);
+    } else {
+        size_t length = strlen(dirName) + strlen(transportName) + 8;
+        transportFullName = static_cast<char *>(GetMemoryManager().Allocate(length JDWP_FILE_LINE));
+        hystr_printf(privatePortLibrary, transportFullName, length, "%s/lib%s.so", dirName, transportName);
+    }
+#endif
+//    AgentAutoFree afv(transportFullName JDWP_FILE_LINE);
+    UDATA res;
+    UDATA ret = hysl_open_shared_library(transportFullName,&res, FALSE);
+
+    if (ret != 0) {
+	JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "LoadTransport: loading library %s failed: %s)", transportFullName, hyerror_last_error_message()));
+        //JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "LoadTransport: loading library " << transportFullName << " failed (error code: " << GetLastTransportError() << ")"));
+        res = 0;
+    } else {
+        JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "LoadTransport: transport library %s loaded", transportFullName));
+    }
+    return (LoadedLibraryHandler)res;
+}
+
+#endif

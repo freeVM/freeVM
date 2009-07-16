@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.10.2.1 $
- */
-
 /**
  * @file
  * RequestModifier.h
@@ -31,7 +25,7 @@
 #define _REQUEST_MODIFIER_H_
 
 #include "AgentBase.h"
-#include <vector>
+#include "ExceptionManager.h"
 
 namespace jdwp {
 
@@ -126,8 +120,8 @@ namespace jdwp {
          *
          * @return <code>TRUE</code>.
          */
-        virtual bool Apply(JNIEnv* jni, EventInfo &eInfo) throw() {
-            JDWP_TRACE_DATA("RequestModifier.Apply is invoked.");
+        virtual bool Apply(JNIEnv* jni, EventInfo &eInfo) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "RequestModifier.Apply is invoked."));
             return true;
         }
 
@@ -136,12 +130,12 @@ namespace jdwp {
          *
          * @return The JDWP request modifier kind.
          */
-        jdwpRequestModifier GetKind() const throw() { return m_kind; }
+        jdwpRequestModifier GetKind() const { return m_kind; }
 
     protected:
 
         bool MatchPattern(const char *signature, const char *pattern)
-            const throw();
+            const;
         
 
         jdwpRequestModifier m_kind;
@@ -172,7 +166,7 @@ namespace jdwp {
          *
          * @return The current value of the event counter.
          */
-        jint GetCount() const throw() { return m_count; }
+        jint GetCount() const { return m_count; }
 
         /**
          * Applies count filtering for the given event.
@@ -183,7 +177,7 @@ namespace jdwp {
          * @return Returns <code>TRUE</code> if count is zero, otherwise 
          * <code>FALSE</code>.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw()
+        bool Apply(JNIEnv* jni, EventInfo &eInfo)
         {
             if (m_count > 0) {
                 m_count--;
@@ -224,7 +218,7 @@ namespace jdwp {
          *
          * @return The expression ID.
          */
-        jint GetExprID() const throw() { return m_exprID; }
+        jint GetExprID() const { return m_exprID; }
 
         /**
          * Applies filtering by the expression result for the given event.
@@ -234,7 +228,7 @@ namespace jdwp {
          *
          * @return <code>TRUE</code> (not implemented).
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw() {
+        bool Apply(JNIEnv* jni, EventInfo &eInfo) {
             return true;
         }
 
@@ -260,12 +254,12 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        ThreadOnlyModifier(JNIEnv *jni, jthread thread) throw(AgentException) :
+        ThreadOnlyModifier(JNIEnv *jni, jthread thread) :
             RequestModifier(JDWP_MODIFIER_THREAD_ONLY)
         {
             m_thread = jni->NewGlobalRef(thread);
             if (m_thread == 0) {
-                throw OutOfMemoryException();
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Error in ThreadOnlyModifier constructor - out of memory"));
             }
         }
 
@@ -281,7 +275,7 @@ namespace jdwp {
          *
          * @return The Java thread.
          */
-        jthread GetThread() const throw() {
+        jthread GetThread() const {
             return m_thread;
         }
 
@@ -294,7 +288,7 @@ namespace jdwp {
          * @return Returns <code>TRUE</code>, if the event occurs in the 
          *         thread of interest.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw() 
+        bool Apply(JNIEnv* jni, EventInfo &eInfo) 
         {
             JDWP_ASSERT(eInfo.thread != 0);
             return (JNI_TRUE == jni->IsSameObject(eInfo.thread, m_thread));
@@ -322,12 +316,12 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        ClassOnlyModifier(JNIEnv *jni, jclass cls) throw(AgentException) :
+        ClassOnlyModifier(JNIEnv *jni, jclass cls) :
             RequestModifier(JDWP_MODIFIER_CLASS_ONLY)
         {
             m_class = static_cast<jclass>(jni->NewGlobalRef(cls));
             if (m_class == 0) {
-                throw OutOfMemoryException();
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Error in ClassOnlyModifier constructor - out of memory"));
             }
         }
 
@@ -343,7 +337,7 @@ namespace jdwp {
          *
          * @return The Java class.
          */
-        jclass GetClass() const throw() {
+        jclass GetClass() const {
             return m_class;
         }
 
@@ -355,9 +349,10 @@ namespace jdwp {
          *
          * @return Returns <code>TRUE</code>, if event occurs in the class of interest.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw()
+        bool Apply(JNIEnv* jni, EventInfo &eInfo)
         {
             JDWP_ASSERT(eInfo.cls != 0);
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "ClassOnlyModifier#Apply: eInfo.cls=%p, m_class=%p", eInfo.cls,  m_class));
             return (JNI_TRUE == jni->IsAssignableFrom(eInfo.cls, m_class));
         }
 
@@ -398,7 +393,7 @@ namespace jdwp {
          *
          * @return Zero-terminated string.
          */
-        const char* GetPattern() const throw() {
+        const char* GetPattern() const {
             return m_pattern;
         }
 
@@ -410,7 +405,7 @@ namespace jdwp {
          *
          * @return Returns <code>TRUE</code>, if the class signature matches the given pattern.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw()
+        bool Apply(JNIEnv* jni, EventInfo &eInfo)
         {
             JDWP_ASSERT(eInfo.signature != 0);
             return (MatchPattern(eInfo.signature, m_pattern));
@@ -453,7 +448,7 @@ namespace jdwp {
          *
          * @return Zero-terminated string.
          */
-        const char* GetPattern() const throw() {
+        const char* GetPattern() const {
             return m_pattern;
         }
 
@@ -466,7 +461,7 @@ namespace jdwp {
          * @return Returns <code>TRUE</code>, if the class signature does not match 
          * the given pattern.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw()
+        bool Apply(JNIEnv* jni, EventInfo &eInfo)
         {
             JDWP_ASSERT(eInfo.signature != 0);
             return (!MatchPattern(eInfo.signature, m_pattern));
@@ -497,14 +492,14 @@ namespace jdwp {
          * @throws OutOfMemoryException.
          */
         LocationOnlyModifier(JNIEnv *jni, jclass cls, jmethodID method,
-                jlocation loc) throw(AgentException) :
+                jlocation loc) :
             RequestModifier(JDWP_MODIFIER_LOCATION_ONLY),
             m_method(method),
             m_location(loc)
         {
             m_class = static_cast<jclass>(jni->NewGlobalRef(cls));
             if (m_class == 0) {
-                throw OutOfMemoryException();
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Error in LocationOnlyModifier constructor - out of memory"));
             }
         }
 
@@ -520,7 +515,7 @@ namespace jdwp {
          *
          * @return The Java class.
          */
-        jclass GetClass() const throw() {
+        jclass GetClass() const {
             return m_class;
         }
 
@@ -529,7 +524,7 @@ namespace jdwp {
          *
          * @return The method ID.
          */
-        jmethodID GetMethod() const throw() { 
+        jmethodID GetMethod() const { 
             return m_method;
         }
 
@@ -538,7 +533,7 @@ namespace jdwp {
          *
          * @return The Java location.
          */
-        jlocation GetLocation() const throw() {
+        jlocation GetLocation() const {
             return m_location;
         }
 
@@ -550,7 +545,7 @@ namespace jdwp {
          *
          * @return Returns <code>TRUE</code>, if event location is equal to the given one.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw()
+        bool Apply(JNIEnv* jni, EventInfo &eInfo)
         {
             JDWP_ASSERT(eInfo.cls != 0);
             return (eInfo.method == m_method && eInfo.location == m_location &&
@@ -585,7 +580,7 @@ namespace jdwp {
          * @throws <code>OutOfMemoryException</code>.
          */
         ExceptionOnlyModifier(JNIEnv *jni, jclass cls, bool caught,
-                bool uncaught) throw(AgentException) :
+                bool uncaught) :
             RequestModifier(JDWP_MODIFIER_EXCEPTION_ONLY),
             m_caught(caught),
             m_uncaught(uncaught)
@@ -595,7 +590,7 @@ namespace jdwp {
             } else {
                 m_class = static_cast<jclass>(jni->NewGlobalRef(cls));
                 if (m_class == 0) {
-                    throw OutOfMemoryException();
+                    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Error in ExceptionOnlyModifier constructor - out of memory"));
                 }
             }
         }
@@ -612,7 +607,7 @@ namespace jdwp {
          *
          * @return The Java class.
          */
-        jclass GetClass() const throw() {
+        jclass GetClass() const {
             return m_class;
         }
 
@@ -621,7 +616,7 @@ namespace jdwp {
          *
          * @return Boolean.
          */
-        bool IsCaught() const throw() {
+        bool IsCaught() const {
             return m_caught;
         }
 
@@ -630,7 +625,7 @@ namespace jdwp {
          *
          * @return Boolean.
          */
-        bool IsUncaught() const throw() {
+        bool IsUncaught() const {
             return m_uncaught;
         }
 
@@ -642,7 +637,7 @@ namespace jdwp {
          *
          * @return Returns <code>TRUE</code>, if the event location is equal to the given one.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw()
+        bool Apply(JNIEnv* jni, EventInfo &eInfo)
         {
             return ((eInfo.caught ? m_caught : m_uncaught) &&
                 (m_class == 0 || (eInfo.cls != 0 &&
@@ -676,13 +671,13 @@ namespace jdwp {
          * @throws <code>OutOfMemoryException</code>.
          */
         FieldOnlyModifier(JNIEnv *jni, jclass cls,
-                jfieldID field) throw(AgentException) :
+                jfieldID field) :
             RequestModifier(JDWP_MODIFIER_FIELD_ONLY),
             m_field(field)
         {
             m_class = static_cast<jclass>(jni->NewGlobalRef(cls));
             if (m_class == 0) {
-                throw OutOfMemoryException();
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Error in FieldOnlyModifier constructor - out of memory"));
             }
         }
 
@@ -698,7 +693,7 @@ namespace jdwp {
          *
          * @return The Java class.
          */
-        jclass GetClass() const throw() {
+        jclass GetClass() const {
             return m_class;
         }
 
@@ -707,7 +702,7 @@ namespace jdwp {
          *
          * @return The field ID.
          */
-        jfieldID GetField() const throw() {
+        jfieldID GetField() const {
             return m_field;
         }
 
@@ -719,7 +714,7 @@ namespace jdwp {
          *
          * @return Returns <code>TRUE</code>, if the event field is equal to the given one.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw()
+        bool Apply(JNIEnv* jni, EventInfo &eInfo)
         {
             JDWP_ASSERT(eInfo.cls != 0);
             return (eInfo.field == m_field &&
@@ -753,14 +748,14 @@ namespace jdwp {
          * @throws OutOfMemoryException.
          */
         StepModifier(JNIEnv *jni, jthread thread, jint size,
-                jint depth) throw(AgentException) :
+                jint depth) :
             RequestModifier(JDWP_MODIFIER_STEP),
             m_size(size),
             m_depth(depth)
         {
             m_thread = jni->NewGlobalRef(thread);
             if (m_thread == 0) {
-                throw OutOfMemoryException();
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Error in StepModifier constructor - out of memory"));
             }
         }
 
@@ -776,7 +771,7 @@ namespace jdwp {
          *
          * @return The Java thread.
          */
-        jthread GetThread() const throw() {
+        jthread GetThread() const {
             return m_thread;
         }
 
@@ -785,7 +780,7 @@ namespace jdwp {
          *
          * @return The int step size.
          */
-        jint GetSize() const throw() {
+        jint GetSize() const {
             return m_size;
         }
 
@@ -794,7 +789,7 @@ namespace jdwp {
          *
          * @return The int step depth.
          */
-        jint GetDepth() const throw() {
+        jint GetDepth() const {
             return m_depth;
         }
 
@@ -807,7 +802,7 @@ namespace jdwp {
          *
          * @return <code>TRUE</code>.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw() {
+        bool Apply(JNIEnv* jni, EventInfo &eInfo) {
             return true;
         }
 
@@ -835,7 +830,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        InstanceOnlyModifier(JNIEnv *jni, jobject obj) throw(AgentException) :
+        InstanceOnlyModifier(JNIEnv *jni, jobject obj) :
             RequestModifier(JDWP_MODIFIER_INSTANCE_ONLY)
         {
             if (obj == 0) {
@@ -843,7 +838,7 @@ namespace jdwp {
             } else {
                 m_instance = jni->NewGlobalRef(obj);
                 if (m_instance == 0) {
-                    throw OutOfMemoryException();
+                    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Error in InstanceOnlyModifier constructor - out of memory"));
                 }
             }
         }
@@ -860,7 +855,7 @@ namespace jdwp {
          *
          * @return The Java object.
          */
-        jobject GetInstance() const throw() {
+        jobject GetInstance() const {
             return m_instance;
         }
 
@@ -873,25 +868,28 @@ namespace jdwp {
          *
          * @return <code>TRUE</code>.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw()
+        bool Apply(JNIEnv* jni, EventInfo &eInfo)
         {
             if (eInfo.instance == 0 &&
                 (eInfo.kind == JDWP_EVENT_SINGLE_STEP  ||
                  eInfo.kind == JDWP_EVENT_BREAKPOINT   ||
                  eInfo.kind == JDWP_EVENT_EXCEPTION    ||
                  eInfo.kind == JDWP_EVENT_METHOD_ENTRY ||
-                 eInfo.kind == JDWP_EVENT_METHOD_EXIT))
+                 eInfo.kind == JDWP_EVENT_METHOD_EXIT  ||
+                 eInfo.kind == JDWP_EVENT_METHOD_EXIT_WITH_RETURN_VALUE ))
             {
                 jint modifiers;
                 jvmtiError err;
-                JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodModifiers(
+                JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetMethodModifiers(
                     eInfo.method, &modifiers));
                 if (err == JVMTI_ERROR_NONE && (modifiers & ACC_STATIC) == 0) {
                     // get "this" object from slot 0 (stated in JVM spec)
-                    JVMTI_TRACE(err, GetJvmtiEnv()->GetLocalObject(
+                    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetLocalObject(
                         eInfo.thread, 0, 0, &eInfo.instance));
                 }
             }
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "InstanceOnlyModifier#Apply: m_instance=%p, eInfo.instance=%p," ,
+                    m_instance, eInfo.instance));
             return ((eInfo.instance == 0 && m_instance == 0) ||
                 ((eInfo.instance != 0 && m_instance != 0) &&
                  JNI_TRUE == jni->IsSameObject(eInfo.instance, m_instance)));
@@ -935,7 +933,7 @@ namespace jdwp {
          *
          * @return Zero-terminated string.
          */
-        const char* GetPattern() const throw() {
+        const char* GetPattern() const {
             return m_pattern;
         }
 
@@ -947,13 +945,12 @@ namespace jdwp {
          *
          * @return Returns <code>TRUE</code>, if the source name matches the given pattern.
          */
-        bool Apply(JNIEnv* jni, EventInfo &eInfo) throw();
+        bool Apply(JNIEnv* jni, EventInfo &eInfo);
       
 
     private:
         bool MatchPatternSourceName(const char *sourcename, const char *pattern)
             const ;
-        void ParseSourceDebugExtension(const string& str, vector<string>& tokens, const string& delimiters);
 
         char* m_pattern;
 

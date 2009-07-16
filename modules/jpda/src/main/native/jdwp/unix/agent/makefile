@@ -22,15 +22,8 @@ include $(HY_HDK)/build/make/defines.mk
 COMMON=../../common/
 CMNAGENT=$(COMMON)agent/
 
-CFLAGS += -fpic
-CXXFLAGS += -fpic
-
-INCLUDES += -I$(CMNAGENT)commands -I$(CMNAGENT)core \
-            -I$(COMMON)generic -Icore
-
-INCLUDES := -I../../../include $(INCLUDES)
-
-LDFLAGS += $(STDCLIBS)
+INCLUDES := -I../../../include -I$(CMNAGENT)commands -I$(CMNAGENT)core \
+            -I$(COMMON)generic -Icore $(INCLUDES)
 
 BUILDFILES = \
     $(CMNAGENT)commands/ArrayReference.o \
@@ -53,11 +46,42 @@ BUILDFILES = \
     $(CMNAGENT)core/ObjectManager.o $(CMNAGENT)core/OptionParser.o $(CMNAGENT)core/PacketDispatcher.o \
     $(CMNAGENT)core/PacketParser.o $(CMNAGENT)core/RequestManager.o $(CMNAGENT)core/RequestModifier.o \
     $(CMNAGENT)core/ThreadManager.o $(CMNAGENT)core/TransportManager.o $(CMNAGENT)core/AgentManager.o \
-    $(CMNAGENT)core/CallBacks.o \
+    $(CMNAGENT)core/CallBacks.o $(CMNAGENT)core/ExceptionManager.o\
     core/TransportManager_pd.o
 
-MDLLIBFILES = 
+
+ifneq ($(HY_OS),zos)
+  # !zOS
+  OPT += -fno-exceptions -fno-rtti 
+  ifneq ($(HY_OS),aix)
+    # !AIX and !zOS
+    MDLLIBFILES = $(LIBPATH)libvmi.so
+    DLL_LDFLAGS += -fno-exceptions -fno-rtti
+    LDFLAGS += $(STDCLIBS)
+  else
+    # AIX
+    MDLLIBFILES = 
+    LDFLAGS += -L$(LIBPATH). -L$(LIBPATH)../. $(STDCLIBS) -lvmi
+  endif
+else
+  # zOS
+  MDLLIBFILES = $(LIBPATH)libvmi.x
+  LDFLAGS += $(STDCLIBS)
+endif
+
+ifeq ($(HY_NO_THR),true)
+MDLLIBFILES += $(LIBPATH)libhythr$(HY_LINKLIB_SUFFIX)
+endif
 
 DLLNAME = ../libjdwp.so
+
+STDCLIBS = 
+
+CCVERSION=$(shell $(CC) -v 2>&1 | sed -e '1,3d; s/gcc version \([^ ]\+\).*/\1/')
+ifneq ($(HY_OS),zos)
+  ifeq (1,$(shell expr "$(CCVERSION)" \>= "3.4.6"))
+    OPT += -fno-threadsafe-statics
+  endif
+endif
 
 include $(HY_HDK)/build/make/rules.mk

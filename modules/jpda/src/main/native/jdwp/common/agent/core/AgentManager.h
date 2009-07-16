@@ -15,19 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @file
- * ClassManager.h
- *
- * Provides access to certain standard Java classes.
- */
-
-/**
- * @author Aleksander V. Budniy
- * @version $Revision: 1.10.2.1 $
- */
-
 /**
  * @file
  * ClassManager.h
@@ -54,59 +41,59 @@ namespace jdwp {
         /**
          * A constructor.
          */
-        AgentManager() throw() {
+        AgentManager() {
             m_isStarted = false;
         }
 
         /**
          * A destructor.
          */
-        ~AgentManager() throw () {
+        ~AgentManager() {
         }
         
         /**
          * Initializes all agent modules.
          */
-        void Init(jvmtiEnv *jvmti, JNIEnv *jni) throw (AgentException);
+        int Init(jvmtiEnv *jvmti, JNIEnv *jni);
 
         /**
          * Start all agent threads.
          */
-        void Start(jvmtiEnv *jvmti, JNIEnv *jni) throw (AgentException);
+        int Start(jvmtiEnv *jvmti, JNIEnv *jni);
 
         /**
          * Stop all agent threads.
          */
-        void Stop(JNIEnv *jni) throw (AgentException);
+        void Stop(JNIEnv *jni);
 
         /**
          * Clean all agent modules.
          */
-        void Clean(JNIEnv *jni) throw (AgentException);
+        void Clean(JNIEnv *jni);
 
         /*                      
          * Returns started status of this agent.
          */
-        bool IsStarted() throw() {
+        bool IsStarted() {
             return m_isStarted;
         }
 
         /*
          * Sets started status of this agent.
          */
-        void SetStarted(bool isStarted) throw() {
+        void SetStarted(bool isStarted) {
             m_isStarted = isStarted;
         }
 
         /**
          * Enables catching initial EXCEPTION event to launch debugger.
          */
-        void EnableInitialExceptionCatch(jvmtiEnv *jvmti, JNIEnv *jni) throw (AgentException);
+        int EnableInitialExceptionCatch(jvmtiEnv *jvmti, JNIEnv *jni);
 
         /**
          * Disables catching initial EXCEPTION event to launch debugger.
          */
-        void DisableInitialExceptionCatch(jvmtiEnv *jvmti, JNIEnv *jni) throw (AgentException);
+        int DisableInitialExceptionCatch(jvmtiEnv *jvmti, JNIEnv *jni);
 
     private :
 

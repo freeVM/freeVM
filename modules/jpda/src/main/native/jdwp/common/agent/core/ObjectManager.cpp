@@ -16,16 +16,7 @@
  *  limitations under the License.
  */
 
-/**
- * @author Anatoly F. Bondarenko
- * @version $Revision: 1.17 $
- */
-
-// ObjectManager.cpp - implementation of 'class ObjectManager :public AgentBase'
 // Provide mapping between JDWP IDs and corresponding JVMTI, JNI data types
-
-#include <string.h>
-
 #include "jni.h"
 #include "jvmti.h"
 #include "jdwp.h"
@@ -33,10 +24,12 @@
 #include "AgentBase.h"
 #include "AgentEnv.h"
 #include "MemoryManager.h"
-#include "AgentException.h"
+#include "ExceptionManager.h"
 #include "Log.h"
 
 #include "ObjectManager.h"
+
+#include <string.h>
 
 using namespace jdwp;
 
@@ -64,19 +57,56 @@ const jlong OBJECTID_TABLE_INIT_SIZE = 512; // in ObjectIDItem
 const ObjectID FREE_OBJECTID_SIGN = -1;
 const ObjectID OBJECTID_MINIMUM = 1;
 
-ObjectID ObjectManager::MapToObjectID(JNIEnv* JNIEnvPtr, jobject jvmObject) throw (AgentException) {
-    JDWP_TRACE_ENTRY("MapToObjectID(" << JNIEnvPtr << ',' << jvmObject << ')');
+jboolean ObjectManager::FindObjectID(JNIEnv* JNIEnvPtr, jobject jvmObject, ObjectID objectID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "FindObjectID(%p,%p,%lld)", JNIEnvPtr, jvmObject, objectID));
 
     if (jvmObject == NULL) {
-        JDWP_TRACE_MAP("## MapToObjectID: map NULL jobject");
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "## FindObjectID: find NULL jobject"));
+        return false;
+    }
+
+    // get object HASH CODE
+    jint hashCode = -1;
+    if (GetObjectHashCode(jvmObject, &hashCode) != JVMTI_ERROR_NONE) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "## FindObjectID: GetObjectHashCode failed"));
+        return false;
+    }
+
+    // get HASH INDEX
+    size_t idx = size_t(hashCode) & HASH_TABLE_MSK;
+
+     // LOCK objectID table
+    MonitorAutoLock objectIDTableLock(m_objectIDTableMonitor JDWP_FILE_LINE);
+
+    // find EXISTING objectID
+    ObjectIDItem* objectIDItem = m_objectIDTable[idx];
+    ObjectIDItem* objectIDItemEnd = objectIDItem + m_maxAllocatedObjectID[idx];
+    while (objectIDItem != objectIDItemEnd) {
+        if (objectIDItem->objectID != FREE_OBJECTID_SIGN &&
+            JNIEnvPtr->IsSameObject(objectIDItem->mapObjectIDItem.jvmObject, jvmObject) == JNI_TRUE &&
+            objectID == objectIDItem->objectID) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "FindObjectID: find object, it is a valid object id"));
+            return true;
+        }
+        objectIDItem++;
+    }
+    return false;
+}
+
+
+ObjectID ObjectManager::MapToObjectID(JNIEnv* JNIEnvPtr, jobject jvmObject) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "MapToObjectID(%p,%p)", JNIEnvPtr, jvmObject));
+
+    if (jvmObject == NULL) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapToObjectID: map NULL jobject"));
         return JDWP_OBJECT_ID_NULL;
     }
 
     // get object HASH CODE
     jint hashCode = -1;
     if (GetObjectHashCode(jvmObject, &hashCode) != JVMTI_ERROR_NONE) {
-        JDWP_TRACE_MAP("## MapToObjectID: GetObjectHashCode failed");
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapToObjectID: GetObjectHashCode failed"));
+        return JDWP_OBJECT_ID_NULL;
     }
 
     // get HASH INDEX
@@ -112,8 +142,8 @@ ObjectID ObjectManager::MapToObjectID(JNIEnv* JNIEnvPtr, jobject jvmObject) thro
              *   suppose just this case is here
             */
             JNIEnvPtr->ExceptionClear();
-            JDWP_TRACE_MAP("## MapToObjectID: NewWeakGlobalRef returned NULL");
-            throw OutOfMemoryException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapToObjectID: NewWeakGlobalRef returned NULL"));
+            return JDWP_OBJECT_ID_NULL;
         }
         if (m_freeObjectIDItems[idx] == NULL) {
             // expand table
@@ -148,8 +178,8 @@ ObjectID ObjectManager::MapToObjectID(JNIEnv* JNIEnvPtr, jobject jvmObject) thro
     return objectID;
 } // MapToObjectID()
 
-jobject ObjectManager::MapFromObjectID(JNIEnv* JNIEnvPtr, ObjectID objectID) throw (AgentException) {
-    JDWP_TRACE_ENTRY("MapFromObjectID(" << JNIEnvPtr << ',' << objectID << ')');
+jobject ObjectManager::MapFromObjectID(JNIEnv* JNIEnvPtr, ObjectID objectID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "MapFromObjectID(%p,%lld)", JNIEnvPtr, objectID));
 
     // decode object ID
     size_t idx = (size_t)objectID & HASH_TABLE_MSK;
@@ -158,8 +188,8 @@ jobject ObjectManager::MapFromObjectID(JNIEnv* JNIEnvPtr, ObjectID objectID) thr
     // check decoded object ID
     if (objectID <= 0 || objectID > m_maxAllocatedObjectID[idx]) {
         // It is DEBUGGER ERROR: request for ObjectID which was never allocated
-        JDWP_TRACE_MAP("## MapFromObjectID: invalid object ID: " << objectID);
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapFromObjectID: invalid object ID: %lld", objectID));
+        return NULL;
     }
 
     // take object from table
@@ -170,8 +200,8 @@ jobject ObjectManager::MapFromObjectID(JNIEnv* JNIEnvPtr, ObjectID objectID) thr
     ObjectIDItem* objectIDItem = m_objectIDTable[idx] + objectID - 1;
     if (objectIDItem->objectID == FREE_OBJECTID_SIGN) {
         // It is DEBUGGER ERROR: Corresponding jobject is DISPOSED
-        JDWP_TRACE_MAP("## MapFromObjectID: corresponding jobject has been disposed: " << objectID);
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapFromObjectID: corresponding jobject has been disposed: %lld", objectID));
+        return NULL;
     }
     jvmObject = objectIDItem->mapObjectIDItem.jvmObject;
     } // synchronized block: objectIDTableLock
@@ -179,15 +209,15 @@ jobject ObjectManager::MapFromObjectID(JNIEnv* JNIEnvPtr, ObjectID objectID) thr
     // Check if corresponding jobject has been Garbage collected*/
     if (JNIEnvPtr->IsSameObject(jvmObject, NULL) == JNI_TRUE) {
         // Corresponding jobject is Garbage collected
-        JDWP_TRACE_MAP("## MapFromObjectID: corresponding jobject has been Garbage collected: " << objectID);
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapFromObjectID: corresponding jobject has been Garbage collected: %lld", objectID));
+        return NULL;
     }
 
     return jvmObject;
 } // MapFromObjectID()
 
-jboolean ObjectManager::IsValidObjectID(ObjectID objectID) throw () {
-    JDWP_TRACE_ENTRY("IsValidObjectID(" << objectID << ')');
+jboolean ObjectManager::IsValidObjectID(JNIEnv* JNIEnvPtr,ObjectID objectID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsValidObjectID(%lld)", objectID));
 
     // decode object ID
     size_t idx = (size_t)objectID & HASH_TABLE_MSK;
@@ -199,20 +229,29 @@ jboolean ObjectManager::IsValidObjectID(ObjectID objectID) throw () {
         return JNI_FALSE;
     }
 
+    jobject jvmObject;
     { // synchronized block: objectIDTableLock
         MonitorAutoLock objectIDTableLock(m_objectIDTableMonitor JDWP_FILE_LINE);
         ObjectIDItem* objectIDItem = m_objectIDTable[idx] + objectID - 1;
         if (objectIDItem->objectID == FREE_OBJECTID_SIGN) {
-        // this ObjectID is DISPOSED
+            // this ObjectID is DISPOSED
+            return JNI_FALSE;
+        }
+        jvmObject = objectIDItem->mapObjectIDItem.jvmObject;
+    } // synchronized block: objectIDTableLock
+    
+    // Check if corresponding jobject has been Garbage collected*/
+    if (JNIEnvPtr->IsSameObject(jvmObject, NULL) == JNI_TRUE) {
+        // Corresponding jobject is Garbage collected
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "## IsValidObjectID: corresponding jobject has been Garbage collected: %lld", objectID));
         return JNI_FALSE;
     }
-    } // synchronized block: objectIDTableLock
-
+        
     return JNI_TRUE;
 } // IsValidObjectID() 
 
-void ObjectManager::DisableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) throw (AgentException) {
-    JDWP_TRACE_ENTRY("DisableCollection(" << JNIEnvPtr << ',' << objectID << ')');
+int ObjectManager::DisableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "DisableCollection(%p,%lld)", JNIEnvPtr, objectID));
 
     // decode object ID
     size_t idx = (size_t)objectID & HASH_TABLE_MSK;
@@ -221,8 +260,10 @@ void ObjectManager::DisableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) thro
     // check decoded object ID
     if (objectID <= 0 || objectID > m_maxAllocatedObjectID[idx]) {
         // It is DEBUGGER ERROR: request for ObjectID which was never allocated
-        JDWP_TRACE_MAP("## DisableCollection: invalid object ID: " << objectID);
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## DisableCollection: invalid object ID: %lld", objectID));
+        AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_INVALID_OBJECT;
     }
 
     { // synchronized block: objectIDTableLock
@@ -230,36 +271,43 @@ void ObjectManager::DisableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) thro
         ObjectIDItem* objectIDItem = m_objectIDTable[idx] + objectID - 1;
         if (objectIDItem->objectID == FREE_OBJECTID_SIGN) {
             // It is DEBUGGER ERROR: Corresponding jobject is DISPOSED
-            JDWP_TRACE_MAP("## DisableCollection: corresponding jobject has been disposed: " << objectID);
-            throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## DisableCollection: corresponding jobject has been disposed: %lld", objectID));
+            AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+            JDWP_SET_EXCEPTION(ex);
+            return JDWP_ERROR_INVALID_OBJECT;
         }
     
         jobject jvmObject = objectIDItem->mapObjectIDItem.jvmObject;
         if (JNIEnvPtr->IsSameObject(jvmObject, NULL) == JNI_TRUE) {
             // Corresponding jobject is Garbage collected
-            JDWP_TRACE_MAP("## DisableCollection: corresponding jobject has been Garbage collected: " << objectID);
-            throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## DisableCollection: corresponding jobject has been Garbage collected: %lld", objectID));
+            AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+            JDWP_SET_EXCEPTION(ex);
+            return JDWP_ERROR_INVALID_OBJECT;
         }
         if (objectIDItem->mapObjectIDItem.globalRefKind == NORMAL_GLOBAL_REF) {
             // Repeated request for DisableCollection
-            JDWP_TRACE_MAP("<= DisableCollection: corresponding jobject has a global reference");
-            return;
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "<= DisableCollection: corresponding jobject has a global reference"));
+            return JDWP_ERROR_NONE;
         }
     
         jobject newGlobRef = JNIEnvPtr->NewGlobalRef(jvmObject);
         if (newGlobRef == NULL) {
-            JDWP_TRACE_MAP("## DisableCollection: NewGlobalRef returned NULL");
-            throw OutOfMemoryException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## DisableCollection: NewGlobalRef returned NULL"));
+            AgentException ex(JDWP_ERROR_OUT_OF_MEMORY);
+            JDWP_SET_EXCEPTION(ex);
+            return JDWP_ERROR_OUT_OF_MEMORY;
         }
-        JNIEnvPtr->DeleteWeakGlobalRef(jvmObject);
+        JNIEnvPtr->DeleteWeakGlobalRef((jweak)jvmObject);
         objectIDItem->mapObjectIDItem.globalRefKind = NORMAL_GLOBAL_REF;
         objectIDItem->mapObjectIDItem.jvmObject = newGlobRef;
     } // synchronized block: objectIDTableLock
 
+    return JDWP_ERROR_NONE;
 } // DisableCollection() 
 
-void ObjectManager::EnableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) throw (AgentException) {
-    JDWP_TRACE_ENTRY("EnableCollection(" << JNIEnvPtr << ',' << objectID << ')');
+int ObjectManager::EnableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "EnableCollection(%p,%lld)", JNIEnvPtr, objectID));
 
     // decode object ID
     size_t idx = (size_t)objectID & HASH_TABLE_MSK;
@@ -268,13 +316,13 @@ void ObjectManager::EnableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) throw
     // check decoded object ID
     if (objectID <= 0 || objectID > m_maxAllocatedObjectID[idx]) {
         /* It is DEBUGGER ERROR: request for ObjectID which was never allocated
-         * JDWP_TRACE_MAP("## EnableCollection: throw AgentException(JDWP_ERROR_INVALID_OBJECT)#1");
+         * JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## EnableCollection: throw AgentException(JDWP_ERROR_INVALID_OBJECT)#1"));
          * throw AgentException(JDWP_ERROR_INVALID_OBJECT);
          * EnableCollection Command (ObjectReference Command Set) does not 
          * assume INVALID_OBJECT reply - so simply return:
         */
-        JDWP_TRACE_MAP("## EnableCollection: invalid object ID: " << objectID);
-        return;
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## EnableCollection: invalid object ID: %lld", objectID));
+        return JDWP_ERROR_NONE;
     }
 
     { // synchronized block: objectIDTableLock
@@ -286,15 +334,15 @@ void ObjectManager::EnableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) throw
              * EnableCollection Command (ObjectReference Command Set) does not 
              * assume INVALID_OBJECT reply - so simply return:
             */
-            JDWP_TRACE_MAP("## EnableCollection: corresponding jobject has been disposed: " << objectID);
-            return;
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## EnableCollection: corresponding jobject has been disposed: %lld", objectID));
+            return JDWP_ERROR_NONE;;
         }
         
         if (objectIDItem->mapObjectIDItem.globalRefKind == WEAK_GLOBAL_REF) {
             // Incorrect request for EnableCollection: 
             // ObjectID is in EnableCollection state
-            JDWP_TRACE_MAP("<= EnableCollection: corresponding jobject has a weak reference");
-            return;
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "<= EnableCollection: corresponding jobject has a weak reference"));
+            return JDWP_ERROR_NONE;;
         }
         
         jobject jvmObject = objectIDItem->mapObjectIDItem.jvmObject;
@@ -306,25 +354,28 @@ void ObjectManager::EnableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID) throw
             */
             if (JNIEnvPtr->ExceptionCheck() == JNI_TRUE) {
                 JNIEnvPtr->ExceptionClear();
-                JDWP_TRACE_MAP("## EnableCollection: NewWeakGlobalRef returned NULL due to OutOfMemoryException");
-                throw OutOfMemoryException();
+                JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## EnableCollection: NewWeakGlobalRef returned NULL due to OutOfMemoryException"));
+                AgentException ex(JDWP_ERROR_OUT_OF_MEMORY);
+                JDWP_SET_EXCEPTION(ex);
+                return JDWP_ERROR_OUT_OF_MEMORY;
             }
             /* else requested jobject is garbage collected
              * As EnableCollection Command (ObjectReference Command Set) does not 
              * assume INVALID_OBJECT reply - so simply return:
             */
-            JDWP_TRACE_MAP("## EnableCollection: NewWeakGlobalRef returned NULL");
-            return;
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## EnableCollection: NewWeakGlobalRef returned NULL"));
+            return JDWP_ERROR_NONE;
         }
         JNIEnvPtr->DeleteGlobalRef(jvmObject);
         objectIDItem->mapObjectIDItem.globalRefKind = WEAK_GLOBAL_REF;
         objectIDItem->mapObjectIDItem.jvmObject = newWeakGlobRef;
     } // synchronized block: objectIDTableLock
 
+    return JDWP_ERROR_NONE;
 } // EnableCollection()
 
-jboolean ObjectManager::IsCollectionDisabled(ObjectID objectID) throw (AgentException) {
-    JDWP_TRACE_ENTRY("IsCollectionDisabled(" << objectID << ')');
+/*jboolean ObjectManager::IsCollectionDisabled(ObjectID objectID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsCollectionDisabled(%lld)", objectID));
 
     // decode object ID
     size_t idx = (size_t)objectID & HASH_TABLE_MSK;
@@ -335,8 +386,9 @@ jboolean ObjectManager::IsCollectionDisabled(ObjectID objectID) throw (AgentExce
     // check decoded object ID
     if (objectID <= 0 || objectID > m_maxAllocatedObjectID[idx]) {
         // It is DEBUGGER ERROR: request for ObjectID which was never allocated
-        JDWP_TRACE_MAP("## IsCollectionDisabled: invalid object ID: " << objectID);
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## IsCollectionDisabled: invalid object ID: %lld", objectID));
+	AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+	THROW(ex);
     }
 
     jboolean result;
@@ -345,8 +397,9 @@ jboolean ObjectManager::IsCollectionDisabled(ObjectID objectID) throw (AgentExce
     ObjectIDItem* objectIDItem = m_objectIDTable[idx] + objectID - 1;
     if ( objectIDItem->objectID == FREE_OBJECTID_SIGN ) {
         // It is DEBUGGER ERROR: Corresponding jobject is DISPOSED
-        JDWP_TRACE_MAP("## IsCollectionDisabled: corresponding jobject has been disposed: " << objectID);
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## IsCollectionDisabled: corresponding jobject has been disposed: %lld", objectID));
+	AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+	THROW(ex);
     }
     result = JNI_FALSE;
     if (objectIDItem->mapObjectIDItem.globalRefKind != WEAK_GLOBAL_REF) {
@@ -355,10 +408,10 @@ jboolean ObjectManager::IsCollectionDisabled(ObjectID objectID) throw (AgentExce
     } // synchronized block: objectIDTableLock
 
     return result;
-} // IsCollectionDisabled() 
+} // IsCollectionDisabled() */
 
-jboolean ObjectManager::IsCollected(JNIEnv* JNIEnvPtr, ObjectID objectID) throw (AgentException) {
-    JDWP_TRACE_ENTRY("IsCollected(" << JNIEnvPtr << ',' << objectID << ')');
+jboolean ObjectManager::IsCollected(JNIEnv* JNIEnvPtr, ObjectID objectID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsCollected(%p,%lld)", JNIEnvPtr, objectID));
 
     // decode object ID
     size_t idx = (size_t)objectID & HASH_TABLE_MSK;
@@ -367,8 +420,8 @@ jboolean ObjectManager::IsCollected(JNIEnv* JNIEnvPtr, ObjectID objectID) throw 
     // check decoded object ID
     if (objectID <= 0 || objectID > m_maxAllocatedObjectID[idx]) {
         // It is DEBUGGER ERROR: request for ObjectID which was never allocated
-        JDWP_TRACE_MAP("## IsCollected: invalid object ID: " << objectID);
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## IsCollected: invalid object ID: %lld", objectID));
+        return JNI_FALSE;
     }
 
     jobject jvmObject;
@@ -378,8 +431,8 @@ jboolean ObjectManager::IsCollected(JNIEnv* JNIEnvPtr, ObjectID objectID) throw 
     ObjectIDItem* objectIDItem = m_objectIDTable[idx] + objectID - 1;
     if ( objectIDItem->objectID == FREE_OBJECTID_SIGN) {
         // It is DEBUGGER ERROR: Corresponding jobject is DISPOSED
-        JDWP_TRACE_MAP("## IsCollected: corresponding jobject has been disposed: " << objectID);
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## IsCollected: corresponding jobject has been disposed: %lld", objectID));
+        return JNI_FALSE;
     }
 
     jvmObject = objectIDItem->mapObjectIDItem.jvmObject;
@@ -387,15 +440,15 @@ jboolean ObjectManager::IsCollected(JNIEnv* JNIEnvPtr, ObjectID objectID) throw 
 
     if (JNIEnvPtr->IsSameObject(jvmObject, NULL) == JNI_TRUE) {
         // Corresponding jobject has been Garbage collected
-        JDWP_TRACE_MAP("<= IsCollected: JNI_TRUE");
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "<= IsCollected: JNI_TRUE"));
         return JNI_TRUE;
     }
 
     return JNI_FALSE;
 } // IsCollected() 
 
-void ObjectManager::DisposeObject(JNIEnv* JNIEnvPtr, ObjectID objectID, jint refCount) throw () {
-    JDWP_TRACE_ENTRY("DisposeObject(" << JNIEnvPtr << ',' << objectID << ',' << refCount << ')');
+void ObjectManager::DisposeObject(JNIEnv* JNIEnvPtr, ObjectID objectID, jint refCount) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "DisposeObject(%p,%lld,%d)", JNIEnvPtr, objectID, refCount));
 
     // decode object ID
     size_t idx = (size_t)objectID & HASH_TABLE_MSK;
@@ -407,7 +460,7 @@ void ObjectManager::DisposeObject(JNIEnv* JNIEnvPtr, ObjectID objectID, jint ref
          * JDWP spec does NOT provide to return reply for this command
          * so do nothing
         */
-        JDWP_TRACE_MAP("## DisposeObject: invalid object ID: " << objectID);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## DisposeObject: invalid object ID: %lld", objectID));
         return;
     }
 
@@ -417,7 +470,7 @@ void ObjectManager::DisposeObject(JNIEnv* JNIEnvPtr, ObjectID objectID, jint ref
         if (objectIDItem->objectID == FREE_OBJECTID_SIGN) {
             // It may be DEBUGGER ERROR: Corresponding jobject has been disposed already
             // - do nothing
-            JDWP_TRACE_MAP("## DisposeObject: corresponding jobject has been disposed: " << objectID);
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## DisposeObject: corresponding jobject has been disposed: %lld", objectID));
             return;
         }
         
@@ -425,7 +478,7 @@ void ObjectManager::DisposeObject(JNIEnv* JNIEnvPtr, ObjectID objectID, jint ref
         if (newRefCount > 0) {
             // Still early to dispose ObjectID 
             objectIDItem->mapObjectIDItem.referencesCount = newRefCount;
-            JDWP_TRACE_MAP("<= DisposeObject: still positive ref count: " << newRefCount);
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "<= DisposeObject: still positive ref count: %d", newRefCount));
             return;
         }
         
@@ -433,7 +486,7 @@ void ObjectManager::DisposeObject(JNIEnv* JNIEnvPtr, ObjectID objectID, jint ref
         if (objectIDItem->mapObjectIDItem.globalRefKind == NORMAL_GLOBAL_REF) {
             JNIEnvPtr->DeleteGlobalRef(jvmObject);
         } else {
-            JNIEnvPtr->DeleteWeakGlobalRef(jvmObject);
+            JNIEnvPtr->DeleteWeakGlobalRef((jweak)jvmObject);
         }
         objectIDItem->objectID = FREE_OBJECTID_SIGN;
         objectIDItem->nextFreeObjectIDItem = m_freeObjectIDItems[idx];
@@ -442,8 +495,8 @@ void ObjectManager::DisposeObject(JNIEnv* JNIEnvPtr, ObjectID objectID, jint ref
 
 } // DisposeObject() 
 
-jint ObjectManager::IncreaseIDRefCount(ObjectID objectID, jint incrementValue) throw () {
-    JDWP_TRACE_ENTRY("IncreaseIDRefCount(" << objectID << ',' << incrementValue << ')');
+jint ObjectManager::IncreaseIDRefCount(ObjectID objectID, jint incrementValue) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IncreaseIDRefCount(%lld,%d)", objectID, incrementValue));
 
     // decode object ID
     size_t idx = (size_t)objectID & HASH_TABLE_MSK;
@@ -453,7 +506,7 @@ jint ObjectManager::IncreaseIDRefCount(ObjectID objectID, jint incrementValue) t
     JDWP_ASSERT(objectID <= m_maxAllocatedObjectID[idx]);
     if (objectID == JDWP_OBJECT_ID_NULL) {
         // returned objectID is not real - it is possibly, so do nothing:
-        JDWP_TRACE_MAP("## IncreaseIDRefCount: invalid object ID: " << objectID);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## IncreaseIDRefCount: invalid object ID: %lld", objectID));
         return 0;
     }
 
@@ -463,7 +516,7 @@ jint ObjectManager::IncreaseIDRefCount(ObjectID objectID, jint incrementValue) t
          * JDWP spec does NOT provide to return reply for this command
          * so do nothing
         */
-        JDWP_TRACE_MAP("## IncreaseIDRefCount: invalid object ID: " << objectID);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## IncreaseIDRefCount: invalid object ID: %lld", objectID));
         return 0;
     }
 
@@ -474,7 +527,7 @@ jint ObjectManager::IncreaseIDRefCount(ObjectID objectID, jint incrementValue) t
     if (objectIDItem->objectID == FREE_OBJECTID_SIGN) {
         // Corresponding jobject is DISPOSED - unlikely but possibly theoretically
         // so do nothing
-        JDWP_TRACE_MAP("## IncreaseIDRefCount: corresponding jobject has been disposed: " << objectID);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## IncreaseIDRefCount: corresponding jobject has been disposed: %lld", objectID));
         return 0;
     }
     newRefCount = objectIDItem->mapObjectIDItem.referencesCount + incrementValue;
@@ -484,8 +537,8 @@ jint ObjectManager::IncreaseIDRefCount(ObjectID objectID, jint incrementValue) t
     return newRefCount;
 } // IncreaseIDRefCount() 
 
-void ObjectManager::InitObjectIDMap() throw () {
-    JDWP_TRACE_ENTRY("InitObjectIDMap()");
+void ObjectManager::InitObjectIDMap() {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "InitObjectIDMap()"));
 
     memset(m_objectIDTableSize, 0, sizeof(m_objectIDTableSize));
     memset(m_maxAllocatedObjectID, 0, sizeof(m_maxAllocatedObjectID));
@@ -493,8 +546,8 @@ void ObjectManager::InitObjectIDMap() throw () {
     memset(m_freeObjectIDItems, 0, sizeof(m_freeObjectIDItems));
 } // InitObjectIDMap()
 
-void ObjectManager::ResetObjectIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) {
-    JDWP_TRACE_ENTRY("ResetObjectIDMap(" << JNIEnvPtr << ')');
+void ObjectManager::ResetObjectIDMap(JNIEnv* JNIEnvPtr) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "ResetObjectIDMap(%p)", JNIEnvPtr));
 
     for (size_t idx = 0; idx < HASH_TABLE_SIZE; idx++) {
         if (m_objectIDTable[idx]) {
@@ -505,7 +558,7 @@ void ObjectManager::ResetObjectIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) {
                     if (objectIDItem->mapObjectIDItem.globalRefKind == NORMAL_GLOBAL_REF) {
                         JNIEnvPtr->DeleteGlobalRef(objectIDItem->mapObjectIDItem.jvmObject);
                     } else {
-                        JNIEnvPtr->DeleteWeakGlobalRef(objectIDItem->mapObjectIDItem.jvmObject);
+                        JNIEnvPtr->DeleteWeakGlobalRef((jweak)objectIDItem->mapObjectIDItem.jvmObject);
                     }
                 }
                 objectIDItem++;
@@ -521,23 +574,19 @@ void ObjectManager::ResetObjectIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) {
 // Mapping: ReferenceTypeID <-> jclass (=> jobject)
 // Includes JDWP types: referenceTypeID, classID, interfaceID, arrayID
 
-// Constant defining initial value for ReferenceTypeID to be different from
-// ObjectID values
-const ReferenceTypeID REFTYPEID_MINIMUM = 1000000000;
-
-ReferenceTypeID ObjectManager::MapToReferenceTypeID(JNIEnv* JNIEnvPtr, jclass jvmClass) throw (AgentException) {
-    JDWP_TRACE_ENTRY("MapToReferenceTypeID(" << JNIEnvPtr << ',' << jvmClass << ')');
+ReferenceTypeID ObjectManager::MapToReferenceTypeID(JNIEnv* JNIEnvPtr, jclass jvmClass) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "MapToReferenceTypeID(%p,%p)", JNIEnvPtr, jvmClass));
 
     if (jvmClass == NULL) {
-        JDWP_TRACE_MAP("## MapToReferenceTypeID: map NULL jclass");
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapToReferenceTypeID: map NULL jclass"));
         return JDWP_OBJECT_ID_NULL;
     }
 
     // get object HASH CODE
     jint hashCode = -1;
     if (GetObjectHashCode(jvmClass, &hashCode) != JVMTI_ERROR_NONE) {
-        JDWP_TRACE_MAP("## MapToReferenceTypeID: GetObjectHashCode failed");
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapToReferenceTypeID: GetObjectHashCode failed"));
+        return JDWP_OBJECT_ID_NULL;
     }
 
     // get HASH INDEX
@@ -570,8 +619,8 @@ ReferenceTypeID ObjectManager::MapToReferenceTypeID(JNIEnv* JNIEnvPtr, jclass jv
              *   suppose just this case is here
             */
             JNIEnvPtr->ExceptionClear();
-            JDWP_TRACE_MAP("## MapToReferenceTypeID: NewWeakGlobalRef returned NULL due to OutOfMemoryException");
-            throw OutOfMemoryException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapToReferenceTypeID: NewWeakGlobalRef returned NULL due to OutOfMemoryException"));
+            return JDWP_OBJECT_ID_NULL;
         }
         // expand table if needed
         if (m_refTypeIDTableUsed[idx] == m_refTypeIDTableSize[idx])
@@ -593,8 +642,8 @@ ReferenceTypeID ObjectManager::MapToReferenceTypeID(JNIEnv* JNIEnvPtr, jclass jv
 } // MapToReferenceTypeID() 
 
 jclass ObjectManager::MapFromReferenceTypeID(JNIEnv* JNIEnvPtr,
-                                             ReferenceTypeID refTypeID) throw (AgentException) {
-    JDWP_TRACE_ENTRY("MapFromReferenceTypeID(" << JNIEnvPtr << ',' << refTypeID << ')');
+                                             ReferenceTypeID refTypeID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "MapFromReferenceTypeID(%p,%lld)", JNIEnvPtr, refTypeID));
 
     refTypeID-= REFTYPEID_MINIMUM;
     jclass jvmClass;
@@ -611,10 +660,12 @@ jclass ObjectManager::MapFromReferenceTypeID(JNIEnv* JNIEnvPtr,
 
     // check buffer index
     if (item >= m_refTypeIDTableUsed[idx]) {
-        if ( IsValidObjectID(refTypeID + REFTYPEID_MINIMUM) ) {
-            throw AgentException(JDWP_ERROR_INVALID_CLASS);
+        if ( IsValidObjectID(JNIEnvPtr, refTypeID + REFTYPEID_MINIMUM) ) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## MapFromReferenceTypeID: class is invalid"));
+            return NULL;
         } else {
-            throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## MapFromReferenceTypeID: object is invalid"));
+            return NULL;
         }
     }
 
@@ -622,30 +673,65 @@ jclass ObjectManager::MapFromReferenceTypeID(JNIEnv* JNIEnvPtr,
 
     // check if corresponding jclass has been Garbage collected
     if (JNIEnvPtr->IsSameObject(jvmClass, NULL) == JNI_TRUE) {
-        JDWP_TRACE_MAP("## MapFromReferenceTypeID: corresponding jclass has been Garbage collected");
-        throw AgentException(JDWP_ERROR_INVALID_CLASS);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapFromReferenceTypeID: corresponding jclass has been Garbage collected"));
+        return NULL;
     }
 
     } // UNLOCK ReferenceTypeID table
 
     return jvmClass;
-} // MapFromReferenceTypeID() 
+} // MapFromReferenceTypeID()
 
-void ObjectManager::InitRefTypeIDMap() throw () {
-    JDWP_TRACE_ENTRY("InitRefTypeIDMap()");
+jboolean ObjectManager::IsValidReferenceTypeID(JNIEnv* JNIEnvPtr,ObjectID refTypeID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "IsValidReferenceTypeID(%p,%lld)", JNIEnvPtr, refTypeID));
+
+    refTypeID-= REFTYPEID_MINIMUM;
+    jclass jvmClass;
+
+    { // LOCK ReferenceTypeID table
+        
+    MonitorAutoLock refTypeIDTableLock(m_refTypeIDTableMonitor JDWP_FILE_LINE);
+
+    // calculate hash index
+    // masking guarantees the index will be in the range [0..HASH_TABLE_SIZE-1]
+    size_t idx = (size_t)refTypeID & HASH_TABLE_MSK;
+
+    // calculate buffer index
+    size_t item = (size_t)refTypeID >> HASH_TABLE_IDX;
+
+    // check buffer index
+    if (item < 0 || item >= m_refTypeIDTableUsed[idx]) {
+        return JNI_FALSE;
+    }
+
+    jvmClass = m_refTypeIDTable[idx][item];
+
+    // check if corresponding jclass has been Garbage collected
+    if (JNIEnvPtr->IsSameObject(jvmClass, NULL) == JNI_TRUE) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapFromReferenceTypeID: corresponding jclass has been Garbage collected"));
+        return JNI_FALSE;
+    }
+
+    } // UNLOCK ReferenceTypeID table
+
+    return JNI_TRUE;
+} // IsValidReferenceTypeID()   
+
+void ObjectManager::InitRefTypeIDMap() {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "InitRefTypeIDMap()"));
 
     memset(m_refTypeIDTable, 0, sizeof(m_refTypeIDTable));
     memset(m_refTypeIDTableSize, 0, sizeof(m_refTypeIDTableSize));
     memset(m_refTypeIDTableUsed, 0, sizeof(m_refTypeIDTableUsed));
 } // InitRefTypeIDMap()
 
-void ObjectManager::ResetRefTypeIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) {
-    JDWP_TRACE_ENTRY("ResetRefTypeIDMap(" << JNIEnvPtr << ')');
+void ObjectManager::ResetRefTypeIDMap(JNIEnv* JNIEnvPtr) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "ResetRefTypeIDMap(%p)", JNIEnvPtr));
 
     for (size_t idx = 0; idx < HASH_TABLE_SIZE; idx++) {
         if (m_refTypeIDTable[idx]) {
             for (size_t item = 0; item < m_refTypeIDTableUsed[idx]; item++)
-                JNIEnvPtr->DeleteWeakGlobalRef(m_refTypeIDTable[idx][item]);
+                JNIEnvPtr->DeleteWeakGlobalRef((jweak)m_refTypeIDTable[idx][item]);
             GetMemoryManager().Free(m_refTypeIDTable[idx] JDWP_FILE_LINE);
             m_refTypeIDTable[idx] = NULL;
             m_refTypeIDTableUsed[idx] = m_refTypeIDTableSize[idx] = 0;
@@ -661,17 +747,17 @@ void ObjectManager::ResetRefTypeIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) 
  * FieldID (jlong) <-> jfieldID (_jfieldID*)
 */
    
-FieldID ObjectManager::MapToFieldID(JNIEnv* JNIEnvPtr, jfieldID jvmFieldID) throw () {
-    JDWP_TRACE_ENTRY("MapToFieldID(" << JNIEnvPtr << ',' << jvmFieldID << ')');
+FieldID ObjectManager::MapToFieldID(JNIEnv* JNIEnvPtr, jfieldID jvmFieldID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "MapToFieldID(%p,%p)", JNIEnvPtr, jvmFieldID));
 
     FieldID fieldID = reinterpret_cast<FieldID>(jvmFieldID);
     return fieldID;
 } // MapToFieldID() 
  
-jfieldID ObjectManager::MapFromFieldID(JNIEnv* JNIEnvPtr, FieldID fieldID) throw () {
-    JDWP_TRACE_ENTRY("MapFromFieldID(" << JNIEnvPtr << ',' << fieldID << ')');
+jfieldID ObjectManager::MapFromFieldID(JNIEnv* JNIEnvPtr, FieldID fieldID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "MapFromFieldID(%p,%p)", JNIEnvPtr, fieldID));
 
-    jfieldID jvmFieldID = reinterpret_cast<jfieldID>(static_cast<intptr_t>(fieldID));
+    jfieldID jvmFieldID = (jfieldID)(fieldID);
     return jvmFieldID;
 } // MapFromFieldID() 
 
@@ -682,17 +768,17 @@ jfieldID ObjectManager::MapFromFieldID(JNIEnv* JNIEnvPtr, FieldID fieldID) throw
  * MethodID (jlong) <-> jmethodID (_jmethodID*)
 */
    
-MethodID ObjectManager::MapToMethodID(JNIEnv* JNIEnvPtr, jmethodID jvmMethodID) throw () {
-    JDWP_TRACE_ENTRY("MapToMethodID(" << JNIEnvPtr << ',' << jvmMethodID << ')');
+MethodID ObjectManager::MapToMethodID(JNIEnv* JNIEnvPtr, jmethodID jvmMethodID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "MapToMethodID(%p,%p)", JNIEnvPtr, jvmMethodID));
 
     MethodID methodID = reinterpret_cast<MethodID>(jvmMethodID);
     return methodID;
 } // MapToMethodID() 
  
-jmethodID ObjectManager::MapFromMethodID(JNIEnv* JNIEnvPtr, MethodID methodID) throw () {
-    JDWP_TRACE_ENTRY("MapFromMethodID(" << JNIEnvPtr << ',' << methodID << ')');
+jmethodID ObjectManager::MapFromMethodID(JNIEnv* JNIEnvPtr, MethodID methodID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "MapFromMethodID(%p,%lld)", JNIEnvPtr, methodID));
 
-    jmethodID jvmMethodID = reinterpret_cast<jmethodID>(static_cast<intptr_t>(methodID));
+    jmethodID jvmMethodID = (jmethodID)(methodID);
     return jvmMethodID;
 } // MapFromMethodID() 
 
@@ -711,7 +797,7 @@ const jint FRAMES_COUNT_OF_FREE_ITEM = -1;
 const jlong FRAMEID_TABLE_INIT_SIZE = 128; // in ThreadFramesItem
 
 ObjectManager::ThreadFramesItem* ObjectManager::ExpandThreadFramesTable()
-        throw (AgentException) {
+        {
     if ( m_frameIDTableSize == 0 ) {
         m_frameIDTable =
             reinterpret_cast<ThreadFramesItem*>
@@ -742,7 +828,7 @@ ObjectManager::ThreadFramesItem* ObjectManager::ExpandThreadFramesTable()
 
 ObjectManager::ThreadFramesItem* ObjectManager::NewThreadFramesItem
         (JNIEnv* JNIEnvPtr, jthread jvmThread, jint framesCount)
-        throw (AgentException) {
+{
     ThreadFramesItem* threadFramesItem = m_frameIDTable;
     if ( m_freeItemsNumberInFrameIDTable == 0 ) {
         threadFramesItem = ExpandThreadFramesTable();
@@ -770,8 +856,8 @@ ObjectManager::ThreadFramesItem* ObjectManager::NewThreadFramesItem
          *   suppose just this case is here
         */
         JNIEnvPtr->ExceptionClear();
-        JDWP_TRACE_MAP("## NewThreadFramesItem: OutOfMemoryException");
-        throw OutOfMemoryException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## NewThreadFramesItem: OutOfMemoryException"));
+        return NULL;
     }
 
     threadFramesItem->jvmThread = newWeakGlobRef;
@@ -784,9 +870,8 @@ ObjectManager::ThreadFramesItem* ObjectManager::NewThreadFramesItem
 
 FrameID ObjectManager::MapToFrameID(JNIEnv* JNIEnvPtr, jthread jvmThread,
                                     jint frameDepth, jint framesCount)
-                                    throw (AgentException) {
-    JDWP_TRACE_ENTRY("MapToFrameID(" << JNIEnvPtr << ',' << jvmThread 
-        << ',' << frameDepth << ',' << framesCount << ')');
+                                    {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "MapToFrameID(%p,%p,%d,%d)", JNIEnvPtr, jvmThread, frameDepth, framesCount));
 
     /* according to the JDWP agent policy it is supposed that passed jvmThread
      * is JNI global reference so do not check if the jvmThread is garbage
@@ -816,8 +901,8 @@ FrameID ObjectManager::MapToFrameID(JNIEnv* JNIEnvPtr, jthread jvmThread,
         if ( (frameDepth < 0) 
                 || (frameDepth >= framesCount) ) {
             // passed frameDepth is INVALID ");
-            JDWP_TRACE_MAP("## MapToFrameID: JDWP_ERROR_INVALID_LENGTH#1");
-            throw AgentException(JDWP_ERROR_INVALID_LENGTH);
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapToFrameID: JDWP_ERROR_INVALID_LENGTH#1"));
+            return 0;
         }
         threadFramesItem = NewThreadFramesItem(JNIEnvPtr, jvmThread, framesCount);
         // can be OutOfMemoryException, InternalErrorException
@@ -825,8 +910,8 @@ FrameID ObjectManager::MapToFrameID(JNIEnv* JNIEnvPtr, jthread jvmThread,
         if ( (frameDepth < 0) 
                 || (frameDepth >= threadFramesItem->framesCountOfThread) ) {
             // passed frameDepth is INVALID ");
-            JDWP_TRACE_MAP("## MapToFrameID: JDWP_ERROR_INVALID_LENGTH#2");
-            throw AgentException(JDWP_ERROR_INVALID_LENGTH);
+            JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapToFrameID: JDWP_ERROR_INVALID_LENGTH#2"));
+            return 0;
         }
     }
     frameID = threadFramesItem->currentFrameID + frameDepth;
@@ -835,8 +920,8 @@ FrameID ObjectManager::MapToFrameID(JNIEnv* JNIEnvPtr, jthread jvmThread,
 
 } // MapToFrameID() 
 
-jint ObjectManager::MapFromFrameID(JNIEnv* JNIEnvPtr, FrameID frameID) throw (AgentException) {
-    JDWP_TRACE_ENTRY("MapFromFrameID(" << JNIEnvPtr << ',' << frameID << ')');
+jint ObjectManager::MapFromFrameID(JNIEnv* JNIEnvPtr, FrameID frameID) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "MapFromFrameID(%p,%lld)", JNIEnvPtr, frameID));
 
     // searching for threadFramesItem for given FrameID
     jint frameIndex;
@@ -859,20 +944,20 @@ jint ObjectManager::MapFromFrameID(JNIEnv* JNIEnvPtr, FrameID frameID) throw (Ag
     }
     if ( tableIndex == m_frameIDTableSize ) {
         // threadFramesItem for given FrameID is not found out in table*/
-        JDWP_TRACE_MAP("## MapFromFrameID: JDWP_ERROR_INVALID_FRAMEID");
-        throw AgentException(JDWP_ERROR_INVALID_FRAMEID);
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## MapFromFrameID: JDWP_ERROR_INVALID_FRAMEID"));
+        return 0;
     }
     frameIndex = static_cast<jint>(frameID - threadFramesItem->currentFrameID);
     } // synchronized block: frameIDTableLock
     return frameIndex;
 } // MapFromFrameID() 
 
-void ObjectManager::DeleteFrameIDs(JNIEnv* JNIEnvPtr, jthread jvmThread) throw () {
-    JDWP_TRACE_ENTRY("DeleteFrameIDs(" << JNIEnvPtr << ',' << jvmThread << ')');
+void ObjectManager::DeleteFrameIDs(JNIEnv* JNIEnvPtr, jthread jvmThread) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "DeleteFrameIDs(%p,%p)", JNIEnvPtr, jvmThread));
 
     if ( JNIEnvPtr->IsSameObject(jvmThread, NULL) == JNI_TRUE ) {
         // jvmThread object is GARBAGE COLLECTED: possible case - do nothing
-        JDWP_TRACE_MAP("## DeleteFrameIDs: ignore NULL jthread");
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "## DeleteFrameIDs: ignore NULL jthread"));
         return;
     }
 
@@ -905,8 +990,8 @@ void ObjectManager::DeleteFrameIDs(JNIEnv* JNIEnvPtr, jthread jvmThread) throw (
     } // synchronized block: frameIDTableLock
 } // DeleteFrameIDs() 
 
-void ObjectManager::InitFrameIDMap() throw () {
-    JDWP_TRACE_ENTRY("InitFrameIDMap()");
+void ObjectManager::InitFrameIDMap() {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "InitFrameIDMap()"));
 
     m_frameIDTableSize = 0; 
     m_freeItemsNumberInFrameIDTable = 0; 
@@ -914,8 +999,8 @@ void ObjectManager::InitFrameIDMap() throw () {
     m_maxAllocatedFrameID = 0;
 } // InitFrameIDMap()
 
-void ObjectManager::ResetFrameIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) {
-    JDWP_TRACE_ENTRY("ResetFrameIDMap(" << JNIEnvPtr << ')');
+void ObjectManager::ResetFrameIDMap(JNIEnv* JNIEnvPtr) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "ResetFrameIDMap(%p)", JNIEnvPtr));
 
     if ( m_frameIDTable != 0 ) {
         // delete all weak global references from frameIDTable
@@ -927,7 +1012,7 @@ void ObjectManager::ResetFrameIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) {
                 threadFramesItem++;
                 continue;
             }
-            JNIEnvPtr->DeleteWeakGlobalRef(threadFramesItem->jvmThread);
+            JNIEnvPtr->DeleteWeakGlobalRef((jweak)threadFramesItem->jvmThread);
             threadFramesItem++;
         }
         AgentBase::GetMemoryManager().Free(m_frameIDTable JDWP_FILE_LINE);
@@ -938,8 +1023,8 @@ void ObjectManager::ResetFrameIDMap(JNIEnv* JNIEnvPtr) throw (AgentException) {
 
 // =============================================================================
 
-void ObjectManager::Init(JNIEnv* JNIEnvPtr) throw (AgentException) {
-    JDWP_TRACE_ENTRY("Init(" << JNIEnvPtr << ')');
+void ObjectManager::Init(JNIEnv* JNIEnvPtr) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Init(%p)", JNIEnvPtr));
 
     InitObjectIDMap();
     InitRefTypeIDMap();
@@ -950,36 +1035,36 @@ void ObjectManager::Init(JNIEnv* JNIEnvPtr) throw (AgentException) {
     // can be AgentException(jvmtiError err);
 } // Init()
 
-void ObjectManager::Reset(JNIEnv* JNIEnvPtr) throw (AgentException) {
-    JDWP_TRACE_ENTRY("Reset(" << JNIEnvPtr << ')');
+void ObjectManager::Reset(JNIEnv* JNIEnvPtr) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Reset(%p)", JNIEnvPtr));
 
     if (m_objectIDTableMonitor != 0){
-        JDWP_TRACE_MAP("=> m_objectIDTableMonitor ");
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "=> m_objectIDTableMonitor "));
         m_objectIDTableMonitor->Enter(); 
-        JDWP_TRACE_MAP("<= m_objectIDTableMonitor");
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "<= m_objectIDTableMonitor"));
         m_objectIDTableMonitor->Exit(); 
         ResetObjectIDMap(JNIEnvPtr); //    can    be InternalErrorException
     }
 
     if (m_refTypeIDTableMonitor != 0) {
-        JDWP_TRACE_MAP("=> m_refTypeIDTableMonitor");
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "=> m_refTypeIDTableMonitor"));
         m_refTypeIDTableMonitor->Enter(); 
-        JDWP_TRACE_MAP("<= m_refTypeIDTableMonitor");
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "<= m_refTypeIDTableMonitor"));
         m_refTypeIDTableMonitor->Exit(); 
         ResetRefTypeIDMap(JNIEnvPtr); // can be InternalErrorException
     }
 
     if (m_frameIDTableMonitor != 0) {
-        JDWP_TRACE_MAP("=> m_frameIDTableMonitor");
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "=> m_frameIDTableMonitor"));
         m_frameIDTableMonitor->Enter(); 
-        JDWP_TRACE_MAP("<= m_frameIDTableMonitor");
+        JDWP_TRACE(LOG_RELEASE, (LOG_MAP_FL, "<= m_frameIDTableMonitor"));
         m_frameIDTableMonitor->Exit(); 
         ResetFrameIDMap(JNIEnvPtr); // can be InternalErrorException
     }
 } // Reset()
 
-void ObjectManager::Clean(JNIEnv* JNIEnvPtr) throw () {
-    JDWP_TRACE_ENTRY("Clean(" << JNIEnvPtr << ')');
+void ObjectManager::Clean(JNIEnv* JNIEnvPtr) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Clean(%p)", JNIEnvPtr));
 
     if (m_objectIDTableMonitor != 0)
         delete m_objectIDTableMonitor;
@@ -989,7 +1074,7 @@ void ObjectManager::Clean(JNIEnv* JNIEnvPtr) throw () {
         delete m_frameIDTableMonitor;
 } // Clean()
 
-ObjectManager::ObjectManager () throw ()
+ObjectManager::ObjectManager ()
 {
     m_objectIDTableMonitor = 0;
     m_refTypeIDTableMonitor = 0;
@@ -1001,7 +1086,7 @@ ObjectManager::ObjectManager () throw ()
 #endif // NDEBUG
 }
 
-ObjectManager::~ObjectManager () throw () {
+ObjectManager::~ObjectManager () {
 }
 
 // =============================================================================

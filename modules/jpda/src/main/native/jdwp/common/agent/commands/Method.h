@@ -17,11 +17,6 @@
  */
 
 /**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.4.2.1 $
- */
-
-/**
  * @file
  * Method.h
  *
@@ -54,7 +49,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//LineTableHandler
 
@@ -71,7 +66,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//VariableTableHandler
 
@@ -88,7 +83,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//BytecodesHandler
 
@@ -105,7 +100,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//IsObsoleteHandler
 
@@ -122,7 +117,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//VariableTableWithGenericHandler
 

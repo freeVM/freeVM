@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin
- * @version $Revision: 1.4.2.1 $
- */
-
 /**
  * @file
  * ThreadReference.h
@@ -54,7 +48,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//NameHandler
 
@@ -71,7 +65,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//SuspendHandler
 
@@ -88,7 +82,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//ResumeHandler
 
@@ -105,7 +99,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//StatusHandler
 
@@ -122,7 +116,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//ThreadGroupHandler
 
@@ -139,7 +133,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//FramesHandler
 
@@ -156,7 +150,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//FrameCountHandler
 
@@ -173,7 +167,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//OwnedMonitorsHandler
 
@@ -190,7 +184,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//CurrentContendedMonitorHandler
 
@@ -207,7 +201,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//StopHandler
 
@@ -224,7 +218,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//InterruptHandler
 
@@ -241,7 +235,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//SuspendCountHandler
 
@@ -259,7 +253,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//OwnedMonitorsStackDepthInfoHandler
         
@@ -276,7 +270,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//ForceEarlyReturnHandler
 

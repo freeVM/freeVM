@@ -16,31 +16,51 @@
 #
 # Makefile for module jdwp - transport
 #
-# export HY_HDK=/home/geir/dev/apache/harmony/enhanced/trunk/working_classlib/deploy/
-# export HY_DRLVM=/home/geir/dev/apache/harmony/enhanced/trunk/working_vm/build/deploy/
-
-#
 
 include $(HY_HDK)/build/make/defines.mk
 
 COMMON=../../../common/
 CMNTRANS=$(COMMON)transport/
 
-CFLAGS += -fpic
-CXXFLAGS += -fpic
-
-INCLUDES += -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
-            -I$(COMMON)generic -I. \
-            -I../common
-
-LDFLAGS += $(STDCLIBS)
+INCLUDES := -I../../../../include -I$(CMNTRANS)common -I$(CMNTRANS)dt_socket \
+            -I$(COMMON)generic -I. $(INCLUDES)
 
 BUILDFILES = \
     $(CMNTRANS)common/LastTransportError.o \
-    $(CMNTRANS)dt_socket/SocketTransport.o
+    $(CMNTRANS)dt_socket/SocketTransport.o 
 
-MDLLIBFILES = 
+ifneq ($(HY_OS),zos)
+  # !zOS
+  OPT += -fno-exceptions -fno-rtti
+  ifneq ($(HY_OS),aix)
+    # !AIX and !zOS
+    MDLLIBFILES = $(LIBPATH)libvmi.so
+    DLL_LDFLAGS += -fno-exceptions -fno-rtti
+    LDFLAGS += $(STDCLIBS)
+  else
+    # AIX
+    MDLLIBFILES =
+    LDFLAGS += -L$(LIBPATH). -L$(LIBPATH)../. $(STDCLIBS)  -lvmi 
+  endif
+else
+  # zOS
+  MDLLIBFILES = $(LIBPATH)libvmi.x
+  LDFLAGS += $(STDCLIBS)
+endif
+
+ifeq ($(HY_NO_THR),true)
+MDLLIBFILES += $(LIBPATH)libhythr$(HY_LINKLIB_SUFFIX)
+endif
 
 DLLNAME = ../../libdt_socket.so
+
+STDCLIBS = 
+
+CCVERSION=$(shell $(CC) -v 2>&1 | sed -e '1,3d; s/gcc version \([^ ]\+\).*/\1/')
+ifneq ($(HY_OS),zos)
+  ifeq (1,$(shell expr "$(CCVERSION)" \>= "3.4.6"))
+    OPT += -fno-threadsafe-statics
+  endif
+endif
 
 include $(HY_HDK)/build/make/rules.mk

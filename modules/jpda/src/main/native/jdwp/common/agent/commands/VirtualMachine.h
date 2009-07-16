@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin
- * @version $Revision: 1.6.2.1 $
- */
-
 /**
  * @file
  * VirtualMachine.h
@@ -54,7 +48,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };
 
@@ -71,11 +65,11 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         private:
             bool IsSignatureMatch(jclass klass, const char *signature)
-                throw(AgentException);
+                ;
 
         };//ClassesBySignatureHandler
 
@@ -92,7 +86,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
             /**
              * If the passed class (klass parameter) has status
@@ -109,8 +103,7 @@ namespace jdwp {
              * @return 0 on success,
              *         1 otherwise.
              */
-            virtual int Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti, jclass klass)
-                                            throw (AgentException);
+            virtual int Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti, jclass klass);
 
         };//AllClassesHandler
 
@@ -127,7 +120,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//AllThreadsHandler
 
@@ -144,7 +137,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//TopLevelThreadGroupsHandler
 
@@ -161,7 +154,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//DisposeHandler
 
@@ -178,7 +171,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//IDSizesHandler
 
@@ -195,7 +188,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//SuspendHandler
 
@@ -212,7 +205,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//ResumeHandler
 
@@ -229,7 +222,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//ExitHandler
 
@@ -246,7 +239,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//CreateStringHandler
 
@@ -263,7 +256,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//CapabilitiesHandler
 
@@ -280,11 +273,11 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         private:
             void WritePathStrings(char *str, char pathSeparator)
-                throw(AgentException);
+                ;
 
         };//ClassPathsHandler
 
@@ -301,7 +294,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//DisposeObjectsHandler
 
@@ -318,7 +311,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//HoldEventsHandler
 
@@ -335,7 +328,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//ReleaseEventsHandler
 
@@ -352,7 +345,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//CapabilitiesNewHandler
 
@@ -369,7 +362,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//RedefineClassesHandler
 
@@ -386,7 +379,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//SetDefaultStratumHandler
 
@@ -412,8 +405,7 @@ namespace jdwp {
              * @return 0 on success,
              *         1 otherwise.
              */
-            virtual int Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti, jclass klass)
-                                            throw (AgentException);
+            virtual int Compose41Class(JNIEnv *jni, jvmtiEnv* jvmti, jclass klass);
 
         };//AllClassesWithGenericHandler
 
@@ -431,7 +423,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         };//InstanceCountsHandler
     } // VirtualMachine

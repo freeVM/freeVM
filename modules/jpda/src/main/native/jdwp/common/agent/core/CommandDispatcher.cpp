@@ -15,11 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin
- * @version $Revision: 1.15 $
- */
 #include "CommandDispatcher.h"
 #include "PacketParser.h"
 #include "TransportManager.h"
@@ -48,8 +43,6 @@ using namespace jdwp;
 //-----------------------------------------------------------------------------
 void removeSynchronousHandler(CommandHandler *handler)
 {
-//    JDWP_TRACE_ENTRY("removeSynchronousHandler(" << handler << ')');
-
     if (handler == 0)
         return;
 
@@ -59,10 +52,10 @@ void removeSynchronousHandler(CommandHandler *handler)
         if (JDWP_TRACE_ENABLED(LOG_KIND_CMD)) {
             jdwpCommandSet cmdSet = handler->GetCommandParser()->command.GetCommandSet();
             jdwpCommand cmdKind = handler->GetCommandParser()->command.GetCommand();
-            JDWP_TRACE_CMD("Remove handler: "
-                << CommandDispatcher::GetCommandSetName(cmdSet) << "/"
-                << CommandDispatcher::GetCommandName(cmdSet, cmdKind)
-                << "[" << cmdSet << "/" << cmdKind << "]");
+            JDWP_TRACE(LOG_RELEASE, (LOG_CMD_FL, "Remove handler: %s/%s[%d/%d]",
+                CommandDispatcher::GetCommandSetName(cmdSet),
+                CommandDispatcher::GetCommandName(cmdSet, cmdKind),
+                cmdSet, cmdKind));
         }
 #endif
         delete handler;
@@ -70,54 +63,62 @@ void removeSynchronousHandler(CommandHandler *handler)
 }
 //-----------------------------------------------------------------------------
 
-void CommandDispatcher::ExecCommand(JNIEnv* jni, CommandParser *cmdParser)
-    throw (AgentException)
+int CommandDispatcher::ExecCommand(JNIEnv* jni, CommandParser *cmdParser)
 {
-    JDWP_TRACE_ENTRY("ExecCommand(" << jni << ',' << cmdParser << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "ExecCommand(%p,%p)", jni, cmdParser));
 
+    int ret = JDWP_ERROR_NONE;
     CommandHandler *handler = 0;
     bool isSynchronous = false;
-    jdwpError err = JDWP_ERROR_NONE;
 
     jdwpCommandSet cmdSet = cmdParser->command.GetCommandSet();
     jdwpCommand cmdKind = cmdParser->command.GetCommand();
 
-    try
-    {
-        if (IsDead())
-            throw AgentException(JDWP_ERROR_VM_DEAD);
-
-        JDWP_TRACE_CMD("Create handler: "
-            << GetCommandSetName(cmdSet) << "/"
-            << GetCommandName(cmdSet, cmdKind)
-            << "[" << cmdSet << "/" << cmdKind << "]");
-        handler = CreateCommandHandler(cmdSet, cmdKind);
-        isSynchronous = handler->IsSynchronous();
-
-        handler->Run(jni, cmdParser);
-    }
-    catch (const TransportException &e)
-    {
+    if (IsDead()) {
         if (isSynchronous) {
             removeSynchronousHandler(handler);
         }
-        throw e;
+        cmdParser->reply.SetError(JDWP_ERROR_VM_DEAD);
+        ret = cmdParser->WriteReply(jni);
+        return JDWP_ERROR_VM_DEAD;
     }
-    catch (const AgentException &e)
-    {
-        if (isSynchronous) {
-            removeSynchronousHandler(handler);
-        }
-        err = e.ErrCode();
+
+    JDWP_TRACE(LOG_RELEASE, (LOG_CMD_FL, "Create handler: %s/%s[%d/%d]",
+           GetCommandSetName(cmdSet),
+           GetCommandName(cmdSet, cmdKind),
+           cmdSet, cmdKind));
+    handler = CreateCommandHandler(cmdSet, cmdKind);
+    if (handler == 0) {
+        //Return JDWP_ERROR_NONE since throwing exception is not expected.
+        AgentException aex = GetExceptionManager().GetLastException();
+        jdwpError err = aex.ErrCode();
         cmdParser->reply.SetError(err);
+        cmdParser->WriteReply(jni);
+        return JDWP_ERROR_NONE;
     }
-    
+    isSynchronous = handler->IsSynchronous();
+
+    ret = handler->Run(jni, cmdParser);
+
     if (isSynchronous) {
         removeSynchronousHandler(handler);
     }
 
-    if (err != JDWP_ERROR_NONE)
-        cmdParser->WriteReply(jni);
+    if (ret != JDWP_ERROR_NONE) {
+        AgentException aex = GetExceptionManager().GetLastException();
+        if (aex.Compare(ENUM_TransportException)) {
+            JDWP_SET_EXCEPTION(aex);
+            return ret;
+        }
+        
+        jdwpError err = aex.ErrCode();
+        cmdParser->reply.SetError(err);
+        ret = cmdParser->WriteReply(jni);
+        JDWP_CHECK_RETURN(ret);
+        return err;
+    }
+
+    return JDWP_ERROR_NONE;
 
     //when command is executed asynchronously,
     //memory is released by AsyncCommandHandler::StartExecution()
@@ -127,9 +128,8 @@ void CommandDispatcher::ExecCommand(JNIEnv* jni, CommandParser *cmdParser)
 
 CommandHandler*
 CommandDispatcher::CreateCommandHandler(jdwpCommandSet cmdSet, jdwpCommand cmdKind)
-    throw (NotImplementedException, OutOfMemoryException)
 {
-    JDWP_TRACE_ENTRY("CreateCommandHandler(" << cmdSet << ',' << cmdKind << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "CreateCommandHandler(%d,%d)", cmdSet, cmdKind));
 
     switch (cmdSet)
     {
@@ -501,14 +501,14 @@ CommandDispatcher::CreateCommandHandler(jdwpCommandSet cmdSet, jdwpCommand cmdKi
 
     }//cmdSet
 
-    JDWP_ERROR("command not implemented "
-                        << GetCommandSetName(cmdSet) << "/"
-                        << GetCommandName(cmdSet, cmdKind)
-                        << "[" << cmdSet << "/" << cmdKind << "]");
 
-    throw NotImplementedException();
-
-    // never reached
+    JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Command not implemented %s/%s[%d/%d]",
+                        GetCommandSetName(cmdSet),
+                        GetCommandName(cmdSet, cmdKind),
+                        cmdSet, cmdKind));
+    /* Error if we reach here */
+    AgentException ex(JDWP_ERROR_NOT_IMPLEMENTED);
+    JDWP_SET_EXCEPTION(ex);
     return 0;
 }
 

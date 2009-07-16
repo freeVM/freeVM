@@ -15,31 +15,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.7 $
- */
-// OptionParser.cpp
-
-#include <cstring>
-
 #include "AgentBase.h"
 #include "MemoryManager.h"
-#include "AgentException.h"
+#include "ExceptionManager.h"
 #include "Log.h"
 
 #include "OptionParser.h"
 
-using namespace jdwp;
-using namespace std;
+#include <string.h>
 
-OptionParser::OptionParser() throw()
+using namespace jdwp;
+
+OptionParser::OptionParser()
 {
     m_optionCount = 0;
     m_optionString = 0;
     m_options = 0;
     m_help = false;
+    m_version = false;
     m_suspend = true;
     m_server = false;
     m_timeout = 0;
@@ -53,28 +46,38 @@ OptionParser::OptionParser() throw()
     m_launch = 0;
 }
 
-bool OptionParser::AsciiToBool(const char *str) throw(IllegalArgumentException)
+bool OptionParser::IsValidBool(const char *str)
 {
-    if (strcmp("y", str) == 0) {
+    if (strcmp("y", str) == 0
+         || strcmp("n", str) == 0) {
         return true;
-    } else if (strcmp("n", str) == 0) {
-        return false;
     } else {
-        throw IllegalArgumentException();
+        AgentException ex(JDWP_ERROR_ILLEGAL_ARGUMENT);
+        JDWP_SET_EXCEPTION(ex);
+        return false;
     }
 }
 
-void OptionParser::Parse(const char* str) throw(AgentException)
+bool OptionParser::AsciiToBool(const char *str)
+{
+    if (*str == 'y') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+int OptionParser::Parse(const char* str)
 {
     size_t i;
     int k;
 
     if (str == 0)
-        return;
+        return JDWP_ERROR_NONE;
 
     const size_t len = strlen(str);
     if (len == 0)
-        return;
+        return JDWP_ERROR_NONE;
 
     for (i = 0; i < len; i++) {
         if (str[i] == ',') {
@@ -82,14 +85,18 @@ void OptionParser::Parse(const char* str) throw(AgentException)
         } else if (str[i] == '"' || str[i] == '\'') {
             char quote = str[i];
             if (i > 0 && str[i-1] != '=') {
-                throw IllegalArgumentException();
+                AgentException ex(JDWP_ERROR_ILLEGAL_ARGUMENT);
+                JDWP_SET_EXCEPTION(ex);
+                return JDWP_ERROR_ILLEGAL_ARGUMENT;
             }
             i++;
             while (i < len && str[i] != quote) {
                 i++;
             }
             if (i+1 < len && str[i+1] != ',') {
-                throw IllegalArgumentException();
+                AgentException ex(JDWP_ERROR_ILLEGAL_ARGUMENT);
+                JDWP_SET_EXCEPTION(ex);
+                return JDWP_ERROR_ILLEGAL_ARGUMENT;
             }
         }
     }
@@ -139,36 +146,43 @@ void OptionParser::Parse(const char* str) throw(AgentException)
         } else if (strcmp("timeout", m_options[k].name) == 0) {
             m_timeout = atol(m_options[k].value);
         } else if (strcmp("suspend", m_options[k].name) == 0) {
+            if (!IsValidBool(m_options[k].value)) return JDWP_ERROR_ILLEGAL_ARGUMENT;
             m_suspend = AsciiToBool(m_options[k].value);
         } else if (strcmp("server", m_options[k].name) == 0) {
+            if (!IsValidBool(m_options[k].value)) return JDWP_ERROR_ILLEGAL_ARGUMENT;
             m_server = AsciiToBool(m_options[k].value);
         } else if (strcmp("launch", m_options[k].name) == 0) {
             m_launch = m_options[k].value;
         } else if (strcmp("onuncaught", m_options[k].name) == 0) {
+            if (!IsValidBool(m_options[k].value)) return JDWP_ERROR_ILLEGAL_ARGUMENT;
             m_onuncaught = AsciiToBool(m_options[k].value);
         } else if (strcmp("onthrow", m_options[k].name) == 0) {
             m_onthrow = m_options[k].value;
         } else if (strcmp("help", m_options[k].name) == 0) {
             m_help = true;
-#ifndef NDEBUG
+        } else if (strcmp("version", m_options[k].name) == 0) {
+            m_version = true;
         } else if (strcmp("log", m_options[k].name) == 0) {
             m_log = m_options[k].value;
         } else if (strcmp("trace", m_options[k].name) == 0) {
             m_kindFilter = m_options[k].value;
         } else if (strcmp("src", m_options[k].name) == 0) {
             m_srcFilter = m_options[k].value;
-#endif // NDEBUG
         }
     }
     if ((m_onthrow != 0) || (m_onuncaught != 0)) {
         if (m_launch == 0) {
-            JDWP_ERROR("Specify launch=<command line> when using onthrow or onuncaught option");
-            throw IllegalArgumentException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Specify launch=<command line> when using onthrow or onuncaught option"));
+            AgentException ex(JDWP_ERROR_ILLEGAL_ARGUMENT);
+            JDWP_SET_EXCEPTION(ex);
+            return JDWP_ERROR_ILLEGAL_ARGUMENT;
         }
     }
+
+    return JDWP_ERROR_NONE;
 }
 
-OptionParser::~OptionParser() throw()
+OptionParser::~OptionParser()
 {
     if (m_optionString != 0)
         AgentBase::GetMemoryManager().Free(m_optionString JDWP_FILE_LINE);
@@ -176,7 +190,7 @@ OptionParser::~OptionParser() throw()
         AgentBase::GetMemoryManager().Free(m_options JDWP_FILE_LINE);
 }
 
-const char *OptionParser::FindOptionValue(const char *name) const throw()
+const char *OptionParser::FindOptionValue(const char *name) const
 {
     for (int i = 0; i < m_optionCount; i++) {
         if (strcmp(name, m_options[i].name) == 0) {

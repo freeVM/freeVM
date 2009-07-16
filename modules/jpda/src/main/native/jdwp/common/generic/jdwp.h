@@ -32,7 +32,7 @@
 
 /* JDWP Version */
 #define JDWP_VERSION_MAJOR 1
-#define JDWP_VERSION_MINOR 5
+#define JDWP_VERSION_MINOR 6
 
 /* General JDWP constants */
 #define JDWP_FLAG_REPLY_PACKET ((jbyte)0x80)

@@ -17,11 +17,6 @@
  */
 
 /**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.5.2.1 $
- */
-
-/**
  * @file
  * SocketTransport.h
  *
@@ -32,6 +27,14 @@
 
 #ifndef _SOCKETTRANSPORT_H
 #define _SOCKETTRANSPORT_H
+#if defined(ZOS)
+#define _XOPEN_SOURCE  500
+#endif
+
+#include "SocketTransport_pd.h"
+#include "hythread.h"
+
+typedef hythread_monitor_t CriticalSection;
 
 struct internalEnv {
     JavaVM *jvm;                    // the JNI invocation interface, provided 
@@ -40,8 +43,8 @@ struct internalEnv {
                                     // provided by the agent 
     void (*free)(void *buffer);     // the function deallocating an area of memory, 
                                     // provided by the agent
-    SOCKET envClientSocket;         // the client socket, INVALID_SOCKET if closed
-    SOCKET envServerSocket;         // the server socket, INVALID_SOCKET if closed
+    hysocket_t envClientSocket;         // the client socket, INVALID_SOCKET if closed
+    hysocket_t envServerSocket;         // the server socket, INVALID_SOCKET if closed
     LastTransportError* lastError;  // last errors
     CriticalSection readLock;       // the critical-section lock object for socket
                                     // read operations

@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Aleksander V. Budniy
- * @version $Revision: 1.10.2.1 $
- */
-
 #include "AgentManager.h"
 #include "ClassManager.h"
 #include "ObjectManager.h"
@@ -30,17 +24,20 @@
 #include "TransportManager.h"
 #include "PacketDispatcher.h"
 #include "EventDispatcher.h"
+#include "ExceptionManager.h"
 
 using namespace jdwp;
 
-void AgentManager::Init(jvmtiEnv *jvmti, JNIEnv *jni) throw (AgentException)
+int AgentManager::Init(jvmtiEnv *jvmti, JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Init(" << jvmti << "," << jni << ")");
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Init(%p,%p)", jvmti, jni));
 
-    JDWP_TRACE_PROG("Init: init agent modules and load transport");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Init: init agent modules and load transport"));
 
+    int ret;
     AgentBase::SetIsDead(false);
-    AgentBase::GetClassManager().Init(jni);
+    ret = AgentBase::GetClassManager().Init(jni);
+    JDWP_CHECK_RETURN(ret);
     AgentBase::GetObjectManager().Init(jni);
     AgentBase::GetThreadManager().Init(jni);
     AgentBase::GetRequestManager().Init(jni);
@@ -49,65 +46,74 @@ void AgentManager::Init(jvmtiEnv *jvmti, JNIEnv *jni) throw (AgentException)
 
     char* javaLibraryPath = 0;
     jvmtiError err;
-    JVMTI_TRACE(err,
+    JVMTI_TRACE(LOG_DEBUG, err,
         jvmti->GetSystemProperty("java.library.path", &javaLibraryPath));
     if (err != JVMTI_ERROR_NONE) {
-        JDWP_INFO("Unable to get system property: java.library.path")
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to get system property: java.library.path"));
     }
 
     JvmtiAutoFree afv(javaLibraryPath);
-    AgentBase::GetTransportManager().Init(
+    ret = AgentBase::GetTransportManager().Init(
         AgentBase::GetOptionParser().GetTransport(),
         javaLibraryPath);
+    JDWP_CHECK_RETURN(ret);
 
+    return JDWP_ERROR_NONE;
 } 
 
-void AgentManager::Start(jvmtiEnv *jvmti, JNIEnv *jni) throw (AgentException)
+int AgentManager::Start(jvmtiEnv *jvmti, JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Start(" << jvmti << "," << jni << ")");
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Start(%p,%p)", jvmti, jni));
 
-    JDWP_TRACE_PROG("Start: prepare connection and start all agent threads");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Start: prepare connection and start all agent threads"));
 
     // prepare transport connection
-    AgentBase::GetTransportManager().PrepareConnection(
+    int ret = AgentBase::GetTransportManager().PrepareConnection(
         AgentBase::GetOptionParser().GetAddress(),
         AgentBase::GetOptionParser().GetServer(),
         AgentBase::GetOptionParser().GetTimeout(),
         AgentBase::GetOptionParser().GetTimeout()
     );
+    JDWP_CHECK_RETURN(ret);
 
     // launch debugger if required and disable initial handling of EXCEPTION event
     const char* launch = AgentBase::GetOptionParser().GetLaunch();
     if (launch != 0) {
-        AgentBase::GetTransportManager().Launch(launch);
-        DisableInitialExceptionCatch(jvmti, jni);
+        ret = AgentBase::GetTransportManager().Launch(launch);
+        JDWP_CHECK_RETURN(ret);
+        ret = DisableInitialExceptionCatch(jvmti, jni);
+        JDWP_CHECK_RETURN(ret);
     }
 
     // start agent threads
-    AgentBase::GetEventDispatcher().Start(jni);
-    AgentBase::GetPacketDispatcher().Start(jni);
+    ret = AgentBase::GetEventDispatcher().Start(jni);
+    JDWP_CHECK_RETURN(ret);
+    ret = AgentBase::GetPacketDispatcher().Start(jni);
+    JDWP_CHECK_RETURN(ret);
     SetStarted(true);
+
+    return JDWP_ERROR_NONE;
 }
 
 void 
-AgentManager::Stop(JNIEnv *jni) throw(AgentException)
+AgentManager::Stop(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Stop(" << jni << ")");
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Stop(%p)", jni));
 
     // stop PacketDispatcher and EventDispatcher threads, and reset all modules
-    JDWP_TRACE_PROG("Stop: stop all agent threads");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Stop: stop all agent threads"));
     GetPacketDispatcher().Stop(jni);
 }
 
 void 
-AgentManager::Clean(JNIEnv *jni) throw(AgentException)
+AgentManager::Clean(JNIEnv *jni)
 {
     // trace entry before cleaning LogManager
     {
-        JDWP_TRACE_ENTRY("Clean(" << jni << ")");
+        JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Clean(%p)", jni));
 
         // clean all modules
-        JDWP_TRACE_PROG("Clean: clean agent modules");
+        JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Clean: clean agent modules"));
         GetPacketDispatcher().Clean(jni);
         GetThreadManager().Clean(jni);
         GetRequestManager().Clean(jni);
@@ -119,16 +125,16 @@ AgentManager::Clean(JNIEnv *jni) throw(AgentException)
         jvmtiExtensionEventInfo* ext = GetAgentEnv()->extensionEventClassUnload;
         if (ext != 0) {
             jvmtiError err;
-            JVMTI_TRACE(err, GetJvmtiEnv()->Deallocate(
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->Deallocate(
                 reinterpret_cast<unsigned char*>(ext->id)));
-            JVMTI_TRACE(err, GetJvmtiEnv()->Deallocate(
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->Deallocate(
                 reinterpret_cast<unsigned char*>(ext->short_description)));
             if (ext->params != 0) {
                 for (int j = 0; j < ext->param_count; j++) {
-                    JVMTI_TRACE(err, GetJvmtiEnv()->Deallocate(
+                    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->Deallocate(
                         reinterpret_cast<unsigned char*>(ext->params[j].name)));
                 }
-                JVMTI_TRACE(err, GetJvmtiEnv()->Deallocate(
+                JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->Deallocate(
                     reinterpret_cast<unsigned char*>(ext->params)));
             }
             GetMemoryManager().Free(ext JDWP_FILE_LINE);
@@ -137,28 +143,37 @@ AgentManager::Clean(JNIEnv *jni) throw(AgentException)
 
     // clean LogManager and close log
     GetLogManager().Clean();
+    GetExceptionManager().Clean();
 }
 
-void AgentManager::EnableInitialExceptionCatch(jvmtiEnv *jvmti, JNIEnv *jni) throw (AgentException)
+int AgentManager::EnableInitialExceptionCatch(jvmtiEnv *jvmti, JNIEnv *jni)
 {
-    JDWP_TRACE_PROG("EnableInitialExceptionCatch");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "EnableInitialExceptionCatch"));
 
     jvmtiError err;
-    JVMTI_TRACE(err, jvmti->SetEventNotificationMode(
+    JVMTI_TRACE(LOG_DEBUG, err, jvmti->SetEventNotificationMode(
          JVMTI_ENABLE , JVMTI_EVENT_EXCEPTION, 0));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+        return err;
     }
+
+    return JDWP_ERROR_NONE;
 }
 
-void AgentManager::DisableInitialExceptionCatch(jvmtiEnv *jvmti, JNIEnv *jni) throw (AgentException)
+int AgentManager::DisableInitialExceptionCatch(jvmtiEnv *jvmti, JNIEnv *jni)
 {
-    JDWP_TRACE_PROG("DisableInitialExceptionCatch");
+    JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "DisableInitialExceptionCatch"));
 
     jvmtiError err;
-    JVMTI_TRACE(err, jvmti->SetEventNotificationMode(
+    JVMTI_TRACE(LOG_DEBUG, err, jvmti->SetEventNotificationMode(
          JVMTI_DISABLE, JVMTI_EVENT_EXCEPTION, 0));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+        return err;
     }
+
+    return JDWP_ERROR_NONE;
 }

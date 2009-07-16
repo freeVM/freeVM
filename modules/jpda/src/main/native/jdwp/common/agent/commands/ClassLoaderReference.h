@@ -17,11 +17,6 @@
  */
 
 /**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.4.2.1 $
- */
-
-/**
  * @file
  * ClassLoaderReference.h
  *
@@ -54,7 +49,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni);
 
         };//VisibleClassesHandler
 

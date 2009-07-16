@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin
- * @version $Revision: 1.8.2.1 $
- */
-
 /**
  * @file
  * PacketDispatcher.h
@@ -65,7 +59,7 @@ namespace jdwp {
         /**
          * Constructs a new <code>PacketDispatcher</code> object.
          */
-        PacketDispatcher() throw();
+        PacketDispatcher();
 
         /**
          * Initializes the <code>PacketDispatcher</code>'s thread.
@@ -74,7 +68,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Init(JNIEnv *jni) throw(AgentException);
+        void Init(JNIEnv *jni);
 
         /**
          * Starts the <code>PacketDispatcher</code>'s thread.
@@ -83,7 +77,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Start(JNIEnv *jni) throw(AgentException);
+        int Start(JNIEnv *jni);
 
         /**
          * Stops the <code>PacketDispatcher</code>'s thread.
@@ -92,7 +86,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Stop(JNIEnv *jni) throw(AgentException);
+        void Stop(JNIEnv *jni);
 
         /**
          * Resets the <code>PacketDispatcher</code> object.
@@ -101,7 +95,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Reset(JNIEnv *jni) throw(AgentException);
+        void Reset(JNIEnv *jni);
 
         /**
          * Cleans the <code>PacketDispatcher</code> object.
@@ -110,7 +104,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void Clean(JNIEnv *jni) throw(AgentException);
+        void Clean(JNIEnv *jni);
 
         /**
          * Resets all agent modules.
@@ -119,7 +113,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-        void ResetAll(JNIEnv *jni) throw(AgentException);
+        int ResetAll(JNIEnv *jni);
 
         /**
          * Shutdowns all agent modules.
@@ -128,7 +122,7 @@ namespace jdwp {
          *
          * @exception If any error occurs, <code>AgentException</code> is thrown.
          */
-//        void ShutdownAll(JNIEnv *jni) throw(AgentException);
+//        void ShutdownAll(JNIEnv *jni);
 
         /**
          * Determines if the <code>PacketDispatcher</code> object is already

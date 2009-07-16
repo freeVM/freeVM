@@ -15,74 +15,61 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.8 $
- */
-// AgentMonitor.cpp
-
 #include "AgentMonitor.h"
+#include "ExceptionManager.h"
 #include "jvmti.h"
 
 using namespace jdwp;
 
-AgentMonitor::AgentMonitor(const char* name) throw(AgentException) {
+AgentMonitor::AgentMonitor(const char* name) {
     jvmtiError err;
-    JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->CreateRawMonitor(name, &m_monitor));
+    JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->CreateRawMonitor(name, &m_monitor));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error calling CreateRawMonitor: %d", err));
     }
 }
 
-AgentMonitor::~AgentMonitor() throw(AgentException) {
+AgentMonitor::~AgentMonitor() {
     jvmtiError err;
-    JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->DestroyRawMonitor(m_monitor));
+    JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->DestroyRawMonitor(m_monitor));
     // check for error only in debug mode
-    JDWP_ASSERT(err==JVMTI_ERROR_NONE);
+    //JDWP_ASSERT(err==JVMTI_ERROR_NONE);
 }
 
-void AgentMonitor::Enter() const throw(AgentException) {
-    jvmtiError err;
-//    JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->RawMonitorEnter(m_monitor));
-    err = AgentBase::GetJvmtiEnv()->RawMonitorEnter(m_monitor);
+void AgentMonitor::Enter() const {
+    jvmtiError err = AgentBase::GetJvmtiEnv()->RawMonitorEnter(m_monitor);
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error calling RawMonitorEnter: %d", err));
     }
 }
 
-void AgentMonitor::Wait(jlong timeout) const throw(AgentException) {
+void AgentMonitor::Wait(jlong timeout) const {
     jvmtiError err;
-    JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->RawMonitorWait(m_monitor, timeout));
-//    err = AgentBase::GetJvmtiEnv()->RawMonitorWait(m_monitor, timeout);
+    JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->RawMonitorWait(m_monitor, timeout));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error calling RawMonitorWait: %d", err));
     }
 }
 
-void AgentMonitor::Notify() const throw(AgentException) {
+void AgentMonitor::Notify() const {
     jvmtiError err;
-    JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->RawMonitorNotify(m_monitor));
-//    err = AgentBase::GetJvmtiEnv()->RawMonitorNotify(m_monitor);
+    JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->RawMonitorNotify(m_monitor));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error calling RawMonitorNotify: %d", err));
     }
 }
 
-void AgentMonitor::NotifyAll() const throw(AgentException) {
+void AgentMonitor::NotifyAll() const {
     jvmtiError err;
-    JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->RawMonitorNotifyAll(m_monitor));
-//    err = AgentBase::GetJvmtiEnv()->RawMonitorNotifyAll(m_monitor);
+    JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->RawMonitorNotifyAll(m_monitor));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error calling RawMonitorNotifyAll: %d", err));
     }
 }
 
-void AgentMonitor::Exit() const throw(AgentException) {
-    jvmtiError err;
-    //JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->RawMonitorExit(m_monitor));
-    err = AgentBase::GetJvmtiEnv()->RawMonitorExit(m_monitor);
+void AgentMonitor::Exit() const {
+    jvmtiError err = AgentBase::GetJvmtiEnv()->RawMonitorExit(m_monitor);
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error calling RawMonitorExit: %d", err));
     }
 }

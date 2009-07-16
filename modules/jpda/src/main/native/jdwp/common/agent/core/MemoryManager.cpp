@@ -16,97 +16,107 @@
  *  limitations under the License.
  */
 
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.5 $
- */
-// MemoryManager.cpp
-
-#include <cstdlib>
-#include <cstring>
-
-#include "AgentException.h"
 #include "MemoryManager.h"
+#include "ExceptionManager.h"
 #include "AgentBase.h"
-//#include "Log.h"
+#include "Log.h"
 //#include "jvmti.h"
+
+#include <string.h>
+#include <stdlib.h> 
 
 using namespace jdwp;
 
-// STDMemoryManager intended to use std::malloc(), std::free() etc.
-
-void* STDMemoryManager::AllocateNoThrow(size_t size JDWP_FILE_LINE_PAR) throw() {
-    void *p = std::malloc(size);
-    JDWP_TRACE_EX(LOG_KIND_MEMORY, file, line, "STD malloc: " << static_cast<long long>(size) << " " << p);
+// should never be invoked
+void *operator new(size_t size)
+{
+    void* p = malloc(size);
+    JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, __FILE__, __LINE__, "VM malloc: %lld, %p", static_cast<long long>(size), p));
     return p;
 }
 
-void* STDMemoryManager::Allocate(size_t size JDWP_FILE_LINE_PAR) throw(AgentException) {
-    void *p = std::malloc(size);
-    JDWP_TRACE_EX(LOG_KIND_MEMORY, file, line, "STD malloc: " << static_cast<long long>(size) << " " << p);
+// should never be invoked
+void operator delete(void *p)
+{
+    JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, __FILE__, __LINE__, "VM free: %p", p));
+    free(p);
+}
+
+// STDMemoryManager intended to use malloc(), free() etc.
+
+void* STDMemoryManager::AllocateNoThrow(size_t size JDWP_FILE_LINE_PAR) {
+    void *p = malloc(size);
+    JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, file, line, "STD malloc: %lld %p", static_cast<long long>(size), p));
+    return p;
+}
+
+void* STDMemoryManager::Allocate(size_t size JDWP_FILE_LINE_PAR) {
+    void *p = malloc(size);
+    JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, file, line, "STD malloc: %lld %p", static_cast<long long>(size), p));
     if (p == 0) {
-        throw OutOfMemoryException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_KIND_ERROR, file, line, "STD malloc failed: %lld %p", static_cast<long long>(size), p));
     }
     return p;
 }
 
 void* STDMemoryManager::Reallocate(void* ptr, size_t oldSize, size_t newSize JDWP_FILE_LINE_PAR)
-        throw(AgentException) {
-    void *p = std::realloc(ptr, newSize);
-    JDWP_TRACE_EX(LOG_KIND_MEMORY, file, line, "STD realloc: " << ptr << " " << static_cast<long long>(oldSize)
-        << "/" << static_cast<long long>(newSize) << " " << p);
+        {
+    void *p = realloc(ptr, newSize);
+    JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, file, line, "STD realloc: %p %lld/%lld %p", ptr, static_cast<long long>(oldSize),
+        static_cast<long long>(newSize), p));
     if (p == 0) {
-        throw OutOfMemoryException();
-    }
+        JDWP_TRACE(LOG_RELEASE, (LOG_KIND_ERROR, file, line, "STD realloc failed: %p %lld/%lld %p", ptr, static_cast<long long>(oldSize),
+                                 static_cast<long long>(newSize), p));
+    }    
     return p;
 }
 
-void STDMemoryManager::Free(void* ptr JDWP_FILE_LINE_PAR) throw() {
-    JDWP_TRACE_EX(LOG_KIND_MEMORY, file, line, "STD free: " << ptr);
-    std::free(ptr);
+void STDMemoryManager::Free(void* ptr JDWP_FILE_LINE_PAR) {
+    JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, file, line, "STD free: %p", ptr));
+    free(ptr);
 }
 
 
 // VMMemoryManager intended to use JVMTI's Allocate() and Deallocate()
 
-void* VMMemoryManager::AllocateNoThrow(size_t size JDWP_FILE_LINE_PAR) throw() {
+void* VMMemoryManager::AllocateNoThrow(size_t size JDWP_FILE_LINE_PAR) {
     void *p;
 
     jvmtiError err;
-    JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->Allocate(size,
+    JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->Allocate(size,
         reinterpret_cast<unsigned char**>(&p)));
-    JDWP_TRACE_EX(LOG_KIND_MEMORY, file, line, "VM malloc: " << static_cast<long long>(size) << ", " << p);
+    JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, file, line, "VM malloc: %lld, %p", static_cast<long long>(size), p));
     return ((err == JVMTI_ERROR_NONE) ? p : 0);
 }
 
-void* VMMemoryManager::Allocate(size_t size JDWP_FILE_LINE_PAR) throw(AgentException) {
+void* VMMemoryManager::Allocate(size_t size JDWP_FILE_LINE_PAR) {
     void *p;
 
     jvmtiError err;
-    JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->Allocate(size,
+    JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->Allocate(size,
         reinterpret_cast<unsigned char**>(&p)));
-    JDWP_TRACE_EX(LOG_KIND_MEMORY, file, line, "VM malloc: " << static_cast<long long>(size) << ", " << p);
+    JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, file, line, "VM malloc: %lld, %p", static_cast<long long>(size), p));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        JDWP_TRACE(LOG_RELEASE, (LOG_KIND_ERROR, file, line, "VM malloc failed: %lld, %p", static_cast<long long>(size), p));
     }
-
     return p;
 }
 
 void* VMMemoryManager::Reallocate(void* ptr, size_t oldSize, size_t newSize JDWP_FILE_LINE_PAR)
-        throw(AgentException) {
+        {
     void *p;
 
     jvmtiError err;
-    JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->Allocate(newSize,
+    JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->Allocate(newSize,
         reinterpret_cast<unsigned char**>(&p)));
-    JDWP_TRACE_EX(LOG_KIND_MEMORY, file, line, "VM realloc: " << ptr << " " << static_cast<long long>(oldSize)
-        << "/" << static_cast<long long>(newSize) << " " << p);
+    JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, file, line, "VM realloc: %p %lld/%lld %p", ptr, static_cast<long long>(oldSize),
+        static_cast<long long>(newSize), p));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        JDWP_TRACE(LOG_RELEASE, (LOG_KIND_ERROR, file, line, "VM realloc failed: %p %lld/%lld %p", ptr, static_cast<long long>(oldSize),
+                                 static_cast<long long>(newSize), p));
     } else {
-        std::memcpy(p, ptr, (newSize < oldSize) ? newSize : oldSize);
-        JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->Deallocate(
+        memcpy(p, ptr, (newSize < oldSize) ? newSize : oldSize);
+        JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->Deallocate(
             reinterpret_cast<unsigned char*>(ptr)));
         JDWP_ASSERT(err==JVMTI_ERROR_NONE);
     }
@@ -114,10 +124,10 @@ void* VMMemoryManager::Reallocate(void* ptr, size_t oldSize, size_t newSize JDWP
     return p;
 }
 
-void VMMemoryManager::Free(void* ptr JDWP_FILE_LINE_PAR) throw() {
-    JDWP_TRACE_EX(LOG_KIND_MEMORY, file, line, "VM free: " << ptr);
+void VMMemoryManager::Free(void* ptr JDWP_FILE_LINE_PAR) {
+    JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, file, line, "VM free: %p", ptr));
     jvmtiError err;
-    JVMTI_TRACE(err, AgentBase::GetJvmtiEnv()->Deallocate(
+    JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->Deallocate(
         reinterpret_cast<unsigned char*>(ptr)));
     JDWP_ASSERT(err==JVMTI_ERROR_NONE);
 }

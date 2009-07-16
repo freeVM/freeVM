@@ -24,14 +24,17 @@
 
 namespace jdwp {
 
-   //-----------------------------------------------------------------------------
-   // Heap callbacks, used in Instances, InstanceCounts command
+    //-----------------------------------------------------------------------------
+   // Heap callbacks, used in Instances, InstanceCounts,ReferringObject command
    //-----------------------------------------------------------------------------
     namespace CallBacks {
+        //-----------------------------------------------------------------------------
+        // Heap callbacks, used in Instances and InstanceCount command
+        //-----------------------------------------------------------------------------
         /**
          * Describes a reference from an object or the VM (the referrer) 
-        * to another object (the referree) or a heap root to a referree. 
-        */
+         * to another object (the referree) or a heap root to a referree. 
+         */
         jint JNICALL HeapReferenceCallback
         (jvmtiHeapReferenceKind reference_kind, 
          const jvmtiHeapReferenceInfo* reference_info, 
@@ -43,41 +46,6 @@ namespace jdwp {
          jint length, 
          void* user_data) ;
 
-        /**
-        * This callback will describe a static field if the object is a class, 
-        * and otherwise will describe an instance field. 
-        */
-        jint JNICALL PrimitiveFieldCallback
-        (jvmtiHeapReferenceKind kind, 
-         const jvmtiHeapReferenceInfo* info, 
-         jlong object_class_tag, 
-         jlong* object_tag_ptr, 
-         jvalue value, 
-         jvmtiPrimitiveType value_type, 
-         void* user_data);
-     
-        /**
-        * Describes the values in an array of a primitive type.
-        */
-         jint JNICALL ArrayPrimitiveValueCallback
-        (jlong class_tag, 
-         jlong size, 
-         jlong* tag_ptr, 
-         jint element_count, 
-         jvmtiPrimitiveType element_type, 
-         const void* elements, 
-         void* user_data);
-     
-        /**
-        * Describes the value of a java.lang.String. 
-        */ 
-        jint JNICALL StringPrimitiveValueCallback
-        (jlong class_tag, 
-         jlong size, 
-         jlong* tag_ptr, 
-         const jchar* value, 
-         jint value_length, 
-         void* user_data);
          
         //-----------------------------------------------------------------------------
         // Heap callbacks, used in ReferringObject command
@@ -101,3 +69,4 @@ namespace jdwp {
     } //CallBacks namespace
 } // jdwp namesoace
 #endif//_CALL_BACKS_H_
+

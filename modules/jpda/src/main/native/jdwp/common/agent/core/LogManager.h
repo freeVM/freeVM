@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.12.2.1 $
- */
-
 /**
  * @file
  * LogManager.h
@@ -30,10 +24,10 @@
 #ifndef _LOG_MANAGER_H_
 #define _LOG_MANAGER_H_
 
-#include <iostream>
-#include <string>
-
-#include "AgentException.h"
+#include <stdarg.h>
+#include <stdlib.h>
+#include "vmi.h"
+#include "hyport.h"
 
 namespace jdwp {
 
@@ -57,7 +51,7 @@ namespace jdwp {
         LOG_KIND_LOG,
         LOG_KIND_INFO,
         LOG_KIND_ERROR,
-
+        LOG_KIND_SIMPLE,
         LOG_KIND_NUM
     };
 
@@ -82,54 +76,21 @@ namespace jdwp {
         /**
          * Initializes the log manager.
          */
-        virtual void Init(const char* log, const char* kindFilter, const char* srcFilter)
-            throw(AgentException) = 0;
+        virtual void Init(const char* log, const char* kindFilter, const char* srcFilter) {};
 
         /**
          * Cleanups the log manager.
          */
-        virtual void Clean() throw() = 0;
+        virtual void Clean() {};
 
-        /**
-         * Prints the given message of the Info type.
-         *
-         * @param message - the log message
-         * @param file    - the name of the source file (__FILE__ macro)
-         * @param line    - the number of the code line (__LINE__ macro)
-         */
-        virtual void Info(const std::string& message,
-            const char *file, int line) throw() = 0;
+        /* Trace methods */
+        virtual void Trace(int kind, const char* file, int line, const char* format, ...) {};
 
-        /**
-         * Prints the given message of the Error type.
-         *
-         * @param message - the log message
-         * @param file    - the name of the source file (__FILE__ macro)
-         * @param line    - the number of the code line (__LINE__ macro)
-         */
-        virtual void Error(const std::string& message,
-            const char *file, int line) throw() = 0;
+        virtual void TraceEnter(int kind, const char* file, int line, const char* format, ...) {};
+        virtual void TraceEnterv(int kind, const char* file, int line, const char* format, va_list args) {};
+        virtual void TraceExit(int kind, const char* file, int line, const char* format) {};        
 
-        /**
-         * Prints the given message of the Log type.
-         *
-         * @param message - the log message
-         * @param file    - the name of the source file (__FILE__ macro)
-         * @param line    - the number of the code line (__LINE__ macro)
-         */
-        virtual void Log(const std::string& message,
-            const char *file, int line) throw() = 0;
-
-        /**
-         * Prints the given message of the Trace type.
-         *
-         * @param message - the log message
-         * @param file    - the name of the source file (__FILE__ macro)
-         * @param line    - the number of the code line (__LINE__ macro)
-         * @param kind    - the log kind
-         */
-        virtual void Trace(const std::string& message,
-            const char *file, int line, int kind) throw() = 0;
+        static inline void EmptyFunction(int kind, const char* file, int line, const char* format, ...) {};
 
         /**
          * Checks whether the print to log is enabled for the Trace log type.
@@ -140,7 +101,18 @@ namespace jdwp {
          *
          * @return Boolean.
          */
-        virtual bool TraceEnabled(const char *file, int line, int kind) throw() = 0;
+        virtual bool TraceEnabled(int kind, const char* file, int line, const char* format, ...) {return false;};
+
+        inline void* operator new(size_t size) {
+            return malloc(size);
+        }
+
+        inline void operator delete(void* ptr) {
+            free(ptr);
+        }
+
+    private:
+        virtual void Tracev(int kind, const char* file, int line, const char* format, va_list args) {};
     };
 
     /**
@@ -153,59 +125,25 @@ namespace jdwp {
         /**
          * A constructor.
          */
-        STDLogManager() throw();
+        STDLogManager();
 
         /**
          * Initializes the log manager.
          */
-        void Init(const char* log, const char* kindFilter, const char* srcFilter)
-            throw(AgentException);
+        void Init(const char* log, const char* kindFilter, const char* srcFilter);
 
         /**
          * Cleanups the log manager.
          */
-        void Clean() throw();
+        void Clean();
 
-        /**
-         * Prints the given message of the Info type.
-         *
-         * @param message - the log message
-         * @param file    - the name of the source file (__FILE__ macro)
-         * @param line    - the number of the code line (__LINE__ macro)
-         */
-        void Info(const std::string& message,
-            const char *file, int line) throw();
+        /* Trace methods */
+        void Trace(int kind, const char* file, int line, const char* format, ...);
 
-        /**
-         * Prints the given message of the Error type.
-         *
-         * @param message - the log message
-         * @param file    - the name of the source file (__FILE__ macro)
-         * @param line    - the number of the code line (__LINE__ macro)
-         */
-        void Error(const std::string& message,
-            const char *file, int line) throw();
+        void TraceEnter(int kind, const char* file, int line, const char* format, ...);
+        void TraceEnterv(int kind, const char* file, int line, const char* format, va_list args);
+        void TraceExit(int kind, const char* file, int line, const char* format);
 
-        /**
-         * Prints the given message of the Log type.
-         *
-         * @param message - the log message
-         * @param file    - the name of the source file (__FILE__ macro)
-         * @param line    - the number of the code line (__LINE__ macro)
-         */
-        void Log(const std::string& message,
-            const char *file, int line) throw();
-
-        /**
-         * Prints the given message of the Trace type.
-         *
-         * @param message - the log message
-         * @param file    - the name of the source file (__FILE__ macro)
-         * @param line    - the number of the code line (__LINE__ macro)
-         * @param kind    - the log kind
-         */
-        void Trace(const std::string& message,
-            const char *file, int line, int kind) throw();
 
         /**
          * Checks whether the print to log is enabled for the Trace log type.
@@ -216,7 +154,7 @@ namespace jdwp {
          *
          * @return Boolean.
          */
-        bool TraceEnabled(const char *file, int line, int kind) throw();
+        bool TraceEnabled(int kind, const char* file, int line, const char* format, ...);
 
         /**
          * Gets a short file name from the full path.
@@ -225,14 +163,17 @@ namespace jdwp {
          *
          * @return Zero terminated string.
          */
-        static const char* BaseName(const char* filepath) throw();
+        static const char* BaseName(const char* filepath);
 
     private:
+        void Tracev(int kind, const char* file, int line, const char* format, va_list args);
+
         const char*     m_fileFilter;
-        std::ostream*   m_logStream;
+        IDATA           m_fileHandle;
         AgentMonitor*   m_monitor;
         int             m_logKinds[LOG_KIND_NUM];
     };
+
 }
 
 #endif // _LOG_MANAGER_H_

@@ -15,23 +15,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.15 $
- */
-// LogManager.cpp
-
-#include <iostream>
-#include <fstream>
-#include <cstring>
-#include <string>
+#ifndef USING_VMI
+#define USING_VMI
+#endif
 
 #include "LogManager.h"
 #include "AgentMonitor.h"
+#include "AgentBase.h"
+#include "vmi.h"
+#include "hyport.h"
+
+#include <string.h>
 
 using namespace jdwp;
-using namespace std;
 
 static struct {
     const char* disp;
@@ -53,11 +49,11 @@ s_logKinds[LOG_KIND_NUM] = {
     { " PROG", "PROG" },
     { "  LOG", "LOG" },
     { " INFO", "INFO" },
-    { "ERROR", "ERROR" }
+    { "ERROR", "ERROR" },
+    { "SIMPLE", "SIMPLE" } 
 };
 
-STDLogManager::STDLogManager() throw() :
-    m_logStream(&clog),
+STDLogManager::STDLogManager() :
     m_fileFilter(0),
     m_monitor(0)
 {
@@ -69,7 +65,6 @@ STDLogManager::STDLogManager() throw() :
 }
 
 void STDLogManager::Init(const char* log, const char* kindFilter, const char* srcFilter)
-    throw(AgentException)
 {
     if (srcFilter != 0 && strcmp("all", srcFilter) == 0) {
         srcFilter = 0; // null equvivalent to "all"
@@ -101,29 +96,32 @@ void STDLogManager::Init(const char* log, const char* kindFilter, const char* sr
 
     m_logKinds[LOG_KIND_INFO] = TRACE_KIND_ALWAYS;
     m_logKinds[LOG_KIND_ERROR] = TRACE_KIND_ALWAYS;
+    m_logKinds[LOG_KIND_SIMPLE] = TRACE_KIND_ALWAYS;
 
     if (log == 0) {
-        m_logStream = &clog;
+        m_fileHandle = -1;
     } else {
-        m_logStream = new ofstream(log);
-        if (m_logStream == 0) {
-            fprintf(stderr, "Cannot open log file: %s\n", log);
-            m_logStream = &clog;
+        PORT_ACCESS_FROM_JAVAVM(AgentBase::GetJavaVM());
+        hyfile_unlink(log); // We do not care about the result of unlink here, failure may be because the file does not exist
+        m_fileHandle = hyfile_open(log, HyOpenCreate | HyOpenWrite, 0660);
+        if (m_fileHandle == -1) {
+            hytty_printf(privatePortLibrary, "Cannot open log file: %s", log);
         }
     }
 
     m_monitor = new AgentMonitor("_agent_Log");
 }
 
-void STDLogManager::Clean() throw()
+void STDLogManager::Clean()
 {
     if (m_monitor != 0) {
         m_monitor->Enter();
     }
 
-    if (m_logStream != &clog) {
-        delete m_logStream;
-        m_logStream = &clog;
+    if (m_fileHandle != -1) {
+        PORT_ACCESS_FROM_JAVAVM(AgentBase::GetJavaVM());
+        hyfile_close(m_fileHandle);
+        m_fileHandle = -1;
     }
 
     // prevent logging in destruction of log's monitor
@@ -137,7 +135,7 @@ void STDLogManager::Clean() throw()
 
 // extract basename from filename
 
-const char* STDLogManager::BaseName(const char* filepath) throw()
+const char* STDLogManager::BaseName(const char* filepath)
 {
     size_t len;
 
@@ -157,64 +155,76 @@ const char* STDLogManager::BaseName(const char* filepath) throw()
     return filepath;
 }
 
-// STDLogManager intended to use cout, cerr and clog streams.
+void STDLogManager::Tracev(int kind, const char* file, int line, const char* format, va_list args) {
+    // No need to check kind here, as this is a private function and all public functions using it should check kind before calling tracev
+    PORT_ACCESS_FROM_JAVAVM(AgentBase::GetJavaVM());
+    if (m_monitor != 0) {
+        m_monitor->Enter();
+    }
 
-void STDLogManager::Info(const std::string& message,
-        const char *file, int line) throw()
-{
-    Trace(message, file, line, LOG_KIND_INFO);
-}
+    I_64 timeMillis = hytime_current_time_millis();
+    char timestamp[9]; // Buffer for the timestamp
+    hystr_ftime(timestamp, 9, "%H:%M:%S");
 
-void STDLogManager::Error(const std::string& message,
-        const char *file, int line) throw()
-{
-    Trace(message, file, line, LOG_KIND_ERROR);
-}
+    int currentMillis = (int)(timeMillis%1000); // get the 1000ths of a second
 
-void STDLogManager::Log(const std::string& message,
-        const char *file, int line) throw()
-{
-    Trace(message, file, line, LOG_KIND_LOG);
-}
+    char message[5000]; //Buffer of a large size, big enough to contain formatted message strings
+    hystr_vprintf(message, 5000, format, args);
 
-void STDLogManager::Trace(const string& message,
-        const char *file, int line, int kind) throw()
-{
-    if (TraceEnabled(file, line, kind)){
-        if (m_monitor != 0) {
-            m_monitor->Enter();
-        }
+    file = BaseName(file);
+    if (LOG_KIND_SIMPLE == kind) {
+        hyfile_printf(privatePortLibrary, HYPORT_TTY_OUT, "%s\n", message);
+    } else {
+        hyfile_printf(privatePortLibrary, HYPORT_TTY_ERR, "%s.%03d %s: [%s:%d] %s\n", timestamp, currentMillis, s_logKinds[kind].disp, file, line, message);
+    }
 
-        file = BaseName(file);
-        std::ostream* logStream = m_logStream;
-        if (LOG_KIND_ERROR == kind) {
-            logStream = &cerr;
-        }
-        else if (LOG_KIND_INFO == kind) {
-            logStream = &cout;
-        }
+    // duplicate ERROR and INFO message in the log and in the cerr/cout output
+    if (m_fileHandle != -1) {
+        hyfile_printf(privatePortLibrary, m_fileHandle, "%s.%03d %s: [%s:%d] %s\n", timestamp, currentMillis, s_logKinds[kind].disp, file, line, message);
+    }
 
-        *logStream
-                << s_logKinds[kind].disp << ": "
-                << "[" << file << ":" << line << "] "
-                << message << endl;
-
-        // duplicate ERROR and INFO message in the log and in the cerr/cout output
-        if (logStream != m_logStream && m_logStream != &clog) {
-            *m_logStream
-                << s_logKinds[kind].disp << ": "
-                << "[" << file << ":" << line << "] "
-                << message << endl;
-        }
-
-        if (m_monitor != 0) {
-            m_monitor->Exit();
-        }
+    if (m_monitor != 0) {
+        m_monitor->Exit();
     }
 }
 
-bool STDLogManager::TraceEnabled(const char *file, int line, int kind) throw()
-{
+void STDLogManager::Trace(int kind, const char* file, int line, const char* format, ...) {
+    PORT_ACCESS_FROM_JAVAVM(AgentBase::GetJavaVM());
+    va_list args;
+    va_start(args, format);    
+    Tracev(kind, file, line, format, args);
+    va_end(args);
+}
+
+void STDLogManager::TraceEnter(int kind, const char* file, int line, const char* format, ...) {
+    PORT_ACCESS_FROM_JAVAVM(AgentBase::GetJavaVM());
+    char *message = (char*)hymem_allocate_memory(strlen(format) + 4);
+    va_list args;
+    va_start(args, format);
+    hystr_printf(privatePortLibrary, message, (U_32)(strlen(format) + 4), ">> %s", format);
+    Tracev(kind, file, line, message, args);
+    va_end(args);
+    hymem_free_memory(message);
+}
+
+void STDLogManager::TraceExit(int kind, const char* file, int line, const char* format) {
+    PORT_ACCESS_FROM_JAVAVM(AgentBase::GetJavaVM());
+    const char *openBracket = strchr(format, '(');
+    char *message = (char*)hymem_allocate_memory(openBracket - format + 3);
+    hystr_printf(privatePortLibrary, message, (U_32)(openBracket - format + 2), format);
+    Trace(kind, file, line, "<< %s)", message);
+    hymem_free_memory(message);
+}
+
+void STDLogManager::TraceEnterv(int kind, const char* file, int line, const char* format, va_list args) {
+    PORT_ACCESS_FROM_JAVAVM(AgentBase::GetJavaVM());
+    char *message = (char*)hymem_allocate_memory(strlen(format) + 5);
+    hystr_printf(privatePortLibrary, message, (U_32)(strlen(format) + 4), ">> %s", format);
+    Tracev(kind, file, line, message, args);
+    hymem_free_memory(message);
+}
+
+bool STDLogManager::TraceEnabled(int kind, const char* file, int line, const char* format, ...) {
     if (TRACE_KIND_FILTER_FILE == m_logKinds[kind]) {
         return strstr(m_fileFilter, BaseName(file)) != 0;
     }
@@ -222,3 +232,4 @@ bool STDLogManager::TraceEnabled(const char *file, int line, int kind) throw()
         return TRACE_KIND_ALWAYS == m_logKinds[kind];
     }
 }
+

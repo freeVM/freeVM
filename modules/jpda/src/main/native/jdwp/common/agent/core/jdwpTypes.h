@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.7.2.1 $
- */
-
 /**
  * @file
  * jdwpTypes.h
@@ -32,9 +26,6 @@
 
 #include "jni.h"
 #include "jdwp.h"
-
-// Defined to parse bytes order for x86 platform
-#define IS_BIG_ENDIAN_PLATFORM 1
 
 namespace jdwp {
 

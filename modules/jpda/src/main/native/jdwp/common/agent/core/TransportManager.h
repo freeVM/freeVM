@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.10.2.1 $
- */
-
 /**
  * @file
  * TransportManager.h
@@ -30,13 +24,20 @@
 #ifndef _TRANSPORT_MANAGER_H_
 #define _TRANSPORT_MANAGER_H_
 
+
+#include "TransportManager_pd.h"
 #include "jdwpTransport.h"
 #include "AgentBase.h"
 #include "AgentException.h"
 #include "Log.h"
-#include "TransportManager_pd.h"
+#include "AgentMonitor.h"
+#include "vmi.h"
+#include "hythread.h"
+#include "hyport.h"
 
 namespace jdwp {
+
+typedef UDATA LoadedLibraryHandler;
 
     /**
      * The given class provides a high level interface with the JDWP transport.
@@ -68,8 +69,8 @@ namespace jdwp {
          * @exception TransportException() - transport initialization
          *            error happens.
          */
-        void Init(const char* transportName, 
-                const char* libPath) throw(TransportException);
+        int Init(const char* transportName, 
+                const char* libPath);
 
         /**
          * Connection preparation. If the agent is server, then starts listening.
@@ -84,8 +85,8 @@ namespace jdwp {
          *
          * @exception TransportException() - transport error happens.
          */
-        void PrepareConnection(const char* address, bool isServer, 
-                jlong connectTimeout, jlong handshakeTimeout) throw(TransportException);
+        int PrepareConnection(const char* address, bool isServer, 
+                jlong connectTimeout, jlong handshakeTimeout);
         
         /**
          * Establish connection with the debugger.
@@ -93,7 +94,7 @@ namespace jdwp {
          *
          * @exception TransportException() - transport error happens.
          */
-        void Connect() throw(TransportException);
+        int Connect();
         
         /**
          * Launch the debugger and establish connection.
@@ -102,7 +103,7 @@ namespace jdwp {
          *
          * @exception AgentException() - any error happens.
          */
-        void Launch(const char* command) throw(AgentException);
+        int Launch(const char* command);
         
         /**
          * The given function does a blocking read on an open connection.
@@ -112,7 +113,7 @@ namespace jdwp {
          *
          * @exception TransportException() - transport error happens.
          */
-        void Read(jdwpPacket* packet) throw(TransportException);
+        int Read(jdwpPacket* packet);
         
         /**
          * Writes a JDWP packet to an open connection.
@@ -122,16 +123,16 @@ namespace jdwp {
          * @exception TransportException() - transport error 
          *            happens.
          */
-        void Write(const jdwpPacket *packet) throw(TransportException);
+        int Write(const jdwpPacket *packet);
         
         /**
          * Close an open connection. The connection may be established again.
          * 
          * @exception TransportException() - transport error happens.
          */
-        void Reset() throw(TransportException);
+        int Reset();
 
-        void Clean() throw(TransportException);
+        void Clean();
         
         /**
          * Check the connection.
@@ -145,7 +146,7 @@ namespace jdwp {
          *
          * @exception TransportException() - transport error happens.
          */
-        char* GetLastTransportError() throw(TransportException);
+        char* GetLastTransportError();
 
     protected:
 
@@ -155,14 +156,17 @@ namespace jdwp {
         bool m_ConnectionPrepared;               // if true PrepareConnection done
         bool m_isConnected;                      // true if connection is established
         bool m_isServer;                         // is jdwp agent server or not
+        bool m_isCleaned;                        // is clean method is invoked
         const char* m_transportName;             // transport name
         char* m_address;                         // transport address
         jdwpTransportEnv* m_env;                 // jdwpTransport environment
         LoadedLibraryHandler m_loadedLib;        // transport library handler
         char* m_lastErrorMessage;                // last error message
-
-        void CheckReturnStatus(jdwpTransportError err) throw(TransportException);
-        void StartDebugger(const char* command, int extra_argc, const char* extra_argv[]) throw(AgentException);
+#if defined(WIN32) || defined(WIN64)
+	AgentMonitor* m_sendMonitor;
+#endif
+        int CheckReturnStatus(jdwpTransportError err);
+        int StartDebugger(const char* command, int extra_argc, const char* extra_argv[]);
         void TracePacket(const char* message, const jdwpPacket* packet);
         LoadedLibraryHandler LoadTransport(const char* dirName, const char* transportName);
 

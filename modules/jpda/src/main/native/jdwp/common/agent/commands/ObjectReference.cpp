@@ -15,16 +15,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Anatoly F. Bondarenko, Viacheslav G. Rybalov
- * @version $Revision: 1.28 $
- */
-#include <string.h>
 #include "ObjectReference.h"
 #include "PacketParser.h"
 #include "ObjectManager.h"
 #include "CallBacks.h"
+#include "ExceptionManager.h"
+
+#include <string.h>
 
 using namespace jdwp;
 using namespace ObjectReference;
@@ -33,10 +30,17 @@ using namespace CallBacks;
 //------------------------------------------------------------------------------
 //ReferenceTypeHandler(1)-------------------------------------------------------
 
-void
-ObjectReference::ReferenceTypeHandler::Execute(JNIEnv *jni) throw (AgentException)
+int
+ObjectReference::ReferenceTypeHandler::Execute(JNIEnv *jni) 
 {
     jobject jvmObject = m_cmdParser->command.ReadObjectID(jni);
+    if (NULL == jvmObject) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReferenceType: ReadObjectID() returned NULL"));
+        AgentException aex = GetExceptionManager().GetLastException();
+        jdwpError err = aex.ErrCode();
+        JDWP_SET_EXCEPTION(aex);
+        return err;
+    }
     // Can be: InternalErrorException, OutOfMemoryException, JDWP_ERROR_INVALID_OBJECT
     jclass jvmClass = jni->GetObjectClass(jvmObject); 
 
@@ -44,20 +48,21 @@ ObjectReference::ReferenceTypeHandler::Execute(JNIEnv *jni) throw (AgentExceptio
     if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
         char* signature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
         JvmtiAutoFree afs(signature);
-        JDWP_TRACE_DATA("ReferenceType: received: objectID=" << jvmObject 
-            << ", classSignature=" << JDWP_CHECK_NULL(signature));
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReferenceType: received: objectID=%p, classSignature=%s", jvmObject, JDWP_CHECK_NULL(signature)));
     }
 #endif
 
     jboolean isArrayClass;
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->IsArrayClass(jvmClass, &isArrayClass));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->IsArrayClass(jvmClass, &isArrayClass));
 
     if (err != JVMTI_ERROR_NONE) {
         // Can be: JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_NULL_POINTER
-        throw AgentException(err);
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
     }
 
     jbyte refTypeTag = JDWP_TYPE_TAG_CLASS;
@@ -67,16 +72,16 @@ ObjectReference::ReferenceTypeHandler::Execute(JNIEnv *jni) throw (AgentExceptio
 
     m_cmdParser->reply.WriteByte(refTypeTag);
     m_cmdParser->reply.WriteReferenceTypeID(jni, jvmClass);
-    JDWP_TRACE_DATA("ReferenceType: send: refTypeTag=" << refTypeTag 
-        << ", refTypeID=" << jvmClass);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReferenceType: send: refTypeTag=%d, refTypeID=%p", refTypeTag, jvmClass));
 
+    return JDWP_ERROR_NONE;
 } // ReferenceTypeHandler::Execute()
 
 //------------------------------------------------------------------------------
 //GetValuesHandler(2)-----------------------------------------------------------
 
-void
-ObjectReference::GetValuesHandler::Execute(JNIEnv *jni) throw (AgentException)
+int
+ObjectReference::GetValuesHandler::Execute(JNIEnv *jni) 
 {
     jobject jvmObject = m_cmdParser->command.ReadObjectID(jni);
     // Can be: InternalErrorException, OutOfMemoryException, JDWP_ERROR_INVALID_OBJECT
@@ -89,11 +94,10 @@ ObjectReference::GetValuesHandler::Execute(JNIEnv *jni) throw (AgentException)
     if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
         char* signature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
         JvmtiAutoFree afcs(signature);
-        JDWP_TRACE_DATA("GetValues: received: objectID=" << jvmObject 
-            << ", classSignature=" << JDWP_CHECK_NULL(signature)
-            << ", fields=" << fieldsNumber);
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: received: objectID=%p, classSignature=%s, fields=%d", 
+                        jvmObject, JDWP_CHECK_NULL(signature), fieldsNumber));
     }
 #endif
 
@@ -110,39 +114,47 @@ ObjectReference::GetValuesHandler::Execute(JNIEnv *jni) throw (AgentException)
         // taking into account inheritance
         jvmtiError err;
         jclass declaringClass;
-        JVMTI_TRACE(err, jvmti->GetFieldDeclaringClass(jvmClass, jvmFieldID,
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetFieldDeclaringClass(jvmClass, jvmFieldID,
             &declaringClass));
 
         if (err != JVMTI_ERROR_NONE) {
-            throw AgentException(err);
+            AgentException e(err);
+		    JDWP_SET_EXCEPTION(e);
+            return err;
         }
 
         if ( jni->IsAssignableFrom(jvmClass, declaringClass) == JNI_FALSE ) {
             // given field does not belong to class of passed jobject
-            throw AgentException(JDWP_ERROR_INVALID_FIELDID);
+            AgentException e(JDWP_ERROR_INVALID_FIELDID);
+			JDWP_SET_EXCEPTION(e);
+            return JDWP_ERROR_INVALID_FIELDID;
         }
 
         char* fieldName = 0;
         char* fieldSignature = 0;
-        JVMTI_TRACE(err, jvmti->GetFieldName(jvmClass, jvmFieldID,
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetFieldName(jvmClass, jvmFieldID,
             &fieldName, &fieldSignature, 0));
 
         if (err != JVMTI_ERROR_NONE) {
             // Can be: JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_INVALID_FIELDID
-            throw AgentException(err);
+            AgentException e(err);
+		    JDWP_SET_EXCEPTION(e);
+            return err;
         }
         JvmtiAutoFree autoFreeFieldName(fieldName);
         JvmtiAutoFree autoFreeFieldSignature(fieldSignature);
 
         // Check if given field is static
         jint fieldModifiers;
-        JVMTI_TRACE(err, jvmti->GetFieldModifiers(jvmClass, jvmFieldID,
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetFieldModifiers(jvmClass, jvmFieldID,
             &fieldModifiers));
 
         if (err != JVMTI_ERROR_NONE) {
             // Can be: JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_INVALID_FIELDID,
             // JVMTI_ERROR_NULL_POINTER
-            throw AgentException(err);
+            AgentException e(err);
+		    JDWP_SET_EXCEPTION(e);
+            return err;
         }
 
         jboolean isFieldStatic = JNI_FALSE;
@@ -158,149 +170,133 @@ ObjectReference::GetValuesHandler::Execute(JNIEnv *jni) throw (AgentException)
             fieldValueTag = JDWP_TAG_BOOLEAN;
             if ( isFieldStatic ) {
                 fieldValue.z = jni->GetStaticBooleanField(jvmClass, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(boolean)" << fieldValue.z);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get static: field#=%d, fieldID=%%p, value=(boolean)%d",
+                                i, jvmFieldID, fieldValue.z));
             } else {
                 fieldValue.z = jni->GetBooleanField(jvmObject, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(boolean)" << fieldValue.z);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get instance: field#=%d, fieldID=%p, value=(boolean)%d",
+                                i, jvmFieldID, fieldValue.z));
             }
             break;
         case 'B':
             fieldValueTag = JDWP_TAG_BYTE;
             if ( isFieldStatic ) {
                 fieldValue.b = jni->GetStaticByteField(jvmClass, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(byte)" << fieldValue.b);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get static: field#=%d, fieldID=%p, value=(byte)%d",
+                                i, jvmFieldID, fieldValue.b));
             } else {
                 fieldValue.b = jni->GetByteField(jvmObject, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(byte)" << fieldValue.b);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get instance: field#=%d, fieldID=%p, value=(byte)%d",
+                                i, jvmFieldID, fieldValue.b));
             }
             break;
         case 'C':
             fieldValueTag = JDWP_TAG_CHAR;
             if ( isFieldStatic ) {
                 fieldValue.c = jni->GetStaticCharField(jvmClass, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(char)" << fieldValue.c);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get static: field#=%d, fieldID=%p, value=(char)%d",
+                                i, jvmFieldID, fieldValue.c));
             } else {
                 fieldValue.c = jni->GetCharField(jvmObject, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(char)" << fieldValue.c);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get instance: field#=%d, fieldID=%p, value=(char)%d",
+                                i, jvmFieldID, fieldValue.c));
             }
             break;
         case 'S':
             fieldValueTag = JDWP_TAG_SHORT;
             if ( isFieldStatic ) {
                 fieldValue.s = jni->GetStaticShortField(jvmClass, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(short)" << fieldValue.s);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get static: field#=%d, fieldID=%p, value=(short)%d",
+                                i, jvmFieldID, fieldValue.s));
             } else {
                 fieldValue.s = jni->GetShortField(jvmObject, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(short)" << fieldValue.s);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get instance: field#=%d, fieldID=%p, value=(short)%d",
+                                i, jvmFieldID, fieldValue.s));
             }
             break;
         case 'I':
             fieldValueTag = JDWP_TAG_INT;
             if ( isFieldStatic ) {
                 fieldValue.i = jni->GetStaticIntField(jvmClass, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(int)" << fieldValue.i);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get static: field#=%d, fieldID=%p, value=(int)%d",
+                                i, jvmFieldID, fieldValue.i));
             } else {
                 fieldValue.i = jni->GetIntField(jvmObject, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(int)" << fieldValue.i);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get instance: field#=%d, fieldID=%p, value=(int)%d",
+                                i, jvmFieldID, fieldValue.i));
             }
             break;
         case 'J':
             fieldValueTag = JDWP_TAG_LONG;
             if ( isFieldStatic ) {
                 fieldValue.j = jni->GetStaticLongField(jvmClass, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(long)" << fieldValue.l);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get static: field#=%d, fieldID=%p, value=(long)%lld",
+                                i, jvmFieldID, fieldValue.j));
             } else {
                 fieldValue.j = jni->GetLongField(jvmObject, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(long)" << fieldValue.l);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get instance: field#=%d, fieldID=%p, value=(long)%lld",
+                                i, jvmFieldID, fieldValue.j));
             }
             break;
         case 'F':
             fieldValueTag = JDWP_TAG_FLOAT;
             if ( isFieldStatic ) {
                 fieldValue.f = jni->GetStaticFloatField(jvmClass, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(float)" << fieldValue.f);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get static: field#=%d, fieldID=%p, value=(float)%f",
+                                i, jvmFieldID, fieldValue.f));
             } else {
                 fieldValue.f = jni->GetFloatField(jvmObject, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(float)" << fieldValue.f);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get instance: field#=%d, fieldID=%p, value=(float)%f",
+                                i, jvmFieldID, fieldValue.f));
             }
             break;
         case 'D':
             fieldValueTag = JDWP_TAG_DOUBLE;
             if ( isFieldStatic ) {
                 fieldValue.d = jni->GetStaticDoubleField(jvmClass, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(double)" << fieldValue.d);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get static: field#=%d, fieldID=%p, value=(double)%Lf",
+                                i, jvmFieldID, fieldValue.d));
             } else {
                 fieldValue.d = jni->GetDoubleField(jvmObject, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(double)" << fieldValue.d);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get instance: field#=%d, fieldID=%p, value=(double)%Lf",
+                                i, jvmFieldID, fieldValue.d));
             }
             break;
         case 'L':
         case '[':
             if ( isFieldStatic ) {
                 fieldValue.l = jni->GetStaticObjectField(jvmClass, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(object)" << fieldValue.l);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get static: field#=%d, fieldID=%p, value=(object)%p",
+                                i, jvmFieldID, fieldValue.l));
             } else {
                 fieldValue.l = jni->GetObjectField(jvmObject, jvmFieldID);
-                JDWP_TRACE_DATA("GetValues: get instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(double)" << fieldValue.l);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: get instance: field#=%d, fieldID=%p, value=(object)%p",
+                                i, jvmFieldID, fieldValue.l));
             }
             fieldValueTag = AgentBase::GetClassManager().GetJdwpTag(jni, fieldValue.l);
             break;
         default:
             // should not reach here
-            JDWP_TRACE_DATA("GetValues: bad field signature: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", signature: " << fieldSignature);
-            throw InternalErrorException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: bad field signature: field#=%d, fieldID=%p, signature=%s",
+                            i, jvmFieldID, fieldSignature));
+            AgentException e(JDWP_ERROR_INTERNAL);
+			JDWP_SET_EXCEPTION(e);
+            return JDWP_ERROR_INTERNAL;
         }
 
         m_cmdParser->reply.WriteValue(jni, fieldValueTag, fieldValue);
        
     } // for (int i = 0; i < fieldsNumber; i++) {
 
+    return JDWP_ERROR_NONE;
 } // GetValuesHandler::Execute()
 
 //------------------------------------------------------------------------------
 //SetValuesHandler(3)-----------------------------------------------------------
 
 
-void
-ObjectReference::SetValuesHandler::Execute(JNIEnv *jni) throw (AgentException)
+int
+ObjectReference::SetValuesHandler::Execute(JNIEnv *jni) 
 {
     jobject jvmObject = m_cmdParser->command.ReadObjectID(jni);
     // Can be: InternalErrorException, OutOfMemoryException,
@@ -314,11 +310,10 @@ ObjectReference::SetValuesHandler::Execute(JNIEnv *jni) throw (AgentException)
     if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
         char* signature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(jvmClass, &signature, 0));
         JvmtiAutoFree afs(signature);
-        JDWP_TRACE_DATA("SetValues: received: objectID=" << jvmObject 
-            << ", classSignature=" << JDWP_CHECK_NULL(signature)
-            << ", fields=" << fieldsNumber);
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: received: objectID=%d, classSignature=%s, fields=%d",
+                        jvmObject, JDWP_CHECK_NULL(signature), fieldsNumber));
     }
 #endif
 
@@ -331,39 +326,47 @@ ObjectReference::SetValuesHandler::Execute(JNIEnv *jni) throw (AgentException)
         // taking into account inheritance
         jvmtiError err;
         jclass declaringClass;
-        JVMTI_TRACE(err, jvmti->GetFieldDeclaringClass(jvmClass, jvmFieldID,
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetFieldDeclaringClass(jvmClass, jvmFieldID,
             &declaringClass));
 
         if (err != JVMTI_ERROR_NONE) {
-            throw AgentException(err);
+            AgentException e(err);
+		    JDWP_SET_EXCEPTION(e);
+            return err;
         }
 
         if ( jni->IsAssignableFrom(jvmClass, declaringClass) == JNI_FALSE ) {
             // given field does not belong to class of passed jobject
-            throw AgentException(JDWP_ERROR_INVALID_FIELDID);
+            AgentException e(JDWP_ERROR_INVALID_FIELDID);
+			JDWP_SET_EXCEPTION(e);
+            return JDWP_ERROR_INVALID_FIELDID;
         }
 
         char* fieldName = 0;
         char* fieldSignature = 0;
-        JVMTI_TRACE(err, jvmti->GetFieldName(jvmClass, jvmFieldID,
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetFieldName(jvmClass, jvmFieldID,
             &fieldName, &fieldSignature, 0));
 
         if (err != JVMTI_ERROR_NONE) {
             // Can be: JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_INVALID_FIELDID
-            throw AgentException(err);
+            AgentException e(err);
+		    JDWP_SET_EXCEPTION(e);
+            return err;
         }
         JvmtiAutoFree autoFreeFieldName(fieldName);
         JvmtiAutoFree autoFreeFieldSignature(fieldSignature);
 
         // Check if given field is static
         jint fieldModifiers;
-        JVMTI_TRACE(err, jvmti->GetFieldModifiers(jvmClass, jvmFieldID,
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetFieldModifiers(jvmClass, jvmFieldID,
             &fieldModifiers));
 
         if (err != JVMTI_ERROR_NONE) {
             // Can be: JVMTI_ERROR_INVALID_CLASS, JVMTI_ERROR_INVALID_FIELDID,
             // JVMTI_ERROR_NULL_POINTER
-            throw AgentException(err);
+            AgentException e(err);
+		    JDWP_SET_EXCEPTION(e);
+            return err;
         }
 
         jboolean isFieldStatic = JNI_FALSE;
@@ -383,105 +386,89 @@ ObjectReference::SetValuesHandler::Execute(JNIEnv *jni) throw (AgentException)
         switch ( fieldValueTag ) {
         case JDWP_TAG_BOOLEAN:
             if ( isFieldStatic ) {
-                JDWP_TRACE_DATA("SetValues: set static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(boolean)" << fieldValue.z);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set static: field#=%d, fieldID=%p, value=(boolean)%d",
+                                i, jvmFieldID, fieldValue.z));
                 jni->SetStaticBooleanField(jvmClass, jvmFieldID, fieldValue.z);
             } else {
-                JDWP_TRACE_DATA("SetValues: set instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(boolean)" << fieldValue.z);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set instance: field#=%d, fieldID=%p, value=(boolean)%d",
+                                i, jvmFieldID, fieldValue.z));
                 jni->SetBooleanField(jvmObject, jvmFieldID, fieldValue.z);
             }
             break;
         case JDWP_TAG_BYTE:
             if ( isFieldStatic ) {
-                JDWP_TRACE_DATA("SetValues: set static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(byte)" << fieldValue.b);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set static: field#=%d, fieldID=%p, value=(byte)%d",
+                                i, jvmFieldID, fieldValue.b));
                 jni->SetStaticByteField(jvmClass, jvmFieldID, fieldValue.b);
             } else {
-                JDWP_TRACE_DATA("SetValues: set instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(byte)" << fieldValue.b);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set instance: field#=%d, fieldID=%p, value=(byte)%d",
+                                i, jvmFieldID, fieldValue.b));
                 jni->SetByteField(jvmObject, jvmFieldID, fieldValue.b);
             }
             break;
         case JDWP_TAG_CHAR:
             if ( isFieldStatic ) {
-                JDWP_TRACE_DATA("SetValues: set static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(char)" << fieldValue.c);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set static: field#=%d, fieldID=%p, value=(char)%d",
+                                i, jvmFieldID, fieldValue.c));
                 jni->SetStaticCharField(jvmClass, jvmFieldID, fieldValue.c);
             } else {
-                JDWP_TRACE_DATA("SetValues: set instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(char)" << fieldValue.c);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set instance: field#=%d, fieldID=%p, value=(char)%d",
+                                i, jvmFieldID, fieldValue.c));
                 jni->SetCharField(jvmObject, jvmFieldID, fieldValue.c);
             }
             break;
         case JDWP_TAG_SHORT:
             if ( isFieldStatic ) {
-                JDWP_TRACE_DATA("SetValues: set static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(short)" << fieldValue.s);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set static: field#=%d, fieldID=%p, value=(short)%d",
+                                i, jvmFieldID, fieldValue.s));
                 jni->SetStaticShortField(jvmClass, jvmFieldID, fieldValue.s);
             } else {
-                JDWP_TRACE_DATA("SetValues: set instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(short)" << fieldValue.s);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set instance: field#=%d, fieldID=%p, value=(short)%d",
+                                i, jvmFieldID, fieldValue.s));
                 jni->SetShortField(jvmObject, jvmFieldID, fieldValue.s);
             }
             break;
         case JDWP_TAG_INT:
             if ( isFieldStatic ) {
-                JDWP_TRACE_DATA("SetValues: set static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(int)" << fieldValue.i);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set static: field#=%d, fieldID=%p, value=(int)%d",
+                                i, jvmFieldID, fieldValue.i));
                 jni->SetStaticIntField(jvmClass, jvmFieldID, fieldValue.i);
             } else {
-                JDWP_TRACE_DATA("SetValues: set instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(int)" << fieldValue.i);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set instance: field#=%d, fieldID=%p, value=(int)%d",
+                                i, jvmFieldID, fieldValue.i));
                 jni->SetIntField(jvmObject, jvmFieldID, fieldValue.i);
             }
             break;
         case JDWP_TAG_LONG:
             if ( isFieldStatic ) {
-                JDWP_TRACE_DATA("SetValues: set static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(long)" << fieldValue.j);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set static: field#=%d, fieldID=%p, value=(long)%lld",
+                                i, jvmFieldID, fieldValue.j));
                 jni->SetStaticLongField(jvmClass, jvmFieldID, fieldValue.j);
             } else {
-                JDWP_TRACE_DATA("SetValues: set instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(long)" << fieldValue.j);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set instance: field#=%d, fieldID=%p, value=(long)%lld",
+                                i, jvmFieldID, fieldValue.j));
                 jni->SetLongField(jvmObject, jvmFieldID, fieldValue.j);
             }
             break;
         case JDWP_TAG_FLOAT:
             if ( isFieldStatic ) {
-                JDWP_TRACE_DATA("SetValues: set static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(float)" << fieldValue.f);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set static: field#=%d, fieldID=%p, value=(float)%f",
+                                i, jvmFieldID, fieldValue.f));
                 jni->SetStaticFloatField(jvmClass, jvmFieldID, fieldValue.f);
             } else {
-                JDWP_TRACE_DATA("SetValues: set instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(float)" << fieldValue.f);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set instance: field#=%d, fieldID=%p, value=(float)%f",
+                                i, jvmFieldID, fieldValue.f));
                 jni->SetFloatField(jvmObject, jvmFieldID, fieldValue.f);
             }
             break;
         case JDWP_TAG_DOUBLE:
             if ( isFieldStatic ) {
-                JDWP_TRACE_DATA("SetValues: set static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(double)" << fieldValue.d);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set static: field#=%d, fieldID=%p, value=(double)%Lf",
+                                i, jvmFieldID, fieldValue.d));
                 jni->SetStaticDoubleField(jvmClass, jvmFieldID, fieldValue.d);
             } else {
-                JDWP_TRACE_DATA("SetValues: set instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(double)" << fieldValue.d);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set instance: field#=%d, fieldID=%p, value=(double)%Lf",
+                                i, jvmFieldID, fieldValue.d));
                 jni->SetDoubleField(jvmObject, jvmFieldID, fieldValue.d);
             }
             break;
@@ -489,59 +476,60 @@ ObjectReference::SetValuesHandler::Execute(JNIEnv *jni) throw (AgentException)
         case JDWP_TAG_ARRAY:
             if ( ! AgentBase::GetClassManager().IsObjectValueFitsFieldType
                     (jni, fieldValue.l, fieldSignature) ) {
-                JDWP_TRACE_DATA("SetValues: bad object type: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", signature=" << fieldSignature
-                    << ", value=(object)" << fieldValue.l);
-                throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: bad object type: field#=%d, fieldID=%p, fieldSignature=%s, value(object)=%p",
+                                i, jvmFieldID, fieldSignature, fieldValue.l));
+                AgentException e(JDWP_ERROR_INVALID_OBJECT);
+				JDWP_SET_EXCEPTION(e);
+                return JDWP_ERROR_INVALID_OBJECT;
             }
 
             if ( isFieldStatic ) {
-                JDWP_TRACE_DATA("SetValues: set static: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(object)" << fieldValue.l);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set static: field#=%d, fieldID=%p, value=(object)%p",
+                                i, jvmFieldID, fieldValue.l));
                 jni->SetStaticObjectField(jvmClass, jvmFieldID, fieldValue.l);
             } else {
-                JDWP_TRACE_DATA("SetValues: set instance: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", value=(object)" << fieldValue.l);
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: set instance: field#=%d, fieldID=%p, value=(object)%p",
+                                i, jvmFieldID, fieldValue.l));
                 jni->SetObjectField(jvmObject, jvmFieldID, fieldValue.l);
             }
             break;
         default:
             // should not reach here
-            JDWP_TRACE_DATA("SetValues: bad field signature: field#=" << i
-                    << ", fieldID=" << jvmFieldID
-                    << ", signature: " << fieldSignature);
-            throw InternalErrorException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: bad field signature: field#=%d, fieldID=%p, fieldSignature=%s",
+                                i, jvmFieldID, fieldSignature));
+            AgentException e(JDWP_ERROR_INTERNAL);
+			JDWP_SET_EXCEPTION(e);
+            return JDWP_ERROR_INTERNAL;
         }
 
     } // for (int i = 0; i < fieldsNumber; i++) {
 
+    return JDWP_ERROR_NONE;
 } // SetValuesHandler::Execute()
 
 //------------------------------------------------------------------------------
 //MonitorInfoHandler(5)---------------------------------------------------------
 
-void
+int
 ObjectReference::MonitorInfoHandler::Execute(JNIEnv *jni)
-    throw (AgentException)
 {
     jobject jvmObject = m_cmdParser->command.ReadObjectID(jni);
     // Can be: InternalErrorException, OutOfMemoryException,
     // JDWP_ERROR_INVALID_OBJECT
-    JDWP_TRACE_DATA("MonitorInfo: received: objectID=" << jvmObject);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "MonitorInfo: received: objectID=%p", jvmObject));
 
     jvmtiMonitorUsage monitorInfo;
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetObjectMonitorUsage(jvmObject,
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetObjectMonitorUsage(jvmObject,
         &monitorInfo));
 
     if (err != JVMTI_ERROR_NONE) {
         // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_INVALID_OBJECT,
         // JVMTI_ERROR_NULL_POINTER
-        throw AgentException(err);
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
     }
 
     JvmtiAutoFree autoFreeWaiters(monitorInfo.waiters);
@@ -551,13 +539,11 @@ ObjectReference::MonitorInfoHandler::Execute(JNIEnv *jni)
     if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiThreadInfo info;
         info.name = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(monitorInfo.owner, &info));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(monitorInfo.owner, &info));
         JvmtiAutoFree jafInfoName(info.name);
 
-        JDWP_TRACE_DATA("MonitorInfo: send: ownerID=" << monitorInfo.owner 
-            << ", name=" << JDWP_CHECK_NULL(info.name)
-            << ", entry_count=" << monitorInfo.entry_count 
-            << ", waiter_count=" << monitorInfo.waiter_count);
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "MonitorInfo: send: ownerID=%d, name=%s, entry_count=%d, waiter_count=%d",
+                        monitorInfo.owner, JDWP_CHECK_NULL(info.name), monitorInfo.entry_count, monitorInfo.waiter_count));
     }
 #endif
     
@@ -576,12 +562,11 @@ ObjectReference::MonitorInfoHandler::Execute(JNIEnv *jni)
         if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
             jvmtiThreadInfo info;
             info.name = 0;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(monitorInfo.waiters[i], &info));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(monitorInfo.waiters[i], &info));
             JvmtiAutoFree jafInfoName(info.name);
     
-            JDWP_TRACE_DATA("MonitorInfo: waiter#=" << i 
-                << ", threadID=" << monitorInfo.waiters[i]
-                << ", name=" << JDWP_CHECK_NULL(info.name));
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "MonitorInfo: waiter#=%d, threadID=%p, name=%s",
+                            i, monitorInfo.waiters[i], JDWP_CHECK_NULL(info.name)));
         }
 #endif
         
@@ -589,60 +574,63 @@ ObjectReference::MonitorInfoHandler::Execute(JNIEnv *jni)
         // jthread - the thread object waiting this monitor 
     }
 
+    return JDWP_ERROR_NONE;
 } // MonitorInfoHandler::Execute()
 
 //------------------------------------------------------------------------------
 //DisableCollectionHandler(7)---------------------------------------------------
 
-void
+int
 ObjectReference::DisableCollectionHandler::Execute(JNIEnv *jni)
-    throw (AgentException)
 {
     ObjectID objectID = m_cmdParser->command.ReadRawObjectID();
     // Can be: InternalErrorException
-    JDWP_TRACE_DATA("DisableCollection: received: objectID=" << objectID);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "DisableCollection: received: objectID=%lld", objectID));
 
-    GetObjectManager().DisableCollection(jni, objectID);
+    int ret = GetObjectManager().DisableCollection(jni, objectID);
+    JDWP_CHECK_RETURN(ret);
     // Can be: JDWP_ERROR_INVALID_OBJECT, OutOfMemoryException
-    JDWP_TRACE_DATA("DisableCollection: disableCollection");
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "DisableCollection: disableCollection"));
 
+    return JDWP_ERROR_NONE;
 } // DisableCollectionHandler::Execute()
 
 //------------------------------------------------------------------------------
 //EnableCollectionHandler(8)----------------------------------------------------
 
-void
+int
 ObjectReference::EnableCollectionHandler::Execute(JNIEnv *jni)
-    throw (AgentException)
 {
     ObjectID objectID = m_cmdParser->command.ReadRawObjectID();
     // Can be: InternalErrorException
-    JDWP_TRACE_DATA("EnableCollection: received: objectID=" << objectID);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "EnableCollection: received: objectID=%lld", objectID));
 
-    GetObjectManager().EnableCollection(jni, objectID);
+    int ret = GetObjectManager().EnableCollection(jni, objectID);
+    JDWP_CHECK_RETURN(ret);
     // Can be: OutOfMemoryException
-    JDWP_TRACE_DATA("EnableCollection: enableCollection");
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "EnableCollection: enableCollection"));
 
+    return JDWP_ERROR_NONE;
 } // EnableCollectionHandler::Execute()
 
 //------------------------------------------------------------------------------
 //IsCollectedHandler(9)---------------------------------------------------
 
-void
+int
 ObjectReference::IsCollectedHandler::Execute(JNIEnv *jni)
-    throw (AgentException)
 {
     ObjectID objectID = m_cmdParser->command.ReadRawObjectID();
     // Can be: InternalErrorException
-    JDWP_TRACE_DATA("IsCollected: received: objectID=" << objectID);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsCollected: received: objectID=%lld", objectID));
 
     jboolean isCollected = GetObjectManager().IsCollected(jni, objectID);
     // Can be: JDWP_ERROR_INVALID_OBJECT
 
     m_cmdParser->reply.WriteBoolean(isCollected);
     // Can be: OutOfMemoryException
-    JDWP_TRACE_DATA("IsCollected: send: isCollected=" << isCollected);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "IsCollected: send: isCollected=%s", (isCollected?"TRUE":"FALSE")));
 
+    return JDWP_ERROR_NONE;
 } // IsCollectedHandler::Execute()
 
 //------------------------------------------------------------------------------
@@ -652,8 +640,8 @@ const char* ObjectReference::InvokeMethodHandler::GetThreadName() {
     return "_jdwp_ObjectReference_InvokeMethodHandler";
 }
 
-void 
-ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException) 
+int 
+ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) 
 {
     m_object = m_cmdParser->command.ReadObjectID(jni);
     m_thread = m_cmdParser->command.ReadThreadID(jni);
@@ -661,24 +649,24 @@ ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
     m_methodID = m_cmdParser->command.ReadMethodID(jni);
     int arguments = m_cmdParser->command.ReadInt();
 
-    JDWP_TRACE_DATA("InvokeMethod: received: "
-        << "objectID=" << m_object 
-        << ", classID=" << m_clazz 
-        << ", threadID=" << m_thread 
-        << ", methodID=" << m_methodID
-        << ", arguments=" << arguments);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "InvokeMethod: received: objectID=%p, classID=%p, threadID=%p, methodID=%p, arguments=%d",
+                    m_object, m_clazz, m_thread, m_methodID, arguments));
 
     if (AgentBase::GetClassManager().IsClass(jni, m_clazz) != JNI_TRUE) {
-        throw AgentException(JDWP_ERROR_INVALID_CLASS);
+        AgentException e(JDWP_ERROR_INVALID_CLASS);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_INVALID_CLASS;
     }
     
     char* signature = 0;
     char* name = 0;
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetMethodName(m_methodID,
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetMethodName(m_methodID,
         &name, &signature, 0 /*&generic signature*/));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
     }
     JvmtiAutoFree afv2(signature);
     JvmtiAutoFree afv3(name);
@@ -687,15 +675,14 @@ ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
     if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
         char* classSignature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &classSignature, 0));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(m_clazz, &classSignature, 0));
         JvmtiAutoFree afs(classSignature);
         jvmtiThreadInfo threadInfo;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(m_thread, &threadInfo));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(m_thread, &threadInfo));
         JvmtiAutoFree aftn(threadInfo.name);
-        JDWP_TRACE_DATA("InvokeMethod: call: method=" << JDWP_CHECK_NULL(name)
-            << ", sig=" << JDWP_CHECK_NULL(signature)
-            << ", class=" << JDWP_CHECK_NULL(classSignature) 
-            << ", thread=" << JDWP_CHECK_NULL(threadInfo.name));
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "InvokeMethod: call: method=%s, sig=%s, class=%s, thread=%s", 
+                        JDWP_CHECK_NULL(name), JDWP_CHECK_NULL(signature), JDWP_CHECK_NULL(classSignature),
+                        JDWP_CHECK_NULL(threadInfo.name)));
     }
 #endif
 
@@ -706,7 +693,9 @@ ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
     int methodArguments = getArgsNumber(signature);
 
     if (arguments != methodArguments) {
-        throw AgentException(JDWP_ERROR_ILLEGAL_ARGUMENT);
+        AgentException e(JDWP_ERROR_ILLEGAL_ARGUMENT);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_ILLEGAL_ARGUMENT;
     }
     if (arguments != 0) {
         m_methodValues = 
@@ -719,9 +708,11 @@ ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
     m_returnValue.tag = static_cast<jdwpTag>(*(strchr(signature, ')') + 1));
     for (int i = 0; i < arguments; i++) {
         jdwpTaggedValue tValue = m_cmdParser->command.ReadValue(jni);
-        if (IsArgValid(jni, i, tValue, signature) != JNI_TRUE) {
-            JDWP_TRACE_DATA("InvokeMethod: bad argument " << i << ": sig=" << signature);
-            throw AgentException(JDWP_ERROR_TYPE_MISMATCH);
+        if (IsArgValid(jni, m_clazz, i, tValue, signature) != JNI_TRUE) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "InvokeMethod: bad argument %d: sig=%s", i, signature));
+            AgentException e(JDWP_ERROR_TYPE_MISMATCH);
+			JDWP_SET_EXCEPTION(e);
+            return JDWP_ERROR_TYPE_MISMATCH;
         }
         m_methodValues[i] = tValue.value;
     }
@@ -730,7 +721,8 @@ ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
     m_returnError = JDWP_ERROR_NONE;
     m_returnException = 0;
 
-    WaitDeferredInvocation(jni);
+    int ret = WaitDeferredInvocation(jni);
+    JDWP_CHECK_RETURN(ret);
 
     if (m_returnError == JDWP_ERROR_NONE) {
         m_cmdParser->reply.WriteValue(jni, m_returnValue.tag, m_returnValue.value);
@@ -757,24 +749,24 @@ ObjectReference::InvokeMethodHandler::Execute(JNIEnv *jni) throw(AgentException)
     }
 
     if (m_returnError != JDWP_ERROR_NONE) {
-        throw AgentException(m_returnError);
+        AgentException e(m_returnError);
+		JDWP_SET_EXCEPTION(e);
+        return m_returnError;
     }
     
 #ifndef NDEBUG
     if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
         char* classSignature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(m_clazz, &classSignature, 0));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(m_clazz, &classSignature, 0));
         JvmtiAutoFree afs(classSignature);
-        JDWP_LOG("InvokeMethod: return: method=" << JDWP_CHECK_NULL(name)
-            << ", sig=" << JDWP_CHECK_NULL(signature)
-            << ", class=" << JDWP_CHECK_NULL(classSignature)
-            << ", thread=" << m_thread
-            << ", returnValueTag=" << m_returnValue.tag
-            << ", returnException=" << m_returnException);
+        JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "InvokeMethod: return: method=%s, sig=%s, class=%s, thread=%p, returnValueTag=%d, returnException=%p", 
+                 JDWP_CHECK_NULL(name), JDWP_CHECK_NULL(signature), JDWP_CHECK_NULL(classSignature), m_thread,
+                 m_returnValue.tag, m_returnException));
     }
 #endif
 
+    return JDWP_ERROR_NONE;
 }
 
 void 
@@ -813,6 +805,7 @@ ObjectReference::InvokeMethodHandler::ExecuteDeferredFunc(JNIEnv *jni)
         case JDWP_TAG_VOID:
             jni->CallNonvirtualVoidMethodA(m_object, m_clazz, m_methodID, m_methodValues);
             break;
+        case JDWP_TAG_ARRAY:
         case JDWP_TAG_OBJECT:
             m_returnValue.value.l =
                 jni->CallNonvirtualObjectMethodA(m_object, m_clazz, m_methodID, m_methodValues);
@@ -857,6 +850,7 @@ ObjectReference::InvokeMethodHandler::ExecuteDeferredFunc(JNIEnv *jni)
         case JDWP_TAG_VOID:
             jni->CallVoidMethodA(m_object, m_methodID, m_methodValues);
             break;
+        case JDWP_TAG_ARRAY:
         case JDWP_TAG_OBJECT:
             m_returnValue.value.l =
                 jni->CallObjectMethodA(m_object, m_methodID, m_methodValues);
@@ -888,8 +882,8 @@ ObjectReference::InvokeMethodHandler::ExecuteDeferredFunc(JNIEnv *jni)
 //------------------------------------------------------------------------------
 //ReferringObjectsHandler(10)---------------------------------------------------
 
-void
-ObjectReference::ReferringObjectsHandler::Execute(JNIEnv *jni) throw (AgentException)
+int
+ObjectReference::ReferringObjectsHandler::Execute(JNIEnv *jni) 
 {
     // Get objectID
     jobject jvmObject = m_cmdParser->command.ReadObjectID(jni);
@@ -898,17 +892,21 @@ ObjectReference::ReferringObjectsHandler::Execute(JNIEnv *jni) throw (AgentExcep
     // Get maximum number of referring objects to return.
     int maxReferrers = m_cmdParser->command.ReadInt();
     if(maxReferrers < 0) {
-        throw AgentException(JDWP_ERROR_ILLEGAL_ARGUMENT);
+        AgentException e(JDWP_ERROR_ILLEGAL_ARGUMENT);
+		JDWP_SET_EXCEPTION(e);
+        return JDWP_ERROR_ILLEGAL_ARGUMENT;
     }
 
     // Define tag for referree object
     jlong targetObjTag = 0xefff;
     // Set tag for target object
      jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->SetTag(jvmObject, targetObjTag));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->SetTag(jvmObject, targetObjTag));
     if (err != JVMTI_ERROR_NONE) {
         // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY,  JVMTI_ERROR_INVALID_OBJECT
-        throw AgentException(err);
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
     }
     
     // Define tag for referrer object
@@ -925,26 +923,30 @@ ObjectReference::ReferringObjectsHandler::Execute(JNIEnv *jni) throw (AgentExcep
     hcbs.string_primitive_value_callback = NULL;
 
     //It initiates a traversal over the objects that are directly and indirectly reachable from the heap roots.
-    JVMTI_TRACE(err, GetJvmtiEnv()->FollowReferences(0, NULL,  NULL,
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->FollowReferences(0, NULL,  NULL,
          &hcbs, tags));
     if (err != JVMTI_ERROR_NONE) {
         // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_INVALID_CLASS
         // JVMTI_ERROR_INVALID_OBJECT, JVMTI_ERROR_NULL_POINTER 
-        throw AgentException(err);
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
     }
 
     const jlong referrerTags[1] = {referrerObjTag};
     jint referringObjectsNum = 0;
     jobject * pResultObjects = 0;
     // Return the instances that have been marked expectd tag.
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetObjectsWithTags(1, referrerTags, &referringObjectsNum,
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetObjectsWithTags(1, referrerTags, &referringObjectsNum,
            &pResultObjects, NULL));
     JvmtiAutoFree afResultObjects(pResultObjects);
 
     if (err != JVMTI_ERROR_NONE) {
         // Can be: JVMTI_ERROR_MUST_POSSESS_CAPABILITY, JVMTI_ERROR_ILLEGAL_ARGUMENT 
         // JVMTI_ERROR_ILLEGAL_ARGUMENT, JVMTI_ERROR_NULL_POINTER  
-        throw AgentException(err);
+        AgentException e(err);
+		JDWP_SET_EXCEPTION(e);
+        return err;
     }
 
     jint returnReferringObjectsNum;
@@ -961,11 +963,25 @@ ObjectReference::ReferringObjectsHandler::Execute(JNIEnv *jni) throw (AgentExcep
 
     // Compose reply package
     m_cmdParser->reply.WriteInt(returnReferringObjectsNum);
-    JDWP_TRACE_DATA("ReferringObject: return objects number:" << returnReferringObjectsNum );
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReferringObject: return objects number: %d", returnReferringObjectsNum));
 
     for(int i = 0; i < returnReferringObjectsNum; i++) {
         m_cmdParser->reply.WriteTaggedObjectID(jni, pResultObjects[i]);
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->SetTag(pResultObjects[i], 0));
+        jni->DeleteLocalRef(pResultObjects[i]);
+        if (err != JVMTI_ERROR_NONE) {
+            AgentException e(err);
+            JDWP_SET_EXCEPTION(e);
+            return err;
+        }
     }
-    JDWP_TRACE_DATA("ReferringObject: tagged-objectID returned.");
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->SetTag(jvmObject, 0));
+    if (err != JVMTI_ERROR_NONE) {
+      AgentException e(err);
+      JDWP_SET_EXCEPTION(e);
+      return err;
+    }
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReferringObject: tagged-objectID returned."));
 
+    return JDWP_ERROR_NONE;
 } //ReferringObjectsHandler::Execute()

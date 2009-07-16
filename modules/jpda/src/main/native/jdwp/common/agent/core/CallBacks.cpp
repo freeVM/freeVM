@@ -26,9 +26,9 @@ using namespace CallBacks;
 //-----------------------------------------------------------------------------
 
      /**
-     * Describes a reference from an object or the VM (the referrer) 
-     * to another object (the referree) or a heap root to a referree. 
-     */
+      * Describes a reference from an object or the VM (the referrer) 
+      * to another object (the referree) or a heap root to a referree. 
+      */
     jint JNICALL CallBacks::HeapReferenceCallback
         (jvmtiHeapReferenceKind reference_kind, 
          const jvmtiHeapReferenceInfo* reference_info, 
@@ -44,53 +44,6 @@ using namespace CallBacks;
             return JVMTI_VISIT_OBJECTS;
      }
 
-    /**
-     * This callback will describe a static field if the object is a class, 
-     * and otherwise will describe an instance field. 
-     */
-     jint JNICALL CallBacks::PrimitiveFieldCallback
-        (jvmtiHeapReferenceKind kind, 
-         const jvmtiHeapReferenceInfo* info, 
-         jlong object_class_tag, 
-         jlong* object_tag_ptr, 
-         jvalue value, 
-         jvmtiPrimitiveType value_type, 
-         void* user_data) {
-             jlong tag_value = *(static_cast<jlong *>(user_data));
-              *object_tag_ptr = tag_value;
-              return JVMTI_VISIT_OBJECTS;
-     }
-     
-    /**
-     * Describes the values in an array of a primitive type.
-     */
-     jint JNICALL CallBacks::ArrayPrimitiveValueCallback
-        (jlong class_tag, 
-         jlong size, 
-         jlong* tag_ptr, 
-         jint element_count, 
-         jvmtiPrimitiveType element_type, 
-         const void* elements, 
-         void* user_data) {
-             jlong tag_value = *(static_cast<jlong *>(user_data));
-             *tag_ptr = tag_value;
-             return JVMTI_VISIT_OBJECTS;
-     }
-     
-    /**
-     * Describes the value of a java.lang.String. 
-     */ 
-     jint JNICALL CallBacks::StringPrimitiveValueCallback
-        (jlong class_tag, 
-         jlong size, 
-         jlong* tag_ptr, 
-         const jchar* value, 
-         jint value_length, 
-         void* user_data) {
-             jlong tag_value = *(static_cast<jlong *>(user_data));
-             *tag_ptr = tag_value;
-             return JVMTI_VISIT_OBJECTS;
-     }
      
 //-----------------------------------------------------------------------------
 // Heap callbacks, used in ReferringObject command

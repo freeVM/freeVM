@@ -17,11 +17,6 @@
  */
 
 /**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.5.2.1 $
- */
-
-/**
  * @file
  * TransportManager_pd.h
  *
@@ -33,13 +28,5 @@
 #define _TRANSPORT_MANAGER_PD_H_
 
 #define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
-#include <windows.h>
-
-namespace jdwp {
-
-    typedef HMODULE LoadedLibraryHandler;
-
-}//jdwp
 
 #endif // _TRANSPORT_MANAGER_PD_H_

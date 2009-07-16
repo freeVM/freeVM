@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Anton V. Karnachuk
- * @version $Revision: 1.16.2.1 $
- */
-
 /**
  * @file
  * PacketParser.h
@@ -120,14 +114,14 @@ namespace jdwp {
              *
              * @param ref - string
              */
-            void StoreStringRef(char* ref) throw (OutOfMemoryException);
+            void StoreStringRef(char* ref);
 
             /**
              * Stores the reference to the JNI global reference.
              *
              * @param globalRef - global reference
              */
-            void StoreGlobalRef(jobject globalRef) throw (OutOfMemoryException);
+            void StoreGlobalRef(jobject globalRef);
 
             /**
              * Deletes all stored references.
@@ -135,6 +129,8 @@ namespace jdwp {
              * @param jni - the JNI interface pointer
              */
             void Reset(JNIEnv *jni);
+
+            void ReleaseData();
 
             /**
              * Moves all data to other GCList instance.
@@ -164,6 +160,8 @@ namespace jdwp {
          * @param jni - the JNI interface pointer
          */
         void Reset(JNIEnv *jni);
+
+        void ReleaseData();
 
         /**
          * Moves all data to another PacketWrapper instance.
@@ -199,7 +197,7 @@ namespace jdwp {
          * @throws InternalErrorException if not enough bytes in 
          *         the packet data exist.
          */
-        void ReadPacketFromTransport() throw (TransportException);
+        int ReadPacketFromTransport();
 
         /** 
          * Sequentially reads the byte value from the JDWP packet's data. 
@@ -209,7 +207,7 @@ namespace jdwp {
          * @throws InternalErrorException if the number of bytes in the packet
          *         data is not enough.
          */
-        jbyte ReadByte() throw (InternalErrorException);
+        jbyte ReadByte();
 
         /**
          * Sequentially reads boolean value from the JDWP packet's data. 
@@ -219,7 +217,7 @@ namespace jdwp {
          * @throws InternalErrorException if the number of bytes 
          *         in the packet data is not enough.
          */
-        jboolean ReadBoolean() throw (InternalErrorException);
+        jboolean ReadBoolean();
 
         /** 
          * Sequentially reads int value from the JDWP packet's data. 
@@ -229,7 +227,7 @@ namespace jdwp {
          * @throws InternalErrorException if the number 
          * of bytes in the packet data is not enough.
          */
-        jint ReadInt() throw (InternalErrorException);
+        jint ReadInt();
 
         /** 
          * Sequentially reads a long value from the JDWP packet's data.
@@ -239,7 +237,7 @@ namespace jdwp {
          * @throws InternalErrorException if the number 
          * of bytes in the packet data is not enough.
          */
-        jlong ReadLong() throw (InternalErrorException);
+        jlong ReadLong();
         
         /**
          * Sequentially reads <code>ObjectID</code> value from the JDWP 
@@ -253,7 +251,7 @@ namespace jdwp {
          * @throws InternalErrorException if the number of bytes
          *         in the packet data is not enough.
          */
-        ObjectID ReadRawObjectID() throw (InternalErrorException);
+        ObjectID ReadRawObjectID();
 
         /** 
          * Sequentially reads <code>ObjectID</code> value from JDWP 
@@ -279,7 +277,7 @@ namespace jdwp {
          *         <code>ObjectID</code> is invalid or the object was 
          *         garbage-collected.
          */
-        jobject ReadObjectIDOrNull(JNIEnv *jni) throw (AgentException);
+        jobject ReadObjectIDOrNull(JNIEnv *jni);
 
         /** 
          * Sequentially reads <code>ObjectID</code> value from the JDWP 
@@ -302,7 +300,7 @@ namespace jdwp {
          * @throws AgentException(JDWP_ERROR_NULL_POINTER) if 
          *         <code>ObjectID</code> is null.
          */
-        jobject ReadObjectID(JNIEnv *jni) throw (AgentException);
+        jobject ReadObjectID(JNIEnv *jni);
 
         /** 
          * Sequentially reads the <code>ReferenceTypeID</code> value from 
@@ -330,7 +328,7 @@ namespace jdwp {
          * @throws AgentException(JDWP_ERROR_INVALID_OBJECT) if 
          *         the corresponding class was garbage-collected.
          */
-        jclass ReadReferenceTypeIDOrNull(JNIEnv *jni) throw (AgentException);
+        jclass ReadReferenceTypeIDOrNull(JNIEnv *jni);
 
         /** 
          * Sequentially reads the <code>ReferenceTypeID</code> value from the 
@@ -359,7 +357,7 @@ namespace jdwp {
          * @throws AgentException(JDWP_ERROR_NULL_POINTER) 
          *         if <code>ReferenceTypeID</code> is null.
          */
-        jclass ReadReferenceTypeID(JNIEnv *jni) throw (AgentException);
+        jclass ReadReferenceTypeID(JNIEnv *jni);
 
         /** 
          * Sequentially reads the <code>FieldID</code> value from the JDWP 
@@ -375,7 +373,7 @@ namespace jdwp {
          * @throws OutOfMemoryException if cannot create 
          *         a global reference.
          */
-        jfieldID ReadFieldID(JNIEnv *jni) throw (AgentException);
+        jfieldID ReadFieldID(JNIEnv *jni);
 
         /** 
          * Sequentially reads the <code>MethodID</code> value from the JDWP 
@@ -391,7 +389,7 @@ namespace jdwp {
          * @throws OutOfMemoryException if cannot create 
          *         a global reference.
          */
-        jmethodID ReadMethodID(JNIEnv *jni) throw (AgentException);
+        jmethodID ReadMethodID(JNIEnv *jni);
 
         /** 
          * Sequentially reads the <code>FrameID</code> value from the JDWP 
@@ -406,7 +404,7 @@ namespace jdwp {
          * @throws OutOfMemoryException if cannot create a 
          *         global reference.
          */
-        jint ReadFrameID(JNIEnv *jni) throw (AgentException);
+        jint ReadFrameID(JNIEnv *jni);
 
         /** 
          * Sequentially reads the <code>Location</code> object from the 
@@ -422,8 +420,34 @@ namespace jdwp {
          * @throws OutOfMemoryException if cannot create a 
          *         global reference.
          */
-        jdwpLocation ReadLocation(JNIEnv *jni) throw (AgentException);
+        jdwpLocation ReadLocation(JNIEnv *jni);
 
+        /** 
+         * Sequentially reads <code>ThreadID</code> value from JDWP 
+         * packet's data and converts it to <code>jthread</code> through 
+         * <code>ObjectManager</code>. Returns the JNI global reference to 
+         * <code>jthread</code> or null. 
+         * The given global reference is stored inside PacketWrapper 
+         * and can be destroyed with the method Reset().
+         * The given method should be used only in special cases where null 
+         * <code>ThreadID</code> is acceptible.
+         * In usual cases the method <code>ReadThreadID()</code> should be used.
+         *
+         * @param jni - the JNI interface pointer
+         * 
+         * @return The JNI global reference to <code>jthread</code> or null 
+         * reference for null <code>ThreadID</code>.
+         *
+         * @throws InternalErrorException if the number of bytes 
+         *         in the packet data is not enough.
+         * @throws OutOfMemoryException if cannot create a global 
+         *         reference.
+         * @throws AgentException(JDWP_ERROR_INVALID_OBJECT) if 
+         *         <code>ThreadID</code> is invalid or the object was 
+         *         garbage-collected.
+         */
+        jthread ReadThreadIDOrNull(JNIEnv *jni);
+        
         /** 
          * Sequentially reads the <code>ThreadID</code> value from the JDWP
          * packet's data and convert it to <code>jthreadGroup</code> through 
@@ -445,7 +469,7 @@ namespace jdwp {
          * @throws AgentException(JDWP_ERROR_NULL_POINTER) if 
          *         <code>ThreadID</code> is null.
          */
-        jthread ReadThreadID(JNIEnv *jni) throw (AgentException);
+        jthread ReadThreadID(JNIEnv *jni);
 
         /** 
          * Sequentially reads the <code>ThreadGroupID</code> value from the 
@@ -469,7 +493,7 @@ namespace jdwp {
          * @throws AgentException(JDWP_ERROR_NULL_POINTER) if 
          *         <code>ThreadGroupID</code> is null.
          */
-        jthreadGroup ReadThreadGroupID(JNIEnv *jni) throw (AgentException);
+        jthreadGroup ReadThreadGroupID(JNIEnv *jni);
 
         /** 
          * Sequentially reads the <code>StringID</code> value from the JDWP 
@@ -495,7 +519,7 @@ namespace jdwp {
          * @throws AgentException(JDWP_ERROR_NULL_POINTER) 
          *         if <code>StringID</code> is null.
          */
-        jstring ReadStringID(JNIEnv *jni) throw (AgentException);
+        jstring ReadStringID(JNIEnv *jni);
 
         /** 
          * Sequentially reads the <code>ArrayID</code> value from the JDWP 
@@ -521,7 +545,7 @@ namespace jdwp {
          * @throws AgentException(JDWP_ERROR_NULL_POINTER) if 
          * <code>ArrayID</code> is null.
          */
-        jarray ReadArrayID(JNIEnv *jni) throw (AgentException);
+        jarray ReadArrayID(JNIEnv *jni);
 
         /** 
          * Sequentially reads the string value from the JDWP packet's data.
@@ -536,7 +560,7 @@ namespace jdwp {
          * @throws OutOfMemoryException if cannot create a global 
          *         reference.
          */
-        char* ReadString() throw (InternalErrorException, OutOfMemoryException);
+        char* ReadString();
 
         /** 
          * Sequentially reads the string value from the JDWP packet's data.
@@ -550,7 +574,7 @@ namespace jdwp {
          * @throws OutOfMemoryException if cannot create a global 
          *         reference.
          */
-        char* ReadStringNoFree() throw (InternalErrorException, OutOfMemoryException);
+        char* ReadStringNoFree();
 
         /** 
          * Sequentially reads the <code>JDWP.Tag</code> value and the following 
@@ -574,7 +598,7 @@ namespace jdwp {
          * @throws AgentException(JDWP_ERROR_NULL_POINTER) if 
          *         <code>ObjectID</code> is null.
          */
-        jdwpTaggedValue ReadValue(JNIEnv *jni) throw (AgentException);
+        jdwpTaggedValue ReadValue(JNIEnv *jni);
 
         /** 
          * Sequentially reads the JDWP value for the selected <code>JDWP.Tag</code> 
@@ -599,7 +623,7 @@ namespace jdwp {
          * @throws AgentException(JDWP_ERROR_NULL_POINTER) if 
          *         <code>ObjectID</code> is null.
          */
-        jvalue ReadUntaggedValue(JNIEnv *jni, jdwpTag tag) throw (AgentException);
+        jvalue ReadUntaggedValue(JNIEnv *jni, jdwpTag tag);
 
         /** 
          * Disposes all stored global references and allocated strings 
@@ -618,17 +642,19 @@ namespace jdwp {
          */
         void MoveData(JNIEnv *jni, InputPacketParser* to);
 
+        void ReleaseData();
+
     protected:
-        jchar ReadChar() throw (InternalErrorException);
-        jshort ReadShort() throw (InternalErrorException);
-        jfloat ReadFloat() throw (InternalErrorException);
-        jdouble ReadDouble() throw (InternalErrorException);
+        jchar ReadChar();
+        jshort ReadShort();
+        jfloat ReadFloat();
+        jdouble ReadDouble();
 
     private:
         int m_position;
 
-        void ReadBigEndianData(void* data, int len) throw (InternalErrorException); 
-        void ReadRawData(void* data, int len) throw (InternalErrorException);
+        void ReadBigEndianData(void* data, int len); 
+        //void ReadRawData(void* data, int len);
     };
 
     /**
@@ -649,6 +675,8 @@ namespace jdwp {
          * @return the current position in reply packet.
          */
         size_t GetPosition();
+
+        void ReleaseData();
 
         /** 
          * Sets current position in reply packet
@@ -702,7 +730,7 @@ namespace jdwp {
          * @param id        - the reply ID
          * @param errorCode - the JDWP error code
          */
-        void CreateJDWPReply(jint id, jdwpError errorCode) throw (InternalErrorException);
+        void CreateJDWPReply(jint id, jdwpError errorCode);
 
         /**
          * Fills header fields with the values specific for the new JDWP event.
@@ -713,14 +741,14 @@ namespace jdwp {
          *
          * @throws InternalErrorException
          */
-        void CreateJDWPEvent(jint id, jdwpCommandSet commandSet, jdwpCommand command) throw (InternalErrorException);
+        void CreateJDWPEvent(jint id, jdwpCommandSet commandSet, jdwpCommand command);
         
         /**
          * Writes an enclosed packet to transport.
          * 
          * @throws TransportException.
          */
-        void WritePacketToTransport() throw (TransportException);
+        int WritePacketToTransport();
 
         /** 
          * Sets an error code.
@@ -729,7 +757,7 @@ namespace jdwp {
          * @param error - the JDWP error code
          */
         void SetError(jdwpError error) {
-            m_packet.type.reply.errorCode = error;
+            m_packet.type.reply.errorCode = (jshort)error;
         }
 
         /**
@@ -739,7 +767,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteByte(jbyte value) throw (OutOfMemoryException);
+        void WriteByte(jbyte value);
 
         /**
          * Sequentially writes the boolean value to the JDWP packet's data.
@@ -748,7 +776,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteBoolean(jboolean value) throw (OutOfMemoryException);
+        void WriteBoolean(jboolean value);
 
         /**
          * Sequentially writes the int value to the JDWP packet's data.
@@ -756,7 +784,7 @@ namespace jdwp {
          * @param value - the <code>jint</code> value
          * @throws OutOfMemoryException.
          */
-        void WriteInt(jint value) throw (OutOfMemoryException);
+        void WriteInt(jint value);
 
         /**
          * Sequentially writes the long value to the JDWP packet's data.
@@ -764,7 +792,7 @@ namespace jdwp {
          * @param value- the <code>jlong</code> value
          * @throws OutOfMemoryException.
          */
-        void WriteLong(jlong value) throw (OutOfMemoryException);
+        void WriteLong(jlong value);
         
         /**
          * Sequentially writes the <code>jobject</code> value to the 
@@ -775,7 +803,7 @@ namespace jdwp {
          *
          * @throws AgentException.
          */
-        void WriteObjectID(JNIEnv *jni, jobject value) throw (AgentException);
+        void WriteObjectID(JNIEnv *jni, jobject value);
 
         /**
          * Sequentially writes the <code>jclass</code> value to  
@@ -786,7 +814,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteReferenceTypeID(JNIEnv *jni, jclass value) throw (OutOfMemoryException);
+        void WriteReferenceTypeID(JNIEnv *jni, jclass value);
 
         /**
          * Sequentially writes the <code>jfieldID</code> value to 
@@ -797,7 +825,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteFieldID(JNIEnv *jni, jfieldID value) throw (OutOfMemoryException);
+        void WriteFieldID(JNIEnv *jni, jfieldID value);
 
         /**
          * Sequentially writes the <code>jmethodID</code> value to the JDWP
@@ -808,7 +836,7 @@ namespace jdwp {
          * 
          * @throws OutOfMemoryException.
          */
-        void WriteMethodID(JNIEnv *jni, jmethodID value) throw (OutOfMemoryException);
+        void WriteMethodID(JNIEnv *jni, jmethodID value);
 
         /**
          * Sequentially writes the <code>jthread</code> value to the JDWP 
@@ -821,7 +849,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteFrameID(JNIEnv *jni, jthread jvmThread, jint frameDepth, jint framesCount) throw (OutOfMemoryException);
+        void WriteFrameID(JNIEnv *jni, jthread jvmThread, jint frameDepth, jint framesCount);
 
         /**
          * Sequentially writes the location value to the JDWP packet's data.
@@ -834,7 +862,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteLocation(JNIEnv *jni, jdwpTypeTag typeTag, jclass classID, jmethodID methodID, jlocation location) throw (OutOfMemoryException);
+        void WriteLocation(JNIEnv *jni, jdwpTypeTag typeTag, jclass classID, jmethodID methodID, jlocation location);
 
         /**
          * Sequentially writes the location value to the JDWP packet's data.
@@ -844,7 +872,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteLocation(JNIEnv *jni, jdwpLocation *location) throw (OutOfMemoryException);
+        void WriteLocation(JNIEnv *jni, jdwpLocation *location);
 
         /**
          * Sequentially writes the <code>jthread</code> value to the JDWP 
@@ -855,7 +883,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteThreadID(JNIEnv *jni, jthread value) throw (OutOfMemoryException);
+        void WriteThreadID(JNIEnv *jni, jthread value);
 
         /**
          * Sequentially writes the <code>jthreadGroup</code> value to the JDWP 
@@ -866,7 +894,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteThreadGroupID(JNIEnv *jni, jthreadGroup value) throw (OutOfMemoryException);
+        void WriteThreadGroupID(JNIEnv *jni, jthreadGroup value);
 
         /**
          * Sequentially writes the <code>jstring</code> value to the JDWP 
@@ -877,7 +905,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteStringID(JNIEnv *jni, jstring value) throw (OutOfMemoryException);
+        void WriteStringID(JNIEnv *jni, jstring value);
 
         /**
          * Sequentially writes the <code>jarray</code> value to the JDWP 
@@ -888,7 +916,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteArrayID(JNIEnv *jni, jarray value) throw (OutOfMemoryException);
+        void WriteArrayID(JNIEnv *jni, jarray value);
         
         /**
          * Sequentially writes the string to the JDWP packet's data.
@@ -897,7 +925,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteString(const char* value) throw (OutOfMemoryException);
+        void WriteString(const char* value);
 
         /**
          * Sequentially writes the string to the JDWP packet's data.
@@ -907,7 +935,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteString(const char* value, jint length) throw (OutOfMemoryException);
+        void WriteString(const char* value, jint length);
 
         /**
          * Sequentially writes the tagged-object ID.
@@ -917,7 +945,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteTaggedObjectID(JNIEnv *jni, jobject object) throw (OutOfMemoryException);
+        void WriteTaggedObjectID(JNIEnv *jni, jobject object);
 
         /**
          * Sequentially writes the value object to the JDWP packet's data.
@@ -928,7 +956,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteValue(JNIEnv *jni, jdwpTag tag, jvalue value) throw (OutOfMemoryException);
+        void WriteValue(JNIEnv *jni, jdwpTag tag, jvalue value);
 
         /**
          * Sequentially writes the array of value objects to the JDWP packet's 
@@ -941,7 +969,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteValues(JNIEnv *jni, jdwpTag tag, jint length, jvalue* value) throw (OutOfMemoryException);
+        void WriteValues(JNIEnv *jni, jdwpTag tag, jint length, jvalue* value);
 
         /**
          * Sequentially writes the untagged value object to the JDWP 
@@ -953,7 +981,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteUntaggedValue(JNIEnv *jni, jdwpTag tag, jvalue value) throw (OutOfMemoryException);
+        void WriteUntaggedValue(JNIEnv *jni, jdwpTag tag, jvalue value);
 
         /**
          * Sequentially writes the array length, then the byte array values 
@@ -964,7 +992,7 @@ namespace jdwp {
          *
          * @throws OutOfMemoryException.
          */
-        void WriteByteArray(jbyte* byte, jint length) throw (OutOfMemoryException);
+        void WriteByteArray(jbyte* byte, jint length);
 
         /** 
          * Disposes all stored references and prepares 
@@ -986,13 +1014,13 @@ namespace jdwp {
     protected:
         void SetId(jint id) { m_packet.type.cmd.id = id; }
         void SetFlags(jbyte flags) { m_packet.type.cmd.flags = flags; }
-        void SetCommandSet(jdwpCommandSet cmdSet) { m_packet.type.cmd.cmdSet = cmdSet; }
-        void SetCommand(jdwpCommand command) { m_packet.type.cmd.cmd = command; }
+        void SetCommandSet(jdwpCommandSet cmdSet) { m_packet.type.cmd.cmdSet = (jbyte)cmdSet; }
+        void SetCommand(jdwpCommand command) { m_packet.type.cmd.cmd = (jbyte)command; }
 
-        void WriteChar(jchar value) throw (OutOfMemoryException);
-        void WriteShort(jshort value) throw (OutOfMemoryException);
-        void WriteFloat(jfloat value) throw (OutOfMemoryException);
-        void WriteDouble(jdouble value) throw (OutOfMemoryException);
+        void WriteChar(jchar value);
+        void WriteShort(jshort value);
+        void WriteFloat(jfloat value);
+        void WriteDouble(jdouble value);
 
     private:
         size_t m_position;
@@ -1002,10 +1030,10 @@ namespace jdwp {
         int m_registeredObjectIDCount;
         int m_registeredObjectIDTableSise; // in ObjectID
 
-        void AllocateMemoryForData(int length) throw (OutOfMemoryException);
-        void WriteData(const void* data, int length) throw (OutOfMemoryException);
-        void WriteRawData(const void* data, int length) throw (OutOfMemoryException);
-        void WriteBigEndianData(void* data, int length) throw (OutOfMemoryException);
+        void AllocateMemoryForData(int length);
+        void WriteData(const void* data, int length);
+        void WriteRawData(const void* data, int length);
+        void WriteBigEndianData(void* data, int length);
 
         /** 
          * Registers given <code>objectID</code> in a special table containing 
@@ -1024,7 +1052,7 @@ namespace jdwp {
          *            <code>AgentException(JDWP_ERROR_INTERNAL)</code> - if an 
          *            unexpected internal JDWP agent error has occurred.
          */
-        void RegisterObjectID(ObjectID objectID) throw (AgentException);
+        void RegisterObjectID(ObjectID objectID);
 
         /** 
          * Increases by one the count of references for all <code>ObjectID</code> values
@@ -1053,7 +1081,7 @@ namespace jdwp {
          * 
          * @exception TransportException.
          */
-        void ReadCommand() throw (TransportException);
+        int ReadCommand();
 
         /**
          * Writes the reply packet to the transport and resets the 
@@ -1063,7 +1091,7 @@ namespace jdwp {
          *
          * @exception TransportException
          */
-        void WriteReply(JNIEnv *jni) throw (TransportException);
+        int WriteReply(JNIEnv *jni);
 
         /**
          * Moves all data to another CommandParser  instance.
@@ -1083,12 +1111,14 @@ namespace jdwp {
          */
         OutputPacketComposer reply;
 
-    private:
-
         /**
          * Resets the given CommandParser  object.
          */
         void Reset(JNIEnv *jni);
+
+        ~CommandParser();
+
+    private:
 
     };
 
@@ -1111,6 +1141,8 @@ namespace jdwp {
         EventComposer(jint id, jdwpCommandSet commandSet, jdwpCommand command,
             jdwpSuspendPolicy sp);
 
+        ~EventComposer();
+
         /**
          * Writes a thread ID to the output packet and creates a global reference
          * to the thread.
@@ -1120,8 +1152,7 @@ namespace jdwp {
          *
          * @exception OutOfMemoryException.
          */
-        void WriteThread(JNIEnv *jni, jthread thread)
-            throw (OutOfMemoryException);
+        void WriteThread(JNIEnv *jni, jthread thread);
 
         /**
          * Disposes all stored references and prepares CommandParser 
@@ -1131,7 +1162,7 @@ namespace jdwp {
          *
          * @exception TransportException.
          */
-        void WriteEvent(JNIEnv *jni) throw (TransportException);
+        int WriteEvent(JNIEnv *jni);
 
         /**
          * Resets the current JDWP event.

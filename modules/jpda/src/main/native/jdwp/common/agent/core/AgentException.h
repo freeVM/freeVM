@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.5.2.1 $
- */
-
 /**
  * @file
  * AgentException.h
@@ -30,31 +24,68 @@
 #ifndef _AGENT_EXCEPTION_H_
 #define _AGENT_EXCEPTION_H_
 
-#include <exception>
-#include <sstream>
-
+#include <string.h>
+#include <stdlib.h>
 #include "jdwp.h"
-#include "jvmti.h"
 #include "jdwpTransport.h"
+#include "jvmti.h"
+#include "vmi.h"
 
 namespace jdwp {
 
-    using namespace std;
+    typedef enum exceptions {
+        ENUM_AgentException = 0,
+		ENUM_OutOfMemoryException = 1,
+		ENUM_InternalErrorException = 2,
+		ENUM_NotImplementedException = 3,
+		ENUM_IllegalArgumentException = 4,
+		ENUM_InvalidStackFrameException = 5,
+		ENUM_InvalidIndexException = 6,
+		ENUM_TransportException = 7
+    } exceptions;
 
     /**
      * The base of all agent exceptions.
      */
-    class AgentException : public exception {
+    class AgentException {
 
     public:
+
+        AgentException() { }
 
         /**
          * A constructor.
          *
          * @param err - JDWP error code
          */
-        AgentException(jdwpError err) throw() {
+        AgentException(jdwpError err, const char *message = NULL)  {
             m_error = err;
+            m_transportError = JDWPTRANSPORT_ERROR_NONE;
+            m_message = message;
+            m_mustFree = false;
+
+            switch(m_error) {
+            case JDWP_ERROR_OUT_OF_MEMORY:
+                m_exception = ENUM_OutOfMemoryException;
+                break;
+            case JDWP_ERROR_INTERNAL:
+                m_exception = ENUM_InternalErrorException;
+                break;
+            case JDWP_ERROR_NOT_IMPLEMENTED:
+                m_exception = ENUM_NotImplementedException;
+                break;
+            case JDWP_ERROR_ILLEGAL_ARGUMENT:
+                m_exception = ENUM_IllegalArgumentException;
+                break;
+            case JDWP_ERROR_OPAQUE_FRAME:
+                m_exception = ENUM_InvalidStackFrameException;
+                break;
+            case JDWP_ERROR_INVALID_INDEX:
+                m_exception = ENUM_InvalidIndexException;
+                break;
+            default:
+                m_exception = ENUM_AgentException;
+            }
         }
 
         /**
@@ -62,181 +93,164 @@ namespace jdwp {
          *
          * @param err - JVMTI error code
          */
-        AgentException(jvmtiError err) throw() {
+        AgentException(jvmtiError err, const char *message = NULL)  {
             m_error = (jdwpError)err;
+            m_transportError = JDWPTRANSPORT_ERROR_NONE;
+            m_exception = ENUM_AgentException;
+            m_message = message;
+            m_mustFree = false;
+        }
+
+        AgentException(jdwpTransportError err, const char *message = NULL)  {
+            m_transportError = err;
+            m_error = JDWP_ERROR_NONE;
+            m_exception = ENUM_TransportException;
+            m_message = message;
+            m_mustFree = false;
+        }
+
+        AgentException(jdwpError err, jdwpTransportError terr, const char *message = NULL)  {
+            m_error = err;
+            m_transportError = terr;            
+            m_exception = ENUM_TransportException;
+            m_message = message;
+            m_mustFree = false;
+        }
+
+        /**
+         * A copy constructor.
+         */
+        AgentException(const AgentException& ex) {
+            if (&ex == NULL) {
+                m_mustFree = false;
+                return;
+            }
+
+            m_error = ex.m_error;
+            m_transportError = ex.m_transportError;
+            m_exception = ex.m_exception;
+
+            if (ex.m_message == NULL) {
+                m_message = NULL;
+                m_mustFree = false;
+            } else {
+                char *temp = (char *)malloc(strlen(ex.m_message) + 1);
+                strcpy(temp, ex.m_message);
+                m_message = (const char*)temp;
+                m_mustFree = true;
+            }
+        }
+
+        /**
+         * A destructor.
+         */
+        virtual ~AgentException() {
+            if (m_mustFree) {
+                free((void*)m_message);
+            }
+        }
+
+        /**
+         * Returns if the exception type is expected type.
+         */
+        bool Compare(exceptions ex) {
+            return (ex == ENUM_AgentException)?true:(m_exception == ex);
         }
 
         /**
          * Returns the exception name.
          */
-        virtual const char* what() const throw() { return "AgentException"; }
+        virtual const char* what() const { 
+            switch(m_exception) {
+            case ENUM_OutOfMemoryException:
+                return "OutOfMemoryException";
+            case ENUM_InternalErrorException:
+                return "InternalException";
+            case ENUM_NotImplementedException:
+                return "NotImplementedException";
+            case ENUM_IllegalArgumentException:
+                return "IllegalArgumentException";
+            case ENUM_InvalidStackFrameException:
+                return "InvalidStackFrameException";
+            case ENUM_InvalidIndexException:
+                return "InvalidIndexException";
+            case ENUM_TransportException:
+                return "TransportException";
+            default:
+                return "AgentException";
+            }
+        }
 
         /**
          * Returns JDWP error code.
          */
-        jdwpError ErrCode() const throw() {
+        jdwpError ErrCode() const  {
             return m_error;
         }
 
-    private:
-        jdwpError m_error;
-    };
-
-    /**
-     * Out of memory exception thrown in case of JVMTI failures
-     * of memory or reference allocation.
-     */
-    class OutOfMemoryException : public AgentException {
-
-    public:
-
         /**
-         * A constructor.
+         * Returns JDWP transport error code.
          */
-        OutOfMemoryException() throw() :
-            AgentException(JDWP_ERROR_OUT_OF_MEMORY) { }
-
-        /**
-         * Returns the given exception name.
-         */
-        const char* what() const throw() {
-            return "JDWP_ERROR_OUT_OF_MEMORY";
-        }
-    };
-
-    /**
-     * Exception caused by invalid internal state, checking or parameter 
-     * validation.
-     */
-    class InternalErrorException : public AgentException {
-
-    public:
-
-        /**
-         * A constructor.
-         */
-        InternalErrorException() throw() :
-            AgentException(JDWP_ERROR_INTERNAL) { }
-
-        /**
-         * Returns the given exception name.
-         */
-        const char* what() const throw() {
-            return "JDWP_ERROR_INTERNAL";
-        }
-    };
-
-    /**
-     * Exception thrown by unrealized method or function.
-     */
-    class NotImplementedException : public AgentException {
-
-    public:
-
-        /**
-         * A constructor.
-         */
-        NotImplementedException() throw() :
-            AgentException(JDWP_ERROR_NOT_IMPLEMENTED) { }
-
-        /**
-         * Returns the given exception name.
-         */
-        const char* what() const throw() {
-            return "JDWP_ERROR_NOT_IMPLEMENTED";
-        }
-    };
-
-    /**
-     * Exception caused by the parameter validation failure.
-     */
-    class IllegalArgumentException : public AgentException {
-
-    public:
-
-        /**
-         * A constructor.
-         */
-        IllegalArgumentException() throw() :
-            AgentException(JDWP_ERROR_ILLEGAL_ARGUMENT) { }
-
-        /**
-         * Returns the given exception name.
-         */
-        const char* what() const throw() {
-            return "JDWP_ERROR_ILLEGAL_ARGUMENT";
-        }
-    };
-
-    /**
-     * Exception caused by invalid index value or out-of-range index.
-     */
-    class InvalidIndexException : public AgentException {
-
-    public:
-
-        /**
-         * A constructor.
-         */
-        InvalidIndexException() throw() :
-            AgentException(JDWP_ERROR_INVALID_INDEX) { }
-
-        /**
-         * Returns the given exception name.
-         */
-        const char* what() const throw() {
-            return "JDWP_ERROR_INVALID_INDEX";
-        }
-    };
-
-    /**
-     * Exception caused by failures in agent-transport layer.
-     */
-    class TransportException : public AgentException {
-
-    public:
-
-        /**
-         * A constructor.
-         *
-         * @param err            - JDWP error code
-         * @param transportError - transport error code
-         */
-        TransportException(jdwpError err = JDWP_ERROR_TRANSPORT_INIT, 
-                jdwpTransportError transportError = JDWPTRANSPORT_ERROR_NONE,
-                const char* message = 0) 
-                throw() : AgentException(err) 
-        {
-            this->m_transportError = transportError;
-            this->m_message = message;
-        }
-
-        /**
-         * Returns transport error code.
-         */
-        jdwpTransportError TransportErrorCode() const throw() {
+        jdwpTransportError TransportErrCode() const  {
             return m_transportError;
         }
 
         /**
-         * Returns transport error message.
+        * Return exceptions
+        */
+        exceptions ExceptionType() const {
+            return m_exception;
+        }
+
+        /**
+         * Returns error message.
          */
-        const char* TransportErrorMessage() const throw() {
+        const char* ErrorMessage() const  {
             return m_message;
         }
 
         /**
-         * Returns the given exception info.
+         * Returns a formatted error message for this Exception
          */
-        const char* what() const throw() {
-            return (m_message == 0 ? "TransportException" : m_message);
+        const char* GetExceptionMessage(JNIEnv* jni) {
+            PORT_ACCESS_FROM_ENV(jni);
+
+            // Create a full error message from this exception
+            int allocateSize = strlen(what()) + 16; // Gives enough space for the type and error codes to be displayed
+            const char *exMsg;
+            if (m_message != NULL)  {
+                allocateSize += strlen(m_message);
+                exMsg = m_message;
+            } else {
+                exMsg = "";
+            }
+            char *message = (char*)hymem_allocate_memory(allocateSize);
+            if (m_exception == ENUM_TransportException) {
+                // If this is a TransportException, give transport error code
+                hystr_printf(privatePortLibrary, message, (U_32)allocateSize, "%s [%d/%d] %s", what(), m_error, m_transportError, exMsg);
+            } else {
+                hystr_printf(privatePortLibrary, message, (U_32)allocateSize, "%s [%d] %s", what(), m_error, exMsg);
+            }
+
+            return message;
+        }
+
+        inline void* operator new(size_t size) {
+            return malloc(size);
+        }
+
+        inline void operator delete(void* ptr) {
+            free(ptr);
         }
 
     private:
+        exceptions m_exception;
+        jdwpError m_error;
         jdwpTransportError m_transportError;
-        const char* m_message;
+        const char *m_message;
+        bool m_mustFree;
     };
-
 };
 
 #endif // _AGENT_EXCEPTION_H_
+

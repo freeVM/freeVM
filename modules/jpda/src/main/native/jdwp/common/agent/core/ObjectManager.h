@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Anatoly F. Bondarenko
- * @version $Revision: 1.9.2.1 $
- */
-
 /**
  * @file
  * ObjectManager.h
@@ -38,7 +32,14 @@
 #include "jdwpTypes.h"
 #include "AgentMonitor.h"
 
+#if defined(ZOS)
+#include <inttypes.h>
+#endif
+
 namespace jdwp {
+
+    // Constant defining initial value for ReferenceTypeID to be different from  ObjectID values
+    const ReferenceTypeID REFTYPEID_MINIMUM = 1000000000;
 
     // hash table parameters
     enum {
@@ -81,6 +82,20 @@ namespace jdwp {
         // Public primitives of Mapping 
     // =========================================================================
     public:
+        /** 
+         * Find the JVM object of the type <code>jobject</code> in map 
+         * according to JDWP identifier of the type <code>ObjectID</code> 
+         *
+         * @param JNIEnvPtr - the JNI interface pointer used to call
+         *                    necessary JNI functions
+         * @param objectID  - the JDWP identifier of the <code>ObjectID</code>
+         *                    type to be mapped.
+         *
+         * @return Returns true when get a same object identifer as the second 
+         *                    parameter according to specified <code>jobject</code>,
+         *                    otherwise return false.
+         */
+        jboolean FindObjectID(JNIEnv* JNIEnvPtr, jobject jvmObject, ObjectID objectID);
 
         // Mapping: <code>ObjectID</code> <-> <code>jobject</code>
         // Includes the following JDWP types: <code>objectID</code>, <code>threadID</code>, 
@@ -123,8 +138,7 @@ namespace jdwp {
          *            <code>AgentException(JDWP_ERROR_INTERNAL)</code> - if an 
          *            unexpected internal JDWP agent error has occurred.
          */
-        ObjectID MapToObjectID(JNIEnv* JNIEnvPtr, jobject jvmObject)
-            throw (AgentException);
+        ObjectID MapToObjectID(JNIEnv* JNIEnvPtr, jobject jvmObject);
 
         /** 
          * Maps the JDWP identifier of the type <code>ObjectID</code> to the 
@@ -143,8 +157,7 @@ namespace jdwp {
          *            or was disposed; or corresponding <code>jvmObject</code>
          *            has been unloaded and garbage-collected.
          */
-        jobject MapFromObjectID(JNIEnv* JNIEnvPtr, ObjectID objectID)
-            throw (AgentException);
+        jobject MapFromObjectID(JNIEnv* JNIEnvPtr, ObjectID objectID);
 
         /** 
          * Changes a condition of corresponding <code>jvmObject</code> so, 
@@ -165,8 +178,7 @@ namespace jdwp {
          *            if out-of-memory error has occurred during execution 
          *            of the given function.
          */
-        void DisableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID)
-            throw (AgentException);
+        int DisableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID);
 
         /** 
          * Changes a condition of corresponding <code>jvmObject</code> so, that
@@ -183,8 +195,7 @@ namespace jdwp {
          *            out-of-memory error has occurred during execution of the 
          *            given function.
          */
-        void EnableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID)
-            throw (AgentException);
+        int EnableCollection(JNIEnv* JNIEnvPtr, ObjectID objectID);
 
         /** 
          * Checks if garbage collection is disabled for corresponding 
@@ -201,7 +212,7 @@ namespace jdwp {
          *            if the given <code>ObjectID</code> was never allocated
          *            or was disposed.
          */
-        jboolean IsCollectionDisabled(ObjectID objectID) throw (AgentException);
+        //jboolean IsCollectionDisabled(ObjectID objectID);
   
         /** 
          * Checks if corresponding <code>jvmObject</code> has been 
@@ -220,8 +231,7 @@ namespace jdwp {
          *            if the given <code>ObjectID</code> was never allocated 
          *            or was disposed.
          */
-        jboolean IsCollected(JNIEnv* JNIEnvPtr, ObjectID objectID)
-            throw (AgentException);
+        jboolean IsCollected(JNIEnv* JNIEnvPtr, ObjectID objectID);
 
         /** 
          * Disposes corresponding <code>jvmObject</code> defining by given 
@@ -248,8 +258,7 @@ namespace jdwp {
          *                     enables to avoid a situation when the used  
          *                     <code>ObjectID</code> can be disposed.
          */
-        void DisposeObject(JNIEnv* JNIEnvPtr, ObjectID objectID, jint refCount)
-             throw ();
+        void DisposeObject(JNIEnv* JNIEnvPtr, ObjectID objectID, jint refCount);
 
         /** 
          * Increases the count of references to given <code>ObjectID</code> 
@@ -265,8 +274,7 @@ namespace jdwp {
          * @return Returns the new value of the references count after
          *         increasing.
          */
-        jint IncreaseIDRefCount(ObjectID objectID, jint incrementValue = 1)
-            throw ();
+        jint IncreaseIDRefCount(ObjectID objectID, jint incrementValue = 1);
 
     // =========================================================================
         // Mapping: <code>ReferenceTypeID</code> <-> <code>jclass</code> (=> <code>jobject</code>)
@@ -308,8 +316,7 @@ namespace jdwp {
          *            <code>AgentException(JDWP_ERROR_INTERNAL)</code> - if an 
          *            unexpected internal JDWP agent error has occurred.
          */
-        ReferenceTypeID MapToReferenceTypeID(JNIEnv* JNIEnvPtr, jclass jvmClass)
-            throw (AgentException);
+        ReferenceTypeID MapToReferenceTypeID(JNIEnv* JNIEnvPtr, jclass jvmClass);
 
         /** 
          * Maps the JDWP identifier of the type <code>ReferenceTypeID</code> to 
@@ -330,8 +337,23 @@ namespace jdwp {
          *            type or a corresponding JVM <code>jclass</code> has been unloaded and 
          *            garbage-collected.
          */
-        jclass MapFromReferenceTypeID(JNIEnv* JNIEnvPtr, ReferenceTypeID refTypeID)
-            throw (AgentException);
+        jclass MapFromReferenceTypeID(JNIEnv* JNIEnvPtr, ReferenceTypeID refTypeID);
+        
+        /** 
+         * Checks if the passed <code>objID</code> of JDWP identifier is a valid
+         * <code>ReferenceTypeID</code>, that is currently it represents in the JDI 
+         * level the JVM reference type.
+         * 
+         * @param JNIEnvPtr - the JNI interface pointer used to call
+         *                    necessary JNI functions
+         * @param objID  - the JDWP identifier of the type 
+         *                    <code>ObjectID</code> to be checked
+         *
+         * @return Returns the <code>JNI_TRUE</code> value if the passed 
+         *         <code>objID</code> is a valid <code>ReferenceTypeID</code>, 
+         *         <code>JNI_FALSE</code> otherwise.
+         */
+        jboolean IsValidReferenceTypeID(JNIEnv* JNIEnvPtr,ObjectID objID);
 
     // =========================================================================
         // Mapping: <code>FieldID</code> <-> <code>jfieldID</code>
@@ -350,7 +372,7 @@ namespace jdwp {
          * @return Returns the JDWP identifier of the type <code>FieldID</code>
          *         to which <code>jvmFieldID</code> is mapped.
          */
-        FieldID MapToFieldID(JNIEnv* JNIEnvPtr, jfieldID jvmFieldID) throw ();
+        FieldID MapToFieldID(JNIEnv* JNIEnvPtr, jfieldID jvmFieldID);
 
         /** 
          * Maps the JDWP identifier of the type <code>FieldID</code> to the 
@@ -364,7 +386,7 @@ namespace jdwp {
          * @return Returns the JVM identifier of the type <code>jfieldID</code>
          *         to which <code>fieldID</code> is mapped.
          */
-        jfieldID MapFromFieldID(JNIEnv* JNIEnvPtr, FieldID fieldID) throw ();
+        jfieldID MapFromFieldID(JNIEnv* JNIEnvPtr, FieldID fieldID);
 
     // =========================================================================
         // Mapping: <code>MethodID</code> <-> <code>jmethodID</code>
@@ -383,8 +405,7 @@ namespace jdwp {
          * @return Returns the JDWP identifier of the type <code>MethodID</code> to which
          *         <code>jvmMethodID</code> is mapped.
          */
-        MethodID MapToMethodID(JNIEnv* JNIEnvPtr, jmethodID jvmMethodID)
-            throw ();
+        MethodID MapToMethodID(JNIEnv* JNIEnvPtr, jmethodID jvmMethodID);
 
         /** 
          * Maps the JDWP identifier of the type <code>MethodID</code> to the 
@@ -398,8 +419,7 @@ namespace jdwp {
          * @return Returns the JVM identifier of the type <code>jmethodID</code> to 
          *         which methodID is mapped to.
          */
-        jmethodID MapFromMethodID(JNIEnv* JNIEnvPtr, MethodID methodID)
-            throw ();
+        jmethodID MapFromMethodID(JNIEnv* JNIEnvPtr, MethodID methodID);
 
     // =========================================================================
         // Mapping: <code>FrameID</code> <-> <code>jthread</code> + <code>depth (jint)</code>
@@ -439,8 +459,7 @@ namespace jdwp {
          *            current stack frames.
          */
         FrameID MapToFrameID(JNIEnv* JNIEnvPtr, jthread jvmThread,
-                             jint frameDepth, jint framesCount)
-            throw (AgentException);
+                             jint frameDepth, jint framesCount);
 
         /** 
          * Maps the JDWP identifier of the type <code>FrameID</code> to the 
@@ -459,8 +478,7 @@ namespace jdwp {
          *            identifier, that is it does not identify any stack frame 
          *            at the current moment.
          */
-        jint MapFromFrameID(JNIEnv* JNIEnvPtr, FrameID frameID)
-            throw (AgentException);
+        jint MapFromFrameID(JNIEnv* JNIEnvPtr, FrameID frameID);
 
         /** 
          * Deletes all JDWP frames' identifiers registered at present for the 
@@ -475,8 +493,7 @@ namespace jdwp {
          *                     defining the JVM thread, which <code>FrameIDs</code> 
          *                     have to be deleted for
          */
-        void DeleteFrameIDs(JNIEnv* JNIEnvPtr, jthread jvmThread)
-            throw ();
+        void DeleteFrameIDs(JNIEnv* JNIEnvPtr, jthread jvmThread);
 
     // =========================================================================
         /** 
@@ -493,7 +510,7 @@ namespace jdwp {
          * @exception AgentException(jvmtiError) that 
          *            may be thrown by the <code>AgentMonitor</code> constructor.
          */
-        void Init(JNIEnv* JNIEnvPtr) throw (AgentException);
+        void Init(JNIEnv* JNIEnvPtr);
 
         /** 
          * Releases resources of the ObjectManager class instance 
@@ -509,7 +526,7 @@ namespace jdwp {
          *            is the same as <code>AgentException(JDWP_ERROR_INTERNAL)</code> - if an 
          *            unexpected internal JDWP agent error has occurred.
          */
-        void Reset(JNIEnv* JNIEnvPtr) throw (AgentException);
+        void Reset(JNIEnv* JNIEnvPtr);
  
         /** 
          * Releases resources of the ObjectManager class instance  
@@ -519,17 +536,17 @@ namespace jdwp {
          * @param JNIEnvPtr  - the JNI interface pointer used to call
          *                     necessary JNI functions
          */
-        void Clean(JNIEnv* JNIEnvPtr) throw ();
+        void Clean(JNIEnv* JNIEnvPtr);
 
         /** 
          * Constructor for the ObjectManager class instance.
          */
-        ObjectManager() throw ();
+        ObjectManager();
 
         /** 
          * Destructor for the ObjectManager class instance.
          */
-        ~ObjectManager () throw ();
+        ~ObjectManager ();
 
 
     // =========================================================================
@@ -635,7 +652,7 @@ namespace jdwp {
          *            <code>AgentException(JDWP_ERROR_INTERNAL)</code> - if an 
          *            unexpected internal JDWP agent error has occurred.
          */
-        void ExpandObjectIDTable() throw (AgentException);
+        void ExpandObjectIDTable();
 
         /** 
          * Maps the JVM object of the type <code>jobject</code> to the JDWP 
@@ -658,14 +675,15 @@ namespace jdwp {
          *            <code>AgentException(JDWP_ERROR_INTERNAL)</code> - if an 
          *            unexpected internal JDWP agent error has occurred.
          */
-        ObjectID MapToNewObjectID(JNIEnv* JNIEnvPtr, jobject jvmObject)
-            throw (AgentException);
+        ObjectID MapToNewObjectID(JNIEnv* JNIEnvPtr, jobject jvmObject);
 
         /** 
          * Checks if the passed <code>ObjectID</code> JDWP identifier is valid
          * <code>ObjectID</code>, that is currently it represents in the JDI 
          * level the JVM object of the <code>jobject</code> type.
          * 
+         * @param JNIEnvPtr - the JNI interface pointer used to call
+         *                    necessary JNI functions
          * @param objectID  - the JDWP identifier of the type 
          *                    <code>ObjectID</code> to be checked
          *
@@ -673,14 +691,14 @@ namespace jdwp {
          *         <code>objectID</code> is valid, <code>JNI_FALSE</code> 
          *         otherwise.
          */
-        jboolean IsValidObjectID(ObjectID objectID) throw ();
+        jboolean IsValidObjectID(JNIEnv* JNIEnvPtr, ObjectID objectID);
 
         /** 
          * Initializes the fields of the ObjectManager class used 
          * for <code>ObjectID</code> values mapping. It is called by the 
          * Init() function.
          */
-        void InitObjectIDMap() throw ();
+        void InitObjectIDMap();
 
         /** 
          * Disposes all allocated <code>ObjectID</code> values and releases memory 
@@ -696,7 +714,7 @@ namespace jdwp {
          *            <code>AgentException(JDWP_ERROR_INTERNAL)</code> - if an 
          *            unexpected internal JDWP agent error has occurred.
          */
-        void ResetObjectIDMap(JNIEnv* JNIEnvPtr) throw (AgentException);
+        void ResetObjectIDMap(JNIEnv* JNIEnvPtr);
 
     // =========================================================================
         // Mapping: <code>ReferenceTypeID</code> <-> <code>jclass</code>
@@ -728,7 +746,7 @@ namespace jdwp {
          * for <code>ReferenceTypeIDs</code> mapping. It is called by the 
          * Init() function.
          */
-        void InitRefTypeIDMap() throw ();
+        void InitRefTypeIDMap();
 
         /** 
          * Deletes all weak Global References for allocated 
@@ -744,7 +762,7 @@ namespace jdwp {
          *            <code>AgentException(JDWP_ERROR_INTERNAL)</code> - if an 
          *            unexpected internal JDWP agent error has occurred.
          */
-        void ResetRefTypeIDMap(JNIEnv* JNIEnvPtr) throw (AgentException);
+        void ResetRefTypeIDMap(JNIEnv* JNIEnvPtr);
 
     // =========================================================================
         // Mapping: <code>FrameID</code> <-> <code>jthread</code> + <code>depth (jint)</code>
@@ -826,7 +844,7 @@ namespace jdwp {
          *            <code>AgentException(JDWP_ERROR_INTERNAL)</code> - if an 
          *            unexpected internal JDWP agent error has occurred.
          */
-        ThreadFramesItem* ExpandThreadFramesTable() throw (AgentException);
+        ThreadFramesItem* ExpandThreadFramesTable();
 
         /** 
          * Allocates the new ThreadFramesItem to map the stack 
@@ -854,14 +872,13 @@ namespace jdwp {
          *            unexpected internal JDWP agent error has occurred.
          */
         ThreadFramesItem* NewThreadFramesItem(JNIEnv* JNIEnvPtr, 
-            jthread jvmThread, jint framesCount)
-            throw (AgentException);
+            jthread jvmThread, jint framesCount);
 
         /** 
          * Initializes the fields of the ObjectManager class used for 
          * <code>FrameIDs</code> mapping. It is called by the Init() function.
          */
-        void InitFrameIDMap() throw ();
+        void InitFrameIDMap();
 
         /** 
          * Releases memory from under the table of <code>FrameIDs</code>. 
@@ -876,7 +893,7 @@ namespace jdwp {
          *            <code>AgentException(JDWP_ERROR_INTERNAL)</code> - if an 
          *            unexpected internal JDWP agent error has occurred.
          */
-        void ResetFrameIDMap(JNIEnv* JNIEnvPtr) throw (AgentException);
+        void ResetFrameIDMap(JNIEnv* JNIEnvPtr);
     // =========================================================================
 
     // =========================================================================

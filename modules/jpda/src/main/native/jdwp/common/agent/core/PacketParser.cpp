@@ -15,23 +15,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Anton V. Karnachuk
- * @version $Revision: 1.18 $
- */
-// PacketParser.cpp: implementation of the PacketParser class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "PacketParser.h"
 #include "jdwpTypes.h"
+#include "hycomp.h"
 #include "MemoryManager.h"
 #include "ObjectManager.h"
 #include "TransportManager.h"
 #include "ClassManager.h"
+#include "ExceptionManager.h"
 
-#include <cstring>
+#include <string.h>
+
+// Defined to parse bytes order for x86 platform
+#ifdef HY_LITTLE_ENDIAN
+#define IS_LITTLE_ENDIAN_PLATFORM 1
+#else
+#define IS_LITTLE_ENDIAN_PLATFORM 0
+#endif
 
 using namespace jdwp;
 
@@ -40,6 +40,9 @@ const int REGISTERED_OBJECTID_TABLE_STEP = 0x10;
 
 const size_t ALLOCATION_STEP = 0x10;
 const jbyte PACKET_IS_UNINITIALIZED = 0x03;
+
+// Constant defining initial value for ReferenceTypeID to be different from  ObjectID values
+extern const ReferenceTypeID REFTYPEID_MINIMUM;
 
 // GCList
 PacketWrapper::GCList::GCList() :
@@ -57,9 +60,6 @@ void PacketWrapper::GCList::Reset(JNIEnv *jni) {
         while (m_memoryRefPosition-- > 0) {
             GetMemoryManager().Free(m_memoryRef[m_memoryRefPosition] JDWP_FILE_LINE);
         }
-        GetMemoryManager().Free(m_memoryRef JDWP_FILE_LINE);
-        m_memoryRef = 0;
-        m_memoryRefAllocatedSize = 0;
         m_memoryRefPosition = 0;
     }
 
@@ -67,14 +67,26 @@ void PacketWrapper::GCList::Reset(JNIEnv *jni) {
         while (m_globalRefPosition-- > 0) {
             jni->DeleteGlobalRef(m_globalRef[m_globalRefPosition]);
         }
-        GetMemoryManager().Free(m_globalRef JDWP_FILE_LINE);
-        m_globalRef = 0;
-        m_globalRefAllocatedSize = 0;
         m_globalRefPosition = 0;
     }
 }
 
-void PacketWrapper::GCList::StoreStringRef(char* ref) throw (OutOfMemoryException) {
+void PacketWrapper::GCList::ReleaseData() {
+    Reset(AgentBase::GetJniEnv());
+    if (m_memoryRef != 0) {
+        GetMemoryManager().Free(m_memoryRef JDWP_FILE_LINE);
+        m_memoryRef = 0;
+        m_memoryRefAllocatedSize = 0;
+    }
+
+    if (m_globalRef != 0) {
+        GetMemoryManager().Free(m_globalRef JDWP_FILE_LINE);
+        m_globalRef = 0;
+        m_globalRefAllocatedSize = 0;
+    }
+}
+
+void PacketWrapper::GCList::StoreStringRef(char* ref){
     if (m_memoryRefPosition >= m_memoryRefAllocatedSize) {
         // then reallocate buffer
         size_t oldAllocatedSize = this->m_memoryRefAllocatedSize;
@@ -91,7 +103,7 @@ void PacketWrapper::GCList::StoreStringRef(char* ref) throw (OutOfMemoryExceptio
     m_memoryRef[m_memoryRefPosition++] = ref;
 }
 
-void PacketWrapper::GCList::StoreGlobalRef(jobject globalRef) throw (OutOfMemoryException) {
+void PacketWrapper::GCList::StoreGlobalRef(jobject globalRef){
     if (m_globalRefPosition >= m_globalRefAllocatedSize) {
         // then reallocate buffer
         size_t oldAllocatedSize = m_globalRefAllocatedSize;
@@ -151,6 +163,17 @@ void PacketWrapper::Reset(JNIEnv *jni) {
     m_packet.type.cmd.flags = PACKET_IS_UNINITIALIZED;
 }
 
+void PacketWrapper::ReleaseData() {
+    m_garbageList.ReleaseData();
+    // free packet's data
+    if (m_packet.type.cmd.data!=0) {
+        GetMemoryManager().Free(m_packet.type.cmd.data JDWP_FILE_LINE);
+        m_packet.type.cmd.data = 0;
+    }
+
+    m_packet.type.cmd.flags = PACKET_IS_UNINITIALIZED;
+}
+
 bool PacketWrapper::IsPacketInitialized() {
     return ((m_packet.type.cmd.flags & PACKET_IS_UNINITIALIZED) == 0);
 }
@@ -173,75 +196,77 @@ void PacketWrapper::MoveData(JNIEnv *jni, PacketWrapper* to) {
 // InputPacketParser - sequential reading of m_packet data
 //////////////////////////////////////////////////////////////////////
 
-void InputPacketParser::ReadPacketFromTransport() throw (TransportException) {
+int InputPacketParser::ReadPacketFromTransport() {
     JDWP_ASSERT(!IsPacketInitialized());
-    GetTransportManager().Read(&m_packet);
+    return GetTransportManager().Read(&m_packet);
 }
 
-void InputPacketParser::ReadBigEndianData(void* data, int len) throw (InternalErrorException) {
+void InputPacketParser::ReadBigEndianData(void* data, int len) {
     JDWP_ASSERT(IsPacketInitialized());
 
     if (m_position+len>m_packet.type.cmd.len-JDWP_MIN_PACKET_LENGTH) {
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error reading data - attempting to read past end of packet"));
+        return;
     }
   
-    #if IS_BIG_ENDIAN_PLATFORM
+    #if IS_LITTLE_ENDIAN_PLATFORM
     jbyte* from = static_cast<jbyte*>(&m_packet.type.cmd.data[m_position]);
     jbyte* to = static_cast<jbyte*>(data);
     for (int i=0; i<len; i++) {
         to[i] = from[len-i-1];
     }    
     #else
-    memcpy(data, &m_packet.type.cmd.data[m_position], length);
+    memcpy(data, &m_packet.type.cmd.data[m_position], len);
     #endif
     m_position += len;
 }
 
-void InputPacketParser::ReadRawData(void* data, int len) throw (InternalErrorException) {
+/*void InputPacketParser::ReadRawData(void* data, int len) {
     JDWP_ASSERT(IsPacketInitialized());
 
     if (m_position+len>m_packet.type.cmd.len-JDWP_MIN_PACKET_LENGTH) {
-        throw InternalErrorException();
+        AgentException ex(JDWP_ERROR_INTERNAL);
+        THROW(ex);
     }
   
     memcpy(data, &m_packet.type.cmd.data[m_position], len);
     
     m_position += len;
-}
+}*/
 
 
 
-jbyte InputPacketParser::ReadByte() throw (InternalErrorException) {
+jbyte InputPacketParser::ReadByte() {
     jbyte data = 0;
     ReadBigEndianData(&data, sizeof(jbyte));
     return data;
 }
 
-jboolean InputPacketParser::ReadBoolean() throw (InternalErrorException) {
+jboolean InputPacketParser::ReadBoolean() {
     jboolean data = 0;
     ReadBigEndianData(&data, sizeof(jboolean));
     return data;
 }
 
-jint InputPacketParser::ReadInt() throw (InternalErrorException) {
+jint InputPacketParser::ReadInt() {
     jint res = 0;
     ReadBigEndianData(&res, sizeof(jint));
     return res;
 }
 
-jlong InputPacketParser::ReadLong() throw (InternalErrorException) {
+jlong InputPacketParser::ReadLong() {
     jlong data = 0;
     ReadBigEndianData(&data, sizeof(jlong));
     return data;
 }
 
-ObjectID InputPacketParser::ReadRawObjectID() throw (InternalErrorException) {
+ObjectID InputPacketParser::ReadRawObjectID() {
     ObjectID data = 0;
     ReadBigEndianData(&data, OBJECT_ID_SIZE);
     return data;
 }
 
-jobject InputPacketParser::ReadObjectIDOrNull(JNIEnv *jni) throw (AgentException) {
+jobject InputPacketParser::ReadObjectIDOrNull(JNIEnv *jni) {
     // read raw ObjectID and check for null
     ObjectID oid = ReadRawObjectID();
     if (oid == 0) {
@@ -250,15 +275,26 @@ jobject InputPacketParser::ReadObjectIDOrNull(JNIEnv *jni) throw (AgentException
 
     // convert to jobject (actually to WeakReference or GlobalReference)
     jobject obj = GetObjectManager().MapFromObjectID(jni, oid);
-    JDWP_ASSERT(obj !=  NULL);
+    if (NULL == obj) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "MapFromObjectID returned NULL"));
+        AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_SET_EXCEPTION(ex);
+        return 0;
+    }
 
     // make GlobalReference and check if WeakReference was freed
     jobject ref = jni->NewGlobalRef(obj);
     if (ref == 0) {
         if (jni->IsSameObject(obj, 0)) {
-            throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Invalid object calling NewGlobalRef"));
+            AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+            JDWP_SET_EXCEPTION(ex);
+            return 0;
         } else {
-            throw OutOfMemoryException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Out of memory calling NewGlobalRef"));
+            AgentException ex(JDWP_ERROR_OUT_OF_MEMORY);
+            JDWP_SET_EXCEPTION(ex);
+            return 0;
         }
     }
 
@@ -267,32 +303,54 @@ jobject InputPacketParser::ReadObjectIDOrNull(JNIEnv *jni) throw (AgentException
     return ref;
 }
 
-jobject InputPacketParser::ReadObjectID(JNIEnv *jni) throw (AgentException) {
+jobject InputPacketParser::ReadObjectID(JNIEnv *jni) {
     jobject obj = ReadObjectIDOrNull(jni);
-    if (obj == 0) {
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
-    }
     return obj;
 }
 
-jclass InputPacketParser::ReadReferenceTypeIDOrNull(JNIEnv *jni) throw (AgentException) {
+jclass InputPacketParser::ReadReferenceTypeIDOrNull(JNIEnv *jni) {
     ReferenceTypeID rtid = 0;
     ReadBigEndianData(&rtid, REFERENCE_TYPE_ID_SIZE);
+	JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReadReferenceTypeIDOrNul: read : ReferenceTypeID=%p", rtid));
+
     if (rtid == 0) {
         return 0;
     }
 
-    // convert to jclass (actually to WeakReference or GlobalReference)
-    jclass cls = GetObjectManager().MapFromReferenceTypeID(jni, rtid);
+    jclass cls = 0;
+    if(rtid < REFTYPEID_MINIMUM) {
+        // For a ObjectID, we should convert it to ReferenceTypeID 
+        // if it is a ClassObjectID
+        jobject obj = GetObjectManager().MapFromObjectID(jni, rtid);
+        jclass clsType = jni->GetObjectClass(obj);
+        jboolean isClass = jni->IsAssignableFrom(clsType, jni->GetObjectClass(clsType)); 
+        if (!isClass){
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## ReadReferenceTypeIDOrNul: read : ObjectID is not a ClassObjectID"));
+            return 0;
+        }
+        
+        cls = static_cast<jclass> (obj);
+        jboolean isValidID = GetObjectManager().FindObjectID(jni, cls, rtid); 
+        if(!isValidID){
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## ReadReferenceTypeIDOrNul: read : ID is an invalid ObjectID"));
+            return 0;
+        }
+    }else { 
+        // convert to jclass (actually to WeakReference or GlobalReference)
+        cls = GetObjectManager().MapFromReferenceTypeID(jni, rtid);
+    }
+
     JDWP_ASSERT(cls != 0);
     
     // make GlobalReference and check if WeakReference was freed
     jclass ref = static_cast<jclass>(jni->NewGlobalRef(cls));
     if (ref == 0) {
         if (jni->IsSameObject(cls, 0)) {
-            throw AgentException(JDWP_ERROR_INVALID_OBJECT);
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Invalid object calling NewGlobalRef"));
+            return 0;
         } else {
-            throw OutOfMemoryException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Out of memory calling NewGlobalRef"));
+            return 0;
         }
     }
 
@@ -301,36 +359,33 @@ jclass InputPacketParser::ReadReferenceTypeIDOrNull(JNIEnv *jni) throw (AgentExc
     return ref;
 }
 
-jclass InputPacketParser::ReadReferenceTypeID(JNIEnv *jni) throw (AgentException) {
+jclass InputPacketParser::ReadReferenceTypeID(JNIEnv *jni) {
     jclass cls = ReadReferenceTypeIDOrNull(jni);
-    if (cls == 0) {
-        throw AgentException(JDWP_ERROR_INVALID_OBJECT);
-    }
     return cls;
 }
 
-jfieldID InputPacketParser::ReadFieldID(JNIEnv *jni) throw (AgentException) {
+jfieldID InputPacketParser::ReadFieldID(JNIEnv *jni) {
     FieldID fid = 0;
     ReadBigEndianData(&fid, FIELD_ID_SIZE);
     jfieldID res = GetObjectManager().MapFromFieldID(jni, fid);
     return res;
 }
 
-jmethodID InputPacketParser::ReadMethodID(JNIEnv *jni) throw (AgentException) {
+jmethodID InputPacketParser::ReadMethodID(JNIEnv *jni) {
     MethodID mid = 0;
     ReadBigEndianData(&mid, METHOD_ID_SIZE);
     jmethodID res = GetObjectManager().MapFromMethodID(jni, mid);
     return res;
 }
 
-jint InputPacketParser::ReadFrameID(JNIEnv *jni) throw (AgentException) {
+jint InputPacketParser::ReadFrameID(JNIEnv *jni) {
     FrameID fid;
     ReadBigEndianData(&fid, FRAME_ID_SIZE);
     jint res = GetObjectManager().MapFromFrameID(jni, fid);
     return res;
 }
 
-jdwpLocation InputPacketParser::ReadLocation(JNIEnv *jni) throw (AgentException) {
+jdwpLocation InputPacketParser::ReadLocation(JNIEnv *jni) {
     jdwpLocation res;
     res.typeTag = static_cast<jdwpTypeTag>(ReadByte());
     res.classID = ReadReferenceTypeID(jni);
@@ -339,41 +394,88 @@ jdwpLocation InputPacketParser::ReadLocation(JNIEnv *jni) throw (AgentException)
     return res;
 }
 
-jthread InputPacketParser::ReadThreadID(JNIEnv *jni) throw (AgentException) {
-    return static_cast<jthread>(ReadObjectID(jni));
+jthread InputPacketParser::ReadThreadIDOrNull(JNIEnv *jni) {
+    // read raw ThreadID and check for null
+    ObjectID oid = ReadRawObjectID();
+    if (oid == 0) {
+        AgentException ex(JDWP_ERROR_INVALID_THREAD);
+        JDWP_SET_EXCEPTION(ex);
+        return 0;
+    }
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReadThreadIDOrNull: read : ThreadID=%lld", oid));
+    
+    // if oid is a reference type, throw INVALID_THREAD exception
+    // Bug fix, INVALID_THREAD error reply is required
+    if( GetObjectManager().IsValidReferenceTypeID(jni, oid) ) {
+        AgentException ex(JDWP_ERROR_INVALID_THREAD);
+        JDWP_SET_EXCEPTION(ex);
+        return 0;
+    }    
+
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReadObjectIDOrNull: read : ObjectID=%lld", oid));
+    
+    // convert to jobject (actually to WeakReference or GlobalReference)
+    jobject obj = GetObjectManager().MapFromObjectID(jni, oid);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReadObjectIDOrNull: read : jobject=%p", obj));
+    JDWP_ASSERT(obj !=  NULL);
+
+    // make GlobalReference and check if WeakReference was freed
+    jobject ref = jni->NewGlobalRef(obj);
+    if (ref == 0) {
+        if (jni->IsSameObject(obj, 0)) {
+            AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+            JDWP_SET_EXCEPTION(ex);
+            return 0;
+        } else {
+            AgentException ex(JDWP_ERROR_OUT_OF_MEMORY);
+            JDWP_SET_EXCEPTION(ex);
+            return 0;
+        }
+    }
+ 
+    jthread thrd = static_cast<jthread>(ref);
+    // store GlobalReference for futher disposal
+    m_garbageList.StoreGlobalRef(thrd);
+    return thrd;
+}
+    
+jthread InputPacketParser::ReadThreadID(JNIEnv *jni) {
+    jthread thrd = ReadThreadIDOrNull(jni);
+    return thrd;
 }
 
-jthreadGroup InputPacketParser::ReadThreadGroupID(JNIEnv *jni) throw (AgentException) {
+jthreadGroup InputPacketParser::ReadThreadGroupID(JNIEnv *jni) {
     return static_cast<jthreadGroup>(ReadObjectID(jni));
 }
 
-jstring InputPacketParser::ReadStringID(JNIEnv *jni) throw (AgentException) {
+jstring InputPacketParser::ReadStringID(JNIEnv *jni) {
     return static_cast<jstring>(ReadObjectID(jni));
 }
 
-jarray InputPacketParser::ReadArrayID(JNIEnv *jni) throw (AgentException) {
+jarray InputPacketParser::ReadArrayID(JNIEnv *jni) {
     return static_cast<jarray>(ReadObjectID(jni));
 }
 
-char* InputPacketParser::ReadStringNoFree()  throw (InternalErrorException, OutOfMemoryException) {
+char* InputPacketParser::ReadStringNoFree() {
     jint len = ReadInt();
     if (m_position+len>m_packet.type.cmd.len) {
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Attempting to read past end of packet"));
+        return NULL;
     }
     char* res = static_cast<char*>(GetMemoryManager().Allocate(len+1 JDWP_FILE_LINE));
-    strncpy(res, reinterpret_cast<char*>(&m_packet.type.cmd.data[m_position]), len);
+    memcpy(res, reinterpret_cast<char*>(&m_packet.type.cmd.data[m_position]), len);
     res[len] = '\0';
     m_position += len;
     return res;
 }
 
-char* InputPacketParser::ReadString()  throw (InternalErrorException, OutOfMemoryException) {
+char* InputPacketParser::ReadString() {
     char* res = ReadStringNoFree();
     m_garbageList.StoreStringRef(res);
     return res;
 }
 
-jdwpTaggedValue InputPacketParser::ReadValue(JNIEnv *jni)  throw (AgentException) {
+jdwpTaggedValue InputPacketParser::ReadValue(JNIEnv *jni)  {
     //The first byte is a signature byte which is used to identify the type
     jdwpTaggedValue tv;
     tv.tag = static_cast<jdwpTag>(ReadByte());
@@ -381,7 +483,7 @@ jdwpTaggedValue InputPacketParser::ReadValue(JNIEnv *jni)  throw (AgentException
     return tv;
 }
 
-jvalue InputPacketParser::ReadUntaggedValue(JNIEnv *jni, jdwpTag tagPtr)  throw (AgentException) {
+jvalue InputPacketParser::ReadUntaggedValue(JNIEnv *jni, jdwpTag tagPtr)  {
     jvalue value;
 
     switch (tagPtr) {
@@ -433,30 +535,30 @@ jvalue InputPacketParser::ReadUntaggedValue(JNIEnv *jni, jdwpTag tagPtr)  throw 
     case JDWP_TAG_CLASS_OBJECT:
         value.l = ReadObjectIDOrNull(jni);
         break;
-    default: JDWP_ERROR("Illegal jdwp-tag value: " << tagPtr);
+    default: JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Illegal jdwp-tag value: %d", tagPtr));
     }
     return value;
 }
 
 // InputPacket's private methods
 
-jchar InputPacketParser::ReadChar() throw (InternalErrorException) {
+jchar InputPacketParser::ReadChar() {
     jchar data = 0;
     ReadBigEndianData(&data, sizeof(jchar));
     return data;
 }
-jshort InputPacketParser::ReadShort() throw (InternalErrorException) {
+jshort InputPacketParser::ReadShort() {
     jshort data = 0;
     ReadBigEndianData(&data, sizeof(jshort));
     return data;
 }
 
-jfloat InputPacketParser::ReadFloat() throw (InternalErrorException) {
+jfloat InputPacketParser::ReadFloat() {
     jfloat data = 0;
     ReadBigEndianData(&data, sizeof(jfloat));
     return data;
 }
-jdouble InputPacketParser::ReadDouble() throw (InternalErrorException) {
+jdouble InputPacketParser::ReadDouble() {
     jdouble data = 0;
     ReadBigEndianData(&data, sizeof(jdouble));
     return data;
@@ -464,6 +566,11 @@ jdouble InputPacketParser::ReadDouble() throw (InternalErrorException) {
 
 void InputPacketParser::Reset(JNIEnv *jni) {
     PacketWrapper::Reset(jni);
+    m_position = 0;
+}
+
+void InputPacketParser::ReleaseData() {
+    PacketWrapper::ReleaseData();
     m_position = 0;
 }
 
@@ -475,15 +582,19 @@ void InputPacketParser::MoveData(JNIEnv *jni, InputPacketParser* to) {
 //////////////////////////////////////////////////////////////////////
 // OutputPacketComposer - sequential writing of m_packet data
 //////////////////////////////////////////////////////////////////////
-void OutputPacketComposer::WritePacketToTransport() throw (TransportException) {
+int OutputPacketComposer::WritePacketToTransport() {
     JDWP_ASSERT(IsPacketInitialized());
-    GetTransportManager().Write(&m_packet);
-    if ( GetError() == JDWP_ERROR_NONE ) {
+    int ret = GetTransportManager().Write(&m_packet);
+    JDWP_CHECK_RETURN(ret);
+
+    if (GetError() == JDWP_ERROR_NONE) {
        IncreaseObjectIDRefCounts();
     }
+
+    return JDWP_ERROR_NONE;
 }
 
-void OutputPacketComposer::AllocateMemoryForData(int length) throw (OutOfMemoryException) {
+void OutputPacketComposer::AllocateMemoryForData(int length){
     size_t newPosition = m_position + static_cast<size_t>(length);
     if (newPosition >= m_allocatedSize) {
         // then reallocate buffer
@@ -509,7 +620,7 @@ void OutputPacketComposer::SetPosition(size_t newPosition) {
     m_position = newPosition;
 }
 
-void OutputPacketComposer::WriteRawData(const void* data, int length) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteRawData(const void* data, int length){
     AllocateMemoryForData(length);
     
     memcpy(&m_packet.type.cmd.data[m_position], data, length);
@@ -519,11 +630,11 @@ void OutputPacketComposer::WriteRawData(const void* data, int length) throw (Out
 }
 
 
-void OutputPacketComposer::WriteBigEndianData(void* data, int length) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteBigEndianData(void* data, int length){
     JDWP_ASSERT(length <= sizeof(jlong));
     AllocateMemoryForData(length);
     
-    #if IS_BIG_ENDIAN_PLATFORM
+    #if IS_LITTLE_ENDIAN_PLATFORM
         const jbyte* from = static_cast<jbyte*>(const_cast<void*>(data));
         jbyte* to = static_cast<jbyte*>(&m_packet.type.cmd.data[m_position]);
         for (int i=0; i<length; i++) {
@@ -538,89 +649,86 @@ void OutputPacketComposer::WriteBigEndianData(void* data, int length) throw (Out
      
 }
 
-void OutputPacketComposer::WriteByte(jbyte value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteByte(jbyte value){
     WriteBigEndianData(&value, sizeof(value));
 }
-void OutputPacketComposer::WriteBoolean(jboolean value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteBoolean(jboolean value){
     WriteBigEndianData(&value, sizeof(value));
 }
-void OutputPacketComposer::WriteInt(jint value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteInt(jint value){
     WriteBigEndianData(&value, sizeof(value));
 }
-void OutputPacketComposer::WriteLong(jlong value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteLong(jlong value){
     WriteBigEndianData(&value, sizeof(value));
 }
 
-void OutputPacketComposer::WriteObjectID(JNIEnv *jni, jobject value) throw (AgentException) {
+void OutputPacketComposer::WriteObjectID(JNIEnv *jni, jobject value) {
     ObjectID id = GetObjectManager().MapToObjectID(jni, value);
     WriteBigEndianData(&id, OBJECT_ID_SIZE);
     RegisterObjectID(id);
 }
 
-void OutputPacketComposer::WriteReferenceTypeID(JNIEnv *jni, jclass value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteReferenceTypeID(JNIEnv *jni, jclass value){
     ReferenceTypeID id = GetObjectManager().MapToReferenceTypeID(jni, value);
     WriteBigEndianData(&id, REFERENCE_TYPE_ID_SIZE);
 }
 
-void OutputPacketComposer::WriteFieldID(JNIEnv *jni, jfieldID value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteFieldID(JNIEnv *jni, jfieldID value){
     FieldID id = GetObjectManager().MapToFieldID(jni, value);
     WriteBigEndianData(&id, FIELD_ID_SIZE);
 }
 
-void OutputPacketComposer::WriteMethodID(JNIEnv *jni, jmethodID value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteMethodID(JNIEnv *jni, jmethodID value){
     MethodID id = GetObjectManager().MapToMethodID(jni, value);
     WriteBigEndianData(&id, METHOD_ID_SIZE);
 }
 
-void OutputPacketComposer::WriteFrameID(JNIEnv *jni, jthread jvmThread, jint frameDepth, jint framesCount) 
-throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteFrameID(JNIEnv *jni, jthread jvmThread, jint frameDepth, jint framesCount) {
     FrameID id = GetObjectManager().MapToFrameID(jni, jvmThread, frameDepth, framesCount);
     WriteBigEndianData(&id, FRAME_ID_SIZE);
 }
 
 void OutputPacketComposer::WriteLocation(JNIEnv *jni, jdwpTypeTag typeTag, jclass clazz, 
-                                         jmethodID method, jlocation location) 
-throw (OutOfMemoryException) {
+                                         jmethodID method, jlocation location) {
     WriteByte(static_cast<jbyte>(typeTag));
     WriteReferenceTypeID(jni, clazz);
     WriteMethodID(jni, method);
     WriteLong(static_cast<jlong>(location));
 }
 
-void OutputPacketComposer::WriteLocation(JNIEnv *jni, jdwpLocation *location) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteLocation(JNIEnv *jni, jdwpLocation *location){
     WriteLocation(jni, location->typeTag, location->classID, location->methodID, location->loc);
 }
 
-void OutputPacketComposer::WriteThreadID(JNIEnv *jni, jthread value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteThreadID(JNIEnv *jni, jthread value){
     WriteObjectID(jni, value);
 }
 
-void OutputPacketComposer::WriteThreadGroupID(JNIEnv *jni, jthreadGroup value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteThreadGroupID(JNIEnv *jni, jthreadGroup value){
     WriteObjectID(jni, value);
 }
 
-void OutputPacketComposer::WriteStringID(JNIEnv *jni, jstring value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteStringID(JNIEnv *jni, jstring value){
     WriteObjectID(jni, value);
 }
 
-void OutputPacketComposer::WriteArrayID(JNIEnv *jni, jarray value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteArrayID(JNIEnv *jni, jarray value){
     WriteObjectID(jni, value);
 }
 
-void OutputPacketComposer::WriteString(const char* value) throw (OutOfMemoryException) {
-    jint len = static_cast<jint>((value == 0) ? 0 : std::strlen(value));
+void OutputPacketComposer::WriteString(const char* value){
+    jint len = static_cast<jint>((value == 0) ? 0 : strlen(value));
     WriteString(value, len);
 }
 
-void OutputPacketComposer::WriteString(const char* value, jint length) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteString(const char* value, jint length){
     WriteBigEndianData(&length, sizeof(jint));
     if (length > 0) {
         WriteRawData(value, length);
     }
 }
 
-void OutputPacketComposer::WriteUntaggedValue(JNIEnv *jni, jdwpTag tag, jvalue value) 
-throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteUntaggedValue(JNIEnv *jni, jdwpTag tag, jvalue value) {
     //The first byte is a signature byte which is used to identify the type
     switch (tag) {
     case JDWP_TAG_ARRAY:
@@ -671,43 +779,52 @@ throw (OutOfMemoryException) {
     case JDWP_TAG_CLASS_OBJECT:
         WriteObjectID(jni, value.l);
         break;
-    default: JDWP_ERROR("Illegal jdwp-tag value: " << tag);
+    default: JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Illegal jdwp-tag value: %d", tag));
     }
 }
 
-void OutputPacketComposer::WriteValue(JNIEnv *jni, jdwpTag tag, jvalue value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteValue(JNIEnv *jni, jdwpTag tag, jvalue value){
     WriteByte(static_cast<jbyte>(tag));
     WriteUntaggedValue(jni, tag, value);
 }
 
-void OutputPacketComposer::WriteTaggedObjectID(JNIEnv *jni, jobject object) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteTaggedObjectID(JNIEnv *jni, jobject object){
     jdwpTag tag = GetClassManager().GetJdwpTag(jni, object);
     WriteByte(static_cast<jbyte>(tag));
     WriteObjectID(jni, object);
 }
 
 void OutputPacketComposer::WriteValues(JNIEnv *jni, jdwpTag tag, 
-                           jint length, jvalue* value) throw (OutOfMemoryException) {
+                           jint length, jvalue* value){
     WriteByte(static_cast<jbyte>(tag));
     WriteInt(length);
     for (int i=0; i<length; i++)
         WriteUntaggedValue(jni, tag, value[i]);
 }
 
-void OutputPacketComposer::WriteByteArray(jbyte* byte, jint length) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteByteArray(jbyte* byte, jint length){
     WriteInt(length);
     WriteRawData(byte, length);
 }
 
 void OutputPacketComposer::Reset(JNIEnv *jni) {
-    PacketWrapper::Reset(jni);
+    // clear links
+    m_garbageList.Reset(jni);
+    m_packet.type.cmd.flags = PACKET_IS_UNINITIALIZED;
     m_position = 0;
-    m_allocatedSize = 0;
     if (m_registeredObjectIDCount != 0) {
+        m_registeredObjectIDCount = 0;
+    }
+}
+
+void OutputPacketComposer::ReleaseData() {
+    PacketWrapper::ReleaseData();
+    m_allocatedSize = 0;
+
+    if (m_registeredObjectIDTable != 0) {
         GetMemoryManager().Free(m_registeredObjectIDTable JDWP_FILE_LINE);
         m_registeredObjectIDTable = 0;
         m_registeredObjectIDCount = 0;
-        m_registeredObjectIDTableSise = 0;
     }
 }
 
@@ -718,21 +835,20 @@ void OutputPacketComposer::MoveData(JNIEnv *jni, OutputPacketComposer* to) {
 }
 
 // OutputPacketComposer's private methods
-void OutputPacketComposer::WriteChar(jchar value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteChar(jchar value){
     WriteBigEndianData(&value, sizeof(value));
 }
-void OutputPacketComposer::WriteShort(jshort value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteShort(jshort value){
     WriteBigEndianData(&value, sizeof(value));
 }
-void OutputPacketComposer::WriteFloat(jfloat value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteFloat(jfloat value){
     WriteBigEndianData(&value, sizeof(value));
 }
-void OutputPacketComposer::WriteDouble(jdouble value) throw (OutOfMemoryException) {
+void OutputPacketComposer::WriteDouble(jdouble value){
     WriteBigEndianData(&value, sizeof(value));
 }
 
-void OutputPacketComposer::RegisterObjectID(ObjectID objectID)
-    throw (AgentException) {
+void OutputPacketComposer::RegisterObjectID(ObjectID objectID) {
 
     if ( objectID == JDWP_OBJECT_ID_NULL ) {
         return;
@@ -766,37 +882,40 @@ void OutputPacketComposer::IncreaseObjectIDRefCounts() {
 }
 
 // new reply
-void OutputPacketComposer::CreateJDWPReply(jint id, jdwpError errorCode) throw (InternalErrorException) {
+void OutputPacketComposer::CreateJDWPReply(jint id, jdwpError errorCode) {
     JDWP_ASSERT(!IsPacketInitialized());
     m_packet.type.reply.id = id;
     m_packet.type.reply.len = JDWP_MIN_PACKET_LENGTH;
     m_packet.type.reply.flags = JDWP_FLAG_REPLY_PACKET;
-    m_packet.type.reply.errorCode = errorCode;
+    m_packet.type.reply.errorCode = (jshort)errorCode;
 }
 
 // new event
-void OutputPacketComposer::CreateJDWPEvent(jint id, jdwpCommandSet commandSet, jdwpCommand command) 
-throw (InternalErrorException) {
+void OutputPacketComposer::CreateJDWPEvent(jint id, jdwpCommandSet commandSet, jdwpCommand command) {
     JDWP_ASSERT(!IsPacketInitialized());
     m_packet.type.cmd.id = id;
     m_packet.type.cmd.len = JDWP_MIN_PACKET_LENGTH;
     m_packet.type.cmd.flags = 0;
-    m_packet.type.cmd.cmdSet = commandSet;
-    m_packet.type.cmd.cmd = command;
+    m_packet.type.cmd.cmdSet = (jbyte)commandSet;
+    m_packet.type.cmd.cmd = (jbyte)command;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // CommandParser
 ///////////////////////////////////////////////////////////////////////////////
 
-void CommandParser::ReadCommand() throw (TransportException) {
-    command.ReadPacketFromTransport();
+int CommandParser::ReadCommand() {
+    int ret = command.ReadPacketFromTransport();
+    JDWP_CHECK_RETURN(ret);
     reply.CreateJDWPReply(command.GetId(), JDWP_ERROR_NONE);
+    return JDWP_ERROR_NONE;
 }
 
-void CommandParser::WriteReply(JNIEnv *jni) throw (TransportException) {
-    reply.WritePacketToTransport();
+int CommandParser::WriteReply(JNIEnv *jni) {
+    int ret = reply.WritePacketToTransport();
+    JDWP_CHECK_RETURN(ret);
     Reset(jni);
+    return JDWP_ERROR_NONE;
 }
 
 void CommandParser::Reset(JNIEnv *jni) {
@@ -807,6 +926,11 @@ void CommandParser::Reset(JNIEnv *jni) {
 void CommandParser::MoveData(JNIEnv *jni, CommandParser* to) {
     command.MoveData(jni, &to->command);
     reply.MoveData(jni, &to->reply);
+}
+
+CommandParser::~CommandParser() {
+    reply.ReleaseData();
+    command.ReleaseData();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -823,16 +947,19 @@ EventComposer::EventComposer(jint id,
     m_isWaiting = false;
     m_isReleased = false;
     m_isAutoDeathEvent = false;
-    event.WriteByte(sp);
+    event.WriteByte((jbyte)sp);
+}
+
+EventComposer::~EventComposer() {
+    event.ReleaseData();
 }
 
 void EventComposer::WriteThread(JNIEnv *jni, jthread thread)
-    throw (OutOfMemoryException)
 {
     event.WriteThreadID(jni, thread);
     m_thread = jni->NewGlobalRef(thread);
     if (m_thread == 0) {
-        throw OutOfMemoryException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Out of memory calling NewGlobalRef"));
     }
 }
 
@@ -845,9 +972,11 @@ void EventComposer::Reset(JNIEnv *jni)
     event.Reset(jni);
 }
 
-void EventComposer::WriteEvent(JNIEnv *jni) throw (TransportException)
+int EventComposer::WriteEvent(JNIEnv *jni)
 {
-    event.WritePacketToTransport();
+    int ret = event.WritePacketToTransport();
+    JDWP_CHECK_RETURN(ret);
     m_isSent = true;
     event.Reset(jni);
+    return JDWP_ERROR_NONE;
 }

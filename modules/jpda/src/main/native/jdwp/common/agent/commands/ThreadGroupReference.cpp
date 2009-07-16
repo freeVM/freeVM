@@ -15,17 +15,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin
- * @version $Revision: 1.11 $
- */
 #include "ThreadGroupReference.h"
 #include "VirtualMachine.h"
 
 #include "PacketParser.h"
 #include "ThreadManager.h"
 #include "Log.h"
+#include "ExceptionManager.h"
 
 using namespace jdwp;
 using namespace ThreadGroupReference;
@@ -33,60 +29,70 @@ using namespace ThreadGroupReference;
 //-----------------------------------------------------------------------------
 //NameHandler------------------------------------------------------------------
 
-void
-ThreadGroupReference::NameHandler::Execute(JNIEnv *jni) throw (AgentException)
+int
+ThreadGroupReference::NameHandler::Execute(JNIEnv *jni)
 {
     jvmtiThreadGroupInfo info;
     info.name = 0;
 
     jthreadGroup threadGroupID = m_cmdParser->command.ReadThreadGroupID(jni);
-    JDWP_TRACE_DATA("Name: received: threadGroupID=" << threadGroupID);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Name: received: threadGroupID=%p", threadGroupID));
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadGroupInfo(threadGroupID, &info));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadGroupInfo(threadGroupID, &info));
 
     JvmtiAutoFree dobj(info.name);
 
     JDWP_ASSERT(err != JVMTI_ERROR_NULL_POINTER);
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE) {
+        AgentException e(err);
+	    JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
-    JDWP_TRACE_DATA("Name: send: name=" << info.name);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Name: send: name=%s", info.name));
     m_cmdParser->reply.WriteString(info.name);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //ParentHandler----------------------------------------------------------------
 
-void
-ThreadGroupReference::ParentHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+ThreadGroupReference::ParentHandler::Execute(JNIEnv *jni)
 {
     jvmtiThreadGroupInfo info;
     info.name = 0;
 
     jthreadGroup threadGroupID = m_cmdParser->command.ReadThreadGroupID(jni);
-    JDWP_TRACE_DATA("Parent: received: threadGroupID=" << threadGroupID);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Parent: received: threadGroupID=%p", threadGroupID));
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadGroupInfo(threadGroupID, &info));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadGroupInfo(threadGroupID, &info));
 
     JvmtiAutoFree dobj(info.name);
 
     JDWP_ASSERT(err != JVMTI_ERROR_NULL_POINTER);
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE){
+        AgentException e(err);
+	    JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
-    JDWP_TRACE_DATA("Parent: send: name=" << info.name << ", parent=" << info.parent);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Parent: send: name=%s, parent=%p", info.name, info.parent));
     m_cmdParser->reply.WriteThreadGroupID(jni, info.parent);
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------
 //ChildrenHandler--------------------------------------------------------------
 
-void
-ThreadGroupReference::ChildrenHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+ThreadGroupReference::ChildrenHandler::Execute(JNIEnv *jni)
 {
     jint totalThreadCount, threadCount = 0;
     jint groupCount;
@@ -94,10 +100,10 @@ ThreadGroupReference::ChildrenHandler::Execute(JNIEnv *jni) throw(AgentException
     jthreadGroup* groups = 0;
 
     jthreadGroup threadGroupID = m_cmdParser->command.ReadThreadGroupID(jni);
-    JDWP_TRACE_DATA("Children: received: threadGroupID=" << threadGroupID); 
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Children: received: threadGroupID=%p", threadGroupID));
 
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadGroupChildren(threadGroupID,
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadGroupChildren(threadGroupID,
         &totalThreadCount, &threads, &groupCount, &groups));
 
     JvmtiAutoFree dobjt(threads);
@@ -105,16 +111,16 @@ ThreadGroupReference::ChildrenHandler::Execute(JNIEnv *jni) throw(AgentException
 
     JDWP_ASSERT(err != JVMTI_ERROR_NULL_POINTER);
 
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    if (err != JVMTI_ERROR_NONE){
+        AgentException e(err);
+	    JDWP_SET_EXCEPTION(e);
+        return err;
+    }
 
     ThreadManager& thrdMgr = GetThreadManager();
 
-    JDWP_TRACE_DATA("Children: threadGroupID=" << threadGroupID 
-        << ", totalThreadCount=" << totalThreadCount 
-        << ", threads=" << threads 
-        << ", groupCount=" << groupCount 
-        << ", groups=" << groups);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Children: threadGroupID=%p, totalThreadCount=%d, thread=%p, groupCount=%d, groups=%p", 
+                    threadGroupID, totalThreadCount, threads, groupCount, groups));
 
     int i;
 
@@ -124,11 +130,10 @@ ThreadGroupReference::ChildrenHandler::Execute(JNIEnv *jni) throw(AgentException
         if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
             jvmtiThreadInfo info;
             info.name = 0;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(threads[i], &info));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(threads[i], &info));
             JvmtiAutoFree jafInfoName(info.name);
-            JDWP_TRACE_DATA("Children: thread#=" << i
-                << ", name= " << JDWP_CHECK_NULL(info.name)
-                << ", isAgent=" << (thrdMgr.IsAgentThread(jni, threads[i])));
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Children: thread#=%d, name=%s, isAgent=%s", 
+                            i, JDWP_CHECK_NULL(info.name), ((thrdMgr.IsAgentThread(jni, threads[i]))?"TRUE":"FALSE")));
         }
 #endif
         if (!thrdMgr.IsAgentThread(jni, threads[i])) {
@@ -150,32 +155,29 @@ ThreadGroupReference::ChildrenHandler::Execute(JNIEnv *jni) throw(AgentException
 #ifndef NDEBUG    
     if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         int i;
-        JDWP_TRACE_DATA("Clildren: send: threadCount=" << threadCount 
-            << ", groupCount=" << groupCount);
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Clildren: send: threadCount=%d, groupCount=%d", threadCount, groupCount));
 
         for (i = 0; i < threadCount; i++) {
             jvmtiThreadInfo info;
             info.name = 0;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(threads[i], &info));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(threads[i], &info));
             JvmtiAutoFree jafInfoName(info.name);
 
-            JDWP_TRACE_DATA("Clildren: send: thread#=" << i
-            << ", threadID=" << threads[i]
-            << ", name=" << JDWP_CHECK_NULL(info.name));
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Clildren: send: thread#=%d, threadID=%p, name=%s", i, threads[i], JDWP_CHECK_NULL(info.name)));
         }
 
         for (i = 0; i < groupCount; i++) {
             jvmtiThreadGroupInfo info;
             info.name = 0;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadGroupInfo(groups[i], &info));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadGroupInfo(groups[i], &info));
             JvmtiAutoFree jafInfoName(info.name);
 
-            JDWP_TRACE_DATA("Clildren: send: group#" << i 
-            << ", groupID=" << groups[i]
-            << ", name=" << JDWP_CHECK_NULL(info.name));
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Clildren: send: group#%d, groupID=%p, name=%s", i, groups[i], JDWP_CHECK_NULL(info.name)));
         }
     }
 #endif
+
+    return JDWP_ERROR_NONE;
 }
 
 //-----------------------------------------------------------------------------

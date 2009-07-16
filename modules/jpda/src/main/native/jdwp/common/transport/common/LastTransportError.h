@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.9.2.1 $
- */
-
 /**
  * @file
  * LastTransportError.h
@@ -29,9 +23,15 @@
 
 #ifndef _LASTTRANSPORTERROR_H
 #define _LASTTRANSPORTERROR_H
+#if defined(ZOS)
+#define _XOPEN_SOURCE  500
+#endif
 
+#include "jni.h"
+#include "jvmti.h"
+#include "hythread.h"
 #include "jdwpTransport.h"
-#include "LastTransportError_pd.h"
+typedef hythread_t ThreadId_t;
 
 /**
  * The given class is a container for message and status code of the last 
@@ -51,7 +51,7 @@ public:
      * @param free        - the pointer to the function deallocating the memory 
      *                      area 
      */
-    LastTransportError(const char* messagePtr, int errorStatus, 
+    LastTransportError(JavaVM *jvm, const char* messagePtr, int errorStatus, 
         void* (*alloc)(jint numBytes), void (*free)(void *buffer));
 
     /**
@@ -103,6 +103,7 @@ public:
     void operator delete(void* address, void* (*alloc)(jint numBytes), void (*free)(void *buffer));
 
 private:
+    JavaVM *m_jvm;
     ThreadId_t m_treadId;             // the thread Id
     const char* m_lastErrorMessage;   // diagnostics for the last failed operation 
     const char* m_lastErrorMessagePrefix;   // diagnostics prefix for the last failed operation  

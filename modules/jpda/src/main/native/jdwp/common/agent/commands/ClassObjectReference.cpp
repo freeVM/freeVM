@@ -15,23 +15,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Viacheslav G. Rybalov
- * @version $Revision: 1.9 $
- */
 #include "ClassObjectReference.h"
 #include "PacketParser.h"
 #include "ClassManager.h"
+#include "ExceptionManager.h"
+
 
 using namespace jdwp;
 using namespace ClassObjectReference;
 
-void
-ClassObjectReference::ReflectedTypeHandler::Execute(JNIEnv *jni) throw(AgentException)
+int
+ClassObjectReference::ReflectedTypeHandler::Execute(JNIEnv *jni)
 {
     jclass classObject = static_cast<jclass>(m_cmdParser->command.ReadObjectID(jni));
-    JDWP_TRACE_DATA("ReflectedType: received: classObject=" << classObject);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReflectedType: received: classObject=%p", classObject));
 
     jdwpTypeTag typeTag = AgentBase::GetClassManager().GetJdwpTypeTag(classObject); 
 
@@ -39,14 +36,14 @@ ClassObjectReference::ReflectedTypeHandler::Execute(JNIEnv *jni) throw(AgentExce
     if (JDWP_TRACE_ENABLED(LOG_KIND_DATA)) {
         jvmtiError err;
         char* signature = 0;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetClassSignature(classObject, &signature, 0));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(classObject, &signature, 0));
         JvmtiAutoFree afs(signature);
-        JDWP_TRACE_DATA("ReflectedType: send: typeTag=" << typeTag
-            << ", typeID=" << classObject
-            << ", signature=" << JDWP_CHECK_NULL(signature));
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "ReflectedType: send: typeTag=%d, typeID=%d, signature=%s", typeTag, classObject, JDWP_CHECK_NULL(signature)));
     }
 #endif
 
-    m_cmdParser->reply.WriteByte(typeTag);
+    m_cmdParser->reply.WriteByte((jbyte)typeTag);
     m_cmdParser->reply.WriteReferenceTypeID(jni, classObject);
+
+    return JDWP_ERROR_NONE;
 }

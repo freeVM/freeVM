@@ -15,14 +15,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Anton V. Karnachuk
- * @version $Revision: 1.9 $
- */
 #include "StringReference.h"
 #include "PacketParser.h"
 #include "ClassManager.h"
+#include "ExceptionManager.h"
+
 
 using namespace jdwp;
 using namespace StringReference;
@@ -30,13 +27,13 @@ using namespace StringReference;
 //-----------------------------------------------------------------------------
 // StringReference -----------------------------------------------------------------
 
-void 
-StringReference::ValueHandler::Execute(JNIEnv *jni) throw(AgentException) 
+int 
+StringReference::ValueHandler::Execute(JNIEnv *jni) 
 {
 
     //INVALID_OBJECT can be thrown below
     jstring stringObject = m_cmdParser->command.ReadStringID(jni);
-    JDWP_TRACE_DATA("Value: received: stringID=" << stringObject);
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Value: received: stringID=%p", stringObject));
 
     // get length of the string
     jsize len = jni->GetStringLength(stringObject);
@@ -51,9 +48,10 @@ StringReference::ValueHandler::Execute(JNIEnv *jni) throw(AgentException)
     jni->GetStringUTFRegion(stringObject, 0, len, p_string);
     AgentBase::GetClassManager().CheckOnException(jni);
 
-    JDWP_TRACE_DATA("Value: send: utfLen=" << utfLen
-        << ", string=" << JDWP_CHECK_NULL(p_string));
+    JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Value: send: utfLen=%d, string=%s", utfLen, JDWP_CHECK_NULL(p_string)));
 
     // write string to the reply
     m_cmdParser->reply.WriteString(p_string, utfLen);
+
+    return JDWP_ERROR_NONE;
 }

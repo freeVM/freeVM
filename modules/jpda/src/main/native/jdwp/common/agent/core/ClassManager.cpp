@@ -15,23 +15,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.13 $
- */
-// ClassManager.cpp
-
-#include <string.h>
-
 #include "jni.h"
 
 #include "ClassManager.h"
 #include "Log.h"
 
+#include <string.h>
+
 using namespace jdwp;
 
-ClassManager::ClassManager() throw()
+ClassManager::ClassManager()
 {
     m_classClass = 0;
     m_threadClass = 0;
@@ -42,66 +35,83 @@ ClassManager::ClassManager() throw()
     m_systemClass = 0;
 }
 
-void ClassManager::Init(JNIEnv *jni) throw(AgentException)
+int ClassManager::Init(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Init(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Init(%p)", jni));
     
     m_stringClass = jni->FindClass("java/lang/String");
     if (m_stringClass == 0) {
-        JDWP_INFO("Class not found: java.lang.String");
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Class not found: java.lang.String"));
+        AgentException ex(JDWP_ERROR_INTERNAL);
+	    JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_INTERNAL;
     }
     m_stringClass = static_cast<jclass>(jni->NewGlobalRef(m_stringClass));
 
     m_classClass = jni->FindClass("java/lang/Class");
     if (m_classClass == 0) {
-        JDWP_INFO("Class not found: java.lang.Class");
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Class not found: java.lang.Class"));
+        AgentException ex(JDWP_ERROR_INTERNAL);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_INTERNAL;
     }
     m_classClass = static_cast<jclass>(jni->NewGlobalRef(m_classClass));
 
     m_threadClass = jni->FindClass("java/lang/Thread");
     if (m_threadClass == 0) {
-        JDWP_INFO("Class not found: java.lang.Thread");
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Class not found: java.lang.Thread"));
+    	AgentException ex(JDWP_ERROR_INTERNAL);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_INTERNAL;
     }
     m_threadClass = static_cast<jclass>(jni->NewGlobalRef(m_threadClass));
 
     m_threadGroupClass = jni->FindClass("java/lang/ThreadGroup");
     if (m_threadGroupClass == 0) {
-        JDWP_INFO("Class not found: java.lang.ThreadGroup");
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Class not found: java.lang.ThreadGroup"));
+        AgentException ex(JDWP_ERROR_INTERNAL);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_INTERNAL;
     }
     m_threadGroupClass =
         static_cast<jclass>(jni->NewGlobalRef(m_threadGroupClass));
 
     m_classLoaderClass = jni->FindClass("java/lang/ClassLoader");
     if (m_classLoaderClass== 0) {
-        JDWP_INFO("Class not found: java.lang.ClassLoader");
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Class not found: java.lang.ClassLoader"));
+        AgentException ex(JDWP_ERROR_INTERNAL);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_INTERNAL;
     }
     m_classLoaderClass =
         static_cast<jclass>(jni->NewGlobalRef(m_classLoaderClass));
 
     m_OOMEClass = jni->FindClass("java/lang/OutOfMemoryError");
     if (m_OOMEClass == 0) {
-        JDWP_INFO("Class not found: java.lang.OutOfMemoryError");
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Class not found: java.lang.OutOfMemoryError"));
+        AgentException ex(JDWP_ERROR_INTERNAL);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_INTERNAL;
     }
     m_OOMEClass = static_cast<jclass>(jni->NewGlobalRef(m_OOMEClass));
 
     m_systemClass = jni->FindClass("java/lang/System");
     if (m_systemClass == 0) {
-        JDWP_INFO("Class not found: java.lang.System");
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Class not found: java.lang.System"));
+        AgentException ex(JDWP_ERROR_INTERNAL);
+        JDWP_SET_EXCEPTION(ex);
+        return JDWP_ERROR_INTERNAL;
     }
     m_systemClass = static_cast<jclass>(jni->NewGlobalRef(m_systemClass));
+
+    return JDWP_ERROR_NONE;
 }
 
-void ClassManager::Clean(JNIEnv *jni) throw()
+void ClassManager::Clean(JNIEnv *jni)
 {
-    JDWP_TRACE_ENTRY("Clean(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Clean(%p)", jni));
 
+    /* FIXME - Workaround for shutdown crashes
     if (m_classClass != 0)
         jni->DeleteGlobalRef(m_classClass);
     if (m_threadClass != 0)
@@ -115,40 +125,39 @@ void ClassManager::Clean(JNIEnv *jni) throw()
     if (m_OOMEClass != 0)
         jni->DeleteGlobalRef(m_OOMEClass);
     if (m_systemClass != 0)
-        jni->DeleteGlobalRef(m_systemClass);
+        jni->DeleteGlobalRef(m_systemClass);*/
 }
 
-void ClassManager::CheckOnException(JNIEnv *jni) const throw(AgentException)
+int ClassManager::CheckOnException(JNIEnv *jni) const
 {
-    jthrowable exception = jni->ExceptionOccurred();
-    if (exception != 0) {
+    if (jni->ExceptionOccurred()) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "An exception occurred:"));
+        jni->ExceptionDescribe();
         jni->ExceptionClear();
-        if (jni->IsInstanceOf(exception, m_OOMEClass) == JNI_TRUE) {
-            throw OutOfMemoryException();
-        } else {
-            throw InternalErrorException();
-        }
+        return JDWP_ERROR_INTERNAL;
     }
+    return JDWP_ERROR_NONE;
 }
 
 // returnValue must be freed via GetMemoryManager().Free()
 // returnValue = 0, if there is no property with that name
 char* ClassManager::GetProperty(JNIEnv *jni, const char *str) const
-    throw(AgentException)
 {
     jmethodID mid = jni->GetStaticMethodID(m_systemClass,
         "getProperty", "(Ljava/lang/String;)Ljava/lang/String;");
     if (mid == 0) {
-        JDWP_INFO("Method not found: java.lang.System.getProperty(String)");
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Method not found: java.lang.System.getProperty(String)"));
+        return 0;
     }
 
     jstring key = jni->NewStringUTF(str);
-    CheckOnException(jni);
+    int ret = CheckOnException(jni);
+    if (ret != JDWP_ERROR_NONE) return 0;
 
     jstring value = static_cast<jstring>
         (jni->CallStaticObjectMethod(m_systemClass, mid, key));
-    CheckOnException(jni);
+    ret = CheckOnException(jni);
+    if (ret != JDWP_ERROR_NONE) return 0;
 
     char *returnValue = 0;
     if (value != 0) {
@@ -157,13 +166,14 @@ char* ClassManager::GetProperty(JNIEnv *jni, const char *str) const
             (AgentBase::GetMemoryManager().Allocate(len + 1 JDWP_FILE_LINE));
         jni->GetStringUTFRegion(value, 0, jni->GetStringLength(value),
             returnValue);
+        returnValue[len] = '\0';
     }
 
     return returnValue;
 }
 
 // returnValue must be freed via GetMemoryManager().Free()
-char* ClassManager::GetClassName(const char *signature) const throw(AgentException)
+char* ClassManager::GetClassName(const char *signature) const
 {
     if (signature == 0)
         return 0;
@@ -197,43 +207,47 @@ char* ClassManager::GetClassName(const char *signature) const throw(AgentExcepti
 }
 
 jclass ClassManager::GetClassForName(JNIEnv *jni,
-    const char *name, jobject loader) const throw(AgentException)
+    const char *name, jobject loader) const
 {
-    JDWP_TRACE_ENTRY("GetClassForName(" << jni << ',' << name << ',' << loader << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "GetClassForName(%p,%s,%p)", jni, name, loader));
 
     jmethodID mid = jni->GetStaticMethodID(m_classClass, "forName",
         "(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;");
-    CheckOnException(jni);
+    int ret = CheckOnException(jni);
+    if (ret != JDWP_ERROR_NONE) return 0;
     if (mid == 0) {
-        JDWP_INFO("Method not found: java.lang.Class.forName(String,boolean,ClassLoader)");
-        throw InternalErrorException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Method not found: java.lang.Class.forName(String,boolean,ClassLoader)"));
+        return 0;
     }
 
     jstring clsName = jni->NewStringUTF(name);
-    CheckOnException(jni);
+    ret = CheckOnException(jni);
+    if (ret != JDWP_ERROR_NONE) return 0;
 
     jclass cls = static_cast<jclass>
         (jni->CallStaticObjectMethod(m_classClass, mid, clsName, JNI_TRUE, loader));
-    CheckOnException(jni);
+    ret = CheckOnException(jni);
+    if (ret != JDWP_ERROR_NONE) return 0;
 
     return cls;
 }
 
 jboolean ClassManager::IsArray(JNIEnv *jni, jobject object) const
-    throw(AgentException)
+   
 {
     jboolean isArray;
     jclass cls = jni->GetObjectClass(object);
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->IsArrayClass(cls, &isArray));
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->IsArrayClass(cls, &isArray));
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error %d returned calling IsArrayClass()", err));
+        return JNI_FALSE;
     }
     return isArray;
 }
 
 jdwpTag ClassManager::GetJdwpTag(JNIEnv *jni, jobject object) const
-    throw(AgentException)
+   
 {
     if (object == 0) {
         return JDWP_TAG_OBJECT;
@@ -255,7 +269,6 @@ jdwpTag ClassManager::GetJdwpTag(JNIEnv *jni, jobject object) const
 }
 
 jdwpTag ClassManager::GetJdwpTagFromSignature(const char* signature) const
-throw ()
 {
     switch ( signature[0] ) {
         case 'Z': return JDWP_TAG_BOOLEAN;
@@ -273,33 +286,32 @@ throw ()
 } // GetJdwpTagFromSignature() 
 
 jboolean ClassManager::IsArrayType(jclass klass) const
-    throw(AgentException)
 {
     jboolean flag;
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->IsArrayClass(klass, &flag));
-
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->IsArrayClass(klass, &flag));
+    if (err != JVMTI_ERROR_NONE) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error %d returned calling IsArrayClass()", err));
+        return JNI_FALSE;
+    }
 
     return flag;
 }
 
 jboolean ClassManager::IsInterfaceType(jclass klass) const
-    throw(AgentException)
 {
     jboolean flag;
     jvmtiError err;
-    JVMTI_TRACE(err, GetJvmtiEnv()->IsInterface(klass, &flag));
-
-    if (err != JVMTI_ERROR_NONE)
-        throw AgentException(err);
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->IsInterface(klass, &flag));
+    if (err != JVMTI_ERROR_NONE) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error %d returned calling IsInterface()", err));
+        return JNI_FALSE;
+    }
 
     return flag;
 }
 
 jdwpTypeTag ClassManager::GetJdwpTypeTag(jclass klass) const
-    throw (AgentException)
 {
     if ( IsInterfaceType(klass) == JNI_TRUE )
         return JDWP_TYPE_TAG_INTERFACE;
@@ -312,10 +324,9 @@ jdwpTypeTag ClassManager::GetJdwpTypeTag(jclass klass) const
 
 jboolean ClassManager::IsObjectValueFitsFieldType
     (JNIEnv *jni, jobject objectValue, const char* fieldSignature) const 
-    throw(AgentException)
 {
     if ( objectValue == 0 ) {
-        return true;
+        return JNI_TRUE;
     }
 
     jint classCount = 0;
@@ -323,12 +334,15 @@ jboolean ClassManager::IsObjectValueFitsFieldType
 
     jvmtiEnv* jvmti = AgentBase::GetJvmtiEnv();
 
+    AgentBase::GetJniEnv()->PushLocalFrame(100);
+
     jvmtiError err;
-    JVMTI_TRACE(err, jvmti->GetLoadedClasses(&classCount, &classes));
+    JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetLoadedClasses(&classCount, &classes));
     JvmtiAutoFree classesAutoFree(classes);
 
     if (err != JVMTI_ERROR_NONE) {
-        throw AgentException(err);
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error %d returned calling GetLoadedClasses()", err));
+        return JNI_FALSE;
     }
 
     int i;
@@ -336,20 +350,26 @@ jboolean ClassManager::IsObjectValueFitsFieldType
     for (i = 0; i < classCount; i++) {
         char* classSignature = 0;
 
-        JVMTI_TRACE(err, jvmti->GetClassSignature(classes[i], &classSignature, 0));
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetClassSignature(classes[i], &classSignature, 0));
         JvmtiAutoFree classSignatureAutoFree(classSignature);
 
         if (err != JVMTI_ERROR_NONE) {
-            throw AgentException(err);
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Error %d returned calling GetClassSignature()", err));
+            return JNI_FALSE;
         }
 
         if ( strcmp(fieldSignature, classSignature) == 0 ) {
             fieldTypeClass = classes[i];
             break;
         }
+
     }
     if ( fieldTypeClass == 0 ) {
-        throw AgentException(JDWP_ERROR_INVALID_FIELDID);
+    	JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Field type class unexpectedly null"));
+        return JNI_FALSE;
     }
-    return  jni->IsInstanceOf(objectValue, fieldTypeClass);
+
+    jboolean rtValue = jni->IsInstanceOf(objectValue, fieldTypeClass);
+    AgentBase::GetJniEnv()->PopLocalFrame(NULL);
+    return rtValue;
 }

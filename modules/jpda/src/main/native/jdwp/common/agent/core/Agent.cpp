@@ -15,25 +15,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+#ifndef USING_VMI
+#define USING_VMI
+#endif
 
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.25 $
- */
-// Agent.cpp
-
-#include <string.h>
-#include <cstdlib>
-#include <cstdio>
-
-#include "jvmti.h"
+#include "AgentBase.h"
 
 #include "AgentEnv.h"
-#include "AgentBase.h"
 #include "MemoryManager.h"
 #include "AgentException.h"
 #include "LogManager.h"
 #include "Log.h"
+#include "jvmti.h"
+
+#include "jdwpcfg.h"
 
 #include "ClassManager.h"
 #include "ObjectManager.h"
@@ -44,10 +39,17 @@
 #include "PacketDispatcher.h"
 #include "EventDispatcher.h"
 #include "AgentManager.h"
+#include "ExceptionManager.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 using namespace jdwp;
 
 AgentEnv *AgentBase::m_agentEnv = 0;
+char* AgentBase::m_defaultStratum = 0;
+bool isLoaded = false;
+bool disableOnUnload = false;
 
 static const char* const AGENT_OPTIONS_ENVNAME = "JDWP_AGENT_OPTIONS";
 static const char* const AGENT_OPTIONS_PROPERTY = "jdwp.agent.options";
@@ -64,31 +66,35 @@ static const char* JVMTI_EXTENSION_FUNC_ID_IS_CLASS_UNLOAD_ENABLED
 // static internal functions
 //-----------------------------------------------------------------------------
 
+static void ShowJDWPVersion() {
+    const char *buildLevel = BUILD_LEVEL;
+    const char *versionString = "JDWP version:";
+
+    PORT_ACCESS_FROM_JAVAVM(AgentBase::GetJavaVM());
+    hytty_printf(privatePortLibrary, "%s %s\n\n", versionString, buildLevel);    
+}
+
 static void Usage()
 {
-    std::fprintf(stdout,
-        "\nUsage: java -agentlib:agent=[help] |"
+  const char* usage = 
+        "\nUsage: java -agentlib:agent=[help] | [version] |"
         "\n\t[suspend=y|n][,transport=name][,address=addr]"
         "\n\t[,server=y|n][,timeout=n]"
-#ifndef NDEBUG
         "\n\t[,trace=none|all|log_kinds][,src=all|sources][,log=filepath]\n"
-#endif//NDEBUG
         "\nWhere:"
         "\n\thelp\t\tOutput this message"
+        "\n\tversion\t\tDisplay the JDWP build version"
         "\n\tsuspend=y|n\tSuspend on start (default: y)"
         "\n\ttransport=name\tName of transport to use for connection"
         "\n\taddress=addr\tTransport address for connection"
         "\n\tserver=y|n\tListen for or attach to debugger (default: n)"
         "\n\ttimeout=n\tTime in ms to wait for connection (0-forever)"
-#ifndef NDEBUG
         "\n\ttrace=log_kinds\tApplies filtering to log message kind (default: none)"
         "\n\tsrc=sources\tApplies filtering to __FILE__ (default: all)"
         "\n\tlog=filepath\tRedirect output into filepath\n"
-#endif//NDEBUG
         "\nExample:"
         "\n\tjava -agentlib:agent=transport=dt_socket,"
         "address=localhost:7777,server=y\n"
-#ifndef NDEBUG
         "\nExamples of tracing parameters:\n"
         "\ttrace=all,log=jdwp.log\n"
         "\t - traces all kinds of messages\n"
@@ -110,8 +116,10 @@ static void Usage()
         "\tLOG - debug messages\n"
         "\tINFO - information and warning messages\n"
         "\tERROR - error messages\n\n"
-#endif//NDEBUG
-    );
+    ;
+
+  PORT_ACCESS_FROM_JAVAVM(AgentBase::GetJavaVM());
+  hytty_printf(privatePortLibrary, "%s", usage);
 }
 
 //-----------------------------------------------------------------------------
@@ -121,45 +129,50 @@ static void Usage()
 static void JNICALL
 VMInit(jvmtiEnv *jvmti, JNIEnv *jni, jthread thread)
 {
-    try {
-        JDWP_TRACE_ENTRY("VMInit(" << jvmti << ',' << jni << ',' << thread << ')');
-        jint ver = jni->GetVersion();
-        JDWP_LOG("JNI version: 0x" << hex << ver);
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "VMInit(%p,%p,%p)", jvmti, jni, thread));
+    jint ver = jni->GetVersion();
+    JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "JNI version: 0x%x", ver));
 
-        // initialize agent
-        AgentBase::GetAgentManager().Init(jvmti, jni);
- 
-        // if options onthrow or onuncaught are set, defer starting agent and enable notification of EXCEPTION event
-        if (AgentBase::GetOptionParser().GetOnthrow() || AgentBase::GetOptionParser().GetOnuncaught()) {
-            AgentBase::GetAgentManager().EnableInitialExceptionCatch(jvmti, jni);
-        } else {
-            AgentBase::GetAgentManager().Start(jvmti, jni);
-            RequestManager::HandleVMInit(jvmti, jni, thread);
-        }
-    } catch (TransportException& e) {
-        JDWP_DIE("JDWP transport error in VM_INIT: " << e.TransportErrorMessage() << " [" << e.ErrCode() << "]");
-    } catch (AgentException& e) {
-        JDWP_DIE("JDWP error in VM_INIT: " << e.what() << " [" << e.ErrCode() << "]");
+    // initialize agent
+    int ret = AgentBase::GetAgentManager().Init(jvmti, jni);
+    if (ret != JDWP_ERROR_NONE) {
+        goto handleException;
     }
+
+    // if options onthrow or onuncaught are set, defer starting agent and enable notification of EXCEPTION event
+    if (AgentBase::GetOptionParser().GetOnthrow() || AgentBase::GetOptionParser().GetOnuncaught()) {
+        ret = AgentBase::GetAgentManager().EnableInitialExceptionCatch(jvmti, jni);
+        if (ret != JDWP_ERROR_NONE) {
+            goto handleException;
+        }
+    } else {
+        ret = AgentBase::GetAgentManager().Start(jvmti, jni);
+        if (ret != JDWP_ERROR_NONE) {
+            goto handleException;
+        }
+        RequestManager::HandleVMInit(jvmti, jni, thread);
+    }
+    return;
+
+handleException:
+    AgentException aex = AgentBase::GetExceptionManager().GetLastException();
+    JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "JDWP error in VM_INIT: %s", aex.GetExceptionMessage(jni)));        
+    ::exit(1);
 }
 
 static void JNICALL
 VMDeath(jvmtiEnv *jvmti, JNIEnv *jni)
 {
-    try {
-        if (AgentBase::GetAgentManager().IsStarted()) {
-            // don't print entry trace message after cleaning agent
-            JDWP_TRACE_ENTRY("VMDeath(" << jvmti << ',' << jni << ')');
+    if (AgentBase::GetAgentManager().IsStarted()) {
+        // don't print entry trace message after cleaning agent
+        JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "VMDeath(%p, %p)", jvmti, jni));
 
-            RequestManager::HandleVMDeath(jvmti, jni);
-            AgentBase::SetIsDead(true);
+        RequestManager::HandleVMDeath(jvmti, jni);
+        AgentBase::SetIsDead(true);
 
-            AgentBase::GetAgentManager().Stop(jni);
-        }
-        AgentBase::GetAgentManager().Clean(jni);
-    } catch (AgentException& e) {
-        JDWP_INFO("JDWP error in VM_DEATH: " << e.what() << " [" << e.ErrCode() << "]");
+        AgentBase::GetAgentManager().Stop(jni);
     }
+    AgentBase::GetAgentManager().Clean(jni);
 }
 
 //-----------------------------------------------------------------------------
@@ -169,6 +182,14 @@ VMDeath(jvmtiEnv *jvmti, JNIEnv *jni)
 JNIEXPORT jint JNICALL 
 Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
 {
+    if (isLoaded) {
+        // We are already loaded - exit with an error message
+        PORT_ACCESS_FROM_JAVAVM(vm);
+        hyfile_printf(privatePortLibrary, HYPORT_TTY_ERR, "Error: JDWP agent already loaded - please check java command line options\n");
+        disableOnUnload = true; // If we're already loaded, dont call unload as it may cause a crash
+        return JNI_ERR;
+    }
+    isLoaded = true;
 
 //    static STDMemoryManager mm;
     static VMMemoryManager mm;
@@ -183,138 +204,139 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
     env.extensionEventClassUnload = 0;
     env.isDead = false;
     AgentBase::SetAgentEnv(&env);
+    AgentBase::SetDefaultStratum(NULL);
 
     jvmtiEnv *jvmti = 0;
     jvmtiError err;
 
-    JDWP_TRACE_ENTRY("Agent_OnLoad(" << vm << "," << (void*)options << "," << reserved << ")");
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Agent_OnLoad(%p,%p,%p)", vm, (void*)options, reserved));
 
     // get JVMTI environment
     {
         jint ret =
             (vm)->GetEnv(reinterpret_cast<void**>(&jvmti), JVMTI_VERSION_1_0);
         if (ret != JNI_OK || jvmti == 0) {
-            JDWP_INFO("Unable to get JMVTI environment, return code = " << ret);
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to get JMVTI environment, return code = %d", ret));
             return JNI_ERR;
         }
         env.jvmti = jvmti;
         jint version;
-        JVMTI_TRACE(err, jvmti->GetVersionNumber(&version));
-        JDWP_LOG("JVMTI version: 0x" << hex << version);
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetVersionNumber(&version));
+        JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "JVMTI version: 0x%x", version));
     }
+
+    // inital ExceptionManager before first try block
+    env.exceptionManager = new ExceptionManager();
+    env.exceptionManager->Init(AgentBase::GetJniEnv());
 
     // parse agent options
-    try {
-        env.optionParser = new OptionParser();
+    env.optionParser = new OptionParser();
 
-        // add options from environment variable and/or system property
-        {
-            char* envOptions = getenv(AGENT_OPTIONS_ENVNAME);
-            char* propOptions = 0;
-            jvmtiError err;
+    // add options from environment variable and/or system property
+    {
+        char* envOptions = getenv(AGENT_OPTIONS_ENVNAME);
+        char* propOptions = 0;
+        jvmtiError err;
 
-            JVMTI_TRACE(err,
-                jvmti->GetSystemProperty(AGENT_OPTIONS_PROPERTY, &propOptions));
-            if (err != JVMTI_ERROR_NONE) {
-                JDWP_LOG("No system property: "
-                    << AGENT_OPTIONS_PROPERTY << ", err=" << err);
-                propOptions = 0;
+        JVMTI_TRACE(LOG_DEBUG, err,
+            jvmti->GetSystemProperty(AGENT_OPTIONS_PROPERTY, &propOptions));
+        if (err != JVMTI_ERROR_NONE) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "No system property: %s, err=%d", AGENT_OPTIONS_PROPERTY, err));
+            propOptions = 0;
+        }
+        JvmtiAutoFree af(propOptions);
+
+        if (envOptions != 0 || propOptions != 0) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Add options from: \n\tcommand line: %s\n\tenvironment %s: %s\n\tproperty %s: %s", 
+                      JDWP_CHECK_NULL(options), AGENT_OPTIONS_ENVNAME, JDWP_CHECK_NULL(envOptions), AGENT_OPTIONS_PROPERTY, JDWP_CHECK_NULL(propOptions)));
+
+            size_t fullLength = ((options == 0) ? 0 : strlen(options) + 1)
+                + ((propOptions == 0) ? 0 : strlen(propOptions) + 1)
+                + ((envOptions == 0) ? 0 : strlen(envOptions) + 1);
+            char* fullOptions = static_cast<char*>
+                (AgentBase::GetMemoryManager().Allocate(fullLength JDWP_FILE_LINE));
+            fullOptions[0] = '\0';
+            if (options != 0) {
+                strcat(fullOptions, options);
             }
-            JvmtiAutoFree af(propOptions);
-
-            if (envOptions != 0 || propOptions != 0) {
-                JDWP_INFO("Add options from: "
-                    << endl << "\tcommand line: " << JDWP_CHECK_NULL(options)
-                    << endl << "\tenvironment " << AGENT_OPTIONS_ENVNAME
-                    << ": " << JDWP_CHECK_NULL(envOptions)
-                    << endl << "\tproperty " << AGENT_OPTIONS_PROPERTY
-                    << ": " << JDWP_CHECK_NULL(propOptions)
-                );
-
-                size_t fullLength = ((options == 0) ? 0 : strlen(options) + 1)
-                    + ((propOptions == 0) ? 0 : strlen(propOptions) + 1)
-                    + ((envOptions == 0) ? 0 : strlen(envOptions) + 1);
-                char* fullOptions = static_cast<char*>
-                    (AgentBase::GetMemoryManager().Allocate(fullLength JDWP_FILE_LINE));
-                fullOptions[0] = '\0';
-                if (options != 0) {
-                    strcat(fullOptions, options);
+            if (envOptions != 0) {
+                if (fullOptions[0] != '\0') {
+                    strcat(fullOptions, ",");
                 }
-                if (envOptions != 0) {
-                    if (fullOptions[0] != '\0') {
-                        strcat(fullOptions, ",");
-                    }
-                    strcat(fullOptions, envOptions);
-                }
-                if (propOptions != 0) {
-                    if (fullOptions[0] != '\0') {
-                        strcat(fullOptions, ",");
-                    }
-                    strcat(fullOptions, propOptions);
-                }
-                options = fullOptions;
-                JDWP_INFO("Full options: " << JDWP_CHECK_NULL(options));
+                strcat(fullOptions, envOptions);
             }
-
-            AgentBase::GetOptionParser().Parse(options);
+            if (propOptions != 0) {
+                if (fullOptions[0] != '\0') {
+                    strcat(fullOptions, ",");
+                }
+                strcat(fullOptions, propOptions);
+            }
+            options = fullOptions;
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Full options: %s", JDWP_CHECK_NULL(options)));
         }
 
-        // initialize LogManager module first
-        AgentBase::GetLogManager().Init(
-            AgentBase::GetOptionParser().GetLog(),
-            AgentBase::GetOptionParser().GetTraceKindFilter(),
-            AgentBase::GetOptionParser().GetTraceSrcFilter()
-        );
-
-        #ifndef NDEBUG
-        if (JDWP_TRACE_ENABLED(LOG_KIND_LOG)) {
-              int optCount = AgentBase::GetOptionParser().GetOptionCount();
-              JDWP_LOG("parsed " << optCount << " options:");
-              for (int k = 0; k < optCount; k++) {
-                  const char *name, *value;
-                  AgentBase::GetOptionParser().GetOptionByIndex(k, name, value);
-                  JDWP_LOG("[" << k << "]: " << JDWP_CHECK_NULL(name) << " = "
-                      << JDWP_CHECK_NULL(value));
-              }
-        }
-        #endif // NDEBUG
-
-        // exit if help option specified
-        if (AgentBase::GetOptionParser().GetHelp()) {
-            Usage();
-            JDWP_LOG("exit" << endl);
+        if (AgentBase::GetOptionParser().Parse(options) != JDWP_ERROR_NONE) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error: Bad agent options: %s", options));
             delete env.optionParser;
-            std::exit(0);
-        }
-
-        // check for required options
-        if (AgentBase::GetOptionParser().GetTransport() == 0) {
-            JDWP_INFO("JDWP error: No agent option specified: " << "transport");
             return JNI_ERR;
         }
-        if (!AgentBase::GetOptionParser().GetServer() 
-                && AgentBase::GetOptionParser().GetAddress() == 0) {
-            JDWP_INFO("JDWP error: No agent option specified: " << "address");
-            return JNI_ERR;
-        }
+    }
 
-        // create all other modules
-        env.classManager = new ClassManager();
-        env.objectManager = new ObjectManager();
-        env.threadManager = new ThreadManager();
-        env.requestManager = new RequestManager();
-        env.transportManager = new TransportManager();
-        env.packetDispatcher = new PacketDispatcher();
-        env.eventDispatcher = new EventDispatcher();
-        env.agentManager = new AgentManager();
-    } catch (IllegalArgumentException&) {
-        JDWP_INFO("JDWP error: Bad agent options: " << options);
+    // initialize LogManager module first
+    AgentBase::GetLogManager().Init(
+        AgentBase::GetOptionParser().GetLog(),
+        AgentBase::GetOptionParser().GetTraceKindFilter(),
+        AgentBase::GetOptionParser().GetTraceSrcFilter()
+    );
+
+    #ifndef NDEBUG
+    if (JDWP_TRACE_ENABLED(LOG_KIND_LOG)) {
+          int optCount = AgentBase::GetOptionParser().GetOptionCount();
+          JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "parsed %d options:", optCount));
+          for (int k = 0; k < optCount; k++) {
+              const char *name, *value;
+              AgentBase::GetOptionParser().GetOptionByIndex(k, name, value);
+              JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "[%d]: %s=%s", k, JDWP_CHECK_NULL(name), JDWP_CHECK_NULL(value)));
+          }
+    }
+    #endif // NDEBUG
+
+    // exit if help option specified
+    if (AgentBase::GetOptionParser().GetHelp()) {
+        Usage();
+        JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "exit"));
         delete env.optionParser;
-        return JNI_ERR;
-    } catch (AgentException& e) {
-        JDWP_INFO("JDWP error: " << e.what() << " [" << e.ErrCode() << "]");
+        exit(0);
+    }
+
+    // exit if version option specified
+    if (AgentBase::GetOptionParser().GetVersion()) {
+        ShowJDWPVersion();
+        JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "exit"));
+        delete env.optionParser;
+        exit(0);
+    }
+
+    // check for required options
+    if (AgentBase::GetOptionParser().GetTransport() == 0) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error: No agent option specified: transport"));
         return JNI_ERR;
     }
+    if (!AgentBase::GetOptionParser().GetServer() 
+            && AgentBase::GetOptionParser().GetAddress() == 0) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error: No agent option specified: address"));
+        return JNI_ERR;
+    }
+
+    // create all other modules
+    env.classManager = new ClassManager();
+    env.objectManager = new ObjectManager();
+    env.threadManager = new ThreadManager();
+    env.requestManager = new RequestManager();
+    env.transportManager = new TransportManager();
+    env.packetDispatcher = new PacketDispatcher();
+    env.eventDispatcher = new EventDispatcher();
+    env.agentManager = new AgentManager();
 
 #ifndef NDEBUG
     // display system properties
@@ -322,24 +344,22 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         jint pCount;
         char **properties = 0;
 
-        JVMTI_TRACE(err, jvmti->GetSystemProperties(&pCount, &properties));
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetSystemProperties(&pCount, &properties));
         if (err != JVMTI_ERROR_NONE) {
-            JDWP_INFO("Unable to get system properties: " << err);
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to get system properties: %d", err));
         }
         JvmtiAutoFree afp(properties);
 
-        JDWP_LOG("System properties:");
+        JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "System properties:"));
         for (jint j = 0; j < pCount; j++) {
             char *value = 0;
             JvmtiAutoFree afj(properties[j]);
-            JVMTI_TRACE(err, jvmti->GetSystemProperty(properties[j], &value));
+            JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetSystemProperty(properties[j], &value));
             if (err != JVMTI_ERROR_NONE) {
-                JDWP_INFO("Unable to get system property: "
-                    << JDWP_CHECK_NULL(properties[j]));
+                JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to get system property: %s", JDWP_CHECK_NULL(properties[j])));
             }
             JvmtiAutoFree afv(value);
-            JDWP_LOG("  " << j << ": " << JDWP_CHECK_NULL(properties[j])
-                << " = " << JDWP_CHECK_NULL(value));
+            JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "  %d: %s=%s", j, JDWP_CHECK_NULL(properties[j]), JDWP_CHECK_NULL(value)));
         }
     }
 #endif // NDEBUG
@@ -349,42 +369,37 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         jvmtiCapabilities caps;
         memset(&caps, 0, sizeof(caps));
 
-        JVMTI_TRACE(err, jvmti->GetPotentialCapabilities(&caps));
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetPotentialCapabilities(&caps));
         if (err != JVMTI_ERROR_NONE) {
-            JDWP_INFO("Unable to get potential capabilities: " << err);
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to get potential capabilities: %d", err));
             return JNI_ERR;
         }
 
-        // map directly into JDWP caps
-        env.caps.canWatchFieldModification =
-            caps.can_generate_field_modification_events;
+        // Map JVMTI capabilities onto JDWP capabilities
+        env.caps.canWatchFieldModification = caps.can_generate_field_modification_events;
         env.caps.canWatchFieldAccess = caps.can_generate_field_access_events;
         env.caps.canGetBytecodes = caps.can_get_bytecodes;
         env.caps.canGetSyntheticAttribute = caps.can_get_synthetic_attribute;
         env.caps.canGetOwnedMonitorInfo = caps.can_get_owned_monitor_info;
-        env.caps.canGetCurrentContendedMonitor =
-            caps.can_get_current_contended_monitor;
+        env.caps.canGetCurrentContendedMonitor = caps.can_get_current_contended_monitor;
         env.caps.canGetMonitorInfo = caps.can_get_monitor_info;
-        env.caps.canPopFrames = caps.can_pop_frame;
         env.caps.canRedefineClasses = caps.can_redefine_classes;
-        env.caps.canGetSourceDebugExtension =
-            caps.can_get_source_debug_extension;
-
         env.caps.canAddMethod = 0;
         env.caps.canUnrestrictedlyRedefineClasses = 0;
+        env.caps.canPopFrames = caps.can_pop_frame;
         env.caps.canUseInstanceFilters = 1;
+        env.caps.canGetSourceDebugExtension = caps.can_get_source_debug_extension;
         env.caps.canRequestVMDeathEvent = 1;
-        env.caps.canSetDefaultStratum = 0;
-
-        //New capabilities for Java 6
+        env.caps.canSetDefaultStratum = 1;
+        // New JDWP capabilities for Java 6
         env.caps.canGetInstanceInfo = 1;
         env.caps.canRequestMonitorEvents = 1;
         env.caps.canGetMonitorFrameInfo = 1;
-        env.caps.canUseSourceNameFilters = 1;
-        env.caps.canGetConstantPool = 
-            caps.can_get_constant_pool;
-        env.caps.canForceEarlyReturn =
-            caps.can_force_early_return;
+        env.caps.canUseSourceNameFilters = 0;
+        env.caps.canGetConstantPool = caps.can_get_constant_pool;
+        env.caps.canForceEarlyReturn = caps.can_force_early_return;
+
+        // Request JVMTI capabilities are made available
         caps.can_tag_objects = 1;
         caps.can_generate_monitor_events = 1;
 
@@ -394,7 +409,7 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         // caps.can_get_source_file_name = 1;
         // caps.can_get_line_numbers = 1;
         // caps.can_access_local_variables = 1;
-        // caps.can_generate_single_step_events = 1;
+        caps.can_generate_single_step_events = 1;
         // caps.can_generate_exception_events = 1;
         // caps.can_generate_frame_pop_events = 1;
         // caps.can_generate_breakpoint_events = 1;
@@ -414,9 +429,9 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         caps.can_generate_garbage_collection_events = 0;
         caps.can_generate_object_free_events = 0;
 
-        JVMTI_TRACE(err, jvmti->AddCapabilities(&caps));
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->AddCapabilities(&caps));
         if (err != JVMTI_ERROR_NONE) {
-            JDWP_INFO("Unable to add capabilities: " << err);
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to add capabilities: %d", err));
             return JNI_ERR;
         }
     }
@@ -448,23 +463,23 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         ecbs.MonitorWait = &RequestManager::HandleMonitorWait;
         ecbs.MonitorWaited = &RequestManager::HandleMonitorWaited;
 
-        JVMTI_TRACE(err,
+        JVMTI_TRACE(LOG_DEBUG, err,
             jvmti->SetEventCallbacks(&ecbs, static_cast<jint>(sizeof(ecbs))));
         if (err != JVMTI_ERROR_NONE) {
-            JDWP_INFO("Unable to set event callbacks: " << err);
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to set event callbacks: %d", err));
             return JNI_ERR;
         }
 
-        JVMTI_TRACE(err, jvmti->SetEventNotificationMode(JVMTI_ENABLE,
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->SetEventNotificationMode(JVMTI_ENABLE,
             JVMTI_EVENT_VM_INIT, 0));
         if (err != JVMTI_ERROR_NONE) {
-            JDWP_INFO("Unable to enable VM_INIT event: " << err);
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to enable VM_INIT event: %d", err));
             return JNI_ERR;
         }
-        JVMTI_TRACE(err, jvmti->SetEventNotificationMode(JVMTI_ENABLE,
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->SetEventNotificationMode(JVMTI_ENABLE,
             JVMTI_EVENT_VM_DEATH, 0));
         if (err != JVMTI_ERROR_NONE) {
-            JDWP_INFO("Unable to enable VM_DEATH event: " << err);
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to enable VM_DEATH event: %d", err));
             return JNI_ERR;
         }
     }
@@ -475,37 +490,34 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
         jvmtiExtensionEventInfo* extensionEvents = 0;
 
         jvmtiError err;
-        JVMTI_TRACE(err, jvmti->GetExtensionEvents(&extensionEventsCount, &extensionEvents));
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetExtensionEvents(&extensionEventsCount, &extensionEvents));
         JvmtiAutoFree afv(extensionEvents);
         if (err != JVMTI_ERROR_NONE) {
-            JDWP_INFO("Unable to get JVMTI extension events: " << err);
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to get JVMTI extension events: %d", err));
             return JNI_ERR;
         }
 
         if (extensionEvents != 0 && extensionEventsCount > 0) {
             for (int i = 0; i < extensionEventsCount; i++) {
                 if (strcmp(extensionEvents[i].id, JVMTI_EXTENSION_EVENT_ID_CLASS_UNLOAD) == 0) {
-                    JDWP_LOG("CLASS_UNLOAD extension event: " 
-                            << " index=" << extensionEvents[i].extension_event_index
-                            << " id=" << extensionEvents[i].id
-                            << " param_count=" << extensionEvents[i].param_count
-                            << " descr=" << extensionEvents[i].short_description);
+                    JDWP_TRACE(LOG_RELEASE, (LOG_LOG_FL, "CLASS_UNLOAD extension event: index=%d id=%d param_count=%d descr=%s", 
+                             extensionEvents[i].extension_event_index, extensionEvents[i].id, extensionEvents[i].param_count, extensionEvents[i].short_description));
                     // store info about found extension event 
                     env.extensionEventClassUnload = static_cast<jvmtiExtensionEventInfo*>
                         (AgentBase::GetMemoryManager().Allocate(sizeof(jvmtiExtensionEventInfo) JDWP_FILE_LINE));
                     *(env.extensionEventClassUnload) = extensionEvents[i];
                 } else {
                     // free allocated memory for not used extension events
-                    JVMTI_TRACE(err, jvmti->Deallocate(
+                    JVMTI_TRACE(LOG_DEBUG, err, jvmti->Deallocate(
                         reinterpret_cast<unsigned char*>(extensionEvents[i].id)));
-                    JVMTI_TRACE(err, jvmti->Deallocate(
+                    JVMTI_TRACE(LOG_DEBUG, err, jvmti->Deallocate(
                         reinterpret_cast<unsigned char*>(extensionEvents[i].short_description)));
                     if (extensionEvents[i].params != 0) {
                         for (int j = 0; j < extensionEvents[i].param_count; j++) {
-                            JVMTI_TRACE(err, jvmti->Deallocate(
+                            JVMTI_TRACE(LOG_DEBUG, err, jvmti->Deallocate(
                                 reinterpret_cast<unsigned char*>(extensionEvents[i].params[j].name)));
                         }
-                        JVMTI_TRACE(err, jvmti->Deallocate(
+                        JVMTI_TRACE(LOG_DEBUG, err, jvmti->Deallocate(
                             reinterpret_cast<unsigned char*>(extensionEvents[i].params)));
                     }
                 }
@@ -518,8 +530,10 @@ Agent_OnLoad(JavaVM *vm, char *options, void *reserved)
 JNIEXPORT void JNICALL
 Agent_OnUnload(JavaVM *vm)
 {
-//    JDWP_TRACE_ENTRY("Agent_OnUnload(" << vm << ")");
-    
+    if (disableOnUnload) {
+        return;
+    }
+
     if (AgentBase::GetAgentEnv() != 0) {
         delete &AgentBase::GetEventDispatcher();
         delete &AgentBase::GetPacketDispatcher();

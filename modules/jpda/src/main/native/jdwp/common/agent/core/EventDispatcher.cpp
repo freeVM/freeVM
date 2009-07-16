@@ -15,22 +15,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.24 $
- */
-// EventDispatcher.cpp
-
 #include "EventDispatcher.h"
 #include "ThreadManager.h"
 #include "OptionParser.h"
 #include "PacketDispatcher.h"
+#include "ExceptionManager.h"
 #include "Log.h"
 
 using namespace jdwp;
 
-EventDispatcher::EventDispatcher(size_t limit) throw() {
+EventDispatcher::EventDispatcher(size_t limit) {
     JDWP_ASSERT(limit > 0);
     m_idCount = 0;
     m_queueMonitor = 0;
@@ -45,67 +39,65 @@ EventDispatcher::EventDispatcher(size_t limit) throw() {
 }
 
 void EventDispatcher::Run(JNIEnv* jni) {
-    JDWP_TRACE_ENTRY("Run(" << jni << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Run(%p)", jni));
 
-    try {
-        MonitorAutoLock malCM(m_completeMonitor JDWP_FILE_LINE);
-        
-        try {
-            while (!m_stopFlag) {
-                EventComposer *ec;
-            
-                // get next event from queue
-                {
-                    MonitorAutoLock lock(m_queueMonitor JDWP_FILE_LINE);
-
-                    while (m_holdFlag || m_eventQueue.empty()) {
-                        m_queueMonitor->Wait();
-                        if (m_stopFlag) break; // break event waiting loop
-                    }
-
-                    if (m_stopFlag) break; // break events handling loop
-
-                    ec = m_eventQueue.front();
-                    m_eventQueue.pop();
-                    m_queueMonitor->NotifyAll();
-                }
-            
-                // send event and suspend thread according to suspend policy
-                SuspendOnEvent(jni, ec);
-            }
-        }
-        catch (const AgentException& e)
+    MonitorAutoLock malCM(m_completeMonitor JDWP_FILE_LINE);
+    /*if (GetExceptionManager().GetLastException() != NULL) {
+        AgentException aex = GetExceptionManager().GetLastException();
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Exception in EventDispatcher synchronization: %s", aex.GetExceptionMessage(jni)));
+        return;
+    }*/
+    
+    while (!m_stopFlag) {
+        EventComposer *ec;
+    
+        // get next event from queue
         {
-            JDWP_ERROR("Exception in EventDispatcher thread: "
-                            << e.what() << " [" << e.ErrCode() << "]");
-        
-            // reset current session
-            JDWP_TRACE_PROG("Run: reset session after exception");
-            GetPacketDispatcher().ResetAll(jni);
+            MonitorAutoLock lock(m_queueMonitor JDWP_FILE_LINE);
+
+            while (m_holdFlag || m_eventQueue.empty()) {
+                m_queueMonitor->Wait();
+                if (m_stopFlag) break; // break event waiting loop
+            }
+            if (m_stopFlag) break; // break events handling loop
+
+            ec = m_eventQueue.front();
+            m_eventQueue.pop();
+            m_queueMonitor->NotifyAll();
         }
+
+        // send event and suspend thread according to suspend policy
+        int ret = SuspendOnEvent(jni, ec);
+        if (ret != JDWP_ERROR_NONE) {
+            AgentException aex = GetExceptionManager().GetLastException();
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Exception in EventDispatcher thread: %s", aex.GetExceptionMessage(jni)));
+
+            // reset current session
+            JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "Run: reset session after exception"));
+            int ret = GetPacketDispatcher().ResetAll(jni);
+            if (ret != JDWP_ERROR_NONE) {
+                AgentException aex = GetExceptionManager().GetLastException();
+                JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Exception in PacketDispatcher::ResetAll(): %s", aex.GetExceptionMessage(jni)));
+            } 
+            break;
+        }
+    }
 
         // release completion monitor and wait forever until VM kills this thread
         // TODO: remove this workaround to prevent from resource leak
 	// This is the old completion mechanism fixed in HARMONY-5019
 //        m_completeMonitor->Wait(0);
-    }
-    catch (const AgentException& e)
-    {
-        // just report an error, cannot do anything else
-        JDWP_ERROR("Exception in EventDispatcher synchronization: "
-                        << e.what() << " [" << e.ErrCode() << "]");
-    }
 }
 
 void JNICALL
 EventDispatcher::StartFunction(jvmtiEnv* jvmti, JNIEnv* jni, void* arg) {
-    JDWP_TRACE_ENTRY("StartFunction(" << jvmti << ',' << jni << ',' << arg << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "StartFunction(%p,%p,%p)", jvmti, jni, arg));
 
     (reinterpret_cast<EventDispatcher*>(arg))->Run(jni);
 }
 
-void EventDispatcher::Init(JNIEnv *jni) throw(AgentException) {
-    JDWP_TRACE_ENTRY("Init(" << jni << ')');
+void EventDispatcher::Init(JNIEnv *jni) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Init(%p)", jni));
 
     m_queueMonitor = new AgentMonitor("_jdwp_EventDispatcher_queueMonitor");
     m_waitMonitor = new AgentMonitor("_jdwp_EventDispatcher_waitMonitor");
@@ -115,15 +107,20 @@ void EventDispatcher::Init(JNIEnv *jni) throw(AgentException) {
     m_holdFlag = true;
 }
 
-void EventDispatcher::Start(JNIEnv *jni) throw(AgentException) {
-    JDWP_TRACE_ENTRY("Start(" << jni << ')');
+int EventDispatcher::Start(JNIEnv *jni) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Start(%p)", jni));
 
-    m_threadObject = jni->NewGlobalRef(GetThreadManager().RunAgentThread(jni, StartFunction, this,
-        JVMTI_THREAD_MAX_PRIORITY, "_jdwp_EventDispatcher"));
+    jthread thread = GetThreadManager().RunAgentThread(jni, StartFunction, this,
+        JVMTI_THREAD_MAX_PRIORITY, "_jdwp_EventDispatcher");
+    if (thread == 0) {
+        return JDWP_ERROR_INTERNAL;
+    }
+    m_threadObject = jni->NewGlobalRef(thread);
+    return JDWP_ERROR_NONE;
 }
 
-void EventDispatcher::Reset(JNIEnv *jni) throw(AgentException) {
-    JDWP_TRACE_ENTRY("Reset(" << jni << ')');
+void EventDispatcher::Reset(JNIEnv *jni) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Reset(%p)", jni));
 
     m_resetFlag = true;
 
@@ -134,7 +131,7 @@ void EventDispatcher::Reset(JNIEnv *jni) throw(AgentException) {
         while(!m_eventQueue.empty()) {
             EventComposer *ec = m_eventQueue.front();
             m_eventQueue.pop();
-            JDWP_TRACE_EVENT("Reset -- delete event set: packet=" << ec);
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "Reset -- delete event set: packet=%p", ec));
             ec->Reset(jni);
             delete ec;
         }
@@ -155,8 +152,8 @@ void EventDispatcher::Reset(JNIEnv *jni) throw(AgentException) {
     }
 }
 
-void EventDispatcher::Stop(JNIEnv *jni) throw(AgentException) {
-    JDWP_TRACE_ENTRY("Stop(" << jni << ')');
+void EventDispatcher::Stop(JNIEnv *jni) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Stop(%p)", jni));
 
     // let thread loop to finish
     {
@@ -177,8 +174,8 @@ void EventDispatcher::Stop(JNIEnv *jni) throw(AgentException) {
     m_threadObject = NULL;
 }
 
-void EventDispatcher::Clean(JNIEnv *jni) throw(AgentException) {
-    JDWP_TRACE_ENTRY("Clean(" << jni << ')');
+void EventDispatcher::Clean(JNIEnv *jni) {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "Clean(%p)", jni));
     
     // The following code is just a workaround for known problem
     // in reset and clean-up procedure to release threads which
@@ -199,8 +196,9 @@ void EventDispatcher::Clean(JNIEnv *jni) throw(AgentException) {
     }
 
     // delete monitors
-    
-    if (m_queueMonitor != 0) {
+
+    /* Commented out as a workaround for shutdown crash - TODO apply correct behaviour to free these locks */
+    /*if (m_queueMonitor != 0) {
         delete m_queueMonitor;
         m_queueMonitor = 0;
     }
@@ -211,7 +209,7 @@ void EventDispatcher::Clean(JNIEnv *jni) throw(AgentException) {
     if (m_invokeMonitor != 0){
         delete m_invokeMonitor;
         m_invokeMonitor = 0;
-    }
+    }*/
 
     // do not delete m_completeMonitor because thread is waiting on it
     // TODO: remove this workaround to prevent from resource leak
@@ -226,84 +224,86 @@ void EventDispatcher::Clean(JNIEnv *jni) throw(AgentException) {
     m_idCount = 0;
 }
 
-void EventDispatcher::HoldEvents() throw(AgentException) {
-    JDWP_TRACE_ENTRY("HoldEvents()");
+void EventDispatcher::HoldEvents() {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "HoldEvents()"));
 
     MonitorAutoLock lock(m_queueMonitor JDWP_FILE_LINE);
     m_holdFlag = true;
 }
 
-void EventDispatcher::ReleaseEvents() throw(AgentException) {
-    JDWP_TRACE_ENTRY("ReleaseEvents()");
+void EventDispatcher::ReleaseEvents() {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "ReleaseEvents()"));
 
     MonitorAutoLock lock(m_queueMonitor JDWP_FILE_LINE);
     m_holdFlag = false;
     m_queueMonitor->NotifyAll();
 }
 
-void EventDispatcher::NewSession() throw(AgentException) {
-    JDWP_TRACE_ENTRY("NewSession()");
+void EventDispatcher::NewSession() {
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "NewSession()"));
 
     m_resetFlag = false;
     m_holdFlag = true;
 }
 
-void EventDispatcher::PostInvokeSuspend(JNIEnv *jni, SpecialAsyncCommandHandler* handler) 
-    throw(AgentException) 
+int EventDispatcher::PostInvokeSuspend(JNIEnv *jni, SpecialAsyncCommandHandler* handler) 
+    
 {
-    JDWP_TRACE_ENTRY("PostInvokeSuspend(" << jni << ',' << handler << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "PostInvokeSuspend(%p,%p)", jni, handler));
 
     MonitorAutoLock lock(m_invokeMonitor JDWP_FILE_LINE);
     jthread thread = handler->GetThread();
 
+    int ret;
     char* threadName = 0;
 #ifndef NDEBUG
         if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
             jvmtiError err;
             jvmtiThreadInfo threadInfo;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
             threadName = threadInfo.name;
         }
 #endif // NDEBUG
     JvmtiAutoFree af(threadName);
 
     // wait for thread to complete method invocation and ready for suspension
-    JDWP_TRACE_EVENT("PostInvokeSuspend -- wait for method invoked: thread=" << thread 
-            << ", name=" << JDWP_CHECK_NULL(threadName));
+    JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "PostInvokeSuspend -- wait for method invoked: thread=%p, name=%s", thread, JDWP_CHECK_NULL(threadName)));
     while (!handler->IsInvoked()) {
         m_invokeMonitor->Wait();
         if (m_resetFlag) {
-            return;
+            return JDWP_ERROR_NONE;
         }
     }
 
     // suspend single thread or all threads accodring to invocation options
     if ((handler->GetOptions() & JDWP_INVOKE_SINGLE_THREADED) == 0) {
-        JDWP_TRACE_EVENT("PostInvokeSuspend -- suspend all after method invoke: thread=" << thread 
-                << ", name=" << JDWP_CHECK_NULL(threadName));
-        GetThreadManager().SuspendAll(jni, handler->GetThread());
+        JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "PostInvokeSuspend -- suspend all after method invoke: thread=%p, name=%s", thread, JDWP_CHECK_NULL(threadName)));
+        ret = GetThreadManager().SuspendAll(jni, handler->GetThread());
+        JDWP_CHECK_RETURN(ret);
     } else {
-        JDWP_TRACE_EVENT("PostInvokeSuspend -- suspend after method invoke: thread=" << thread 
-                << ", name=" << JDWP_CHECK_NULL(threadName));
-        GetThreadManager().Suspend(jni, handler->GetThread(), true);
+        JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "PostInvokeSuspend -- suspend after method invoke: thread=%p, name=%s", thread, JDWP_CHECK_NULL(threadName)));
+        ret = GetThreadManager().Suspend(jni, handler->GetThread(), true);
+        JDWP_CHECK_RETURN(ret);
     }
 
     // release thread after suspension
-    JDWP_TRACE_EVENT("SuspendOnEvent -- release after method invoke: thread=" << thread  
-                << ", name=" << JDWP_CHECK_NULL(threadName));
+    JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "SuspendOnEvent -- release after method invoke: thread=%p, name=%s", thread, JDWP_CHECK_NULL(threadName)));
     handler->SetReleased(true);
     m_invokeMonitor->NotifyAll();
+
+    return JDWP_ERROR_NONE;
 }
 
-void EventDispatcher::SuspendOnEvent(JNIEnv* jni, EventComposer *ec)
-    throw(AgentException)
+int EventDispatcher::SuspendOnEvent(JNIEnv* jni, EventComposer *ec)
+   
 {
-    JDWP_TRACE_EVENT("SuspendOnEvent -- send event set: id=" << ec->event.GetId()
-        << ", policy=" << ec->GetSuspendPolicy());
+    JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "SuspendOnEvent -- send event set: id=%d, policy=%d", ec->event.GetId(), ec->GetSuspendPolicy()));
+    int ret = 0;
     if (ec->GetSuspendPolicy() == JDWP_SUSPEND_NONE && !ec->IsAutoDeathEvent()) {
         // thread is not waiting for suspension
-        ec->WriteEvent(jni);
-        JDWP_TRACE_EVENT("SuspendOnEvent -- delete event set: packet=" << ec);
+        ret = ec->WriteEvent(jni);
+        JDWP_CHECK_RETURN(ret);
+        JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "SuspendOnEvent -- delete event set: packet=%p", ec));
         ec->Reset(jni);
         delete ec;
     } else {
@@ -315,49 +315,51 @@ void EventDispatcher::SuspendOnEvent(JNIEnv* jni, EventComposer *ec)
         if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
             jvmtiError err;
             jvmtiThreadInfo threadInfo;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
             threadName = threadInfo.name;
         }
 #endif // NDEBUG
         JvmtiAutoFree af(threadName);
 
         // wait for thread to reach suspension point
-        JDWP_TRACE_EVENT("SuspendOnEvent -- wait for thread on event: thread=" << thread 
-                << ", name=" << JDWP_CHECK_NULL(threadName));
+        JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "SuspendOnEvent -- wait for thread on event: thread=%p, name=%s", thread, JDWP_CHECK_NULL(threadName)));
+
         while (!ec->IsWaiting()) {
             m_waitMonitor->Wait();
             if (m_resetFlag) {
-                return;
+                return JDWP_ERROR_NONE;
             }
         }
 
         // suspend corresponding threads if necessary
         if (ec->GetSuspendPolicy() == JDWP_SUSPEND_ALL) {
-            JDWP_TRACE_EVENT("SuspendOnEvent -- suspend all threads on event: thread=" << thread 
-                    << ", name=" << JDWP_CHECK_NULL(threadName));
-            GetThreadManager().SuspendAll(jni, thread);
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "SuspendOnEvent -- suspend all threads on event: thread=%p, name=%s", thread, JDWP_CHECK_NULL(threadName)));
+            ret = GetThreadManager().SuspendAll(jni, thread);
+            JDWP_CHECK_RETURN(ret);
         } else if (ec->GetSuspendPolicy() == JDWP_SUSPEND_EVENT_THREAD) {
-            JDWP_TRACE_EVENT("SuspendOnEvent -- suspend thread on event: thread=" << thread 
-                    << ", name=" << JDWP_CHECK_NULL(threadName));
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "SuspendOnEvent -- suspend thread on event: thread=%p, name=%s", thread, JDWP_CHECK_NULL(threadName)));
             JDWP_ASSERT(thread != 0);
-            GetThreadManager().Suspend(jni, thread, true);
+            ret = GetThreadManager().Suspend(jni, thread, true);
+            JDWP_CHECK_RETURN(ret);
         }
 
         // send event packet
-        ec->WriteEvent(jni);
+        ret = ec->WriteEvent(jni);
+        JDWP_CHECK_RETURN(ret);
 
         // release thread on suspension point
-        JDWP_TRACE_EVENT("SuspendOnEvent -- release thread on event: thread=" << thread 
-                << ", name=" << JDWP_CHECK_NULL(threadName));
+        JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "SuspendOnEvent -- release thread on event: thread=%p, name=%s", thread, JDWP_CHECK_NULL(threadName)));
         ec->SetReleased(true);
         m_waitMonitor->NotifyAll();
     }
+
+    return JDWP_ERROR_NONE;
 }
 
 void EventDispatcher::PostEventSet(JNIEnv *jni, EventComposer *ec, jdwpEventKind eventKind)
-    throw(AgentException)
+   
 {
-    JDWP_TRACE_ENTRY("PostEventSet(" << jni << ',' << ec << ',' << eventKind << ')');
+    JDWP_TRACE_ENTRY(LOG_RELEASE, (LOG_FUNC_FL, "PostEventSet(%p,%p,%d)", jni, ec, eventKind));
 
     if (m_stopFlag) {
         return;
@@ -369,11 +371,10 @@ void EventDispatcher::PostEventSet(JNIEnv *jni, EventComposer *ec, jdwpEventKind
     // put event packet into queue
     {
         MonitorAutoLock lock(m_queueMonitor JDWP_FILE_LINE);
-        while (m_eventQueue.size() > m_queueLimit) {
+        while (m_eventQueue.size() > (jint)m_queueLimit) {
             m_queueMonitor->Wait();
             if (m_resetFlag) {
-                JDWP_TRACE_EVENT("PostEventSet -- delete event set: packet=" << ec 
-                    << ", eventKind=" << eventKind);
+                JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "PostEventSet -- delete event set: packet=%p, evenKind=%d", ec, eventKind));
                 ec->Reset(jni);
                 delete ec;
                 return;
@@ -393,7 +394,7 @@ void EventDispatcher::PostEventSet(JNIEnv *jni, EventComposer *ec, jdwpEventKind
         if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
             jvmtiError err;
             jvmtiThreadInfo threadInfo;
-            JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
+            JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
             threadName = threadInfo.name;
         }
 #endif // NDEBUG
@@ -402,8 +403,7 @@ void EventDispatcher::PostEventSet(JNIEnv *jni, EventComposer *ec, jdwpEventKind
         // wait on suspension point
         {
             MonitorAutoLock lock(m_waitMonitor JDWP_FILE_LINE);
-            JDWP_TRACE_EVENT("PostEventSet -- wait for release on event: thread=" << thread
-                << ", name=" << JDWP_CHECK_NULL(threadName) << ", eventKind=" << eventKind);
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "PostEventSet -- wait for release on event: thread=%p, name=%s, eventKind=%d", thread, JDWP_CHECK_NULL(threadName), eventKind));
 
             // notify that thread is waiting on suspension point
             ec->SetWaiting(true);
@@ -412,28 +412,36 @@ void EventDispatcher::PostEventSet(JNIEnv *jni, EventComposer *ec, jdwpEventKind
             // wait for thread to be released after suspension
             while (!ec->IsReleased()) {
                 m_waitMonitor->Wait();
-                if (m_resetFlag) {
+                if (m_resetFlag || m_stopFlag) {
                     return;
                 }
             }
 
-            JDWP_TRACE_EVENT("PostEventSet -- released on event: thread=" << thread
-                << ", name=" << JDWP_CHECK_NULL(threadName) << ", eventKind=" << eventKind);
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "PostEventSet -- released on event: thread=%p, name=%s, eventKind=%d", thread, JDWP_CHECK_NULL(threadName), eventKind));
         }
-        
+       
+	if (GetThreadManager().IsSuspended(thread)) {
+	    jvmtiError error;
+	    JVMTI_TRACE(LOG_DEBUG, error, GetJvmtiEnv()->ResumeThread(thread));
+	    if (error == JVMTI_ERROR_NONE) {
+		JVMTI_TRACE(LOG_DEBUG, error, GetJvmtiEnv()->SuspendThread(thread));
+	    }
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "PostEventSet -- Running suspended thread: thread=%p, name=%s, eventKind=%d", thread, threadName, eventKind));
+	}
+
         // execute all registered InvokeMethod handlers sequentially
         if (thread != 0 && suspendPolicy != JDWP_SUSPEND_NONE) {
             ExecuteInvokeMethodHandlers(jni, thread);
         }
         
         // delete event packet
-        JDWP_TRACE_EVENT("PostEventSet -- delete event set: packet=" << ec);
+        JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "PostEventSet -- delete event set: packet=%p", ec));
         ec->Reset(jni);
         delete ec;
     }
 }
 
-void EventDispatcher::ExecuteInvokeMethodHandlers(JNIEnv *jni, jthread thread) throw(AgentException)
+void EventDispatcher::ExecuteInvokeMethodHandlers(JNIEnv *jni, jthread thread)
 {
     // if reset process, don't invoke handlers
     if (m_resetFlag) {
@@ -445,7 +453,7 @@ void EventDispatcher::ExecuteInvokeMethodHandlers(JNIEnv *jni, jthread thread) t
     jvmtiError err;
     if (JDWP_TRACE_ENABLED(LOG_KIND_EVENT)) {
         jvmtiThreadInfo threadInfo;
-        JVMTI_TRACE(err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
+        JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetThreadInfo(thread, &threadInfo));
         threadName = threadInfo.name;
     }
 #endif // NDEBUG
@@ -458,8 +466,7 @@ void EventDispatcher::ExecuteInvokeMethodHandlers(JNIEnv *jni, jthread thread) t
         while ((handler =
             GetThreadManager().FindInvokeHandler(jni, thread)) != 0)
         {
-            JDWP_TRACE_EVENT("ExecuteInvokeMethodHandlers -- invoke method: thread=" << thread
-                << ", name=" << JDWP_CHECK_NULL(threadName) << ", handler=" << handler);
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "ExecuteInvokeMethodHandlers -- invoke method: thread=%p, threadName=%s, handler=%p", thread, JDWP_CHECK_NULL(threadName), handler));
             handler->ExecuteDeferredInvoke(jni);
 
             MonitorAutoLock invokeMonitorLock(m_invokeMonitor JDWP_FILE_LINE);
@@ -469,16 +476,24 @@ void EventDispatcher::ExecuteInvokeMethodHandlers(JNIEnv *jni, jthread thread) t
             m_invokeMonitor->NotifyAll();
 
             // wait on suspension point after method invocation
-            JDWP_TRACE_EVENT("ExecuteInvokeMethodHandlers -- wait for released on event: thread=" << thread
-                << ", name=" << JDWP_CHECK_NULL(threadName) << ", handler=" << handler);
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "ExecuteInvokeMethodHandlers -- wait for released on event: thread=%p, threadName=%s, handler=%p", thread, JDWP_CHECK_NULL(threadName), handler));
             while (!handler->IsReleased()) {
                 m_invokeMonitor->Wait();
                 if (m_resetFlag) {
                     return;
                 }
             }
-            JDWP_TRACE_EVENT("ExecuteInvokeMethodHandlers -- released on event: thread=" << thread 
-                << ", name=" << JDWP_CHECK_NULL(threadName) << ", handler=" << handler);
+
+	    if (GetThreadManager().IsSuspended(thread)) {
+		jvmtiError error;
+		JVMTI_TRACE(LOG_DEBUG, error, GetJvmtiEnv()->ResumeThread(thread));
+		if (error == JVMTI_ERROR_NONE) {
+		    JVMTI_TRACE(LOG_DEBUG, error, GetJvmtiEnv()->SuspendThread(thread));
+		}
+                JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "ExecuteInvokeMethodHandlers -- Running suspended thread: thread=%p, name=%s", thread, threadName));
+	    }
+
+            JDWP_TRACE(LOG_RELEASE, (LOG_EVENT_FL, "ExecuteInvokeMethodHandlers -- released on event: thread=%p, threadName=%s, handler=%p", thread, JDWP_CHECK_NULL(threadName), handler));
         }
     }
 }

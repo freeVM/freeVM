@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Vitaly A. Provodin, Pavel N. Vyssotski
- * @version $Revision: 1.16.2.1 $
- */
-
 /**
  * @file
  * ThreadManager.h
@@ -30,24 +24,26 @@
 #ifndef _THREAD_MANAGER_H_
 #define _THREAD_MANAGER_H_
 
-#include <vector>
+#include "Util.h"
 
 #include "jni.h"
 #include "jvmti.h"
 #include "AgentBase.h"
 #include "AgentException.h"
 #include "AgentMonitor.h"
-#include "AgentAllocator.h"
 #include "CommandHandler.h"
 
 namespace jdwp {
 
+    class JavaThreadInfo;
+
     class ThreadInfo;
 
-    typedef vector<ThreadInfo*, AgentAllocator<ThreadInfo*> > ThreadInfoList;
+    typedef JDWPVector<ThreadInfo> ThreadInfoList;
 
-    typedef vector<SpecialAsyncCommandHandler*,
-        AgentAllocator<SpecialAsyncCommandHandler*> > ExecList;
+    typedef JDWPVector<JavaThreadInfo> JavaThreadInfoList;
+
+    typedef JDWPVector<SpecialAsyncCommandHandler> ExecList;
 
     typedef ExecList::iterator ExecListIterator;
 
@@ -63,7 +59,8 @@ namespace jdwp {
         /**
          * Constructs a new <code>ThreadManager</code> object.
          */
-        ThreadManager() throw() : 
+        ThreadManager() : 
+          m_javathrdmgrMonitor(0),
           m_thrdmgrMonitor(0), 
           m_execMonitor(0),
           m_stepMonitor(0),
@@ -78,14 +75,14 @@ namespace jdwp {
          *
          * @param jni - the JNI interface pointer
          */
-        void Init(JNIEnv *jni) throw();
+        void Init(JNIEnv *jni);
 
         /**
          * Cleans the <code>ThreadManager</code> object.
          *
          * @param jni - the JNI interface pointer
          */
-        void Clean(JNIEnv *jni) throw();
+        void Clean(JNIEnv *jni);
 
         /**
          * Reinitializes <code>ThreadManager</code> object.
@@ -97,7 +94,7 @@ namespace jdwp {
          * @exception AgentException is thrown in case of a 
          *            universal error, with the corresponded error code.
          */
-        void Reset(JNIEnv *jni) throw(AgentException);
+        int Reset(JNIEnv *jni);
 
         /**
          * Creates a new agent thread and starts the specified function in it.
@@ -126,7 +123,7 @@ namespace jdwp {
         jthread RunAgentThread(JNIEnv *jni, jvmtiStartFunction proc,
                                 const void *arg, jint priority,
                                 const char *name = 0,
-                                jthread thread = 0) throw(AgentException);
+                                jthread thread = 0);
 
         /**
          * Adds an information about the thread parameter into
@@ -145,7 +142,60 @@ namespace jdwp {
          *            is available for allocation.
          */
         ThreadInfo* AddThread(JNIEnv *jni, jthread thread,
-                    bool isAgentThread = false, bool isOnEvent = false) throw(AgentException);
+                    bool isAgentThread = false, bool isOnEvent = false);
+
+        /**
+         * remove the thread from internal list. If the thread is not in the
+         * list, nothing to do.
+         *
+         * @param jni            - the JNI interface pointer
+         * @param thread         - the thread to be removed
+         *
+         */
+        void RemoveThread(JNIEnv *jni, jthread thread);
+
+        /**
+         * Add the specified Java thread to the internal list. If the 
+         * thread is already in the list, does nothing. 
+         *  
+         * @param jni           - the JNI interface pointer 
+         * @param thread        - the Java thread to be added 
+         *  
+         * @return Pointer to the new record in the thread list 
+         */        
+        JavaThreadInfo* AddJavaThread(JNIEnv *jni, jthread thread);
+
+        /**
+         * Remove the specified Java thread to the internal list. If the
+         * thread is not in the list, does nothing. 
+         *  
+         * @param jni           - the JNI interface pointer 
+         * @param thread        - the Java thread to be removed 
+         */
+        void RemoveJavaThread(JNIEnv *jni, jthread thread);
+
+        /**
+         * Record in the Java thread list whether the last action on 
+         * this thread was a single step. 
+         * @param jni           - the JNI interface pointer
+         * @param thread        - the Java thread
+         * @param hasStepped    - indicates if the last action was a 
+         *                      single step
+         */
+        void SetHasStepped(JNIEnv *jni, jthread thread, bool hasStepped);
+
+        /**
+         * Returns an indicator of whether the last action on the 
+         * specified thread was a single step. 
+         *  
+         * @param jni           - the JNI interface pointer
+         * @param thread        - the Java thread to query
+         * 
+         * @return bool         - indicates if the last action was a 
+         *                      single step
+         */
+        bool HasStepped(JNIEnv *jni, jthread thread);
+
         /**
          * Suspends the specified thread.
          * If the specified thread is an agent thread, calling this method 
@@ -163,7 +213,7 @@ namespace jdwp {
          * @exception AgentException(JVMTI_ERROR_THREAD_NOT_ALIVE) 
          *            is thrown if thread has not been started or is dead.
          */
-        void Suspend(JNIEnv *jni, jthread thread, bool isOnEvent = false) throw(AgentException);
+        int Suspend(JNIEnv *jni, jthread thread, bool isOnEvent = false);
 
         /**
          * Resumes the specified thread.
@@ -181,7 +231,7 @@ namespace jdwp {
          * @exception AgentException(JVMTI_ERROR_THREAD_NOT_ALIVE) 
          *            is thrown if thread has not been started or is dead.
          */
-        void Resume(JNIEnv *jni, jthread thread) throw(AgentException);
+        int Resume(JNIEnv *jni, jthread thread);
 
         /**
          * Suspends all non-agent threads.
@@ -192,7 +242,7 @@ namespace jdwp {
          * @exception AgentException is thrown in case an universal 
          *            error, with the corresponded error code.
          */
-        void SuspendAll(JNIEnv *jni, jthread threadOnEvent = 0) throw(AgentException);
+        int SuspendAll(JNIEnv *jni, jthread threadOnEvent = 0);
 
         /**
          * Resumes all non-agent threads.
@@ -202,7 +252,7 @@ namespace jdwp {
          * @exception AgentException is thrown in case an universal 
          *             error, with the corresponded error code.
          */
-        void ResumeAll(JNIEnv *jni)                 throw(AgentException);
+        int ResumeAll(JNIEnv *jni);
 
         /**
          * Interrupts the specified thread.
@@ -215,7 +265,7 @@ namespace jdwp {
          * @exception AgentException(JVMTI_ERROR_THREAD_NOT_ALIVE) 
          *            is thrown if thread has not been started or is dead.
          */
-        void Interrupt(JNIEnv *jni, jthread thread) throw(AgentException);
+        int Interrupt(JNIEnv *jni, jthread thread);
 
         /**
          * Stops the specified thread.
@@ -231,8 +281,7 @@ namespace jdwp {
          * @exception AgentException(JVMTI_ERROR_INVALID_OBJECT) 
          *            is thrown if exception is not an object.
          */
-        void Stop(JNIEnv *jni, jthread thread, jobject throwable)
-            throw(AgentException);
+        int Stop(JNIEnv *jni, jthread thread, jobject throwable);
         
         /**
          * Join the specified thread.
@@ -278,7 +327,7 @@ namespace jdwp {
          * @exception AgentException(JVMTI_ERROR_INVALID_THREAD)
          *            is thrown if the thread is not a thread object.
          */
-        bool IsSuspendedOnEvent(JNIEnv *jni, jthread thrd) throw (AgentException);
+        bool IsSuspendedOnEvent(JNIEnv *jni, jthread thrd);
 
         /**
          * Checks if the specified thread is really suspended.
@@ -291,7 +340,21 @@ namespace jdwp {
          * @exception AgentException(JVMTI_ERROR_INVALID_THREAD) 
          *            is thrown if the thread is not a thread object.
          */
-        bool IsSuspended(jthread thrd) throw (AgentException);
+        bool IsSuspended(jthread thrd);
+        
+        /**
+         * Check the status of  specified thread, if it is in invalid status,
+         * throw corresponging exception in case.
+         *
+         * @param jni    - the JNI interface pointer
+         * @param thread - the thread to be checked
+         *
+         * @exception AgentException(JVMTI_ERROR_INVALID_THREAD) 
+         *            is thrown if the thread is not a valid thread.
+         *            AgentException(JVMTI_ERROR_THREAD_NOT_SUSPENDED) 
+         *            is thrown if the thread is not suspended.
+         */        
+        int CheckThreadStatus(JNIEnv *jni,jthread thrd);
 
         /**
          * Registers instance of <code>SpecialAsyncCommandHandler</code> for 
@@ -307,8 +370,7 @@ namespace jdwp {
          *            is thrown if the specified thread has not been suspended by 
          *            an event.
          */
-        void RegisterInvokeHandler(JNIEnv *jni, SpecialAsyncCommandHandler* handler)
-            throw (AgentException);
+        int RegisterInvokeHandler(JNIEnv *jni, SpecialAsyncCommandHandler* handler);
 
         /**
          * Finds an instance of <code>SpecialAsyncCommandHandler</code> from 
@@ -323,7 +385,7 @@ namespace jdwp {
          * @exception AgentException is thrown if any error occurs.
          */
         SpecialAsyncCommandHandler* FindInvokeHandler(JNIEnv *jni,
-            jthread thread) throw (AgentException);
+            jthread thread);
 
         /**
          * Used for internal purposes. Handles <code>Step Event</code>, 
@@ -336,7 +398,7 @@ namespace jdwp {
          *
          * @exception AgentException is thrown if any error occurs.
          */
-        void HandleInternalSingleStep(JNIEnv* jni, jthread thread, jmethodID method, jlocation location) throw(AgentException);
+        void HandleInternalSingleStep(JNIEnv* jni, jthread thread, jmethodID method, jlocation location);
 
         /**
          * Pops <code>framesToPop</code> number of frames on the specified thread.
@@ -347,8 +409,7 @@ namespace jdwp {
          *
          * @exception AgentException is thrown if any error occurs.
          */
-        void PerformPopFrames(JNIEnv* jni, jint framesToPop, jthread thread)
-            throw(AgentException);
+        int PerformPopFrames(JNIEnv* jni, jint framesToPop, jthread thread);
  
         /**
          * Checks if <code>PopFrames</code> command is executed on the specified 
@@ -360,6 +421,16 @@ namespace jdwp {
         jboolean IsPopFramesProcess(JNIEnv* jni, jthread thread);
 
     private:
+
+        /**
+         * Track details of Java threads
+         */
+        JavaThreadInfoList  m_javaThreadInfoList;
+
+        /**
+         * Monitor for <code>m_javaThreadInfoList</code>.
+         */
+        AgentMonitor    *m_javathrdmgrMonitor;
 
         /**
          * List of suspended threads and agent threads.
@@ -402,8 +473,7 @@ namespace jdwp {
          * @exception AgentException(JDWP_ERROR_NATIVE_METHOD)
          *            is thrown if native frame is found.
          */
-        void CheckNativeFrameExistence(jthread thread, jint numberOfFrames)
-            throw(AgentException);
+        int CheckNativeFrameExistence(jthread thread, jint numberOfFrames);
         
         /**
          * Creates a new agent thread and adds it to the list.
@@ -420,20 +490,19 @@ namespace jdwp {
          * @exception InternalErrorException is thrown in any other
          *            cases.
          */
-        jthread CreateAgentThread(JNIEnv *jni, const char *name = 0)
-            throw(AgentException);
+        jthread CreateAgentThread(JNIEnv *jni, const char *name = 0);
 
         // synchronized
-        void ClearExecList(JNIEnv* jni) throw();
+        void ClearExecList(JNIEnv* jni);
 
         // synchronized
-        void ClearThreadList(JNIEnv *jni);
+        int ClearThreadList(JNIEnv *jni);
 
         // not synchronized
-        void InternalResume(JNIEnv *jni, jthread thread, bool ignoreInternal) throw(AgentException);
+        int InternalResume(JNIEnv *jni, jthread thread, bool ignoreInternal);
 
         // not synchronized
-        void InternalSuspend(JNIEnv *jni, jthread thread, bool ignoreInternal, bool isOnEvent = false) throw(AgentException);
+        int InternalSuspend(JNIEnv *jni, jthread thread, bool ignoreInternal, bool isOnEvent = false);
 
     };//class ThreadManager
 

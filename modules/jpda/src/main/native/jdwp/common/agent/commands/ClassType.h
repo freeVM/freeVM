@@ -17,11 +17,6 @@
  */
 
 /**
- * @author Viacheslav G. Rybalov, Anton V. Karnachuk
- * @version $Revision: 1.7.2.1 $
- */
-
-/**
  * @file
  * ClassType.h
  *
@@ -63,7 +58,7 @@ namespace jdwp {
              *                      interface may throw <code>AgentException</code>:
              *                      INVALID_CLASS, INVALID_OBJECT, VM_DEAD
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         }; //SuperClassHandler
 
@@ -90,7 +85,7 @@ namespace jdwp {
              *                      CLASS_NOT_PREPARED,INVALID_OBJECT, INVALID_FIELDID, 
              *                      VM_DEAD.
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         }; //SetValuesHandler
 
@@ -123,7 +118,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         private:
             jclass m_clazz;
@@ -164,7 +159,7 @@ namespace jdwp {
              *
              * @param jni - the JNI interface pointer
              */
-            virtual void Execute(JNIEnv *jni) throw(AgentException);
+            virtual int Execute(JNIEnv *jni) ;
 
         private:
             jclass m_clazz;

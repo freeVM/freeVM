@@ -15,12 +15,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-/**
- * @author Pavel N. Vyssotski
- * @version $Revision: 1.6.2.1 $
- */
-
 /**
  * @file
  * MemoryManager.h
@@ -30,10 +24,14 @@
 #ifndef _MEMORY_MANAGER_H_
 #define _MEMORY_MANAGER_H_
 
-#include "AgentException.h"
 #include "Log.h"
 
+void *operator new(size_t size);
+
+void operator delete(void *p);
+
 namespace jdwp {
+
 
     /**
      * Agent memory manager interface.
@@ -51,7 +49,7 @@ namespace jdwp {
          * @return Pointer to the allocated memory block.
          */
         virtual void* AllocateNoThrow(size_t size
-            JDWP_FILE_LINE_PAR) throw() = 0;
+				      JDWP_FILE_LINE_PAR) {return 0;};
 
         /**
          * Allocates the memory block with the given size.
@@ -64,7 +62,7 @@ namespace jdwp {
          *            <code>OutOfMemoryException</code> is thrown.
          */
         virtual void* Allocate(size_t size
-            JDWP_FILE_LINE_PAR) throw(AgentException) = 0;
+			       JDWP_FILE_LINE_PAR) {return 0;};
 
         /**
          * Reallocates the memory block with the given size over the previously
@@ -78,7 +76,7 @@ namespace jdwp {
          *            <code>OutOfMemoryException</code> is thrown.
          */
         virtual void* Reallocate(void* ptr, size_t oldSize, size_t newSize
-            JDWP_FILE_LINE_PAR) throw(AgentException) = 0;
+				 JDWP_FILE_LINE_PAR) {return 0;};
 
         /**
          * Frees the memory block with the given size.
@@ -86,7 +84,15 @@ namespace jdwp {
          * @param ptr - the pointer to the allocated memory block
          */
         virtual void Free(void* ptr
-            JDWP_FILE_LINE_PAR) throw() = 0;
+            JDWP_FILE_LINE_PAR) {};
+
+	inline void* operator new(size_t size) {
+	    return malloc(size);
+	}
+
+	inline void operator delete(void* ptr) {
+	    free(ptr);
+	}
     };
 
     /**
@@ -106,7 +112,7 @@ namespace jdwp {
          * @return Pointer to the allocated memory block.
          */
         void* AllocateNoThrow(size_t size
-            JDWP_FILE_LINE_PAR) throw();
+            JDWP_FILE_LINE_PAR);
 
         /**
          * Allocates the memory block with the given size.
@@ -119,7 +125,7 @@ namespace jdwp {
          *            <code>OutOfMemoryException</code> is thrown.
          */
         void* Allocate(size_t size
-            JDWP_FILE_LINE_PAR) throw(AgentException);
+            JDWP_FILE_LINE_PAR) ;
 
         /**
          * Reallocates the memory block with the given size over the previously
@@ -133,7 +139,7 @@ namespace jdwp {
          *            <code>OutOfMemoryException</code> is thrown.
          */
         void* Reallocate(void* ptr, size_t oldSize, size_t newSize
-            JDWP_FILE_LINE_PAR) throw(AgentException);
+            JDWP_FILE_LINE_PAR);
 
         /**
          * Frees the memory block with the given size.
@@ -141,7 +147,7 @@ namespace jdwp {
          * @param ptr - the pointer to the allocated memory block
          */
         void Free(void* ptr
-            JDWP_FILE_LINE_PAR) throw();
+            JDWP_FILE_LINE_PAR);
     };
 
 
@@ -162,7 +168,7 @@ namespace jdwp {
          * @return Pointer to the allocated memory block.
          */
         void* AllocateNoThrow(size_t size
-            JDWP_FILE_LINE_PAR) throw();
+            JDWP_FILE_LINE_PAR);
 
         /**
          * Allocates the memory block with the given size.
@@ -175,7 +181,7 @@ namespace jdwp {
          *            <code>OutOfMemoryException</code> is thrown.
          */
         void* Allocate(size_t size
-            JDWP_FILE_LINE_PAR) throw(AgentException);
+            JDWP_FILE_LINE_PAR);
 
         /**
          * Reallocates the memory block with the given size over the previously
@@ -189,7 +195,7 @@ namespace jdwp {
          *            <code>OutOfMemoryException</code> is thrown.
          */
         void* Reallocate(void* ptr, size_t oldSize, size_t newSize
-            JDWP_FILE_LINE_PAR) throw(AgentException);
+            JDWP_FILE_LINE_PAR);
 
         /**
          * Frees the memory block with the given size.
@@ -197,7 +203,7 @@ namespace jdwp {
          * @param ptr - the pointer to the allocated memory block
          */
         void Free(void* ptr
-            JDWP_FILE_LINE_PAR) throw();
+            JDWP_FILE_LINE_PAR);
     };
 }
 

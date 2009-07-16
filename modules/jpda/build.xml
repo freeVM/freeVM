@@ -135,7 +135,13 @@
 
     <!-- Build native code -->
     <target name="build-native">
-        
+        <!-- create jdwpcfg.h to record the build level -->
+        <tstamp>
+            <format property="BUILD_LEVEL" pattern="dd-MM-yyyy"/>
+        </tstamp>
+        <echo message="#define BUILD_LEVEL &quot;${BUILD_LEVEL}&quot;${line.separator}"
+                file="${hy.jpda.src.main.native}/include/jdwpcfg.h"/>
+
         <echo message="Compiling JPDA natives" />
 
         <!-- Build agent shared lib -->
