@@ -170,7 +170,7 @@ jint StepRequest::GetCurrentLine()
     JvmtiAutoFree autoFreeDebugExtension(sourceDebugExtension);            
 
 #ifdef ZOS
-    /* Fix for 143846 - make sure we pass EBCDIC strings to zOS system functions */
+    /* Make sure we pass EBCDIC strings to zOS system functions */
     __atoe(sourceDebugExtension);
 #pragma convlit(suspend)
 #endif /* ZOS */
