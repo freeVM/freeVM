@@ -213,9 +213,10 @@ jint StepRequest::GetCurrentLine()
                                     long int out_start;
                                     long int out_len = 1;
                                     if (tok[0] == '#') {
+                                        long ret;
                                         tok++;
-                                         // ignore file id
-                                        (void)strtol(tok, &tok, 10);
+                                         // ignore file id - capture return value to satisfy compiler
+                                        ret = strtol(tok, &tok, 10);
                                     }
                                     if (tok[0] == ',') {
                                         tok++;
