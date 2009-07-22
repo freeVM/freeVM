@@ -795,7 +795,11 @@ TCPIPSocketTran_Accept(jdwpTransportEnv* env, jlong acceptTimeout,
     } while (ret == HYPORT_ERROR_SOCKET_TIMEOUT && envServerSocket != NULL);
     if (ret != 1){
         SetLastTranError(env, "socket accept failed or closed", GetLastErrorStatus(env));
-	return JDWPTRANSPORT_ERROR_IO_ERROR;
+        return JDWPTRANSPORT_ERROR_IO_ERROR;
+    }
+    if (envServerSocket == NULL) {
+        SetLastTranError(env, "Server socket has been closed", 0);
+        return JDWPTRANSPORT_ERROR_ILLEGAL_STATE;
     }
 #endif
 
