@@ -172,6 +172,16 @@ jint StepRequest::GetCurrentLine()
 #ifdef ZOS
     /* Make sure we pass EBCDIC strings to zOS system functions */
     __atoe(sourceDebugExtension);
+    if (default_stratum != NULL) {
+        // Copy the string so we only convert the local version to EBCDIC
+        char *temp = (char*)GetMemoryManager().Allocate(strlen(default_stratum)+1 JDWP_FILE_LINE);
+        strcpy(temp, default_stratum);
+        default_stratum = temp;
+        __atoe(default_stratum);
+    }
+    // This is ok to do here since JvmtiAutoFree checks if the pointer is NULL
+    // before freeing
+    JvmtiAutoFree autoFreeDefaultStratum(default_stratum); 
 #pragma convlit(suspend)
 #endif /* ZOS */
 
