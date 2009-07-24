@@ -269,18 +269,40 @@ ThreadReference::FramesHandler::Execute(JNIEnv *jni)
         }
 #endif
         
-        jboolean isObsolete;
-        JVMTI_TRACE(LOG_DEBUG, err, jvmti->IsMethodObsolete(frame_buffer[j].method, &isObsolete));
-
         // we should return 0 as the methodID for obsolete method.
-        if(isObsolete) {	 
-            m_cmdParser->reply.WriteLocation(jni, typeTag,
-                        declaring_class, 0,
-                        frame_buffer[j].location);
-        } else {
+
+        jvmtiCapabilities caps;
+        memset(&caps, 0, sizeof(caps));
+
+        JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetCapabilities(&caps));
+        if (err != JVMTI_ERROR_NONE) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Unable to get capabilities: %d", err));
+            return err;
+        }
+       // When selective debug is enabled, HCR is not allowed. So we need to check if HCR is disabled first before invoking IsMethodObsolete.
+       // If so, just return the methodID directly.
+        if(caps.can_redefine_classes != 1) {
             m_cmdParser->reply.WriteLocation(jni, typeTag,
                         declaring_class, frame_buffer[j].method,
                         frame_buffer[j].location);
+        }else {
+            jboolean isObsolete;
+            JVMTI_TRACE(LOG_DEBUG, err, jvmti->IsMethodObsolete(frame_buffer[j].method, &isObsolete));
+            if (err != JVMTI_ERROR_NONE) {
+                JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "Frames: IsMethodObsolete return error code: %d", err));
+                return err;
+            }
+            if(isObsolete) {
+                JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Frames: the method is obsolete: frame#=%d, loc=%lld, methodID=%p, classID=%p, typeTag=%d",
+                            j, frame_buffer[j].location, frame_buffer[j].method, declaring_class, typeTag));
+                m_cmdParser->reply.WriteLocation(jni, typeTag,
+                            declaring_class, 0,
+                            frame_buffer[j].location);
+            }else {
+                m_cmdParser->reply.WriteLocation(jni, typeTag,
+                        declaring_class, frame_buffer[j].method,
+                        frame_buffer[j].location);
+            }
         }
     }
 
