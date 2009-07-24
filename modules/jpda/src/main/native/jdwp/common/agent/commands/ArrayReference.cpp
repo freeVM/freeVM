@@ -77,8 +77,15 @@ ArrayReference::GetValuesHandler::Execute(JNIEnv *jni)
 
     JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: received: arrayID=%p, firstIndex=%d, length=%d", arrayObject, firstIndex, length));
 
+    if (NULL == arrayObject) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "GetValues: ReadArrayID() returned NULL"));
+        AgentException aex = GetExceptionManager().GetLastException();
+        jdwpError err = aex.ErrCode();
+        JDWP_SET_EXCEPTION(aex);
+        return err;
+    }
+
     jclass arrObjClass = jni->GetObjectClass(arrayObject);
-    JDWP_ASSERT(arrObjClass != 0);
 
     char* signature = 0;
     jvmtiError err;
