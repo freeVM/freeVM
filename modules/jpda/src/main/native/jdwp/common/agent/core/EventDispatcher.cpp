@@ -44,6 +44,7 @@ void EventDispatcher::Run(JNIEnv* jni) {
     MonitorAutoLock malCM(m_completeMonitor JDWP_FILE_LINE);
     
     while (!m_stopFlag) {
+        jni->PushLocalFrame(32);
         EventComposer *ec;
     
         // get next event from queue
@@ -76,6 +77,7 @@ void EventDispatcher::Run(JNIEnv* jni) {
             } 
             break;
         }
+        jni->PopLocalFrame(NULL);
     }
 
         // release completion monitor and wait forever until VM kills this thread
