@@ -17,12 +17,18 @@
 package org.apache.harmony.jretools.pack200;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
 
-import org.apache.harmony.pack200.Archive;
 import org.apache.harmony.pack200.PackingOptions;
 
 /**
@@ -31,102 +37,346 @@ import org.apache.harmony.pack200.PackingOptions;
 public class Main {
 
     public static void main(String args[]) throws Exception {
-        // TODO: -f isn't implemented here yet
-
         String inputFileName = null;
         String outputFileName = null;
         PackingOptions options = new PackingOptions();
+        String value = null;
 
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equals("--help") || args[i].equals("-help")
-                    || args[i].equals("-h") || args[i].equals("-?")) {
+            if ("--help".equals(args[i]) || "-help".equals(args[i])
+                    || "-h".equals(args[i]) || "-?".equals(args[i])) {
                 printHelp();
                 return;
-            } else if(args[i].equals("-V") || args[i].equals("--version")) {
+            } else if ("-V".equals(args[i]) || "--version".equals(args[i])) {
                 printVersion();
                 return;
-            } else if(args[i].equals("-g") || args[i].equals("--no-gzip")) {
+            } else if ("-g".equals(args[i]) || "--no-gzip".equals(args[i])) {
                 options.setGzip(false);
-            } else if(args[i].equals("--gzip")) {
+            } else if ("--gzip".equals(args[i])) {
                 options.setGzip(true);
-            } else if(args[i].equals("-G") || args[i].equals("--strip-debug")) {
+            } else if ("-G".equals(args[i]) || "--strip-debug".equals(args[i])) {
                 options.setStripDebug(true);
-            } else if(args[i].equals("-O") || args[i].equals("--no-keep-file-order")) {
+            } else if ("-O".equals(args[i])
+                    || "--no-keep-file-order".equals(args[i])) {
                 options.setKeepFileOrder(false);
-            } else if(args[i].equals("--keep-file-order")) {
+            } else if ("--keep-file-order".equals(args[i])) {
                 options.setKeepFileOrder(true);
-            } else if(args[i].startsWith("-S")) {
-                options.setSegmentLimit(Integer.parseInt(args[i].substring(2)));
+            } else if (args[i].startsWith("-S")) {
+                value = args[i].substring(2);
+                if(value.length() == 0) {
+                    if(i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -S ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                options.setSegmentLimit(Long.parseLong(value));
             } else if (args[i].startsWith("--segment-limit=")) {
-                options.setSegmentLimit(Integer.parseInt(args[i].substring(16)));
-            } else if(args[i].startsWith("-E")) {
-                options.setEffort(Integer.parseInt(args[i].substring(2)));
-            } else if(args[i].startsWith("--effort=")) {
-                options.setEffort(Integer.parseInt(args[i].substring(10)));
-            } else if(args[i].startsWith("-H")) {
-                options.setDeflateHint(args[i].substring(2));
-            } else if(args[i].startsWith("--deflate-hint=")) {
+                options.setSegmentLimit(Long.parseLong(args[i].substring(16)));
+            } else if (args[i].startsWith("-E")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -E ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                options.setEffort(Integer.parseInt(value));
+            } else if (args[i].startsWith("--effort=")) {
+                options.setEffort(Integer.parseInt(args[i].substring(9)));
+            } else if (args[i].startsWith("-H")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -H ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                options.setDeflateHint(value);
+            } else if (args[i].startsWith("--deflate-hint=")) {
                 options.setDeflateHint(args[i].substring(15));
-            } else if(args[i].startsWith("-m")) {
-                options.setModificationTime(args[i].substring(2));
-            } else if(args[i].startsWith("--modification-time=")) {
-                options.setModificationTime(args[i].substring(19));
-            } else if(args[i].startsWith("-P")) {
-                options.addPassFile(args[i].substring(2));
-            } else if(args[i].startsWith("--pass-file=")) {
+            } else if (args[i].startsWith("-m")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -m ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                options.setModificationTime(value);
+            } else if (args[i].startsWith("--modification-time=")) {
+                options.setModificationTime(args[i].substring(20));
+            } else if (args[i].startsWith("-P")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -P ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                options.addPassFile(value);
+            } else if (args[i].startsWith("--pass-file=")) {
                 options.addPassFile(args[i].substring(12));
-            } else if(args[i].startsWith("-U")) {
-                options.setUnknownAttributeAction(args[i].substring(2));
+            } else if (args[i].startsWith("-U")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -U ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                options.setUnknownAttributeAction(value);
             } else if (args[i].startsWith("--unknown-attribute=")) {
                 options.setUnknownAttributeAction(args[i].substring(20));
-            } else if(args[i].startsWith("-C")) {
-                String[] nameEqualsAction = args[i].substring(2).split("=");
-                options.addClassAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("--class-attribute=")) {
+            } else if (args[i].startsWith("-C")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -C ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                String[] nameEqualsAction = value.split("=");
+                options.addClassAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("--class-attribute=")) {
                 String[] nameEqualsAction = args[i].substring(18).split("=");
-                options.addClassAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("-F")) {
-                String[] nameEqualsAction = args[i].substring(2).split("=");
-                options.addFieldAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("--field-attribute=")) {
+                options.addClassAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("-F")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -F ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                String[] nameEqualsAction = value.split("=");
+                options.addFieldAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("--field-attribute=")) {
                 String[] nameEqualsAction = args[i].substring(18).split("=");
-                options.addFieldAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("-M")) {
-                String[] nameEqualsAction = args[i].substring(2).split("=");
-                options.addMethodAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("--method-attribute=")) {
+                options.addFieldAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("-M")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -M ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                String[] nameEqualsAction = value.split("=");
+                options.addMethodAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("--method-attribute=")) {
                 String[] nameEqualsAction = args[i].substring(19).split("=");
-                options.addMethodAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("-D")) {
-                String[] nameEqualsAction = args[i].substring(2).split("=");
-                options.addCodeAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].startsWith("--code-attribute=")) {
+                options.addMethodAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("-D")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -D ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                String[] nameEqualsAction = value.split("=");
+                options.addCodeAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if (args[i].startsWith("--code-attribute=")) {
                 String[] nameEqualsAction = args[i].substring(17).split("=");
-                options.addCodeAttributeAction(nameEqualsAction[0], nameEqualsAction[1]);
-            } else if(args[i].equals("-v") || args[i].equals("--verbose")) {
+                options.addCodeAttributeAction(nameEqualsAction[0],
+                        nameEqualsAction[1]);
+            } else if ("-v".equals(args[i]) || "--verbose".equals(args[i])) {
                 options.setVerbose(true);
                 options.setQuiet(false);
-            } else if(args[i].equals("-q") || args[i].equals("--quiet")) {
+            } else if ("-q".equals(args[i]) || "--quiet".equals(args[i])) {
                 options.setQuiet(true);
                 options.setVerbose(false);
-            } else if(args[i].startsWith("-l")) {
-                options.setLogFile(args[i].substring(2));
+            } else if (args[i].startsWith("-l")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -l ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                options.setLogFile(value);
+            } else if (args[i].startsWith("--log-file=")) {
+                options.setLogFile(args[i].substring(11));
+            } else if ("-r".equals(args[i]) || "--repack".equals(args[i])) {
+                options.setRepack(true);
+            } else if (args[i].startsWith("-f")) {
+                value = args[i].substring(2);
+                if (value.length() == 0) {
+                    if (i + 1 < args.length) {
+                        value = args[++i];
+                    } else {
+                        printErrorMessage("Bad argument: -f ?");
+                        printUsage();
+                        return;
+                    }
+                }
+                loadPackProperties(value, options);
+            } else if (args[i].startsWith("--config-file=")) {
+                loadPackProperties(args[i].substring(14), options);
             } else {
                 outputFileName = args[i];
-                if(args.length > i + 1) {
-                    inputFileName = args[i+1];
+                if (args.length > i + 1) {
+                    if (args.length == i + 2) {
+                        inputFileName = args[++i];
+                    } else {
+                        printUsage();
+                        return;
+                    }
                 }
-                break;
             }
         }
-        if(inputFileName == null || outputFileName == null) {
+
+        if (options.isRepack()) {
+            repack(inputFileName, outputFileName, options);
+        } else {
+            pack(inputFileName, outputFileName, options);
+        }
+    }
+
+    /*
+     * Load properties for packing
+     */
+    private static void loadPackProperties(String packPropertyFileName,
+            PackingOptions options) throws IOException {
+        Properties packProperties = new Properties();
+        packProperties.load(new FileInputStream(packPropertyFileName));
+        Enumeration propertyNames = packProperties.propertyNames();
+        String propretyName, propretyValue;
+        while (propertyNames.hasMoreElements()) {
+            propretyName = (String) propertyNames.nextElement();
+            propretyValue = packProperties.getProperty(propretyName);
+
+            if ("deflate.hint".equals(propretyName)) {
+                options.setDeflateHint(propretyValue);
+            } else if ("effort".equals(propretyName)) {
+                options.setEffort(Integer.parseInt(propretyValue));
+            } else if ("keep.file.order".equals(propretyName)) {
+                options.setKeepFileOrder(Boolean.getBoolean(propretyValue));
+            } else if ("modification.time".equals(propretyName)) {
+                options.setModificationTime(propretyName);
+            } else if ("segment.limit".equals(propretyName)) {
+                options.setSegmentLimit(Integer.parseInt(propretyValue));
+            } else if ("unknown.attribute".equals(propretyName)) {
+                options.setUnknownAttributeAction(propretyValue);
+            }
+        }
+    }
+
+    /*
+     * Pack input stream of jar file into output stream
+     */
+    private static void pack(String inputFileName, String outputFileName,
+            PackingOptions options) throws Exception {
+        if (inputFileName == null || outputFileName == null) {
             printUsage();
             return;
         }
-        JarInputStream inputStream = new JarInputStream(new FileInputStream(inputFileName));
-        OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFileName));
-        Archive archive = new Archive(inputStream, outputStream, options);
+
+        if (options.isGzip() && !outputFileName.endsWith(".gz")) {
+            printErrorMessage("To write a *.pack file, specify --no-gzip: "
+                    + outputFileName);
+            printUsage();
+            return;
+        }
+
+        JarFile jarFile = new JarFile(inputFileName);
+        OutputStream outputStream = new BufferedOutputStream(
+                new FileOutputStream(outputFileName));
+        org.apache.harmony.pack200.Archive archive = new org.apache.harmony.pack200.Archive(
+                jarFile, outputStream, options);
         archive.pack();
+    }
+
+    /*
+     * Repack input stream of jar file into output stream of jar file
+     */
+    private static void repack(String inputFileName, String outputFileName,
+            PackingOptions options) throws Exception {
+        if (outputFileName == null) {
+            printUsage();
+            return;
+        }
+
+        if (inputFileName == null) {
+            inputFileName = outputFileName;
+        }
+
+        // packing
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        org.apache.harmony.pack200.Archive packer;
+        // this is a workround for compatibility with RI
+        if (0 == options.getEffort()) {
+            packer = new org.apache.harmony.pack200.Archive(new JarInputStream(
+                    new FileInputStream(inputFileName)), outputStream, options);
+        } else {
+            packer = new org.apache.harmony.pack200.Archive(new JarFile(
+                    inputFileName), outputStream, options);
+        }
+        packer.pack();
+
+        // unpacking
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(
+                outputStream.toByteArray());
+        JarOutputStream jarOutputStream = new JarOutputStream(
+                new FileOutputStream(outputFileName));
+        org.apache.harmony.unpack200.Archive unpacker = new org.apache.harmony.unpack200.Archive(
+                inputStream, jarOutputStream);
+        unpacker.setVerbose(options.isVerbose());
+        unpacker.setQuiet(options.isQuiet());
+        // set deflate_hint option
+        if (!options.isKeepDeflateHint()) {
+            unpacker.setDeflateHint("true".equals(options.getDeflateHint()));
+        }
+        // set log file
+        String logFile = options.getLogFile();
+        if(logFile != null) {
+            unpacker.setLogFile(logFile, true);
+        }
+        unpacker.unpack();
+    }
+
+    private static void printErrorMessage(String mesg) {
+        System.out.println("Error: " + mesg);
     }
 
     private static void printUsage() {
