@@ -398,6 +398,7 @@ ClassType::InvokeMethodHandler::ExecuteDeferredFunc(JNIEnv *jni)
     case JDWP_TAG_VOID:
         jni->CallStaticVoidMethodA(m_clazz, m_methodID, m_methodValues);
         break;
+    case JDWP_TAG_ARRAY:
     case JDWP_TAG_OBJECT: {
         m_returnValue.value.l =
             jni->CallStaticObjectMethodA(m_clazz, m_methodID, m_methodValues);

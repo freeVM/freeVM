@@ -811,6 +811,7 @@ ObjectReference::InvokeMethodHandler::ExecuteDeferredFunc(JNIEnv *jni)
         case JDWP_TAG_VOID:
             jni->CallNonvirtualVoidMethodA(m_object, m_clazz, m_methodID, m_methodValues);
             break;
+        case JDWP_TAG_ARRAY:
         case JDWP_TAG_OBJECT:
             m_returnValue.value.l =
                 jni->CallNonvirtualObjectMethodA(m_object, m_clazz, m_methodID, m_methodValues);
@@ -855,6 +856,7 @@ ObjectReference::InvokeMethodHandler::ExecuteDeferredFunc(JNIEnv *jni)
         case JDWP_TAG_VOID:
             jni->CallVoidMethodA(m_object, m_methodID, m_methodValues);
             break;
+        case JDWP_TAG_ARRAY:
         case JDWP_TAG_OBJECT:
             m_returnValue.value.l =
                 jni->CallObjectMethodA(m_object, m_methodID, m_methodValues);
