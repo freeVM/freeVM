@@ -313,6 +313,9 @@ properties in preference to these:
        <!-- name of concatenated list, should be an absolute pathname -->
        <attribute name="result"/>
        <sequential>
+           <dirname file="@{result}" property="@{result}.dir" />
+           <mkdir dir="${@{result}.dir}" />
+
            <echo message="" file="@{result}"/>
            <concat destfile="@{result}" force="yes" fixlastline="yes" append="true">
                <fileset dir="@{dir}">
