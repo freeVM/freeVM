@@ -20,11 +20,13 @@ package org.apache.harmony.tools.jar;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * This is a tool that allows you to create/unpack jar/zip 
@@ -94,8 +96,58 @@ public class Main {
     /**
      * Creates a jar file with the specified arguments
      */
-    private static void createJar(String[] args) {
-        System.out.println("Error: Jar creation not yet implemented");
+    private static void createJar(String[] args) throws Exception {
+        boolean verboseFlag = false, fileFlag = false, manifestFlag = false;
+
+        // Check for expected and unexpected flags
+        for (int i=1; i<args[0].length(); i++) {
+            switch (args[0].charAt(i)) {
+            case 'v':
+                verboseFlag = true;
+                break;
+            case 'f':
+                fileFlag = true;
+                break;
+            case 'm':
+                manifestFlag = true;
+                break;
+            default:
+                System.out.println("Error: Illegal option for -c: '"+args[0].charAt(i)+"'");
+                return;
+            }
+        }
+
+        ZipOutputStream zos;
+        if (!fileFlag) {
+            // Write to stdout
+            if (verboseFlag) System.out.println("Writing to stdout");
+            zos = new ZipOutputStream(System.out);
+        } else {
+            // Write to the specified file
+            if (verboseFlag) System.out.println("Creating jar file: "+args[1]);
+            zos = new ZipOutputStream(new FileOutputStream(new File(args[1])));
+        }
+
+        String workingDir = System.getProperty("user.dir");
+        int firstFileIndex = 0;
+        if (manifestFlag) {
+            firstFileIndex = 3;
+        } else {
+            firstFileIndex = 2;
+        }
+
+        // Assume that all the args following the manifest (if provided) are the name of files to add to the archive
+        for (int i=firstFileIndex; i < args.length; i++) {
+            // attempt to add the file to the output stream
+            File f = new File(workingDir + File.separator + args[i]);
+            if (f.isDirectory()) {
+                processDir(f, zos, workingDir, verboseFlag);
+            } else {
+                processFile(f, zos, workingDir, verboseFlag);
+            }
+        }
+        
+        zos.close();
     }
 
     /**
@@ -131,8 +183,8 @@ public class Main {
             System.out.println("Error: No file name specified for 'f' option");
             return;
         }
-    	
-    	ZipInputStream zis;
+    
+        ZipInputStream zis;
         if (!fileFlag) {
             // Read from stdin
             if (verboseFlag) System.out.println("Reading input from stdin");
@@ -148,35 +200,35 @@ public class Main {
         String workingDir = System.getProperty("user.dir");
         
         while ((ze = zis.getNextEntry()) != null) {
-        	if (ze.isDirectory()) {
-        		// create a new directory of the same name
-       			File newDir = new File(ze.getName());
-    			if (! newDir.exists()) {
-    				newDir.mkdirs();        				
-    			}
-    	        if (verboseFlag) {
-    	        	System.out.println("created: " + ze.getName());
-    	        }
-        	} else {
-        		// extract the file to the appropriate directory
-        		File f = new File(workingDir + File.separator + ze.getName());
-        		f.createNewFile();
-        		FileOutputStream fos = new FileOutputStream(f);
-        		int i;
-        		while ((i = zis.read()) != -1) {
-        			fos.write(i);
-        		}
-            	fos.close();
-            	if (verboseFlag) {
-            		System.out.println("inflated: " + ze.getName());
-            	}
-        	}           
+            if (ze.isDirectory()) {
+                // create a new directory of the same name
+                File newDir = new File(ze.getName());
+                if (! newDir.exists()) {
+                    newDir.mkdirs();
+                }
+                if (verboseFlag) {
+                    System.out.println("created: " + ze.getName());
+                }
+            } else {
+                // extract the file to the appropriate directory
+                File f = new File(workingDir + File.separator + ze.getName());
+                f.createNewFile();
+                FileOutputStream fos = new FileOutputStream(f);
+                int i;
+                while ((i = zis.read()) != -1) {
+                    fos.write(i);
+                }
+                fos.close();
+                if (verboseFlag) {
+                    System.out.println("inflated: " + ze.getName());
+                }
+            }
             zis.closeEntry();
         }
 
         zis.close();
     }
-    	
+
     /**
      * Lists contents of jar file with the specified arguments
      */
@@ -234,5 +286,43 @@ public class Main {
     private static void indexJar(String[] args) {
         System.out.println("Error: Jar indexing not yet implemented");
     }
+    
+    private static void processDir(File dir, ZipOutputStream zos, String workingDir, boolean verboseFlag) throws IOException {	
+        // First add the dir to the ZipOutputStream
+        String relativePath = dir.getAbsolutePath().substring(workingDir.length() + 1);		
+        ZipEntry zEntry = new ZipEntry(relativePath);
+        if (verboseFlag) {
+            System.out.println("adding: " + relativePath);
+        }
+        zos.putNextEntry(zEntry);
 
+        // Add all files in this directory
+        File[] filesInDir = dir.listFiles();
+        for (int i=0; i < filesInDir.length; i++) {
+            File curFile = filesInDir[i];
+            if (curFile.isDirectory()) {
+                processDir(curFile, zos, workingDir, verboseFlag);
+            } else {
+                processFile(curFile, zos, workingDir, verboseFlag);
+            }
+        }
+
+        zos.closeEntry();
+    }
+
+    private static void processFile(File file, ZipOutputStream zos, String workingDir, boolean verboseFlag) throws IOException {
+        String relativePath = file.getAbsolutePath().substring(workingDir.length() + 1);
+        if (verboseFlag) {
+            System.out.println("adding: " + relativePath);
+        }
+
+        ZipEntry zEntry = new ZipEntry(relativePath);
+        zos.putNextEntry(zEntry);
+        // now write the data
+        FileInputStream fis = new FileInputStream(file);
+        byte fileContent[] = new byte[(int)file.length()];
+        fis.read(fileContent);
+        zos.write(fileContent);
+        zos.closeEntry();
+    }    
 }
