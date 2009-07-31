@@ -274,6 +274,7 @@ public class Main {
             Date date = new Date(ze.getTime());
             DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyy");
             String formattedDate = dateFormat.format(date);
+            zis.closeEntry();
             System.out.printf("%6d %s %s\n", ze.getSize(), formattedDate, ze.getName());
         }
 
