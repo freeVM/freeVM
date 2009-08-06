@@ -17,23 +17,22 @@
 
 #if !defined(helpers_h)
 #define helpers_h
-#include "vmi.h"
 int platformReadLink (char *link);
 jbyteArray getPlatformPath (JNIEnv * env, jbyteArray path);
 void setDefaultServerSocketOptions (JNIEnv * env, hysocket_t socketP);
-I_32 getPlatformRoots (char *rootStrings);
-char *getCommports (JNIEnv * env);
 jint getPlatformDatagramNominalSize (JNIEnv * env, hysocket_t socketP);
-I_32 getPlatformIsHidden (JNIEnv * env, char *path);
+I_32 getPlatformRoots (char *rootStrings);
 jstring getCustomTimeZoneInfo (JNIEnv * env, jintArray tzinfo,
-                               jbooleanArray isCustomTimeZone);
+             jbooleanArray isCustomTimeZone);
+I_32 getPlatformIsHidden (JNIEnv * env, char *path);
 jint getPlatformDatagramMaxSize (JNIEnv * env, hysocket_t socketP);
+char *getCommports (JNIEnv * env);
 I_32 getPlatformIsWriteOnly (JNIEnv * env, char *path);
 I_32 setPlatformFileLength (JNIEnv * env, IDATA descriptor, jlong newLength);
+void platformCanonicalPath (char *pathCopy);
 I_32 getPlatformIsReadOnly (JNIEnv * env, char *path);
 void setPlatformBindOptions (JNIEnv * env, hysocket_t socketP);
 I_32 setPlatformLastModified (JNIEnv * env, char *path, I_64 time);
 I_32 setPlatformReadOnly (JNIEnv * env, char *path);
-int portCmp (const void **a, const void **b);
 void getOSCharset(char *locale, const size_t size);
 #endif /* helpers_h */
