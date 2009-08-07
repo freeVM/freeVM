@@ -31,6 +31,7 @@
     <target name="check">
         <check-one-file src="${ecj.jar.url}" dest="${ecj.jar}" />
         <check-one-file src="${junit.jar.url}" dest="${junit.jar}" />
+        <check-one-file src="${hamcrest-library.jar.url}" dest="${hamcrest-library.jar}" />
 
         <poll-modules target="check-depends" dir="${jdktools.base.dir}/modules"/>
 
@@ -55,6 +56,7 @@ You may point to the correct location via "hy.hdk" property:
         
     <target name="fetch">
         <fetch dep="junit.jar"/>
+        <fetch dep="hamcrest-library.jar"/>
         <fetch dep="ecj.jar"/>
         <poll-modules target="fetch-depends" dir="${jdktools.base.dir}/modules"/>
     </target>
