@@ -1,0 +1,1 @@
+@java -Xms128m -Xmx256m -classpath %~dp0\..\lib\minjre.jar;%~dp0\..\lib\bcel-5.2.jar org.crazynut.harmony.minjre.bin.AnalyzeDependency %*
