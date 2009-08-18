@@ -1,203 +1,215 @@
 <?xml version="1.0"?>
 <project name="MinJre Toolkit" default="dist">
-	
-	<property environment="env" />
 
-	<!-- build properies -->
-	<property name="src.dir" location="src" />
-	<property name="build.dir" location="build" />
-	<property name="lib.dir" location="lib" />
-	<property name="dist.dir" location="dist" />
-	<property name="native.dir" location="native" />
-	<property name="script.dir" location="script" />
-	<property name="conf.dir" location="conf" />
+    <property environment="env" />
 
-	<!-- user properies -->
-	<property name="jdk.dir" location="${env.JAVA_HOME}" />
-	<property name="cns.dir" location="cns" />
+    <!-- build properies -->
+    <property name="src.dir" location="src" />
+    <property name="build.dir" location="build" />
+    <property name="lib.dir" location="lib" />
+    <property name="dist.dir" location="dist" />
+    <property name="native.dir" location="native" />
+    <property name="script.dir" location="script" />
+    <property name="conf.dir" location="conf" />
 
-	<property name="agent.name" value="tracer" />
-	<property name="origin.dir" location="${jdk.dir}/jre" />
-	<property name="target.dir" location="${origin.dir}-min" />
+    <!-- user properies -->
+    <property name="jdk.dir" location="${env.JAVA_HOME}" />
+    <property name="cns.dir" location="cns" />
 
-	<!-- test properies -->
-	<property name="test.dir" location="test" />
-	
-	<!-- os property, used for native compiling -->
-	<condition property="isWindows">    
-		<os family="windows" />   
+    <property name="agent.name" value="tracer" />
+    <property name="origin.dir" location="${jdk.dir}/jre" />
+    <property name="target.dir" location="${origin.dir}-min" />
+
+    <!-- test properies -->
+    <property name="test.dir" location="test" />
+
+    <!-- os property, used for native compiling -->
+    <condition property="isWindows">    
+        <os family="windows" />   
     </condition>
     <condition property="isUnix"> 
         <os family="unix" />
     </condition>
     <condition property="isOther">
-		<and>
-			<os family="dos" />
-			<os family="mac" />
-			<os family="netware" />
-			<os family="os 2" />
-		</and>
+        <and>
+            <os family="dos" />
+            <os family="mac" />
+            <os family="netware" />
+            <os family="os 2" />
+        </and>
     </condition>
 
-	<!-- check dependencies property, build will fail unless it is true -->
-	<!-- NOT IMPLEMENTED YET! -->
-	<!-- <condition property="all.dependencies.present">
-	</condition> -->
+    <!-- check dependencies property, build will fail unless it is true -->
+    <!-- NOT IMPLEMENTED YET! -->
+    <!-- <condition property="all.dependencies.present">
+         </condition> -->
 
-	<!-- test unnecessary property, test will be ignored if it is true -->
-	<!-- NOT IMPLEMENTED YET! -->
-	<!-- <condition property="test.unnecessary">
-	</condition> -->
+    <!-- test unnecessary property, test will be ignored if it is true -->
+    <!-- NOT IMPLEMENTED YET! -->
+    <!-- <condition property="test.unnecessary">
+         </condition> -->
 
-	<!-- define classpath -->
-	<path id="classpath">
-		<fileset file="${lib.dir}/*.jar" />
-		<pathelement path="${build.dir}" />
-	</path>
+    <!-- define classpath -->
+    <path id="classpath">
+        <fileset file="${lib.dir}/*.jar" />
+        <pathelement path="${build.dir}" />
+    </path>
 
-	<!-- initialize task -->
-	<target name="init">
+    <!-- initialize task -->
+    <target name="init">
 
-		<!-- <fail message="Missing dependencies. Building fails." unless="all.dependencies.present" /> -->
-	</target>
+        <!-- <fail message="Missing dependencies. Building fails." unless="all.dependencies.present" /> -->
+    </target>
 
-	<target name="-compile-native-win" if="isWindows">
-		<exec dir="${native.dir}" executable="cl">
-			<arg line="/EHsc" />
-			<arg line="-I${jdk.dir}\include" />
-			<arg line="-I${jdk.dir}\include\win32" />
-			<arg line="-LD" />
-			<arg line="ClassLoadTraceAgent.cpp" />
-			<arg line="Main.cpp" />
-			<arg line="-Fe${agent.name}.dll" />
-		</exec>
-		<delete dir="${native.dir}" excludes="**\*.cpp **\*.h **\*.dll" />
-	</target>
-	
-	<target name="-compile-native-unix" if="isUnix">
-		<exec dir="${native.dir}" executable="g++">
-			<arg line="-I${jdk.dir}/include" />
-			<arg line="-I${jdk.dir}/include/linux" />
-			<arg line="ClassLoadTraceAgent.cpp" />
-			<arg line="Main.cpp" />
-			<arg line="-fPIC" />
-			<arg line="-shared" />
-			<arg line="-o lib${agent.name}.so" />
-		</exec>
-		<delete dir="${native.dir}" excludes="**\*.cpp **\*.h **\*.so" />
-	</target>
+    <target name="-compile-native-win" if="isWindows">
+        <exec dir="${native.dir}" executable="cl">
+            <arg line="/EHsc" />
+            <arg line="-I${jdk.dir}\include" />
+            <arg line="-I${jdk.dir}\include\win32" />
+            <arg line="-LD" />
+            <arg line="ClassLoadTraceAgent.cpp" />
+            <arg line="Main.cpp" />
+            <arg line="-Fe${agent.name}.dll" />
+        </exec>
+        <delete dir="${native.dir}" excludes="**\*.cpp **\*.h **\*.dll" />
+    </target>
 
-	<target name="-compile-native-other" if="isOther">
-		<echo message="Dynamic tracer agent is not supported in this os and will not be included in the distribution." />
-	</target>
+    <target name="-compile-native-unix" if="isUnix">
+        <exec dir="${native.dir}" executable="g++">
+            <arg line="-I${jdk.dir}/include" />
+            <arg line="-I${jdk.dir}/include/linux" />
+            <arg line="ClassLoadTraceAgent.cpp" />
+            <arg line="Main.cpp" />
+            <arg line="-fPIC" />
+            <arg line="-shared" />
+            <arg line="-o lib${agent.name}.so" />
+        </exec>
+        <delete dir="${native.dir}" excludes="**\*.cpp **\*.h **\*.so" />
+    </target>
 
-	<target name="compile-native" depends="init, -compile-native-win, -compile-native-unix, -compile-native-other" />
+    <target name="-compile-native-other" if="isOther">
+        <echo message="Dynamic tracer agent is not supported in this os and will not be included in the distribution." />
+    </target>
 
-	<target name="compile-java" depends="init">
-		<mkdir dir="${build.dir}"/>
-		<javac srcdir="${src.dir}" destdir="${build.dir}" target="1.5">
-			<classpath refid="classpath"/>
-		</javac>
-		<mkdir dir="${build.dir}/org/crazynut/harmony/minjre/conf" />
-		<copy todir="${build.dir}/org/crazynut/harmony/minjre/conf">
-			<fileset file="${conf.dir}/*.cns" />
-		</copy>
-	</target>
+    <target name="compile-native"
+            depends="init, -compile-native-win, -compile-native-unix, -compile-native-other" />
 
-	<!-- compile -->
-	<target name="compile" depends="compile-native, compile-java" description="Compile the source files." />
-	
-	<!-- test the command line tool with helloworld -->
-	<target name="test-hello" depends="compile">
-    	<delete dir="${cns.dir}" />
-    	<mkdir dir="${cns.dir}" />
-		<delete dir="${target.dir}" />
-    	<mkdir dir="${target.dir}" />
-		<javac srcdir="${test.dir}/hello" destdir="${test.dir}/hello" target="1.5" />
-		<java classname="org.crazynut.harmony.minjre.bin.AnalyzeDependency">
-			<classpath refid="classpath"/>
-			<arg line="-jrelib=${origin.dir}/lib" />
-			<arg line="-classpath=${test.dir}/hello" />
-			<arg line="-aim=${cns.dir}/static.cns" />
-		</java>
-		<java classname="Hello" fork="true" dir="${test.dir}/hello">
-			<env key="PATH" path="${env.PATH}:${native.dir}" />
-			<env key="LD_LIBRARY_PATH" path="${env.LD_LIBRARY_PATH}:${native.dir}" />
-			<jvmarg line="-agentlib:${agent.name}=output=dynamic.cns" />
-		</java>
-		<copy file="${test.dir}/hello/dynamic.cns" toDir="${cns.dir}" />
-		<java classname="org.crazynut.harmony.minjre.bin.GenerateJre">
-			<classpath refid="classpath"/>
-			<arg line="-jre=harmony" />
-			<arg line="-cnspath=${cns.dir}" />
-			<arg line="-origin=${origin.dir}" />
-			<arg line="-target=${target.dir}" />
-		</java>
-		<chmod file="${target.dir}/bin/java" perm="+x"/>
-    	<exec executable="${target.dir}/bin/java">
-    	    <arg line="-classpath ${test.dir}/hello Hello"/>
-    	</exec>
-		<delete dir="${test.dir}/hello" excludes="**\*.java" />
-	</target>
+    <target name="compile-java" depends="init">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}" target="1.5">
+            <classpath refid="classpath"/>
+        </javac>
+        <mkdir dir="${build.dir}/org/crazynut/harmony/minjre/conf" />
+        <copy todir="${build.dir}/org/crazynut/harmony/minjre/conf">
+            <fileset file="${conf.dir}/*.cns" />
+        </copy>
+    </target>
 
-	<!-- test the ant task with helloworld -->
-	
-<target name="test-task-hello" depends="compile">
+    <!-- compile -->
+    <target name="compile" depends="compile-native, compile-java"
+            description="Compile the source files." />
 
-		<taskdef name="analyze" classname="org.crazynut.harmony.minjre.anttask.AnalyzeDependencyTask" classpath="${build.dir};${lib.dir}/bcel-5.2.jar" />
-		<taskdef name="jregen" classname="org.crazynut.harmony.minjre.anttask.GenerateJreTask" classpath="${build.dir}" />
-		<delete dir="${cns.dir}" />
-    	<mkdir dir="${cns.dir}" />
-		<delete dir="${target.dir}" />
-    	<mkdir dir="${target.dir}" />
-		<javac srcdir="${test.dir}/hello" destdir="${test.dir}/hello" target="1.5" />
-    	<analyze jrelib="${origin.dir}/lib" aim="${cns.dir}/static.cns">
-    		<classpath>
-				<pathelement location="${test.dir}/hello"/>
-			</classpath>
-    	</analyze>
-    	<jregen jre="harmony" origin="${origin.dir}" target="${target.dir}">
-    		<cnspath path="${cns.dir}" />
-    	</jregen>
-		<chmod file="${target.dir}/bin/java" perm="+x"/>
-    	<exec executable="${target.dir}/bin/java">
-    	    <arg line="-classpath ${test.dir}/hello Hello"/>
-    	</exec>
-		<delete dir="${test.dir}/hello" excludes="**\*.java" />
-	</target>
+    <!-- test the command line tool with helloworld -->
+    <target name="test-hello" depends="compile">
+        <delete dir="${cns.dir}" />
+        <mkdir dir="${cns.dir}" />
+        <delete dir="${target.dir}" />
+        <mkdir dir="${target.dir}" />
+        <javac srcdir="${test.dir}/hello" destdir="${test.dir}/hello"
+               target="1.5" />
+        <java classname="org.crazynut.harmony.minjre.bin.AnalyzeDependency">
+            <classpath refid="classpath"/>
+            <arg line="-jrelib=${origin.dir}/lib" />
+            <arg line="-classpath=${test.dir}/hello" />
+            <arg line="-aim=${cns.dir}/static.cns" />
+        </java>
+        <java classname="Hello" fork="true" dir="${test.dir}/hello">
+            <env key="PATH" path="${env.PATH}:${native.dir}" />
+            <env key="LD_LIBRARY_PATH"
+                 path="${env.LD_LIBRARY_PATH}:${native.dir}" />
+            <jvmarg line="-agentlib:${agent.name}=output=dynamic.cns" />
+        </java>
+        <copy file="${test.dir}/hello/dynamic.cns" toDir="${cns.dir}" />
+        <java classname="org.crazynut.harmony.minjre.bin.GenerateJre">
+            <classpath refid="classpath"/>
+            <arg line="-jre=harmony" />
+            <arg line="-cnspath=${cns.dir}" />
+            <arg line="-origin=${origin.dir}" />
+            <arg line="-target=${target.dir}" />
+        </java>
+        <chmod file="${target.dir}/bin/java" perm="+x"/>
+        <exec executable="${target.dir}/bin/java">
+            <arg line="-classpath ${test.dir}/hello Hello"/>
+        </exec>
+        <delete dir="${test.dir}/hello" excludes="**\*.java" />
+    </target>
+
+    <!-- test the ant task with helloworld -->
+
+    <target name="test-task-hello" depends="compile">
+
+        <taskdef name="analyze"
+                 classname="org.crazynut.harmony.minjre.anttask.AnalyzeDependencyTask"
+                 classpath="${build.dir};${lib.dir}/bcel-5.2.jar" />
+        <taskdef name="jregen"
+                 classname="org.crazynut.harmony.minjre.anttask.GenerateJreTask"
+                 classpath="${build.dir}" />
+        <delete dir="${cns.dir}" />
+        <mkdir dir="${cns.dir}" />
+        <delete dir="${target.dir}" />
+        <mkdir dir="${target.dir}" />
+        <javac srcdir="${test.dir}/hello" destdir="${test.dir}/hello"
+               target="1.5" />
+        <analyze jrelib="${origin.dir}/lib" aim="${cns.dir}/static.cns">
+            <classpath>
+                <pathelement location="${test.dir}/hello"/>
+            </classpath>
+        </analyze>
+        <jregen jre="harmony" origin="${origin.dir}" target="${target.dir}">
+            <cnspath path="${cns.dir}" />
+        </jregen>
+        <chmod file="${target.dir}/bin/java" perm="+x"/>
+        <exec executable="${target.dir}/bin/java">
+            <arg line="-classpath ${test.dir}/hello Hello"/>
+        </exec>
+        <delete dir="${test.dir}/hello" excludes="**\*.java" />
+    </target>
 
 
     <target name="test" depends="test-hello, test-task-hello" />
-	
-	<!-- create the distribution -->
-	<target name="dist" depends="test" description="Create everything for the MinJre Toolkit.">
-		<mkdir dir="${dist.dir}" />
-		<mkdir dir="${dist.dir}/bin" />
-		<copy todir="${dist.dir}/bin">
-			<fileset file="${script.dir}/*.*" />
-		</copy>
-		<mkdir dir="${dist.dir}/lib" />
-		<jar destfile="${dist.dir}/lib/minjre.jar" basedir="${build.dir}" />
-		<copy file="${lib.dir}/bcel-5.2.jar" todir="${dist.dir}/lib" />
-		<mkdir dir="${dist.dir}/agent" />
-		<copy todir="${dist.dir}/agent">
-			<fileset file="${native.dir}/*.so" />
-			<fileset file="${native.dir}/*.dll" />
-		</copy>
-		<mkdir dir="${dist.dir}/doc" />
-		<javadoc destdir="${dist.dir}/doc" author="true" version="true" use="true" windowtitle="MinJre Toolkit API">
-			<packageset dir="${src.dir}" defaultexcludes="yes" />
-			<doctitle><![CDATA[<h1>MinJre Toolkit API</h1>]]></doctitle>
-			<bottom><![CDATA[<i>Auther Daniel Gong.</i>]]></bottom>
-			<tag name="todo" scope="all" description="To do:" />
-		</javadoc>
-	</target>
-	
-	<target name="clean" description="Restore the project directory.">
-		<delete dir="${build.dir}" />
-		<delete dir="${cns.dir}" />
-		<delete dir="${dist.dir}" />
-		<delete dir="${native.dir}" excludes="**\*.cpp **\*.h" />
-	</target>
+
+    <!-- create the distribution -->
+    <target name="dist" depends="test"
+            description="Create everything for the MinJre Toolkit.">
+        <mkdir dir="${dist.dir}" />
+        <mkdir dir="${dist.dir}/bin" />
+        <copy todir="${dist.dir}/bin">
+            <fileset file="${script.dir}/*.*" />
+        </copy>
+        <mkdir dir="${dist.dir}/lib" />
+        <jar destfile="${dist.dir}/lib/minjre.jar" basedir="${build.dir}" />
+        <copy file="${lib.dir}/bcel-5.2.jar" todir="${dist.dir}/lib" />
+        <mkdir dir="${dist.dir}/agent" />
+        <copy todir="${dist.dir}/agent">
+            <fileset file="${native.dir}/*.so" />
+            <fileset file="${native.dir}/*.dll" />
+        </copy>
+        <mkdir dir="${dist.dir}/doc" />
+        <javadoc destdir="${dist.dir}/doc"
+                 author="true" version="true" use="true"
+                 windowtitle="MinJre Toolkit API">
+            <packageset dir="${src.dir}" defaultexcludes="yes" />
+            <doctitle><![CDATA[<h1>MinJre Toolkit API</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Auther Daniel Gong.</i>]]></bottom>
+            <tag name="todo" scope="all" description="To do:" />
+        </javadoc>
+    </target>
+
+    <target name="clean" description="Restore the project directory.">
+        <delete dir="${build.dir}" />
+        <delete dir="${cns.dir}" />
+        <delete dir="${dist.dir}" />
+        <delete dir="${native.dir}" excludes="**\*.cpp **\*.h" />
+    </target>
 
 </project>
