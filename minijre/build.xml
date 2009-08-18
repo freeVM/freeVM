@@ -96,7 +96,8 @@
 
     <target name="compile-java" depends="init">
         <mkdir dir="${build.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${build.dir}" target="1.5">
+        <javac srcdir="${src.dir}" destdir="${build.dir}"
+               source="1.5" target="1.5">
             <classpath refid="classpath"/>
         </javac>
         <mkdir dir="${build.dir}/org/crazynut/harmony/minjre/conf" />
@@ -116,7 +117,7 @@
         <delete dir="${target.dir}" />
         <mkdir dir="${target.dir}" />
         <javac srcdir="${test.dir}/hello" destdir="${test.dir}/hello"
-               target="1.5" />
+               source="1.5" target="1.5" />
         <java classname="org.crazynut.harmony.minjre.bin.AnalyzeDependency">
             <classpath refid="classpath"/>
             <arg line="-jrelib=${origin.dir}/lib" />
@@ -159,7 +160,7 @@
         <delete dir="${target.dir}" />
         <mkdir dir="${target.dir}" />
         <javac srcdir="${test.dir}/hello" destdir="${test.dir}/hello"
-               target="1.5" />
+               source="1.5" target="1.5" />
         <analyze jrelib="${origin.dir}/lib" aim="${cns.dir}/static.cns">
             <classpath>
                 <pathelement location="${test.dir}/hello"/>
