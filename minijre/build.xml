@@ -4,24 +4,24 @@
 	<property environment="env" />
 
 	<!-- build properies -->
-	<property name="src.dir" value="src" />
-	<property name="build.dir" value="build" />
-	<property name="lib.dir" value="lib" />
-	<property name="dist.dir" value="dist" />
-	<property name="native.dir" value="native" />
-	<property name="script.dir" value="script" />
-	<property name="conf.dir" value="conf" />
+	<property name="src.dir" location="src" />
+	<property name="build.dir" location="build" />
+	<property name="lib.dir" location="lib" />
+	<property name="dist.dir" location="dist" />
+	<property name="native.dir" location="native" />
+	<property name="script.dir" location="script" />
+	<property name="conf.dir" location="conf" />
 
 	<!-- user properies -->
-	<property name="jdk.dir" value="${env.JAVA_HOME}" />
-	<property name="cns.dir" value="cns" />
+	<property name="jdk.dir" location="${env.JAVA_HOME}" />
+	<property name="cns.dir" location="cns" />
 
 	<property name="agent.name" value="tracer" />
-	<property name="origin.dir" value="C:/java/harmony-jre" />
-	<property name="target.dir" value="C:/java/harmony-jre-min" />
+	<property name="origin.dir" location="${jdk.dir}/jre" />
+	<property name="target.dir" location="${origin.dir}-min" />
 
 	<!-- test properies -->
-	<property name="test.dir" value="test" />
+	<property name="test.dir" location="test" />
 	
 	<!-- os property, used for native compiling -->
 	<condition property="isWindows">    
@@ -113,6 +113,7 @@
     	<mkdir dir="${cns.dir}" />
 		<delete dir="${target.dir}" />
     	<mkdir dir="${target.dir}" />
+		<javac srcdir="${test.dir}/hello" destdir="${test.dir}/hello" target="1.5" />
 		<java classname="org.crazynut.harmony.minjre.bin.AnalyzeDependency">
 			<classpath refid="classpath"/>
 			<arg line="-jrelib=${origin.dir}/lib" />
@@ -122,7 +123,6 @@
 		<java classname="Hello" fork="true" dir="${test.dir}/hello">
 			<env key="PATH" path="${env.PATH}:${native.dir}" />
 			<env key="LD_LIBRARY_PATH" path="${env.LD_LIBRARY_PATH}:${native.dir}" />
-
 			<jvmarg line="-agentlib:${agent.name}=output=dynamic.cns" />
 		</java>
 		<copy file="${test.dir}/hello/dynamic.cns" toDir="${cns.dir}" />
@@ -133,9 +133,11 @@
 			<arg line="-origin=${origin.dir}" />
 			<arg line="-target=${target.dir}" />
 		</java>
+		<chmod file="${target.dir}/bin/java" perm="+x"/>
     	<exec executable="${target.dir}/bin/java">
     	    <arg line="-classpath ${test.dir}/hello Hello"/>
     	</exec>
+		<delete dir="${test.dir}/hello" excludes="**\*.java" />
 	</target>
 
 	<!-- test the ant task with helloworld -->
@@ -148,6 +150,7 @@
     	<mkdir dir="${cns.dir}" />
 		<delete dir="${target.dir}" />
     	<mkdir dir="${target.dir}" />
+		<javac srcdir="${test.dir}/hello" destdir="${test.dir}/hello" target="1.5" />
     	<analyze jrelib="${origin.dir}/lib" aim="${cns.dir}/static.cns">
     		<classpath>
 				<pathelement location="${test.dir}/hello"/>
@@ -156,10 +159,11 @@
     	<jregen jre="harmony" origin="${origin.dir}" target="${target.dir}">
     		<cnspath path="${cns.dir}" />
     	</jregen>
+		<chmod file="${target.dir}/bin/java" perm="+x"/>
     	<exec executable="${target.dir}/bin/java">
     	    <arg line="-classpath ${test.dir}/hello Hello"/>
     	</exec>
-
+		<delete dir="${test.dir}/hello" excludes="**\*.java" />
 	</target>
 
 
