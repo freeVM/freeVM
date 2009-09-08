@@ -77,14 +77,19 @@ bool SourceNameMatchModifier::Apply(JNIEnv* jni, EventInfo &eInfo)
             bool result =  MatchPatternSourceName(sourceFileName, m_pattern);
 
             if(!result) {
+                bool result;
+                char *p = (char*) GetMemoryManager().Allocate(strlen(m_pattern)+1 JDWP_FILE_LINE);
+                strcpy(p, m_pattern);
                 // replace '.' with '/' to be matched with signature
-                for (char* p = m_pattern; *p != '\0'; p++) {
+                for (; *p != '\0'; p++) {
                     if (*p == '.') {
                         *p = '/';
                     }
                 }
                 JDWP_ASSERT(eInfo.signature != 0);
-                return MatchPattern(eInfo.signature, m_pattern);
+                result = MatchPattern(eInfo.signature, p);
+                GetMemoryManager().Free(p JDWP_FILE_LINE);
+                return result;
             } else {
                 return true;
             }
