@@ -298,6 +298,7 @@ ObjectReference::GetValuesHandler::Execute(JNIEnv *jni)
 int
 ObjectReference::SetValuesHandler::Execute(JNIEnv *jni) 
 {
+    jdwpError jdwpErr;
     jobject jvmObject = m_cmdParser->command.ReadObjectID(jni);
     // Can be: InternalErrorException, OutOfMemoryException,
     // JDWP_ERROR_INVALID_OBJECT
@@ -382,6 +383,7 @@ ObjectReference::SetValuesHandler::Execute(JNIEnv *jni)
             = m_cmdParser->command.ReadUntaggedValue(jni, fieldValueTag);
         // Can be: InternalErrorException, OutOfMemoryException,
         // JDWP_ERROR_INVALID_OBJECT
+        JDWP_CHECK_ERROR_CODE(jdwpErr);
 
         switch ( fieldValueTag ) {
         case JDWP_TAG_BOOLEAN:

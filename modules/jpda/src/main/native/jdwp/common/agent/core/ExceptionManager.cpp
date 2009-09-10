@@ -137,3 +137,10 @@ AgentException ExceptionManager::GetLastException() {
     return *aex;
 }
 
+jdwpError ExceptionManager::ReadLastErrorCode() {
+    ThreadId_t tid = _GetCurrentThreadId(m_jvm);
+    MonitorAutoLock lock(m_monitor JDWP_FILE_LINE);
+    exception_context* context = GetCurrentContext(tid);
+    return (context == 0 || context->lastException == 0) ?
+        JDWP_ERROR_NONE : context->lastException->ErrCode();
+}

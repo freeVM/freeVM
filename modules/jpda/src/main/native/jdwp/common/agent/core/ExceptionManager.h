@@ -34,6 +34,16 @@
 
 #define JDWP_SET_EXCEPTION(ex) AgentBase::GetExceptionManager().SetException(ex)
 
+#define JDWP_LAST_ERROR_CODE \
+  AgentBase::GetExceptionManager().ReadLastErrorCode()
+
+#define JDWP_CHECK_ERROR_CODE(var) var = JDWP_LAST_ERROR_CODE; \
+                                   if (var != JDWP_ERROR_NONE) { \
+                                     return var; \
+                                   }
+
+#define JDWP_HAS_EXCEPTION (JDWP_LAST_ERROR_CODE != JDWP_ERROR_NONE)
+
 #define JDWP_CHECK_RETURN(value) if (value != JDWP_ERROR_NONE) { \
                                     return value; \
                                  }
@@ -66,6 +76,7 @@ namespace jdwp {
 
         void SetException(AgentException& ex);
         AgentException GetLastException();
+        jdwpError ReadLastErrorCode();
 
         inline void* operator new(size_t size) {
             return malloc(size);
