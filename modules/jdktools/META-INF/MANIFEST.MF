@@ -4,7 +4,8 @@ Specification-Version: 1.5
 Implementation-Title: Apache Harmony
 Implementation-Vendor: The Apache Software Foundation
 Implementation-Vendor-Id: org.apache.harmony
-Implementation-URL: http://incubator.apache.org/harmony
+Implementation-URL: http://harmony.apache.org
+Class-Path: ecj-3.4.2.jar,jdi.jar,jdimodel.jar,bcel-5.2.jar
 Bundle-ManifestVersion: 2
 Bundle-Name: Harmony Tools
 Bundle-SymbolicName: org.apache.harmony.tools
@@ -28,21 +29,21 @@ Import-Package: java.io,
  org.apache.harmony.kernel.vm,
  org.apache.harmony.luni.util,
  org.apache.harmony.pack200,
- org.apache.harmony.security.asn1;version="1.0.0",
- org.apache.harmony.security.pkcs10;version="1.0.0",
- org.apache.harmony.security.provider.cert;version="1.0.0",
- org.apache.harmony.security.utils;version="1.0.0",
- org.apache.harmony.security.x501;version="1.0.0",
- org.apache.harmony.security.x509;version="1.0.0"
+ org.apache.harmony.rmi.activation,
+ org.apache.harmony.rmi.compiler,
+ org.apache.harmony.rmi.registry,
+ org.apache.harmony.security.asn1,
+ org.apache.harmony.security.pkcs10,
+ org.apache.harmony.security.pkcs7,
+ org.apache.harmony.security.provider.cert,
+ org.apache.harmony.security.utils,
+ org.apache.harmony.security.x501,
+ org.apache.harmony.security.x509,
+ org.apache.harmony.security.x509.tsp
 Export-Package: org.apache.harmony.tools.javac,
  org.apache.harmony.tools.javah,
  org.apache.harmony.tools.javadoc,
  org.apache.harmony.tools.jarsigner,
  org.apache.harmony.tools.keytool,
- org.apache.harmony.tools.unpack200,
- org.apache.harmony.tools.pack200,
  com.sun.tools.javac,
- com.sun.tools.jdi,
- com.sun.tools.jdi.connect,
- com.sun.tools.jdi.event,
- com.sun.tools.jdi.request
+ com.sun.jdi
