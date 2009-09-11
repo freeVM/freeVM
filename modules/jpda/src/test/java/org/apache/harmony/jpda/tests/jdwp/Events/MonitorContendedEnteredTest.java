@@ -33,15 +33,12 @@ public class MonitorContendedEnteredTest extends JDWPSyncTestCase {
         return "org.apache.harmony.jpda.tests.jdwp.Events.MonitorContendedEnterAndEnteredDebuggee";
     }
 
-    public void testMonitorContendedEntteredForClassOnly() {
+    public void testMonitorContendedEnteredForClassMatch() {
         synchronizer.receiveMessage(JPDADebuggeeSynchronizer.SGNL_READY);
 
-        // Attain Object class id
-        long monitorRefTypeID = getClassIDBySignature(monitorSignature);
-        logWriter.println("==> Object ReferenceType ID = " + monitorRefTypeID);
-        
-        // Set MONITOR_CONTENDED_ENTERED request for MockMonitorClass
-        debuggeeWrapper.vmMirror.setMonitorContendedEnteredForClassOnly(monitorRefTypeID);
+        // Set MONITOR_CONTENDED_ENTERED request for MonitorContendedEnterAndEnteredDebuggee
+        logWriter.println("==> Debuggee class pattern to match = " + getDebuggeeClassName() + "*");
+        debuggeeWrapper.vmMirror.setMonitorContendedEnteredForClassMatch(getDebuggeeClassName()+"*");
 
         // Verify received event
         verifyEvent();

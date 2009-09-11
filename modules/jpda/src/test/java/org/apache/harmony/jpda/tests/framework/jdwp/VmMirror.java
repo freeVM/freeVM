@@ -1053,6 +1053,19 @@ public class VmMirror {
         return setEvent(event);
     }
 
+    public ReplyPacket setMonitorContendedEnterForClassMatch(String classRegexp) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.MONITOR_CONTENDED_ENTER;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].classPattern = classRegexp;
+        mods[0].modKind = EventMod.ModKind.ClassMatch;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
+
     /**
      * Set MonitorContendedEntered event request for given class's reference type
      * 
@@ -1067,6 +1080,19 @@ public class VmMirror {
         EventMod[] mods = new EventMod[] { new EventMod() };
         mods[0].clazz = referenceTypeID;
         mods[0].modKind = EventMod.ModKind.ClassOnly;
+        Event event = new Event(eventKind, suspendPolicy, mods);
+
+        // Set event
+        return setEvent(event);
+    }
+
+    public ReplyPacket setMonitorContendedEnteredForClassMatch(String classRegexp) {
+        // Prepare corresponding event
+        byte eventKind = JDWPConstants.EventKind.MONITOR_CONTENDED_ENTERED;
+        byte suspendPolicy = JDWPConstants.SuspendPolicy.ALL;
+        EventMod[] mods = new EventMod[] { new EventMod() };
+        mods[0].classPattern = classRegexp;
+        mods[0].modKind = EventMod.ModKind.ClassMatch;
         Event event = new Event(eventKind, suspendPolicy, mods);
 
         // Set event

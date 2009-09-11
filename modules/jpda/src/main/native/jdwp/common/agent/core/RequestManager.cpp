@@ -2474,23 +2474,11 @@ void JNICALL RequestManager::HandleMonitorWait(jvmtiEnv *jvmti, JNIEnv* jni,
 
     jvmtiError err;
     EventInfo eInfo;
+
     memset(&eInfo, 0, sizeof(eInfo));
     eInfo.kind = JDWP_EVENT_MONITOR_WAIT;
     eInfo.thread = thread;
-
-JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
-        &eInfo.method, &eInfo.location));
-    if (err != JVMTI_ERROR_NONE) {
-        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error in MONITOR_WAIT: %d", err));
-        return;
-    }
-
-    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetMethodDeclaringClass(eInfo.method,
-        &eInfo.cls));
-    if (err != JVMTI_ERROR_NONE) {
-        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error in MONITOR_WAIT: %d", err));
-        return;
-    }
+    eInfo.cls = jni->GetObjectClass(object);
 
     JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
         &eInfo.signature, 0));
@@ -2509,6 +2497,12 @@ JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
     }
 #endif // NDEBUG
 
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
+        &eInfo.method, &eInfo.location));
+    if (err != JVMTI_ERROR_NONE) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error in MONITOR_WAIT: %d", err));
+        return;
+    }
 
     jint eventCount = 0;
     RequestID *eventList = 0;
@@ -2556,23 +2550,11 @@ void JNICALL RequestManager::HandleMonitorWaited(jvmtiEnv *jvmti, JNIEnv* jni,
 
     jvmtiError err;
     EventInfo eInfo;
+
     memset(&eInfo, 0, sizeof(eInfo));
     eInfo.kind = JDWP_EVENT_MONITOR_WAITED;
     eInfo.thread = thread;
-
-	JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
-            &eInfo.method, &eInfo.location));
-    if (err != JVMTI_ERROR_NONE) {
-        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error in MONITOR_WAITED: %d", err));
-        return;
-    }
-
-    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetMethodDeclaringClass(eInfo.method,
-        &eInfo.cls));
-    if (err != JVMTI_ERROR_NONE) {
-        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error in MONITOR_WAITED: %d", err));
-        return;
-    }
+    eInfo.cls = jni->GetObjectClass(object);
 
     JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
         &eInfo.signature, 0));
@@ -2591,6 +2573,12 @@ void JNICALL RequestManager::HandleMonitorWaited(jvmtiEnv *jvmti, JNIEnv* jni,
     }
 #endif // NDEBUG
 
+    JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
+        &eInfo.method, &eInfo.location));
+    if (err != JVMTI_ERROR_NONE) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error in MONITOR_WAITED: %d", err));
+        return;
+    }
 
     jint eventCount = 0;
     RequestID *eventList = 0;
@@ -2637,9 +2625,11 @@ void JNICALL RequestManager::HandleMonitorContendedEnter(jvmtiEnv *jvmti, JNIEnv
     bool isAgent = GetThreadManager().IsAgentThread(jni, thread);
     jvmtiError err;
     EventInfo eInfo;
+
     memset(&eInfo, 0, sizeof(eInfo));
     eInfo.kind = JDWP_EVENT_MONITOR_CONTENDED_ENTER;
     eInfo.thread = thread;
+
     JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
         &eInfo.method, &eInfo.location));
     if (err != JVMTI_ERROR_NONE) {
@@ -2653,7 +2643,6 @@ void JNICALL RequestManager::HandleMonitorContendedEnter(jvmtiEnv *jvmti, JNIEnv
         JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "JDWP error in MONITOR_CONTENDED_ENTER: %d", err));
         return;
     }
-
 
     JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetClassSignature(eInfo.cls,
         &eInfo.signature, 0));
@@ -2714,9 +2703,11 @@ void JNICALL RequestManager::HandleMonitorContendedEntered(jvmtiEnv *jvmti, JNIE
     bool isAgent = GetThreadManager().IsAgentThread(jni, thread);
     jvmtiError err;
     EventInfo eInfo;
+
     memset(&eInfo, 0, sizeof(eInfo));
     eInfo.kind = JDWP_EVENT_MONITOR_CONTENDED_ENTERED;
     eInfo.thread = thread;
+
     JVMTI_TRACE(LOG_DEBUG, err, GetJvmtiEnv()->GetFrameLocation(thread, 0,
         &eInfo.method, &eInfo.location));
     if (err != JVMTI_ERROR_NONE) {
