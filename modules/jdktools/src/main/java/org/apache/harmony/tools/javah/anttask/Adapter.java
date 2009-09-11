@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.harmony.tools.ijh.anttask;
+package org.apache.harmony.tools.javah.anttask;
 
 import java.io.File;
 
@@ -28,7 +28,7 @@ import org.apache.tools.ant.types.Commandline;
 import org.apache.tools.ant.types.Path;
 
 /**
- * Adapter to org.apache.harmony.tools.ijh.Main.
+ * Adapter to org.apache.harmony.tools.javah.Main.
  *
  * This class depends on Apache Ant tool 1.6.5 or later.
  * Please see http://ant.apache.org for more information about this tool.
@@ -47,7 +47,7 @@ public class Adapter implements JavahAdapter {
 
         // Try to load the main class of the tool.
         try {
-            clss = Class.forName("org.apache.harmony.tools.ijh.Main");
+            clss = Class.forName("org.apache.harmony.tools.javah.Main");
         } catch (ClassNotFoundException e) {
             throw new BuildException("Can't load a class", e, 
                     javah.getLocation());
