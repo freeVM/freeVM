@@ -48,6 +48,10 @@
                                     return value; \
                                  }
 
+#define JDWP_CHECK_NOT_NULL(value) if (value != NULL) {\
+                                    return JDWP_LAST_ERROR_CODE; \
+                                 }
+
 namespace jdwp {
 
     typedef hythread_t ThreadId_t;

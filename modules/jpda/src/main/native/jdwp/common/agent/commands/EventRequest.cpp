@@ -35,6 +35,7 @@ EventRequest::SetHandler::Execute(JNIEnv *jni)
     jdwpSuspendPolicy suspendPolicy =
         (jdwpSuspendPolicy) m_cmdParser->command.ReadByte();
     jint modCount = m_cmdParser->command.ReadInt();
+    jdwpError jdwpErr;
 
     JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Set: event=%s, eventKind=%d, suspendPolicy=%d, modCount=%d",
                     GetRequestManager().GetEventKindName(eventKind), eventKind, suspendPolicy, modCount));
@@ -195,6 +196,13 @@ EventRequest::SetHandler::Execute(JNIEnv *jni)
                 }
                 m_cmdParser->command.ReadByte(); // typeTag
                 jclass cls = m_cmdParser->command.ReadReferenceTypeID(jni);
+                if (cls == 0) {
+                    AgentException e(JDWP_ERROR_INVALID_CLASS);
+                    JDWP_SET_EXCEPTION(e);
+                    delete request;
+                    return JDWP_ERROR_INVALID_CLASS;
+                }
+
                 jmethodID method = m_cmdParser->command.ReadMethodID(jni);
                 jlocation loc = m_cmdParser->command.ReadLong();
 
@@ -223,6 +231,12 @@ EventRequest::SetHandler::Execute(JNIEnv *jni)
                     return JDWP_ERROR_ILLEGAL_ARGUMENT;
                 }
                 jclass cls = m_cmdParser->command.ReadReferenceTypeIDOrNull(jni);
+                jdwpErr = JDWP_LAST_ERROR_CODE;
+                if (jdwpErr != JDWP_ERROR_NONE) {
+                    delete request;
+                    return jdwpErr;
+                }
+
                 jboolean caught = m_cmdParser->command.ReadBoolean();
                 jboolean uncaught = m_cmdParser->command.ReadBoolean();
 
@@ -252,7 +266,7 @@ EventRequest::SetHandler::Execute(JNIEnv *jni)
                     return JDWP_ERROR_ILLEGAL_ARGUMENT;
                 }
                 jclass cls = m_cmdParser->command.ReadReferenceTypeID(jni);
-                                    if (cls == 0) {
+                if (cls == 0) {
                     AgentException e(JDWP_ERROR_INVALID_CLASS);
                     JDWP_SET_EXCEPTION(e);
                     delete request;

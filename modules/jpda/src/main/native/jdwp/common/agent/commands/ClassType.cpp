@@ -33,8 +33,10 @@ using namespace ClassType;
 int 
 ClassType::SuperClassHandler::Execute(JNIEnv *jni)
 {
-    //INVALID_OBJECT can be thrown below
+    //INVALID_CLASS or INVALID_OBJECT can be thrown below
     jclass clazz = m_cmdParser->command.ReadReferenceTypeID(jni);
+    JDWP_CHECK_NOT_NULL(clazz);
+
     JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SuperClass: received: classID=%p", clazz));
 
     // get superclass
@@ -66,6 +68,8 @@ ClassType::SetValuesHandler::Execute(JNIEnv *jni)
 {
     //INVALID_CLASS or INVALID_OBJECT can be thrown below
     jclass clazz = m_cmdParser->command.ReadReferenceTypeID(jni);
+    JDWP_CHECK_NOT_NULL(clazz);
+
     jint values = m_cmdParser->command.ReadInt();
     JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "SetValues: received: classID=%p, values=%d", clazz, values));
 
@@ -226,7 +230,10 @@ int
 ClassType::InvokeMethodHandler::Execute(JNIEnv *jni)
 {
     m_clazz = m_cmdParser->command.ReadReferenceTypeID(jni);
+    JDWP_CHECK_NOT_NULL(m_clazz);
     m_thread = m_cmdParser->command.ReadThreadID(jni);
+    JDWP_CHECK_NOT_NULL(m_thread);
+
     m_methodID = m_cmdParser->command.ReadMethodID(jni);
     jint arguments = m_cmdParser->command.ReadInt();
 
@@ -261,7 +268,7 @@ ClassType::InvokeMethodHandler::Execute(JNIEnv *jni)
         return JDWP_ERROR_INVALID_METHODID;
     }
 
-    // check that given method is stsic method
+    // check that given method is static method
     jint methodModifiers;
     JVMTI_TRACE(LOG_DEBUG, err, jvmti->GetMethodModifiers(m_methodID, &methodModifiers));
     if (err != JVMTI_ERROR_NONE) {

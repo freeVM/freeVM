@@ -290,6 +290,14 @@ jobject InputPacketParser::ReadObjectIDOrNull(JNIEnv *jni) {
 
 jobject InputPacketParser::ReadObjectID(JNIEnv *jni) {
     jobject obj = ReadObjectIDOrNull(jni);
+
+    // if the ID was invalid we already have an exception so we just
+    // need to check the case when it is null
+    if (!obj && !JDWP_HAS_EXCEPTION) {
+      JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "ReadObjectID returned null"));
+      AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+      JDWP_SET_EXCEPTION(ex);
+    }
     return obj;
 }
 
@@ -307,34 +315,47 @@ jclass InputPacketParser::ReadReferenceTypeIDOrNull(JNIEnv *jni) {
         // For a ObjectID, we should convert it to ReferenceTypeID 
         // if it is a ClassObjectID
         jobject obj = GetObjectManager().MapFromObjectID(jni, rtid);
-        jclass clsType = jni->GetObjectClass(obj);
-        jboolean isClass = jni->IsAssignableFrom(clsType, jni->GetObjectClass(clsType)); 
-        if (!isClass){
-            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## ReadReferenceTypeIDOrNul: read : ObjectID is not a ClassObjectID"));
-            return 0;
+        if (obj) {
+          jclass clsType = jni->GetObjectClass(obj);
+          jboolean isClass = jni->IsAssignableFrom(clsType, jni->GetObjectClass(clsType)); 
+          if (isClass) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "## ReadReferenceTypeIDOrNul: read : ObjectID is a ClassObjectID"));
+            cls = static_cast<jclass> (obj);
+            jboolean isValidID = GetObjectManager().FindObjectID(jni, cls, rtid); 
+            if(!isValidID) {
+              JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## ReadReferenceTypeIDOrNul: read : ID is an invalid ObjectID"));
+              AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+              JDWP_SET_EXCEPTION(ex);
+              return 0;
+            }
+          }
         }
-        
-        cls = static_cast<jclass> (obj);
-        jboolean isValidID = GetObjectManager().FindObjectID(jni, cls, rtid); 
-        if(!isValidID){
-            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## ReadReferenceTypeIDOrNul: read : ID is an invalid ObjectID"));
-            return 0;
-        }
-    }else { 
+    }
+
+    if (cls == 0) {
         // convert to jclass (actually to WeakReference or GlobalReference)
         cls = GetObjectManager().MapFromReferenceTypeID(jni, rtid);
     }
 
-    JDWP_ASSERT(cls != 0);
+    if (!cls) {
+        JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## ReadReferenceTypeIDOrNul: read : ID is invalid"));
+        AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+        JDWP_SET_EXCEPTION(ex);
+        return 0;
+    }
     
     // make GlobalReference and check if WeakReference was freed
     jclass ref = static_cast<jclass>(jni->NewGlobalRef(cls));
     if (ref == 0) {
         if (jni->IsSameObject(cls, 0)) {
             JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Invalid object calling NewGlobalRef"));
+            AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+            JDWP_SET_EXCEPTION(ex);
             return 0;
         } else {
             JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Out of memory calling NewGlobalRef"));
+            AgentException ex(JDWP_ERROR_OUT_OF_MEMORY);
+            JDWP_SET_EXCEPTION(ex);
             return 0;
         }
     }
@@ -346,6 +367,15 @@ jclass InputPacketParser::ReadReferenceTypeIDOrNull(JNIEnv *jni) {
 
 jclass InputPacketParser::ReadReferenceTypeID(JNIEnv *jni) {
     jclass cls = ReadReferenceTypeIDOrNull(jni);
+
+    // if the ID was invalid we already have an exception so we just
+    // need to check the case when it is null
+    if (!cls && !JDWP_HAS_EXCEPTION) {
+      JDWP_TRACE(LOG_RELEASE,
+                 (LOG_ERROR_FL, "ReadReferenceTypeID returned null"));
+      AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+      JDWP_SET_EXCEPTION(ex);
+    }
     return cls;
 }
 
@@ -426,6 +456,14 @@ jthread InputPacketParser::ReadThreadIDOrNull(JNIEnv *jni) {
     
 jthread InputPacketParser::ReadThreadID(JNIEnv *jni) {
     jthread thrd = ReadThreadIDOrNull(jni);
+
+    // if the ID was invalid we already have an exception so we just
+    // need to check the case when it is null
+    if (!thrd && !JDWP_HAS_EXCEPTION) {
+      JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "ReadThreadID returned null"));
+      AgentException ex(JDWP_ERROR_INVALID_OBJECT);
+      JDWP_SET_EXCEPTION(ex);
+    }
     return thrd;
 }
 
