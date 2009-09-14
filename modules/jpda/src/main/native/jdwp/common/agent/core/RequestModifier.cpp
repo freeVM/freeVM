@@ -77,8 +77,8 @@ bool SourceNameMatchModifier::Apply(JNIEnv* jni, EventInfo &eInfo)
             bool result =  MatchPatternSourceName(sourceFileName, m_pattern);
 
             if(!result) {
-                bool result;
-                char *p = (char*) GetMemoryManager().Allocate(strlen(m_pattern)+1 JDWP_FILE_LINE);
+                char *p_orig = (char*) GetMemoryManager().Allocate(strlen(m_pattern)+1 JDWP_FILE_LINE);
+                char *p = p_orig;
                 strcpy(p, m_pattern);
                 // replace '.' with '/' to be matched with signature
                 for (; *p != '\0'; p++) {
@@ -88,7 +88,7 @@ bool SourceNameMatchModifier::Apply(JNIEnv* jni, EventInfo &eInfo)
                 }
                 JDWP_ASSERT(eInfo.signature != 0);
                 result = MatchPattern(eInfo.signature, p);
-                GetMemoryManager().Free(p JDWP_FILE_LINE);
+                GetMemoryManager().Free(p_orig JDWP_FILE_LINE);
                 return result;
             } else {
                 return true;
