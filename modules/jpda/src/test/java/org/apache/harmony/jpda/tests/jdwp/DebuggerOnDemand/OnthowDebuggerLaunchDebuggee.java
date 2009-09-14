@@ -52,7 +52,7 @@ public class OnthowDebuggerLaunchDebuggee extends Debuggee {
             logWriter.println("DEBUGGEE: throw ExceptionForDebugger");
             throw new ExceptionForDebugger();
         } catch (ExceptionForDebugger e) {
-            logWriter.println("DEBUGGEE: cought ExceptionForDebugger: " + e);
+            logWriter.println("DEBUGGEE: caught ExceptionForDebugger: " + e);
         }
 
         // listen for connection with debugger

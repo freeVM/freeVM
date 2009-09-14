@@ -198,7 +198,7 @@ public class AllClassesWithGenericTest extends JDWPSyncTestCase {
                 assertTrue(signature.toCharArray()[0] == 'L' 
                         || signature.toCharArray()[0] == '[');
             } catch ( Throwable thrown) {
-                // some assert is cought
+                // some assert is caught
                 if ( !infoIsPrinted ) {
                     logWriter.println(msgLine);
                     logWriter.println("\treferenceTypeID = " + typeID);

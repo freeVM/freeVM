@@ -58,7 +58,7 @@ public class HoldEventsDebuggee extends SyncDebuggee {
             try {
                 waitForStart.wait();
             } catch (InterruptedException e) {
-                logWriter.println("" + e + " is cought");
+                logWriter.println("" + e + " is caught");
             }
         }
 

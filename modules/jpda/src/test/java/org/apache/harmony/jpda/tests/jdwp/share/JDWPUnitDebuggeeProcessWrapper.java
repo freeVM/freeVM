@@ -279,7 +279,7 @@ public class JDWPUnitDebuggeeProcessWrapper extends JDWPDebuggeeWrapper {
             int exitCode = process.exitValue();
             logWriter.println("Finished debuggee with exit code: " + exitCode);
         } catch (IllegalThreadStateException e) {
-            logWriter.printError("Terminate debugge process");
+            logWriter.printError("Terminate debuggee process");
             process.destroy();
             throw new TestErrorException("Debuggee process did not finish during timeout", e);
         }

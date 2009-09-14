@@ -97,7 +97,7 @@ public class FramesTest extends JDWPSyncTestCase {
 
         allFrames = getFrames(0, allFrames.size() + 1);
         if (err == JDWPConstants.Error.INVALID_LENGTH) {
-            logWriter.println("Cought expected error - " + JDWPConstants.Error.getName(err)
+            logWriter.println("Caught expected error - " + JDWPConstants.Error.getName(err)
                     + "(" + err + ")");
         } else {
             printErrorAndFail("unexpected behaviour: error is "
@@ -151,7 +151,7 @@ public class FramesTest extends JDWPSyncTestCase {
 
         allFrames = getFrames(allFrames.size() + 1, -1);
         if (err == JDWPConstants.Error.INVALID_INDEX) {
-            logWriter.println("Cought expected error - " + JDWPConstants.Error.getName(err)
+            logWriter.println("Caught expected error - " + JDWPConstants.Error.getName(err)
                     + "(" + err + ")");
         } else {
             printErrorAndFail("unexpected behaviour: error is "

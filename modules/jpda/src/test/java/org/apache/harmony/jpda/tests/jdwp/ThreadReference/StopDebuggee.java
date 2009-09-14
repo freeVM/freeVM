@@ -80,7 +80,7 @@ public class StopDebuggee extends SyncDebuggee {
             try {
                 waitForStart.wait();
             } catch (InterruptedException e) {
-                logWriter.println("StopDebuggee:" + e + " is cought while waitForStart.wait()");
+                logWriter.println("StopDebuggee:" + e + " is caught while waitForStart.wait()");
             }
         }
 
