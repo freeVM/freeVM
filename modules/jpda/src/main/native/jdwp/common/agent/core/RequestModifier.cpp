@@ -87,7 +87,7 @@ bool SourceNameMatchModifier::Apply(JNIEnv* jni, EventInfo &eInfo)
                     }
                 }
                 JDWP_ASSERT(eInfo.signature != 0);
-                result = MatchPattern(eInfo.signature, p);
+                result = MatchPattern(eInfo.signature, p_orig);
                 GetMemoryManager().Free(p_orig JDWP_FILE_LINE);
                 return result;
             } else {
