@@ -316,11 +316,20 @@ jclass InputPacketParser::ReadReferenceTypeIDOrNull(JNIEnv *jni) {
         // if it is a ClassObjectID
         jobject obj = GetObjectManager().MapFromObjectID(jni, rtid);
         if (obj) {
+          obj = jni->NewLocalRef(obj);
+          if (!obj) {
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "Out of memory calling NewLocalRef"));
+            AgentException ex(JDWP_ERROR_OUT_OF_MEMORY);
+            JDWP_SET_EXCEPTION(ex);
+            return 0;
+          }
           jclass clsType = jni->GetObjectClass(obj);
           jboolean isClass = jni->IsAssignableFrom(clsType, jni->GetObjectClass(clsType)); 
           if (isClass) {
             JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "## ReadReferenceTypeIDOrNul: read : ObjectID is a ClassObjectID"));
             cls = static_cast<jclass> (obj);
+            jni->DeleteLocalRef(obj);
+            
             jboolean isValidID = GetObjectManager().FindObjectID(jni, cls, rtid); 
             if(!isValidID) {
               JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## ReadReferenceTypeIDOrNul: read : ID is an invalid ObjectID"));
@@ -328,6 +337,12 @@ jclass InputPacketParser::ReadReferenceTypeIDOrNull(JNIEnv *jni) {
               JDWP_SET_EXCEPTION(ex);
               return 0;
             }
+          } else {
+            jni->DeleteLocalRef(obj);
+            JDWP_TRACE(LOG_RELEASE, (LOG_ERROR_FL, "## ReadReferenceTypeIDOrNul: read : ID is not a ClassObjectID"));
+            AgentException ex(JDWP_ERROR_INVALID_CLASS);
+            JDWP_SET_EXCEPTION(ex);
+            return 0;
           }
         }
     }

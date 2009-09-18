@@ -37,6 +37,8 @@ ReferenceType::SignatureHandler::Execute(JNIEnv *jni)
     jclass jvmClass = m_cmdParser->command.ReadReferenceTypeID(jni);
     // Can be: InternalErrorException, OutOfMemoryException,
     // JDWP_ERROR_INVALID_CLASS, JDWP_ERROR_INVALID_OBJECT
+    JDWP_CHECK_NOT_NULL(jvmClass);
+
     JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "Signature: received: refTypeID=%p", jvmClass));
 
     char* classSignature = 0;

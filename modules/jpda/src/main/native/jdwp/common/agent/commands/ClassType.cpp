@@ -466,6 +466,8 @@ int
 ClassType::NewInstanceHandler::Execute(JNIEnv *jni) 
 {
     m_clazz = m_cmdParser->command.ReadReferenceTypeID(jni);
+    JDWP_CHECK_NOT_NULL(m_clazz);
+
     if (AgentBase::GetClassManager().IsClass(jni, m_clazz) != JNI_TRUE) {
         JDWP_TRACE(LOG_RELEASE, (LOG_DATA_FL, "NewInstance: not a class: refTypeID=%p", m_clazz));
         AgentException e(JDWP_ERROR_INVALID_CLASS);
@@ -474,6 +476,7 @@ ClassType::NewInstanceHandler::Execute(JNIEnv *jni)
     }
 
     m_thread = m_cmdParser->command.ReadThreadID(jni);
+    JDWP_CHECK_NOT_NULL(m_thread);
     m_methodID = m_cmdParser->command.ReadMethodID(jni);
     int passedArguments = m_cmdParser->command.ReadInt();
 
