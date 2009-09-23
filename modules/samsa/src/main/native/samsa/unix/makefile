@@ -21,7 +21,7 @@ include $(HY_HDK)/build/make/defines.mk
 
 BUILDFILES = ../samsa.o
 
-EXENAME = samsa
+EXENAME = $(LIBPATH)samsa
 
 MDLLIBFILES = 
 

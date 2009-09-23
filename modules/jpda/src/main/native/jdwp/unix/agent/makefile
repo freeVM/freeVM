@@ -45,16 +45,19 @@ BUILDFILES = \
     $(CMNAGENT)commands/ThreadGroupReference.o \
     $(CMNAGENT)commands/ThreadReference.o \
     $(CMNAGENT)commands/VirtualMachine.o \
-    $(CMNAGENT)core/Agent.o $(CMNAGENT)core/AgentEventRequest.o $(CMNAGENT)core/AgentMonitor.o \
-    $(CMNAGENT)core/ClassManager.o $(CMNAGENT)core/CommandDispatcher.o $(CMNAGENT)core/CommandHandler.o \
-    $(CMNAGENT)core/EventDispatcher.o $(CMNAGENT)core/LogManager.o $(CMNAGENT)core/MemoryManager.o \
-    $(CMNAGENT)core/ObjectManager.o $(CMNAGENT)core/OptionParser.o $(CMNAGENT)core/PacketDispatcher.o \
-    $(CMNAGENT)core/PacketParser.o $(CMNAGENT)core/RequestManager.o $(CMNAGENT)core/RequestModifier.o \
-    $(CMNAGENT)core/ThreadManager.o $(CMNAGENT)core/TransportManager.o $(CMNAGENT)core/AgentManager.o \
+    $(CMNAGENT)core/Agent.o $(CMNAGENT)core/AgentEventRequest.o \
+    $(CMNAGENT)core/AgentMonitor.o $(CMNAGENT)core/ClassManager.o \
+    $(CMNAGENT)core/CommandDispatcher.o $(CMNAGENT)core/CommandHandler.o \
+    $(CMNAGENT)core/EventDispatcher.o $(CMNAGENT)core/LogManager.o \
+    $(CMNAGENT)core/MemoryManager.o $(CMNAGENT)core/ObjectManager.o \
+    $(CMNAGENT)core/OptionParser.o $(CMNAGENT)core/PacketDispatcher.o \
+    $(CMNAGENT)core/PacketParser.o $(CMNAGENT)core/RequestManager.o \
+    $(CMNAGENT)core/RequestModifier.o $(CMNAGENT)core/ThreadManager.o \
+    $(CMNAGENT)core/TransportManager.o $(CMNAGENT)core/AgentManager.o \
     core/TransportManager_pd.o
 
 MDLLIBFILES = 
 
-DLLNAME = ../libjdwp.so
+DLLNAME = $(TOOLSDLLPATH)libjdwp.so
 
 include $(HY_HDK)/build/make/rules.mk

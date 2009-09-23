@@ -41,6 +41,6 @@ BUILDFILES = \
 
 MDLLIBFILES = 
 
-DLLNAME = ../../libdt_socket.so
+DLLNAME = $(TOOLSDLLPATH)libdt_socket.so
 
 include $(HY_HDK)/build/make/rules.mk

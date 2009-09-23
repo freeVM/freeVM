@@ -19,7 +19,8 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME = samsa.exe
+EXEBASE = samsa
+EXENAME = $(LIBPATH)$(EXEBASE).exe
 BUILDFILES = ..\samsa.obj
 EXEFLAGS=$(conlflags) -subsystem:console
 EXEDLLFILES=$(conlibsdll)

@@ -136,30 +136,36 @@
     </target>
 
     <!-- Build native code -->
-    <target name="build-native">
+    <target name="build-native"
+            depends="-build-native-common,-build-native-windows" />
+
+    <target name="-build-native-common">
         
         <echo message="Compiling JPDA natives" />
 
         <!-- Build agent shared lib -->
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/agent" />
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/agent">
+            <make-elements>
+                <arg line="TOOLSDLLPATH=${jdktools.deploy.dir}/jre/bin/" />
+            </make-elements>
+        </make>
         
         <!-- Build socket transport shared lib -->
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_socket" />
-
-        <antcall target="-build-native-windows" />
-
-        <!-- copy to our local jdk skeleton -->
-        <copy todir="${jdktools.deploy.dir}/jre/bin" overwrite="yes">
-            <fileset dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}">
-                <include name="*${shlib.suffix}"/>
-                <include name="*${progdb.suffix}" if="is.windows" />
-            </fileset>
-        </copy>
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_socket">
+            <make-elements>
+                <arg line="TOOLSDLLPATH=${jdktools.deploy.dir}/jre/bin/" />
+            </make-elements>
+        </make>
     </target>
 
     <target name="-build-native-windows" if="is.windows">
         <!-- Build shared memory transport shared lib on Windows -->
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_shmem" />
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_shmem">
+            <make-elements>
+                <arg line="TOOLSDLLPATH=${jdktools.deploy.dir}/jre/bin/" />
+            </make-elements>
+        </make>
+
     </target>
 
     <!-- internal target for local and global test run sequence -->
@@ -180,15 +186,33 @@
     </target>
 
     <!-- Clean natives -->
-    <target name="clean-native">
+    <target name="clean-native"
+            depends="-clean-native-common,-clean-native-windows" />
+
+    <target name="-clean-native-common">
         <echo message="Cleaning JPDA natives" />
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/agent" target="clean" />
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_socket" target="clean" />
-        <antcall target="-clean-native-windows" />
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/agent"
+              target="clean">
+            <make-elements>
+                <arg line="TOOLSDLLPATH=${jdktools.deploy.dir}/jre/bin/" />
+            </make-elements>
+        </make>
+
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_socket"
+              target="clean">
+            <make-elements>
+                <arg line="TOOLSDLLPATH=${jdktools.deploy.dir}/jre/bin/" />
+            </make-elements>
+        </make>
     </target>
 
     <target name="-clean-native-windows" if="is.windows">
-        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_shmem" target="clean" />
+        <make dir="${hy.jpda.src.main.native}/jdwp/${hy.os.family}/transport/dt_shmem"
+              target="clean">
+            <make-elements>
+                <arg line="TOOLSDLLPATH=${jdktools.deploy.dir}/jre/bin/" />
+            </make-elements>
+        </make>
     </target>
 
     <!-- Compile JDWP tests always with debug info included -->

@@ -23,7 +23,7 @@ COMMON=..\..\..\common\# comment to avoid \ being treated as continuation
 CMNTRANS=$(COMMON)transport\# comment to avoid \ being treated as continuation
 
 LIBBASE=dt_socket
-DLLNAME=..\..\$(LIBBASE).dll
+DLLNAME=$(TOOLSDLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 INCLUDES = $(INCLUDES) \

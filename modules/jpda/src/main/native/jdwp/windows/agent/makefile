@@ -23,7 +23,7 @@ COMMON=..\..\common\# comment to avoid \ being treated as continuation
 CMNAGENT=$(COMMON)agent\# comment to avoid \ being treated as continuation
 
 LIBBASE=jdwp
-DLLNAME=..\$(LIBBASE).dll
+DLLNAME=$(TOOLSDLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
 INCLUDES = $(INCLUDES) \
