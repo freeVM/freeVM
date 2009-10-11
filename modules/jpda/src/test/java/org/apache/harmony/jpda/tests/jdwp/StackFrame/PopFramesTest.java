@@ -18,7 +18,6 @@
 
 /**
  * @author Anton V. Karnachuk, Aleksander V. Budniy
- * @version $Revision: 1.5 $
  */
 
 /**

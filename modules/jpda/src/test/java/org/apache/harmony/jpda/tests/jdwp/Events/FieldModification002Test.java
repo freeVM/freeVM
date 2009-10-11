@@ -18,7 +18,6 @@
 
 /**
  * @author Ruslan A. Scherbakov
- * @version $Revision: 1.4 $
  */
 
 /**

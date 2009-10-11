@@ -18,7 +18,6 @@
 
 /**
  * @author Alexei S. Vaskin
- * @version $Revision: 1.4 $
  */
 
 /**

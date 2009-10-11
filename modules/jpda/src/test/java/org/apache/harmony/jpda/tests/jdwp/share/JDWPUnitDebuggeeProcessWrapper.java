@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin
- * @version $Revision: 1.4 $
  */
 
 package org.apache.harmony.jpda.tests.jdwp.share;

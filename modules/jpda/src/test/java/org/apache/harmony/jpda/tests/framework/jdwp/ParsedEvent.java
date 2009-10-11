@@ -18,7 +18,6 @@
 
 /**
  * @author Anton V. Karnachuk
- * @version $Revision: 1.3 $
  */
 
 /**

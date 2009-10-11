@@ -17,7 +17,6 @@
 
 /**
  * @author Aleksander V. Budniy
- * @version $Revision: 0.0 $
  */
 
 /**

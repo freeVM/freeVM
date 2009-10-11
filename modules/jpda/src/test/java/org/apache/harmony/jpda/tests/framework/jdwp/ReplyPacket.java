@@ -18,7 +18,6 @@
 
 /**
  * @author Khen G. Kim
- * @version $Revision: 1.3 $
  */
 
 /**

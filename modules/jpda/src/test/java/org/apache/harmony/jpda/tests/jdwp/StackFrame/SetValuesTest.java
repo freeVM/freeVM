@@ -18,7 +18,6 @@
 
 /**
  * @author Aleksander V. Budniy
- * @version $Revision: 1.4 $
 
  /**
  * Created on 15.08.2005

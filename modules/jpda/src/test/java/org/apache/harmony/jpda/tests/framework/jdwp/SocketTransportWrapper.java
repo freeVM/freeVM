@@ -18,7 +18,6 @@
 
 /**
  * @author Ivan G. Popov
- * @version $Revision: 1.5 $
  */
 
 /**

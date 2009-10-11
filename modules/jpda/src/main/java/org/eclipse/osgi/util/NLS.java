@@ -17,7 +17,6 @@
 
 /**
 * @author Ivan Popov
-* @version $Revision$
 */
 
 package org.eclipse.osgi.util;
