@@ -18,7 +18,6 @@
 
 /**
  * @author Pavel N. Vyssotski
- * @version $Revision: 1.24 $
  */
 // EventDispatcher.cpp
 

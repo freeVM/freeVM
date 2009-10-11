@@ -18,7 +18,6 @@
 
 /**
  * @author Viacheslav G. Rybalov
- * @version $Revision: 1.11 $
  */
 #include "Method.h"
 #include "PacketParser.h"

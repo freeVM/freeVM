@@ -18,7 +18,6 @@
 
 /**
  * @author Pavel N. Vyssotski
- * @version $Revision: 1.4 $
  */
 
 // $Id: InvokeMethod002Test.java,v 1.4 2006/06/20 11:15:16 rscherba Exp $

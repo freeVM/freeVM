@@ -18,7 +18,6 @@
 
 /**
  * @author Viacheslav G. Rybalov
- * @version $Revision: 1.10 $
  */
 #include "ClassLoaderReference.h"
 #include "PacketParser.h"

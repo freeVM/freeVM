@@ -18,7 +18,6 @@
 
 /**
  * @author Anatoly F. Bondarenko
- * @version $Revision: 1.17 $
  */
 
 // ObjectManager.cpp - implementation of 'class ObjectManager :public AgentBase'

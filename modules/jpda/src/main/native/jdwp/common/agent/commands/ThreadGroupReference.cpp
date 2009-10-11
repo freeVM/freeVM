@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin
- * @version $Revision: 1.11 $
  */
 #include "ThreadGroupReference.h"
 #include "VirtualMachine.h"

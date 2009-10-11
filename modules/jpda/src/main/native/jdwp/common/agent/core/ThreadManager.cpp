@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin, Pavel N. Vyssotski
- * @version $Revision: 1.32.2.1 $
  */
 #include <algorithm>
 

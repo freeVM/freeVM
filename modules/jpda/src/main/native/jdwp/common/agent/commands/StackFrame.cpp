@@ -18,7 +18,6 @@
 
 /**
  * @author Viacheslav G. Rybalov
- * @version $Revision: 1.15.2.2 $
  */
 #include "StackFrame.h"
 #include "PacketParser.h"

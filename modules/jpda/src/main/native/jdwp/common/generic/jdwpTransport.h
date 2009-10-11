@@ -18,7 +18,6 @@
 
 /**
  * @author Viacheslav G. Rybalov
- * @version $Revision: 1.8.2.1 $
  */
 
 /**

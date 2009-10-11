@@ -18,7 +18,6 @@
 
 /**
  * @author Pavel N. Vyssotski
- * @version $Revision: 1.5.2.1 $
  */
 
 /**

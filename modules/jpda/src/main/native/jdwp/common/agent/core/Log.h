@@ -18,7 +18,6 @@
 
 /**
  * @author Pavel N. Vyssotski
- * @version $Revision: 1.9.2.1 $
  */
 #ifndef _LOG_H_
 #define _LOG_H_

@@ -18,7 +18,6 @@
 
 /**
  * @author Anatoly F. Bondarenko, Viacheslav G. Rybalov
- * @version $Revision: 1.28 $
  */
 #include <string.h>
 #include "ObjectReference.h"

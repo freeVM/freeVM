@@ -18,7 +18,6 @@
 
 /**
  * @author Anatoly F. Bondarenko
- * @version $Revision: 1.9.2.1 $
  */
 
 /**

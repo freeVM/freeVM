@@ -18,7 +18,6 @@
 
 /**
  * @author Aleksey V. Yantsen
- * @version $Revision: 1.4 $
  */
 
 /**

@@ -18,7 +18,6 @@
 
 /**
  * @author Viacheslav G. Rybalov
- * @version $Revision: 1.3 $
  */
 // SocketTransport_pd.cpp
 //

@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin, Pavel N. Vyssotski
- * @version $Revision: 1.16.2.1 $
  */
 
 /**

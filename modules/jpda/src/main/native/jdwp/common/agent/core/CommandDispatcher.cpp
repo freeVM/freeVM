@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin
- * @version $Revision: 1.15 $
  */
 #include "CommandDispatcher.h"
 #include "PacketParser.h"

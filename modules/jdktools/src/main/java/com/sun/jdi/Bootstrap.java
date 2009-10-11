@@ -17,7 +17,6 @@
 
 /**
 * @author Ivan Popov
-* @version $Revision$
 */
 
 package com.sun.jdi;

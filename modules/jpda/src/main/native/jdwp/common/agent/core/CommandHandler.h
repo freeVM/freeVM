@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin, Viacheslav G. Rybalov
- * @version $Revision: 1.16.2.1 $
  */
 
 /**

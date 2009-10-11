@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin
- * @version $Revision: 1.23.2.2 $
  */
 #include <string.h>
 

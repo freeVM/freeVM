@@ -25,7 +25,6 @@
 
 /**
  * @author Aleksander V. Budniy
- * @version $Revision: 1.10.2.1 $
  */
 
 /**

@@ -18,7 +18,6 @@
 
 /**
  * @author Anatoly F. Bondarenko, Viacheslav G. Rybalov
- * @version $Revision: 1.7.2.1 $
  */
 
 /**

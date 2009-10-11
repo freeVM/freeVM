@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin, Pavel N. Vyssotski
- * @version $Revision: 1.12 $
  */
 #include "EventRequest.h"
 #include "PacketParser.h"

@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin
- * @version $Revision: 1.5 $
  */
 
 /**

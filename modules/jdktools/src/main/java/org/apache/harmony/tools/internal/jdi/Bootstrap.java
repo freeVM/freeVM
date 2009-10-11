@@ -17,7 +17,6 @@
 
 /**
 * @author Ivan Popov
-* @version $Revision$
 */
 
 package org.apache.harmony.tools.internal.jdi;

@@ -18,7 +18,6 @@
 
 /**
  * @author Viacheslav G. Rybalov, Anton V. Karnachuk
- * @version $Revision: 1.7.2.1 $
  */
 
 /**

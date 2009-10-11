@@ -18,7 +18,6 @@
 
 /**
  * @author Anatoly F. Bondarenko
- * @version $Revision: 1.18.2.1 $
  */
 #include "ReferenceType.h"
 #include "PacketParser.h"

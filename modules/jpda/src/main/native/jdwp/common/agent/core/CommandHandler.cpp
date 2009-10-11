@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin, Viacheslav G. Rybalov
- * @version $Revision: 1.18 $
  */
 
 #include <string.h>

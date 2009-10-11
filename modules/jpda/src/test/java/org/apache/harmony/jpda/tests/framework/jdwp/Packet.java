@@ -18,7 +18,6 @@
 
 /**
  * @author Khen G. Kim, Aleksey V. Yantsen
- * @version $Revision: 1.6 $
  */
 
 /**

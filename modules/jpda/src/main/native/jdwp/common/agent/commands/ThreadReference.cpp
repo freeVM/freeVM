@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin
- * @version $Revision: 1.16.2.2 $
  */
 #include "ThreadReference.h"
 #include "PacketParser.h"

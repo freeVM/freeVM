@@ -18,7 +18,6 @@
 
 /**
  * @author Pavel N. Vyssotski
- * @version $Revision: 1.10 $
  */
 // AgentEventRequest.cpp
 

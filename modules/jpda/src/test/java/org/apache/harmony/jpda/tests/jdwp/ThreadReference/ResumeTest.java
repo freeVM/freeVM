@@ -18,7 +18,6 @@
 
 /**
  * @author Vitaly A. Provodin, Anatoly F. Bondarenko
- * @version $Revision: 1.7 $
  */
 
 /**
