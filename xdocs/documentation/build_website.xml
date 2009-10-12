@@ -59,7 +59,7 @@
 		<ol>
 			<li>
 			   Download the website source from Harmony subversion repository:</li>
-			   <pre>$ svn checkout https://svn.apache.org/repos/asf/harmony/standard/site</pre>
+			   <pre>$ svn checkout https://svn.apache.org/repos/asf/harmony/standard/site/trunk site</pre>
 		
 			
 			<li>
@@ -98,29 +98,33 @@
 <subsection name="Deploying to Harmony Website">
 
   <p>
-    If you are a Harmony Committer, you can commit your changes into SVN and then
-    publish to the project website. Once the changes are in SVN, do the following:
+    If you are a Harmony Committer, you can commit your changes into
+ SVN.  Once committed changes in <code>site/trunk</code> should appear
+ on <a href="http://harmony.staging.apache.org/">the staging site</a>.
+ After reviewing your changes, using the username/password of
+ 'staging'/'staging', you should merge your changes
+ from <code>site/trunk</code> to <code>branches/live</code>.  To do that:
   </p>
   
     <ol>
       <li>
-        SSH to <code>minotaur.apache.org</code>. Your login name will of course be your own.</li>
-        <pre>$ ssh geirm@minotaur.apache.org </pre>
-        
+        Check out the live branch:
+        <pre>$ svn checkout https://svn.apache.org/repos/asf/harmony/standard/site/branches/live live-site</pre>
+      </li>
       <li>
-        Go to the project website directory:</li>
-        <pre>$ cd /www/harmony.apache.org/</pre>
-      
+        Go to the live-site directory:
+        <pre>$ cd live-site</pre>
+      </li>      
       <li>
-        Update the local copy in one of two ways:
-        <pre>$ svn update</pre>
-        If you need to delete the HTML and 
-        re-checkout, use: 
-        <pre>$ `cat UPDATE`</pre></li>
-        <p class="note">Note</p>
-        <p class="notetext">The <code>UPDATE</code> file has the command performing a fresh svn checkout.</p> 
-     
-        
+        Merge the changes from <code>site/trunk</code>:
+        <pre>$ svn merge https://svn.apache.org/repos/asf/harmony/standard/site/trunk</pre>
+      </li>
+      <li>
+        Commit the changes to the live branch (using the revision number of
+        the last change on <code>site/trunk</code>):
+        <pre>$ svn ci -m "Merging from trunk@824513"</pre>
+      </li>
+      <li>The changes should appear shortly on the live site.</li>
     </ol>
   
   
