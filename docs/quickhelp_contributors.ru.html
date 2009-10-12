@@ -31,11 +31,8 @@ limitations under the License.
             <meta name="email" content="dev@harmony.apache.org">
             
            
-            
-            
-            
-            
-            
+                                    
+                        
             <title>Apache Harmony - Open Source Java SE</title>
 
                         
@@ -358,8 +355,18 @@ limitations under the License.
     Для последующих прогонов, достаточно использовать команду
     </p>
                                 <pre>$ ant</pre>
-                                <p> Для построения полной сборки настоятельно рекомендуется увеличить объем динамической памяти (Java heap), 
-    используемой программой Apache Ant. Для этого, измените значение переменной окружения ANT_OPTS 
+                                <p>
+        Если у вас система Linux использующая 5-ю версию C++ Standard Library 
+        (т.е. libstdc++.so.5 вместо libstdc++.so.6), вам необходимо 
+        указать дополнительную опцию <i><b>use.libstdc++5=true</b></i>. 
+        Это требование обусловлено зависимостью от библиотеки ICU в бинарном виде.
+      </p>
+                                <pre>$ ant -Duse.libstdc++5=true</pre>
+                                <p class="note">Примечание</p>
+                                <p class="notetext">Для построения полной сборки настоятельно рекомендуется увеличить объем динамической памяти (Java heap), 
+    используемой программой Apache Ant. Это особенно актуально для пользователей Windows: 
+    иначе Ant может выдавать весьма непонятные ошибки, наподобие InvocationTargetException.<br />
+    Для этого, измените значение переменной окружения ANT_OPTS 
     доступным для вашей операционной системы способом, например:
     </p>
                                 <pre>ANT_OPTS='-Xms256m -Xmx512m' </pre>
