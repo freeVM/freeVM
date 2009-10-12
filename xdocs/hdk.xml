@@ -29,7 +29,7 @@
             <p>
                 The Harmony Development Kit (HDK) allows a Harmony developer to
                 rebuild any module of the Harmony Classlib or DRLVM in a standalone way by providing all the
-                necesary supplementary binaries and header files. 
+                necessary supplementary binaries and header files. 
                 HDK bundles are available for download as a standard part of regular Harmony builds
                 (nightly, stable, etc).
                 This document describes the layout of such an HDK and its contents.
@@ -114,7 +114,7 @@
                         </li>
                         <li>
                             <b>Building against an HDK</b> - The location of an HDK must be specified at
-                            the Ant command line, and the ouptut will be built into the default (deploy)
+                            the Ant command line, and the output will be built into the default (deploy)
                             directory. The command line for this is <code><nobr>ant -Dhy.hdk=path/to/HDK</nobr></code>.
                         </li>
                         <li>
