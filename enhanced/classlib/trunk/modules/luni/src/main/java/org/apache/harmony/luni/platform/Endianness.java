@@ -16,22 +16,40 @@
 
 package org.apache.harmony.luni.platform;
 
-import java.lang.ref.Reference;
 
-final class RuntimeMemorySpy extends AbstractMemorySpy {
+/**
+ * Endianness
+ * 
+ */
+public final class Endianness {
+    /**
+     * Private mapping mode (equivalent to copy on write).
+     */
+    public static final Endianness BIG_ENDIAN = new Endianness("BIG_ENDIAN"); //$NON-NLS-1$
 
-    public RuntimeMemorySpy() {
+    /**
+     * Read-only mapping mode.
+     */
+    public static final Endianness LITTLE_ENDIAN = new Endianness(
+            "LITTLE_ENDIAN"); //$NON-NLS-1$
+
+    // The string used to display the mapping mode.
+    private final String displayName;
+
+    /*
+     * Private constructor prevents others creating new Endians.
+     */
+    private Endianness(String displayName) {
         super();
+        this.displayName = displayName;
     }
 
-    public void alloc(PlatformAddress address) {
-        // Pay a tax on the allocation to see if there are any frees pending.
-        Reference ref = notifyQueue.poll(); // non-blocking check
-        while (ref != null) {
-            orphanedMemory(ref);
-            ref = notifyQueue.poll();
-        }
-
-        super.alloc(address);
+    /**
+     * Answers a string version of the endianness
+     * 
+     * @return the mode string.
+     */
+    public String toString() {
+        return displayName;
     }
 }
