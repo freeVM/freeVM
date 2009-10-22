@@ -182,6 +182,10 @@ char* ClassManager::GetClassName(const char *signature) const
     char *returnValue = reinterpret_cast<char*>
         (AgentBase::GetMemoryManager().Allocate(len + 1 JDWP_FILE_LINE));
 
+    if (0 == returnValue) {
+        return 0;
+    }
+
     bool arrayFlag = (signature[0] == '[');
     size_t j = 0;
     for (size_t i = 0; i < len; i++) {

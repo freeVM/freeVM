@@ -1604,6 +1604,12 @@ void JNICALL RequestManager::HandleException(jvmtiEnv* jvmti, JNIEnv* jni,
                 JvmtiAutoFree jafSignature(exceptionSignature);
 
                 char* exceptionName = GetClassManager().GetClassName(exceptionSignature);
+                if (0 == exceptionName) {
+                    AgentException aex = GetExceptionManager().GetLastException();
+                    err = (jvmtiError)aex.ErrCode();        
+                    JDWP_TRACE(LOG_RELEASE, (LOG_INFO_FL, "HandleException: jvmti method Allocate() failed, error code is %d", err));
+                    return;
+                }
                 JvmtiAutoFree jafName(exceptionName);
 
                 JDWP_TRACE(LOG_RELEASE, (LOG_PROG_FL, "HandleException: exception: class=%s, signature=%s", exceptionName, exceptionSignature));

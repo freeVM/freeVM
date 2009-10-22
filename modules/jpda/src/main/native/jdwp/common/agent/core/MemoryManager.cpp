@@ -98,6 +98,9 @@ void* VMMemoryManager::Allocate(size_t size JDWP_FILE_LINE_PAR) {
     JDWP_TRACE(LOG_RELEASE, (LOG_KIND_MEMORY, file, line, "VM malloc: %lld, %p", static_cast<long long>(size), p));
     if (err != JVMTI_ERROR_NONE) {
         JDWP_TRACE(LOG_RELEASE, (LOG_KIND_ERROR, file, line, "VM malloc failed: %lld, %p", static_cast<long long>(size), p));
+        AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+        return 0;
     }
     return p;
 }
@@ -114,6 +117,9 @@ void* VMMemoryManager::Reallocate(void* ptr, size_t oldSize, size_t newSize JDWP
     if (err != JVMTI_ERROR_NONE) {
         JDWP_TRACE(LOG_RELEASE, (LOG_KIND_ERROR, file, line, "VM realloc failed: %p %lld/%lld %p", ptr, static_cast<long long>(oldSize),
                                  static_cast<long long>(newSize), p));
+        AgentException ex(err);
+        JDWP_SET_EXCEPTION(ex);
+        return 0;
     } else {
         memcpy(p, ptr, (newSize < oldSize) ? newSize : oldSize);
         JVMTI_TRACE(LOG_DEBUG, err, AgentBase::GetJvmtiEnv()->Deallocate(
