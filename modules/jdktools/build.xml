@@ -20,28 +20,18 @@
     <description>Build for Tools component</description>
 
     <!-- import common properties -->
-    <property name="tests.build.output" location="../../build/tests" />
     <import file="${basedir}/../../make/properties.xml" />
 
     <property name="tests.output" location="../../build/test_report" />
+    <property name="hy.hdk" location="../../deploy" />
 
     <!-- set global properties for this build. -->
     <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
 
     <!-- filename for tests exclude list -->
-    <property name="tools.exclude.file" location="${hy.hdk}/build/jdktools.tools.exclude" />
-
-    <fileset id="classes" dir="${hy.build}">
-        <or>
-            <present targetdir="${hy.tools.src.main.java}" />
-            <present targetdir="${hy.tools.src.main.java}">
-                <mapper type="regexp"
-                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
-                        to="\1.java"/>
-            </present>
-        </or>
-    </fileset>
-    
+    <property name="tools.exclude.file"
+              location="${hy.hdk}/build/jdktools.tools.exclude" />
+   
     <target name="check-depends">
         <check-one-file src="${jdt.jdi.jar.url}"
                         dest="${jdt.jdi.jar}" />
@@ -57,8 +47,8 @@
     </target>
 
 
-    <target name="build" depends="check-depends, build-java, copy-resources, build-jar" />
-    <target name="build-java" depends="compile-java, copy-resources, build-jar" />
+    <target name="build" depends="check-depends, build-java" />
+    <target name="build-java" depends="compile-java, build-jar" />
     <target name="build-native" />
 
     <target name="clean" depends="clean-java" />
@@ -83,21 +73,17 @@
 
         <delete file="${jdktools.deploy.dir}/lib/tools.jar" />
         <delete file="${jdktools.deploy.dir}/lib/tools-src.jar" />
-        <delete includeemptydirs="true" failonerror="false">
-            <!--fileset refid="classes" /-->
-            <fileset dir="${hy.build}" />
-            <fileset dir="${tests.build.output}/classes" />
-        </delete>
+        <delete dir="bin" includeemptydirs="true" failonerror="false" />
     </target>
 
     <target name="compile-java">
         <echo message="Compiling TOOLS classes" />
         <ensure-javac/>
-        <mkdir dir="${hy.build}" />
+        <mkdir dir="bin/main" />
 
         <hy.javac sourcepath=""
-               srcdir="${hy.tools.src.main.java}"
-               destdir="${hy.build}">
+               srcdir="src/main/java"
+               destdir="bin/main">
 
             <bootclasspath>
                 <fileset dir="${hy.hdk}/jdk/jre/lib/boot">
@@ -115,22 +101,18 @@
         </hy.javac>
     </target>
 
-    <target name="copy-resources">
-        <mkdir dir="${hy.build}" />
-        <copy todir="${hy.build}" includeemptydirs="false">
-            <fileset dir="${hy.tools.src.main.java}">
-                <exclude name="**/*.java" />
-            </fileset>
-        </copy>
-    </target>
-
     <target name="build-jar" depends="svn-info">
         <mkdir dir="${jdktools.deploy.dir}/lib" />
 
         <jar destfile="${jdktools.deploy.dir}/lib/tools.jar"
-             manifest="${hy.tools}/META-INF/MANIFEST.MF">
+             manifest="META-INF/MANIFEST.MF">
 
-            <fileset refid="classes" />
+            <fileset dir="bin/main" />
+
+            <fileset dir="src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+
             <zipfileset src="${jdt.jdi.jar}">
                 <exclude name="com/sun/jdi/Bootstrap.class"/>
                 <exclude name="META-INF/*"/>
@@ -145,7 +127,7 @@
         </jar>
 
         <jar destfile="${jdktools.deploy.dir}/lib/tools-src.jar">
-            <fileset dir="${hy.tools.src.main.java}" />
+            <fileset dir="src/main/java" />
             <manifest>
                 <attribute name="Implementation-Version" value="${svn.info}"/> 
             </manifest>
@@ -158,12 +140,12 @@
     <target name="build-tests">
         <echo message="Compiling TOOLS tests" />
         <ensure-javac/>
-        <mkdir dir="${tests.build.output}/classes" />
+        <mkdir dir="bin/test" />
 
-        <hy.javac srcdir="${hy.tools.src.test.java}"
-               destdir="${tests.build.output}/classes"
-               sourcepath=""
-               debug="on">
+        <hy.javac srcdir="src/test/java"
+                  destdir="bin/test"
+                  sourcepath=""
+                  debug="on">
 
             <bootclasspath>
                 <fileset dir="${hy.hdk}/jdk/jre/lib/boot">
@@ -174,7 +156,7 @@
                 <pathelement path="${jdktools.deploy.dir}/lib/tools.jar"/>
                 <pathelement path="${junit.jar}"/>
             </classpath>
-            <classpath location="${tests.build.output}/classes" />
+            <classpath location="bin/test" />
 
             <!-- temporarely exclude one test that breaks compilation -->
             <exclude name="**/javah/Test02.java"/>
@@ -209,7 +191,7 @@
             <jvmarg line="${hy.test.vmargs}" />
 
             <classpath>
-                <pathelement path="${tests.build.output}/classes"/>
+                <pathelement path="bin/test"/>
                 <pathelement path="${jdktools.deploy.dir}/lib/tools.jar"/>
             </classpath>
 
@@ -221,7 +203,7 @@
             <batchtest todir="${tests.output}" haltonfailure="no"
                                    unless="test.case">
 
-                <fileset dir="${hy.tools.src.test.java}">
+                <fileset dir="src/test/java">
                     <!-- if ${test.case}     -->
                     <include name="${converted.tc}" if="test.case" />
 
