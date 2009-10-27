@@ -25,11 +25,18 @@
 #if defined(WIN32)
 #include <windows.h>
 #include <sys/stat.h>
+
+/* If using the MSVC2008 compiler */
+#if defined(_MSC_VER) && (_MSC_VER >= 1500)
+#pragma warning(disable: 4996)   // 'strdup' was deprecated
+#endif
+
 #else
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
+
 #if defined(FREEBSD)
 #include <dlfcn.h>
 #endif

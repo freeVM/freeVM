@@ -42,7 +42,7 @@
     <target name="build-tests" />
     <target name="test-module" depends="prepare-exclude, run-tests" />
 
-    <target name="build-native" depends="-compile-native, -copy-native-exe, -copy-native-exe-windows, -copy-native-progdb, -copy-native-data" />
+    <target name="build-native" depends="-compile-native, -copy-native-exe, -copy-native-exe-windows, -copy-native-data" />
 
     <!-- compile universal samsa binary -->
     <target name="-compile-native" >
@@ -58,7 +58,7 @@
     <target name="-copy-native-exe" >
 
         <property name="hy.samsa.exe"
-                  location="${hy.samsa.src.main.native}/samsa/${hy.os.family}/samsa${exe.suffix}" />
+                  location="${hy.hdk}/lib/samsa${exe.suffix}" />
 
         <copy file="${hy.samsa.exe}" tofile="${jdktools.deploy.dir}/bin/java${exe.suffix}" />
         <chmod file="${jdktools.deploy.dir}/bin/java${exe.suffix}" perm="ugo+x" />
@@ -119,33 +119,13 @@
 
     <!-- copy windows javaw executable -->
     <target name="-copy-native-exe-windows" if="is.windows" >
-        <property name="hy.javaw.exe"
-                  location="${hy.samsa.src.main.native}/samsa/${hy.os.family}/javaw${exe.suffix}" />
+        <property name="hy.samsaw.exe"
+                  location="${hy.hdk}/lib/samsaw${exe.suffix}" />
 
-        <copy file="${hy.javaw.exe}" tofile="${jdktools.deploy.dir}/bin/javaw${exe.suffix}" />
-        <chmod file="${jdktools.deploy.dir}/bin/javaw${exe.suffix}" perm="ugo+x" />
-    </target>
-
-    <!-- copy samsa symbol info for different tools -->
-    <target name="-copy-native-progdb" if="is.windows" >
-
-        <property name="hy.samsa.progdb"
-                  location="${hy.samsa.src.main.native}/samsa/${hy.os.family}/samsa${progdb.suffix}" />
-        <property name="hy.javaw.progdb"
-                  location="${hy.samsa.src.main.native}/samsa/${hy.os.family}/javaw${progdb.suffix}" />
-
-        <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/java${progdb.suffix}" />
-        <copy file="${hy.javaw.progdb}" tofile="${jdktools.deploy.dir}/bin/javaw${progdb.suffix}" />
-        <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javac${progdb.suffix}" />
-        <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javah${progdb.suffix}" />
-        <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javadoc${progdb.suffix}" />
-        <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/javap${progdb.suffix}" />
-        <copy file="${hy.samsa.progdb}" tofile="${jdktools.deploy.dir}/bin/jarsigner${progdb.suffix}" />
-    	<copy file="${hy.samsa.progdb}" tofile="${jretools.deploy.dir}/bin/unpack200${progdb.suffix}" />
-    	<copy file="${hy.samsa.progdb}" tofile="${jretools.deploy.dir}/bin/pack200${progdb.suffix}" />
-    	<copy file="${hy.samsa.progdb}" tofile="${jretools.deploy.dir}/bin/keytool${progdb.suffix}" />
-        <copy file="${hy.samsa.progdb}" tofile="${jretools.deploy.dir}/bin/policytool${progdb.suffix}" />
-
+        <copy file="${hy.samsaw.exe}"
+              tofile="${jdktools.deploy.dir}/bin/javaw${exe.suffix}" />
+        <chmod file="${jdktools.deploy.dir}/bin/javaw${exe.suffix}"
+               perm="ugo+x" />
     </target>
 
     <!-- copy samsa configuration data for different tools -->

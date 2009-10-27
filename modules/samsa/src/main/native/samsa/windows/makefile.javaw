@@ -19,7 +19,8 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-EXENAME = javaw.exe
+EXEBASE = samsaw
+EXENAME = $(LIBPATH)$(EXEBASE).exe
 BUILDFILES = javaw.obj ..\samsa.obj
 EXEFLAGS=$(conlflags) -subsystem:windows
 EXEDLLFILES=$(guilibsdll)

@@ -52,7 +52,7 @@ ifeq ($(HY_NO_THR),true)
 MDLLIBFILES += $(LIBPATH)libhythr$(HY_LINKLIB_SUFFIX)
 endif
 
-DLLNAME = ../../libdt_socket.so
+DLLNAME = $(TOOLSDLLPATH)libdt_socket.so
 
 STDCLIBS = 
 

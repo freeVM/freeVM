@@ -17,9 +17,11 @@
 
 package org.apache.harmony.tools.javac;
 
-import java.io.PrintWriter;
 import java.io.File;
+import java.io.PrintWriter;
+
 import org.apache.harmony.tools.toolutils.Util;
+import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 
 /**
  * This is the entry point for the javac tool.
@@ -54,8 +56,9 @@ public final class Main {
      * @return a return code as defined by this class
      */
     public int compile(String[] args) {
-
-        return compile(args,Util.getDefaultWriter(System.out), Util.getDefaultWriter(System.err));
+        return compile(args,
+                Util.getDefaultWriter(System.out),
+                Util.getDefaultWriter(System.err));
     }
 
     /**
@@ -71,17 +74,17 @@ public final class Main {
      */
     public int compile(String[] args, PrintWriter out, PrintWriter err) {
 
-        /* Give me something to do */
+        /* Give me something to do, or print usage message */
         if (args == null || args.length == 0) {
-            new Compiler(out, err).printUsage();
+            BatchCompiler.compile("-help", out, err, null); //$NON-NLS-1$
             return RC_USAGE_ERROR;
         }
 
         /* Add in the base class library code to compile against */
-        String[] newArgs = addBootclasspath(args);
+        String[] newArgs = addLocalArgs(args);
 
         /* Invoke the compiler */
-        boolean success = Compiler.main(newArgs, out, err);
+        boolean success = BatchCompiler.compile(newArgs, out, err, null);
         return success ? RC_SUCCESS : RC_COMPILE_ERROR;
     }
 
@@ -89,20 +92,20 @@ public final class Main {
      * Set up the compiler option to compile against the running JRE class
      * libraries.
      */
-    private String[] addBootclasspath(String[] args) {
+    private String[] addLocalArgs(String[] args) {
         StringBuilder sb = new StringBuilder();
-        String[] result = new String[args.length + 2];
+        String[] result = new String[args.length + 3];
 
         System.arraycopy(args, 0, result, 0, args.length);
         result[args.length] = "-classpath"; //$NON-NLS-1$
         sb.append(System.getProperty(
-                 "org.apache.harmony.boot.class.path", ".")); //$NON-NLS-1$ //$NON-NLS-2$
+                        "org.apache.harmony.boot.class.path", ".")); //$NON-NLS-1$ //$NON-NLS-2$
         sb.append(File.pathSeparator);
-        sb.append(System.getProperty(
-                 "sun.boot.class.path", ".")); //$NON-NLS-1$ //$NON-NLS-2$
+        sb.append(System.getProperty("sun.boot.class.path", ".")); //$NON-NLS-1$ //$NON-NLS-2$
         sb.append(File.pathSeparator);
         sb.append("."); //$NON-NLS-1$
         result[args.length + 1] = sb.toString();
+        result[args.length + 2] = "-1.5"; //$NON-NLS-1$
         return result;
     }
 }

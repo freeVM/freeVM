@@ -48,6 +48,7 @@
         <check-one-file src="${jdt.jdimodel.jar.url}"
                         dest="${jdt.jdimodel.jar}" />
         <check-one-file src="${icu.url}" dest="${icu.jar}" />
+        <check-one-file src="${ecj.jar.url}" dest="${ecj.jar}" />
     </target>
     
     <target name="fetch-depends">
@@ -109,6 +110,7 @@
 
             <classpath>
                 <pathelement path="${jdt.jdi.jar}"/>
+                <pathelement path="${ecj.jar}" />
             </classpath>
         </hy.javac>
     </target>
