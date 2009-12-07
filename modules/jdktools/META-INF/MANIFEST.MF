@@ -5,7 +5,10 @@ Implementation-Title: Apache Harmony
 Implementation-Vendor: The Apache Software Foundation
 Implementation-Vendor-Id: org.apache.harmony
 Implementation-URL: http://harmony.apache.org
-Class-Path: ecj-3.4.2.jar,jdi.jar,jdimodel.jar,bcel-5.2.jar
+Class-Path: com.ibm.icu.base_3.6.1.v20070417.jar
+  ecj-3.4.2.jar
+  jdimodel.jar
+  jdtstub.jar
 Bundle-ManifestVersion: 2
 Bundle-Name: Harmony Tools
 Bundle-SymbolicName: org.apache.harmony.tools
