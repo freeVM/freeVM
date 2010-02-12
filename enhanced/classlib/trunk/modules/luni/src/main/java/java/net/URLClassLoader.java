@@ -432,7 +432,7 @@ public class URLClassLoader extends SecureClassLoader {
                     }
                     if (exception) {
                         throw new SecurityException(Messages
-                                .getString("luni.A2", packageName)); //$NON-NLS-1$
+                                .getString("luni.A1", packageName)); //$NON-NLS-1$
                     }
                 }
             }
