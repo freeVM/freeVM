@@ -35,7 +35,7 @@ import org.apache.harmony.misc.accessors.AccessorFactory;
 
 import org.apache.harmony.kernel.vm.VM;
 import org.apache.harmony.luni.internal.nls.Messages;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -666,12 +666,12 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
     public int read(byte[] buffer, int offset, int length) throws IOException {
         // Force buffer null check first!
         if (offset > buffer.length || offset < 0) {
-            // K002e=Offset out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+            // luni.12=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
         }
         if (length < 0 || length > buffer.length - offset) {
-            // K0031=Length out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
+            // luni.18=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", length)); //$NON-NLS-1$
         }
         if (length == 0) {
             return 0;
@@ -810,8 +810,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             case TC_NULL:
                 return null;
             default:
-                throw new StreamCorruptedException(Msg.getString(
-                        "K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
+                throw new StreamCorruptedException(Messages.getString(
+                        "luni.BC", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
         }
     }
 
@@ -855,13 +855,13 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 return null;
             case TC_EXCEPTION:
                 Exception exc = readException();
-                throw new WriteAbortedException(Msg.getString("K00d3"), exc); //$NON-NLS-1$
+                throw new WriteAbortedException(Messages.getString("luni.BD"), exc); //$NON-NLS-1$
             case TC_RESET:
                 resetState();
                 return null;
             default:
-                throw new StreamCorruptedException(Msg.getString(
-                        "K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
+                throw new StreamCorruptedException(Messages.getString(
+                        "luni.BC", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
         }
     }
 
@@ -909,14 +909,14 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 case TC_REFERENCE:
                     if (unshared) {
                         readNewHandle();
-                        throw new InvalidObjectException(Msg.getString("KA002")); //$NON-NLS-1$
+                        throw new InvalidObjectException(Messages.getString("luni.BE")); //$NON-NLS-1$
                     }
                     return readCyclicReference();
                 case TC_NULL:
                     return null;
                 case TC_EXCEPTION:
                     Exception exc = readException();
-                    throw new WriteAbortedException(Msg.getString("K00d3"), exc); //$NON-NLS-1$
+                    throw new WriteAbortedException(Messages.getString("luni.BD"), exc); //$NON-NLS-1$
                 case TC_RESET:
                     resetState();
                     break;
@@ -926,8 +926,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                     e.eof = true;
                     throw e;
                 default:
-                    throw new StreamCorruptedException(Msg.getString(
-                            "K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
+                    throw new StreamCorruptedException(Messages.getString(
+                            "luni.BC", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
             }
             // Only TC_RESET falls through
         } while (true);
@@ -1267,8 +1267,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                             }
                             break;
                         default:
-                            throw new StreamCorruptedException(Msg.getString(
-                                    "K00d5", fieldDesc.getTypeCode())); //$NON-NLS-1$
+                            throw new StreamCorruptedException(Messages.getString(
+                                    "luni.BF", fieldDesc.getTypeCode())); //$NON-NLS-1$
                     }
                 } catch (NoSuchFieldError err) {
                 }
@@ -1294,8 +1294,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                         Class<?> fieldType = fieldDesc.getType();
                         Class<?> valueType = toSet.getClass();
                         if (!fieldType.isAssignableFrom(valueType)) {
-                            throw new ClassCastException(Msg.getString(
-                                    "K00d4", new String[] { //$NON-NLS-1$
+                            throw new ClassCastException(Messages.getString(
+                                    "luni.C0", new String[] { //$NON-NLS-1$
                                     fieldType.toString(), valueType.toString(),
                                             classDesc.getName() + "." //$NON-NLS-1$
                                                     + fieldName }));
@@ -1600,7 +1600,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         ObjectStreamClass classDesc = readClassDesc();
 
         if (classDesc == null) {
-            throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
+            throw new InvalidClassException(Messages.getString("luni.C1")); //$NON-NLS-1$
         }
 
         Integer newHandle = nextHandle();
@@ -1657,8 +1657,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                     doubleArray[i] = input.readDouble();
                 }
             } else {
-                throw new ClassNotFoundException(Msg.getString(
-                        "K00d7", classDesc.getName())); //$NON-NLS-1$
+                throw new ClassNotFoundException(Messages.getString(
+                        "luni.C2", classDesc.getName())); //$NON-NLS-1$
             }
         } else {
             // Array of Objects
@@ -1702,7 +1702,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             }
             return localClass;
         }
-        throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
+        throw new InvalidClassException(Messages.getString("luni.C1")); //$NON-NLS-1$
     }
 
     /*
@@ -1720,8 +1720,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             case TC_NULL:
                 return null;
             default:
-                throw new StreamCorruptedException(Msg.getString(
-                        "K00d2", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
+                throw new StreamCorruptedException(Messages.getString(
+                        "luni.BC", Integer.toHexString(tc & 0xff))); //$NON-NLS-1$
         }
     }
 
@@ -1743,8 +1743,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         // Check SUIDs, note all SUID for Enum is 0L
         if (0L != classDesc.getSerialVersionUID()
                 || 0L != superClass.getSerialVersionUID()) {
-            throw new InvalidClassException(superClass.getName(), Msg
-                    .getString("K00da", superClass, //$NON-NLS-1$
+            throw new InvalidClassException(superClass.getName(), Messages
+                    .getString("luni.C3", superClass, //$NON-NLS-1$
                             superClass));
         }
         byte tc = nextTC();
@@ -1772,7 +1772,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             case TC_REFERENCE:
                 if (unshared) {
                     readNewHandle();
-                    throw new InvalidObjectException(Msg.getString("KA002")); //$NON-NLS-1$
+                    throw new InvalidObjectException(Messages.getString("luni.BE")); //$NON-NLS-1$
                 }
                 name = (String) readCyclicReference();
                 break;
@@ -1780,7 +1780,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 name = (String) readNewString(unshared);
                 break;
             default:
-                throw new StreamCorruptedException(Msg.getString("K00d2"));//$NON-NLS-1$
+                throw new StreamCorruptedException(Messages.getString("luni.BC"));//$NON-NLS-1$
         }
 
         Enum<?> result = Enum.valueOf((Class) classDesc.forClass(), name);
@@ -1980,8 +1980,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
             // Has to have an empty constructor
             if (constructor == null) {
-                throw new InvalidClassException(constructorClass.getName(), Msg
-                        .getString("K00dc")); //$NON-NLS-1$
+                throw new InvalidClassException(constructorClass.getName(), Messages
+                        .getString("luni.C4")); //$NON-NLS-1$
             }
 
             int constructorModifiers = constructor.getModifiers();
@@ -1991,8 +1991,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             if (Modifier.isPrivate(constructorModifiers)
                     || (wasExternalizable && !Modifier
                             .isPublic(constructorModifiers))) {
-                throw new InvalidClassException(constructorClass.getName(), Msg
-                        .getString("K00dc")); //$NON-NLS-1$
+                throw new InvalidClassException(constructorClass.getName(), Messages
+                        .getString("luni.C4")); //$NON-NLS-1$
             }
 
             // We know we are testing from a subclass, so the only other case
@@ -2005,7 +2005,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
                 // visibility. Check if same package
                 if (!inSamePackage(constructorClass, objectClass)) {
                     throw new InvalidClassException(constructorClass.getName(),
-                            Msg.getString("K00dc")); //$NON-NLS-1$
+                            Messages.getString("luni.C4")); //$NON-NLS-1$
                 }
             }
 
@@ -2039,7 +2039,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         ObjectStreamClass classDesc = readClassDesc();
 
         if (classDesc == null) {
-            throw new InvalidClassException(Msg.getString("K00d1")); //$NON-NLS-1$
+            throw new InvalidClassException(Messages.getString("luni.C1")); //$NON-NLS-1$
         }
 
         Integer newHandle = nextHandle();
@@ -2395,7 +2395,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         Object res = objectsRead.get(handle);
 
         if (res == UNSHARED_OBJ) {
-            throw new InvalidObjectException(Msg.getString("KA010")); //$NON-NLS-1$
+            throw new InvalidObjectException(Messages.getString("luni.C5")); //$NON-NLS-1$
         }
 
         return res;
@@ -2448,7 +2448,7 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
             throw new NotActiveException();
         }
         if (object == null) {
-            throw new InvalidObjectException(Msg.getString("K00d9")); //$NON-NLS-1$
+            throw new InvalidObjectException(Messages.getString("luni.C6")); //$NON-NLS-1$
         }
         // From now on it is just insertion in a SortedCollection. Since
         // the Java class libraries don't provide that, we have to
@@ -2608,8 +2608,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
 
         if (loadedStreamClass.getSerialVersionUID() != localStreamClass
                 .getSerialVersionUID()) {
-            throw new InvalidClassException(loadedStreamClass.getName(), Msg
-                    .getString("K00da", loadedStreamClass, //$NON-NLS-1$
+            throw new InvalidClassException(loadedStreamClass.getName(), Messages
+                    .getString("luni.C3", loadedStreamClass, //$NON-NLS-1$
                             localStreamClass));
         }
 
@@ -2617,8 +2617,8 @@ public class ObjectInputStream extends InputStream implements ObjectInput,
         String localClassBaseName = getBaseName(localStreamClass.getName());
 
         if (!loadedClassBaseName.equals(localClassBaseName)) {
-            throw new InvalidClassException(loadedStreamClass.getName(), Msg
-                    .getString("KA015", loadedClassBaseName, //$NON-NLS-1$
+            throw new InvalidClassException(loadedStreamClass.getName(), Messages
+                    .getString("luni.C7", loadedClassBaseName, //$NON-NLS-1$
                             localClassBaseName));
         }
 

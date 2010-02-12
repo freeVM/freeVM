@@ -24,7 +24,7 @@ import java.util.Formatter;
 import java.util.IllegalFormatException;
 import java.util.Locale;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -324,7 +324,7 @@ public class PrintStream extends FilterOutputStream implements Appendable,
      */
     public PrintStream format(Locale l, String format, Object... args) {
         if (format == null) {
-            throw new NullPointerException(Msg.getString("K0351")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.D2")); //$NON-NLS-1$
         }
         new Formatter(this, l).format(format, args);
         return this;
@@ -667,12 +667,12 @@ public class PrintStream extends FilterOutputStream implements Appendable,
     public void write(byte[] buffer, int offset, int length) {
         // Force buffer null check first!
         if (offset > buffer.length || offset < 0) {
-            // K002e=Offset out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+            // luni.12=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
         }
         if (length < 0 || length > buffer.length - offset) {
-            // K0031=Length out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
+            // luni.18=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", length)); //$NON-NLS-1$
         }
         synchronized (this) {
             if (out == null) {

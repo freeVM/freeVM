@@ -25,7 +25,7 @@ import java.util.IdentityHashMap;
 import org.apache.harmony.misc.accessors.ObjectAccessor;
 import org.apache.harmony.misc.accessors.AccessorFactory;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * A specialized {@link OutputStream} that is able to write (serialize) Java
@@ -668,13 +668,13 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
      */
     public void useProtocolVersion(int version) throws IOException {
         if (!objectsWritten.isEmpty()) {
-            // KA028=Cannot set protocol version when stream in use
-            throw new IllegalStateException(Msg.getString("KA028")); //$NON-NLS-1$
+            // luni.C8=Cannot set protocol version when stream in use
+            throw new IllegalStateException(Messages.getString("luni.C8")); //$NON-NLS-1$
         }
         if (version != ObjectStreamConstants.PROTOCOL_VERSION_1
                 && version != ObjectStreamConstants.PROTOCOL_VERSION_2) {
-            // K00b3=Unknown protocol\: {0}
-            throw new IllegalArgumentException(Msg.getString("K00b3", version)); //$NON-NLS-1$
+            // luni.9C=Unknown protocol\: {0}
+            throw new IllegalArgumentException(Messages.getString("luni.9C", version)); //$NON-NLS-1$
         }
         protocolVersion = version;
     }
@@ -1080,8 +1080,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
                             break;
                         default:
                             throw new IOException(
-                                    org.apache.harmony.luni.util.Msg.getString(
-                                            "K00d5", fieldDesc.getTypeCode())); //$NON-NLS-1$
+                                    Messages.getString(
+                                            "luni.BF", fieldDesc.getTypeCode())); //$NON-NLS-1$
                     }
                 } else {
                     // Object type (array included).
@@ -1307,8 +1307,8 @@ public class ObjectOutputStream extends OutputStream implements ObjectOutput,
                 }
             } else {
                 throw new InvalidClassException(
-                        org.apache.harmony.luni.util.Msg.getString(
-                                "K00d7", arrayClass.getName())); //$NON-NLS-1$
+                        Messages.getString(
+                                "luni.C2", arrayClass.getName())); //$NON-NLS-1$
             }
         } else {
             // Array of Objects

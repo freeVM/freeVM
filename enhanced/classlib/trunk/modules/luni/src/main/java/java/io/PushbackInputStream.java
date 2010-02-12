@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Wraps an existing {@link InputStream} and adds functionality to "push back"
@@ -67,7 +67,7 @@ public class PushbackInputStream extends FilterInputStream {
     public PushbackInputStream(InputStream in, int size) {
         super(in);
         if (size <= 0) {
-            throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.A3")); //$NON-NLS-1$
         }
         buf = (in == null) ? null : new byte[size];
         pos = size;
@@ -177,17 +177,17 @@ public class PushbackInputStream extends FilterInputStream {
     @Override
     public int read(byte[] buffer, int offset, int length) throws IOException {
         if (buf == null) {
-            // K0059=Stream is closed
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            // luni.24=Stream is closed
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
         // Force buffer null check first!
         if (offset > buffer.length || offset < 0) {
-            // K002e=Offset out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+            // luni.12=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
         }
         if (length < 0 || length > buffer.length - offset) {
-            // K0031=Length out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
+            // luni.18=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", length)); //$NON-NLS-1$
         }
 
         int copiedBytes = 0, copyLength = 0, newOffset = offset;
@@ -228,7 +228,7 @@ public class PushbackInputStream extends FilterInputStream {
     @Override
     public long skip(long count) throws IOException {
         if (in == null) {
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
         if (count <= 0) {
             return 0;
@@ -293,20 +293,20 @@ public class PushbackInputStream extends FilterInputStream {
     public void unread(byte[] buffer, int offset, int length)
             throws IOException {
         if (length > pos) {
-            // K007e=Pushback buffer full
-            throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
+            // luni.D3=Pushback buffer full
+            throw new IOException(Messages.getString("luni.D3")); //$NON-NLS-1$
         }
         if (offset > buffer.length || offset < 0) {
-            // K002e=Offset out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+            // luni.12=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
         }
         if (length < 0 || length > buffer.length - offset) {
-            // K0031=Length out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
+            // luni.18=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", length)); //$NON-NLS-1$
         }
         if (buf == null) {
-            // K0059=Stream is closed
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            // luni.24=Stream is closed
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
 
         System.arraycopy(buffer, offset, buf, pos - length, length);
@@ -333,7 +333,7 @@ public class PushbackInputStream extends FilterInputStream {
             throw new IOException();
         }
         if (pos == 0) {
-            throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.D3")); //$NON-NLS-1$
         }
         buf[--pos] = (byte) oneByte;
     }
