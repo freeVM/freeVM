@@ -22,7 +22,7 @@ import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.PrivilegedAction;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * A permission for accessing a file or directory. The FilePermission is made up
@@ -93,12 +93,12 @@ public final class FilePermission extends Permission implements Serializable {
 
     private void init(final String path, String pathActions) {
         if (pathActions == null || pathActions.equals("")) { //$NON-NLS-1$
-            throw new IllegalArgumentException(Msg.getString("K006d")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.B7")); //$NON-NLS-1$
         }
         this.actions = toCanonicalActionString(pathActions);
 
         if (path == null) {
-            throw new NullPointerException(Msg.getString("K006e")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.B8")); //$NON-NLS-1$
         }
         if (path.equals("<<ALL FILES>>")) { //$NON-NLS-1$
             includeAll = true;
@@ -181,8 +181,8 @@ public final class FilePermission extends Permission implements Serializable {
             } else if (action.equals("delete")) { //$NON-NLS-1$
                 actionInt |= 1;
             } else {
-                throw new IllegalArgumentException(Msg.getString(
-                        "K006f", action)); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString(
+                        "luni.B9", action)); //$NON-NLS-1$
             }
             head = tail + 1;
         } while (tail > 0);

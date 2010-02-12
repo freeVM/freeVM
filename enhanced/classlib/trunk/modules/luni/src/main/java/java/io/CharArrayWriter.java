@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * A specialized {@link Writer} for class for writing content to an (internal)
@@ -63,7 +63,7 @@ public class CharArrayWriter extends Writer {
     public CharArrayWriter(int initialSize) {
         super();
         if (initialSize < 0) {
-            throw new IllegalArgumentException(Msg.getString("K005e")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.A8")); //$NON-NLS-1$
         }
         buf = new char[initialSize];
         lock = buf;
@@ -214,7 +214,7 @@ public class CharArrayWriter extends Writer {
     @Override
     public void write(String str, int offset, int len) {
         if (str == null) {
-            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.11")); //$NON-NLS-1$
         }
         // avoid int overflow
         if (offset < 0 || offset > str.length() || len < 0

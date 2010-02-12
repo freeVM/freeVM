@@ -21,7 +21,7 @@ import java.nio.channels.FileChannel;
 
 import org.apache.harmony.luni.platform.IFileSystem;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.nio.FileChannelFactory;
 
 /**
@@ -74,8 +74,8 @@ public class FileInputStream extends InputStream implements Closeable {
             security.checkRead(filePath);
         }
         if (file == null) {
-            // KA001=Argument must not be null
-            throw new NullPointerException(Msg.getString("KA001")); //$NON-NLS-1$
+            // luni.4D=Argument must not be null
+            throw new NullPointerException(Messages.getString("luni.4D")); //$NON-NLS-1$
         }
         fd = new FileDescriptor();
         fd.readOnly = true;
@@ -316,8 +316,8 @@ public class FileInputStream extends InputStream implements Closeable {
             return 0;
         }
         if (count < 0) {
-            // KA013=Number of bytes to skip cannot be negative
-            throw new IOException(Msg.getString("KA013")); //$NON-NLS-1$
+            // luni.AC=Number of bytes to skip cannot be negative
+            throw new IOException(Messages.getString("luni.AC")); //$NON-NLS-1$
         }
 
         // stdin requires special handling

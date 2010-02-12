@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Wraps an existing {@link InputStream} and <em>buffers</em> the input.
@@ -90,8 +90,8 @@ public class BufferedInputStream extends FilterInputStream {
     public BufferedInputStream(InputStream in, int size) {
         super(in);
         if (size <= 0) {
-            // K0058=size must be > 0
-            throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
+            // luni.A3=size must be > 0
+            throw new IllegalArgumentException(Messages.getString("luni.A3")); //$NON-NLS-1$
         }
         buf = new byte[size];
     }
@@ -109,8 +109,8 @@ public class BufferedInputStream extends FilterInputStream {
     public synchronized int available() throws IOException {
         InputStream localIn = in; // 'in' could be invalidated by close()
         if (buf == null || localIn == null) {
-            // K0059=Stream is closed
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            // luni.24=Stream is closed
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
         return count - pos + localIn.available();
     }
@@ -217,8 +217,8 @@ public class BufferedInputStream extends FilterInputStream {
         byte[] localBuf = buf;
         InputStream localIn = in;
         if (localBuf == null || localIn == null) {
-            // K0059=Stream is closed
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            // luni.24=Stream is closed
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
 
         /* Are there buffered bytes available? */
@@ -229,8 +229,8 @@ public class BufferedInputStream extends FilterInputStream {
         if (localBuf != buf) {
             localBuf = buf;
             if (localBuf == null) {
-                // K0059=Stream is closed
-                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+                // luni.24=Stream is closed
+                throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
             }
         }
 
@@ -273,8 +273,8 @@ public class BufferedInputStream extends FilterInputStream {
         // close()
         byte[] localBuf = buf;
         if (localBuf == null) {
-            // K0059=Stream is closed
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            // luni.24=Stream is closed
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
         // avoid int overflow
         if (offset > buffer.length - length || offset < 0 || length < 0) {
@@ -285,8 +285,8 @@ public class BufferedInputStream extends FilterInputStream {
         }
         InputStream localIn = in;
         if (localIn == null) {
-            // K0059=Stream is closed
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            // luni.24=Stream is closed
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
 
         int required;
@@ -323,8 +323,8 @@ public class BufferedInputStream extends FilterInputStream {
                 if (localBuf != buf) {
                     localBuf = buf;
                     if (localBuf == null) {
-                        // K0059=Stream is closed
-                        throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+                        // luni.24=Stream is closed
+                        throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
                     }
                 }
 
@@ -355,12 +355,12 @@ public class BufferedInputStream extends FilterInputStream {
     @Override
     public synchronized void reset() throws IOException {
         if (buf == null) {
-            // K0059=Stream is closed
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$	
+            // luni.24=Stream is closed
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$	
         }
         if (-1 == markpos) {
-            // K005a=Mark has been invalidated.
-            throw new IOException(Msg.getString("K005a")); //$NON-NLS-1$
+            // luni.A4=Mark has been invalidated.
+            throw new IOException(Messages.getString("luni.A4")); //$NON-NLS-1$
         }
         pos = markpos;
     }
@@ -384,15 +384,15 @@ public class BufferedInputStream extends FilterInputStream {
         byte[] localBuf = buf;
         InputStream localIn = in;
         if (localBuf == null) {
-            // K0059=Stream is closed
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            // luni.24=Stream is closed
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
         if (amount < 1) {
             return 0;
         }
         if (localIn == null) {
-            // K0059=Stream is closed
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            // luni.24=Stream is closed
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
 
         if (count - pos >= amount) {

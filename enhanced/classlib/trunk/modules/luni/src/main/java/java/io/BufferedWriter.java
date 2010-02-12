@@ -19,7 +19,7 @@ package java.io;
 
 import java.security.AccessController;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 import org.apache.harmony.luni.util.SneakyThrow;
 
@@ -79,7 +79,7 @@ public class BufferedWriter extends Writer {
     public BufferedWriter(Writer out, int size) {
         super(out);
         if (size <= 0) {
-            throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.A3")); //$NON-NLS-1$
         }
         this.out = out;
         this.buf = new char[size];
@@ -134,7 +134,7 @@ public class BufferedWriter extends Writer {
     public void flush() throws IOException {
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A7")); //$NON-NLS-1$
             }
             flushInternal();
             out.flush();
@@ -195,7 +195,7 @@ public class BufferedWriter extends Writer {
     public void write(char[] cbuf, int offset, int count) throws IOException {
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A7")); //$NON-NLS-1$
             }
             if (offset < 0 || offset > cbuf.length - count || count < 0) {
                 throw new IndexOutOfBoundsException();
@@ -244,7 +244,7 @@ public class BufferedWriter extends Writer {
     public void write(int oneChar) throws IOException {
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A7")); //$NON-NLS-1$
             }
             if (pos >= buf.length) {
                 out.write(buf, 0, buf.length);
@@ -278,7 +278,7 @@ public class BufferedWriter extends Writer {
     public void write(String str, int offset, int count) throws IOException {
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A7")); //$NON-NLS-1$
             }
             if (count <= 0) {
                 return;

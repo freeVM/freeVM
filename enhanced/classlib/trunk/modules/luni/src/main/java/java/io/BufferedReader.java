@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Wraps an existing {@link Reader} and <em>buffers</em> the input. Expensive
@@ -97,7 +97,7 @@ public class BufferedReader extends Reader {
     public BufferedReader(Reader in, int size) {
         super(in);
         if (size <= 0) {
-            throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.A3")); //$NON-NLS-1$
         }
         this.in = in;
         buf = new char[size];
@@ -200,7 +200,7 @@ public class BufferedReader extends Reader {
         }
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A5")); //$NON-NLS-1$
             }
             this.markLimit = markLimit;
             mark = pos;
@@ -236,7 +236,7 @@ public class BufferedReader extends Reader {
     public int read() throws IOException {
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A5")); //$NON-NLS-1$
             }
             /* Are there buffered characters available? */
             if (pos < end || fillBuf() != -1) {
@@ -276,7 +276,7 @@ public class BufferedReader extends Reader {
     public int read(char[] buffer, int offset, int length) throws IOException {
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A5")); //$NON-NLS-1$
             }
             if (offset < 0 || offset > buffer.length - length || length < 0) {
                 throw new IndexOutOfBoundsException();
@@ -361,7 +361,7 @@ public class BufferedReader extends Reader {
     public String readLine() throws IOException {
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A5")); //$NON-NLS-1$
             }
             /* has the underlying stream been exhausted? */
             if (pos == end && fillBuf() == -1) {
@@ -451,7 +451,7 @@ public class BufferedReader extends Reader {
     public boolean ready() throws IOException {
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A5")); //$NON-NLS-1$
             }
             return ((end - pos) > 0) || in.ready();
         }
@@ -471,10 +471,10 @@ public class BufferedReader extends Reader {
     public void reset() throws IOException {
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A5")); //$NON-NLS-1$
             }
             if (mark == -1) {
-                throw new IOException(Msg.getString("K005c")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A6")); //$NON-NLS-1$
             }
             pos = mark;
         }
@@ -504,7 +504,7 @@ public class BufferedReader extends Reader {
         }
         synchronized (lock) {
             if (isClosed()) {
-                throw new IOException(Msg.getString("K005b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.A5")); //$NON-NLS-1$
             }
             if (amount < 1) {
                 return 0;
