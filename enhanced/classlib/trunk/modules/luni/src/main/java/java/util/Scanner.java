@@ -35,6 +35,7 @@ import java.text.NumberFormat;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * A parser that parses a text string of primitive types and strings with the
@@ -179,13 +180,13 @@ public final class Scanner implements Iterator<String> {
      */
     public Scanner(File src, String charsetName) throws FileNotFoundException {
         if (null == src) {
-            throw new NullPointerException(org.apache.harmony.luni.util.Msg
-                    .getString("KA00a")); //$NON-NLS-1$
+            throw new NullPointerException(Messages
+                    .getString("luni.DB")); //$NON-NLS-1$
         }
         FileInputStream fis = new FileInputStream(src);
         if (null == charsetName) {
-            throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-                    .getString("KA009")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages
+                    .getString("luni.DC")); //$NON-NLS-1$
         }
         try {
             input = new InputStreamReader(fis, charsetName);
@@ -235,8 +236,8 @@ public final class Scanner implements Iterator<String> {
      */
     public Scanner(InputStream src, String charsetName) {
         if (null == src) {
-            throw new NullPointerException(org.apache.harmony.luni.util.Msg
-                    .getString("KA00b")); //$NON-NLS-1$
+            throw new NullPointerException(Messages
+                    .getString("luni.AA")); //$NON-NLS-1$
         }
         try {
             input = new InputStreamReader(src, charsetName);
@@ -284,12 +285,12 @@ public final class Scanner implements Iterator<String> {
      */
     public Scanner(ReadableByteChannel src, String charsetName) {
         if (null == src) {
-            throw new NullPointerException(org.apache.harmony.luni.util.Msg
-                    .getString("KA00d")); //$NON-NLS-1$
+            throw new NullPointerException(Messages
+                    .getString("luni.DD")); //$NON-NLS-1$
         }
         if (null == charsetName) {
-            throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-                    .getString("KA009")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages
+                    .getString("luni.DC")); //$NON-NLS-1$
         }
         input = Channels.newReader(src, charsetName);
         initialization();
@@ -473,8 +474,8 @@ public final class Scanner implements Iterator<String> {
         checkClosed();
         checkNull(pattern);
         if (horizon < 0) {
-            throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-                    .getString("KA00e")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages
+                    .getString("luni.DE")); //$NON-NLS-1$
         }
         matcher.usePattern(pattern);
 
@@ -1697,8 +1698,8 @@ public final class Scanner implements Iterator<String> {
      */
     public Scanner useRadix(int radix) {
         if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
-            throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-                    .getString("KA008", radix)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages
+                    .getString("luni.DF", radix)); //$NON-NLS-1$
         }
         this.integerRadix = radix;
         return this;
@@ -1774,8 +1775,8 @@ public final class Scanner implements Iterator<String> {
      */
     private Pattern getIntegerPattern(int radix) {
         if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
-            throw new IllegalArgumentException(org.apache.harmony.luni.util.Msg
-                    .getString("KA00e", radix)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages
+                    .getString("luni.DE", radix)); //$NON-NLS-1$
         }
         decimalFormat = (DecimalFormat) NumberFormat.getInstance(locale);
 
