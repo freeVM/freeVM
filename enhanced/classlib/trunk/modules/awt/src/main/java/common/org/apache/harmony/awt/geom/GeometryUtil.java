@@ -53,7 +53,7 @@ public class GeometryUtil {
      * The method checks up if line (x1, y1) - (x2, y2) and line (x3, y3) - (x4, y4)
      * intersect. If lines intersect then the result parameters are saved to point
      * array. The size of array point must be at least 2.
-     * @returns the method returns 1 if two lines intersect in the defined interval,  
+     * @return the method returns 1 if two lines intersect in the defined interval,  
      * 			otherwise 0
      */
     public static int intersectLines(double x1, double y1, double x2, double y2,
