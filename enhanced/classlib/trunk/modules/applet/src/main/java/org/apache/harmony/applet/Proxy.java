@@ -28,6 +28,7 @@ import java.awt.Window;
 import java.net.URL;
 
 import org.apache.harmony.awt.ComponentInternals;
+import org.apache.harmony.applet.internal.nls.Messages;
 
 
 /**
@@ -73,7 +74,7 @@ class Proxy implements AppletStub {
     private void createImpl() {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         if (toolkit == null) {
-            throw new InternalError("Toolkit is null");
+            throw new InternalError(Messages.getString("applet.03"));
         }
         
         if ((params.container != null) && (params.container instanceof Container)) { 

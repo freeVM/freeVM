@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.harmony.awt.ContextStorage;
+import org.apache.harmony.applet.internal.nls.Messages;
 
 
 /**
@@ -50,7 +51,7 @@ public class Connection implements Callback {
         try {
             port = Integer.parseInt(args[0]);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid port");
+            throw new IllegalArgumentException(Messages.getString("applet.02"));
         }
         
         Connection c = new Connection(port);
