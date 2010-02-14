@@ -88,10 +88,6 @@ public class BufferedOutputStream extends FilterOutputStream {
      */
     @Override
     public synchronized void flush() throws IOException {
-        if (buf == null) {
-            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
-        }
-
         flushInternal();
         out.flush();
     }
