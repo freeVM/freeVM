@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Places information on a communications pipe. When two threads want to pass
@@ -87,11 +87,11 @@ public class PipedOutputStream extends OutputStream {
             throw new NullPointerException();
         }
         if (this.dest != null) {
-            throw new IOException(Msg.getString("K0079")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.5F")); //$NON-NLS-1$
         }
         synchronized (stream) {
             if (stream.isConnected) {
-                throw new IOException(Msg.getString("K007a")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.D0")); //$NON-NLS-1$
             }
             if (stream.buffer == null) {
                 stream.buffer = new byte[PipedInputStream.PIPE_SIZE];
@@ -148,8 +148,8 @@ public class PipedOutputStream extends OutputStream {
     @Override
     public void write(byte buffer[], int offset, int count) throws IOException {
         if (dest == null) {
-            // K007b=Pipe Not Connected
-            throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
+            // luni.D1=Pipe Not Connected
+            throw new IOException(Messages.getString("luni.D1")); //$NON-NLS-1$
         }
         super.write(buffer, offset, count);
     }
@@ -177,7 +177,7 @@ public class PipedOutputStream extends OutputStream {
     @Override
     public void write(int oneByte) throws IOException {
         if (dest == null) {
-            throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.D1")); //$NON-NLS-1$
         }
         dest.receive(oneByte);
     }

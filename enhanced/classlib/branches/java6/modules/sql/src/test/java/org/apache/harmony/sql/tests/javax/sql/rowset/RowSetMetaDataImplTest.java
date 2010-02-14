@@ -827,6 +827,13 @@ public class RowSetMetaDataImplTest extends TestCase {
             // expected
         }
         
+        try {
+            metaDataImpl.setColumnType(2, 59);
+            fail("should throw SQLException");
+        } catch (SQLException e) {
+            // expected
+        }
+
         // types compliant to JDBC4
         metaDataImpl.setColumnType(2, Types.NCHAR);
         metaDataImpl.setColumnType(2, Types.NCLOB);

@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.apache.harmony.luni.internal.io.FileCanonPathCache;
 import org.apache.harmony.luni.util.DeleteOnExit;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 import org.apache.harmony.luni.util.Util;
 
@@ -199,33 +199,33 @@ public class File implements Serializable, Comparable<File> {
     @SuppressWarnings("nls")
     private void checkURI(URI uri) {
         if (!uri.isAbsolute()) {
-            throw new IllegalArgumentException(Msg.getString("K031a", uri));
+            throw new IllegalArgumentException(Messages.getString("luni.AD", uri));
         } else if (!uri.getRawSchemeSpecificPart().startsWith("/")) {
-            throw new IllegalArgumentException(Msg.getString("K031b", uri));
+            throw new IllegalArgumentException(Messages.getString("luni.AE", uri));
         }
 
         String temp = uri.getScheme();
         if (temp == null || !temp.equals("file")) {
-            throw new IllegalArgumentException(Msg.getString("K031c", uri));
+            throw new IllegalArgumentException(Messages.getString("luni.AF", uri));
         }
 
         temp = uri.getRawPath();
         if (temp == null || temp.length() == 0) {
-            throw new IllegalArgumentException(Msg.getString("K031d", uri));
+            throw new IllegalArgumentException(Messages.getString("luni.B0", uri));
         }
 
         if (uri.getRawAuthority() != null) {
-            throw new IllegalArgumentException(Msg.getString("K031e",
+            throw new IllegalArgumentException(Messages.getString("luni.B1",
                     new String[] { "authority", uri.toString() }));
         }
 
         if (uri.getRawQuery() != null) {
-            throw new IllegalArgumentException(Msg.getString("K031e",
+            throw new IllegalArgumentException(Messages.getString("luni.B1",
                     new String[] { "query", uri.toString() }));
         }
 
         if (uri.getRawFragment() != null) {
-            throw new IllegalArgumentException(Msg.getString("K031e",
+            throw new IllegalArgumentException(Messages.getString("luni.B1",
                     new String[] { "fragment", uri.toString() }));
         }
     }
@@ -950,7 +950,7 @@ public class File implements Serializable, Comparable<File> {
      */
     public boolean setLastModified(long time) {
         if (time < 0) {
-            throw new IllegalArgumentException(Msg.getString("K006a")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.B2")); //$NON-NLS-1$
         }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
@@ -1374,7 +1374,7 @@ public class File implements Serializable, Comparable<File> {
             security.checkWrite(path);
         }
         if (0 == path.length()) {
-            throw new IOException(Msg.getString("KA012")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.B3")); //$NON-NLS-1$
         }
         int result = newFileImpl(properPath(true));
         switch (result) {
@@ -1383,7 +1383,7 @@ public class File implements Serializable, Comparable<File> {
             case 1:
                 return false;
             default:
-                throw new IOException(Msg.getString("K01c2", path)); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.B4", path)); //$NON-NLS-1$
         }
     }
 
@@ -1434,7 +1434,7 @@ public class File implements Serializable, Comparable<File> {
             File directory) throws IOException {
         // Force a prefix null check first
         if (prefix.length() < 3) {
-            throw new IllegalArgumentException(Msg.getString("K006b"));
+            throw new IllegalArgumentException(Messages.getString("luni.B5"));
         }
         String newSuffix = suffix == null ? ".tmp" : suffix;
         File tmpDirFile;

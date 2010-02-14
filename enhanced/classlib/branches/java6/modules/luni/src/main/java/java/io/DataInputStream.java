@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.Util;
 
 /**
@@ -244,10 +244,10 @@ public class DataInputStream extends FilterInputStream implements DataInput {
             return;
         }
         if (in == null) {
-            throw new NullPointerException(Msg.getString("KA00b")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.AA")); //$NON-NLS-1$
         }
         if (buffer == null) {
-            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.11")); //$NON-NLS-1$
         }
         if (offset < 0 || offset > buffer.length - length) {
             throw new IndexOutOfBoundsException();

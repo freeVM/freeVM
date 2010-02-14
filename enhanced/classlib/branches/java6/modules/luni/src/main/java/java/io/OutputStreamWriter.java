@@ -26,7 +26,7 @@ import java.nio.charset.CodingErrorAction;
 import java.security.AccessController;
 
 import org.apache.harmony.luni.util.HistoricalNamesUtil;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -181,8 +181,8 @@ public class OutputStreamWriter extends Writer {
 
     private void checkStatus() throws IOException {
         if (encoder == null) {
-            // K005d=Writer is closed.
-            throw new IOException(Msg.getString("K005d")); //$NON-NLS-1$
+            // luni.A7=Writer is closed.
+            throw new IOException(Messages.getString("luni.A7")); //$NON-NLS-1$
         }
     }
 

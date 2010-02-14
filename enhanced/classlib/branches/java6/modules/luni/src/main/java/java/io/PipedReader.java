@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Receives information on a communications pipe. When two threads want to pass
@@ -168,10 +168,10 @@ public class PipedReader extends Reader {
     void establishConnection() throws IOException {
         synchronized (lock) {
             if (data == null) {
-                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
             }
             if (isConnected) {
-                throw new IOException(Msg.getString("K007a")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.D0")); //$NON-NLS-1$
             }
             isConnected = true;
         }
@@ -234,10 +234,10 @@ public class PipedReader extends Reader {
     public int read(char[] buffer, int offset, int count) throws IOException {
         synchronized (lock) {
             if (!isConnected) {
-                throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.D1")); //$NON-NLS-1$
             }
             if (data == null) {
-                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
             }
             // avoid int overflow
             if (offset < 0 || count > buffer.length - offset || count < 0) {
@@ -260,7 +260,7 @@ public class PipedReader extends Reader {
                         return -1;
                     }
                     if (!first && lastWriter != null && !lastWriter.isAlive()) {
-                        throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
+                        throw new IOException(Messages.getString("luni.CE")); //$NON-NLS-1$
                     }
                     first = false;
                     // Notify callers of receive()
@@ -330,10 +330,10 @@ public class PipedReader extends Reader {
     public boolean ready() throws IOException {
         synchronized (lock) {
             if (!isConnected) {
-                throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.D1")); //$NON-NLS-1$
             }
             if (data == null) {
-                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
             }
             return in != -1;
         }
@@ -356,10 +356,10 @@ public class PipedReader extends Reader {
     void receive(char oneChar) throws IOException {
         synchronized (lock) {
             if (data == null) {
-                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
             }
             if (lastReader != null && !lastReader.isAlive()) {
-                throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CE")); //$NON-NLS-1$
             }
             /*
              * Set the last thread to be writing on this PipedWriter. If
@@ -372,7 +372,7 @@ public class PipedReader extends Reader {
                     lock.notifyAll();
                     wait(1000);
                     if (lastReader != null && !lastReader.isAlive()) {
-                        throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
+                        throw new IOException(Messages.getString("luni.CE")); //$NON-NLS-1$
                     }
                 }
             } catch (InterruptedException e) {
@@ -412,10 +412,10 @@ public class PipedReader extends Reader {
     void receive(char[] chars, int offset, int count) throws IOException {
         synchronized (lock) {
             if (data == null) {
-                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
             }
             if (lastReader != null && !lastReader.isAlive()) {
-                throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CE")); //$NON-NLS-1$
             }
             /**
              * Set the last thread to be writing on this PipedWriter. If
@@ -429,7 +429,7 @@ public class PipedReader extends Reader {
                         lock.notifyAll();
                         wait(1000);
                         if (lastReader != null && !lastReader.isAlive()) {
-                            throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
+                            throw new IOException(Messages.getString("luni.CE")); //$NON-NLS-1$
                         }
                     }
                 } catch (InterruptedException e) {
@@ -481,7 +481,7 @@ public class PipedReader extends Reader {
     void flush() throws IOException {
         synchronized (lock) {
             if (isClosed) {
-                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
             }
             lock.notifyAll();
         }

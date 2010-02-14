@@ -22,7 +22,7 @@ import java.util.Formatter;
 import java.util.IllegalFormatException;
 import java.util.Locale;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -329,7 +329,7 @@ public class PrintWriter extends Writer {
      */
     public PrintWriter format(Locale l, String format, Object... args) {
         if (format == null) {
-            throw new NullPointerException(Msg.getString("K0351")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.D2")); //$NON-NLS-1$
         }
         new Formatter(this, l).format(format, args);
         if (autoflush) {

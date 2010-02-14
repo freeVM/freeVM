@@ -28,7 +28,7 @@ import java.nio.charset.UnmappableCharacterException;
 import java.security.AccessController;
 
 import org.apache.harmony.luni.util.HistoricalNamesUtil;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 
 /**
@@ -189,8 +189,8 @@ public class InputStreamReader extends Reader {
     public int read() throws IOException {
         synchronized (lock) {
             if (!isOpen()) {
-                // K0070=InputStreamReader is closed.
-                throw new IOException(Msg.getString("K0070")); //$NON-NLS-1$
+                // luni.BA=InputStreamReader is closed.
+                throw new IOException(Messages.getString("luni.BA")); //$NON-NLS-1$
             }
 
             char buf[] = new char[1];
@@ -226,8 +226,8 @@ public class InputStreamReader extends Reader {
     public int read(char[] buf, int offset, int length) throws IOException {
         synchronized (lock) {
             if (!isOpen()) {
-                // K0070=InputStreamReader is closed.
-                throw new IOException(Msg.getString("K0070")); //$NON-NLS-1$
+                // luni.BA=InputStreamReader is closed.
+                throw new IOException(Messages.getString("luni.BA")); //$NON-NLS-1$
             }
             if (offset < 0 || offset > buf.length - length || length < 0) {
                 throw new IndexOutOfBoundsException();
@@ -326,8 +326,8 @@ public class InputStreamReader extends Reader {
     public boolean ready() throws IOException {
         synchronized (lock) {
             if (in == null) {
-                // K0070=InputStreamReader is closed.
-                throw new IOException(Msg.getString("K0070")); //$NON-NLS-1$
+                // luni.BA=InputStreamReader is closed.
+                throw new IOException(Messages.getString("luni.BA")); //$NON-NLS-1$
             }
             try {
                 return bytes.hasRemaining() || in.available() > 0;

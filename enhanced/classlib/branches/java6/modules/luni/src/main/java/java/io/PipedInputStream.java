@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Receives information from a communications pipe. When two threads want to
@@ -189,17 +189,17 @@ public class PipedInputStream extends InputStream {
     @Override
     public synchronized int read() throws IOException {
         if (!isConnected) {
-            // K0074=Not connected
-            throw new IOException(Msg.getString("K0074")); //$NON-NLS-1$
+            // luni.CB=Not connected
+            throw new IOException(Messages.getString("luni.CB")); //$NON-NLS-1$
         }
         if (buffer == null) {
-            // K0075=InputStream is closed
-            throw new IOException(Msg.getString("K0075")); //$NON-NLS-1$
+            // luni.CC=InputStream is closed
+            throw new IOException(Messages.getString("luni.CC")); //$NON-NLS-1$
         }
 
         if (lastWriter != null && !lastWriter.isAlive() && (in < 0)) {
-            // KA030=Write end dead
-            throw new IOException(Msg.getString("KA030")); //$NON-NLS-1$
+            // luni.CD=Write end dead
+            throw new IOException(Messages.getString("luni.CD")); //$NON-NLS-1$
         }
         /**
          * Set the last thread to be reading on this PipedInputStream. If
@@ -215,8 +215,8 @@ public class PipedInputStream extends InputStream {
                     return -1;
                 }
                 if ((attempts-- <= 0) && lastWriter != null && !lastWriter.isAlive()) {
-                    // K0076=Pipe broken
-                    throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
+                    // luni.CE=Pipe broken
+                    throw new IOException(Messages.getString("luni.CE")); //$NON-NLS-1$
                 }
                 // Notify callers of receive()
                 notifyAll();
@@ -286,18 +286,18 @@ public class PipedInputStream extends InputStream {
         }
 
         if (!isConnected) {
-            // K0074=Not connected
-            throw new IOException(Msg.getString("K0074")); //$NON-NLS-1$
+            // luni.CB=Not connected
+            throw new IOException(Messages.getString("luni.CB")); //$NON-NLS-1$
         }
 
         if (buffer == null) {
-            // K0075=InputStream is closed
-            throw new IOException(Msg.getString("K0075")); //$NON-NLS-1$
+            // luni.CC=InputStream is closed
+            throw new IOException(Messages.getString("luni.CC")); //$NON-NLS-1$
         }
 
         if (lastWriter != null && !lastWriter.isAlive() && (in < 0)) {
-            // KA030=Write end dead
-            throw new IOException(Msg.getString("KA030")); //$NON-NLS-1$
+            // luni.CD=Write end dead
+            throw new IOException(Messages.getString("luni.CD")); //$NON-NLS-1$
         }
 
         /**
@@ -314,8 +314,8 @@ public class PipedInputStream extends InputStream {
                     return -1;
                 }
                 if ((attempts-- <= 0) && lastWriter != null && !lastWriter.isAlive()) {
-                    // K0076=Pipe broken
-                    throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
+                    // luni.CE=Pipe broken
+                    throw new IOException(Messages.getString("luni.CE")); //$NON-NLS-1$
                 }
                 // Notify callers of receive()
                 notifyAll();
@@ -383,10 +383,10 @@ public class PipedInputStream extends InputStream {
      */
     protected synchronized void receive(int oneByte) throws IOException {
         if (buffer == null || isClosed) {
-            throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
         }
         if (lastReader != null && !lastReader.isAlive()) {
-            throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.CE")); //$NON-NLS-1$
         }
         /**
          * Set the last thread to be writing on this PipedInputStream. If
@@ -399,7 +399,7 @@ public class PipedInputStream extends InputStream {
                 notifyAll();
                 wait(1000);
                 if (lastReader != null && !lastReader.isAlive()) {
-                    throw new IOException(Msg.getString("K0076")); //$NON-NLS-1$
+                    throw new IOException(Messages.getString("luni.CE")); //$NON-NLS-1$
                 }
             }
         } catch (InterruptedException e) {

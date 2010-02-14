@@ -30,8 +30,10 @@ class SqlUtil {
             int modifiers = -1;
             Field[] fields = Types.class.getFields();
             for (int index = 0; index < fields.length; index++) {
+                // field should be int type
                 if (int.class == fields[index].getType()) {
                     modifiers = fields[index].getModifiers();
+                    // field should be static and final
                     if (Modifier.isStatic(modifiers)
                             && Modifier.isFinal(modifiers)) {
                         if (type == fields[index].getInt(Types.class)) {

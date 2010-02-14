@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Wraps an existing {@link OutputStream} and writes typed data to it.
@@ -93,7 +93,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
     @Override
     public void write(byte buffer[], int offset, int count) throws IOException {
         if (buffer == null) {
-            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.11")); //$NON-NLS-1$
         }
         out.write(buffer, offset, count);
         written += count;
@@ -332,7 +332,7 @@ public class DataOutputStream extends FilterOutputStream implements DataOutput {
     public final void writeUTF(String str) throws IOException {
         long utfCount = countUTFBytes(str);
         if (utfCount > 65535) {
-            throw new UTFDataFormatException(Msg.getString("K0068")); //$NON-NLS-1$
+            throw new UTFDataFormatException(Messages.getString("luni.AB")); //$NON-NLS-1$
         }
         byte[] buffer = new byte[(int)utfCount + 2];
         int offset = 0;

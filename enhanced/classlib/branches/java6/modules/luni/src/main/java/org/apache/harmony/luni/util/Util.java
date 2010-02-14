@@ -23,6 +23,7 @@ import java.io.UTFDataFormatException;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.TimeZone;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 public final class Util {
 
@@ -234,25 +235,25 @@ public final class Util {
 				s++;
 			else if (((a = out[s]) & 0xe0) == 0xc0) {
 				if (count >= utfSize)
-					throw new UTFDataFormatException(Msg.getString("K0062",
+					throw new UTFDataFormatException(Messages.getString("luni.D7",
 							count));
 				int b = buf[count++];
 				if ((b & 0xC0) != 0x80)
-					throw new UTFDataFormatException(Msg.getString("K0062",
+					throw new UTFDataFormatException(Messages.getString("luni.D7",
 							(count - 1)));
 				out[s++] = (char) (((a & 0x1F) << 6) | (b & 0x3F));
 			} else if ((a & 0xf0) == 0xe0) {
 				if (count + 1 >= utfSize)
-					throw new UTFDataFormatException(Msg.getString("K0063",
+					throw new UTFDataFormatException(Messages.getString("luni.D8",
 							(count + 1)));
 				int b = buf[count++];
 				int c = buf[count++];
 				if (((b & 0xC0) != 0x80) || ((c & 0xC0) != 0x80))
-					throw new UTFDataFormatException(Msg.getString("K0064",
+					throw new UTFDataFormatException(Messages.getString("luni.D9",
 							(count - 2)));
 				out[s++] = (char) (((a & 0x0F) << 12) | ((b & 0x3F) << 6) | (c & 0x3F));
 			} else {
-				throw new UTFDataFormatException(Msg.getString("K0065",
+				throw new UTFDataFormatException(Messages.getString("luni.DA",
 						(count - 1)));
 			}
 		}
@@ -296,13 +297,13 @@ public final class Util {
                 out.reset();
                 do {
                     if (i + 2 >= s.length())
-                        throw new IllegalArgumentException(Msg.getString(
-                                "K01fe", i));
+                        throw new IllegalArgumentException(Messages.getString(
+                                "luni.80", i));
                     int d1 = Character.digit(s.charAt(i + 1), 16);
                     int d2 = Character.digit(s.charAt(i + 2), 16);
                     if (d1 == -1 || d2 == -1)
-                        throw new IllegalArgumentException(Msg.getString(
-                                "K01ff", s.substring(i, i + 3), String
+                        throw new IllegalArgumentException(Messages.getString(
+                                "luni.81", s.substring(i, i + 3), String
                                         .valueOf(i)));
                     out.write((byte) ((d1 << 4) + d2));
                     i += 3;

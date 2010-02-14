@@ -32,7 +32,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
 import org.apache.harmony.luni.util.ThreadLocalCache;
 
@@ -418,8 +418,8 @@ public class ObjectStreamClass implements Serializable {
                             // Static field, parameter is ignored
                             return field.getLong(null);
                         } catch (IllegalAccessException iae) {
-                            throw new RuntimeException(Msg.getString(
-                                    "K0071", iae)); //$NON-NLS-1$
+                            throw new RuntimeException(Messages.getString(
+                                    "luni.C9", iae)); //$NON-NLS-1$
                         }
                     }
                 }
@@ -590,7 +590,7 @@ public class ObjectStreamClass implements Serializable {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(Msg.getString("K0072", e));//$NON-NLS-1$
+            throw new RuntimeException(Messages.getString("luni.CA", e));//$NON-NLS-1$
         }
 
         // now compute the UID based on the SHA

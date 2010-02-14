@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Wraps an existing {@link Reader} and adds functionality to "push back"
@@ -67,7 +67,7 @@ public class PushbackReader extends FilterReader {
     public PushbackReader(Reader in, int size) {
         super(in);
         if (size <= 0) {
-            throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.A3")); //$NON-NLS-1$
         }
         buf = new char[size];
         pos = size;
@@ -101,7 +101,7 @@ public class PushbackReader extends FilterReader {
      */
     @Override
     public void mark(int readAheadLimit) throws IOException {
-        throw new IOException(Msg.getString("K007f")); //$NON-NLS-1$
+        throw new IOException(Messages.getString("luni.D4")); //$NON-NLS-1$
     }
 
     /**
@@ -136,7 +136,7 @@ public class PushbackReader extends FilterReader {
     public int read() throws IOException {
         synchronized (lock) {
             if (buf == null) {
-                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
             }
             /* Is there a pushback character available? */
             if (pos < buf.length) {
@@ -179,7 +179,7 @@ public class PushbackReader extends FilterReader {
     public int read(char[] buffer, int offset, int count) throws IOException {
         synchronized (lock) {
             if (null == buf) {
-                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
             }
             // avoid int overflow
             if (offset < 0 || count < 0 || offset > buffer.length - count) {
@@ -231,7 +231,7 @@ public class PushbackReader extends FilterReader {
     public boolean ready() throws IOException {
         synchronized (lock) {
             if (buf == null) {
-                throw new IOException(Msg.getString("K0080")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.D5")); //$NON-NLS-1$
             }
             return (buf.length - pos > 0 || in.ready());
         }
@@ -247,7 +247,7 @@ public class PushbackReader extends FilterReader {
      */
     @Override
     public void reset() throws IOException {
-        throw new IOException(Msg.getString("K007f")); //$NON-NLS-1$
+        throw new IOException(Messages.getString("luni.D4")); //$NON-NLS-1$
     }
 
     /**
@@ -305,21 +305,21 @@ public class PushbackReader extends FilterReader {
     public void unread(char[] buffer, int offset, int length) throws IOException {
         synchronized (lock) {
             if (buf == null) {
-                // K0059=Stream is closed
-                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+                // luni.24=Stream is closed
+                throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
             }
             if (length > pos) {
-                // K007e=Pushback buffer full
-                throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
+                // luni.D3=Pushback buffer full
+                throw new IOException(Messages.getString("luni.D3")); //$NON-NLS-1$
             }
             // Force buffer null check first!
             if (offset > buffer.length - length || offset < 0) {
-                // K002e=Offset out of bounds \: {0}
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+                // luni.12=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
             }
             if (length < 0) {
-                // K0031=Length out of bounds \: {0}
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
+                // luni.18=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", length)); //$NON-NLS-1$
             }
 
             for (int i = offset + length - 1; i >= offset; i--) {
@@ -345,10 +345,10 @@ public class PushbackReader extends FilterReader {
     public void unread(int oneChar) throws IOException {
         synchronized (lock) {
             if (buf == null) {
-                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
             }
             if (pos == 0) {
-                throw new IOException(Msg.getString("K007e")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.D3")); //$NON-NLS-1$
             }
             buf[--pos] = (char) oneChar;
         }
@@ -373,7 +373,7 @@ public class PushbackReader extends FilterReader {
         }
         synchronized (lock) {
             if (buf == null) {
-                throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
             }
             if (count == 0) {
                 return 0;

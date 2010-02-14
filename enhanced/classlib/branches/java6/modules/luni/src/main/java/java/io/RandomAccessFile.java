@@ -21,7 +21,7 @@ import java.nio.channels.FileChannel;
 
 import org.apache.harmony.luni.platform.IFileSystem;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.Util;
 
 import org.apache.harmony.nio.FileChannelFactory;
@@ -125,7 +125,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
                 options = IFileSystem.O_RDWRSYNC;
             }
         } else {
-            throw new IllegalArgumentException(Msg.getString("K0081")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("luni.A2")); //$NON-NLS-1$
         }
 
         SecurityManager security = System.getSecurityManager();
@@ -479,7 +479,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
     public final void readFully(byte[] buffer, int offset, int count)
             throws IOException {
         if (buffer == null) {
-            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.11")); //$NON-NLS-1$
         }
         // avoid int overflow
         if (offset < 0 || offset > buffer.length || count < 0
@@ -691,7 +691,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
     public void seek(long pos) throws IOException {
         if (pos < 0) {
             // seek position is negative
-            throw new IOException(Msg.getString("K0347")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.BB")); //$NON-NLS-1$
         }
         openCheck();
         synchronized (repositionLock) {
@@ -1036,7 +1036,7 @@ public class RandomAccessFile implements DataInput, DataOutput, Closeable {
             }
         }
         if (utfCount > 65535) {
-            throw new UTFDataFormatException(Msg.getString("K0068")); //$NON-NLS-1$
+            throw new UTFDataFormatException(Messages.getString("luni.AB")); //$NON-NLS-1$
         }
         byte utfBytes[] = new byte[utfCount + 2];
         int utfIndex = 2;

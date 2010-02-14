@@ -21,7 +21,7 @@ import java.nio.channels.FileChannel;
 
 import org.apache.harmony.luni.platform.IFileSystem;
 import org.apache.harmony.luni.platform.Platform;
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.nio.FileChannelFactory;
 
 /**
@@ -116,7 +116,7 @@ public class FileOutputStream extends OutputStream implements Closeable {
     public FileOutputStream(FileDescriptor fd) {
         super();
         if (fd == null) {
-            throw new NullPointerException(Msg.getString("K006c")); //$NON-NLS-1$
+            throw new NullPointerException(Messages.getString("luni.B6")); //$NON-NLS-1$
         }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {

@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Wraps an existing {@link OutputStream} and <em>buffers</em> the output.
@@ -73,8 +73,8 @@ public class BufferedOutputStream extends FilterOutputStream {
     public BufferedOutputStream(OutputStream out, int size) {
         super(out);
         if (size <= 0) {
-            // K0058=size must be > 0
-            throw new IllegalArgumentException(Msg.getString("K0058")); //$NON-NLS-1$
+            // luni.A3=size must be > 0
+            throw new IllegalArgumentException(Messages.getString("luni.A3")); //$NON-NLS-1$
         }
         buf = new byte[size];
     }
@@ -89,7 +89,7 @@ public class BufferedOutputStream extends FilterOutputStream {
     @Override
     public synchronized void flush() throws IOException {
         if (buf == null) {
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
 
         flushInternal();
@@ -126,12 +126,12 @@ public class BufferedOutputStream extends FilterOutputStream {
             throws IOException {
         byte[] internalBuffer = buf;
         if (internalBuffer == null) {
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
 
         if (buffer == null) {
-            // K0047=buffer is null
-            throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+            // luni.11=buffer is null
+            throw new NullPointerException(Messages.getString("luni.11")); //$NON-NLS-1$
         }
         
         if (length >= internalBuffer.length) {
@@ -141,13 +141,13 @@ public class BufferedOutputStream extends FilterOutputStream {
         }
         
         if (offset < 0 || offset > buffer.length - length) {
-            // K002e=Offset out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+            // luni.12=Offset out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
         
         }
         if (length < 0) {
-            // K0031=Length out of bounds \: {0}
-            throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", length)); //$NON-NLS-1$
+            // luni.18=Length out of bounds \: {0}
+            throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", length)); //$NON-NLS-1$
         }
 
         // flush the internal buffer first if we have not enough space left
@@ -188,7 +188,7 @@ public class BufferedOutputStream extends FilterOutputStream {
     public synchronized void write(int oneByte) throws IOException {
         byte[] internalBuffer = buf;
         if (internalBuffer == null) {
-            throw new IOException(Msg.getString("K0059")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("luni.24")); //$NON-NLS-1$
         }
 
         if (count == internalBuffer.length) {

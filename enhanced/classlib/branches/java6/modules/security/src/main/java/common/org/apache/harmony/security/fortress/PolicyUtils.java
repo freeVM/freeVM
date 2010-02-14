@@ -322,7 +322,7 @@ public class PolicyUtils {
      * @param path -
      *            file path.
      * @return - the resulting URI.
-     * @throw URISyntaxException
+     * @throws URISyntaxException
      */
     public static URI filePathToURI(String path) throws URISyntaxException {
         path = path.replace(File.separatorChar, '/');

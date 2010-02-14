@@ -20,7 +20,7 @@ package org.apache.harmony.luni.internal.process;
 import java.io.FileDescriptor;
 import java.io.IOException;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 class ProcessInputStream extends java.io.InputStream {
 
@@ -123,12 +123,12 @@ class ProcessInputStream extends java.io.InputStream {
                 return -1;
             }
             if (nbytes > buffer.length  || nbytes < 0) {
-                // K0031=Length out of bounds \: {0}
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K0031", nbytes)); //$NON-NLS-1$
+                // luni.18=Length out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.18", nbytes)); //$NON-NLS-1$
             }
             if (offset < 0 || offset > buffer.length - nbytes) {
-                // K002e=Offset out of bounds \: {0}
-                throw new ArrayIndexOutOfBoundsException(Msg.getString("K002e", offset)); //$NON-NLS-1$
+                // luni.12=Offset out of bounds \: {0}
+                throw new ArrayIndexOutOfBoundsException(Messages.getString("luni.12", offset)); //$NON-NLS-1$
             }
             return readImpl(buffer, offset, nbytes, handle);
         }

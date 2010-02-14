@@ -16,13 +16,13 @@
 
 package org.apache.harmony.luni.tests.util;
 
-import org.apache.harmony.luni.util.MsgHelp;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 import junit.framework.TestCase;
 
-public class MsgHelpTest extends TestCase {
+public class MessagesTest extends TestCase {
 
-    public MsgHelpTest(String name) {
+    public MessagesTest(String name) {
         super(name);
     }
 
@@ -31,40 +31,40 @@ public class MsgHelpTest extends TestCase {
      * Object[])'
      */
     public void testFormatLjava_lang_String$Ljava_lang_Object() {
-        assertEquals("empty", MsgHelp.format("empty", new Object[0]));
+        assertEquals("empty", Messages.format("empty", new Object[0]));
 
-        assertEquals("<null>", MsgHelp.format("{0}", new Object[1]));
-        assertEquals("<missing argument>", MsgHelp.format("{0}", new Object[0]));
-        assertEquals("fixture {} fixture", MsgHelp.format("{0} \\{} {0}",
+        assertEquals("<null>", Messages.format("{0}", new Object[1]));
+        assertEquals("<missing argument>", Messages.format("{0}", new Object[0]));
+        assertEquals("fixture {} fixture", Messages.format("{0} \\{} {0}",
                 new Object[] { "fixture" }));
 
-        assertEquals("<null> fixture", MsgHelp.format("{0} {1}", new Object[] {
+        assertEquals("<null> fixture", Messages.format("{0} {1}", new Object[] {
                 null, "fixture" }));
-        assertEquals("<null> fixture <missing argument>", MsgHelp.format(
+        assertEquals("<null> fixture <missing argument>", Messages.format(
                 "{0} {1} {2}", new Object[] { null, "fixture" }));
-        assertEquals("<null> fixture", MsgHelp.format("{0} {1}", new Object[] {
+        assertEquals("<null> fixture", Messages.format("{0} {1}", new Object[] {
                 null, "fixture", "extra" }));
 
-        assertEquals("0 1 2 3 4 5 6 7 8 9", MsgHelp.format(
+        assertEquals("0 1 2 3 4 5 6 7 8 9", Messages.format(
                 "{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}", new Object[] { "0",
                         "1", "2", "3", "4", "5", "6", "7", "8", "9" }));
-        assertEquals("9 8 7 6 5 4 3 2 1 0", MsgHelp.format(
+        assertEquals("9 8 7 6 5 4 3 2 1 0", Messages.format(
                 "{0} {1} {2} {3} {4} {5} {6} {7} {8} {9}", new Object[] { "9",
                         "8", "7", "6", "5", "4", "3", "2", "1", "0" }));
 
-        assertEquals("0 1 2 3 4 5 6 7 8 9 {10}", MsgHelp.format(
+        assertEquals("0 1 2 3 4 5 6 7 8 9 {10}", Messages.format(
                 "{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}",
                 new Object[] { "0", "1", "2", "3", "4", "5", "6", "7", "8",
                         "9", "10" }));
         
         try {
-            MsgHelp.format(null, new Object[0]);
+            Messages.format(null, new Object[0]);
             fail("No NPE");
         } catch (NullPointerException e) {
         }
         
         try {
-            MsgHelp.format("fixture", null);
+            Messages.format("fixture", null);
             fail("No NPE");
         } catch (NullPointerException e) {
         }

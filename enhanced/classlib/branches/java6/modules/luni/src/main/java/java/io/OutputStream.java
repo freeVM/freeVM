@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * The base class for all output streams. An output stream is a means of writing
@@ -101,7 +101,7 @@ public abstract class OutputStream implements Closeable, Flushable {
         // avoid int overflow, check null buffer
         if (offset > buffer.length || offset < 0 || count < 0
                 || count > buffer.length - offset) {
-            throw new IndexOutOfBoundsException(Msg.getString("K002f")); //$NON-NLS-1$
+            throw new IndexOutOfBoundsException(Messages.getString("luni.13")); //$NON-NLS-1$
         }
         for (int i = offset; i < offset + count; i++) {
             write(buffer[i]);

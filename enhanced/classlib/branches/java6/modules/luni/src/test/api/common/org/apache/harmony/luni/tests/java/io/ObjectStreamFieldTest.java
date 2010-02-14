@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.ObjectStreamField;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.Date;
@@ -221,6 +222,23 @@ public class ObjectStreamFieldTest extends junit.framework.TestCase {
         assertEquals(1, objectStreamClass.getField("i").getOffset());
         assertEquals(2, objectStreamClass.getField("s").getOffset());
     }
+    
+
+    /**
+     * Write/serialize and read/de-serialize an object with primitive field
+     */ 
+    public void test_ObjectWithPrimitiveField()
+        throws IOException, ClassNotFoundException {
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final MyObjectOutputStream oos = new MyObjectOutputStream(baos);
+        oos.writeObject(new MockClass());
+        final byte[] bytes = baos.toByteArray();
+        final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        final MyObjectInputStream ois = new MyObjectInputStream(bais);
+        // NullPointerException is thrown by the readObject call below. 
+        ois.readObject();
+    }
 
     /**
      * Sets up the fixture, for example, open a network connection. This method
@@ -325,5 +343,53 @@ class SerializableObject2 implements Serializable {
     private void readObject(ObjectInputStream in) throws NotActiveException,
             IOException, ClassNotFoundException {
         getField = in.readFields();
+    }
+}
+
+
+// Primitive fields are necessary to cause the NullPointerException. 
+class MockClass implements Serializable {
+    String str1 = "string 1";
+    String str2 = "string 2";
+    int int1 = 1;
+    int int2 = 2;
+    String str3 = "string 3";
+}
+
+
+// Overrides writeClassDescriptor to store ObjectStreamClass in map. 
+class MyObjectOutputStream extends ObjectOutputStream {
+
+    // record the only ObjectStreamClass
+    static ObjectStreamClass descs;
+    
+    MyObjectOutputStream(OutputStream out)
+        throws IOException {
+        super(out);
+    }
+
+    @Override
+    protected void writeClassDescriptor(ObjectStreamClass desc)
+        throws IOException {
+        descs = desc;
+        // Write a int
+        writeInt(1);
+    }
+}
+
+// Overrides readClassDescriptor to get ObjectStreamClass from map.
+class MyObjectInputStream extends ObjectInputStream {
+
+    MyObjectInputStream(InputStream in)
+        throws IOException {
+        super(in);
+    }
+
+    @Override
+    protected ObjectStreamClass readClassDescriptor()
+        throws IOException, ClassNotFoundException {
+        // Read a integer and get the only ObjectStreamClass for the test
+        final int id = readInt();
+        return MyObjectOutputStream.descs;
     }
 }

@@ -17,7 +17,7 @@
 
 package java.io;
 
-import org.apache.harmony.luni.util.Msg;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * Places information on a communications pipe. When two threads want to pass
@@ -93,10 +93,10 @@ public class PipedWriter extends Writer {
     public void connect(PipedReader stream) throws IOException {
         synchronized (lock) {
             if (this.dest != null) {
-                throw new IOException(Msg.getString("K0079")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.5F")); //$NON-NLS-1$
             }
             if (closed) {
-                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
             }
             stream.establishConnection();
             this.dest = stream;
@@ -114,7 +114,7 @@ public class PipedWriter extends Writer {
     public void flush() throws IOException {
         synchronized(lock) {
             if (closed) {
-                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
             }
         }
     	
@@ -158,13 +158,13 @@ public class PipedWriter extends Writer {
     public void write(char buffer[], int offset, int count) throws IOException {
         synchronized (lock) {
             if (closed) {
-                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
             }
             if (dest == null) {
-                throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.D1")); //$NON-NLS-1$
             }
             if (buffer == null) {
-                throw new NullPointerException(Msg.getString("K0047")); //$NON-NLS-1$
+                throw new NullPointerException(Messages.getString("luni.11")); //$NON-NLS-1$
             }
 
             // avoid int overflow
@@ -200,10 +200,10 @@ public class PipedWriter extends Writer {
     public void write(int c) throws IOException {
         synchronized (lock) {
             if (closed) {
-                throw new IOException(Msg.getString("K0078")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.CF")); //$NON-NLS-1$
             }
             if (dest == null) {
-                throw new IOException(Msg.getString("K007b")); //$NON-NLS-1$
+                throw new IOException(Messages.getString("luni.D1")); //$NON-NLS-1$
             }
             dest.receive((char) c);
         }

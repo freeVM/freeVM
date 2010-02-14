@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.harmony.luni.util.MsgHelp;
+import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
  * This class retrieves strings from a resource bundle and returns them,
@@ -37,7 +37,10 @@ import org.apache.harmony.luni.util.MsgHelp;
  * will be returned as the associated message. This means that the <em>KEY</em>
  * should a reasonable human-readable (english) string.
  * 
+ * @deprecated use module specific message class such as {@link
+ * org.apache.harmony.luni.internal.nls.Message} for luni.
  */
+@Deprecated
 public class Msg {
 
 	// ResourceBundle holding the system messages.
@@ -46,7 +49,7 @@ public class Msg {
 	static {
 		// Attempt to load the messages.
 		try {
-			bundle = MsgHelp.setLocale(Locale.getDefault(),
+			bundle = Messages.setLocale(Locale.getDefault(),
 					"org.apache.harmony.luni.util.ExternalMessages");
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -143,6 +146,6 @@ public class Msg {
 			}
 		}
 
-		return MsgHelp.format(format, args);
+		return Messages.format(format, args);
 	}
 }
