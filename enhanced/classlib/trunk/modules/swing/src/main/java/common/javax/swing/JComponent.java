@@ -1098,6 +1098,7 @@ public abstract class JComponent extends Container implements Serializable {
         return result;
     }
 
+    @Deprecated
     public void setNextFocusableComponent(Component component) {
         Component oldComponent = nextFocusableComponent;
         nextFocusableComponent = component;
@@ -1111,6 +1112,7 @@ public abstract class JComponent extends Container implements Serializable {
         focusCycleRoot.setFocusTraversalPolicy(newFocusTraversalPolicy);
     }
 
+    @Deprecated
     public Component getNextFocusableComponent() {
         return nextFocusableComponent;
     }
@@ -1184,6 +1186,7 @@ public abstract class JComponent extends Container implements Serializable {
         return super.requestFocusInWindow(temporary);
     }
 
+    @Deprecated
     public boolean requestDefaultFocus() {
         Component defaultComponent = null;
         Container cycleRoot = isFocusCycleRoot() ? this : getFocusCycleRootAncestor();
@@ -1197,6 +1200,7 @@ public abstract class JComponent extends Container implements Serializable {
         return true;
     }
 
+    @Deprecated
     public boolean isManagingFocus() {
         return false;
     }

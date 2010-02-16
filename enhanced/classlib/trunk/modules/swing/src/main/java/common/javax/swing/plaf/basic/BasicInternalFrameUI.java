@@ -460,7 +460,10 @@ public class BasicInternalFrameUI extends InternalFrameUI {
     }
 
     protected JInternalFrame frame;
+
+    @Deprecated
     protected KeyStroke openMenuKey;
+
     protected BasicInternalFrameTitlePane titlePane;
     protected ComponentListener componentListener;
     protected MouseInputListener glassPaneDispatcher;
