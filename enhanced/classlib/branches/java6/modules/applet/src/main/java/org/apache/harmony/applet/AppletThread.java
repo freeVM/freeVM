@@ -22,6 +22,7 @@ package org.apache.harmony.applet;
 import java.util.List;
 import java.util.Collections;
 import java.util.LinkedList;
+import org.apache.harmony.applet.internal.nls.Messages;
 
 
 /**
@@ -79,7 +80,7 @@ final class AppletThread extends Thread {
     
     void exit() {
         if (Thread.currentThread() != this) {
-            throw new InternalError("Attempt to stop applet main thread outside of that thread");
+            throw new InternalError(Messages.getString("applet.01"));
         }
         synchronized(monitor) {
             doExit = true;

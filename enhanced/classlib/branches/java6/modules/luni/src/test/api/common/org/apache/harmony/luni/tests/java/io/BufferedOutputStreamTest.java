@@ -807,6 +807,15 @@ public class BufferedOutputStreamTest extends junit.framework.TestCase {
         }
     }
 
+    // Regression test for flush on closed stream
+    public void test_flush_on_closed_stream() throws IOException {
+        BufferedOutputStream bos =
+            new BufferedOutputStream(
+                new ByteArrayOutputStream());
+        bos.close();
+        bos.flush(); // RI does not throw exception
+    }
+
     /**
      * Tears down the fixture, for example, close a network connection. This
      * method is called after a test is executed.

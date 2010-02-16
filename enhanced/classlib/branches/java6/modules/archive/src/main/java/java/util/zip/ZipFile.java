@@ -377,7 +377,15 @@ public class ZipFile implements ZipConstants {
 
         @Override
         public int available() throws IOException {
-            return (mOffset < mLength ? 1 : 0);
+            if (mLength > mOffset) {
+                if (mLength - mOffset < Integer.MAX_VALUE) {
+                    return (int)(mLength - mOffset);
+                } else {
+                    return Integer.MAX_VALUE;
+                }
+            } else {
+                return 0;
+            }
         }
 
         @Override
