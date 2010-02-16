@@ -16,6 +16,7 @@
  */
 package javax.swing.text.html.parser;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.BitSet;
@@ -142,8 +143,17 @@ public class DTD implements DTDConstants {
 
     public void read(final DataInputStream stream) throws IOException {
         // converts from DataInputStream into a byte array
-        byte[] enc = new byte[stream.available()];
-        stream.read(enc);
+        byte[] enc = new byte[1024];
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+
+        int iRead = 0;
+        while (iRead != -1) {
+            iRead = stream.read(enc, 0, enc.length);
+            if (iRead > 0) {
+                bs.write(enc, 0, iRead);
+            }
+        }
+        enc = bs.toByteArray();
 
         // decode the byte array
         Asn1Dtd asn1 = new Asn1Dtd(enc);
