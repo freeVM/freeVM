@@ -488,7 +488,7 @@ class Division {
         
         if (!p.testBit(0)){
             // montgomery inverse require even modulo
-            return modInverseLorencz(a, p);
+            return modInverseHars(a, p);
         }
         
         int m = p.numberLength * 32;
@@ -583,145 +583,6 @@ class Division {
         return (int)(n2 & 0xFFFFFFFFL);
     }
 
-    /**
-     * @return bi == abs(2^exp)
-     */
-    private static boolean isPowerOfTwo(BigInteger bi, int exp) {
-        boolean result = false;
-        result = ( exp >> 5 == bi.numberLength - 1 )
-        && ( bi.digits[bi.numberLength - 1] == 1 << ( exp & 31 ) );
-        if (result) {
-            for (int i = 0; result && i < bi.numberLength - 1; i++) {
-                result = bi.digits[i] == 0;
-            }
-        }
-        return result;
-    }
-    
-    /**
-     * Calculate how many iteration of Lorencz's algorithm would perform the
-     * same operation
-     *
-     * @param bi
-     * @param n
-     * @return
-     */
-    private static int howManyIterations(BigInteger bi, int n) {
-        int i = n - 1;
-        if (bi.sign > 0) {
-            while (!bi.testBit(i))
-                i--;
-            return n - 1 - i;
-        } else {
-            while (bi.testBit(i))
-                i--;
-            return n - 1 - Math.max(i, bi.getLowestSetBit());
-        }
-        
-    }
-    
-    /**
-     *
-     * Based on "New Algorithm for Classical Modular Inverse" Róbert Lórencz.
-     * LNCS 2523 (2002)
-     *
-     * @return a^(-1) mod m
-     */
-    static BigInteger modInverseLorencz(BigInteger a, BigInteger modulo) {
-        // PRE: a is coprime with modulo, a < modulo
-        
-        int max = Math.max(a.numberLength, modulo.numberLength);
-        int uDigits[] = new int[max + 1]; // enough place to make all the inplace operation
-        int vDigits[] = new int[max + 1];
-        System.arraycopy(modulo.digits, 0, uDigits, 0, modulo.numberLength);
-        System.arraycopy(a.digits, 0, vDigits, 0, a.numberLength);
-        BigInteger u = new BigInteger(modulo.sign, modulo.numberLength,
-                uDigits);
-        BigInteger v = new BigInteger(a.sign, a.numberLength, vDigits);
-        
-        BigInteger r = new BigInteger(0, 1, new int[max + 1]); // BigInteger.ZERO;
-        BigInteger s = new BigInteger(1, 1, new int[max + 1]);
-        s.digits[0] = 1;
-        // r == 0 && s == 1, but with enough place
-        
-        int coefU = 0, coefV = 0;
-        int n = modulo.bitLength();
-        int k;
-        while (!isPowerOfTwo(u, coefU) && !isPowerOfTwo(v, coefV)) {
-            
-            // modification of original algorithm: I calculate how many times the algorithm will enter in the same branch of if
-            k = howManyIterations(u, n);
-            
-            if (k != 0) {
-                BitLevel.inplaceShiftLeft(u, k);
-                if (coefU >= coefV) {
-                    BitLevel.inplaceShiftLeft(r, k);
-                } else {
-                    BitLevel.inplaceShiftRight(s, Math.min(coefV - coefU, k));
-                    if (k - ( coefV - coefU ) > 0) {
-                        BitLevel.inplaceShiftLeft(r, k - coefV + coefU);
-                    }
-                }
-                coefU += k;
-            }
-            
-            k = howManyIterations(v, n);
-            if (k != 0) {
-                BitLevel.inplaceShiftLeft(v, k);
-                if (coefV >= coefU) {
-                    BitLevel.inplaceShiftLeft(s, k);
-                } else {
-                    BitLevel.inplaceShiftRight(r, Math.min(coefU - coefV, k));
-                    if (k - ( coefU - coefV ) > 0) {
-                        BitLevel.inplaceShiftLeft(s, k - coefU + coefV);
-                    }
-                }
-                coefV += k;
-                
-            }
-            
-            if (u.signum() == v.signum()) {
-                if (coefU <= coefV) {
-                    Elementary.completeInPlaceSubtract(u, v);
-                    Elementary.completeInPlaceSubtract(r, s);
-                } else {
-                    Elementary.completeInPlaceSubtract(v, u);
-                    Elementary.completeInPlaceSubtract(s, r);
-                }
-            } else {
-                if (coefU <= coefV) {
-                    Elementary.completeInPlaceAdd(u, v);
-                    Elementary.completeInPlaceAdd(r, s);
-                } else {
-                    Elementary.completeInPlaceAdd(v, u);
-                    Elementary.completeInPlaceAdd(s, r);
-                }
-            }
-            if (v.signum() == 0 || u.signum() == 0){
-                // math.19: BigInteger not invertible
-                throw new ArithmeticException(Messages.getString("math.19"));
-            }
-        }
-        
-        if (isPowerOfTwo(v, coefV)) {
-            r = s;
-            if (v.signum() != u.signum())
-                u = u.negate();
-        }
-        if (u.testBit(n)) {
-            if (r.signum() < 0) {
-                r = r.negate();
-            } else {
-                r = modulo.subtract(r);
-            }
-        }
-        if (r.signum() < 0) {
-            r = r.add(modulo);
-        }
-        
-        return r;
-    }
-    
     static BigInteger squareAndMultiply(BigInteger x2, BigInteger a2, BigInteger exponent,BigInteger modulus, int n2  ){
         BigInteger res = x2;
         for (int i = exponent.bitLength() - 1; i >= 0; i--) {
@@ -732,7 +593,77 @@ class Division {
         }
         return res;
     }
-    
+
+    /**
+     * Implements the "Shifting Euclidean modular inverse algorithm".
+     * "Laszlo Hars - Modular Inverse Algorithms Without Multiplications
+     * for Cryptographic Applications"
+     * 
+     * @see BigInteger#modInverse(BigInteger)
+     * @param a
+     *            a positive number
+     * @param m
+     *            a positive modulus
+     */
+    static BigInteger modInverseHars(BigInteger a, BigInteger m) {
+        // PRE: (a > 0) and (m > 0)
+        BigInteger u, v, r, s, temp;
+        // u = MAX(a,m), v = MIN(a,m)
+        if (a.compareTo(m) == BigInteger.LESS) {
+            u = m;
+            v = a;
+            r = BigInteger.ZERO;
+            s = BigInteger.ONE;
+        } else {
+            v = m;
+            u = a;
+            s = BigInteger.ZERO;
+            r = BigInteger.ONE;
+        }
+        int uLen = u.bitLength();
+        int vLen = v.bitLength();
+        int f = uLen - vLen;
+
+        while (vLen > 1) {
+            if (u.sign == v.sign) {
+                u = u.subtract(v.shiftLeft(f));
+                r = r.subtract(s.shiftLeft(f));
+            } else {
+                u = u.add(v.shiftLeft(f));
+                r = r.add(s.shiftLeft(f));
+            }
+            uLen = u.abs().bitLength();
+            vLen = v.abs().bitLength();
+            f = uLen - vLen;
+            if (f < 0) {
+                // SWAP(u,v)
+                temp = u;
+                u = v;
+                v = temp;
+                // SWAP(r,s)
+                temp = r;
+                r = s;
+                s = temp;
+
+                f = -f;
+                vLen = uLen;
+            }
+        }
+        if (v.sign == 0) {
+            return BigInteger.ZERO;
+        }
+        if (v.sign < 0) {
+            s = s.negate();
+        }
+        if (s.compareTo(m) == BigInteger.GREATER) {
+            return s.subtract(m);
+        }
+        if (s.sign < 0) {
+            return s.add(m);
+        }
+        return s; // a^(-1) mod m
+    }
+
     /*Implements the Montgomery modular exponentiation based in <i>The sliding windows algorithm and the Mongomery
      *Reduction</i>.
      *@ar.org.fitc.ref "A. Menezes,P. van Oorschot, S. Vanstone - Handbook of Applied Cryptography";
