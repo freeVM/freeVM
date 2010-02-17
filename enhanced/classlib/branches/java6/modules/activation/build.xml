@@ -35,7 +35,7 @@
         
     <target name="fetch-depends">
 
-        <mkdir dir="${geronimo.dir}" />
+        <mkdir dir="${activation.dir}" />
         <download-one-file src="${activation.url}" dest="${activation.jar}"
                            md5="${activation.md5}" />
 

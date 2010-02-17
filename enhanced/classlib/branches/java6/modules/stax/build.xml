@@ -35,7 +35,7 @@
         
     <target name="fetch-depends">
 
-        <mkdir dir="${geronimo.dir}" />
+        <mkdir dir="${stax.dir}" />
         <download-one-file src="${stax.url}" dest="${stax.jar}"
                            md5="${stax.md5}" />
 

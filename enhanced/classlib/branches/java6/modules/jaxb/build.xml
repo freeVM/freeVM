@@ -35,7 +35,7 @@
         
     <target name="fetch-depends">
 
-        <mkdir dir="${geronimo.dir}" />
+        <mkdir dir="${jaxb.dir}" />
         <download-one-file src="${jaxb.url}" dest="${jaxb.jar}"
                            md5="${jaxb.md5}" />
 
