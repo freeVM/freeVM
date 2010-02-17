@@ -1033,7 +1033,7 @@ public class TreeMapTest extends junit.framework.TestCase {
         }
         try {
             tm.lowerEntry(null);
-            fail("should throw ClassCastException");
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }
@@ -1066,7 +1066,7 @@ public class TreeMapTest extends junit.framework.TestCase {
         }
         try {
             tm.lowerKey(null);
-            fail("should throw ClassCastException");
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }
@@ -1100,7 +1100,7 @@ public class TreeMapTest extends junit.framework.TestCase {
         }
         try {
             tm.floorEntry(null);
-            fail("should throw ClassCastException");
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }
@@ -1133,7 +1133,7 @@ public class TreeMapTest extends junit.framework.TestCase {
         }
         try {
             tm.floorKey(null);
-            fail("should throw ClassCastException");
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }
@@ -1166,7 +1166,7 @@ public class TreeMapTest extends junit.framework.TestCase {
         }
         try {
             tm.ceilingEntry(null);
-            fail("should throw ClassCastException");
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }
@@ -1197,7 +1197,7 @@ public class TreeMapTest extends junit.framework.TestCase {
         }
         try {
             tm.ceilingKey(null);
-            fail("should throw ClassCastException");
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }
@@ -1236,7 +1236,7 @@ public class TreeMapTest extends junit.framework.TestCase {
         }
         try {
             tm.higherEntry(null);
-            fail("should throw ClassCastException");
+            fail("should throw NullPointerException");
         } catch (NullPointerException e) {
             // expected
         }
