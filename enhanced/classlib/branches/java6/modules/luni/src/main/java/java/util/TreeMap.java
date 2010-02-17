@@ -4044,6 +4044,9 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
     }
 
     TreeMap.Entry<K, V> findCeilingEntry(K key) {
+        if (root == null) {
+            return null;
+        }
         Comparable<K> object = comparator == null ? toComparable((K) key)
                 : null;
         K keyK = (K) key;
@@ -4105,6 +4108,9 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
     }
 
     TreeMap.Entry<K, V> findFloorEntry(K key) {
+        if (root == null) {
+            return null;
+        }
         Comparable<K> object = comparator == null ? toComparable((K) key)
                 : null;
         K keyK = (K) key;
@@ -4164,7 +4170,10 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
         return null;
     }
 
-    TreeMap.Entry<K, V> findLowerEntry(K key) {        
+    TreeMap.Entry<K, V> findLowerEntry(K key) {
+        if (root == null) {
+            return null;
+        }
         Comparable<K> object = comparator == null ? toComparable((K) key)
                 : null;
         K keyK = (K) key;
@@ -4219,6 +4228,9 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
     }
 
     TreeMap.Entry<K, V> findHigherEntry(K key) {
+        if (root == null) {
+            return null;
+        }
         Comparable<K> object = comparator == null ? toComparable((K) key)
                 : null;
         K keyK = (K) key;
@@ -5465,6 +5477,9 @@ public class TreeMap<K, V> extends AbstractMap<K, V> implements
 
     @SuppressWarnings("unchecked")
     private static <T> Comparable<T> toComparable(T obj) {
+        if (obj == null) {
+            throw new NullPointerException();
+        }
         return (Comparable<T>) obj;
     }
 
