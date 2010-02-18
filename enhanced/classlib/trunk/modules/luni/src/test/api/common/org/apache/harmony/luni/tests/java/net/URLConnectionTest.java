@@ -274,13 +274,13 @@ public class URLConnectionTest extends junit.framework.TestCase {
      */
     public void test_getContentType_regression() throws IOException {
         // Regression for HARMONY-4699
-        assertEquals(getContentType("test.rtf"), "application/rtf");
-        assertEquals(getContentType("test.java"), "text/plain");
+        assertEquals("application/rtf", getContentType("test.rtf"));
+        assertEquals("text/plain", getContentType("test.java"));
         // RI would return "content/unknown"
-        assertEquals(getContentType("test.doc"), "application/msword");
-        assertEquals(getContentType("test.htx"), "text/html");
-        assertEquals(getContentType("test.xml"), "application/xml");
-        assertEquals(getContentType("."), "text/plain");
+        assertEquals("application/msword", getContentType("test.doc"));
+        assertEquals("text/html", getContentType("test.htx"));
+        assertEquals("application/xml", getContentType("test.xml"));
+        assertEquals("text/plain", getContentType("."));
     }
 
     /**
