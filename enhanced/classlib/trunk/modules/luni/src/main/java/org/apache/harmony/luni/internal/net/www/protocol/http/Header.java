@@ -62,11 +62,11 @@ public class Header implements Cloneable {
         this(); // initialize fields
         for (Entry<String, List<String>> next : map.entrySet()) {
             String key = next.getKey();
-            props.add(key);
             List<String> value = next.getValue();
             LinkedList<String> linkedList = new LinkedList<String>();
             for (String element : value) {
                 linkedList.add(element);
+                props.add(key);
                 props.add(element);
             }
             keyTable.put(key, linkedList);

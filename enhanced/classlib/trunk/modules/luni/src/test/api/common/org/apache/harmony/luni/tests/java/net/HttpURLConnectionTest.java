@@ -551,6 +551,14 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
         assertFalse(isPutCalled);
         assertEquals(mockHeaderMap, headerMap);
         assertEquals(uc.getInputStream(), mockIs);
+
+        // REGRESSION for HARMONY-6542 item 1 in descriptions.txt attachement
+        assertEquals("value1", uc.getHeaderField(0));
+        assertEquals("value2", uc.getHeaderField(1));
+        assertEquals("value1", uc.getHeaderField(2));
+        assertEquals("value2", uc.getHeaderField(3));
+        assertNull(uc.getHeaderField(4));
+
         uc.disconnect();
     }
 
@@ -789,6 +797,7 @@ public class HttpURLConnectionTest extends junit.framework.TestCase {
         mockHeaderMap = new Hashtable<String, List<String>>();
         List<String> valueList = new ArrayList<String>();
         valueList.add("value1");
+        valueList.add("value2");
         mockHeaderMap.put("field1", valueList);
         mockHeaderMap.put("field2", valueList);
         isGetCalled = false;
