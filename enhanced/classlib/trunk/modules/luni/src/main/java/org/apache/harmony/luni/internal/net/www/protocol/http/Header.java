@@ -19,6 +19,8 @@ package org.apache.harmony.luni.internal.net.www.protocol.http;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,12 +33,12 @@ import java.util.Map.Entry;
  */
 public class Header implements Cloneable {
     /*
-     * we use the non-synchronized ArrayList and HashMap instead of the
+     * we use the non-synchronized ArrayList and TreehMap instead of the
      * synchronized Vector and Hashtable
      */
     private ArrayList<String> props;
 
-    private HashMap<String, LinkedList<String>> keyTable;
+    private SortedMap<String, LinkedList<String>> keyTable;
 
     private String statusLine;
 
@@ -48,7 +50,8 @@ public class Header implements Cloneable {
     public Header() {
         super();
         this.props = new ArrayList<String>(20);
-        this.keyTable = new HashMap<String, LinkedList<String>>(20);
+        this.keyTable = new TreeMap<String, LinkedList<String>>(
+                                String.CASE_INSENSITIVE_ORDER);
     }
 
     /**
@@ -79,7 +82,8 @@ public class Header implements Cloneable {
         try {
             Header clone = (Header) super.clone();
             clone.props = (ArrayList<String>) props.clone();
-            clone.keyTable = new HashMap<String, LinkedList<String>>(20);
+            clone.keyTable = new TreeMap<String, LinkedList<String>>(
+                                     String.CASE_INSENSITIVE_ORDER);
             for (Map.Entry<String, LinkedList<String>> next : this.keyTable
                     .entrySet()) {
                 LinkedList<String> v = (LinkedList<String>) next.getValue()
@@ -105,7 +109,7 @@ public class Header implements Cloneable {
         LinkedList<String> list = keyTable.get(key);
         if (list == null) {
             list = new LinkedList<String>();
-            keyTable.put(key.toLowerCase(), list);
+            keyTable.put(key, list);
         }
         list.add(value);
         props.add(key);
@@ -197,7 +201,7 @@ public class Header implements Cloneable {
      *         such key exists.
      */
     public String get(String key) {
-        LinkedList<String> result = keyTable.get(key.toLowerCase());
+        LinkedList<String> result = keyTable.get(key);
         if (result == null) {
             return null;
         }
