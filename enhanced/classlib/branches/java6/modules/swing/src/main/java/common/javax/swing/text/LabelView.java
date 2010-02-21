@@ -85,6 +85,7 @@ public class LabelView extends GlyphView implements TabableView {
         return background;
     }
 
+    @Deprecated
     protected FontMetrics getFontMetrics() {
         lazySync();
         Component component = getComponent();

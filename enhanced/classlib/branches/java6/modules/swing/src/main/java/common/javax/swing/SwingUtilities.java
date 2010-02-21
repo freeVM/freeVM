@@ -418,6 +418,7 @@ public class SwingUtilities implements SwingConstants {
         return result;
     }
 
+    @Deprecated
     public static Component findFocusOwner(final Component component) {
         return KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
     }

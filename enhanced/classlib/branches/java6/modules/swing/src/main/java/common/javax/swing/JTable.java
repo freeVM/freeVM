@@ -782,6 +782,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
 
     private static final String UI_CLASS_ID = "TableUI";
 
+    @Deprecated
     public static JScrollPane createScrollPaneForTable(JTable table) {
         return new JScrollPane(table);
     }
@@ -1322,6 +1323,7 @@ public class JTable extends JComponent implements TableModelListener, Scrollable
         return result;
     }
 
+    @Deprecated
     public void sizeColumnsToFit(boolean lastColumnOnly) {
         int previousSetting = getAutoResizeMode();
         if (lastColumnOnly) {

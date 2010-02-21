@@ -141,6 +141,105 @@ public class URLConnectionTest extends junit.framework.TestCase {
     }
 
     /**
+     * Regression test for HARMONY-6452
+     */
+    public void test_RequestProperty_case_insensitivity() 
+            throws MalformedURLException, IOException {
+
+        URLConnection u =
+            (URLConnection)(new URL("http://example.org/").openConnection());
+        u.setRequestProperty("KEY", "upper");
+        u.setRequestProperty("key", "lower");
+        assertEquals("set for \"KEY\" is overwritten by set for \"key\"",
+                     "lower", u.getRequestProperty("KEY"));
+        assertEquals("value can be retrieved by either key case",
+                     "lower", u.getRequestProperty("key"));
+        assertEquals("value can be retrieved by arbitrary key case",
+                     "lower", u.getRequestProperty("kEy"));
+
+        Map<String, List<String>> props = u.getRequestProperties();
+        List<String> values = props.get("KEY");
+        assertNotNull("first key does have an entry", values);
+        assertNull("second key does not have an entry", props.get("key"));
+
+        assertEquals("returned value list is correct size", 1, values.size());
+        assertTrue("returned value list contains expected value",
+                   values.contains("lower"));
+
+
+        // repeat the above with the case of keys reversed to confirm
+        // that first key is significant one
+        u = (URLConnection)(new URL("http://example.org/").openConnection());
+        u.setRequestProperty("key", "lower");
+        u.setRequestProperty("KEY", "upper");
+        assertEquals("set for \"key\" is overwritten by set for \"KEY\"",
+                     "upper", u.getRequestProperty("KEY"));
+        assertEquals("value can be retrieved by either key case",
+                     "upper", u.getRequestProperty("key"));
+        assertEquals("value can be retrieved by arbitrary key case",
+                     "upper", u.getRequestProperty("kEy"));
+
+        props = u.getRequestProperties();
+        values = props.get("key");
+        assertNotNull("first key does have an entry", values);
+        assertNull("second key does not have an entry", props.get("KEY"));
+
+        assertEquals("returned value list is correct size", 1, values.size());
+        assertTrue("returned value list contains expected value",
+                   values.contains("upper"));
+
+
+        // repeat the first test with set and add methods
+        u = (URLConnection)(new URL("http://example.org/").openConnection());
+        u.setRequestProperty("KEY", "value1");
+        u.addRequestProperty("key", "value2");
+        assertEquals("value for \"KEY\" is the last one added",
+                     "value2", u.getRequestProperty("KEY"));
+        assertEquals("value can be retrieved by either key case",
+                     "value2", u.getRequestProperty("key"));
+        assertEquals("value can be retrieved by arbitrary key case",
+                     "value2", u.getRequestProperty("kEy"));
+
+        props = u.getRequestProperties();
+        values = props.get("KEY");
+        assertNotNull("first key does have an entry", values);
+        assertNull("second key does not have an entry", props.get("key"));
+
+        assertEquals("returned value list is correct size", 2, values.size());
+        assertTrue("returned value list contains first value",
+                   values.contains("value1"));
+        assertTrue("returned value list contains second value",
+                   values.contains("value2"));
+
+
+        // repeat the previous test with only add methods
+        u = (URLConnection)(new URL("http://example.org/").openConnection());
+        u.addRequestProperty("KEY", "value1");
+        u.addRequestProperty("key", "value2");
+        u.addRequestProperty("Key", "value3");
+        assertEquals("value for \"KEY\" is the last one added",
+                     "value3", u.getRequestProperty("KEY"));
+        assertEquals("value can be retrieved by another key case",
+                     "value3", u.getRequestProperty("key"));
+        assertEquals("value can be retrieved by arbitrary key case",
+                     "value3", u.getRequestProperty("kEy"));
+
+        props = u.getRequestProperties();
+        values = props.get("KEY");
+        assertNotNull("first key does have an entry", values);
+        assertNull("second key does not have an entry", props.get("key"));
+        assertNull("third key does not have an entry", props.get("Key"));
+
+        assertEquals("returned value list is correct size", 3, values.size());
+        assertTrue("returned value list contains first value",
+                   values.contains("value1"));
+        assertTrue("returned value list contains second value",
+                   values.contains("value2"));
+        assertTrue("returned value list contains second value",
+                   values.contains("value3"));
+    }
+
+    /**
      * @tests java.net.URLConnection#addRequestProperty(java.lang.String,java.lang.String)
      */
     public void test_addRequestPropertyLjava_lang_StringLjava_lang_String()
@@ -274,13 +373,13 @@ public class URLConnectionTest extends junit.framework.TestCase {
      */
     public void test_getContentType_regression() throws IOException {
         // Regression for HARMONY-4699
-        assertEquals(getContentType("test.rtf"), "application/rtf");
-        assertEquals(getContentType("test.java"), "text/plain");
+        assertEquals("application/rtf", getContentType("test.rtf"));
+        assertEquals("text/plain", getContentType("test.java"));
         // RI would return "content/unknown"
-        assertEquals(getContentType("test.doc"), "application/msword");
-        assertEquals(getContentType("test.htx"), "text/html");
-        assertEquals(getContentType("test.xml"), "application/xml");
-        assertEquals(getContentType("."), "text/plain");
+        assertEquals("application/msword", getContentType("test.doc"));
+        assertEquals("text/html", getContentType("test.htx"));
+        assertEquals("application/xml", getContentType("test.xml"));
+        assertEquals("text/plain", getContentType("."));
     }
 
     /**

@@ -53,7 +53,13 @@ public class HelloWorldTest extends TestCase {
 
         helper.run();
 
-        assertEquals(0, helper.getExitCode());
+        if (helper.getExitCode() != 0) {
+            System.out.println("std err:");
+            System.out.println(helper.getStdErr());
+            System.out.println("std out:");
+            System.out.println(helper.getStdOut());
+            fail("helper exit code was non-zero");
+        }
         assertEquals("Hello World" + LINE_SEPARATOR, helper.getStdOut());
         assertEquals("", helper.getStdErr());
     }
@@ -72,7 +78,13 @@ public class HelloWorldTest extends TestCase {
 
         helper.run();
 
-        assertEquals(0, helper.getExitCode());
+        if (helper.getExitCode() != 0) {
+            System.out.println("std err:");
+            System.out.println(helper.getStdErr());
+            System.out.println("std out:");
+            System.out.println(helper.getStdOut());
+            fail("helper exit code was non-zero");
+        }
         assertEquals("Hello World" + LINE_SEPARATOR, helper.getStdOut());
         assertEquals("", helper.getStdErr());
     }
@@ -91,8 +103,20 @@ public class HelloWorldTest extends TestCase {
 
         helper.run();
 
-        assertTrue(0 != helper.getExitCode());
-        assertTrue(helper.getStdErr().contains(
-                ClassNotFoundException.class.getName()));
-    }
+        if (helper.getExitCode() == 0) {
+            System.out.println("std err:");
+            System.out.println(helper.getStdErr());
+            System.out.println("std out:");
+            System.out.println(helper.getStdOut());
+            fail("helper exit code was zero");
+        }
+        if (!(helper.getStdErr().contains(
+                  ClassNotFoundException.class.getName()))) {
+            System.out.println("std err:");
+            System.out.println(helper.getStdErr());
+            System.out.println("std out:");
+            System.out.println(helper.getStdOut());
+            fail("helper should have thrown ClassNotFoundException");
+        }
+     }
 }

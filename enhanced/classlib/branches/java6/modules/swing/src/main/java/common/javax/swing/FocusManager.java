@@ -26,6 +26,7 @@ public abstract class FocusManager extends DefaultKeyboardFocusManager {
 
     private static boolean focusManagerEnabled = true;
 
+    @Deprecated
     public static void disableSwingFocusManager() {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().setDefaultFocusTraversalPolicy(new DefaultFocusTraversalPolicy());
         focusManagerEnabled = false;
@@ -43,6 +44,7 @@ public abstract class FocusManager extends DefaultKeyboardFocusManager {
         KeyboardFocusManager.setCurrentKeyboardFocusManager(focusManager);
     }
 
+    @Deprecated
     public static boolean isFocusManagerEnabled() {
         return focusManagerEnabled;
     }

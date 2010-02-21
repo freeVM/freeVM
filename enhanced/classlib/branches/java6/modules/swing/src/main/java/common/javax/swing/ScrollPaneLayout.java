@@ -282,6 +282,7 @@ public class ScrollPaneLayout implements Serializable, LayoutManager, ScrollPane
         setLowerRightBounds(pane, verticalSBWidth, horizontalSBHeight, rowHeadWidth, colHeadHeight, rowHeadHeight);
     }
 
+    @Deprecated
     public Rectangle getViewportBorderBounds(final JScrollPane scrollpane) {
         return scrollpane.getViewportBorderBounds();
     }
