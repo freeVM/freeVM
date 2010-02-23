@@ -77,7 +77,7 @@ public class PipedInputStreamTest extends TestCase {
     /**
      * @test java.io.PipedInputStream#read()
      */
-    public void test_readException() {
+    public void test_readException() throws IOException {
         pis = new PipedInputStream();
         pos = new PipedOutputStream();
 
@@ -91,7 +91,9 @@ public class PipedInputStreamTest extends TestCase {
                 t.interrupted();
             }
         } catch (IOException e) {
-            assertTrue(e.getMessage().contains("Write end dead"));
+            if (!e.getMessage().contains("Write end dead")) {
+                throw e;
+            }
         } finally {
             try {
                 pis.close();
