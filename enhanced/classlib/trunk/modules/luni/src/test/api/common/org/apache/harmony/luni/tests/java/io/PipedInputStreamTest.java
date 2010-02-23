@@ -88,7 +88,7 @@ public class PipedInputStreamTest extends TestCase {
             assertTrue(t.isAlive());
             while (true) {
                 pis.read();
-                t.interrupted();
+                t.interrupt();
             }
         } catch (IOException e) {
             if (!e.getMessage().contains("Write end dead")) {
