@@ -18,6 +18,13 @@
 #if defined(FREEBSD) || defined(AIX) || defined(MACOSX) || defined(ZOS)
 #include <sys/types.h>
 #include <netinet/in.h>
+
+#if defined(FREEBSD)
+/*
+ * Function definition is in <sys/uio.h> under FreeBSD.
+ */
+#include <sys/uio.h>
+#endif /* FREEBSD */
 #endif
 
 #if !defined(ZOS)
