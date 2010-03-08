@@ -85,9 +85,8 @@
     <target name="build-jar" depends="svn-info">
         <mkdir dir="${jretools.deploy.dir}/lib" />
 
-        <jar destfile="${jretools.deploy.dir}/lib/tools.jar"
+        <hy.jar.bin destfile="${jretools.deploy.dir}/lib/tools.jar"
              manifest="META-INF/MANIFEST.MF">
-
             <fileset dir="bin/main" />
 
             <fileset dir="src/main/java">
@@ -98,24 +97,11 @@
                 <exclude name="com/sun/jdi/Bootstrap.class"/>
                 <exclude name="META-INF/*"/>
             </zipfileset>
+        </hy.jar.bin>
 
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-
-            <metainf file="${hy.hdk}/NOTICE"/>
-            <metainf file="${hy.hdk}/LICENSE"/>
-        </jar>
-
-        <jar destfile="${jretools.deploy.dir}/lib/tools-src.jar">
+        <hy.jar.src destfile="${jretools.deploy.dir}/lib/tools-src.jar">
             <fileset dir="src/main/java" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-
-            <metainf file="${hy.hdk}/NOTICE"/>
-            <metainf file="${hy.hdk}/LICENSE"/>
-        </jar>
+        </hy.jar.src>
     </target>
 
     <target name="build-tests">
