@@ -89,23 +89,14 @@
     </target>
 
     <target name="build-jar" depends="svn-info,class-patternset">
-        <jar destfile="${hy.jdk}/jre/lib/boot/lang-management.jar"
-             manifest="META-INF/MANIFEST.MF"
-             compress="${hy.jar.compress}">
+        <hy.jar.bin destfile="${hy.jdk}/jre/lib/boot/lang-management.jar"
+                    manifest="META-INF/MANIFEST.MF">
             <fileset refid="classes" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}" />
-            </manifest>
-            <metainf refid="hy.required.metainf-files" />
-        </jar>
+        </hy.jar.bin>
 
-        <jar destfile="${hy.jdk}/jre/lib/boot/lang-management-src.jar">
+        <hy.jar.src destfile="${hy.jdk}/jre/lib/boot/lang-management-src.jar">
             <fileset dir="src/main/java" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}" />
-            </manifest>
-            <metainf refid="hy.required.metainf-files" />
-        </jar>
+        </hy.jar.src>
     </target>
 
     <target name="test-jar" depends="svn-info,compile-tests">
@@ -113,21 +104,13 @@
 
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
 
-        <jar destfile="${tests.hdk.dir}/lang-management_tests.jar">
+        <hy.jar.bin destfile="${tests.hdk.dir}/lang-management_tests.jar">
             <fileset dir="bin/api" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.bin>
 
-        <jar destfile="${tests.hdk.dir}/lang-management_impl_tests.jar">
+        <hy.jar.bin destfile="${tests.hdk.dir}/lang-management_impl_tests.jar">
             <fileset dir="bin/impl" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.bin>
 
         <mkdir dir="${tests.excludes.hdk.dir}"/>
         <copy todir="${tests.excludes.hdk.dir}">

@@ -102,27 +102,16 @@
     </target>
 
     <target name="build-jar" depends="svn-info,class-patternset">
-        <jar destfile="${hy.jdk}/jre/lib/boot/swing.jar"
-             manifest="META-INF/MANIFEST.MF"
-             compress="${hy.jar.compress}">
+        <hy.jar.bin destfile="${hy.jdk}/jre/lib/boot/swing.jar"
+             manifest="META-INF/MANIFEST.MF">
             <fileset refid="classes" />
             <fileset refid="hidden.classes" />
             <fileset refid="common.resources" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
+        </hy.jar.bin>
 
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-
-        <jar destfile="${hy.jdk}/jre/lib/boot/swing-src.jar">
+        <hy.jar.src destfile="${hy.jdk}/jre/lib/boot/swing-src.jar">
             <fileset dir="src/main/java/common" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.src>
     </target>
 
     <target name="test-jar" depends="svn-info,compile-tests">
@@ -130,13 +119,9 @@
         
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
         
-        <jar destfile="${tests.hdk.dir}/swing_tests.jar">
+        <hy.jar.bin destfile="${tests.hdk.dir}/swing_tests.jar">
             <fileset dir="bin/test" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.bin>
 
         <mkdir dir="${tests.excludes.hdk.dir}"/>
         <copy todir="${tests.excludes.hdk.dir}">

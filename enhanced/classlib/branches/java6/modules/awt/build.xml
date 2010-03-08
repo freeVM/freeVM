@@ -225,27 +225,16 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
     </target>
 
     <target name="build-jar" depends="svn-info,class-patternset">
-        <jar destfile="${hy.jdk}/jre/lib/boot/awt.jar"
-             manifest="META-INF/MANIFEST.MF"
-             compress="${hy.jar.compress}">
+        <hy.jar.bin destfile="${hy.jdk}/jre/lib/boot/awt.jar"
+                    manifest="META-INF/MANIFEST.MF">
             <fileset refid="classes" />
             <fileset refid="common.resources" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
+        </hy.jar.bin>
 
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-
-        <jar destfile="${hy.jdk}/jre/lib/boot/awt-src.jar">
+        <hy.jar.src destfile="${hy.jdk}/jre/lib/boot/awt-src.jar">
             <fileset dir="src/main/java/common" />
             <fileset dir="src/main/java/${hy.os.family}" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.src>
     </target>
 
     <target name="build-native" depends="build-native-all" />
@@ -317,31 +306,19 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
         <mkdir dir="${tests.hdk.dir}" />
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
         
-        <jar destfile="${tests.hdk.dir}/awt_boot_tests.jar">
+        <hy.jar.bin destfile="${tests.hdk.dir}/awt_boot_tests.jar">
             <fileset dir="bin/test/boot">
                 <exclude name="**/*Headless*Test.class" />
             </fileset>
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-        <jar destfile="${tests.hdk.dir}/awt_tests.jar">
+        </hy.jar.bin>
+        <hy.jar.bin destfile="${tests.hdk.dir}/awt_tests.jar">
             <fileset dir="bin/test/classes" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-        <jar destfile="${tests.hdk.dir}/awt_headless_tests.jar">
+        </hy.jar.bin>
+        <hy.jar.bin destfile="${tests.hdk.dir}/awt_headless_tests.jar">
             <fileset dir="bin/test/boot">
                 <include name="**/*Headless*Test.class" />
             </fileset>
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.bin>
 
         <mkdir dir="${tests.excludes.hdk.dir}"/>
         <copy todir="${tests.excludes.hdk.dir}">

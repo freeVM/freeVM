@@ -116,11 +116,10 @@
 
     <target name="support-jar" depends="compile-support">
         <mkdir dir="${hy.hdk}/build/test" />
-        <jar destfile="${hy.hdk}/build/test/support.jar"
-             manifest="support/META-INF/MANIFEST.MF">
+        <hy.jar.bin destfile="${hy.hdk}/build/test/support.jar"
+                    manifest="support/META-INF/MANIFEST.MF">
             <fileset dir="${tests.support.output}" />
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.bin>
         <copy todir="${hy.hdk}/build/test"> 
             <fileset dir="${jetty.dir}">
                 <include name="*.jar" />

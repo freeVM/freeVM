@@ -229,26 +229,15 @@
     </target>
 
     <target name="build-jar" depends="svn-info,class-patternset">
-        <jar destfile="${hy.jdk}/jre/lib/boot/luni.jar"
-             manifest="META-INF/MANIFEST.MF"
-             compress="${hy.jar.compress}">
+        <hy.jar.bin destfile="${hy.jdk}/jre/lib/boot/luni.jar"
+                    manifest="META-INF/MANIFEST.MF">
             <fileset refid="classes" />
             <fileset refid="resources" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/>
-            </manifest>
+        </hy.jar.bin>
 
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-
-        <jar destfile="${hy.jdk}/jre/lib/boot/luni-src.jar">
+        <hy.jar.src destfile="${hy.jdk}/jre/lib/boot/luni-src.jar">
             <fileset dir="src/main/java" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/>
-            </manifest>
-
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.src>
     </target>
 
     <target name="test-jar" depends="compile-tests">
@@ -257,21 +246,13 @@
         <copy file="make/run-test.xml"
               tofile="${tests.hdk.dir}/build.xml" />
 
-        <jar destfile="${tests.hdk.dir}/luni_tests_api.jar">
+        <hy.jar.bin destfile="${tests.hdk.dir}/luni_tests_api.jar">
             <fileset dir="bin/test/api" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/>
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.bin>
 
-        <jar destfile="${tests.hdk.dir}/luni_tests_impl.jar">
+        <hy.jar.bin destfile="${tests.hdk.dir}/luni_tests_impl.jar">
             <fileset dir="bin/test/impl" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/>
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.bin>
 
         <copy todir="${tests.resources.hdk.dir}">
             <fileset dir="src/test/resources" >
