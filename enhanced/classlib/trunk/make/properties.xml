@@ -651,14 +651,50 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
         </sequential>
     </macrodef>
    
-   <presetdef name="hy.javac">
-       <javac target="${hy.javac.target}" source="${hy.javac.source}" 
+    <presetdef name="hy.javac">
+        <javac target="${hy.javac.target}" source="${hy.javac.source}" 
                compiler="${hy.javac.compiler}"
                debug="${hy.javac.debug}" debuglevel="${hy.javac.debuglevel}">
-           <compilerarg line="${build.compilerarg}" />
-       </javac>
-   </presetdef>
+            <compilerarg line="${build.compilerarg}" />
+        </javac>
+    </presetdef>
 
+    <presetdef name="hy.jar.bin">
+        <jar compress="${hy.jar.compress}">
+            <manifest>
+                <attribute name="Implementation-Title" value="Apache Harmony"/>
+                <attribute name="Implementation-Vendor"
+                           value="The Apache Software Foundation"/>
+                <attribute name="Implementation-Vendor-Id"
+                           value="org.apache.harmony"/>
+                <attribute name="Implementation-URL"
+                           value="http://harmony.apache.org"/>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+                <attribute name="X-Compile-Source-JDK"
+                           value="${hy.javac.source}"/> 
+                <attribute name="X-Compile-Target-JDK"
+                           value="${hy.javac.target}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+    </presetdef>
+
+    <presetdef name="hy.jar.src">
+        <jar compress="${hy.jar.compress}">
+            <manifest>
+                <attribute name="Implementation-Title" value="Apache Harmony"/>
+                <attribute name="Implementation-Vendor"
+                           value="The Apache Software Foundation"/>
+                <attribute name="Implementation-Vendor-Id"
+                           value="org.apache.harmony"/>
+                <attribute name="Implementation-URL"
+                           value="http://harmony.apache.org"/>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+            <metainf refid="hy.required.metainf-files"/>
+        </jar>
+    </presetdef>
+   
     <macrodef name="compile-tests">
         <attribute name="description" default="" />
         <attribute name="destdir" default="bin/test" />

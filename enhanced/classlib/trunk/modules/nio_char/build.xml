@@ -102,30 +102,21 @@
     </target>
 
     <target name="build-jar" depends="svn-info,class-patternset">
-        <jar destfile="${hy.jdk}/jre/lib/boot/nio_char.jar"
-             manifest="META-INF/MANIFEST.MF"
-             compress="${hy.jar.compress}">
-            <service type="java.nio.charset.spi.CharsetProvider" provider="org.apache.harmony.niochar.CharsetProviderImpl" />
+        <hy.jar.bin destfile="${hy.jdk}/jre/lib/boot/nio_char.jar"
+             manifest="META-INF/MANIFEST.MF">
+            <service type="java.nio.charset.spi.CharsetProvider"
+                     provider="org.apache.harmony.niochar.CharsetProviderImpl"/>
             <fileset refid="classes" />
             <fileset refid="resources" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
+        </hy.jar.bin>
 
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-
-        <jar destfile="${hy.jdk}/jre/lib/boot/nio_char-src.jar">
-            <service type="java.nio.charset.spi.CharsetProvider" provider="org.apache.harmony.niochar.CharsetProviderImpl" />
+        <hy.jar.src destfile="${hy.jdk}/jre/lib/boot/nio_char-src.jar">
+            <service type="java.nio.charset.spi.CharsetProvider"
+                     provider="org.apache.harmony.niochar.CharsetProviderImpl"/>
             <fileset dir="src/main/java">
                 <excludesfile name="${basedir}/make/excludesfile"/>
             </fileset>
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.src>
     </target>
 
     <target name="test-jar" depends="svn-info,compile-tests">
@@ -133,13 +124,9 @@
 
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
 
-        <jar destfile="${tests.hdk.dir}/nio_char_tests.jar">
+        <hy.jar.bin destfile="${tests.hdk.dir}/nio_char_tests.jar">
             <fileset dir="bin/test" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.bin>
 
         <mkdir dir="${tests.excludes.hdk.dir}"/>
         <copy todir="${tests.excludes.hdk.dir}">

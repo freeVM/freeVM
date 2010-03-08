@@ -106,27 +106,16 @@
     </target>
 
     <target name="build-jar" depends="svn-info,class-patternset">
-        <jar destfile="${hy.jdk}/jre/lib/boot/security.jar"
-             manifest="META-INF/MANIFEST.MF"
-             compress="${hy.jar.compress}">
+        <hy.jar.bin destfile="${hy.jdk}/jre/lib/boot/security.jar"
+                    manifest="META-INF/MANIFEST.MF">
             <fileset refid="classes" />
             <fileset refid="common.resources" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
+        </hy.jar.bin>
 
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-
-        <jar destfile="${hy.jdk}/jre/lib/boot/security-src.jar">
+        <hy.jar.src destfile="${hy.jdk}/jre/lib/boot/security-src.jar">
             <fileset dir="src/main/java/common" />
             <fileset dir="src/main/java/${hy.os.family}" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.src>
     </target>
 
     <target name="test-jar" depends="svn-info, compile-tests">
@@ -134,41 +123,21 @@
 
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
 
-        <jar destfile="${tests.hdk.dir}/security_tests_api.jar">
+        <hy.jar.bin destfile="${tests.hdk.dir}/security_tests_api.jar">
             <fileset dir="bin/test/api" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-        <jar destfile="${tests.hdk.dir}/security_tests_api_in.jar">
+        </hy.jar.bin>
+        <hy.jar.bin destfile="${tests.hdk.dir}/security_tests_api_in.jar">
             <fileset dir="bin/test/api.injected" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-        <jar destfile="${tests.hdk.dir}/security_tests_impl.jar">
+        </hy.jar.bin>
+        <hy.jar.bin destfile="${tests.hdk.dir}/security_tests_impl.jar">
             <fileset dir="bin/test/impl" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-        <jar destfile="${tests.hdk.dir}/security_tests_impl_in.jar">
+        </hy.jar.bin>
+        <hy.jar.bin destfile="${tests.hdk.dir}/security_tests_impl_in.jar">
             <fileset dir="bin/test/impl.injected" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-        <jar destfile="${tests.hdk.dir}/security_tests_support.jar">
+        </hy.jar.bin>
+        <hy.jar.bin destfile="${tests.hdk.dir}/security_tests_support.jar">
             <fileset dir="bin/test/support" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.bin>
 
         <copy todir="${tests.resources.hdk.dir}">
             <fileset dir="src/test/resources" />

@@ -98,9 +98,8 @@
     </target>
 
     <target name="build-jar" depends="svn-info,class-patternset">
-        <jar destfile="${hy.jdk}/jre/lib/boot/print.jar"
-             manifest="META-INF/MANIFEST.MF"
-             compress="${hy.jar.compress}">
+        <hy.jar.bin destfile="${hy.jdk}/jre/lib/boot/print.jar"
+                    manifest="META-INF/MANIFEST.MF">
             <metainf prefix="META-INF/services"
                 dir="src/main/java/common/org/apache/harmony/x/print"
                 includes="javax.print.StreamPrintServiceFactory"/>
@@ -113,14 +112,9 @@
                 <exclude name="**/javax.print.StreamPrintServiceFactory" />
                 <exclude name="**/javax.print.PrintServiceLookup" />
             </fileset>
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
+        </hy.jar.bin>
 
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
-
-        <jar destfile="${hy.jdk}/jre/lib/boot/print-src.jar">
+        <hy.jar.src destfile="${hy.jdk}/jre/lib/boot/print-src.jar">
             <metainf prefix="META-INF/services"
                 dir="src/main/java/common/org/apache/harmony/x/print"
                 includes="javax.print.StreamPrintServiceFactory"/>
@@ -129,12 +123,7 @@
                 includes="javax.print.PrintServiceLookup"/>
             <fileset dir="src/main/java/common" />
             <fileset dir="src/main/java/${hy.os.family}" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.src>
     </target>
 
     <target name="test-jar" depends="svn-info,compile-tests">
@@ -142,13 +131,9 @@
         
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
         
-        <jar destfile="${tests.hdk.dir}/print_tests.jar">
+        <hy.jar.bin destfile="${tests.hdk.dir}/print_tests.jar">
             <fileset dir="bin/test" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-            <metainf refid="hy.required.metainf-files"/>
-        </jar>
+        </hy.jar.bin>
 
         <mkdir dir="${tests.excludes.hdk.dir}"/>
         <copy todir="${tests.excludes.hdk.dir}">
