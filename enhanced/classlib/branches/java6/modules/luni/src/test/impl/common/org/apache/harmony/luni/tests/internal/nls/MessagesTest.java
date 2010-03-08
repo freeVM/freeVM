@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.harmony.luni.tests.util;
+package org.apache.harmony.luni.tests.internal.nls;
 
 import org.apache.harmony.luni.internal.nls.Messages;
 
