@@ -104,8 +104,8 @@
     <target name="build-jar" depends="svn-info">
         <mkdir dir="${jdktools.deploy.dir}/lib" />
 
-        <jar destfile="${jdktools.deploy.dir}/lib/tools.jar"
-             manifest="META-INF/MANIFEST.MF">
+        <hy.jar.bin destfile="${jdktools.deploy.dir}/lib/tools.jar"
+                    manifest="META-INF/MANIFEST.MF">
 
             <fileset dir="bin/main" />
 
@@ -118,23 +118,11 @@
                 <exclude name="META-INF/*"/>
             </zipfileset>
 
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
+        </hy.jar.bin>
 
-            <metainf file="${hy.hdk}/NOTICE"/>
-            <metainf file="${hy.hdk}/LICENSE"/>
-        </jar>
-
-        <jar destfile="${jdktools.deploy.dir}/lib/tools-src.jar">
+        <hy.jar.src destfile="${jdktools.deploy.dir}/lib/tools-src.jar">
             <fileset dir="src/main/java" />
-            <manifest>
-                <attribute name="Implementation-Version" value="${svn.info}"/> 
-            </manifest>
-
-            <metainf file="${hy.hdk}/NOTICE"/>
-            <metainf file="${hy.hdk}/LICENSE"/>
-        </jar>
+        </hy.jar.src>
     </target>
 
     <target name="build-tests">
