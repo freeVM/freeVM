@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
  * An instance of {@code ZipEntry} represents an entry within a <i>ZIP-archive</i>.
@@ -363,7 +364,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
         long sig = (hdrBuf[0] & 0xff) | ((hdrBuf[1] & 0xff) << 8) |
             ((hdrBuf[2] & 0xff) << 16) | ((hdrBuf[3] << 24) & 0xffffffffL);
         if (sig != CENSIG) {
-             throw new ZipException("Central Directory Entry not found");
+             throw new ZipException(Messages.getString("archive.3A"));
         }
 
         compressionMethod = (hdrBuf[10] & 0xff) | ((hdrBuf[11] & 0xff) << 8);
@@ -443,7 +444,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
         int b3 = raf.read();
 
         if (b3 < 0) {
-            throw new EOFException("in ZipEntry.readIntLE(RandomAccessFile)");
+            throw new EOFException(Messages.getString("archive.3B"));
         }
         return b0 | (b1 << 8) | (b2 << 16) | (b3 << 24); // ATTENTION: DOES SIGN EXTENSION: IS THIS WANTED?
     }
@@ -459,7 +460,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
             if (in.read(b, 0, 2) == 2) {
                 return (b[0] & 0XFF) | ((b[1] & 0XFF) << 8);
             } else {
-                throw new EOFException("in ZipEntry.readShortLE(InputStream)");
+                throw new EOFException(Messages.getString("archive.3C"));
             }
         }
 
@@ -474,7 +475,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
                          | ((b[3] & 0XFF) << 24))
                        & 0XFFFFFFFFL; // Here for sure NO sign extension is wanted.
             } else {
-                throw new EOFException("in ZipEntry.readIntLE(InputStream)");
+                throw new EOFException(Messages.getString("archive.3D"));
             }
         }
     }

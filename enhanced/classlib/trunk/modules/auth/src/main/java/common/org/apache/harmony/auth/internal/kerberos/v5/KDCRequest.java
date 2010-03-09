@@ -33,6 +33,7 @@ import org.apache.harmony.security.asn1.ASN1Sequence;
 import org.apache.harmony.security.asn1.ASN1SequenceOf;
 import org.apache.harmony.security.asn1.ASN1StringType;
 import org.apache.harmony.security.asn1.ASN1Type;
+import org.apache.harmony.auth.internal.nls.Messages;
 
 /**
  * @see http://www.ietf.org/rfc/rfc3961.txt
@@ -70,7 +71,7 @@ public class KDCRequest {
     public DatagramSocket send(InetAddress address, int port) throws IOException {
 
         if (msgType != AS_REQ) {
-            throw new RuntimeException("Not implemented");
+            throw new RuntimeException(Messages.getString("auth.65"));
         }
 
         byte[] enc = AS_REQ_ASN1.encode(this);
