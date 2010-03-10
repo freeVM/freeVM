@@ -1432,7 +1432,7 @@ hythread_cancel (hythread_t thread)
       return;
     }
 
-  THREAD_CANCEL (thread->handle);
+  (void)THREAD_CANCEL (thread->handle);
 
   thread->flags |= HYTHREAD_FLAG_CANCELED;
 
