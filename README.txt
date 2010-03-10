@@ -2,37 +2,39 @@ Here's how to edit and publish the website.  Note
 that this assumes you have a working implementation 
 of Java and Ant installed.
 
+1) Checkout a working copy of the site
 
-1) Edit the docs in xdocs/
+   svn co https://svn.apache.org/repos/asf/harmony/standard/site/trunk
+   cd trunk
 
-2) Type "ant" in the root (site/)
+2) Edit the docs in xdocs/
 
-3) Look at the changes in the docs/ directory using
+3) Type "ant" in the root (trunk/)
+
+4) Look at the changes in the docs/ directory using
    a web browser.
-
-4) Repeat steps 2-4 until happiness and joy achieved.
 
 5) Commit all changes, both docs/ and xdocs/
    
-    svn commit
+   svn commit
 
-6) ssh to minotaur
+6) Review your changes on the staging server
 
-7) cd /www/harmony.apache.org
+   http://harmony.staging.apache.org
 
-8) execute 
-    
-    umask 02; svn update
+7) Repeat steps 1-6 until happiness and joy achieved.
 
-   to update the just-committed docs out of SVN
+8) Merge changes into the live website
+
+   svn co https://svn.apache.org/repos/asf/harmony/standard/site/branches/live
+   cd live
+   svn merge https://svn.apache.org/repos/asf/harmony/standard/site/trunk
+   # review changes
+   svn ci -m "Merging from trunk."
 
 9) Verify that all went as planned by browsing the live 
     site 
 
       http://harmony.apache.org
 
-    and look for the changes you made.  Note that it may take up
-    to an hour after step (8) is complete before the changes are
-    reflected on the live website.
-
-
+    and look for the changes you made.
