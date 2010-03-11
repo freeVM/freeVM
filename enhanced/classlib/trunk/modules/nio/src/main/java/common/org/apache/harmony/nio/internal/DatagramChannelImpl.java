@@ -386,9 +386,14 @@ class DatagramChannelImpl extends DatagramChannel implements
                 synchronized (writeLock) {
                     long data_address = AddressUtil
                             .getDirectBufferAddress(source);
-                    sendCount = networkSystem.sendDatagramDirect(fd,
-                            data_address, start, length, isa.getPort(), false,
-                            trafficClass, isa.getAddress());
+                    if (isConnected()) {
+                        sendCount = networkSystem.sendConnectedDatagramDirect(
+                                fd, data_address, start, length, false);
+                    } else {
+                        sendCount = networkSystem.sendDatagramDirect(fd,
+                                data_address, start, length, isa.getPort(),
+                                false, trafficClass, isa.getAddress());
+                    }
                 }
             } else {
                 if (source.hasArray()) {
@@ -400,9 +405,14 @@ class DatagramChannelImpl extends DatagramChannel implements
                     start = 0;
                 }
                 synchronized (writeLock) {
-                    sendCount = networkSystem.sendDatagram(fd, array, start,
-                            length, isa.getPort(), false, trafficClass, isa
-                                    .getAddress());
+                    if (isConnected()) {
+                        sendCount = networkSystem.sendConnectedDatagram(fd,
+                                array, start, length, false);
+                    } else {
+                        sendCount = networkSystem.sendDatagram(fd, array,
+                                start, length, isa.getPort(), false,
+                                trafficClass, isa.getAddress());
+                    }
                 }
             }
             source.position(oldposition + sendCount);
