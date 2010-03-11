@@ -586,5 +586,33 @@ public class ServerSocketChannelTest extends TestCase {
         serverChannel.close();
     }
 
-    
+    /**
+     * Regression test for HARMONY-6375
+     */
+    public void test_accept_configureBlocking() throws Exception {
+        InetSocketAddress localAddr = new InetSocketAddress("localhost", 0);
+        serverChannel.socket().bind(localAddr);
+
+        // configure the channel non-blocking 
+        // when it is accepting in main thread
+        new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(TIME_UNIT);
+                    serverChannel.configureBlocking(false);
+                    serverChannel.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+        try {
+            serverChannel.accept();
+            fail("should throw AsynchronousCloseException");
+        } catch (AsynchronousCloseException e) {
+            // expected
+        }
+        serverChannel.close();
+    }
 }
