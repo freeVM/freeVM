@@ -92,7 +92,7 @@ public class Header implements Cloneable {
             }
             return clone;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError("Should not be here");
+            throw new AssertionError(e);
         }
     }
 
