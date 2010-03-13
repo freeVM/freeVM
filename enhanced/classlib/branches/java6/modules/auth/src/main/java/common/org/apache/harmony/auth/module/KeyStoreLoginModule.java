@@ -44,6 +44,7 @@ import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import javax.security.auth.x500.X500Principal;
 import javax.security.auth.x500.X500PrivateCredential;
+import org.apache.harmony.auth.internal.nls.Messages;
 
 public class KeyStoreLoginModule implements LoginModule {
     
@@ -101,11 +102,11 @@ public class KeyStoreLoginModule implements LoginModule {
             return true;
         case logout:
             clear();
-            throw new LoginException("Fail to login");
+            throw new LoginException(Messages.getString("auth.54"));
         default:
             if (subject.isReadOnly()) {
                 clear();
-                throw new LoginException("Subject is readonly.");
+                throw new LoginException(Messages.getString("auth.55"));
             }
             subject.getPrincipals().add(principal);
             subject.getPublicCredentials().add(certPath);
@@ -174,7 +175,7 @@ public class KeyStoreLoginModule implements LoginModule {
             if (!keyStoreURL.equals("NONE")
                     || privateKeyPasswordURL != null) {
                 throw new LoginException(
-                        "PKCS11 must have NONE as keyStoreURL and privateKeyPasswordURL unset");
+                        Messages.getString("auth.61"));
             }            
             needPrivateKeyPassword = false;            
         }
@@ -182,7 +183,7 @@ public class KeyStoreLoginModule implements LoginModule {
         if (has_protected_authentication_path) {
             if (keyStorePasswordURL != null && privateKeyPasswordURL != null) {
                 throw new LoginException(
-                        "Protected authentication path must have keyStorePasswordURL and privateKeyPasswordURL unset");
+                        Messages.getString("auth.62"));
             }
             needKeyStorePassword = false;
             needPrivateKeyPassword = false;
@@ -274,7 +275,7 @@ public class KeyStoreLoginModule implements LoginModule {
 
         if (null == keyStoreURL || (needKeyStorePassword && null == keyStorePassword)) {
             throw new LoginException(
-                    "Failure to get KeyStore or KeyStore Password");
+                    Messages.getString("auth.63"));
         }
     }
 

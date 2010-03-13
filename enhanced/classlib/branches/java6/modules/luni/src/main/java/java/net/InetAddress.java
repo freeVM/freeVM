@@ -1255,10 +1255,11 @@ public class InetAddress extends Object implements Serializable {
                     }
 
                     // the rest should be the scope string
-                    scopeString = tokenizer.nextToken();
+                    StringBuilder buf = new StringBuilder();
                     while (tokenizer.hasMoreTokens()) {
-                        scopeString = scopeString + tokenizer.nextToken();
+                        buf.append(tokenizer.nextToken());
                     }
+                    scopeString = buf.toString();
                 }
             }
 

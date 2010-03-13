@@ -45,6 +45,7 @@ import javax.security.auth.spi.LoginModule;
 import org.apache.harmony.auth.UnixNumericGroupPrincipal;
 import org.apache.harmony.auth.UnixNumericUserPrincipal;
 import org.apache.harmony.auth.UnixPrincipal;
+import org.apache.harmony.auth.internal.nls.Messages;
 
 public class JndiLoginModule extends SharedStateManager implements LoginModule {
 
@@ -107,11 +108,11 @@ public class JndiLoginModule extends SharedStateManager implements LoginModule {
             return true;
         case logout:
             clear();
-            throw new LoginException("Fail to login");
+            throw new LoginException(Messages.getString("auth.54"));
         default:
             if (subject.isReadOnly()) {
                 clear();
-                throw new LoginException("Subject is readonly.");
+                throw new LoginException(Messages.getString("auth.55"));
             }
             subject.getPrincipals().add(unixPrincipal);
             debugUtil.recordDebugInfo("[JndiLoginModule] added UnixPrincipal to Subject\n");
@@ -173,10 +174,10 @@ public class JndiLoginModule extends SharedStateManager implements LoginModule {
         jndiUserProvider = (String) options.get("user.provider.url");
         jndiGroupProvider = (String) options.get("group.provider.url");
         if (jndiUserProvider == null) {
-            throw new LoginException("Unable to locate JNDI user provider");
+            throw new LoginException(Messages.getString("auth.56"));
         }
         if (jndiGroupProvider == null) {
-            throw new LoginException("Unable to locate JNDI group provider");
+            throw new LoginException(Messages.getString("auth.57"));
         }
         debugUtil.recordDebugInfo("[JndiLoginModule] user provider: " + jndiUserProvider + "\n"
                 +"[JndiLoginModule] group provider: " + jndiGroupProvider
@@ -218,7 +219,7 @@ public class JndiLoginModule extends SharedStateManager implements LoginModule {
                         attrIds);
                 passwordAttr = userAttrs.get("userPassword");
                 if (passwordAttr == null) {
-                    throw new LoginException("Cannot get user password");
+                    throw new LoginException(Messages.getString("auth.58"));
                 }
                 jndiUserPassword = new String((byte[])passwordAttr.get());
                 if (!jndiUserPassword.equals(crypto(new String(userPassword)))) {
@@ -227,13 +228,13 @@ public class JndiLoginModule extends SharedStateManager implements LoginModule {
 
                 uidNumberAttr = userAttrs.get("uidNumber");
                 if (uidNumberAttr == null) {
-                    throw new LoginException("Cannot get uidNumber information");
+                    throw new LoginException(Messages.getString("auth.59"));
                 }
                 uidNumber = Long.valueOf((String) uidNumberAttr.get());
 
                 gidNumberAttr = userAttrs.get("gidNumber");
                 if (gidNumberAttr == null) {
-                    throw new LoginException("Cannot get gidNumber information");
+                    throw new LoginException(Messages.getString("auth.5A"));
                 }
                 gidNumber = Long.valueOf((String) gidNumberAttr.get());
             }
@@ -255,7 +256,7 @@ public class JndiLoginModule extends SharedStateManager implements LoginModule {
     protected void getUserIdentityFromCallbackHandler() throws LoginException {
         
         if (callbackHandler == null) {
-            throw new LoginException("no CallbackHandler available");
+            throw new LoginException(Messages.getString("auth.5B"));
         }
         ArrayList<Callback> callbacks = new ArrayList<Callback>();
         NameCallback jndiNameCallback = new NameCallback("User ID");

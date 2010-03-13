@@ -119,7 +119,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
             begin();
 
             synchronized (acceptLock) {
-                synchronized (blockingLock()) {
                     boolean isBlocking = isBlocking();
                     if (!isBlocking) {
                         // for non blocking mode, use select to see whether
@@ -145,7 +144,6 @@ public class ServerSocketChannelImpl extends ServerSocketChannel implements
                             // mode.
                         }
                     } while (isBlocking);
-                }
             }
         } finally {
             end(socketGot.isConnected());

@@ -17,13 +17,11 @@ document please refer to the file THIRD_PARTY_NOTICES.txt.
 
 
 
-FDLIBM version 5.2
+FDLIBM version 5.3
 ------------------
 FDLIBM (Freely Distributable LIBM) is a C math library for supporting IEEE 754
-floating-point arithmetic. File fdlibm_5.2.zip mostly contains the original
-source as downloaded from the FDLIBM home page with the
-exception of a few files whose names clashed with others in Harmony. In the
-zip file these files have all been given the ".orig" suffix.
+floating-point arithmetic. File fdlibm53.tar.gz contains the original source 
+as downloaded from the FDLIBM home page.
 
 The official FDLIBM page is located at http://www.netlib.org/fdlibm/
 

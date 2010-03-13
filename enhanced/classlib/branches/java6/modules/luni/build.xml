@@ -21,15 +21,22 @@
 
     <property name="hy.module" value="luni" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="depends.dir" location="${basedir}/../../depends" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
+    <import file="${hy.hdk}/build/ant/depends.xml" />
 
     <property file="../../make/depends.properties" />
 
-    <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
+    <property name="fdlibm.dist" location="src/main/native/fdlibm_dist"/>
 
     <target name="build" depends="compile-java, build-jar" />
 
     <target name="clean" depends="clean-java,clean-native,clean-test" />
+
+    <target name="check-depends">
+        <check-one-file src="${fdlibm.url}" dest="${fdlibm.tar}" />
+    </target>
+
 
     <target name="copy-native-includes">
         <copy todir="${hy.hdk}/include" preservelastmodified="true">
@@ -112,7 +119,24 @@
     <target name="overlay-oss" depends="-unzip-oss,-ascii2ebcdic-conversion" />
 
     <target name="-unzip-oss">
-        <unzip src="${fdlibm.zip}" dest="src/main/native/fdlibm_dist" />
+        <untar src="${fdlibm.tar}" compression="gzip" dest="${fdlibm.dist}">
+            <patternset>
+                <exclude name="fdlibm53"/>
+            </patternset>
+            <mapper type="flatten"/>
+        </untar>
+
+        <!-- These files are not used by Harmony, rename them in case misused -->
+        <move todir="${fdlibm.dist}">
+            <fileset dir="${fdlibm.dist}" >
+                <include name="fdlibm.h"/>
+                <include name="s_lib_version.c"/>
+                <include name="configure*"/>
+                <include name="Makefile*"/>
+            </fileset>
+            <mapper type="glob" from="*" to="*.orig" />
+        </move>
+
         <chmod dir="src/main/native/fdlibm_dist" perm="ugo+r" />
     </target>
 
@@ -131,6 +155,12 @@
         </copy>
         <fixcrlf srcdir="src/main/native/fdlibm_dist" includes="**/*" excludes="**/*.o" eol="unix" />
         <delete dir="src/main/native/fdlibm_dist_ascii" />
+    </target>
+
+    <target name="fetch-depends" >
+        <mkdir dir="${fdlibm.dir}" />
+        <download-one-file src="${fdlibm.url}" dest="${fdlibm.tar}"
+                           md5="${fdlibm.md5}" />
     </target>
 
     <target name="test" depends="-test-module">
@@ -282,10 +312,9 @@
                 </tokenfilter>
             </filterchain>
         </copy>
-
-        <copy file="../../${junit.jar}"
+        <copy file="${junit.jar}"
               tofile="${hy.hdk}/build/test/junit.jar" />
-        <copy file="../../${jetty.jar}" todir="${hy.hdk}/build/test" />
+        <copy file="${jetty.jar}" todir="${hy.hdk}/build/test" />
     </target>
 
     <!-- compile both api tests and impl tests-->

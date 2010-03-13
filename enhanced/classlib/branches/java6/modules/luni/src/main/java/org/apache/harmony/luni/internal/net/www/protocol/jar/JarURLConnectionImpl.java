@@ -150,12 +150,12 @@ public class JarURLConnectionImpl extends JarURLConnection {
                 jar = AccessController
                         .doPrivileged(new PrivilegedAction<JarFile>() {
                             public JarFile run() {
+                                FileOutputStream fos = null;
                                 try {
                                     File tempJar = File.createTempFile(
                                             "hyjar_", ".tmp", null);
                                     tempJar.deleteOnExit();
-                                    FileOutputStream fos = new FileOutputStream(
-                                            tempJar);
+                                    fos = new FileOutputStream(tempJar);
                                     byte[] buf = new byte[4096];
                                     int nbytes = 0;
                                     while ((nbytes = is.read(buf)) > -1) {
@@ -167,6 +167,12 @@ public class JarURLConnectionImpl extends JarURLConnection {
                                                     | ZipFile.OPEN_DELETE);
                                 } catch (IOException e) {
                                     return null;
+                                } finally {
+                                    if (fos != null) {
+                                        try {
+                                            fos.close();
+                                        } catch (IOException e) {}
+                                    }
                                 }
                             }
                         });

@@ -27,6 +27,7 @@ import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Iterator;
+import org.apache.harmony.archive.internal.nls.Messages;
 
 /**
  * This class provides random read access to a <i>ZIP-archive</i> file.
@@ -161,7 +162,7 @@ public class ZipFile implements ZipConstants {
 
     private void checkNotClosed() {
         if (mRaf == null) {
-            throw new IllegalStateException("Zip File closed.");
+            throw new IllegalStateException(Messages.getString("archive.36"));
         }
     }
 
@@ -299,7 +300,7 @@ public class ZipFile implements ZipConstants {
          */
         long scanOffset = mRaf.length() - ENDHDR;
         if (scanOffset < 0) {
-            throw new ZipException("too short to be Zip");
+            throw new ZipException(Messages.getString("archive.37"));
         }
 
         long stopOffset = scanOffset - 65536;
@@ -315,7 +316,7 @@ public class ZipFile implements ZipConstants {
 
             scanOffset--;
             if (scanOffset < stopOffset) {
-                throw new ZipException("EOCD not found; not a Zip archive?");
+                throw new ZipException(Messages.getString("archive.38"));
             }
         }
 
@@ -341,7 +342,7 @@ public class ZipFile implements ZipConstants {
         if (numEntries != totalNumEntries ||
             diskNumber != 0 ||
             diskWithCentralDir != 0) {
-            throw new ZipException("spanned archives not supported");
+            throw new ZipException(Messages.getString("archive.39"));
         }
 
         /*

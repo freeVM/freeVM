@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import javax.security.auth.login.LoginException;
+import org.apache.harmony.auth.internal.nls.Messages;
 
 public class LoginModuleUtils {
     
@@ -80,7 +81,7 @@ public class LoginModuleUtils {
         public ACTION checkLogin() throws LoginException {
             switch (phase) {
             case uninitialized:
-                throw new LoginException("Login Module is not initialized.");
+                throw new LoginException(Messages.getString("auth.60"));
             case initialized:
                 return ACTION.login;
             default:
@@ -91,7 +92,7 @@ public class LoginModuleUtils {
         public ACTION checkCommit() throws LoginException {
             switch (phase) {
             case uninitialized:
-                throw new LoginException("Login Module is not initialized.");
+                throw new LoginException(Messages.getString("auth.60"));
             case initialized:
                 return ACTION.logout;
             case logined:
@@ -104,7 +105,7 @@ public class LoginModuleUtils {
         public ACTION checkLogout() throws LoginException {
             switch (phase) {
             case uninitialized:
-                throw new LoginException("Login Module is not initialized.");
+                throw new LoginException(Messages.getString("auth.60"));
             case initialized:
             case logined:
                 return ACTION.no_action;

@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
+import org.apache.harmony.auth.internal.nls.Messages;
 
 abstract public class SharedStateManager {
 
@@ -91,7 +92,7 @@ abstract public class SharedStateManager {
                     debugUtil.recordDebugInfo("[" + getModuleName()
                             + "] regular authentication failed\n");
                     debugUtil.printAndClearDebugInfo();
-                    throw new FailedLoginException("Login incorrect");
+                    throw new FailedLoginException(Messages.getString("auth.5C"));
                 } else {
                     debugUtil.recordDebugInfo("[" + getModuleName()
                             + "] regular authentication succeeded\n");
@@ -108,7 +109,7 @@ abstract public class SharedStateManager {
                             + "] regular authentication failed\n");
                 }
                 debugUtil.printAndClearDebugInfo();
-                throw new FailedLoginException("Login incorrect");
+                throw new FailedLoginException(Messages.getString("auth.5C"));
             }
         } else {
             if (tryFirstPass) {
@@ -128,14 +129,14 @@ abstract public class SharedStateManager {
 
     private void getUserIdentityFromSharedStatus() throws LoginException {
         if (sharedState == null)
-            throw new LoginException("No shared status");
+            throw new LoginException(Messages.getString("auth.5D"));
         String userName = (String) sharedState
                 .get("javax.security.auth.login.name");
         char[] userPassword = (char[]) sharedState
                 .get("javax.security.auth.login.password");
         if (userName == null || userPassword == null) {
             throw new LoginException(
-                    "Cannot get user ID or user password from shared state");
+                    Messages.getString("auth.5E"));
         }
         setUserName(userName);
         setUserPassword(userPassword);
@@ -144,7 +145,7 @@ abstract public class SharedStateManager {
     protected void storePass() throws LoginException {
         if (storePass) {
             if (sharedState == null) {
-                throw new LoginException("No Shared State");
+                throw new LoginException(Messages.getString("auth.5F"));
             }
             if (sharedState.get("javax.security.auth.login.name") == null) {
                 sharedState
@@ -160,7 +161,7 @@ abstract public class SharedStateManager {
     protected void clearPass() throws LoginException {
         if (clearPass) {
             if (sharedState == null) {
-                throw new LoginException("No Shared State");
+                throw new LoginException(Messages.getString("auth.5F"));
             }
             sharedState.remove("javax.security.auth.login.name");
             sharedState.remove("javax.security.auth.login.password");

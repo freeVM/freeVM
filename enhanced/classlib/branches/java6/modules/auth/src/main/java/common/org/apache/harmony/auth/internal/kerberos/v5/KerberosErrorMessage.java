@@ -30,6 +30,7 @@ import org.apache.harmony.security.asn1.ASN1StringType;
 import org.apache.harmony.security.asn1.ASN1Type;
 import org.apache.harmony.security.asn1.BerInputStream;
 import org.apache.harmony.security.asn1.DerInputStream;
+import org.apache.harmony.auth.internal.nls.Messages;
 
 /**
  * Kerberos Error Message type.
@@ -162,7 +163,7 @@ public class KerberosErrorMessage {
 
         @Override
         protected void getValues(Object object, Object[] values) {
-            throw new RuntimeException("KerberosErrorMessage encoder is not implemented");
+            throw new RuntimeException(Messages.getString("auth.64"));
         }
     };
 

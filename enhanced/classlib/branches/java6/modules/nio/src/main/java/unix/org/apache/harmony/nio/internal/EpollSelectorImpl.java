@@ -35,10 +35,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.lang.Class;
 
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
-import org.apache.harmony.luni.platform.Platform;
 
 /*
  * Default implementation of java.nio.channels.Selector
@@ -504,7 +502,7 @@ final class EpollSelectorImpl extends AbstractSelector {
 
         Entry deleted = new Entry(-1, null);
 
-        final int threshRatio = 4;
+        static final int threshRatio = 4;
 
         public InternalKeyMap() {
             this(1);
