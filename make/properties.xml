@@ -35,8 +35,8 @@
     <property name="hy.test.vm.name" value="drl"/>
 
     <!-- set the path root for the classlib : must be relative to the build directory -->
-    <property name="external.classlib.loc" value="${jdktools.base.dir}/../working_classlib/deploy" />
-    <property name="external.drlvm.loc" value="${jdktools.base.dir}/../working_vm/deploy" />
+    <property name="external.classlib.loc" value="${jdktools.base.dir}/../classlib/deploy" />
+    <property name="external.drlvm.loc" value="${jdktools.base.dir}/../drlvm/deploy" />
     <property name="external.resources.loc" value="${jdktools.base.dir}/../common_resources" />
     <property name="external.resources" location="${external.resources.loc}" />
 

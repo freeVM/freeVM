@@ -16,8 +16,8 @@
 #
 # Makefile for module jdwp - transport
 #
-# export HY_HDK=/home/geir/dev/apache/harmony/enhanced/trunk/working_classlib/deploy/
-# export HY_DRLVM=/home/geir/dev/apache/harmony/enhanced/trunk/working_vm/build/deploy/
+# export HY_HDK=/home/geir/dev/apache/harmony/enhanced/trunk/classlib/deploy/
+# export HY_DRLVM=/home/geir/dev/apache/harmony/enhanced/trunk/drlvm/build/deploy/
 
 #
 
