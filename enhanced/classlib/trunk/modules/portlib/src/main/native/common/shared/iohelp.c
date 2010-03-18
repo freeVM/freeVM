@@ -27,7 +27,9 @@ void
 ioh_convertToPlatform (char *path)
 {
   char *pathIndex;
+#if !(DIR_SEPARATOR == '/')
   size_t length = strlen (path);
+#endif
 
   /* Convert all separators to the same type */
   pathIndex = path;

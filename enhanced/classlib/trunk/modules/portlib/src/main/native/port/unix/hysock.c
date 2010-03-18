@@ -958,7 +958,9 @@ hysock_getaddrinfo_address (struct HyPortLibrary * portLibrary,
   I_32 rc = 0;
   OSADDRINFO *addr;
   void *sock_addr;
+#if !defined(IPv6_FUNCTION_SUPPORT)
   char **addr_list;
+#endif
   int i;
 
   /* If we have the IPv6 functions available we cast to an OSADDRINFO structure otherwise a OSHOSTENET structure */
@@ -1169,7 +1171,9 @@ hysock_getaddrinfo_name (struct HyPortLibrary * portLibrary,
                          hyaddrinfo_t handle, char *name, int index)
 {
   I_32 rc = 0;
+#if !defined(IPv6_FUNCTION_SUPPORT)
   char **alias_list;
+#endif
   int i;
   OSADDRINFO *addr;
 
@@ -1591,8 +1595,6 @@ hysock_getnameinfo (struct HyPortLibrary * portLibrary, hysockaddr_t in_addr,
 
 /* If we have the IPv6 functions available we will call them, otherwise we'll call the IPv4 function */
 #if defined(IPv6_FUNCTION_SUPPORT)
-  OSSOCKADDR *addr;
-  int size;
   int rc = 0;
   rc =
     getnameinfo ((OSADDR *) & in_addr->addr, sizeof (in_addr->addr), name,
@@ -4950,11 +4952,8 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
 {
 
 #if (defined(HAS_RTNETLINK))
-  struct sockaddr_nl address;
   U_32 receiveLength;
   struct pollfd my_pollfd;
-  socklen_t addressLength = sizeof (address);
-  int result;
 
   for (;;)
     {
@@ -4999,7 +4998,7 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
                 int reallocLoop = 1;
 
                 while (reallocLoop) {
-                    int len = recvmsg(netlinkContext->netlinkSocketHandle, &msg, MSG_PEEK);
+                    (void)recvmsg(netlinkContext->netlinkSocketHandle, &msg, MSG_PEEK);
 
                     /*
                      *  if the peek shows that we would truncate, realloc to 2x the buffer size

@@ -118,7 +118,6 @@ JNIEXPORT jlong JNICALL Java_org_apache_harmony_nio_internal_EpollSelectorImpl_p
 JNIEXPORT jlong JNICALL Java_org_apache_harmony_nio_internal_EpollSelectorImpl_addFileDescriptor
   (JNIEnv * env, jclass clazz, jlong epollfd, jint mode, jint fd) 
 {
-    int op;
     struct epoll_event ev;
     int result;
     

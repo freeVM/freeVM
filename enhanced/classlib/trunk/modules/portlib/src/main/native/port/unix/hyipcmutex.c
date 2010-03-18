@@ -183,7 +183,6 @@ hyipcmutex_release (struct HyPortLibrary * portLibrary, const char *name)
 {
   int sid;
   int nsops;                    /* number of operations to perform on semaphore */
-  int nsems = 1;                /* number of semaphores */
   key_t sKey = 439;             /* semaphore identifier key */
   int nameLen;                  /* length of semaphore name */
   char *sPath;                  /* semaphore path (used in ftok) */

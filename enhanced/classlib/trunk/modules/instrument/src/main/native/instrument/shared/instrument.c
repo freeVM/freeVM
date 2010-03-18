@@ -203,7 +203,6 @@ JNIEXPORT void JNICALL Java_org_apache_harmony_instrument_internal_Instrumentati
     jmethodID method_get_data;
     jsize length;
     jvmtiClassDefinition *class_definitions;
-    int i=0;
     jclass clz;
     jmethodID method_clear;
 

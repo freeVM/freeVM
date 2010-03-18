@@ -136,7 +136,6 @@ UDATA JNICALL HyVMLSAllocKeys(JNIEnv * env, UDATA * pInitCount, ...)
 	hythread_monitor_enter(globalMonitor);
 
 	if (++(*pInitCount) == 1) {
-		JavaVM *javaVM = NULL;
 		void **pKey;
 		UDATA count = 0;
 

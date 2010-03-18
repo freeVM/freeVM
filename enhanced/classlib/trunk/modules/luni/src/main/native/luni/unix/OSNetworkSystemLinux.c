@@ -372,7 +372,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl
   
   /* return both correct and error result, let java code handle	exceptions */
   return result;
-};
+}
 
 
 JNIEXPORT jobject JNICALL

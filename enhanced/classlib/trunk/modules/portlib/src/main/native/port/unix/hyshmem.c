@@ -87,8 +87,6 @@ static struct hyshmem_handle *createshmHandle (HyPortLibrary * portLibrary,
 static IDATA writeControlFile (HyPortLibrary * portLibrary,
                                const char *filename, I_32 proj_id, key_t key,
                                I_32 size, I_32 shmid);
-static void getControlFileName (struct HyPortLibrary *portLibrary,
-                                char *buffer, UDATA size, const char *name);
 static IDATA openSharedMemory (HyPortLibrary * portLibrary,
                                struct hyshmem_handle **handle,
                                const char *controlFile);
@@ -125,9 +123,6 @@ hyshmem_open (HyPortLibrary * portLibrary, struct hyshmem_handle **handle,
 {
   /*TODO: Do we need the length to be longer? */
   char controlFile[HYSH_MAXPATH];
-  IDATA retryCount, exist;
-  key_t fkey;
-  void *region;
   int retry = RETRY_COUNT;
 
   Trc_PRT_shmem_hyshmem_open_Entry (rootname, size, perm);
@@ -417,7 +412,6 @@ hyshmem_findnext (struct HyPortLibrary * portLibrary, UDATA findHandle,
                   char *resultbuf)
 {
   char file[HyMaxPath];
-  int result;
 
   Trc_PRT_shmem_hyshmem_findnext_Entry (findHandle);
 
@@ -558,7 +552,6 @@ openSharedMemory (HyPortLibrary * portLibrary, struct hyshmem_handle **handle,
                   const char *controlFile)
 {
   struct hyshmem_controlFileFormat *info;
-  key_t fkey;
   void *region;
   UDATA retryCount = RETRY_COUNT;
   IDATA rc;
@@ -957,36 +950,6 @@ readControlFile (HyPortLibrary * portLibrary, const char *filename,
 
 #undef CDEV_CURRENT_FUNCTION
 
-#define CDEV_CURRENT_FUNCTION getControlFileName
-/**
- * @internal
- * Get the filename for a shared memory area
- *
- * @param[in] portLibrary The port library
- * @param[in] buffer where the base file name will be stored
- * @param[in] size size of the buffer
- * @param[in] name of the shared memory area
- *
- */
-static void
-getControlFileName (struct HyPortLibrary *portLibrary, char *buffer,
-                    UDATA size, const char *name)
-{
-  char versionStr[256];
-
-  GET_VERSION_STRING (portLibrary, versionStr);
-  portLibrary->str_printf (portLibrary, buffer, size, "%s%s%s", versionStr,
-                           HYSH_MEMORY_ID, name);
-
-#if defined(HYSHMEM_DEBUG)
-  portLibrary->tty_printf (portLibrary, "getControlFileName returns: %s\n",
-                           buffer);
-#endif
-
-}
-
-#undef CDEV_CURRENT_FUNCTION
-
 #define CDEV_CURRENT_FUNCTION isControlFileName
 static int
 isControlFileName (struct HyPortLibrary *portLibrary, char *buffer)
@@ -1049,7 +1012,7 @@ getControlFilePath (struct HyPortLibrary *portLibrary, char *buffer,
                            HYSH_BASEDIR, versionStr, HYSH_MEMORY_ID, name);
 
 #if defined(HYSHMEM_DEBUG)
-  portLibrary->tty_printf (portLibrary, "getControlFileName returns: %s\n",
+  portLibrary->tty_printf (portLibrary, "getControlFilePath returns: %s\n",
                            buffer);
 #endif
 

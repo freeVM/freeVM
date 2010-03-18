@@ -73,8 +73,6 @@ nls_determine_locale (struct HyPortLibrary *portLibrary)
 
   IDATA countryStart = 2;
 
-  PORT_ACCESS_FROM_PORT (portLibrary);
-
   /* Get the language */
 
   /* Set locale, returns NULL in case locale data cannot be initialized. This may indicate

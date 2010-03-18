@@ -595,7 +595,6 @@ parse_catalogues (struct HyPortLibrary *portLibrary, UDATA flags,
   I_32 success_reading = 0;
   HyNLSDataCache *nls = &portLibrary->portGlobals->nls_data;
   HyNLSHashEntry *entry = NULL;
-  char *message = NULL;
   char convertedModuleEnum[5];
   U_32 catalog_index;
   /* calculate a size which is larger than we could possibly need by putting together all of the prefixes and suffixes */
@@ -988,7 +987,6 @@ static void
 free_catalog (struct HyPortLibrary *portLibrary)
 {
   HyNLSDataCache *nls = &portLibrary->portGlobals->nls_data;
-  HyNLSHashEntry *old_hashEntries = nls->old_hashEntries;
   U_32 i;
 #if defined(NLS_DEBUG_TRACE)
   portLibrary->tty_printf (portLibrary, "NLS - free_catalog\n");
