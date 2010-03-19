@@ -39,7 +39,7 @@
                         dest="${jdt.jdimodel.jar}" />
         <check-one-file src="${icu.url}" dest="${icu.jar}" />
         <check-one-file src="${ecj.jar.url}" dest="${ecj.jar}" />
-        <check-one-file src="${bcel.jar.url}" dest="${bcel.jar}" />
+        <check-one-file src="${bcel.jar}" dest="${bcel.jar}" />
         <copy todir="${hy.hdk}/jdk/jre/lib/boot">
             <fileset dir="${depends.jars}">
                 <patternset includes="${bcel.version}/*.jar" />
@@ -51,6 +51,9 @@
     <target name="fetch-depends">
         <fetch dep="jdt.jdi.jar"/>
         <fetch dep="jdt.jdimodel.jar"/>
+        <mkdir dir="${bcel.dir}" />
+        <download-one-file dest="${bcel.jar}" 
+                           src="${bcel.url}" md5="${bcel.md5}"/>
     </target>
 
     <target name="build" depends="check-depends, build-java" />
