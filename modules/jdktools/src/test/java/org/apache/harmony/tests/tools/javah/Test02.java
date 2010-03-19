@@ -16,7 +16,7 @@
  */
 
 package org.apache.harmony.tests.tools.javah;
-import Test.*;
+import org.apache.harmony.tests.tools.javah.Test.*;
 
 public class Test02 extends Test01 {
 
