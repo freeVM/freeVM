@@ -104,10 +104,7 @@ hyshsem_open (struct HyPortLibrary *portLibrary,
   /* TODO: needs to be longer? dynamic? */
   char baseFile[HYSH_MAXPATH];
   char versionStr[32];
-  struct stat statbuf;
   I_8 retry = RETRY_COUNT;
-  I_8 exist = 0;
-  I_32 fd;
 
   Trc_PRT_shsem_hyshsem_open_Entry (semname, setSize, permission);
 
@@ -880,7 +877,6 @@ openSemaphore (struct HyPortLibrary *portLibrary, char *baseFile,
   /* base file exist - process the file and get sem info */
   hyshsem_baseFileFormat *info;
   I_8 retrycount = RETRY_COUNT;
-  key_t fkey;
   I_32 rc;
 
   while (retrycount > 0)

@@ -56,10 +56,12 @@
 #include "main_hlp.h"
 
 
+#if !defined(LINUX)
 static BOOLEAN isSymbolicLink (char *filename);
 static IDATA cwdname (char **result);
-static IDATA readSymbolicLink (char *linkFilename, char **result);
 static IDATA searchSystemPath (char *filename, char **result);
+#endif
+static IDATA readSymbolicLink (char *linkFilename, char **result);
 
 
 int
@@ -194,7 +196,6 @@ void *
 main_mem_allocate_memory (int byteAmount)
 {
 	void *pointer = NULL;
-	void *mem;
 	if (byteAmount == 0)
 	{                           /* prevent malloc from failing causing allocate to return null */
 		byteAmount = 1;
@@ -210,6 +211,7 @@ main_mem_free_memory (void *memoryPointer)
 }
 
 
+#if !defined(LINUX)
 /**
  * @internal  Examines the named file to determine if it is a symbolic link.  On platforms which don't have
  * symbolic links (or where we can't tell) or if an unexpected error occurs, just answer FALSE.
@@ -262,7 +264,7 @@ doAlloc:
   *result = cwd;
   return 0;
 }
-
+#endif
 
 /**
  * @internal  Attempts to read the contents of a symbolic link.  (The contents are the relative pathname of
@@ -275,8 +277,6 @@ static IDATA
 readSymbolicLink (char *linkFilename,
                   char **result)
 {
-  /* TODO: remove this ifdef and find out what other builds break (if any) */
-#if defined(LINUX)
   char fixedBuffer[PATH_MAX + 1];
   int size = readlink (linkFilename, fixedBuffer, sizeof (fixedBuffer) - 1);
   if (size <= 0)
@@ -291,12 +291,10 @@ readSymbolicLink (char *linkFilename,
     }
   strcpy (*result, fixedBuffer);
   return 0;
-#else
-  return -1;
-#endif
 }
 
 
+#if !defined(LINUX)
 /**
  * @internal  Searches through the system PATH for the named file.  If found, it returns the path entry
  * which matched the file.  A buffer large enough to hold the proper path entry (without a
@@ -368,6 +366,7 @@ searchSystemPath (char *filename, char **result)
   /* not found */
   return -1;
 }
+#endif
 
 /**
  * Close a shared library.

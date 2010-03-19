@@ -111,14 +111,14 @@ pinFunctions(Double, jdouble)
     (*env)->ReleasePrimitiveArrayCritical(env, (jarray)array, ptr, 0); \
 }
 
-setGetFunctions(B, jbyte);
-setGetFunctions(Z, jboolean);
-setGetFunctions(S, jshort);
-setGetFunctions(C, jchar);
-setGetFunctions(I, jint);
-setGetFunctions(J, jlong);
-setGetFunctions(F, jfloat);
-setGetFunctions(D, jdouble);
+setGetFunctions(B, jbyte)
+setGetFunctions(Z, jboolean)
+setGetFunctions(S, jshort)
+setGetFunctions(C, jchar)
+setGetFunctions(I, jint)
+setGetFunctions(J, jlong)
+setGetFunctions(F, jfloat)
+setGetFunctions(D, jdouble)
 
 /*
  * Class:     org_apache_harmony_misc_accessors_ArrayAccessor

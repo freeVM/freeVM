@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <string.h>
 
 #include "vmi.h"
 #include "helpers.h"
@@ -441,10 +442,10 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
   PORT_ACCESS_FROM_ENV(env);
 
   jobject buffer;
-  jobject* toBeReleasedBuffers;
-  jint *noffset;
+  jobject* toBeReleasedBuffers = NULL;
+  jint *noffset = NULL;
   jboolean isDirectBuffer = JNI_FALSE;
-  jint result;
+  jint result = 0;
   LPWSABUF vect;
   int i;
   jint sentBytes;
@@ -464,26 +465,44 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
     return 0;
   }
 
-  toBeReleasedBuffers = (jobject*) hymem_allocate_memory(sizeof(jobject) * length);
+  toBeReleasedBuffers =
+    (jobject*) hymem_allocate_memory(sizeof(jobject) * length);
   if (toBeReleasedBuffers == NULL) {
     throwNewOutOfMemoryError(env, "");
-    return 0;
+    goto free_resources;
   }
+  memset(toBeReleasedBuffers, 0, sizeof(jobject)*length);
 
   byteBufferClass = HARMONY_CACHE_GET (env, CLS_java_nio_DirectByteBuffer);
   noffset = (*env)->GetIntArrayElements(env, offsets, NULL);
+  if (noffset == NULL) {
+    throwNewOutOfMemoryError(env, "");
+    goto free_resources;
+  }
 
   for (i = 0; i < length; ++i) {
     jint *cts;
+    U_8* buf;
     buffer = (*env)->GetObjectArrayElement(env, buffers, i);
     isDirectBuffer = (*env)->IsInstanceOf(env, buffer, byteBufferClass);
     if (isDirectBuffer) {
-      vect[i].buf =  (U_8 *)(jbyte *)(IDATA) (*env)->GetDirectBufferAddress(env, buffer) + noffset[i];
+      buf =
+        (U_8 *)(jbyte *)(IDATA) (*env)->GetDirectBufferAddress(env, buffer);
+      if (buf == NULL) {
+        throwNewOutOfMemoryError(env, "Failed to get direct buffer address");
+        goto free_resources;
+      }
       toBeReleasedBuffers[i] = NULL;
     } else {
-      vect[i].buf = (U_8 *)(jbyte *)(IDATA) (*env)->GetByteArrayElements(env, buffer, NULL) + noffset[i];
+      buf =
+        (U_8 *)(jbyte *)(IDATA) (*env)->GetByteArrayElements(env, buffer, NULL);
+      if (buf == NULL) {
+        throwNewOutOfMemoryError(env, "");
+        goto free_resources;
+      }
       toBeReleasedBuffers[i] = buffer;
     }
+    vect[i].buf = buf  + noffset[i];
 
     cts = (*env)->GetPrimitiveArrayCritical(env, counts, NULL);
     vect[i].len = cts[i];
@@ -500,22 +519,31 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
       result = WSASend(socketP->ipv6, vect, length, &sentBytes, HYSOCK_NOFLAGS, NULL, NULL);
     }
 
-  for (i = 0; i < length; ++i) {
-    if (toBeReleasedBuffers[i] != NULL) {
-      (*env)->ReleaseByteArrayElements(env, toBeReleasedBuffers[i], vect[i].buf - noffset[i], JNI_ABORT);
-    }
-  }
-
-  (*env)->ReleaseIntArrayElements(env, offsets, noffset, JNI_ABORT);
-
-  hymem_free_memory(toBeReleasedBuffers);
-  hymem_free_memory(vect);
-
   if (SOCKET_ERROR == result) {
     rc = WSAGetLastError ();
     throwJavaNetSocketException(env, rc);
-    return (jint) 0;  // Ignored, exception takes precedence
+    result = 0;
   }
+
+  
+ free_resources:
+  
+  if (toBeReleasedBuffers != NULL) {
+    for (i = 0; i < length; ++i) {
+      if (toBeReleasedBuffers[i] != NULL) {
+        (*env)->ReleaseByteArrayElements(env, toBeReleasedBuffers[i],
+                                         vect[i].buf - noffset[i],
+                                         JNI_ABORT);
+      }
+    }
+  }
+
+  if (noffset != NULL) {
+    (*env)->ReleaseIntArrayElements(env, offsets, noffset, JNI_ABORT);
+  }
+
+  hymem_free_memory(toBeReleasedBuffers);
+  hymem_free_memory(vect);
 
   return sentBytes;
 }

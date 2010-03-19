@@ -44,6 +44,8 @@
 #include<netinet/ip_icmp.h>
 #endif /* !ZOS */
 
+#include <string.h>
+
 #include "nethelp.h"
 #include "harmonyglob.h"
 #include "helpers.h"
@@ -370,7 +372,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl
   
   /* return both correct and error result, let java code handle	exceptions */
   return result;
-};
+}
 
 
 JNIEXPORT jobject JNICALL
@@ -730,7 +732,7 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
   jobject* toBeReleasedBuffers;
   jint *noffset;
   jboolean isDirectBuffer = JNI_FALSE;
-  jint result;
+  jint result = 0;
   jclass byteBufferClass;
   struct iovec* vect;
   int i;
@@ -748,26 +750,45 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
     return 0;
   }
 
-  toBeReleasedBuffers = (jobject*) hymem_allocate_memory(sizeof(jobject) * length);
+  toBeReleasedBuffers =
+    (jobject*) hymem_allocate_memory(sizeof(jobject) * length);
   if (toBeReleasedBuffers == NULL) {
     throwNewOutOfMemoryError(env, "");
-    return 0;
+    goto free_resources;
   }
+  memset(toBeReleasedBuffers, 0, sizeof(jobject)*length);
 
   byteBufferClass = HARMONY_CACHE_GET (env, CLS_java_nio_DirectByteBuffer);
   noffset = (*env)->GetIntArrayElements(env, offset, NULL);
+  if (noffset == NULL) {
+    throwNewOutOfMemoryError(env, "");
+    goto free_resources;
+  }
 
   for (i = 0; i < length; ++i) {
     jint *cts;
+    U_8* base;
     buffer = (*env)->GetObjectArrayElement(env, buffers, i);
     isDirectBuffer = (*env)->IsInstanceOf(env, buffer, byteBufferClass);
     if (isDirectBuffer) {
-      vect[i].iov_base =  (U_8 *)(jbyte *)(IDATA) (*env)->GetDirectBufferAddress(env, buffer) + noffset[i];
+      base =
+        (U_8 *)(jbyte *)(IDATA) (*env)->GetDirectBufferAddress(env, buffer);
+      if (base == NULL) {
+        throwNewOutOfMemoryError(env, "");
+        goto free_resources;
+      }
       toBeReleasedBuffers[i] = NULL;
     } else {
-      vect[i].iov_base = (U_8 *)(jbyte *)(IDATA) (*env)->GetByteArrayElements(env, buffer, NULL) + noffset[i];
+      base =
+        (U_8 *)(jbyte *)(IDATA) (*env)->GetByteArrayElements(env, buffer, NULL);
+      if (base == NULL) {
+        throwNewOutOfMemoryError(env, "");
+        goto free_resources;
+      }
       toBeReleasedBuffers[i] = buffer;
     }
+    vect[i].iov_base = base + noffset[i];
+
     cts = (*env)->GetPrimitiveArrayCritical(env, counts, NULL);
     vect[i].iov_len = cts[i];
     (*env)->ReleasePrimitiveArrayCritical(env, counts, cts, JNI_ABORT);
@@ -776,24 +797,31 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
 
   result = writev(SOCKET_CAST (socketP), vect, length);
 
-  for (i = 0; i < length; ++i) {
-    if (toBeReleasedBuffers[i] != NULL) {
-      (*env)->ReleaseByteArrayElements(env, toBeReleasedBuffers[i], vect[i].iov_base - noffset[i], JNI_ABORT);
+  if (0 > result) {
+    if (errno != EAGAIN) {
+      throwJavaNetSocketException(env, result);
+    }
+    result = 0;
+  }
+
+ free_resources:
+  
+  if (toBeReleasedBuffers != NULL) {
+    for (i = 0; i < length; ++i) {
+      if (toBeReleasedBuffers[i] != NULL) {
+        (*env)->ReleaseByteArrayElements(env, toBeReleasedBuffers[i],
+                                         vect[i].iov_base - noffset[i],
+                                         JNI_ABORT);
+      }
     }
   }
 
-  (*env)->ReleaseIntArrayElements(env, offset, noffset, JNI_ABORT);
+  if (noffset != NULL) {
+    (*env)->ReleaseIntArrayElements(env, offset, noffset, JNI_ABORT);
+  }
 
   hymem_free_memory(toBeReleasedBuffers);
   hymem_free_memory(vect);
-
-  if (0 > result) {
-      if (errno == EAGAIN) {
-          return 0;
-      }
-    throwJavaNetSocketException(env, result);
-    return (jint) 0;  // Ignored, exception takes precedence
-  }
 
   return (jint) result;
 }

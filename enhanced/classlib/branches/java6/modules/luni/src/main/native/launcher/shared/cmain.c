@@ -43,58 +43,6 @@ extern UDATA VMCALL gpProtectedMain (void *arg);
 extern int main_addVMDirToPath(int argc, char **argv, char **envp); 
 #endif /* HY_NO_THR */
 
-static UDATA VMCALL
-genericSignalHandler (struct HyPortLibrary *portLibrary, U_32 gpType,
-                      void *gpInfo, void *userData)
-{
-  PORT_ACCESS_FROM_PORT (portLibrary);
-  U_32 category;
-
-  hytty_printf (PORTLIB, "\nAn unhandled error (%d) has occurred.\n", gpType);
-
-  for (category = 0; category < HYPORT_SIG_NUM_CATEGORIES; category++)
-    {
-      U_32 infoCount = hysig_info_count (gpInfo, category);
-      U_32 infoKind, index;
-      void *value;
-      const char *name;
-
-      for (index = 0; index < infoCount; index++)
-        {
-          infoKind = hysig_info (gpInfo, category, index, &name, &value);
-
-          switch (infoKind)
-            {
-            case HYPORT_SIG_VALUE_32:
-              hytty_printf (PORTLIB, "%s=%08.8x\n", name, *(U_32 *) value);
-              break;
-            case HYPORT_SIG_VALUE_64:
-            case HYPORT_SIG_VALUE_FLOAT_64:
-              hytty_printf (PORTLIB, "%s=%016.16llx\n", name,
-                            *(U_64 *) value);
-              break;
-            case HYPORT_SIG_VALUE_STRING:
-              hytty_printf (PORTLIB, "%s=%s\n", name, (const char *) value);
-              break;
-            case HYPORT_SIG_VALUE_ADDRESS:
-              hytty_printf (PORTLIB, "%s=%p\n", name, *(void **) value);
-              break;
-            }
-        }
-    }
-
-  abort ();
-
-  /* UNREACHABLE */
-  return 0;
-}
-
-static UDATA VMCALL
-signalProtectedMain (HyPortLibrary * portLibrary, void *arg)
-{
-  return gpProtectedMain (arg);
-}
-
 #ifdef HY_NO_THR
 typedef I_32 (PVMCALL hyport_init_library_type) (struct HyPortLibrary *portLibrary,
 		struct HyPortLibraryVersion *version, 

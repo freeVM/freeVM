@@ -123,8 +123,6 @@ gpProtectedMain (struct haCmdlineOptions *args)
   char *mainClass = NULL;
   char *mainClassAlloc = NULL;
   int isStandaloneJar = 0;
-  int copyrightWritten = 0;
-  int versionWritten = 0;
   UDATA classArg = argc;
   int i;
   char *vmdllsubdir;
@@ -135,7 +133,6 @@ gpProtectedMain (struct haCmdlineOptions *args)
   char *exeBaseName;
   char *endPathPtr;
   UDATA handle;
-  int javaRc = 0;
   char defaultDllName[] = "harmonyvm";
   char defaultDirName[] = "default";
   int rc = -1;
@@ -1185,7 +1182,6 @@ main_runJavaMain (JNIEnv * env, char *mainClassName, int nameIsUTF,
   jclass globalCls;
   jarray globalArgs;
 
-  PORT_ACCESS_FROM_PORT (portLibrary);
   slashifiedClassName =
     portLibrary->mem_allocate_memory (portLibrary,
                                       strlen (mainClassName) + 1);
@@ -1542,7 +1538,6 @@ main_addVMDirToPath(int argc, char **argv, char **envp)
 {
   char *vmdllsubdir;
   char *newPathToAdd = NULL;
-  char *propertiesFileName = NULL;
   char *exeName = NULL;
   char *exeBaseName;
   char *endPathPtr;

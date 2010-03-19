@@ -136,7 +136,7 @@ JNIEXPORT jboolean JNICALL Java_org_apache_harmony_luni_platform_OSMemory_isLoad
 JNIEXPORT jint JNICALL Java_org_apache_harmony_luni_platform_OSMemory_flushImpl
   (JNIEnv * env, jobject thiz, jlong addr, jlong size){
   return msync((void *)((IDATA)addr), size, MS_SYNC);
-};
+}
 
 /*
  * Class:     org_apache_harmony_luni_platform_OSMemory

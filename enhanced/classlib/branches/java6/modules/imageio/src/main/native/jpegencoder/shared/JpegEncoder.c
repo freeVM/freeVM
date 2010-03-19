@@ -55,7 +55,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 
 static JNIEnv* get_env() {
     JNIEnv *e;
-    int rt = (*jvm)->GetEnv(jvm, (void **)&e, JNI_VERSION_1_2);
+    (*jvm)->GetEnv(jvm, (void **)&e, JNI_VERSION_1_2);
     return e;
 }
 

@@ -58,7 +58,9 @@ void *VMCALL
 hymem_allocate_memory (struct HyPortLibrary *portLibrary, UDATA byteAmount)
 {
   void *pointer = NULL;
+#if defined(DEBUG_MALLOC_FREE_LEAK)
   void *mem;
+#endif
 
   Trc_PRT_mem_hymem_allocate_memory_Entry (byteAmount);
 #if defined(DEBUG_MALLOC_FREE_LEAK)
