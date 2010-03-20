@@ -4988,6 +4988,8 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
                 struct sockaddr_nl nladdr;
                 struct msghdr msg;
                 struct iovec iov;
+                int reallocLoop = 1;
+
                 iov.iov_base = netlinkContext->buffer;
                 iov.iov_len = netlinkContext->bufferSize;
                 msg.msg_name = (void *)&(nladdr);
@@ -4995,8 +4997,6 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
                 msg.msg_iov = &iov;
                 msg.msg_iovlen = 1;
                 
-                int reallocLoop = 1;
-
                 while (reallocLoop) {
                     (void)recvmsg(netlinkContext->netlinkSocketHandle, &msg, MSG_PEEK);
 
