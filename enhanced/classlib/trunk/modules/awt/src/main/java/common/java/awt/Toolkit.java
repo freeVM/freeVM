@@ -495,7 +495,7 @@ public abstract class Toolkit {
     private static String getWTKClassName() {
         String osName = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
         String packageBase = "org.apache.harmony.awt.wtk", win = "windows", lin = "linux"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        if (osName.startsWith(lin)) {
+        if (osName.startsWith(lin) || osName.startsWith("freebsd")) {
             return packageBase + "." + lin + ".LinuxWTK"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (osName.startsWith(win)) {
