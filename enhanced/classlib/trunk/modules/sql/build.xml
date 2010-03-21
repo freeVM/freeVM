@@ -131,8 +131,6 @@
         <copy todir="${tests.resources.hdk.dir}">
             <fileset dir="src/test/resources" />
         </copy>
-        
-        <copy file="${junit.jar}" todir="${hy.hdk}/build/test" />
 
         <copy todir="${hy.hdk}/build/test/derby"> 
             <fileset dir="${derby.dir}">

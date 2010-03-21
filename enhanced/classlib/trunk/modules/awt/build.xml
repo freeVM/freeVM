@@ -329,8 +329,6 @@ ${line.separator}For Fedora try: yum install libpng-devel" />
         <copy todir="${tests.resources.hdk.dir}" includeemptydirs="false">
             <fileset dir="src/test/api/resources" />
         </copy>
-
-        <copy file="${junit.jar}" todir="${hy.hdk}/build/test" />
     </target>
 
     <target name="compile-tests">

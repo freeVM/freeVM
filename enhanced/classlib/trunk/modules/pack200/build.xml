@@ -159,12 +159,16 @@
         <copy todir="${tests.resources.hdk.dir}">
             <fileset dir="src/test/resources" />
         </copy>
-
-        <copy file="${junit.jar}" todir="${hy.hdk}/build/test" />
     </target>
 
     <target name="compile-tests"> 
         <mkdir dir="bin/test" />
+
+        <mkdir dir="${hy.hdk}/build/test" />
+        <copy file="${junit.jar}"
+              tofile="${hy.hdk}/build/test/junit.jar" />
+        <copy file="${hamcrest-library.jar}"
+              tofile="${hy.hdk}/build/test/hamcrest-library.jar" />
 
         <echo message="Compiling ${hy.module} tests" />
         <hy.javac srcdir="src/test/java"
@@ -180,6 +184,8 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
+            <classpath location="${hy.hdk}/build/test/junit.jar" />
+            <classpath location="${hy.hdk}/build/test/hamcrest-library.jar" />
         </hy.javac>
     </target>
 

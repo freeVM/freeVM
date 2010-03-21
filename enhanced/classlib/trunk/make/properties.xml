@@ -658,7 +658,8 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
                source="${hy.javac.source}"
                target="${hy.javac.target}"
                debug="${hy.javac.debug}"
-               debuglevel="${hy.javac.debuglevel}">
+               debuglevel="${hy.javac.debuglevel}"
+               includeantruntime="false">
             <compilerarg line="${build.compilerarg}" />
         </javac>
     </presetdef>
@@ -707,6 +708,12 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
             <echo message="Compiling @{description}" />
             
             <mkdir dir="@{destdir}" />
+
+            <mkdir dir="${hy.hdk}/build/test" />
+            <copy file="${junit.jar}"
+                  tofile="${hy.hdk}/build/test/junit.jar" />
+            <copy file="${hamcrest-library.jar}"
+                  tofile="${hy.hdk}/build/test/hamcrest-library.jar" />
             
             <hy.javac destdir="@{destdir}">
 
@@ -720,8 +727,11 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
                     </fileset>
                 </bootclasspath>
 
-                <classpath location="${hy.hdk}/build/test/support.jar" />
                 <classpath location="../../build/classes" />
+                <classpath location="${hy.hdk}/build/test/junit.jar" />
+                <classpath
+                     location="${hy.hdk}/build/test/hamcrest-library.jar" />
+                <classpath location="${hy.hdk}/build/test/support.jar" />
             </hy.javac>
         </sequential>
     </macrodef>

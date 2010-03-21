@@ -21,6 +21,7 @@
 
     <property name="hy.module" value="regex" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="depends.dir" location="${basedir}/../../depends" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property file="../../make/depends.properties" />
@@ -117,9 +118,6 @@
         <copy todir="${tests.resources.hdk.dir}">
             <fileset dir="src/test/resources" />
         </copy>
-
-        <copy file="../../${junit.jar}"
-              tofile="${hy.hdk}/build/test/junit.jar" />
     </target>
 
     <target name="compile-tests">

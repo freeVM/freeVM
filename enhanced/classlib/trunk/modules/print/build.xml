@@ -21,6 +21,7 @@
 
     <property name="hy.module" value="print" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="depends.dir" location="${basedir}/../../depends" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property file="../../make/depends.properties" />
@@ -139,9 +140,6 @@
                 </tokenfilter>
             </filterchain>
         </copy>
-
-        <copy file="../../${junit.jar}"
-              tofile="${hy.hdk}/build/test/junit.jar" />
     </target>
 
     <target name="compile-tests">
