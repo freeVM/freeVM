@@ -113,11 +113,11 @@
                 <include name="time.h" />
                 <include name="utime.h" />
                 <include name="unistd.h" />
-                <include name="arpa\inet.h" />
-                <include name="sys\ipc.h" />
-                <include name="sys\stat.h" />
-                <include name="sys\time.h" />
-                <include name="sys\utsname.h" />
+                <include name="arpa/inet.h" />
+                <include name="sys/ipc.h" />
+                <include name="sys/stat.h" />
+                <include name="sys/time.h" />
+                <include name="sys/utsname.h" />
             </fileset>
         </copy>
     </target>
@@ -227,11 +227,11 @@
                 <include name="time.h" />
                 <include name="utime.h" />
                 <include name="unistd.h" />
-                <include name="arpa\inet.h" />
-                <include name="sys\ipc.h" />
-                <include name="sys\stat.h" />
-                <include name="sys\time.h" />
-                <include name="sys\utsname.h" />
+                <include name="arpa/inet.h" />
+                <include name="sys/ipc.h" />
+                <include name="sys/stat.h" />
+                <include name="sys/time.h" />
+                <include name="sys/utsname.h" />
             </fileset>
         </delete>
     </target>
