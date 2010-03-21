@@ -159,14 +159,9 @@
 
         <mkdir dir="../../build/classes" />
 
-        <javac sourcepath=""
+        <hy.javac sourcepath=""
                srcdir="src/main/java"
-               destdir="../../build/classes"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
+               destdir="../../build/classes">
 
             <compilerarg line="${build.compilerarg}" />
 
@@ -175,7 +170,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-        </javac>
+        </hy.javac>
     </target>
 
     <target name="findbugs" depends="build-jar">

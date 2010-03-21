@@ -66,14 +66,9 @@
 
         <mkdir dir="../../build/classes" />
 
-        <javac sourcepath=""
-               srcdir="src/main/java/common"
-               destdir="../../build/classes"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
+        <hy.javac sourcepath=""
+                  srcdir="src/main/java/common"
+                  destdir="../../build/classes">
 
             <compilerarg line="${build.compilerarg}" />
 
@@ -82,7 +77,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-        </javac>
+        </hy.javac>
     </target>
     
     <target name="build-native" depends="build-native-all" />
