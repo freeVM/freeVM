@@ -25,7 +25,7 @@
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property file="../../make/depends.properties" />
-    <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
+
     <available property="hythr.available"
         file="${hy.jdk}/jre/bin/default/${shlib.prefix}hythr${shlib.suffix}" />
     <condition property="test.portlib">
