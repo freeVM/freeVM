@@ -689,7 +689,7 @@ writeIntToBuffer (char *buf, U_32 bufLen, U_64 width, U_64 precision,
     }
   while (temp);
 
-  /* zero extend to the left according the the requested precision */
+  /* zero extend to the left according the requested precision */
   while (length > 0)
     {
       length -= 1;
