@@ -109,6 +109,11 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_createServerStreamSocket
 
   createSocket(env, thisObjFD, HYSOCK_STREAM, preferIPv4Stack);
 
+  /* Check if any exception occurred creating the socket */
+  if ((*env)->ExceptionCheck(env)) {
+    return;
+  }
+
   /* Also sets HY_SO_REUSEADDR = TRUE on Linux only */
   socketP =
     (hysocket_t) getJavaIoFileDescriptorContentsAsAPointer(env, thisObjFD);
