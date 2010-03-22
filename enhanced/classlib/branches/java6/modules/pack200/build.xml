@@ -82,14 +82,11 @@
         <mkdir dir="../../build/classes" />
 
     	<!-- Ordinary classes -->
-        <javac sourcepath=""
-               srcdir="src/main/java"
-               destdir="../../build/classes"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="1.4"
-               target="1.4"
-               debug="${hy.javac.debug}">
+        <hy.javac sourcepath=""
+                  srcdir="src/main/java"
+                  destdir="../../build/classes"
+                  source="1.4"
+                  target="1.4">
 
             <compilerarg line="${build.compilerarg}" />
 
@@ -98,16 +95,11 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-        </javac>
+        </hy.javac>
     	<!-- Java5 classes, with generics -->
-        <javac sourcepath=""
-               srcdir="src/main/java5"
-               destdir="../../build/classes"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}"
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
+        <hy.javac sourcepath=""
+                  srcdir="src/main/java5"
+                  destdir="../../build/classes">
 
             <compilerarg line="${build.compilerarg}" />
 
@@ -116,7 +108,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-        </javac>
+        </hy.javac>
     </target>
 
     <target name="findbugs" depends="build-jar">
@@ -167,22 +159,23 @@
         <copy todir="${tests.resources.hdk.dir}">
             <fileset dir="src/test/resources" />
         </copy>
-
-        <copy file="${junit.jar}" todir="${hy.hdk}/build/test" />
     </target>
 
     <target name="compile-tests"> 
         <mkdir dir="bin/test" />
 
+        <mkdir dir="${hy.hdk}/build/test" />
+        <copy file="${junit.jar}"
+              tofile="${hy.hdk}/build/test/junit.jar" />
+        <copy file="${hamcrest-library.jar}"
+              tofile="${hy.hdk}/build/test/hamcrest-library.jar" />
+
         <echo message="Compiling ${hy.module} tests" />
-        <javac srcdir="src/test/java"
-               destdir="bin/test"
-               sourcepath=""
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="1.4" 
-               target="1.4"
-               debug="${hy.javac.debug}">
+        <hy.javac srcdir="src/test/java"
+                  destdir="bin/test"
+                  sourcepath=""
+                  source="1.4" 
+                  target="1.4">
 
             <compilerarg line="${build.compilerarg}" />
 
@@ -191,7 +184,9 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-        </javac>
+            <classpath location="${hy.hdk}/build/test/junit.jar" />
+            <classpath location="${hy.hdk}/build/test/hamcrest-library.jar" />
+        </hy.javac>
     </target>
 
     <target name="run-tests" depends="test-jar">

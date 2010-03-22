@@ -25,6 +25,7 @@ public class SystemUtils {
     // OSes
     public static final int OS_WINDOWS = 1;
     public static final int OS_LINUX = 2;
+    public static final int OS_FREEBSD = 3;
     public static final int OS_UNKNOWN = -1;
 
     // Architectures
@@ -38,7 +39,7 @@ public class SystemUtils {
 
     /**
      * getOS method returns on of the operating system codes:
-     * OS_WINDOWS, OS_LINUX or OS_UNKNOWN
+     * OS_WINDOWS, OS_LINUX, OS_FREEBSD or OS_UNKNOWN
      * @return Operating system code
      */
     public static int getOS() {
@@ -49,8 +50,13 @@ public class SystemUtils {
             } else {
                 if (osname.compareToIgnoreCase("lin") == 0) { //$NON-NLS-1$
                     os = OS_LINUX;
-                } else
-                    os = OS_UNKNOWN;
+                } else {
+                    if (osname.compareToIgnoreCase("fre") == 0) { //$NON-NLS-1$
+                        os = OS_FREEBSD;
+                    } else {
+                        os = OS_UNKNOWN;
+                    }
+                }
             }
         }
         return os;

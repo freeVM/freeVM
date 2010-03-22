@@ -190,7 +190,7 @@ public class Runtime {
     /**
      * Causes the virtual machine to stop running and the program to exit. If
      * {@link #runFinalizersOnExit(boolean)} has been previously invoked with a
-     * {@code true} argument, then all all objects will be properly
+     * {@code true} argument, then all objects will be properly
      * garbage-collected and finalized first.
      *
      * @param code

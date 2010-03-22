@@ -37,6 +37,7 @@
 
     <!-- Debug or release version -->
     <property name="hy.cfg" value="debug" />
+    <property name="hy.specification.version" value="1.5" />
 
     <!-- Javac properties -->
     <!-- Explicitly set to ECJ as the default compiler. -->
@@ -654,8 +655,13 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
     </macrodef>
    
     <presetdef name="hy.javac">
-        <javac target="${hy.javac.target}" source="${hy.javac.source}" 
-                compiler="${hy.javac.compiler}" debug="${hy.javac.debug}">
+        <javac compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}"
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}"
+               debuglevel="${hy.javac.debuglevel}"
+               includeantruntime="false">
             <compilerarg line="${build.compilerarg}" />
         </javac>
     </presetdef>
@@ -704,13 +710,14 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
             <echo message="Compiling @{description}" />
             
             <mkdir dir="@{destdir}" />
+
+            <mkdir dir="${hy.hdk}/build/test" />
+            <copy file="${junit.jar}"
+                  tofile="${hy.hdk}/build/test/junit.jar" />
+            <copy file="${hamcrest-library.jar}"
+                  tofile="${hy.hdk}/build/test/hamcrest-library.jar" />
             
-            <javac destdir="@{destdir}"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
+            <hy.javac destdir="@{destdir}">
 
                 <javac-elements />
 
@@ -722,9 +729,12 @@ Alternatively, you can switch to another compiler, e.g. specify '-Dhy.javac.comp
                     </fileset>
                 </bootclasspath>
 
-                <classpath location="${hy.hdk}/build/test/support.jar" />
                 <classpath location="../../build/classes" />
-            </javac>
+                <classpath location="${hy.hdk}/build/test/junit.jar" />
+                <classpath
+                     location="${hy.hdk}/build/test/hamcrest-library.jar" />
+                <classpath location="${hy.hdk}/build/test/support.jar" />
+            </hy.javac>
         </sequential>
     </macrodef>
 

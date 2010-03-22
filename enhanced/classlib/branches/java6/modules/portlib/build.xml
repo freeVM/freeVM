@@ -21,10 +21,11 @@
 
     <property name="hy.module" value="portlib" />
     <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <property name="depends.dir" location="${basedir}/../../depends" />
     <import file="${hy.hdk}/build/ant/properties.xml" />
 
     <property file="../../make/depends.properties" />
-    <property name="fdlibm.zip" location="${depends.oss}/fdlibm_5.2.zip" />
+
     <available property="hythr.available"
         file="${hy.jdk}/jre/bin/default/${shlib.prefix}hythr${shlib.suffix}" />
     <condition property="test.portlib">
@@ -112,11 +113,11 @@
                 <include name="time.h" />
                 <include name="utime.h" />
                 <include name="unistd.h" />
-                <include name="arpa\inet.h" />
-                <include name="sys\ipc.h" />
-                <include name="sys\stat.h" />
-                <include name="sys\time.h" />
-                <include name="sys\utsname.h" />
+                <include name="arpa/inet.h" />
+                <include name="sys/ipc.h" />
+                <include name="sys/stat.h" />
+                <include name="sys/time.h" />
+                <include name="sys/utsname.h" />
             </fileset>
         </copy>
     </target>
@@ -226,11 +227,11 @@
                 <include name="time.h" />
                 <include name="utime.h" />
                 <include name="unistd.h" />
-                <include name="arpa\inet.h" />
-                <include name="sys\ipc.h" />
-                <include name="sys\stat.h" />
-                <include name="sys\time.h" />
-                <include name="sys\utsname.h" />
+                <include name="arpa/inet.h" />
+                <include name="sys/ipc.h" />
+                <include name="sys/stat.h" />
+                <include name="sys/time.h" />
+                <include name="sys/utsname.h" />
             </fileset>
         </delete>
     </target>

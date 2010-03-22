@@ -574,7 +574,7 @@ hysock_accept (struct HyPortLibrary * portLibrary, hysocket_t serverSock,
  * of the socket by assigning a local name to an unnamed socket.
  *
  * @param[in] portLibrary The port library.
- * @param[in] sock hysocket_t which will be be associated with the specified name.
+ * @param[in] sock hysocket_t which will be associated with the specified name.
  * @param[in] addr Address to bind to socket.
  *
  * @return
@@ -945,7 +945,7 @@ hysock_getaddrinfo (struct HyPortLibrary * portLibrary, char *name,
  *
  * @return	
  * \arg 0, if no errors occurred, otherwise the (negative) error code
- * \arg HYPORT_ERROR_SOCKET_VALUE_NULL when we have have the old IPv4 gethostbyname call and the address indexed is out
+ * \arg HYPORT_ERROR_SOCKET_VALUE_NULL when we have the old IPv4 gethostbyname call and the address indexed is out
  * of range.  This is because the address list and the host alias list are not the same length.  Just skip this entry.
  *
  * @note Added for IPv6 support.
@@ -1161,7 +1161,7 @@ hysock_getaddrinfo_length (struct HyPortLibrary * portLibrary,
  *
  * @return
  * \arg 0, if no errors occurred, otherwise the (negative) error code.
- * \arg HYPORT_ERROR_SOCKET_VALUE_NULL when we have have the old IPv4 gethostbyname call and the name indexed is out
+ * \arg HYPORT_ERROR_SOCKET_VALUE_NULL when we have the old IPv4 gethostbyname call and the name indexed is out
  * of range.  This is because the address list and the host alias list are not the same length.  Just skip this entry.
  *
  * @note Added for IPv6 support.
@@ -4988,6 +4988,8 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
                 struct sockaddr_nl nladdr;
                 struct msghdr msg;
                 struct iovec iov;
+                int reallocLoop = 1;
+
                 iov.iov_base = netlinkContext->buffer;
                 iov.iov_len = netlinkContext->bufferSize;
                 msg.msg_name = (void *)&(nladdr);
@@ -4995,8 +4997,6 @@ getNextNetlinkMsg (struct HyPortLibrary * portLibrary,
                 msg.msg_iov = &iov;
                 msg.msg_iovlen = 1;
                 
-                int reallocLoop = 1;
-
                 while (reallocLoop) {
                     (void)recvmsg(netlinkContext->netlinkSocketHandle, &msg, MSG_PEEK);
 

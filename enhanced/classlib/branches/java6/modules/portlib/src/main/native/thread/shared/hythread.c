@@ -1447,7 +1447,7 @@ hythread_cancel (hythread_t thread)
  * Detaches the current thread from the threading library.
  * 
  * Detach must only be called by an attached thread.  The actual parameter
- * must be the the current thread's hythread_t, or NULL (in which case this
+ * must be the current thread's hythread_t, or NULL (in which case this
  * function retrieves and uses the current thread's hythread_t).  This
  * function cannot be used to detach an arbitrary thread.
  *

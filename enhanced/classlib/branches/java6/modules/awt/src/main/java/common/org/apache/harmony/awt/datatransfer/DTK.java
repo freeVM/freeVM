@@ -133,6 +133,7 @@ public abstract class DTK {
             name = "org.apache.harmony.awt.datatransfer.windows.WinDTK"; //$NON-NLS-1$
             break;
         case SystemUtils.OS_LINUX:
+        case SystemUtils.OS_FREEBSD:
             name = "org.apache.harmony.awt.datatransfer.linux.LinuxDTK"; //$NON-NLS-1$
             break;
         default:

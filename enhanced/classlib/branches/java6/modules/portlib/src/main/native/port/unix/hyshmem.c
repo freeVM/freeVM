@@ -688,7 +688,7 @@ createSharedMemory (HyPortLibrary * portLibrary,
               Trc_PRT_shmem_createSharedMemory_Exit3 ();
               return RETRY;
             }
-          /* any other error code is is bad */
+          /* any other error code is bad */
           Trc_PRT_shmem_createSharedMemory_Exit4 ();
           return FAILED;
         }

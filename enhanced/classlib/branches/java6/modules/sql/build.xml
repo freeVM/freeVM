@@ -76,14 +76,9 @@
 
         <mkdir dir="../../build/classes" />
 
-        <javac sourcepath=""
+        <hy.javac sourcepath=""
                srcdir="src/main/java"
-               destdir="../../build/classes"
-               compiler="${hy.javac.compiler}"
-               memoryMaximumSize="${hy.javac.maxmem}"
-               source="${hy.javac.source}" 
-               target="${hy.javac.target}"
-               debug="${hy.javac.debug}">
+               destdir="../../build/classes">
 
             <compilerarg line="${build.compilerarg}" />
 
@@ -92,7 +87,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
-        </javac>
+        </hy.javac>
     </target>
 
     <target name="findbugs" depends="build-jar">
@@ -136,8 +131,6 @@
         <copy todir="${tests.resources.hdk.dir}">
             <fileset dir="src/test/resources" />
         </copy>
-        
-        <copy file="${junit.jar}" todir="${hy.hdk}/build/test" />
 
         <copy todir="${hy.hdk}/build/test/derby"> 
             <fileset dir="${derby.dir}">
