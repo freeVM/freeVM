@@ -271,6 +271,7 @@ _jc_invoke(int orig_ac, const char **orig_av,
 			if (sub->jc != NULL) {
 
 				/* Delete old flag */
+				free(av[i]);
 				memmove(av + i, av + i + 1,
 				    (ac-- - i) * sizeof(*av));
 
@@ -284,6 +285,7 @@ _jc_invoke(int orig_ac, const char **orig_av,
 			}
 
 			/* Just ignore it */
+			free(av[i]);
 			memmove(av + i, av + i + 1, (ac-- - i) * sizeof(*av));
 			i--;
 			break;
