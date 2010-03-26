@@ -417,11 +417,11 @@ limitations under the License.
                                 <pre>$ svn co http://svn.apache.org/repos/asf/harmony/enhanced/trunk </pre>
                                 <p>
         This command checks out a directory structure that contains
-        <code>common_resources</code>, <code>working_classlib</code>,
-        <code>working_vm</code> and <code>working_jdktools</code> directories.
+        <code>common_resources</code>, <code>classlib</code>,
+        <code>drlvm</code> and <code>jdktools</code> directories.
         The federated build command in the next step will populate the source
-        trees and build the JDK, <code>working_classlib</code> will be the
-        checkout of the class library SVN tree, <code>working_vm</code> will be
+        trees and build the JDK, <code>classlib</code> will be the
+        checkout of the class library SVN tree, <code>drlvm</code> will be
         the checkout of the DRLVM SVN tree, etc.
       </p>
                                 <p class="note">Note</p>
@@ -511,7 +511,7 @@ limitations under the License.
                                 <pre>$ ant populate-src</pre>
                                 <p>
           The given command checks out class library, DRLVM and jdktools into the
-          <code>working_classlib</code>, <code>working_vm</code> and <code>working_jdktools</code>
+          <code>classlib</code>, <code>drlvm</code> and <code>jdktools</code>
           directories respectively, along with a <code>common_resources</code>, <i>
             at the same SVN version of
             the <code>build.xml</code> file
@@ -536,7 +536,7 @@ limitations under the License.
           revision simply by doing <code>svn update</code> in any directory.
         </p>
                                 <pre>
-$ cd working_classlib
+$ cd classlib
 $ svn update</pre>
                                 <p>
           After executing <code>svn update</code>, your tree will
@@ -575,7 +575,7 @@ $ svn update</pre>
           and then build the component, use the following commands:
         </p>
                                 <pre>
-$ cd working_classlib
+$ cd classlib
 $ ant fetch-depends
 $ ant</pre>
                                 <p>
