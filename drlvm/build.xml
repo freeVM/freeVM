@@ -20,6 +20,17 @@
     <description>
     	Build contributed source and lay out results in the required format 
     </description>
+
+    <fail unless="hy.ignore.move">
+...
+
+This tree is deprecated.  Please switch to the new location with:
+
+  svn switch https://svn.apache.org/repos/asf/harmony/enhanced/java/branches/java6/drlvm
+
+This svn tree will disappear in two weeks.  If you wish to force a build
+in the meantime use "ant -Dhy.ignore.move=true".
+    </fail>
     
     <import file="make/properties.xml"/>
 
