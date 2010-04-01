@@ -193,7 +193,6 @@ public class XMLFormatterTest extends TestCase {
         }
     }
 
-    // Regression for CMVC-162645
     public void test_TestFileHandlerClass_constructor() throws Exception {
         File logFile = new File(System.getProperty("user.home"),
                 "TestFileHandlerClass.log");
