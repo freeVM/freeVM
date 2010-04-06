@@ -1,1 +1,0 @@
-The test sources were taken from vm/tests/jvmti/VMInit1 
