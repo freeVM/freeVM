@@ -232,12 +232,8 @@
 
       <p>
         This command checks out a directory structure that contains
-        <code>common_resources</code>, <code>classlib</code>,
-        <code>drlvm</code> and <code>jdktools</code> directories.
-        The federated build command in the next step will populate the source
-        trees and build the JDK, <code>classlib</code> will be the
-        checkout of the class library SVN tree, <code>drlvm</code> will be
-        the checkout of the DRLVM SVN tree, etc.
+        <code>classlib</code>, <code>drlvm</code> and <code>jdktools</code>
+        directories.
       </p>
       <p class="note">Note</p>
       <p class="notetext">
@@ -294,45 +290,17 @@
     procedure consists of the following steps:</p>
     <ol>
       <li>
-        <a href="#1. Populating the Source Trees">Populate the source trees.</a>
+        <a href="#1. Updating the Source Trees">Update the source trees.</a>
       </li>
       <li>
-        <a href="#2. Updating the Source Trees">Update the source trees.</a>
+        <a href="#2. Building the Components">Build the JDK components.</a>
       </li>
       <li>
-        <a href="#3. Building the Components">Build the JDK components.</a>
-      </li>
-      <li>
-        <a href="#4. Combining JRE from Built Components">Combine class libraries and VM into JRE.</a>
+        <a href="#3. Combining JRE from Built Components">Combine class libraries and VM into JRE.</a>
       </li>
     </ol>
     
-    <subsection name="1. Populating the Source Trees">
-        <p>
-          To populate the source trees of all JDK components, use the target located
-          in the federated build <code>build.xml</code> script.
-          Type the following command in the root directory of the
-          federated build:
-        </p>
-        <source>$ ant populate-src</source>
-        <p>
-          The given command checks out class library, DRLVM and jdktools into the
-          <code>classlib</code>, <code>drlvm</code> and <code>jdktools</code>
-          directories respectively, along with a <code>common_resources</code>, <i>
-            at the same SVN version of
-            the <code>build.xml</code> file
-          </i>.
-          The source trees are large,
-          therefore a checkout can take a very long time.
-        </p>
-        <p>
-          Optionally, you can skip using the federated build at all and manually 
-          check out only specific components. In this case you will need to build
-          against a binary <a href="http://harmony.apache.org/hdk.html">HDK</a> bundle,
-          which can be found in Harmony downloads.
-        </p>
-      </subsection>
-    <subsection name="2. Updating the Source Trees">
+    <subsection name="1. Updating the Source Trees">
         <p>
           Any time going forward, you can bring any directory to current SVN
           revision simply by doing <code>svn update</code> in any directory.
@@ -356,7 +324,7 @@ $ svn update</source>
         <source>$ ant clean</source>
 
       </subsection>
-    <subsection name="3. Building the Components">
+    <subsection name="2. Building the Components">
       <p>
         Now you should be ready to build the code. You need to build components in this order:
         first the class library, then DRLVM and last jdktools, to satisfy their build dependencies. 
@@ -384,7 +352,7 @@ $ ant</source>
           unit and functional tests and normally should pass 100% of them.
           Note, you can only test the class libraries in case you have a virtual machine. 
           You can use a VM other than DRLVM, see
-          <a href="#4. Combining JRE from Built Components">Combining JRE from Built Components</a>.
+          <a href="#3. Combining JRE from Built Components">Combining JRE from Built Components</a>.
           If you want to use DRLVM, proceed with the instruction to build it.
           <br/>
           Run the following command to build and run the full test suite for the component:
@@ -405,7 +373,7 @@ $ ant</source>
         </p>
         <source>$ ant help</source>
       </subsection>
-    <subsection name="4. Combining JRE from Built Components">
+    <subsection name="3. Combining JRE from Built Components">
         <p>
           <b>Class library developers</b> can work with DRLVM or install
           another compatible VM. For example, you can use the
