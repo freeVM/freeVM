@@ -417,12 +417,8 @@ limitations under the License.
                                 <pre>$ svn co http://svn.apache.org/repos/asf/harmony/enhanced/java/trunk </pre>
                                 <p>
         This command checks out a directory structure that contains
-        <code>common_resources</code>, <code>classlib</code>,
-        <code>drlvm</code> and <code>jdktools</code> directories.
-        The federated build command in the next step will populate the source
-        trees and build the JDK, <code>classlib</code> will be the
-        checkout of the class library SVN tree, <code>drlvm</code> will be
-        the checkout of the DRLVM SVN tree, etc.
+        <code>classlib</code>, <code>drlvm</code> and <code>jdktools</code>
+        directories.
       </p>
                                 <p class="note">Note</p>
                                 <p class="notetext">
@@ -485,50 +481,18 @@ limitations under the License.
     procedure consists of the following steps:</p>
                                 <ol>
       <li>
-        <a href="#1. Populating the Source Trees">Populate the source trees.</a>
+        <a href="#1. Updating the Source Trees">Update the source trees.</a>
       </li>
       <li>
-        <a href="#2. Updating the Source Trees">Update the source trees.</a>
+        <a href="#2. Building the Components">Build the JDK components.</a>
       </li>
       <li>
-        <a href="#3. Building the Components">Build the JDK components.</a>
-      </li>
-      <li>
-        <a href="#4. Combining JRE from Built Components">Combine class libraries and VM into JRE.</a>
+        <a href="#3. Combining JRE from Built Components">Combine class libraries and VM into JRE.</a>
       </li>
     </ol>
                                     
     <h2>
-        <a name="1. Populating the Source Trees">1. Populating the Source Trees</a>
-    </h2>
-      
-                        <p>
-          To populate the source trees of all JDK components, use the target located
-          in the federated build <code>build.xml</code> script.
-          Type the following command in the root directory of the
-          federated build:
-        </p>
-                                <pre>$ ant populate-src</pre>
-                                <p>
-          The given command checks out class library, DRLVM and jdktools into the
-          <code>classlib</code>, <code>drlvm</code> and <code>jdktools</code>
-          directories respectively, along with a <code>common_resources</code>, <i>
-            at the same SVN version of
-            the <code>build.xml</code> file
-          </i>.
-          The source trees are large,
-          therefore a checkout can take a very long time.
-        </p>
-                                <p>
-          Optionally, you can skip using the federated build at all and manually 
-          check out only specific components. In this case you will need to build
-          against a binary <a href="http://harmony.apache.org/hdk.html">HDK</a> bundle,
-          which can be found in Harmony downloads.
-        </p>
-                   
-                                    
-    <h2>
-        <a name="2. Updating the Source Trees">2. Updating the Source Trees</a>
+        <a name="1. Updating the Source Trees">1. Updating the Source Trees</a>
     </h2>
       
                         <p>
@@ -553,7 +517,7 @@ $ svn update</pre>
                    
                                     
     <h2>
-        <a name="3. Building the Components">3. Building the Components</a>
+        <a name="2. Building the Components">2. Building the Components</a>
     </h2>
       
                         <p>
@@ -583,7 +547,7 @@ $ ant</pre>
           unit and functional tests and normally should pass 100% of them.
           Note, you can only test the class libraries in case you have a virtual machine. 
           You can use a VM other than DRLVM, see
-          <a href="#4. Combining JRE from Built Components">Combining JRE from Built Components</a>.
+          <a href="#3. Combining JRE from Built Components">Combining JRE from Built Components</a>.
           If you want to use DRLVM, proceed with the instruction to build it.
           <br />
           Run the following command to build and run the full test suite for the component:
@@ -606,7 +570,7 @@ $ ant</pre>
                    
                                     
     <h2>
-        <a name="4. Combining JRE from Built Components">4. Combining JRE from Built Components</a>
+        <a name="3. Combining JRE from Built Components">3. Combining JRE from Built Components</a>
     </h2>
       
                         <p>
