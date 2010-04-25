@@ -16,10 +16,10 @@
     limitations under the License.
 -->
 
-<project name="JRE Tools Build" default="build" basedir=".">
-    <description>Build for JRE Tools component</description>
+<project name="JDK Tools Build" default="build" basedir=".">
+    <description>Build for JDK Tools component</description>
 
-    <property name="hy.module" value="jretools" />
+    <property name="hy.module" value="jdktools" />
     <property name="hy.hdk" location="../../deploy" />
     <import file="../../make/properties.xml" />
     <property name="depends.dir" location="${common.resources}/depends" />
@@ -30,9 +30,33 @@
 
     <!-- filename for tests exclude list -->
     <property name="tools.exclude.file"
-              location="${hy.hdk}/build/jretools.exclude" />
+              location="${hy.hdk}/build/jdktools.exclude" />
+   
+    <target name="check-depends">
+        <check-one-file src="${jdt.jdi.jar.url}"
+                        dest="${jdt.jdi.jar}" />
+        <check-one-file src="${jdt.jdimodel.jar.url}"
+                        dest="${jdt.jdimodel.jar}" />
+        <check-one-file src="${icu.url}" dest="${icu.jar}" />
+        <check-one-file src="${ecj.jar.url}" dest="${ecj.jar}" />
+        <check-one-file src="${bcel.jar}" dest="${bcel.jar}" />
+        <copy todir="${hy.hdk}/jdk/jre/lib/boot">
+            <fileset dir="${depends.jars}">
+                <patternset includes="${bcel.version}/*.jar" />
+            </fileset>
+            <fileset dir="depends/manifests"/>
+        </copy>
+    </target>
     
-    <target name="build" depends="build-jar" />
+    <target name="fetch-depends">
+        <fetch dep="jdt.jdi.jar"/>
+        <fetch dep="jdt.jdimodel.jar"/>
+        <mkdir dir="${bcel.dir}" />
+        <download-one-file dest="${bcel.jar}" 
+                           src="${bcel.url}" md5="${bcel.md5}"/>
+    </target>
+
+    <target name="build" depends="check-depends,build-jar,copy-jars" />
 
     <target name="test" depends="test-module">
         <fail message="Some tests failed">
@@ -47,13 +71,13 @@
 
     <!-- internal target for local and global test run sequence -->
     <target name="test-module"
-            depends="build-tests,prepare-exclude,run-tests" />
+            depends="build-tests,prepare-exclude,run-tests"/>
 
     <target name="clean">
         <echo message="Cleaning ${hy.module} classes" />
 
-        <delete file="${hy.jre}/lib/tools.jar" />
-        <delete file="${hy.jre}/lib/tools-src.jar" />
+        <delete file="${hy.jdk}/lib/tools.jar" />
+        <delete file="${hy.jdk}/lib/tools-src.jar" />
         <delete dir="bin" includeemptydirs="true" failonerror="false" />
     </target>
 
@@ -63,8 +87,8 @@
         <mkdir dir="bin/main" />
 
         <hy.javac sourcepath=""
-               srcdir="src/main/java"
-               destdir="bin/main">
+                  srcdir="src/main/java"
+                  destdir="bin/main">
 
             <bootclasspath>
                 <fileset dir="${hy.hdk}/jdk/jre/lib/boot">
@@ -74,23 +98,44 @@
                     <include name="**/*.jar" />
                 </fileset>
             </bootclasspath>
+
+            <classpath>
+                <pathelement path="${jdt.jdi.jar}"/>
+                <pathelement path="${ecj.jar}" />
+                <pathelement path="${ant.library.dir}/ant.jar" />
+                <pathelement path="${ant.library.dir}/ant-launcher.jar" />
+                <pathelement path="${ant.library.dir}/ant-nodeps.jar" />
+            </classpath>
         </hy.javac>
     </target>
 
     <target name="build-jar" depends="svn-info,compile-java">
-        <mkdir dir="${hy.jre}/lib" />
+        <mkdir dir="${hy.jdk}/lib" />
 
-        <hy.jar.bin destfile="${hy.jre}/lib/tools.jar"
-             manifest="META-INF/MANIFEST.MF">
+        <hy.jar.bin destfile="${hy.jdk}/lib/tools.jar"
+                    manifest="META-INF/MANIFEST.MF">
             <fileset dir="bin/main" />
             <fileset dir="src/main/java">
                 <exclude name="**/*.java" />
             </fileset>
+
+            <zipfileset src="${jdt.jdi.jar}">
+                <exclude name="com/sun/jdi/Bootstrap.class"/>
+                <exclude name="META-INF/*"/>
+            </zipfileset>
+
         </hy.jar.bin>
 
-        <hy.jar.src destfile="${hy.jre}/lib/tools-src.jar">
+        <hy.jar.src destfile="${hy.jdk}/lib/tools-src.jar">
             <fileset dir="src/main/java" />
         </hy.jar.src>
+    </target>
+
+    <target name="copy-jars">
+        <mkdir dir="${hy.jdk}/lib" />
+        <copy todir="${hy.jdk}/lib" flatten="true">
+            <fileset file="${ecj.jar}"/>
+        </copy>
     </target>
 
     <target name="build-tests">
@@ -109,7 +154,7 @@
                 </fileset>
             </bootclasspath>
             <classpath>
-                <pathelement path="${hy.jre}/lib/tools.jar"/>
+                <pathelement path="${hy.jdk}/lib/tools.jar"/>
                 <pathelement path="${junit.jar}"/>
             </classpath>
             <classpath location="bin/test" />
@@ -121,11 +166,11 @@
 
     <target name="prepare-exclude">
         <echo message="${hy.module} exclude list: ${tools.exclude.file}" />
-        <prepare-exclude-list moduleName="jretools" dir="./make"
+        <prepare-exclude-list moduleName="${hy.module}" dir="./make"
                              result="${tools.exclude.file}" />
     </target>
 
-    <target name="run-tests" depends="build-tests,prepare-exclude">
+    <target name="run-tests" depends="build-tests, prepare-exclude">
 
         <property name="test.jre.home" value="${hy.jre}" />
 
@@ -148,7 +193,7 @@
 
             <classpath>
                 <pathelement path="bin/test"/>
-                <pathelement path="${hy.jre}/lib/tools.jar"/>
+                <pathelement path="${hy.jdk}/lib/tools.jar"/>
             </classpath>
 
             <formatter type="xml" />
