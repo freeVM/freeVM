@@ -15,28 +15,30 @@
 
 !include <$(HY_HDK)\build\make\defines.mak>
 
-LCMS_DIR=$(HY_LCMS_DIR)\# avoid continuation
+JPEG_DIR=$(HY_JPEG_DIR)\# avoid continuation
 
-LIBBASE=lcmm
+LIBBASE=jpegdecoder
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(LCMS_DIR)include /I$(SHAREDSUB)include
+HYCFLAGS = $(HYCFLAGS) -I$(SHAREDSUB)\include -I$(JPEG_DIR)
 
-BUILDFILES = \
-  $(SHAREDSUB)cmmerror.obj \
-  $(SHAREDSUB)cmmio.obj \
-  $(SHAREDSUB)cmmxforms.obj \
-  $(SHAREDSUB)NativeCMM.obj \
-  $(SHAREDSUB)NativeImageFormat.obj
+BUILDFILES = $(SHAREDSUB)JpegDecoder.obj
 
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) $(LCMS_DIR)Lib/MS/lcms$(HY_LINKLIB_SUFFIX)
+  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) $(JPEG_DIR)libjpeg$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
 
+CLEANFILES=jconfig.h
+
 !include <$(HY_HDK)\build\make\rules.mak>
+
+$(SHAREDSUB)JpegDecoder.obj: jconfig.h
+
+jconfig.h: $(JPEG_DIR)jconfig.vc
+	copy $(JPEG_DIR)jconfig.vc $@
