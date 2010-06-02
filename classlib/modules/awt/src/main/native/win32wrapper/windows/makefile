@@ -13,40 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-APPVER = 5.0 # Need WINVER=0x0500 to get HMONITOR defined.
 !include <$(HY_HDK)\build\make\defines.mak>
 
-PNG_DIR=$(HY_PNG_DIR)\# avoid continuation
-
-LIBBASE=gl
+LIBBASE=Win32Wrapper
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-HYCFLAGS = $(HYCFLAGS) /D_WIN32_WINNT=0x0500 /I$(SHAREDSUB)include /I$(SHAREDSUB) \
-           /I$(PNG_DIR) /Iinclude
-
 BUILDFILES = \
-  BitmapSurface.obj \
-  GDIBlitter.obj \
-  WinGDIGraphics2D.obj \
-  WinGDIPGraphics2D.obj \
-  WinGraphicsEnvironment.obj \
-  WinThemeGraphics.obj \
-  LockingKeys.obj \
-  $(SHAREDSUB)blitter.obj \
-  $(SHAREDSUB)gifdecoder.obj \
-  $(SHAREDSUB)LUTTables.obj \
-  $(SHAREDSUB)pngdecoder.obj \
-  $(SHAREDSUB)SurfaceDataStructure.obj \
+  Callback.obj \
+  org_apache_harmony_awt_nativebridge_windows_Win32.obj \
+  org_apache_harmony_awt_nativebridge_windows_WGL.obj \
+  WinDataTransfer.obj \
+  WinManagement.obj \
+  nativelib_common.obj
 
 VIRTFILES = $(LIBBASE).res
-SYSLIBFILES = ws2_32.lib Iphlpapi.lib \
-              Msimg32.lib gdiplus.lib User32.lib uxTheme.lib 
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) \
-  $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX) $(PNG_DIR)libpng$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) 
 
 DLLBASE=0x13300000
 

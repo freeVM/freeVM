@@ -14,32 +14,21 @@
 # limitations under the License.
 
 #
-# Makefile for module 'archive'
+# Makefile for module 'security'
 #
 
-include $(HY_HDK)/build/make/defines.mk
+!include <$(HY_HDK)\build\make\defines.mak>
 
-INCLUDES += -I$(SHARED)common -I../../zlib_dist -I../../include/shared
+LIBBASE=hysecurity
+DLLNAME=$(DLLPATH)$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+BUILDFILES = $(SHAREDSUB)security_copyright.obj getWindowsRandom.obj
+VIRTFILES = $(LIBBASE).res
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
-	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \
-	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
+SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-ifneq ($(HY_ZIP_API),true)
-MDLLIBFILES +=	$(LIBPATH)libhyzip.a
-endif
+MDLLIBFILES = $(LIBPATH)hycommon$(HY_LINKLIB_SUFFIX)
+DLLBASE=0x1300000
 
-ifeq ($(HY_LOCAL_ZLIB),true)
-DEFINES += -DHY_LOCAL_ZLIB
-OSLIBS += -lz
-else
-MDLLIBZLIB += $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
-endif
-
-MDLLIBFILES += \
-	$(MDLLIBZLIB) $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
-
-DLLNAME=$(DLLPATH)libhyarchive$(HY_SHLIB_SUFFIX)
-EXPNAME=HYARCHIVE_0.1
-
-include $(HY_HDK)/build/make/rules.mk
+!include <$(HY_HDK)\build\make\rules.mak>

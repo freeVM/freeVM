@@ -14,32 +14,16 @@
 # limitations under the License.
 
 #
-# Makefile for module 'archive'
+# Makefile for module 'zip'
 #
 
-include $(HY_HDK)/build/make/defines.mk
+!include <$(HY_HDK)\build\make\defines.mak>
 
-INCLUDES += -I$(SHARED)common -I../../zlib_dist -I../../include/shared
+LIBBASE=hyzip
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
+BUILDFILES = $(SHAREDSUB)zcpool.obj $(SHAREDSUB)zipalloc.obj \
+	$(SHAREDSUB)zipcache.obj $(SHAREDSUB)zipsup.obj \
+        $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX)
+HYCFLAGS = $(HYCFLAGS) /I..\..\zlib_dist
 
-BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
-	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \
-	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
-
-ifneq ($(HY_ZIP_API),true)
-MDLLIBFILES +=	$(LIBPATH)libhyzip.a
-endif
-
-ifeq ($(HY_LOCAL_ZLIB),true)
-DEFINES += -DHY_LOCAL_ZLIB
-OSLIBS += -lz
-else
-MDLLIBZLIB += $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
-endif
-
-MDLLIBFILES += \
-	$(MDLLIBZLIB) $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
-
-DLLNAME=$(DLLPATH)libhyarchive$(HY_SHLIB_SUFFIX)
-EXPNAME=HYARCHIVE_0.1
-
-include $(HY_HDK)/build/make/rules.mk
+!include <$(HY_HDK)\build\make\rules.mak>

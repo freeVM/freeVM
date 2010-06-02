@@ -14,32 +14,24 @@
 # limitations under the License.
 
 #
-# Makefile for module 'archive'
+# Makefile for module 'nio'
 #
 
 include $(HY_HDK)/build/make/defines.mk
 
-INCLUDES += -I$(SHARED)common -I../../zlib_dist -I../../include/shared
-
-BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
-	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \
-	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
+BUILDFILES = \
+	../shared/DirectBufferUtil.o ../shared/AddressUtil.o
+ifeq ($(HY_OS),linux)
+BUILDFILES += EpollSelectorImpl.o
+endif
 
 ifneq ($(HY_ZIP_API),true)
-MDLLIBFILES +=	$(LIBPATH)libhyzip.a
+MDLLIBFILES += $(LIBPATH)libhyzip.a 
 endif
 
-ifeq ($(HY_LOCAL_ZLIB),true)
-DEFINES += -DHY_LOCAL_ZLIB
-OSLIBS += -lz
-else
-MDLLIBZLIB += $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
-endif
+MDLLIBFILES = $(LIBPATH)libhycommon.a
 
-MDLLIBFILES += \
-	$(MDLLIBZLIB) $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
-
-DLLNAME=$(DLLPATH)libhyarchive$(HY_SHLIB_SUFFIX)
-EXPNAME=HYARCHIVE_0.1
+DLLNAME = $(DLLPATH)libhynio$(HY_SHLIB_SUFFIX)
+EXPNAME = HYNIO_0.1
 
 include $(HY_HDK)/build/make/rules.mk

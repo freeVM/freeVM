@@ -13,33 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#
-# Makefile for module 'archive'
-#
-
 include $(HY_HDK)/build/make/defines.mk
 
-INCLUDES += -I$(SHARED)common -I../../zlib_dist -I../../include/shared
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include $(LCMS_INCLUDES)
 
-BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
-	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \
-	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
+BUILDFILES = \
+  $(SHAREDSUB)cmmerror.o \
+  $(SHAREDSUB)cmmio.o \
+  $(SHAREDSUB)cmmxforms.o \
+  $(SHAREDSUB)NativeCMM.o \
+  $(SHAREDSUB)NativeImageFormat.o
+
+OSLIBS += -llcms
 
 ifneq ($(HY_ZIP_API),true)
-MDLLIBFILES +=	$(LIBPATH)libhyzip.a
+MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
 endif
 
-ifeq ($(HY_LOCAL_ZLIB),true)
-DEFINES += -DHY_LOCAL_ZLIB
-OSLIBS += -lz
-else
-MDLLIBZLIB += $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
-endif
+MDLLIBFILES += $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
-MDLLIBFILES += \
-	$(MDLLIBZLIB) $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
-
-DLLNAME=$(DLLPATH)libhyarchive$(HY_SHLIB_SUFFIX)
-EXPNAME=HYARCHIVE_0.1
+DLLNAME=$(DLLPATH)liblcmm$(HY_SHLIB_SUFFIX)
+EXPNAME=HYLCMM_0.1
 
 include $(HY_HDK)/build/make/rules.mk

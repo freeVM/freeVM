@@ -13,33 +13,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#
-# Makefile for module 'archive'
-#
-
 include $(HY_HDK)/build/make/defines.mk
 
-INCLUDES += -I$(SHARED)common -I../../zlib_dist -I../../include/shared
+# TODO: Fix the warnings see HARMONY-5885
+WARNFLAGS :=
 
-BUILDFILES = $(SHAREDSUB)archive_copyright.o $(SHAREDSUB)jclcrc32.o \
-	$(SHAREDSUB)zip.o $(SHAREDSUB)adler32.o $(SHAREDSUB)inflater.o \
-	$(SHAREDSUB)jarfile.o $(SHAREDSUB)deflater.o $(SHAREDSUB)archiveglob.o
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include \
+            -I/usr/X11R6/include -I/usr/include -Iinclude
+
+BUILDFILES = \
+  $(SHAREDSUB)/blitter.o \
+  $(SHAREDSUB)/gifdecoder.o \
+  $(SHAREDSUB)/LUTTables.o \
+  $(SHAREDSUB)/pngdecoder.o \
+  $(SHAREDSUB)/SurfaceDataStructure.o \
+  gl.o \
+  XBlitter.o \
+  XGraphics2D.o \
+  LockingKeys.o
+
+OSLIBS += -lpng
 
 ifneq ($(HY_ZIP_API),true)
-MDLLIBFILES +=	$(LIBPATH)libhyzip.a
+MDLLIBFILES += $(LIBPATH)libhyzip.a
 endif
 
-ifeq ($(HY_LOCAL_ZLIB),true)
-DEFINES += -DHY_LOCAL_ZLIB
-OSLIBS += -lz
-else
-MDLLIBZLIB += $(DLLPATH)libhyzlib$(HY_LINKLIB_SUFFIX)
-endif
+MDLLIBFILES += $(MDLLIBZLIB) \
+	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
-MDLLIBFILES += \
-	$(MDLLIBZLIB) $(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
+OSLIBS += $(STDCLIBS) $(XLIBS)
 
-DLLNAME=$(DLLPATH)libhyarchive$(HY_SHLIB_SUFFIX)
-EXPNAME=HYARCHIVE_0.1
+DLLNAME=$(DLLPATH)libgl$(HY_SHLIB_SUFFIX)
+EXPNAME=HYGL_0.1
 
 include $(HY_HDK)/build/make/rules.mk
