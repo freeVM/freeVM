@@ -16,34 +16,33 @@
     limitations under the License.
 -->
 
-<project name="verifier" default="build" basedir="../..">
+<project name="encoder" default="build" basedir="../..">
     
     <property name="hy.component" value="drlvm"/>
-    <property name="hy.module" value="verifier"/>
+    <property name="hy.module" value="encoder"/>
     <import file="common-vm.xml"/>
     
     <target name="build" depends="-common-vm">        
-        <init-native/>
-        <make-native libname="verifier" type="static">
+        <init-native component="encoder"/>
+        
+        <fileset id="encoder.src" dir="${vm.home}/port/src/encoder">
+            <include name="ia32_em64t/*.cpp" unless="is.ia64"/>
+            <include name="ipf/*.cpp" if="is.ia64"/>
+        </fileset>
+        
+        <make-native libname="encoder" type="static">
             <includepath>
-                <pathelement location="${vm.home}/vmcore/include" />
-                <pathelement location="${vm.home}/include" />
-                <pathelement location="${drlvm.include.dir}" />
+                <path refid="vm.include"/>
             </includepath>
-            <compiler extends="common.cpp.compiler">
-                <fileset dir="${vm.home}/vmcore/src/verifier-3363">
-                    <include name="base/*.cpp" />
-                    <include name="java5/*.cpp" />
-                    <include name="java6/*.cpp" />
-                    <include name="x_verifier/*.cpp" if="cfg.is.debug" />
-                </fileset>
-	            <defineset define="BUILDING_VM" />
+            <compiler id="encoder.compiler" extends="common.cpp.compiler">
+                <!--defineset define="NO_EBCODER_INLINE" /-->
+                <fileset refid="encoder.src"/>
             </compiler>
         </make-native>
     </target>
     
     <target name="clean" >
-        <clean-native/>
+        <clean-native component="encoder"/>
     </target>
     
 </project>
