@@ -17,10 +17,20 @@
 
 # Harmony-Select-1.0 package definition
 
-#annotation
-java.lang.annotation
+#activation
+javax.activation
 
-#archive
+#annotation & JSR269
+java.lang.annotation
+java.lang.annotation.processing
+javax.annotation
+javax.annotation.processing
+javax.lang.model
+javax.lang.model.element
+javax.lang.model.type
+javax.lang.model.util 
+
+#archive & Pack200
 java.util.jar
 java.util.zip
 
@@ -98,6 +108,11 @@ java.rmi.dgc
 java.rmi.registry
 java.rmi.server
 javax.activity
+javax.rmi
+javax.rmi.ssl
+
+#script
+javax.script
 
 #security
 java.security
@@ -106,6 +121,9 @@ java.security.cert
 java.security.interfaces
 java.security.spec
 javax.security.cert
+
+#tools
+javax.tools
 
 #sql
 java.sql
@@ -129,16 +147,22 @@ javax.management.modelmbean
 javax.management.monitor
 javax.management.openmbean
 javax.management.relation
+javax.management.remote
+javax.management.remote.rmi
 javax.management.timer
 
-#xml
+#xml-jaxp & xml-stax
 javax.xml
 javax.xml.datatype
 javax.xml.namespace
 javax.xml.parsers
+javax.xml.stream
+javax.xml.stream.events
+javax.xml.stream.util
 javax.xml.transform
 javax.xml.transform.dom
 javax.xml.transform.sax
+javax.xml.transform.stax
 javax.xml.transform.stream
 javax.xml.validation
 javax.xml.xpath
@@ -146,6 +170,35 @@ org.w3c.dom
 org.w3c.dom.bootstrap
 org.w3c.dom.events
 org.w3c.dom.ls
+org.w3c.dom.ranges
+org.w3c.dom.traversal
 org.xml.sax
 org.xml.sax.ext
 org.xml.sax.helpers
+
+#xml-jaxb
+javax.xml.bind
+javax.xml.bind.annotation
+javax.xml.bind.annotation.adapters
+javax.xml.bind.attachment
+javax.xml.bind.helpers
+javax.xml.bind.util
+
+#xml-jaxws
+javax.jws
+javax.jws.soap
+javax.xml.ws
+javax.xml.ws.handler
+javax.xml.ws.handler.soap
+javax.xml.ws.http
+javax.xml.ws.soap
+javax.xml.ws.spi
+javax.xml.ws.wsaddressing
+
+#xml-saaj
+javax.xml.soap
+
+#AWT data_transfer
+java.awt.datatransfer.DataFlavor
+java.awt.datatransfer.MimeType
+java.awt.datatransfer.Transferable

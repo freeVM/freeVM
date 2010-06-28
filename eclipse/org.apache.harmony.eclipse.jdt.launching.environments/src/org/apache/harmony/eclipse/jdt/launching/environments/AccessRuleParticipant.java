@@ -84,7 +84,7 @@ public class AccessRuleParticipant implements IAccessRuleParticipant {
      * Ignores blank lines and lines that start with a #. 
      */
     private String[] getPackages() throws IOException {
-        InputStream is = this.getClass().getResourceAsStream("/Harmony-Select-1.0");
+        InputStream is = this.getClass().getResourceAsStream("/Harmony-Select-6.0");
         BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
         ArrayList<String> pkgs = new ArrayList<String>(50);

@@ -54,13 +54,11 @@ public class ExecutionEnvironmentAnalyzer implements
         }
 
         // Select is a subset of SE runtimes that are 1.5 or above
-        boolean perfectMatch = javaVersion.startsWith("Harmony-Select-1.0");
-        if (perfectMatch || javaVersion.startsWith("1.7")
-                || javaVersion.startsWith("1.6") || javaVersion.startsWith("1.5")) {
+        boolean perfectMatch = javaVersion.startsWith("Harmony-Select-6.0");
+        if (perfectMatch || javaVersion.startsWith("1.7") || javaVersion.startsWith("1.6")) {
 
-            IExecutionEnvironmentsManager manager = JavaRuntime
-                    .getExecutionEnvironmentsManager();
-            IExecutionEnvironment env = manager.getEnvironment("Harmony-Select-1.0");
+            IExecutionEnvironmentsManager manager = JavaRuntime.getExecutionEnvironmentsManager();
+            IExecutionEnvironment env = manager.getEnvironment("Harmony-Select-6.0");
             if (env != null) {
                 CompatibleEnvironment[] result = new CompatibleEnvironment[1];
                 // SE is not a perfect match
