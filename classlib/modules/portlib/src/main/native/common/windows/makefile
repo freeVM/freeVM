@@ -14,17 +14,19 @@
 #  limitations under the License.
 
 #
-# Makefile for module 'hyzip'
+# Makefile for module 'common'
 #
 
-HY_BIN=$(HY_TARGET)/build/classlib/luni/native/hyzip/
-include $(HY_TARGET)/hdk/build/make/defines.mk
+!include <$(HY_HDK)\build\make\defines.mak>
 
-INCLUDES += -I../../include/shared
-BUILDFILES = hyzip.o zcpool.o zipalloc.o zipcache.o zipsup.o pool.o pool_cap.o
-LIBNAME = $(LIBPATH)libhyzip.a
+LIBNAME=$(LIBPATH)hycommon.lib
 
-$(HY_BIN)%.o: $(LIBPATH)libhypool.a(%.o)
-	( cd $(HY_BIN) && ar $(ARFLAGS) $(AREXTRACT) $(LIBPATH)libhypool.a $@ )
+BUILDFILES = \
+	$(SHAREDSUB)libglob.obj $(SHAREDSUB)iohelp.obj \
+	$(SHAREDSUB)exceptions.obj $(SHAREDSUB)strhelp.obj \
+	$(SHAREDSUB)utf8decode.obj $(SHAREDSUB)utf8encode.obj
+MDLLIBFILES =
 
-include $(HY_TARGET)/hdk/build/make/rules.mk
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+
+!include <$(HY_HDK)\build\make\rules.mak>

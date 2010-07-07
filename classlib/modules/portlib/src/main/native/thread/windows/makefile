@@ -14,17 +14,27 @@
 #  limitations under the License.
 
 #
-# Makefile for module 'hyzip'
+# Makefile for module 'thread'
 #
 
-HY_BIN=$(HY_TARGET)/build/classlib/luni/native/hyzip/
-include $(HY_TARGET)/hdk/build/make/defines.mk
+!include <$(HY_HDK)\build\make\defines.mak>
 
-INCLUDES += -I../../include/shared
-BUILDFILES = hyzip.o zcpool.o zipalloc.o zipcache.o zipsup.o pool.o pool_cap.o
-LIBNAME = $(LIBPATH)libhyzip.a
+LIBBASE=hythr
+DLLNAME=..\$(LIBBASE).dll
+LIBNAME=$(LIBPATH)$(LIBBASE).lib
 
-$(HY_BIN)%.o: $(LIBPATH)libhypool.a(%.o)
-	( cd $(HY_BIN) && ar $(ARFLAGS) $(AREXTRACT) $(LIBPATH)libhypool.a $@ )
+BUILDFILES = \
+  $(SHAREDSUB)thread_copyright.obj $(HY_PLATFORM)\thrhelp.obj $(HY_PLATFORM)\thrspinlock.obj \
+  $(SHAREDSUB)hythread.obj $(SHAREDSUB)hythreadinspect.obj $(SHAREDSUB)rwmutex.obj thrdsup.obj \
+  $(SHAREDSUB)thrprof.obj $(HY_PLATFORM)\locklbl.obj lock386.obj
 
-include $(HY_TARGET)/hdk/build/make/rules.mk
+# TOFIX $(LIBBASE).def should be a dependency on all libs
+VIRTFILES = $(LIBBASE).res
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
+HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
+
+MDLLIBFILES = $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)hycommon$(HY_LINKLIB_SUFFIX)
+
+DLLBASE=0x11500000
+
+!include <$(HY_HDK)\build\make\rules.mak>
