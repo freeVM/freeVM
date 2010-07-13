@@ -16,7 +16,7 @@
     limitations under the License.
 -->
 
-<project name="Harmony LUNI Test" default="test" basedir=".">
+<project name="Harmony Archive Test" default="test" basedir=".">
 
     <property name="hy.hdk" location="../../.." />
     <property name="test.jre.home" location="${hy.hdk}/jdk/jre" />
@@ -32,33 +32,14 @@
     <target name="test" depends="test-module" />
 
     <target name="test-module"
-            depends="-test-module,-test-module-impl" />
-    <target name="-test-module" depends="test-jre-vm-info">
+            depends="test-jre-vm-info,-test-module,-test-module-impl" />
+    <target name="-test-module">
         <convert-test-as-class from="test.case" to="converted.tc.class" />
-        <run-hdk-tests module="luni" jar="luni_tests_api.jar">
-            <excludeorinclude>
-                <exclude name="**/java/io/Test.class" />
-            </excludeorinclude>
-            <junit-elements>
-                <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=../testing.policy" />
-
-                <!-- Required for running the java.net unit tests -->
-                <jvmarg value="-Dtest.ini.file=resources/config/localhosttest.ini" />
-            </junit-elements>
-        </run-hdk-tests>
+        <run-hdk-tests module="archive" jar="archive_tests.jar" />
     </target>
 
     <target name="-test-module-impl" if="hy.run.impl.tests">
-        <run-hdk-tests module="luni" jar="luni_tests_impl.jar">
-            <junit-elements>
-                <!-- Required by various tests that set security manager etc -->
-                <jvmarg value="-Djava.security.policy=../testing.policy" />
-
-                <!-- Required for running the java.net unit tests -->
-                <jvmarg value="-Dtest.ini.file=resources/config/localhosttest.ini" />
-            </junit-elements>
-        </run-hdk-tests>
+        <run-hdk-tests module="archive" jar="archive_internal_tests.jar" />
     </target>
     
 </project>
