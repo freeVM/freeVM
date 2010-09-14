@@ -15,7 +15,7 @@
  * the License.
  */
 
-package org.apache.harmony.jretools.keytool;
+package org.apache.harmony.tools.keytool;
 
 import java.io.File;
 import java.io.IOException;
