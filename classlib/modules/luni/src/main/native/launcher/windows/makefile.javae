@@ -14,29 +14,26 @@
 #  limitations under the License.
 
 #
-# Makefile for module 'thread'
+# Makefile for module 'launcher.java'
 #
 
-HY_BIN=$(HY_TARGET)\build\classlib\portlib\native\thread\# trailing slash
-!include <$(HY_HDK)\build\make\defines.mak>
+HY_BIN=$(HY_TARGET)\build\classlib\luni\native\launcher\# trailing slash
+!include <$(HY_TARGET)\hdk\build\make\defines.mak>
 
-LIBBASE=hythr
-DLLNAME=..\$(LIBBASE).dll
-LIBNAME=$(LIBPATH)$(LIBBASE).lib
-
-BUILDFILES = \
-  $(HY_BIN)thread_copyright.obj $(HY_BIN)thrhelp.obj $(HY_BIN)thrspinlock.obj \
-  $(HY_BIN)hythread.obj $(HY_BIN)hythreadinspect.obj $(HY_BIN)rwmutex.obj \
-  $(HY_BIN)thrdsup.obj $(HY_BIN)thrprof.obj \
-  $(HY_BIN)locklbl.obj $(HY_BIN)lock386.obj
-
-# TOFIX $(LIBBASE).def should be a dependency on all libs
-VIRTFILES = $(LIBBASE).res
+EXEBASE=java
+EXENAME=$(EXEPATH)$(EXEBASE).exe
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
-HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
 
-MDLLIBFILES = $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)hycommon$(HY_LINKLIB_SUFFIX)
+BUILDFILES = $(HY_BIN)launcher_copyright.obj $(HY_BIN)cmain.obj \
+        $(HY_BIN)main.obj $(HY_BIN)strbuf.obj $(HY_BIN)libhlp.obj
+!IF "$(HY_NO_THR)" == "false"
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyprt$(HY_LINKLIB_SUFFIX)
+!ELSE
+BUILDFILES = $(BUILDFILES) $(HY_BIN)main_hlp.obj
+!ENDIF
 
-DLLBASE=0x11500000
+VIRTFILES = java.res
+EXEFLAGS=$(conlflags) -subsystem:console
+EXEDLLFILES=$(conlibsdll)
 
 !include <$(HY_HDK)\build\make\rules.mak>

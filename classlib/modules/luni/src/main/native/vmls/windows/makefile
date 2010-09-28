@@ -14,29 +14,16 @@
 #  limitations under the License.
 
 #
-# Makefile for module 'thread'
+# Makefile for module 'vmls'
 #
 
-HY_BIN=$(HY_TARGET)\build\classlib\portlib\native\thread\# trailing slash
-!include <$(HY_HDK)\build\make\defines.mak>
+HY_BIN=$(HY_TARGET)\build\classlib\luni\native\vmls\# trailing slash
+!include <$(HY_TARGET)\hdk\build\make\defines.mak>
 
-LIBBASE=hythr
-DLLNAME=..\$(LIBBASE).dll
-LIBNAME=$(LIBPATH)$(LIBBASE).lib
+LIBNAME=$(LIBPATH)hyvmls.lib
 
-BUILDFILES = \
-  $(HY_BIN)thread_copyright.obj $(HY_BIN)thrhelp.obj $(HY_BIN)thrspinlock.obj \
-  $(HY_BIN)hythread.obj $(HY_BIN)hythreadinspect.obj $(HY_BIN)rwmutex.obj \
-  $(HY_BIN)thrdsup.obj $(HY_BIN)thrprof.obj \
-  $(HY_BIN)locklbl.obj $(HY_BIN)lock386.obj
+BUILDFILES = $(HY_BIN)vmls.obj
 
-# TOFIX $(LIBBASE).def should be a dependency on all libs
-VIRTFILES = $(LIBBASE).res
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
-HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def 
-
-MDLLIBFILES = $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)hycommon$(HY_LINKLIB_SUFFIX)
-
-DLLBASE=0x11500000
+HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I..\..\include\shared /I..\..\include\windows
 
 !include <$(HY_HDK)\build\make\rules.mak>

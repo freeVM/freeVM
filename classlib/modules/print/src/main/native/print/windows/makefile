@@ -13,21 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-HY_BIN=$(HY_TARGET)\build\classlib\awt\native\oglwrapper\# trailing slash
+HY_BIN=$(HY_TARGET)\build\classlib\print\native\print\# trailing slash
 !include <$(HY_TARGET)\hdk\build\make\defines.mak>
 
-LIBBASE=oglwrapper
+LIBBASE=print
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
 LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHAREDSUB)include
+# TOFIX: fix warning so we can use default HYCFLAGS
+# That is:
+# HYCFLAGS = $(HYCFLAGS) -I$(SHAREDSUB)\include
+HYCFLAGS = \
+  -Ogityb1 -W3 -GF -Gs -MD -Zi -Zm400 \
+  -D_DLL -D_MT -DWIN32 -D_WIN32_WINNT=0x0500 -D_WINSOCKAPI_ -DWINVER=0x0500 \
+  $(VMDEBUG) /I$(HY_HDK)\include /I$(HY_HDK)\jdk\include /I. \
+  -I$(SHAREDSUB)\include
 
-BUILDFILES = $(HY_BIN)org_apache_harmony_awt_gl_opengl_GL.obj
+BUILDFILES = $(HY_BIN)print.obj $(HY_BIN)ui.obj \
+  $(HY_BIN)win_printer_factory.obj $(HY_BIN)devmode_struct_wrapper.obj
 
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
+MDLLIBFILES =
+
 DLLBASE=0x13300000
 
 !include <$(HY_HDK)\build\make\rules.mak>
+
