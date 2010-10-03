@@ -28,6 +28,7 @@ void GetOwnedMonitorInfo0101()
 /* *********************************************************************** */
 
 #include <iostream>
+#include <cstring>
 #include <jvmti.h>
 
 using namespace std;
