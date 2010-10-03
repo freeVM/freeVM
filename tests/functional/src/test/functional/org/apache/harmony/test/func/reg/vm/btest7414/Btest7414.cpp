@@ -15,6 +15,7 @@
  *  limitations under the License.
  */
 #include <iostream>
+#include <cstring>
 
 #include "jni.h"
 #include "jvmti.h"
