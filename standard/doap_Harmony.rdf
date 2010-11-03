@@ -22,17 +22,17 @@
    limitations under the License.
 -->
   <Project rdf:about="http://harmony.apache.org/">
-    <created>2006-10-29</created>
+    <created>2010-11-03</created>
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
     <name>Apache Harmony</name>
     <homepage rdf:resource="http://harmony.apache.org/" />
     <asfext:pmc rdf:resource="http://harmony.apache.org/" />
-    <shortdesc>A Java SE 5 runtime and development kit.</shortdesc>
+    <shortdesc>A Java SE 5 and 6 runtime and development kit.</shortdesc>
     <description> Apache Harmony is the Java SE project of the Apache Software Foundation. Please help us make this a world class, certified implementation of the Java Platform Standard Edition!
 
 The aim of the project is to produce a large and healthy community of those interested in runtime platforms tasked with creation of :
 
-    * A compatible, independent implementation of Java SE 5 under the Apache License v2
+    * A compatible, independent implementation of Java SE 5 and 6 under the Apache License v2
     * A community-developed modular runtime (VM and class library) architecture.
 </description>
     <bug-database rdf:resource="http://issues.apache.org/jira/browse/HARMONY" />
@@ -43,16 +43,16 @@ The aim of the project is to produce a large and healthy community of those inte
     <category rdf:resource="http://projects.apache.org/category/virtual-machine" />
     <release>
       <Version>
-        <name>Harmony 5.0 M2</name>
-        <created>2007-06-30</created>
-        <revision>5.0M2</revision>
+        <name>Harmony 5.0 M15</name>
+        <created>2010-09-01</created>
+        <revision>5.0M15</revision>
       </Version>
     </release>
     <release>
       <Version>
-        <name>Harmony 5.0 M1</name>
-        <created>2007-04-30</created>
-        <revision>5.0M1</revision>
+        <name>Harmony 6.0 M3</name>
+        <created>2010-09-02</created>
+        <revision>6.0M3</revision>
       </Version>
     </release>
     <repository>
@@ -71,7 +71,13 @@ The aim of the project is to produce a large and healthy community of those inte
       <asfext:title>Java SE 5</asfext:title>
       <asfext:body>JCP</asfext:body>
       <asfext:id>java-se-5</asfext:id>
-      <asfext:url rdf:resource="http://java.sun.com/j2se/1.5.0/docs/"/>
+      <asfext:url rdf:resource="http://download.oracle.com/javase/1.5.0/docs/"/>
+    </asfext:Standard></asfext:implements>
+    <asfext:implements><asfext:Standard>
+      <asfext:title>Java SE 6</asfext:title>
+      <asfext:body>JCP</asfext:body>
+      <asfext:id>java-se-6</asfext:id>
+      <asfext:url rdf:resource="http://download.oracle.com/javase/6/docs/"/>
     </asfext:Standard></asfext:implements>
   </Project>
 </rdf:RDF>
