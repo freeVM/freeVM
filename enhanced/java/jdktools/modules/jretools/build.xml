@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="JRE Tools Build" default="build" basedir=".">
+    <description>Build for JRE Tools component</description>
+
+    <property name="hy.module" value="jretools" />
+    <property name="hy.hdk" location="../../deploy" />
+    <import file="../../make/properties.xml" />
+    <property name="depends.dir" location="${common.resources}/depends" />
+    <import file="${hy.hdk}/build/ant/properties.xml" />
+    <import file="${hy.hdk}/build/ant/depends.xml" />
+    <property file="../../make/depends.properties" />
+    <property file="${common.resources}/make/depends.properties" />
+    
+    <target name="check-depends" unless="skip.test.build">
+        <check-one-file dest="${junit.jar}" src="${junit.jar.url}"/>
+        <check-one-file dest="${hamcrest-library.jar}"
+                        src="${hamcrest-library.jar.url}"/>
+    </target>
+
+    <target name="fetch-depends" unless="skip.test.build">
+        <fetch dep="junit.jar"/>
+        <fetch dep="hamcrest-library.jar"/>
+    </target>
+    
+    <target name="build" depends="-build-jar,-test-jar" />
+
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!-- internal target for local and global test run sequence -->
+    <target name="-test-module" depends="build,-run-tests" />
+
+    <target name="clean" depends="-clean-java,-clean-test" />
+
+    <target name="-clean-java" unless="skip.java.build">
+        <delete file="${hy.jre}/lib/tools.jar" />
+        <delete file="${hy.jre}/lib/tools-src.jar" />
+        <delete dir="bin/main" includeemptydirs="true" failonerror="false" />
+    </target>
+
+    <target name="-clean-test" unless="skip.test.build">
+        <delete dir="${tests.hdk.dir}" failonerror="false" />
+        <delete failonerror="false" dir="bin/test"/>
+    </target>
+
+    <target name="-compile-java" unless="skip.java.build">
+        <echo message="Compiling ${hy.module} classes" />
+        <ensure-javac/>
+        <mkdir dir="bin/main" />
+
+        <hy.javac sourcepath=""
+               srcdir="src/main/java"
+               destdir="bin/main">
+
+            <compilerarg line="${build.compilerarg}" />
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+                <fileset dir="${hy.hdk}/lib">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+
+            <exclude name="org/apache/harmony/jretools/policytool/**"
+                     if="is.select"/>
+
+        </hy.javac>
+    </target>
+
+    <target name="findbugs" depends="-build-jar">
+        <run-findBugs
+            jarFile="${hy.jre}/lib/tools.jar"
+            excludeFilter="make/findbugs-exclude-filter.xml"
+            outputFile="${findBugs.report}/${hy.module}.xml"/>
+    </target>
+
+    <target name="-build-jar" unless="skip.java.build"
+            depends="-svn-info,-compile-java">
+        <mkdir dir="${hy.jre}/lib" />
+
+        <hy.jar.bin destfile="${hy.jre}/lib/tools.jar"
+             manifest="META-INF/MANIFEST.MF">
+            <fileset dir="bin/main" />
+            <fileset dir="src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+        </hy.jar.bin>
+
+        <hy.jar.src destfile="${hy.jre}/lib/tools-src.jar">
+            <fileset dir="src/main/java" />
+        </hy.jar.src>
+    </target>
+
+    <target name="-test-jar" unless="skip.test.build"
+            depends="-svn-info,-compile-tests">
+        <mkdir dir="${tests.hdk.dir}" />
+
+        <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
+
+        <hy.jar.bin destfile="${tests.hdk.dir}/${hy.module}_tests.jar">
+            <fileset dir="bin/test" />
+        </hy.jar.bin>
+
+        <mkdir dir="${tests.excludes.hdk.dir}"/>
+        <copy todir="${tests.excludes.hdk.dir}">
+            <fileset dir="make" includes="exclude*"/>
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\.java" replace="\.class" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+    </target>
+
+    <target name="-compile-tests" unless="skip.test.build">
+        <compile-tests description="${hy.module} tests">
+            <javac-elements>
+                <src>
+                    <pathelement location="src/test/java" />
+                </src>
+                <classpath>
+                    <pathelement path="${hy.jre}/lib/tools.jar"/>
+                </classpath>
+            </javac-elements>
+        </compile-tests>
+    </target>
+
+    <target name="-run-tests" depends="-test-jar">
+        <ant dir="${tests.hdk.dir}" target="test-module" />
+    </target>
+
+</project>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="Harmony Test" default="test" basedir=".">
+
+    <property name="hy.hdk" location="../.." />
+    <property name="test.jre.home" location="${hy.hdk}/jdk/jre" />
+    <property file="test.properties" />
+
+    <!-- These two parameters could be assigned by user -->
+    <property name="target.dir" value="." />
+    <property name="work.dir" value="${target.dir}" />
+    <property name="tests.output" value="${work.dir}/report" />
+    <property name="report.dir" value="${tests.output}/html" />
+    <property name="junit.jar" value="${target.dir}/junit.jar" />
+
+    <property name="gen.report" value="true" />
+    <condition property="do.full.report" value="true">
+        <and>
+            <equals arg1="${gen.report}" arg2="true" />
+            <not><equals arg1="${short.report}" arg2="true" /></not>
+        </and>
+    </condition>
+    <condition property="do.short.report" value="true">
+        <and>
+            <equals arg1="${gen.report}" arg2="true" />
+            <equals arg1="${short.report}" arg2="true" />
+        </and>
+    </condition>
+
+    <import file="../ant/properties.xml" />
+
+    <target name="test"
+            depends="test-jre-vm-info,-test,check-test-result" />
+
+    <target name="clean">
+        <delete dir="${tests.output}" />
+    </target>
+
+    <target name="-test">
+        <echo message="Test Work Dir: ${work.dir}" />
+        <echo message="Test Target Dir: ${target.dir}" />
+        <mkdir dir="${work.dir}" /> 
+        <delete dir="${tests.output}" quiet="true"/>
+        <poll-modules dir="." target="test-module" />
+    </target>
+
+    <target name="check-test-result" depends="-check-crashed,gen-report">
+        <fail if="test.crashes"
+              message="There were test crashes: ${crashed.tests}"/>
+        <available property="test.errors"
+                   file="${tests.output}/test.errors" />
+        <available property="test.failures"
+                   file="${tests.output}/test.failures" />
+        <fail if="test.errors" message="There were test errors." />
+        <fail if="test.failures" message="There were test failures." />
+    </target>
+
+    <target name="-check-crashed" depends="-check-for-empty, -process-empty"/>
+    <target name="-check-for-empty">
+        <fileset id="empty.test.reports" dir="${tests.output}">
+            <patternset>
+                <include name="TEST-*.xml"/>
+            </patternset>
+            <size value="0" when="equal"/>
+        </fileset>
+
+        <pathconvert refid="empty.test.reports" pathsep="${path.separator}"
+                     property="crashed.tests"/>
+        <condition property="test.crashes">
+            <not>
+                <equals arg1="" arg2="${crashed.tests}" />
+            </not>
+        </condition>
+    </target>
+    <target name="-process-empty" if="test.crashes">
+       <property name="per.crashed.tests.file" 
+                 value="${tests.output}${file.separator}TEST-crashed.xml"/>
+
+       <property name="per.header"
+                 value="&lt;?xml version='1.0' encoding='UTF-8' ?&gt;&lt;testsuite errors='1' name='vmcrash.CrashedTests' time='0'&gt;"/>
+       <property name="per.prefix" value="&lt;testcase classname='"/>
+       <property name="per.middle" value="' name='"/>
+       <property name="per.suffix" 
+                 value="' time='0.0'&gt;&lt;error message='VM crash?'/&gt;&lt;/testcase&gt;"/>
+       <property name="per.footer" value="&lt;/testsuite&gt;"/>
+
+       <echo message="${crashed.tests}" file="${per.crashed.tests.file}"/>
+
+       <replaceregexp file="${per.crashed.tests.file}" flags="g">
+            <regexp pattern="[^${path.separator}]*TEST-([^${path.separator}]*)\.xml${path.separator}?"/>
+            <substitution expression="${per.prefix}\1${per.middle}\1${per.suffix}"/>
+       </replaceregexp>
+       <replaceregexp file="${per.crashed.tests.file}" match="\A"
+                      replace="${per.header}"/>
+       <echo file="${per.crashed.tests.file}" append="yes"
+             message="${per.footer}"/>
+
+       <!-- now let's delete empty reports -->
+       <delete><fileset refid="empty.test.reports"/></delete>
+
+       <!-- Need to ensure the file is UTF-8 on non-ASCII platforms -->
+        <move file="${per.crashed.tests.file}"
+              tofile="${per.crashed.tests.file}.orig" />
+        <copy file="${per.crashed.tests.file}.orig"
+              tofile="${per.crashed.tests.file}" outputencoding="UTF-8" />
+        <delete file="${per.crashed.tests.file}.orig" />
+
+    </target>
+
+    <target name="gen-report" depends="-short-report,-full-report">
+        <!-- this property is simply to fix slashes in displayed string -->
+        <property name="display-location" location="${report.dir}/index.html"/>
+        <echo message="The test report is in ${display-location}"/>
+    </target>
+
+    <target name="-full-report" if="do.full.report">
+        <mkdir dir="${report.dir}" />
+        <junitreport todir="${report.dir}">
+            <fileset dir="${tests.output}">
+                <include name="TEST*-*.xml" />
+            </fileset>
+            <report format="frames" todir="${report.dir}" />
+        </junitreport>
+    </target>
+
+    <target name="-short-report" if="do.short.report">
+        <mkdir dir="${report.dir}" />
+        <junitreport todir="${report.dir}">
+            <fileset dir="${tests.output}" includes="TEST*-*.xml">
+                <containsregexp expression='(errors|failures)=.[1-9]' />
+                <exclude name="TESTS-TestSuites.xml" />
+            </fileset>
+            <report format="frames" todir="${report.dir}" />
+        </junitreport>
+    </target>
+    
+</project>
