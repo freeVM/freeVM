@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                   Ant's script supplementing CC functionality
+     ====================================================================== -->
+<project name="cc" default="create-cc-configuration" basedir=".">
+
+    <!--
+                        Framework Retated Functionality
+    -->
+
+    <target name="-prepare-cc">
+        <sequential>
+        <if>
+            <istrue value="${framework.parameters.cc.doclean}"/>
+        <then>
+            <delete quiet="true" verbose="false">
+                <fileset dir="${build.dir}/cc" includes="**/*"/>
+            </delete>
+        </then>
+        </if>
+        <mkdir dir="${cc.work.dir}"/>
+        <mkdir dir="${cc.log.dir}"/>
+        <touch file="${cc.execution.status.file}"/>
+        </sequential>
+    </target>
+    
+    <target name="create-cc-configuration" depends="init-framework, init-suites, -prepare-cc">
+        <!-- Create Main CC Configuration File -->
+        <delete file="${cc.config.file}"/>
+        <copy file="${cc.config.template}" 
+              tofile="${cc.config.file}"/>
+
+        <!-- Create Project Files corresponding to selected Test Suites -->
+        <for list="${test.suites.names.list}" param="suite.name">
+            <sequential>
+                <log message="==> Process CC Configuration File for '@{suite.name}'"/>
+                <!-- print-parameters suite="@{suite.name}"/ -->
+
+                <mkdir dir="${cc.log.dir}/@{suite.name}"/>
+                <property name="@{suite.name}.parameters.cc.filename"
+                          value="cc-@{suite.name}-project.xml"/>
+                <property name="@{suite.name}.parameters.cc.file.location"
+                          location="${cc.work.dir}/${@{suite.name}.parameters.cc.filename}"/>
+                <!-- check if the suite is independent -->
+                <condition property="@{suite.name}.independent">
+                    <or>
+                        <not><isset property="@{suite.name}.parameters.depends"/></not>
+                        <length string="${@{suite.name}.parameters.depends}" 
+                                when="equal" length="0"/>
+                    </or>
+                </condition>
+
+                <delete file="${@{suite.name}.parameters.cc.file.location}"/>
+
+                <!-- Create the property files for inclusion into the 
+                     CC-config file for @{suite.name}, and for passing
+                     them through the CC to adaptors -->
+                <var name="tmp.cc-props-file"
+                     value="${cc.work.dir}/cc-@{suite.name}.properties"/>
+                <var name="tmp.ant-props-file"
+                     value="${cc.work.dir}/@{suite.name}.properties"/>
+                <antcall target="make-property-files" inheritAll="true">
+                    <param name="suite" value="@{suite.name}"/>
+                    <param name="cc-params-file" value="${tmp.cc-props-file}"/>
+                    <param name="ant-params-file" value="${tmp.ant-props-file}"/>
+                    <propertyset>
+                        <propertyset refid="@{suite.name}.parameters.id"/>
+                        <!-- do map keys to separate the properties 
+                             need to be passed to the project -->
+                        <globmapper from="*" to="-TO-PASS-.*"/>
+                    </propertyset>
+                </antcall>
+                
+                <if><!-- check for custom configuration file -->
+                    <isset property="@{suite.name}.parameters.cc.config"/>
+                <then>
+                    <!-- use custom -->
+                    <log message="Generating CC config on the base of custom CC config template: ${@{suite.name}.parameters.cc.config}"/>
+
+                    <copy file="${@{suite.name}.parameters.cc.config}" 
+                          tofile="${@{suite.name}.parameters.cc.file.location}"/>
+                </then>
+                <else>
+                    <!-- use custom -->
+                    <log message="Generating CC config on the base of default CC template: ${cc.project.template}"/>
+
+                    <!-- use dafault cc config template -->
+                    <copy file="${cc.project.template}" 
+                          tofile="${@{suite.name}.parameters.cc.file.location}"/>
+                </else>
+                </if>
+
+                <!-- ======================================================= -->
+                <!--    Do CC-Config Template Filling (Tag Substitutions)    -->
+                <!-- ======================================================= -->
+
+                <!-- do not require modifications in case of scheduled execution
+                     and do require in case of execution triggered by 
+                     modifications (of svn repository, successful execution of 
+                     superior test suite, local trigger files, etc) -->
+                <condition property="@{suite.name}.require.modifications" 
+                           value="false"
+                           else="true">
+                    <and>
+                        <isset property="framework.parameters.schedule.time"/>
+                        <isset property="@{suite.name}.independent"/>
+                    </and>
+                </condition>
+                <replace file="${@{suite.name}.parameters.cc.file.location}">
+                    <replacefilter token="@BT.REQMODS@" 
+                               value="${@{suite.name}.require.modifications}"/>
+                </replace>
+
+                <!-- insert 'MUSTHAVE' project name and call to adaptor -->
+                <!-- if it is scheduled run and it is independent test suite,
+                     retrieve the time and define it in ant caller -->
+                <var name="tmp.build.time" unset="true"/>
+                <condition property="tmp.build.time" 
+                        value="time='${framework.parameters.schedule.time}' "
+                        else="">
+                    <and>
+                        <isset property="framework.parameters.schedule.time"/>
+                        <isset property="@{suite.name}.independent"/>
+                    </and>
+                </condition>
+                <var name="tmp.build.day" unset="true"/>
+                <condition property="tmp.build.day" 
+                        value="day='${framework.parameters.schedule.day}' "
+                        else="">
+                    <and>
+                        <isset property="framework.parameters.schedule.day"/>
+                        <isset property="@{suite.name}.independent"/>
+                    </and>
+                </condition>
+
+                <insert-adaptorcall
+                    suite="@{suite.name}"
+                    ccfile="${@{suite.name}.parameters.cc.file.location}"
+                    ccpropsfile="${tmp.cc-props-file}"
+                    antpropsfile="${tmp.ant-props-file}"
+                    time="${tmp.build.day}${tmp.build.time}"
+                />
+                
+                <!-- set up veto on building dependent test suites before 
+                     superiour ones -->
+                <insert-veto
+                    suite="@{suite.name}"
+                    ccfile="${@{suite.name}.parameters.cc.file.location}"
+                />
+                
+                <!-- insert custom bootstrapper -->
+                <if>
+                    <isset property="@{suite.name}.parameters.cc.bootstrapper"/>
+                <then>
+                    <insert-custom-bootstrapper
+                        suite="@{suite.name}"
+                        ccfile="${@{suite.name}.parameters.cc.file.location}"
+                        bootstrapper="${@{suite.name}.parameters.cc.bootstrapper}"
+                        antpropsfile="${tmp.ant-props-file}"
+                    />
+                </then>
+                </if>
+
+                <insert-modification-sets
+                    suite="@{suite.name}"
+                    ccfile="${@{suite.name}.parameters.cc.file.location}"
+                />
+
+                <!-- insert custom publisher -->
+
+                <!-- do status notification by default -->
+                <property name="@{suite.name}.parameters.cc.publish" value="true"/>
+                <if>
+                    <not><isfalse value="${@{suite.name}.parameters.cc.publish}"/></not>
+                <then>
+                    <if>
+                        <isset property="@{suite.name}.parameters.cc.publisher"/>
+                    <then>
+                        <insert-publisher
+                            suite="@{suite.name}"
+                            publisher="${@{suite.name}.parameters.cc.publisher}"
+                            ccfile="${@{suite.name}.parameters.cc.file.location}"
+                            ccpropsfile="${tmp.cc-props-file}"
+                            antpropsfile="${tmp.ant-props-file}"
+                            target="cc-publish-custom"/>
+                    </then>
+                    <else>
+                        <insert-publisher
+                            suite="@{suite.name}"
+                            publisher="${scripts.dir}/publisher.xml"
+                            ccfile="${@{suite.name}.parameters.cc.file.location}"
+                            ccpropsfile="${tmp.cc-props-file}"
+                            antpropsfile="${tmp.ant-props-file}"/>
+                    </else>
+                    </if>
+                </then>
+                </if>
+                <insert-execution_logs-publisher
+                    suite="@{suite.name}"
+                    ccfile="${@{suite.name}.parameters.cc.file.location}"/>
+                <!-- insert test results to be merged into log -->
+                <if>
+                    <isset property="@{suite.name}.parameters.cc.results"/>
+                <then>
+                    <insert-results
+                        dir="${@{suite.name}.parameters.cc.results}"
+                        ccfile="${@{suite.name}.parameters.cc.file.location}"/>
+                </then>
+                </if>
+
+                <!-- finalize the cc config file fro this suite -->
+                <insert-finish
+                        ccfile="${@{suite.name}.parameters.cc.file.location}"/>
+
+                <!-- add import of the project -->
+                <replace file="${cc.config.file}">
+                    <replacefilter
+                        token="@PROJECT@"
+                        value="&lt;include.projects file='${@{suite.name}.parameters.cc.filename}'/&gt;@PROJECT@"/>
+                    <replacetoken>@PROJECT@</replacetoken>
+                    <replacevalue><![CDATA[
+    @PROJECT@]]></replacevalue>
+                </replace>
+
+            </sequential>
+        </for>
+
+        <!-- setup CC properties and clear last token in main config file -->
+        <replace file="${cc.config.file}">
+            <replacefilter 
+                token="@BT.ROOTDIR@" 
+                value="${root.dir}"/>
+            <replacefilter 
+                token="@BT.PROPERTIES@" 
+                value="${framework.properties.file}"/>
+
+            <replacetoken>@PROJECT@</replacetoken>
+            <replacevalue></replacevalue>
+        </replace>
+    </target>
+
+    <!-- Creates the CC properties file for specified by ${suite} project -->
+    <target name="make-property-files">
+        <propertyselector 
+            property="tmp.params.list"
+            delimiter=","
+            match="-TO-PASS-\.(.*)$"
+            select="\1"
+            override="true"
+        />
+        <sortlist 
+            property="tmp.sorted.list"
+            value="${tmp.params.list}"
+            delimiter=","
+            override="true"
+        />
+        <!-- make the file for using by ant (double \) -->
+        <echoproperties destfile="${ant-params-file}">
+            <propertyset>
+                <propertyref prefix="-TO-PASS-"/>
+                <globmapper from="-TO-PASS-.*" to="*"/>
+            </propertyset>
+        </echoproperties>
+        <!-- make the file for using by CC -->
+        <echo file="${cc-params-file}"/>
+        <for list="${tmp.sorted.list}" param="param">
+            <sequential>
+                <echo file="${cc-params-file}" 
+                      append="true">@{param}=${-TO-PASS-.@{param}}
+</echo>
+            </sequential>
+        </for>
+    </target>
+
+    <macrodef name="insert-adaptorcall">
+        <attribute name="suite"/>
+        <attribute name="ccfile"/>
+        <attribute name="ccpropsfile"/>
+        <attribute name="antpropsfile"/>
+        <attribute name="time"/>
+        <sequential>
+            <replace file="@{ccfile}">
+                <!-- Define the name of the project as name of a current 
+                     test suite -->
+                <replacefilter 
+                    token="@BT.PROJECT@"
+                    value="@{suite}"/>
+                <!-- Include the parameters known by test suite -->
+                <replacefilter 
+                    token="&lt;!-- @BT.PARAMETERS.INCLUDE@ --&gt;" 
+                    value="&lt;property file='@{ccpropsfile}'/&gt;"
+                />
+                <replacefilter 
+                    token="&lt;!-- @BT.LISTENER@ --&gt;" 
+                    value="&lt;currentbuildstatuslistener file='${cc.log.dir}/@{suite}/status.txt'/&gt;"
+                />
+                <replacefilter 
+                    token="&lt;!-- @BT.ADAPTORCALL@ --&gt;" 
+                    value="&lt;ant anthome='${ant.home}'@NL@
+                antWorkingDir='${root.dir}'@NL@
+                timeout='${framework.parameters.cc.timeout}'@NL@
+                buildfile='${root.dir}/scripts/cc-exec-adaptor.xml'@NL@
+                @{time}target='cc-run'&gt;@NL@
+               &lt;property name='suite.name' value='@{suite}'/&gt;@NL@
+               &lt;property name='properties.dump.file'@NL@
+                         value='@{antpropsfile}'/&gt;@NL@
+           &lt;/ant&gt;@NL@"/>
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="insert-veto">
+        <attribute name="suite"/>
+        <attribute name="ccfile"/>
+        <sequential>
+            <for list="${@{suite}.parameters.depends}" param="dependency">
+            <sequential>
+                <if>
+                    <isset property="framework.parameters.schedule.time"/>
+                <then>
+                    <!-- veto on scheduled execution before superior one -->
+                    <replace file="@{ccfile}">
+                        <replacefilter 
+                            token="&lt;!-- @BT.VETO@ --&gt;" 
+                            value="&lt;!-- veto on execution before scheduled superior --&gt;@NL@
+           &lt;veto&gt;@NL@
+               &lt;triggers&gt;@NL@
+                   &lt;buildstatus logdir='${cc.log.dir}/@{suite}'/&gt;@NL@
+               &lt;/triggers&gt;@NL@
+               &lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@NL@
+           &lt;/veto&gt;@NL@
+           &lt;!-- @BT.VETO@ --&gt;"
+                    />
+                    </replace>
+                </then>
+                </if>
+            </sequential>
+            </for>
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="&lt;!-- @BT.VETO@ --&gt;" 
+                    value=""/>
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <!-- replaces @BT.USESVN@ tag with the list of pointer to local svn dirs -->
+    <macrodef name="insert-usesvn">
+        <attribute name="suite"/>
+        <attribute name="ccfile"/>
+        <attribute name="indent" default=""/>
+        <attribute name="task" default="svn"/>
+        <attribute name="property" default=""/>
+        <sequential>
+            <var name="tmp.usesvns.list" value=""/>
+            <propertyselector
+                property="tmp.usesvns.list"
+                override="true"
+                delimiter=","
+                match="^@{suite}\.parameters\.cc\.usesvn.*$"
+                distinct="true"
+            />
+            <for list="${tmp.usesvns.list}" param="svndir">
+            <sequential>
+                <replace file="@{ccfile}">
+                    <replacefilter 
+                        token="&lt;!-- @BT.USESVN@ -->" 
+                        value="@{indent}&lt;@{task} localWorkingCopy='${@{svndir}}' @{property}/>@NL@&lt;!-- @BT.USESVN@ -->"/>
+                </replace>
+            </sequential>
+            </for>
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="@NL@&lt;!-- @BT.USESVN@ -->" 
+                    value=""/>
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <!-- insert custom bootstrapper -->
+    <macrodef name="insert-custom-bootstrapper">
+        <attribute name="suite"/>
+        <attribute name="ccfile"/>
+        <attribute name="bootstrapper"/>
+        <attribute name="antpropsfile"/>
+        <sequential>
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="&lt;!-- @BT.BOOTSTRAPPER@ --&gt;"
+                    value="
+           &lt;antbootstrapper@NL@
+                anthome='${ant.home}'@NL@
+                timeout='${framework.parameters.cc.timeout}'@NL@
+                antWorkingDir='${root.dir}'@NL@
+                buildfile='${root.dir}/scripts/cc-exec-adaptor.xml'@NL@
+                target='cc-bootstrap'&gt;@NL@
+               &lt;property name='suite.name' value='@{suite}'/&gt;@NL@
+               &lt;property name='bootstrapper.location' value='@{bootstrapper}'/&gt;@NL@
+               &lt;property name='properties.dump.file'@NL@
+                         value='@{antpropsfile}'/&gt;@NL@
+           &lt;/antbootstrapper&gt;@NL@
+           &lt;!-- @BT.BOOTSTRAPPER@ --&gt;"/>
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <!-- insert modification sets defined for test suite 
+         see: test-insert-modification-sets for unit test -->
+    <macrodef name="insert-modification-sets">
+        <attribute name="suite"/>
+        <attribute name="ccfile"/>
+        <sequential>
+            <var name="tmp.tree" unset="true"/>
+            <build-modification-tree
+                suite="@{suite}"
+                property="tmp.tree"
+            />
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;"
+                    value="${tmp.tree}
+           &lt;!-- @BT.MODIFICATIONSET@ --&gt;"
+                />
+            </replace>
+            <if>
+                <and>
+                    <isset property="@{suite}.parameters.cc.trigger"/>
+                    <!-- no need in triggers in scheduled execution mode -->
+                    <not><isset property="framework.parameters.schedule.time"/></not>
+                </and>
+            <then>
+                <insert-trigger
+                    triggerfile="${@{suite}.parameters.cc.trigger}"
+                    ccfile="@{ccfile}"
+                />
+            </then>
+            </if>
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;" 
+                    value="&lt;forceonly/&gt;"
+                />
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="insert-trigger">
+        <attribute name="triggerfile"/>
+        <attribute name="ccfile"/>
+        <sequential>
+            <if>
+                <not><available file="@{triggerfile}"/></not>
+            <then>
+                <var name="tmp.dir.name" unset="true"/>
+                <dirname property="tmp.dir.name" file="@{triggerfile}"/>
+                <mkdir dir="${tmp.dir.name}"/>
+                <touch file="@{triggerfile}"/>
+            </then>
+            </if>
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="&lt;!-- @BT.MODIFICATIONSET@ --&gt;" 
+                    value="&lt;filesystem folder='@{triggerfile}' username=''/&gt;@NL@
+           &lt;!-- @BT.MODIFICATIONSET@ --&gt;"
+                />
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <!-- goes though the dependencies and looks for 
+         actual svn modification sets -->
+    <macrodef name="build-modification-tree">
+        <attribute name="suite"/>
+        <attribute name="property"/>
+        <attribute name="visited" default=",@{suite}"/>
+        <attribute name="indent" default="            "/>
+        <attribute name="top" default="true"/>
+        <attribute name="nl" default="${line.separator}"/>
+        <sequential>
+
+            <!-- empty resulting value for empty modset -->
+            <condition property="@{property}" value="">
+                <istrue value="@{top}"/>
+            </condition>
+            <if>
+                <isset property="@{suite}.parameters.cc.usesvn"/>
+            <then>
+                <!-- echo message=" -::: @{suite}-svn"/ -->
+                <echo file="${temp.files.dir}/usesvn.tmp" 
+                      message="&lt;!-- @BT.USESVN@ -->"/>
+                <var name="tmp.change.property" value=""/>
+                <if>
+                    <istrue value="@{top}"/>
+                <then>
+                    <var name="tmp.change.property" 
+                         value="property='repository.updated'"/>
+                </then>
+                </if>
+                <insert-usesvn suite="@{suite}" 
+                               ccfile="${temp.files.dir}/usesvn.tmp"
+                               indent="@{indent}"
+                               property="${tmp.change.property}"/>
+                <var name="@{property}" unset="true"/>
+                <loadfile property="@{property}" srcFile="${temp.files.dir}/usesvn.tmp"/>
+                <var name="@{property}" value="${@{property}}@{nl}"/>
+            </then>
+            </if>
+            <if>
+                <isset property="@{suite}.parameters.depends"/>
+            <then>
+                <for list="${@{suite}.parameters.depends}" param="dependency">
+                <sequential>
+                    <if>
+                        <and>
+                            <istrue value="${framework.parameters.cc.get-mods-tree}"/>
+                            <not><contains string="@{visited}" substring=",@{dependency},"/></not>
+                        </and>
+                    <then>
+                        <build-modification-tree
+                            suite="@{dependency}"
+                            visited="@{visited},@{dependency},"
+                            top="false"
+                            property="tmp.@{property}.@{dependency}"
+                            indent="@{indent}    "
+                        />
+                    </then>
+                    </if>
+                    <if>
+                        <isset property="tmp.@{property}.@{dependency}"/>
+                    <then>
+                        <!-- there were svn modsets, so build <compound> structure -->
+                        <property name="@{property}" value=""/>
+                        <var name="@{property}" 
+value="${@{property}}@{indent}&lt;compound includeTriggerChanges='@{top}'&gt;@{nl}
+@{indent}&lt;triggers&gt;@{nl}
+@{indent}    &lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@{nl}
+@{indent}&lt;/triggers&gt;@{nl}
+@{indent}&lt;targets&gt;@{nl}${tmp.@{property}.@{dependency}}
+@{indent}&lt;/targets&gt;@{nl}@{indent}&lt;/compound&gt;@{nl}"/>
+                    </then>
+                    <else>
+                        <if>
+                            <istrue value="@{top}"/>
+                        <then>
+                            <!-- insert just the build status listener -->
+                            <var name="@{property}" 
+                                 value="${@{property}}@{indent}&lt;buildstatus logdir='${cc.log.dir}/@{dependency}'/&gt;@{nl}"/>
+                        </then>
+                        </if>
+                    </else>
+                    </if>
+                </sequential>
+                </for>
+            </then>
+            </if>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="insert-publisher">
+        <attribute name="suite"/>
+        <attribute name="publisher"/>
+        <attribute name="ccfile"/>
+        <attribute name="ccpropsfile"/>
+        <attribute name="antpropsfile"/>
+        <attribute name="target" default="cc-publish"/>
+        <sequential>
+            <replace file="@{ccfile}">
+                <!-- Define the name of the project as name of a current 
+                     test suite -->
+                <replacefilter 
+                    token="@BT.PROJECT@" 
+                    value="@{suite}"/>
+                <!-- Include the parameters known by test suite -->
+                <replacefilter 
+                    token="&lt;!-- @BT.PARAMETERS.INCLUDE@ --&gt;" 
+                    value="&lt;property file='@{ccpropsfile}'/&gt;"
+                />
+                <replacefilter 
+                    token="&lt;!-- @BT.LISTENER@ --&gt;" 
+                    value="&lt;currentbuildstatuslistener file='${cc.log.dir}/@{suite}/status.txt'/&gt;"
+                />
+                <replacefilter 
+                    token="&lt;!-- @BT.PUBLISHER@ --&gt;" 
+                    value="&lt;antpublisher@NL@
+                anthome='${ant.home}'@NL@
+                timeout='${framework.parameters.cc.timeout}'@NL@
+                antWorkingDir='${root.dir}'@NL@
+                buildfile='${root.dir}/scripts/cc-exec-adaptor.xml'@NL@
+                target='@{target}'&gt;@NL@
+               &lt;property name='suite.name' value='@{suite}'/&gt;@NL@
+               &lt;property name='publisher.location' value='@{publisher}'/&gt;@NL@
+               &lt;property name='properties.dump.file'@NL@
+                         value='@{antpropsfile}'/&gt;@NL@
+           &lt;/antpublisher&gt;@NL@
+           &lt;!-- @BT.PUBLISHER@ --&gt;"/>
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="insert-execution_logs-publisher">
+        <attribute name="suite"/>
+        <attribute name="ccfile"/>
+        <sequential>
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="&lt;!-- @BT.PUBLISHER@ --&gt;"
+                    value="&lt;artifactspublisher@NL@
+                file='${cc.execution.log.file}'@NL@
+                dest='${cc.log.dir}/@{suite}'/>"/>
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="insert-results">
+        <attribute name="dir"/>
+        <attribute name="ccfile"/>
+        <sequential>
+            <replace file="@{ccfile}">
+                <replacefilter 
+                    token="&lt;!-- @BT.TEST.RESULTS@ --&gt;" 
+                    value="&lt;merge dir='@{dir}'/&gt;"
+                />
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="insert-finish">
+        <attribute name="ccfile"/>
+        <sequential>
+            <replace file="@{ccfile}">
+                <replacetoken>@NL@</replacetoken>
+                <replacevalue><![CDATA[
+]]></replacevalue>
+            </replace>
+        </sequential>
+    </macrodef>
+
+</project>
+

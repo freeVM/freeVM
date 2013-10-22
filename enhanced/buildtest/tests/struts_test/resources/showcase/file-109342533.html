@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:17:54
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/empmanager/editSkill.jsp</h3>
+<pre>
+
+1: &lt;%@ taglib prefix=&quot;s&quot; uri=&quot;/struts-tags&quot; %&gt;
+2: 
+3: &lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+4: 
+5: &lt;s:if test=&quot;currentSkill!=null&quot;&gt;
+6:     &lt;s:set name=&quot;submitType&quot; value=&quot;'update'&quot;/&gt;
+7:     &lt;s:text id=&quot;title&quot; name=&quot;item.edit&quot;&gt;&lt;s:param&gt;&lt;s:text name=&quot;skill&quot;/&gt;&lt;/s:param&gt;&lt;/s:text&gt;
+8: &lt;/s:if&gt;
+9: &lt;s:else&gt;
+10:     &lt;s:set name=&quot;submitType&quot; value=&quot;'create'&quot;/&gt;
+11:     &lt;s:text id=&quot;title&quot; name=&quot;item.create&quot;&gt;&lt;s:param&gt;&lt;s:text name=&quot;skill&quot;/&gt;&lt;/s:param&gt;&lt;/s:text&gt;
+12: &lt;/s:else&gt;
+13: &lt;html&gt;
+14: &lt;head&gt;&lt;title&gt;&lt;s:property value=&quot;#title&quot;/&gt;&lt;/title&gt;&lt;/head&gt;
+15: 
+16: &lt;body&gt;
+17: &lt;h1&gt;&lt;s:property value=&quot;#title&quot;/&gt;&lt;/h1&gt;
+18: 
+19: &lt;s:form action=&quot;save&quot;&gt;
+20:     &lt;s:textfield label=&quot;%{getText('skill.name')}&quot; name=&quot;currentSkill.name&quot;/&gt;
+21:     &lt;s:textfield label=&quot;%{getText('skill.description')}&quot; name=&quot;currentSkill.description&quot;/&gt;
+22:     &lt;%--s:submit name=&quot;%{#submitType}&quot; value=&quot;%{getText('save')}&quot; /--%&gt;
+23:     &lt;s:submit value=&quot;%{getText('save')}&quot; /&gt;
+24: &lt;/s:form&gt;
+25: &lt;p&gt;&lt;a href=&quot;&lt;s:url action=&quot;list&quot;/&gt;&quot;&gt;&lt;s:text name=&quot;skill.backtolist&quot;/&gt;&lt;/a&gt;&lt;/p&gt;
+26: &lt;/body&gt;
+27: &lt;/html&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml</h3>
+<pre>
+
+
+67: 
+68:     &lt;/package&gt;
+69: 
+70:     &lt;package name=&quot;skill&quot; extends=&quot;default&quot; namespace=&quot;/skill&quot;&gt;
+71:         &lt;default-interceptor-ref name=&quot;crudStack&quot;/&gt;
+72: 
+73:         &lt;action name=&quot;list&quot; class=&quot;org.apache.struts2.showcase.action.SkillAction&quot; method=&quot;list&quot;&gt;
+74:             &lt;result&gt;/empmanager/listSkills.jsp&lt;/result&gt;
+75:             &lt;interceptor-ref name=&quot;basicStack&quot;/&gt;
+76:         &lt;/action&gt;
+<span style="background-color:yellow">77:         &lt;action name=&quot;edit&quot; class=&quot;org.apache.struts2.showcase.action.SkillAction&quot;&gt;</span>
+78:             &lt;result&gt;/empmanager/editSkill.jsp&lt;/result&gt;
+79:             &lt;interceptor-ref name=&quot;params&quot; /&gt;
+80:             &lt;interceptor-ref name=&quot;basicStack&quot;/&gt;
+81:         &lt;/action&gt;
+82:         &lt;action name=&quot;save&quot; class=&quot;org.apache.struts2.showcase.action.SkillAction&quot; method=&quot;save&quot;&gt;
+83:             &lt;result name=&quot;input&quot;&gt;/empmanager/editSkill.jsp&lt;/result&gt;
+84:             &lt;result type=&quot;redirect&quot;&gt;edit.action?skillName=${currentSkill.name}&lt;/result&gt;
+85:         &lt;/action&gt;
+86:         &lt;action name=&quot;delete&quot; class=&quot;org.apache.struts2.showcase.action.SkillAction&quot; method=&quot;delete&quot;&gt;
+87:             &lt;result name=&quot;error&quot;&gt;/empmanager/editSkill.jsp&lt;/result&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>/org/apache/struts2/showcase/action/SkillAction.java</h3>
+<pre>
+
+1: /*
+2:  * $Id: SkillAction.java 476710 2006-11-19 05:05:14Z mrdon $
+3:  *
+4:  * Licensed to the Apache Software Foundation (ASF) under one
+5:  * or more contributor license agreements.  See the NOTICE file
+6:  * distributed with this work for additional information
+7:  * regarding copyright ownership.  The ASF licenses this file
+8:  * to you under the Apache License, Version 2.0 (the
+9:  * &quot;License&quot;); you may not use this file except in compliance
+10:  * with the License.  You may obtain a copy of the License at
+11:  *
+12:  *  http://www.apache.org/licenses/LICENSE-2.0
+13:  *
+14:  * Unless required by applicable law or agreed to in writing,
+15:  * software distributed under the License is distributed on an
+16:  * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+17:  * KIND, either express or implied.  See the License for the
+18:  * specific language governing permissions and limitations
+19:  * under the License.
+20:  */
+21: package org.apache.struts2.showcase.action;
+22: 
+23: import org.apache.log4j.Logger;
+24: import org.apache.struts2.showcase.dao.Dao;
+25: import org.apache.struts2.showcase.dao.SkillDao;
+26: import org.apache.struts2.showcase.model.Skill;
+27: 
+28: import com.opensymphony.xwork2.Preparable;
+29: 
+30: /**
+31:  * SkillAction.
+32:  *
+33:  */
+34: 
+35: public class SkillAction extends AbstractCRUDAction implements Preparable {
+36: 
+37:     private static final Logger log = Logger.getLogger(SkillAction.class);
+38: 
+39:     private String skillName;
+40:     protected SkillDao skillDao;
+41:     private Skill currentSkill;
+42: 
+43:     public String getSkillName() {
+44:         return skillName;
+45:     }
+46: 
+47:     public void setSkillName(String skillName) {
+48:         this.skillName = skillName;
+49:     }
+50: 
+51:     protected Dao getDao() {
+52:         return skillDao;
+53:     }
+54: 
+55:     public void setSkillDao(SkillDao skillDao) {
+56:         if (log.isDebugEnabled()) {
+57:             log.debug(&quot;SkillAction - [setSkillDao]: skillDao injected.&quot;);
+58:         }
+59:         this.skillDao = skillDao;
+60:     }
+61: 
+62:     public Skill getCurrentSkill() {
+63:         return currentSkill;
+64:     }
+65: 
+66:     public void setCurrentSkill(Skill currentSkill) {
+67:         this.currentSkill = currentSkill;
+68:     }
+69: 
+70:     /**
+71:      * This method is called to allow the action to prepare itself.
+72:      *
+73:      * @throws Exception thrown if a system level exception occurs.
+74:      */
+75:     public void prepare() throws Exception {
+76:         Skill preFetched = (Skill) fetch(getSkillName(), getCurrentSkill());
+77:         if (preFetched != null) {
+78:             setCurrentSkill(preFetched);
+79:         }
+80:     }
+81: 
+82:     public String save() throws Exception {
+83:         if (getCurrentSkill() != null) {
+84:             setSkillName((String) skillDao.merge(getCurrentSkill()));
+85:         }
+86:         return SUCCESS;
+87:     }
+88: 
+89: }
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A77&amp;page=%2Fskill%2F%2Fempmanager%2FeditSkill.jsp&amp;className=org.apache.struts2.showcase.action.SkillAction">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:18:03
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/empmanager/listEmployees.jsp</h3>
+<pre>
+
+1: &lt;%@ taglib prefix=&quot;s&quot; uri=&quot;/struts-tags&quot; %&gt;
+2: 
+3: &lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+4: &lt;html&gt;
+5: &lt;head&gt;&lt;title&gt;Available Employees&lt;/title&gt;&lt;/head&gt;
+6: 
+7: &lt;body&gt;
+8: &lt;h1&gt;Available Employees&lt;/h1&gt;
+9: &lt;table&gt;
+10:     &lt;tr&gt;
+11:         &lt;th&gt;Id&lt;/th&gt;
+12:         &lt;th&gt;First Name&lt;/th&gt;
+13:         &lt;th&gt;Last Name&lt;/th&gt;
+14:     &lt;/tr&gt;
+15:     &lt;s:iterator value=&quot;availableItems&quot;&gt;
+16:         &lt;tr&gt;
+17:             &lt;td&gt;&lt;a href=&quot;&lt;s:url action=&quot;edit-%{empId}&quot; /&gt;&quot;&gt;&lt;s:property value=&quot;empId&quot;/&gt;&lt;/a&gt;&lt;/td&gt;
+18:             &lt;td&gt;&lt;s:property value=&quot;firstName&quot;/&gt;&lt;/td&gt;
+19:             &lt;td&gt;&lt;s:property value=&quot;lastName&quot;/&gt;&lt;/td&gt;
+20:         &lt;/tr&gt;
+21:     &lt;/s:iterator&gt;
+22: &lt;/table&gt;
+23: &lt;p&gt;&lt;a href=&quot;&lt;s:url action=&quot;edit-&quot; includeParams=&quot;none&quot;/&gt;&quot;&gt;Create new Employee&lt;/a&gt;&lt;/p&gt;
+24: &lt;p&gt;&lt;a href=&quot;&lt;s:url action=&quot;showcase&quot; namespace=&quot;/&quot; includeParams=&quot;none&quot;/&gt;&quot;&gt;Back to Showcase Startpage&lt;/a&gt;&lt;/p&gt;
+25: &lt;/body&gt;
+26: &lt;/html&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml</h3>
+<pre>
+
+
+85:         &lt;/action&gt;
+86:         &lt;action name=&quot;delete&quot; class=&quot;org.apache.struts2.showcase.action.SkillAction&quot; method=&quot;delete&quot;&gt;
+87:             &lt;result name=&quot;error&quot;&gt;/empmanager/editSkill.jsp&lt;/result&gt;
+88:             &lt;result type=&quot;redirect&quot;&gt;edit.action?skillName=${currentSkill.name}&lt;/result&gt;
+89:         &lt;/action&gt;
+90:     &lt;/package&gt;
+91: 
+92:     &lt;package name=&quot;employee&quot; extends=&quot;default&quot; namespace=&quot;/employee&quot;&gt;
+93:         &lt;default-interceptor-ref name=&quot;crudStack&quot;/&gt;
+94: 
+<span style="background-color:yellow">95:         &lt;action name=&quot;list&quot; class=&quot;org.apache.struts2.showcase.action.EmployeeAction&quot; method=&quot;list&quot;&gt;</span>
+96:             &lt;result&gt;/empmanager/listEmployees.jsp&lt;/result&gt;
+97:             &lt;interceptor-ref name=&quot;basicStack&quot;/&gt;
+98:         &lt;/action&gt;
+99:         &lt;action name=&quot;edit-*&quot; class=&quot;org.apache.struts2.showcase.action.EmployeeAction&quot;&gt;
+100:       &lt;param name=&quot;empId&quot;&gt;{1}&lt;/param&gt;
+101:             &lt;result&gt;/empmanager/editEmployee.jsp&lt;/result&gt;
+102:             &lt;interceptor-ref name=&quot;crudStack&quot;&gt;&lt;param name=&quot;validation.excludeMethods&quot;&gt;execute&lt;/param&gt;&lt;/interceptor-ref&gt;
+103:         &lt;/action&gt;
+104:         &lt;action name=&quot;save&quot; class=&quot;org.apache.struts2.showcase.action.EmployeeAction&quot; method=&quot;save&quot;&gt;
+105:             &lt;result name=&quot;input&quot;&gt;/empmanager/editEmployee.jsp&lt;/result&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>/org/apache/struts2/showcase/action/EmployeeAction.java</h3>
+<pre>
+
+1: /*
+2:  * $Id: EmployeeAction.java 476710 2006-11-19 05:05:14Z mrdon $
+3:  *
+4:  * Licensed to the Apache Software Foundation (ASF) under one
+5:  * or more contributor license agreements.  See the NOTICE file
+6:  * distributed with this work for additional information
+7:  * regarding copyright ownership.  The ASF licenses this file
+8:  * to you under the Apache License, Version 2.0 (the
+9:  * &quot;License&quot;); you may not use this file except in compliance
+10:  * with the License.  You may obtain a copy of the License at
+11:  *
+12:  *  http://www.apache.org/licenses/LICENSE-2.0
+13:  *
+14:  * Unless required by applicable law or agreed to in writing,
+15:  * software distributed under the License is distributed on an
+16:  * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+17:  * KIND, either express or implied.  See the License for the
+18:  * specific language governing permissions and limitations
+19:  * under the License.
+20:  */
+21: package org.apache.struts2.showcase.action;
+22: 
+23: import java.util.ArrayList;
+24: import java.util.Arrays;
+25: import java.util.Iterator;
+26: import java.util.List;
+27: 
+28: import org.apache.log4j.Logger;
+29: import org.apache.struts2.showcase.application.TestDataProvider;
+30: import org.apache.struts2.showcase.dao.Dao;
+31: import org.apache.struts2.showcase.dao.EmployeeDao;
+32: import org.apache.struts2.showcase.model.Employee;
+33: import org.apache.struts2.showcase.model.Skill;
+34: 
+35: import com.opensymphony.xwork2.Preparable;
+36: 
+37: /**
+38:  * JsfEmployeeAction.
+39:  */
+40: 
+41: public class EmployeeAction extends AbstractCRUDAction implements Preparable {
+42: 
+43:     private static final long serialVersionUID = 7047317819789938957L;
+44: 
+45:     private static final Logger log = Logger.getLogger(EmployeeAction.class);
+46: 
+47:     private Long empId;
+48:     protected EmployeeDao employeeDao;
+49:     private Employee currentEmployee;
+50:     private List selectedSkills;
+51: 
+52:     public Long getEmpId() {
+53:         return empId;
+54:     }
+55: 
+56:     public void setEmpId(Long empId) {
+57:         this.empId = empId;
+58:     }
+59: 
+60:     public Employee getCurrentEmployee() {
+61:         return currentEmployee;
+62:     }
+63: 
+64:     public void setCurrentEmployee(Employee currentEmployee) {
+65:         this.currentEmployee = currentEmployee;
+66:     }
+67: 
+68:     public String[] getAvailablePositions() {
+69:         return TestDataProvider.POSITIONS;
+70:     }
+71: 
+72:     public List getAvailableLevels() {
+73:         return Arrays.asList(TestDataProvider.LEVELS);
+74:     }
+75: 
+76:     public List getSelectedSkills() {
+77:         return selectedSkills;
+78:     }
+79: 
+80:     public void setSelectedSkills(List selectedSkills) {
+81:         this.selectedSkills = selectedSkills;
+82:     }
+83: 
+84:     protected Dao getDao() {
+85:         return employeeDao;
+86:     }
+87: 
+88:     public void setEmployeeDao(EmployeeDao employeeDao) {
+89:         if (log.isDebugEnabled()) {
+90:             log.debug(&quot;JsfEmployeeAction - [setEmployeeDao]: employeeDao injected.&quot;);
+91:         }
+92:         this.employeeDao = employeeDao;
+93:     }
+94: 
+95:     /**
+96:      * This method is called to allow the action to prepare itself.
+97:      *
+98:      * @throws Exception thrown if a system level exception occurs.
+99:      */
+100:     public void prepare() throws Exception {
+101:         Employee preFetched = (Employee) fetch(getEmpId(), getCurrentEmployee());
+102:         if (preFetched != null) {
+103:             setCurrentEmployee(preFetched);
+104:         }
+105:     }
+106: 
+107:     public String execute() throws Exception {
+108:         if (getCurrentEmployee() != null &amp;&amp; getCurrentEmployee().getOtherSkills() != null) {
+109:             setSelectedSkills(new ArrayList());
+110:             Iterator it = getCurrentEmployee().getOtherSkills().iterator();
+111:             while (it.hasNext()) {
+112:                 getSelectedSkills().add(((Skill) it.next()).getName());
+113:             }
+114:         }
+115:         return super.execute();
+116:     }
+117: 
+118:     public String save() throws Exception {
+119:         if (getCurrentEmployee() != null) {
+120:             setEmpId((Long) employeeDao.merge(getCurrentEmployee()));
+121:             employeeDao.setSkills(getEmpId(), getSelectedSkills());
+122:         }
+123:         return SUCCESS;
+124:     }
+125: 
+126: }
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A95&amp;page=%2Femployee%2F%2Fempmanager%2FlistEmployees.jsp&amp;className=org.apache.struts2.showcase.action.EmployeeAction">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

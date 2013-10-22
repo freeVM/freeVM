@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?page=%2Fajax%2Fautocompleter%2Findex.jsp">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?page=%2Fajax%2Fautocompleter%2Findex.jsp">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?page=%2Fajax%2Fautocompleter%2Findex.jsp" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?page=%2Fajax%2Fautocompleter%2Findex.jsp"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:16:25
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/ajax/autocompleter/index.jsp</h3>
+<pre>
+
+1: &lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+2: &lt;%@ taglib prefix=&quot;s&quot; uri=&quot;/struts-tags&quot; %&gt;
+3: &lt;html&gt;
+4: &lt;head&gt;
+5:     &lt;title&gt;Ajax Examples&lt;/title&gt;
+6: 
+7:     &lt;!--// START SNIPPET: common-include--&gt;
+8:     &lt;jsp:include page=&quot;/ajax/commonInclude.jsp&quot;/&gt;
+9:     &lt;!--// END SNIPPET: common-include--&gt;
+10: &lt;/head&gt;
+11: 
+12: &lt;body&gt;
+13: 
+14: 
+15: &lt;s:url id=&quot;jsonList&quot; value=&quot;/JSONList.action&quot;/&gt;
+16: 
+17: Using a JSON list returned from an action (href=&quot;/JSONList.action&quot;), without autoComplete (autoComplete=&quot;false&quot;), use indicator, search substring (searchType=&quot;substring&quot;)
+18: &lt;br/&gt;
+19: &lt;s:autocompleter name=&quot;state&quot; theme=&quot;ajax&quot; indicator=&quot;indicator1&quot; href=&quot;%{jsonList}&quot; cssStyle=&quot;width: 200px;&quot; autoComplete=&quot;false&quot; searchType=&quot;substring&quot;/&gt;
+20: &lt;img id=&quot;indicator1&quot; src=&quot;${pageContext.request.contextPath}/images/indicator.gif&quot; alt=&quot;Loading...&quot; style=&quot;display:none&quot;/&gt;
+21: 
+22: &lt;br/&gt;
+23: &lt;br/&gt;
+24: 
+25: Reload on type (loadOnTextChange=&quot;true&quot;), after 3 characters (loadMinimumCout=&quot;3&quot;, it is &quot;3&quot; by default), without the down arrow button (showDownArrow=&quot;false&quot;)
+26: &lt;br/&gt;
+27: &lt;s:autocompleter theme=&quot;ajax&quot; indicator=&quot;indicator&quot; href=&quot;%{jsonList}&quot; cssStyle=&quot;width: 200px;&quot; autoComplete=&quot;false&quot; loadOnTextChange=&quot;true&quot; loadMinimumCount=&quot;3&quot; showDownArrow=&quot;false&quot;/&gt;
+28: &lt;img id=&quot;indicator&quot; src=&quot;${pageContext.request.contextPath}/images/indicator.gif&quot; alt=&quot;Loading...&quot; style=&quot;display:none&quot;/&gt;
+29: 
+30: &lt;br/&gt;
+31: &lt;br/&gt;
+32: 
+33: Using a JSON list returned from an action (href=&quot;/JSONList.action&quot;), with autoComplete (autoComplete=&quot;true&quot;)
+34: &lt;br/&gt;
+35: &lt;s:autocompleter theme=&quot;ajax&quot; href=&quot;%{jsonList}&quot; cssStyle=&quot;width: 200px;&quot; autoComplete=&quot;true&quot; /&gt;
+36: 
+37: &lt;br/&gt;
+38: &lt;br/&gt;
+39: 
+40: Using a local list (list=&quot;{'apple','banana','grape','pear'}&quot;)
+41: &lt;br/&gt;
+42: &lt;s:autocompleter theme=&quot;simple&quot; list=&quot;{'apple','banana','grape','pear'}&quot; cssStyle=&quot;width: 150px;&quot;/&gt;
+43: 
+44: &lt;br/&gt;
+45: &lt;br/&gt;
+46: 
+47: Force valid options (forceValidOption=&quot;true&quot;)
+48: &lt;br/&gt;
+49: &lt;s:autocompleter theme=&quot;ajax&quot; href=&quot;%{jsonList}&quot; cssStyle=&quot;width: 200px;&quot; forceValidOption=&quot;true&quot;/&gt;
+50: 
+51: &lt;br/&gt;
+52: &lt;br/&gt;
+53: 
+54: Make dropdown's height to 180px  (dropdownHeight=&quot;180&quot;)
+55: &lt;br/&gt;
+56: &lt;s:autocompleter theme=&quot;ajax&quot; href=&quot;%{jsonList}&quot; cssStyle=&quot;width: 200px;&quot; dropdownHeight=&quot;180&quot;/&gt;
+57: 
+58: &lt;br/&gt;
+59: &lt;br/&gt;
+60: 
+61: Disabled combobox (disabled=&quot;true&quot;)
+62: &lt;br/&gt;
+63: &lt;s:autocompleter theme=&quot;ajax&quot; href=&quot;%{jsonList}&quot; cssStyle=&quot;width: 200px;&quot; disabled=&quot;true&quot;/&gt;
+64: 
+65: &lt;br/&gt;
+66: &lt;br/&gt;
+67: 
+68: 
+69: &lt;s:url id=&quot;autoex&quot; action=&quot;AutocompleterExample&quot; namespace=&quot;/nodecorate&quot;/&gt;
+70: 
+71: Link two autocompleter elements. When the selected value in 'Autocompleter 1' changes, the available values in 'Autocompleter 2' will change also.
+72: &lt;br/&gt;
+73: &lt;form id=&quot;selectForm&quot;&gt;
+74:   &lt;p&gt;Autocompleter 1 &lt;s:autocompleter theme=&quot;simple&quot; name=&quot;select&quot; list=&quot;{'fruits','colors'}&quot;  value=&quot;colors&quot; notifyTopics=&quot;/Changed&quot; forceValidOption=&quot;true&quot; id=&quot;sel&quot;/&gt;&lt;/p&gt;
+75: &lt;/form&gt;
+76: Autocompleter 2 &lt;s:autocompleter theme=&quot;ajax&quot; href=&quot;%{#autoex}&quot; autoComplete=&quot;false&quot; formId=&quot;selectForm&quot; listenTopics=&quot;/Changed&quot; forceValidOption=&quot;true&quot; id=&quot;ops&quot;/&gt;
+77: 
+78: &lt;br/&gt;
+79: &lt;br/&gt;
+80: 
+81: &lt;s:include value=&quot;../footer.jsp&quot;/&gt;
+82: &lt;/body&gt;
+83: &lt;/html&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>Unknown configuration</h3>
+<pre>
+
+
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>Unknown or unavailable Action class</h3>
+<pre>
+
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?page=%2Fajax%2Fautocompleter%2Findex.jsp">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?page=%2Fajax%2Fautocompleter%2Findex.jsp">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?page=%2Fajax%2Fautocompleter%2Findex.jsp">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?page=%2Fajax%2Fautocompleter%2Findex.jsp">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

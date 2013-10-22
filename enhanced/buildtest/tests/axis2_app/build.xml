@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+ 
+<project basedir="." default="generate.service">
+
+    <property environment="env"/>
+    <property name="AXIS2_HOME" value="${env.AXIS2_HOME}"/>
+
+    <property name="axis.build.dir"  value="build"/>
+    <property name="axis.result.dir" value="${axis.build.dir}/result"/>
+
+    <property name="axis.web.port" value="6060"/>
+    <property name="axis.java.home" value="${java.home}"/>
+    <property name="client.java.home" value="${axis.java.home}"/>
+
+<!-- ##### properties below are derived from the ones defined above ##### -->
+
+    <property name="wsdlFilename" 
+              location="${axis.build.dir}/lab_stat.wsdl"/>
+
+    <property name="packageName" value="org.apache.harmony.test.lab_stat_app"/>
+    <property name="namespaceToPackages" 
+             value="http://harmony.apache.org/test/lab_stat_app/xsd=${packageName}.xsd"/>
+
+    <path id="axis2.classpath">
+        <fileset dir="${AXIS2_HOME}/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    <path id="client.class.path">
+        <fileset dir="${AXIS2_HOME}/lib">
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="${axis.build.dir}/client/build/lib" >
+            <include name="*.jar" />
+        </fileset>
+    </path>
+
+<!-- ################## targets definitions ################## -->
+
+    <property name="start.server.script" location="${AXIS2_HOME}/bin/axis2server.R" />
+    <condition property="start.server.cmd" value="${start.server.script}.bat"
+                                            else="${start.server.script}.sh"    >
+        <os family="windows" />
+    </condition>
+
+    <target name="setup_axis2server" depends="generate.all">
+        <javac destdir="${AXIS2_HOME}" 
+               srcdir="${basedir}/src" 
+               includes="SimpleAxis2Server.java"
+               source="1.4" 
+               target="1.4">
+            <classpath refid="axis2.classpath" />
+        </javac>
+        <copy toDir="${AXIS2_HOME}/bin" overwrite="yes" >
+            <fileset dir="${basedir}/resources" includes="axis2server.R.*" />
+        </copy>
+        <chmod file="${start.server.script}.sh" perm="ugo+rx"/>
+        <mkdir dir="${axis.result.dir}"/>
+    </target>
+
+    <condition property="shell.cmd" value="${env.ComSpec}">
+        <os family="windows" />
+    </condition>
+
+    <property name="server.log"     location="${axis.result.dir}/SimpleAxis2Server.log" />
+    <property name="client.run.log" location="${axis.result.dir}/client.run.log" />
+
+    <target name="start.server">
+        <echo file="${server.log}" append="true">
+============== Starting ${start.server.cmd} in the next test run =====
+
+</echo>
+
+        <delete file="${AXIS2_HOME}/stopServer"/>
+        <echo>
+Run ${start.server.cmd}
+Args: ${server.log}
+in ${AXIS2_HOME}
+</echo>
+        <exec executable="${start.server.cmd}" dir="${AXIS2_HOME}">
+            <!--  
+              output="${server.log}" error="${server.log}" append="true">
+
+            <arg line="/C start ${start.server.cmd} >> ${server.log}" /-->
+            <arg line="${server.log}" />
+            <env key="JAVA_HOME"  value="${axis.java.home}"/>
+            <env key="JAVA_OPTS"  value="${axis.vm.options}"/>
+            <env key="AXIS2_HOME" value="${AXIS2_HOME}"/>
+        </exec>
+    </target>
+
+    <target name="stop.server">
+        <touch file="${AXIS2_HOME}/stopServer"/>
+    </target>
+
+    <target name="-init">
+        <mkdir dir="${axis.build.dir}"/>
+        
+        <copy file="${basedir}/resources/lab_stat.wsdl"
+              toDir="${axis.build.dir}"
+              overwrite="yes" />
+        <replace file="${wsdlFilename}"              token="8080" value="${axis.web.port}"/>
+        <replace file="${AXIS2_HOME}/conf/axis2.xml" token="8080" value="${axis.web.port}"/>
+    </target>
+
+    <taskdef name="wsdl2java"
+                 classname="org.apache.axis2.tool.ant.AntCodegenTask"
+                 classpathref="axis2.classpath"/>
+
+    <target name="generate.service" depends="-init">
+
+        <delete dir="${axis.build.dir}/service"/>
+        <wsdl2java wsdlFilename="${wsdlFilename}"
+                   packageName="${packageName}"
+                   namespaceToPackages="${namespaceToPackages}"
+                   language="java"
+                   databindingName="adb"
+                   synconly="true"
+                   output="${axis.build.dir}/service"
+                   serverside="true"
+                   serverSideInterface="true"
+                   generateservicexml="true"/>
+        <copy file="${basedir}/src/LabStatServiceSkeleton.java"
+              toDir="${axis.build.dir}/service/src/org/apache/harmony/test/lab_stat_app/"
+              overwrite="yes" />    
+        <copy file="${basedir}/resources/services.xml"
+              toDir="${axis.build.dir}/service/resources/"
+              overwrite="yes" />
+
+        <ant dir="${axis.build.dir}/service">
+            <property name="axis2.home" value="${AXIS2_HOME}"/>
+        </ant>
+
+        <copy file="${axis.build.dir}/service/build/lib/LabStatService.aar"
+              toDir="${AXIS2_HOME}/repository/services"
+              overwrite="yes" />    
+    </target>
+
+    <target name="generate.client" depends="-init">
+
+        <delete dir="${axis.build.dir}/client"/>
+        <wsdl2java wsdlFilename="${wsdlFilename}"
+                   packageName="${packageName}"
+                   namespaceToPackages="${namespaceToPackages}"
+                   language="java"
+                   databindingName="adb"
+                   synconly="true"
+                   output="${axis.build.dir}/client"/>
+        <copy file="${basedir}/src/LabStatClient.java"
+              toDir="${axis.build.dir}/client/src/org/apache/harmony/test/lab_stat_app/"
+              overwrite="yes"/>
+
+        <ant dir="${axis.build.dir}/client">
+            <property name="axis2.home" value="${AXIS2_HOME}"/>
+        </ant>
+    </target>
+
+    <target name="generate.all" depends="generate.service, generate.client"/>
+
+    <!--target name="run.client" depends="generate.client"-->
+    <target name="run.client">
+        <echo file="${client.run.log}">==== Server Java : ${axis.java.home}
+</echo>
+        <java fork="true" failonerror="true" output="${client.run.log}" append="true"
+            jvm="${axis.java.home}/bin/java"
+            classname="org.apache.harmony.test.lab_stat_app.LabStatClient">
+            <jvmarg value="-version" />
+        </java>
+        <echo file="${client.run.log}" append="true">=========================================================
+==== Client Java : ${client.java.home}
+</echo>
+        <java fork="true" failonerror="true" output="${client.run.log}" append="true"
+            jvm="${client.java.home}/bin/java"
+            classname="org.apache.harmony.test.lab_stat_app.LabStatClient">
+            <jvmarg value="-version" />
+        </java>
+        <echo file="${client.run.log}" append="true">=========================================================
+
+</echo>
+        <run-client step="1" />
+        <run-client step="2" />
+        <run-client step="3" />
+    </target>
+
+    <macrodef name="run-client">
+        <attribute name="step"/>
+        <sequential>
+            <java fork="true" failonerror="true" output="${client.run.log}" append="true"
+                jvm="${client.java.home}/bin/java"
+                classname="org.apache.harmony.test.lab_stat_app.LabStatClient">
+                <jvmarg line="${client.vm.options}"/>
+                <arg value="@{step}" />
+                <classpath refid="client.class.path" />
+            </java>
+        </sequential>
+    </macrodef>
+
+    <target name="clean">
+        <delete dir="${axis.build.dir}"/>
+        <delete file="${AXIS2_HOME}/repository/services/LabStatService.aar" />
+        <delete file="${AXIS2_HOME}/stopServer"/>
+    </target>
+
+</project>

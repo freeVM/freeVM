@@ -1,0 +1,209 @@
+Index: C:/mol/wrk/ws/abbot.plain/test/abbot/util/NamedTimerTest.java
+===================================================================
+--- C:/mol/wrk/ws/abbot.plain/test/abbot/util/NamedTimerTest.java   (revision 2056)
++++ C:/mol/wrk/ws/abbot.plain/test/abbot/util/NamedTimerTest.java   (working copy)
+@@ -21,7 +21,7 @@
+     public void testSetName() throws Exception {
+         class Flag { volatile String name; }
+         final Flag flag = new Flag();
+-        timer.schedule(new TimerTask() {
++        timer.schedule(new ExtendedTimerTask() {
+             public void run() {
+                 flag.name = Thread.currentThread().getName();
+             }
+@@ -39,7 +39,7 @@
+     public void testExceptionThrowingTimerTask() throws Exception {
+         class Flag { volatile boolean taskRan; }
+         final Flag flag = new Flag();
+-        TimerTask task = new TimerTask() {
++        TimerTask task = new ExtendedTimerTask() {
+             public void run() {
+                 try {
+                     throw new RuntimeException("Purposely throwing");
+@@ -57,13 +57,13 @@
+             Thread.yield();
+         }
+         // This will throw an exception if the Timer was canceled
+-        timer.schedule(new TimerTask() { public void run() { }}, 0);
++        timer.schedule(new ExtendedTimerTask() { public void run() { }}, 0);
+     }
+ 
+     public void testCancelTask() throws Exception {
+         class Flag { volatile boolean taskRan; }
+         final Flag flag = new Flag();
+-        TimerTask task = new TimerTask() {
++        TimerTask task = new ExtendedTimerTask() {
+             public void run() {
+                 flag.taskRan = true;
+             }
+Index: C:/mol/wrk/ws/abbot.plain/src/abbot/tester/WindowTracker.java
+===================================================================
+--- C:/mol/wrk/ws/abbot.plain/src/abbot/tester/WindowTracker.java   (revision 2056)
++++ C:/mol/wrk/ws/abbot.plain/src/abbot/tester/WindowTracker.java   (working copy)
+@@ -8,6 +8,7 @@
+ 
+ import abbot.Log;
+ import abbot.util.AWT;
++import abbot.util.ExtendedTimerTask;
+ import abbot.util.Properties;
+ import abbot.util.WeakAWTEventListener;
+ import abbot.util.NamedTimer;
+@@ -369,7 +370,7 @@
+         synchronized(openWindows) {
+             // At worst, time out and say the window is ready
+             // after the configurable delay
+-            TimerTask task = new TimerTask() {
++            TimerTask task = new ExtendedTimerTask() {
+                 public void run() {
+                     markWindowReady(w);
+                 }
+Index: C:/mol/wrk/ws/abbot.plain/src/abbot/util/PathClassLoader.java
+===================================================================
+--- C:/mol/wrk/ws/abbot.plain/src/abbot/util/PathClassLoader.java   (revision 2056)
++++ C:/mol/wrk/ws/abbot.plain/src/abbot/util/PathClassLoader.java   (working copy)
+@@ -99,7 +99,11 @@
+ 
+     /** Taken from sun.misc.Launcher. */
+     private static class Factory implements URLStreamHandlerFactory {
+-        private static final String PREFIX = "sun.net.www.protocol";
++        private static final String PREFIX;
++        static {
++            PREFIX=System.getProperty("abbot.util.url_stream_handler_prefix",
++                    "sun.net.www.protocol");
++        }
+         private Factory() { }
+         public URLStreamHandler createURLStreamHandler(String protocol) {
+             String name = PREFIX + "." + protocol + ".Handler";
+Index: C:/mol/wrk/ws/abbot.plain/src/abbot/util/EventDispatchExceptionHandler.java
+===================================================================
+--- C:/mol/wrk/ws/abbot.plain/src/abbot/util/EventDispatchExceptionHandler.java (revision 2056)
++++ C:/mol/wrk/ws/abbot.plain/src/abbot/util/EventDispatchExceptionHandler.java (working copy)
+@@ -53,6 +53,12 @@
+             throw new IllegalStateException("Handler must not be installed from the event dispatch thread");
+         }
+ 
++        // Check if we don't want this hack
++        if (Boolean.getBoolean("abbot.util.do_not_install_handler")) {
++            Log.log("Skipped own handler for event dispatch exceptions installation");
++            return;
++        }
++
+         Class cls = getClass();
+         final String className = cls.getName();
+         try {
+Index: C:/mol/wrk/ws/abbot.plain/src/abbot/util/ExtendedTimerTask.java
+===================================================================
+--- C:/mol/wrk/ws/abbot.plain/src/abbot/util/ExtendedTimerTask.java (revision 0)
++++ C:/mol/wrk/ws/abbot.plain/src/abbot/util/ExtendedTimerTask.java (revision 0)
+@@ -0,0 +1,46 @@
++package abbot.util;
++
++import java.util.TimerTask;
++
++/**
++ * <code>ExtendedTimerTask</code> instances may be checked on cancellation state.
++ * This class must be a base for all timer tasks scheduled in <code>abbot.util.NamedTimer</code>
++ * @see abbot.util.NamedTimer
++ */
++public abstract class ExtendedTimerTask extends TimerTask {
++    /**
++     * 'false' initially, 'true' after cancel() invocation
++     */
++    private boolean cancelled;
++
++    /**
++     * Creates a new extended timer task
++     */
++    protected ExtendedTimerTask() {
++        super();
++    }
++
++    /**
++     * @see java.util.TimerTask#run()
++     */
++    public abstract void run();
++
++    /**
++     * @see java.util.TimerTask#cancel()
++     */
++    public boolean cancel() {
++        cancelled = true;
++        return super.cancel();
++    }
++
++    /**
++     * Returns this timer task's cancellation state
++     * 
++     * @return
++     *  <code>true</code> if this timer task has been cancelled
++     *  <code>false</code> otherwise 
++     */
++    public boolean isCancelled() {
++        return cancelled;
++    }
++}
+Index: C:/mol/wrk/ws/abbot.plain/src/abbot/util/NamedTimer.java
+===================================================================
+--- C:/mol/wrk/ws/abbot.plain/src/abbot/util/NamedTimer.java    (revision 2056)
++++ C:/mol/wrk/ws/abbot.plain/src/abbot/util/NamedTimer.java    (working copy)
+@@ -1,7 +1,6 @@
+ package abbot.util;
+ 
+ import java.util.Timer;
+-import java.lang.reflect.Field;
+ import java.util.TimerTask;
+ import java.util.Date;
+ import abbot.Log;
+@@ -21,7 +20,7 @@
+     /** Creates a named timer, optionally running as a daemon thread. */
+     public NamedTimer(final String name, boolean isDaemon) {
+         super(isDaemon);
+-        schedule(new TimerTask() {
++        schedule(new ExtendedTimerTask() {
+             public void run() {
+                 Thread.currentThread().setName(name);
+             }
+@@ -40,12 +39,17 @@
+     // cancel the wrapper when 
+ 
+     private class ProtectingTimerTask extends TimerTask {
+-        private TimerTask task;
++        private ExtendedTimerTask task;
++        /* <code>ProtectingTimerTask</code> ctor
++         * @param <code>orig</code> Timer task object to be wrapped
++         * @throws <code>java.lang.ClassCastException</code> if
++         * <code>orig</code> is not <code>ExtendedTimerTask</code> instance 
++         */
+         public ProtectingTimerTask(TimerTask orig) {
+-            this.task = orig;
++            this.task = (ExtendedTimerTask)orig;
+         }
+         public void run() {
+-            if (isCanceled()) {
++            if (task.isCancelled()) {
+                 cancel();
+             }
+             else {
+@@ -53,20 +57,6 @@
+                 catch(Throwable thrown) { handleException(thrown); }
+             }
+         }
+-        private boolean isCanceled() {
+-            boolean canceled = false;
+-            final int CANCELED = 3;
+-            try {
+-                Field f = TimerTask.class.getDeclaredField("state");
+-                f.setAccessible(true);
+-                int state = ((Integer)f.get(task)).intValue();
+-                canceled = state == CANCELED;
+-            }
+-            catch(Exception e) {
+-                Log.warn(e);
+-            }
+-            return canceled;
+-        }
+     }
+ 
+     public void schedule(TimerTask task, Date time) {
+
+ 	  	 

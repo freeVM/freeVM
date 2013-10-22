@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>JSF Integration Examples</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:18:46
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <!--  todo: make header variable -->
+  
+
+  
+  
+  	<h1>Modify Employee</h1>
+  	
+  	<form id="_idJsp0" name="_idJsp0" method="post" action="/struts2-showcase-2.0.6/jsf/employee/edit.action" enctype="application/x-www-form-urlencoded">
+  		<input type="hidden" id="_idJsp0:_idJsp1" name="_idJsp0:_idJsp1" value="" />
+  		<table border="0"><tbody><tr><td>Employee Id:</td><td><input id="_idJsp0:id" name="_idJsp0:id" type="text" value="" size="5" /></td><td></td></tr>
+<tr><td>First Name:</td><td><input id="_idJsp0:firstName" name="_idJsp0:firstName" type="text" value="" size="30" /></td><td></td></tr>
+<tr><td>Last Name:</td><td><input id="_idJsp0:lastName" name="_idJsp0:lastName" type="text" value="" size="30" /></td><td></td></tr>
+<tr><td>Salary:</td><td><input id="_idJsp0:salary" name="_idJsp0:salary" type="text" value="" size="10" /></td><td></td></tr>
+<tr><td>Married:</td><td><input type="checkbox" name="_idJsp0:married" id="_idJsp0:married" value="true" /></td><td></td></tr>
+<tr><td>Position:</td><td><select id="_idJsp0:position" name="_idJsp0:position" size="1">	<option value="Developer">Developer</option>	<option value="System Architect">System Architect</option>	<option value="Sales Manager">Sales Manager</option>	<option value="CEO">CEO</option></select></td><td></td></tr>
+<tr><td>Main Skill:</td><td><select id="_idJsp0:mainSkill" name="_idJsp0:mainSkill" size="1">	<option value="WW-JUN">Struts Junior Developer</option>	<option value="SPRING-DEV">Spring Developer</option>	<option value="WW-SEN">Struts Senior Developer</option></select></td><td></td></tr>
+<tr><td>Other Skills:</td><td><select id="_idJsp0:otherSkills" name="_idJsp0:otherSkills" multiple="true" size="-2147483648">	<option value="WW-JUN">Struts Junior Developer</option>	<option value="SPRING-DEV">Spring Developer</option>	<option value="WW-SEN">Struts Senior Developer</option></select></td><td></td></tr>
+<tr><td>Password:</td><td><input type="password" id="_idJsp0:password" name="_idJsp0:password" /></td><td></td></tr>
+<tr><td>Level:</td><td><table id="_idJsp0:level"><tr>		<td><label><input type="radio" name="_idJsp0:level" value="Junior" />&#160;Junior</label></td>		<td><label><input type="radio" name="_idJsp0:level" value="Senior" />&#160;Senior</label></td>		<td><label><input type="radio" name="_idJsp0:level" value="Master" />&#160;Master</label></td></tr></table></td><td></td></tr>
+<tr><td>Comment:</td><td><textarea name="_idJsp0:comment" id="_idJsp0:comment" cols="50" rows="3"></textarea></td><td></td></tr>
+</tbody></table>
+  		
+  		<input id="_idJsp0:_idJsp29" name="_idJsp0:_idJsp29" type="submit" value="Save" onclick="clear__5FidJsp0();" />
+  		<br /><br />
+  		
+  			
+  		<a id="_idJsp0:_idJsp30" href="list.action">Back</a>
+  	<input type="hidden" name="_idJsp0_SUBMIT" value="1" /><input type="hidden" name="jsf_sequence" value="6" /><input type="hidden" name="_idJsp0:_link_hidden_" /><script type="text/javascript"><!--
+function clear__5FidJsp0() {
+  var f = document.forms['_idJsp0'];
+  f.elements['_idJsp0:_link_hidden_'].value='';
+  f.target='';
+}
+clear__5FidJsp0();
+//--></script></form>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts-jsf.xml:28&className=org.apache.struts2.showcase.jsf.JsfEmployeeAction&page=/jsf/employee/null">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>
