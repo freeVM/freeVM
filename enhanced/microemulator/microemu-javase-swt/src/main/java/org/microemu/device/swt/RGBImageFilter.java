@@ -1,0 +1,77 @@
+/*
+ *  Licensed to the Apache Software Foundation (ASF) under one
+ *  or more contributor license agreements.  See the NOTICE file
+ *  distributed with this work for additional information
+ *  regarding copyright ownership.  The ASF licenses this file
+ *  to you under the Apache License, Version 2.0 (the
+ *  "License"); you may not use this file except in compliance
+ *  with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ */
+ 
+package org.microemu.device.swt;
+
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.microemu.app.ui.swt.ImageFilter;
+import org.microemu.app.ui.swt.SwtDeviceComponent;
+import org.microemu.device.DeviceFactory;
+
+
+
+public final class RGBImageFilter implements ImageFilter
+{
+
+  private double Rr, Rg, Rb;
+  private Color backgroundColor;
+  private Color foregroundColor;
+  
+
+  public RGBImageFilter()
+	{
+    backgroundColor = SwtDeviceComponent.getColor(new RGB(
+    		((SwtDeviceDisplay) DeviceFactory.getDevice().getDeviceDisplay()).getBackgroundColor().getRed(),
+    		((SwtDeviceDisplay) DeviceFactory.getDevice().getDeviceDisplay()).getBackgroundColor().getGreen(),
+    		((SwtDeviceDisplay) DeviceFactory.getDevice().getDeviceDisplay()).getBackgroundColor().getBlue()));
+    foregroundColor = SwtDeviceComponent.getColor(new RGB(
+    		((SwtDeviceDisplay) DeviceFactory.getDevice().getDeviceDisplay()).getForegroundColor().getRed(),
+    		((SwtDeviceDisplay) DeviceFactory.getDevice().getDeviceDisplay()).getForegroundColor().getGreen(),
+    		((SwtDeviceDisplay) DeviceFactory.getDevice().getDeviceDisplay()).getForegroundColor().getBlue()));
+    Rr = foregroundColor.getRed() - backgroundColor.getRed();
+    Rg = foregroundColor.getGreen() - backgroundColor.getGreen();
+    Rb = foregroundColor.getBlue() - backgroundColor.getBlue();
+  }
+
+
+  public RGB filterRGB (int x, int y, RGB rgb)
+	{
+    int r, g, b;
+
+    if (Rr > 0) {
+      r = (int) (rgb.red * Rr) / 255 + backgroundColor.getRed();
+    } else {
+      r = (int) (rgb.red * -Rr) / 255 + foregroundColor.getRed();
+    }
+    if (Rr > 0) {
+      g = (int) (rgb.green * Rg) / 255 + backgroundColor.getGreen();
+    } else {
+      g = (int) (rgb.green * -Rg) / 255 + foregroundColor.getGreen();
+    }
+    if (Rr > 0) {
+      b = (int) (rgb.blue * Rb) / 255 + backgroundColor.getBlue();
+    } else {
+      b = (int) (rgb.blue * -Rb) / 255 + foregroundColor.getBlue();
+    }
+
+    return new RGB(r, g, b);
+  }
+
+}
