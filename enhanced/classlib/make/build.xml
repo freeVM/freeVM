@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+     
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+     Build source and lay out results in the required format
+     ====================================================================== -->
+<project name="build-contribution" default="default" basedir="..">
+    <description>
+    	Build contributed source and lay out results in the required format 
+    </description>
+
+    <!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="default" depends="clean, build" />
+
+    <target name="build">
+        <echo>
+========================================
+Building Java component archives...
+========================================
+</echo>
+        <ant antfile="make/build-java.xml" inheritall="false" target="build"/>
+
+        <echo>
+========================================
+Building native libs and executables...
+========================================
+</echo>
+        <ant antfile="native-src/build.xml" inheritall="false" target="build"/>
+    </target>
+
+    <target name="test">
+        <echo>
+========================================
+Testing class libraries...
+========================================
+</echo>
+        <ant antfile="make/build-test.xml" inheritall="false" target="test-all"/>
+    </target>
+
+
+    <!-- ================================= 
+          target: doc             
+         ================================= -->
+    <target name="doc">
+        <echo>
+========================================
+Generating HTML using Doxygen...
+========================================
+</echo>
+        <ant antfile="doc/build.xml" inheritall="false" />
+    </target>
+
+    <!-- ================================= 
+          target: clean
+         ================================= -->
+    <target name="clean">
+        <ant antfile="make/build-java.xml" inheritall="false" target="clean" />
+        <ant antfile="native-src/build.xml" inheritall="false" target="clean" />
+        <!-- Removed this for now since svn diff complains with
+             svn: Working copy 'doc/kernel_doc' is missing or not locked
+             if we run it.  We shouldn't really clean things that are in the
+             repository.
+             <ant antfile="doc/build.xml" inheritall="false" target="clean" />
+         -->
+    </target>
+
+    <!-- ================================= 
+          target: properties
+         ================================= -->
+    <target name="properties"
+            depends="common-properties, unix-properties, windows-properties" />
+
+    <!-- ================================= 
+          target: common-properties
+         ================================= -->
+    <target name="common-properties">
+        <xmlproperty file=".svn/entries" prefix="svn" />
+        <property name="svn.revision"
+                  value="${svn.wc-entries.entry(revision)}" />
+        <property name="deploy.file.prefix"
+                  value="harmony-classlib-r${svn.revision}" />
+        <condition property="is.win" value="true">
+            <os family="Windows" />
+        </condition>
+        <condition property="is.unix" value="true">
+            <os name="linux" />
+        </condition>
+    </target>
+
+    <!-- ================================= 
+          target: unix-properties
+         ================================= -->
+    <target name="unix-properties" if="is.unix">
+        <property name="deploy.tar"
+                  value="${deploy.file.prefix}-${os.name}-${os.arch}-snapshot.tar.gz" />
+    </target>
+
+    <!-- ================================= 
+          target: windows-properties
+         ================================= -->
+    <target name="windows-properties" if="is.win">
+        <property name="deploy.zip"
+                  value="${deploy.file.prefix}-win-${os.arch}-snapshot.zip" />
+    </target>
+
+    <!-- ================================= 
+          target: snapshot
+         ================================= -->
+    <target name="snapshot" depends="snapshot-tar, snapshot-zip" />
+
+    <!-- ================================= 
+          target: snapshot-tar
+         ================================= -->
+    <target name="snapshot-tar" depends="default, properties" if="is.unix">
+        <echo>
+========================================
+Generating snapshot tar
+========================================
+</echo>
+        <tar destfile="${deploy.tar}" compression="gzip">
+            <tarfileset dir="${basedir}" prefix="Harmony">
+                <include name="LICENSE" />
+                <include name="THIRD_PARTY_NOTICES.txt" />
+                <include name="deploy/**" />
+                <exclude name="deploy/jre/bin/default/**" /> 
+                <exclude name="deploy/jre/bin/java" /> 
+            </tarfileset>
+            <tarfileset dir="${basedir}" prefix="Harmony" mode="755">
+                <include name="deploy/jre/bin/java" />
+            </tarfileset>
+            <tarfileset dir="${basedir}/make/resources"
+                includes="README-snapshot.txt"
+                fullpath="Harmony/README"/>
+        </tar>
+    </target>
+
+    <!-- ================================= 
+          target: snapshot-zip
+         ================================= -->
+    <target name="snapshot-zip" depends="default, properties" if="is.win">
+        <echo>
+========================================
+Generating snapshot zip
+========================================
+</echo>
+        <zip destfile="${deploy.zip}">
+            <zipfileset dir="${basedir}" prefix="Harmony">
+                <include name="LICENSE" />
+                <include name="THIRD_PARTY_NOTICES.txt" />
+                <include name="deploy/**" />
+                <exclude name="deploy/jre/bin/default/**" /> 
+            </zipfileset>
+            <zipfileset dir="${basedir}/make/resources"
+                includes="README-snapshot.txt"
+                fullpath="Harmony/README.txt"/>
+        </zip>
+    </target>
+
+</project>

@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright 1998, 2005 The Apache Software Foundation or its licensors, as applicable
+     
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+     build-java-source    
+     Compile the Java source and package in component archives.
+     ====================================================================== -->
+<project name="build-java-source" default="default" basedir="..">
+    <description>
+		Compile the Java source and package in component archives.
+    </description>
+
+    <!-- Users need to set this property to use a different compiler -->
+    <!-- To use the eclipse compiler set the value of the below      -->
+    <!-- property to be "org.eclipse.jdt.core.JDTCompilerAdapter"    -->
+    <!-- This requires that the CLASSPATH of the environment where   -->
+    <!-- this Ant is running includes the Eclipse archives           -->
+    <!-- jdtCompilerAdapter.jar and org.eclipse.jdt.core_3.1.0.jar   -->
+    <property name="build.compiler" value="modern" />
+
+    <property name="build.output" location="build" />
+    <property name="depends.jars" location="depends/jars" />
+    <property name="depends.files" location="depends/files" />
+    <property name="components.patternsets" location="make/patternsets" />
+    <property name="components.output" location="build/components" />
+    <property name="target.output" location="deploy" />
+    <property file="make/depends.properties" />
+
+
+    <!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="default" 
+        description="Compile the Java source and package in component archives." 
+        depends="clean, build" />
+
+    <!-- ================================= 
+          target: build
+         ================================= -->
+    <target name="build" depends="compile, package, layout" />
+
+    <!-- ================================= 
+          target: clean            
+         ================================= -->
+    <target name="clean" depends="clean-bin, clean-layout, clean-package" />
+
+
+    <!-- ================================= 
+          target: clean-bin              
+         ================================= -->
+    <target name="clean-bin" description="Delete all built classes">
+        <delete includeemptydirs="true" failonerror="false">
+            <fileset dir="${build.output}">
+                <include name="**/**" />
+            </fileset>
+        </delete>
+    </target>
+
+    <!-- ================================= 
+          target: clean-package
+         ================================= -->
+    <target name="clean-package" description="Delete all built component jars">
+        <delete includeemptydirs="true" failonerror="false">
+            <fileset dir="${components.output}">
+                <include name="**/**" />
+            </fileset>
+        </delete>
+    </target>
+
+    <!-- ================================= 
+          target: package
+         ================================= -->
+    <target name="package" depends="compile" description="Create component jars">
+        <mkdir dir="${components.output}" />
+
+        <!-- Create applet jar -->
+        <jar destfile="${components.output}/applet.jar"
+        	manifest="modules/applet/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/applet.txt" />
+        </jar>
+
+        <!-- Create archive jar -->
+        <jar destfile="${components.output}/archive.jar"
+        	manifest="modules/archive/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/archive.txt" />
+        </jar>
+
+        <!-- Create awt jar -->
+        <jar destfile="${components.output}/awt.jar"
+        	manifest="modules/awt/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/awt.txt" />
+        </jar>
+
+        <!-- Create beans jar -->
+        <jar destfile="${components.output}/beans.jar"
+        	manifest="modules/beans/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/beans.txt" />
+        </jar>
+
+        <!-- Create (non-functional) kernel jars (to compile against) -->
+        <jar destfile="${components.output}/luni-kernel-stubs.jar"
+        	manifest="modules/luni-kernel/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/luni-kernel.txt" />
+        </jar>
+        <jar destfile="${components.output}/security-kernel-stubs.jar"
+        	manifest="modules/security-kernel/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/security-kernel.txt" />
+        </jar>
+
+        <!-- Create luni jar -->
+        <jar destfile="${components.output}/luni.jar"
+        	manifest="modules/luni/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/luni.txt" 
+                excludesfile="${components.patternsets}/luni-kernel.txt" />
+        </jar>
+
+        <!-- Create nio jar -->
+        <jar destfile="${components.output}/nio.jar"
+        	manifest="modules/nio/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/nio.txt" />
+        </jar>
+
+        <!-- Create nio_char jar -->
+        <jar destfile="${components.output}/nio_char.jar"
+        	manifest="modules/nio_char/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/nio_char.txt" />
+        </jar>
+
+        <!-- Create security jar -->
+        <jar destfile="${components.output}/security.jar"
+        	manifest="modules/security/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/security.txt" 
+                excludesfile="${components.patternsets}/security-kernel.txt" />
+        </jar>
+
+        <!-- Create x-net jar -->
+        <jar destfile="${components.output}/x-net.jar"
+        	manifest="modules/x-net/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/x-net.txt"/>
+        </jar>
+
+        <!-- Create crypto jar -->
+        <jar destfile="${components.output}/crypto.jar"
+        	manifest="modules/crypto/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/crypto.txt"/>
+        </jar>
+
+        <!-- Create text jar -->
+        <jar destfile="${components.output}/text.jar"
+        	manifest="modules/text/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/text.txt"/>
+        </jar>
+
+        <!-- Create math jar -->
+        <jar destfile="${components.output}/math.jar"
+        	manifest="modules/math/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/math.txt"/>
+        </jar>
+
+        <!-- Create regex jar -->
+        <jar destfile="${components.output}/regex.jar"
+        	manifest="modules/regex/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/regex.txt" />
+        </jar>
+
+        <!-- Create rmi jar -->
+        <jar destfile="${components.output}/rmi.jar"
+        	manifest="modules/rmi/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}" 
+                includesfile="${components.patternsets}/rmi.txt" />
+        </jar>
+
+        <!-- Create sql jar -->
+        <jar destfile="${components.output}/sql.jar"
+        	manifest="modules/sql/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/sql.txt" />
+        </jar>
+
+        <!-- Create jndi jar -->
+        <jar destfile="${components.output}/jndi.jar"
+        	manifest="modules/jndi/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/jndi.txt" />
+        </jar>
+
+        <!-- Create logging jar -->
+        <jar destfile="${components.output}/logging.jar"
+        	manifest="modules/logging/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/logging.txt" />
+        </jar>
+
+        <!-- Create prefs jar -->
+        <jar destfile="${components.output}/prefs.jar"
+        	manifest="modules/prefs/META-INF/MANIFEST.MF">
+            <fileset dir="${build.output}"
+                includesfile="${components.patternsets}/prefs.txt" />
+        </jar>
+
+    </target>
+
+
+    <!-- =================================
+          target: compile
+         ================================= -->
+    <target name="compile" depends="copy-resources, prepare-depends"
+            description="Compile the source">
+        <mkdir dir="${build.output}" />
+
+        <javac destdir="${build.output}" source="1.4" target="1.4" debug="on">
+            <src path="modules/applet/src/main/java" />
+            <src path="modules/awt/src/main/java" />
+            <src path="modules/beans/src/main/java" />
+            <src path="modules/crypto/src/main/java" />
+            <src path="modules/regex/src/main/java" />
+            <src path="modules/math/src/main/java" />
+            <src path="modules/archive/src/main/java" />
+            <src path="modules/luni/src/main/java" />
+            <src path="modules/luni-kernel/src/main/java" />
+            <src path="modules/nio/src/main/java" />
+            <src path="modules/nio_char/src/main/java" />
+            <src path="modules/security/src/main/java/common" />
+            <src path="modules/security/src/main/java/windows" />
+            <src path="modules/security/src/main/java/linux" />
+            <src path="modules/security-kernel/src/main/java" />
+            <src path="modules/x-net/src/main/java/" />
+            <src path="modules/rmi/src/main/java" />
+            <src path="modules/sql/src/main/java" />
+            <src path="modules/text/src/main/java" />
+            <src path="modules/jndi/src/main/java" />
+            <src path="modules/logging/src/main/java" />
+            <src path="modules/prefs/src/main/java" />
+
+            <classpath location="${build.output}" />
+            <classpath>
+                <fileset dir="${depends.jars}">
+                    <include name="**/*.jar" />
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+
+    <!-- =================================
+          target: copy-resources
+         ================================= -->
+    <target name="copy-resources" description="Copy non-Java files under src tree to the build output">
+        <mkdir dir="${build.output}" />
+
+        <copy todir="${build.output}" includeemptydirs="false">
+            <fileset dir="modules/archive/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/applet/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/awt/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/beans/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/crypto/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/luni/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/nio/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/nio_char/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/security/src">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/text/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+            <fileset dir="modules/logging/src/main/java">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+
+    <!-- ================================= 
+          target: layout              
+         ================================= -->
+    <target name="layout" 
+        depends="package" 
+        description="Construct the correct directory structure for the class libs">
+        <!-- Create the structure -->
+        <mkdir dir="${target.output}/jre/bin" />
+        <mkdir dir="${target.output}/jre/lib/boot" />
+        <mkdir dir="${target.output}/jre/lib/ext" />
+        <mkdir dir="${target.output}/jre/lib/security" />
+
+        <!-- Copy across the dependency jars -->
+        <copy todir="${target.output}/jre/lib/boot" overwrite="yes"
+              verbose="yes">
+            <fileset dir="${depends.jars}">
+                <patternset includes="*.jar" />
+                <patternset includes="xerces_2.6.2/*.jar" />
+                <patternset includes="xalan-j_2.6.0/*.jar" />
+                <patternset includes="icu4j_3.4.4/*.jar" />
+
+            </fileset>
+        </copy>
+
+        <!-- Copy across the extension dependency jars -->
+        <copy todir="${target.output}/jre/lib/ext" overwrite="yes"
+              verbose="yes" flatten="yes">
+            <fileset file="${bcprov.jar}" />
+        </copy>
+
+        <!-- Copy across the component jars -->
+        <copy todir="${target.output}/jre/lib/boot" overwrite="yes">
+            <fileset dir="${components.output}">
+                <patternset includes="*.jar" />
+            </fileset>
+        </copy>
+
+        <!-- Copy across the support files -->
+        <copy todir="${target.output}/jre/lib/boot" overwrite="yes">
+            <fileset dir="${depends.files}">
+                <include name="bootclasspath.properties" />
+            </fileset>
+        </copy>
+        <fixcrlf srcdir="${target.output}/jre/lib/boot"
+            includes="bootclasspath.properties" />
+
+        <!-- NLS catalog files -->
+        <copy todir="${target.output}/jre/bin" overwrite="yes">
+            <fileset dir="${depends.files}">
+                <include name="harmony*.properties" />
+            </fileset>
+        </copy>
+
+        <copy todir="${target.output}/jre/lib/security" overwrite="yes">
+             <fileset dir="${depends.files}">
+                 <include name="java.policy" />
+                 <include name="java.security" />
+             </fileset>
+         </copy>
+   	
+<!-- TOFIX: logging.properties file needs copying to jre/lib -->
+    	
+    </target>
+
+
+    <!-- ================================= 
+          target: clean-layout              
+         ================================= -->
+    <target name="clean-layout">
+        <delete includeemptydirs="true" failonerror="false">
+            <fileset dir="${target.output}">
+                <exclude name="jre/bin/default/**" />
+                <exclude name="jre/lib/ext/**" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="prepare-depends"
+    	    description="Check for jars required to compile prefs">
+    	
+      <ant antfile="make/depends.xml" inheritall="false" target="check"/>
+
+    </target>
+
+</project>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+
+  Copyright 2006 The Apache Software Foundation or its
+  licensors, as applicable
+     
+  Licensed under the Apache License, Version 2.0 (the "License"); you
+  may not use this file except in compliance with the License.  You
+  may obtain a copy of the License at
+     
+      http://www.apache.org/licenses/LICENSE-2.0
+     
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+  implied.  See the License for the specific language governing
+  permissions and limitations under the License.
+
+ -->
+
+<project name="dependencies" default="check" basedir="..">
+    <description>
+    Confirm that dependencies are present and fetch missing dependencies
+    where possible.
+    </description>
+
+    <property file="make/depends.properties" />
+    <import file="${basedir}/make/properties.xml" />
+
+    <target name="check">
+
+	<check-one-file src="${xalan.url}" dest="${xalan.jar}" />
+
+	<check-one-file src="${resolver.url}" dest="${resolver.jar}" />
+
+	<check-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}" />
+
+	<check-one-file src="${xml.apis.url}" dest="${xml.apis.jar}" />
+
+	<check-one-file src="${junit.url}" dest="${junit.jar}" />
+
+	<check-one-file src="${bcprov.url}" dest="${signed.bcprov.jar}" />
+
+	<check-one-file src="${icu4j.url}" dest="${icu4j.jar}" />
+
+	<uptodate property="bcprov.uptodate"
+                  srcfile="${signed.bcprov.jar}"
+                  targetfile="${bcprov.jar}" />
+	<antcall target="create-unsigned-bcprov-jar" />
+
+        <antcall target="check-win" />
+
+    </target>
+
+    <target name="check-win" if="is.windows">
+        
+	<check-one-file src="${msvcr71.url}" dest="${msvcr71.dll}" />
+
+    </target>
+
+    <target name="download" description="Download required jars">
+
+	<mkdir dir="${xalan.dir}" />
+	<download-one-file src="${xalan.url}" dest="${xalan.jar}"
+                           md5="${xalan.md5}" />
+
+	<mkdir dir="${xerces.dir}" />
+	<download-one-file src="${resolver.url}" dest="${resolver.jar}"
+                           md5="${resolver.md5}" />
+
+	<download-one-file src="${xerces.impl.url}" dest="${xerces.impl.jar}"
+                           md5="${xerces.impl.md5}" />
+
+	<download-one-file src="${xml.apis.url}" dest="${xml.apis.jar}"
+                           md5="${xml.apis.md5}" />
+
+	<mkdir dir="${junit.dir}" />
+	<download-one-file src="${junit.url}" dest="${junit.jar}"
+                           md5="${junit.md5}" />
+
+	<mkdir dir="${bcprov.dir}" />
+	<download-one-file src="${bcprov.url}" dest="${signed.bcprov.jar}"
+                           md5="${signed.bcprov.md5}" />
+
+	<mkdir dir="${icu4j.dir}" />
+	<download-one-file src="${icu4j.url}" dest="${icu4j.jar}"
+                           md5="${icu4j.md5}" />
+
+        <antcall target="download-win" />
+
+    </target>
+
+    <target name="download-win" if="is.windows">
+        
+	<download-one-file src="${msvcr71.url}" dest="${msvcr71.dll}"
+                           md5="${msvcr71.md5}" />
+
+    </target>
+
+    <macrodef name="download-one-file">
+        <attribute name="src" />
+        <attribute name="dest" />
+        <attribute name="md5" />
+        <sequential>
+            <echo>Fetching @{dest}</echo>
+	    <get src="@{src}" dest="@{dest}" usetimestamp="true"
+                 verbose="true" />
+            <checksum file="@{dest}" property="new.md5" />
+            <condition property="md5.verified" value="true">
+                <equals arg1="${new.md5}" arg2="@{md5}" />
+            </condition>
+            <antcall target="remove-file-if-bad">
+                <param name="jar" value="@{dest}" />
+            </antcall>
+	    <fail unless="md5.verified">
+...
+
+File @{dest} has incorrect md5 checksum.  Expected:
+  @{md5}
+found:
+  ${new.md5}
+
+            </fail>
+            <echo>Checksum verified (${md5.verified})</echo>
+        </sequential>
+    </macrodef>
+
+    <target name="remove-file-if-bad" unless="md5.verified">
+        <delete file="${dest}" />
+    </target>
+
+    <macrodef name="check-one-file">
+        <attribute name="src" />
+        <attribute name="dest" />
+        <sequential>
+            <echo>Checking for @{dest}</echo>
+	    <available file="@{dest}" type="file"
+                       property="@{dest}.exists" />
+	    <fail>
+		<condition>
+		    <not>
+			<isset property="@{dest}.exists" />
+		    </not>
+		</condition>
+...
+
+Missing dependency.  The jar from:
+
+  @{src}
+
+should be downloaded to:
+
+  @{dest}
+
+Run "ant -f make/depends.xml download" to automatically fetch
+dependencies.  Note: Some of Harmony's dependencies are licensed under
+terms other than the ASLv2.
+            </fail>
+        </sequential>
+    </macrodef>
+
+    <target name="create-unsigned-bcprov-jar" unless="bcprov.uptodate">
+        <echo>Removing signature from bcprov.jar</echo>
+	<delete dir="${bcprov.dir}/temp" />
+	<unzip src="${signed.bcprov.jar}" dest="${bcprov.dir}/temp">
+	    <patternset>
+		<exclude name="META-INF/BCKEY.SF" />
+	    </patternset>
+	</unzip>
+	<jar destfile="${bcprov.jar}" basedir="${bcprov.dir}/temp"
+             manifest="${bcprov.dir}/temp/META-INF/MANIFEST.MF" />
+	<delete dir="${bcprov.dir}/temp" />
+    </target>
+</project>
