@@ -1,0 +1,442 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:18:39
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/hangman/hangmanAjax.ftl</h3>
+<pre>
+
+1: 
+2: &lt;html&gt;
+3: &lt;head&gt;
+4: 	&lt;title&gt;Showcase - Hangman&lt;/title&gt;
+5: 	&lt;@s.head theme=&quot;ajax&quot; debug=&quot;false&quot; /&gt;
+6: &lt;/head&gt;
+7: &lt;body&gt;
+8: 
+9: &lt;script&gt;
+10:     function destroyWidgets() {
+11:       var div = dojo.byId(&quot;updateCharacterAvailableDiv&quot;);
+12:       var anchors = div.getElementsByTagName(&quot;a&quot;);
+13:       dojo.lang.forEach(anchors, function(anchor){
+14:       	var widget = dojo.widget.byId(anchor);
+15:       	widget.destroy();
+16:       });
+17:     }
+18: 
+19: 	var _listeners = {
+20: 		   guessMade: function(sourceId, type) {
+21: 		        if(type == &quot;before&quot;) {
+22: 			   		this.guessMadeFunc(sourceId);
+23: 			   		this.updateCharacterAvailable(sourceId);
+24: 			   		this.updateVocab(sourceId);
+25: 			   		this.updateScaffold(sourceId);
+26: 			   		this.updateGuessLeft(sourceId);
+27: 		   		}
+28: 		   },
+29: 	       guessMadeFunc: function(sourceId) {
+30: 	       				var requestAttr = { character: sourceId };
+31: 						dojo.io.bind({
+32: 							url: &quot;&lt;@s.url action=&quot;guessCharacter&quot; namespace=&quot;/hangman&quot; /&gt;&quot;,
+33: 							load: function(type, data, event) {
+34: 
+35: 							},
+36: 							mimetype: &quot;text/html&quot;,
+37: 							content: requestAttr
+38: 						});
+39: 	       			},
+40: 	       updateCharacterAvailable: function(sourceId) {
+41: 	       				dojo.io.bind({
+42: 	       					url: &quot;&lt;@s.url action=&quot;updateCharacterAvailable&quot; namespace=&quot;/hangman/ajax&quot; /&gt;&quot;,
+43: 	       					load: function(type, data, event) {
+44: 	       						var div = dojo.byId(&quot;updateCharacterAvailableDiv&quot;);
+45: 	       						destroyWidgets();
+46: 	       						div.innerHTML = data;
+47: 
+48: 	       						try{
+49:                         			var xmlParser = new dojo.xml.Parse();
+50:                         			var frag  = xmlParser.parseElement(div, null, true);
+51:                         			dojo.widget.getParser().createComponents(frag);
+52:                         			// eval any scripts being returned
+53:                         			var scripts = div.getElementsByTagName('script');
+54:                         			for (var i=0; i&lt;scripts.length; i++) {
+55:                             			eval(scripts[i].innerHTML);
+56:                         			}
+57:                     			}
+58:                     			catch(e){
+59:                     				alert('dojo error '+e);
+60:                         			dojo.debug(&quot;auto-build-widgets error: &quot;+e);
+61:                     			}
+62: 	       					},
+63: 	       					mimetype: &quot;text/html&quot;
+64: 	       				});
+65: 	       			},
+66: 	       	updateVocab: function(sourceId) {
+67: 	       			dojo.io.bind({
+68: 	       				url: &quot;&lt;@s.url action=&quot;updateVocabCharacters&quot; namespace=&quot;/hangman/ajax&quot; /&gt;&quot;,
+69: 	       				load: function(type, data, event) {
+70: 	       					var div = dojo.byId(&quot;updateVocabDiv&quot;);
+71: 	       					div.innerHTML = data;
+72: 
+73: 	       					try {
+74: 	       						var xmlParser = new dojo.xml.Parse();
+75: 	       						var frag = xmlParser.parseElement(div, null, true);
+76: 
+77: 	       						var scripts = div.getElementsByTagName(&quot;script&quot;);
+78: 	       						for(var i=0; i&lt;scripts.length; i++) {
+79: 	       							eval(scripts[i].innerHTML);
+80: 	       						}
+81: 	       					}
+82: 	       					catch(e) {
+83: 	       						alert(&quot;dojo error&quot;+e);
+84: 	       						dojo.debug(&quot;auto-build-widgets error: &quot;+e);
+85: 	       					}
+86: 	       				},
+87: 	       				mimetype: &quot;text/html&quot;
+88: 	       			});
+89: 	       		},
+90: 	       	updateScaffold: function(sourceId) {
+91: 	       		dojo.io.bind({
+92: 	       			url: &quot;&lt;@s.url action=&quot;updateScaffold&quot; namespace=&quot;/hangman/ajax&quot; /&gt;&quot;,
+93: 	       			load: function(type, data, event) {
+94: 	       				var div = dojo.byId(&quot;updateScaffoldDiv&quot;);
+95: 	       				div.innerHTML = data;
+96: 
+97: 	       				try {
+98: 	       					var xmlParser = new dojo.xml.Parse();
+99: 	       					var frag = xmlParser.parseElement(div, null, true);
+100: 
+101: 	       					var scripts = div.getElementsByTagName(&quot;script&quot;);
+102: 	       					for(var i=0; i&lt;scripts.length; i++) {
+103: 	       							eval(scripts[i].innerHTML);
+104: 	       					}
+105: 	       				}
+106: 	       				catch(e) {
+107: 	       					alert(&quot;dojo error&quot;+e);
+108: 	       					dojo.debug(&quot;auto-build-widgets error: &quot;+e);
+109: 	       				}
+110: 	       			},
+111: 	       			mimetype: &quot;text/html&quot;
+112: 	       		});
+113: 	       	},
+114: 	       	updateGuessLeft: function(sourceId) {
+115: 	       		dojo.io.bind({
+116: 	       			url: &quot;&lt;@s.url action=&quot;updateGuessLeft&quot; namespace=&quot;/hangman/ajax&quot; /&gt;&quot;,
+117: 	       			load: function(type, data, event) {
+118: 	       				var div = dojo.byId(&quot;updateGuessLeftDiv&quot;);
+119: 	       				div.innerHTML = data;
+120: 
+121: 	       				try {
+122: 	       					var xmlParser = new dojo.xml.Parse();
+123: 	       					var frag = xmlParser.parseElement(div, null, true);
+124: 
+125: 	       					var scripts = div.getElementsByTagName(&quot;script&quot;);
+126: 	       					for(var i=0; i&lt;scripts.length; i++) {
+127: 	       							eval(scripts[i].innerHTML);
+128: 	       					}
+129: 	       				}
+130: 	       				catch(e) {
+131: 	       					alert(&quot;dojo error&quot;+e);
+132: 	       					dojo.debug(&quot;auto-build-widgets error: &quot;+e);
+133: 	       				}
+134: 	       			},
+135: 	       			mimetype: &quot;text/html&quot;
+136: 	       		});
+137: 	       	}
+138: 	    };
+139: 	dojo.event.topic.subscribe(&quot;topicGuessMade&quot;, _listeners, &quot;guessMade&quot;);
+140: &lt;/script&gt;
+141: 
+142: &lt;table bgcolor=&quot;green&quot;&gt;
+143:   &lt;tr&gt;
+144:     &lt;td&gt;
+145:     &lt;@s.url id=&quot;url&quot; value=&quot;/hangman/images/hangman.png&quot; /&gt;
+146:     &lt;img alt=&quot;Hangman&quot; src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot;
+147:            width=&quot;197&quot; height=&quot;50&quot; border=&quot;0&quot;/&gt;
+148:     &lt;/td&gt;
+149:     &lt;td width=&quot;70&quot; align=&quot;right&quot;&gt;
+150:       &lt;#-- Guesses Left --&gt;
+151:       &lt;div id=&quot;updateGuessLeftDiv&quot;&gt;
+152:       &lt;@s.set name=&quot;guessLeftImageName&quot; value=&quot;%{'Chalkboard_'+hangman.guessLeft()+'.png'}&quot; /&gt;
+153:       &lt;@s.url id=&quot;url&quot; value=&quot;%{'/hangman/images/'+#guessLeftImageName}&quot; /&gt;
+154:       &lt;img alt=&quot;No. Guesses Left&quot;
+155:       	   src=&quot;&lt;@s.property value=&quot;%{#url}&quot;/&gt;&quot; width=&quot;20&quot; height=&quot;20&quot; border=&quot;0&quot; /&gt;
+156:       &lt;/div&gt;
+157:     &lt;/td&gt;
+158:     &lt;td&gt;
+159:     	&lt;@s.url id=&quot;url&quot; value=&quot;/hangman/images/guesses-left.png&quot; /&gt;
+160:     	&lt;img alt=&quot;Guesses Left&quot;
+161:             src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot; width=&quot;164&quot; height=&quot;11&quot; border=&quot;0&quot;/&gt;
+162:     &lt;/td&gt;
+163:   &lt;/tr&gt;
+164:   &lt;tr&gt;
+165:   	&lt;td&gt;&lt;/td&gt;
+166:     &lt;td align=&quot;left&quot;&gt;
+167:     &lt;#-- Display Scaffold --&gt;
+168:   	&lt;div id=&quot;updateScaffoldDiv&quot;&gt;
+169:     	&lt;@s.set name=&quot;scaffoldImageName&quot; value=&quot;%{'scaffold_'+hangman.guessLeft()+'.png'}&quot; /&gt;
+170:     	&lt;@s.url id=&quot;url&quot; value=&quot;%{'/hangman/images/'+#scaffoldImageName}&quot; /&gt;
+171:     	&lt;img src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot; border=&quot;0&quot;/&gt;
+172:     &lt;/div&gt;
+173:     &lt;/td&gt;
+174:     &lt;td&gt;&lt;/td&gt;
+175:     &lt;/tr&gt;
+176:   &lt;tr&gt;
+177:     &lt;td width=&quot;160&quot;&gt;
+178:       &lt;p align=&quot;right&quot;&gt;
+179:       	&lt;@s.url id=&quot;url&quot; value=&quot;/hangman/images/guess.png&quot; /&gt;
+180:         &lt;img alt=&quot;Current Guess&quot; src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot;
+181:            align=&quot;MIDDLE&quot; width=&quot;127&quot; height=&quot;20&quot; border=&quot;0&quot;/&gt;&lt;/p&gt;
+182:     &lt;/td&gt;
+183:     &lt;td&gt;
+184:     &lt;#-- Display Vacab  --&gt;
+185:     &lt;div id=&quot;updateVocabDiv&quot;&gt;
+186:     &lt;@s.iterator id=&quot;currentCharacter&quot; value=&quot;%{hangman.vocab.inCharacters()}&quot; stat=&quot;stat&quot;&gt;
+187:     	&lt;#if hangman.characterGuessedBefore(currentCharacter)&gt;
+188:     		&lt;@s.set name=&quot;chalkboardImageName&quot; value=&quot;%{'Chalkboard_'+#currentCharacter.toString()+'.png'}&quot; /&gt;
+189:     		&lt;@s.url id=&quot;url&quot; value=&quot;%{'/hangman/images/'+#chalkboardImageName}&quot; /&gt;
+190:     		&lt;img height=&quot;36&quot; alt=&quot;&lt;@s.property value=&quot;%{#currentCharacter}&quot; /&gt;&quot;
+191:         		src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot; width=&quot;36&quot; border=&quot;0&quot;/&gt;
+192:     	&lt;#else&gt;
+193:     		&lt;@s.url id=&quot;url&quot; value=&quot;/hangman/images/Chalkboard_underscroll.png&quot; /&gt;
+194:     		&lt;img height=&quot;36&quot; alt=&quot;_&quot;
+195:         		src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot; width=&quot;36&quot; border=&quot;0&quot;/&gt;
+196:     	&lt;/#if&gt;
+197: 	&lt;/@s.iterator&gt;
+198: 	&lt;/div&gt;
+199:     &lt;/td&gt;
+200:   &lt;/tr&gt;
+201:   &lt;tr&gt;
+202:     &lt;td valign=&quot;top&quot;&gt;
+203:       &lt;p align=&quot;right&quot;&gt;
+204:       	&lt;@s.url id=&quot;url&quot; value=&quot;/hangman/images/choose.png&quot; /&gt;
+205:         &lt;img alt=&quot;Choose&quot; src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot;
+206:              height=&quot;20&quot; width=&quot;151&quot; border=&quot;0&quot;/&gt;
+207:       &lt;/p&gt;
+208:     &lt;/td&gt;
+209:     &lt;td width=&quot;330&quot;&gt;
+210: 
+211:     &lt;#-- Show Characters Available --&gt;
+212:     &lt;div id=&quot;updateCharacterAvailableDiv&quot;&gt;
+213: 	&lt;@s.iterator id=&quot;currentCharacter&quot; value=&quot;%{hangman.charactersAvailable}&quot; status=&quot;stat&quot;&gt;
+214:       &lt;@s.set name=&quot;chalkboardImageName&quot; value=&quot;%{'Chalkboard_'+#currentCharacter+'.png'}&quot; /&gt;
+215:       &lt;@s.url id=&quot;chalkboardImageUrl&quot; value=&quot;%{'/hangman/images/'+#chalkboardImageName}&quot; /&gt;
+216:       &lt;@s.url id=&quot;spacerUrl&quot; value=&quot;/hangman/images/letter-spacer.png&quot; /&gt;
+217: 
+218:       &lt;@s.url id=&quot;blankUrl&quot; value=&quot;ajax/blank.action&quot; includeContext=&quot;false&quot; /&gt;
+219:       &lt;@s.a theme=&quot;ajax&quot;
+220:       		  href=&quot;%{blankUrl}&quot;
+221:       		  id=&quot;%{#currentCharacter}&quot;
+222:       		  notifyTopics=&quot;topicGuessMade&quot;
+223:       		  showErrorTransportText=&quot;true&quot;&gt;
+224:       	&lt;img height=&quot;36&quot; alt=&quot;&quot; src=&quot;&lt;@s.property value=&quot;%{#chalkboardImageUrl}&quot; /&gt;&quot; width=&quot;36&quot; border=&quot;0&quot; /&gt;
+225:       &lt;/@s.a&gt;
+226: 	&lt;/@s.iterator&gt;
+227: 	&lt;/div&gt;
+228: 
+229: 
+230:    &lt;/td&gt;
+231:   &lt;/tr&gt;
+232:   &lt;tr&gt;
+233:   	&lt;td&gt;
+234: 
+235:   	&lt;/td&gt;
+236:   &lt;/tr&gt;
+237: &lt;/table&gt;
+238: &lt;/body&gt;
+239: &lt;/html&gt;
+240: 
+241: 
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts-hangman.xml</h3>
+<pre>
+
+
+2: 
+3: &lt;!DOCTYPE struts PUBLIC
+4:     &quot;-//Apache Software Foundation//DTD Struts Configuration 2.0//EN&quot;
+5:     &quot;http://struts.apache.org/dtds/struts-2.0.dtd&quot;&gt;
+6: 
+7: &lt;struts&gt;
+8: 	&lt;package name=&quot;hangman&quot; extends=&quot;struts-default&quot; namespace=&quot;/hangman&quot;&gt;
+9: 		&lt;action name=&quot;hangmanMenu&quot;&gt;
+10: 			&lt;result type=&quot;freemarker&quot;&gt;/hangman/hangmanMenu.ftl&lt;/result&gt;
+11: 		&lt;/action&gt;
+<span style="background-color:yellow">12: 		&lt;action name=&quot;hangmanAjax&quot; class=&quot;startHangmanAction&quot;&gt;</span>
+13: 			&lt;result type=&quot;freemarker&quot;&gt;/hangman/hangmanAjax.ftl&lt;/result&gt;		
+14: 		&lt;/action&gt;
+15: 		&lt;action name=&quot;hangmanNonAjax&quot; class=&quot;startHangmanAction&quot;&gt;
+16: 			&lt;result type=&quot;freemarker&quot;&gt;/hangman/hangmanNonAjax.ftl&lt;/result&gt;
+17: 		&lt;/action&gt;
+18: 		&lt;action name=&quot;test&quot;&gt;
+19: 			&lt;result type=&quot;freemarker&quot;&gt;/hangman/test.ftl&lt;/result&gt;
+20: 		&lt;/action&gt;
+21: 		&lt;action name=&quot;guessCharacter&quot; class=&quot;guessCharacterAction&quot;&gt;
+22: 			&lt;result type=&quot;freemarker&quot;&gt;/hangman/blank.ftl&lt;/result&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>/startHangmanAction.java</h3>
+<pre>
+
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A12&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanAjax.ftl&amp;className=startHangmanAction">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

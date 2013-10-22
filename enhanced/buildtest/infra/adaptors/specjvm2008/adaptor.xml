@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License. -->
+
+<project name="specjvm2008" default="run" basedir=".">
+
+    <property name="work.dir" location="${results.dir}/${suite.name}"/>
+    <property name="output.log" value="${work.dir}/${suite.name}_output.txt"/>
+    
+    <target name="setup">
+        <description>${suite.name} setup</description>
+        <mkdir dir="${work.dir}"/>
+    </target>
+
+    <target name="run">
+        <description>${suite.name} run</description>
+
+        <echo file="${output.log}" message="Running of ${specjvm2008.spec.home} on ${specjvm2008.jdk.to.test.home} runtime...${line.separator}"/>
+        <echo file="${output.log}" message="Set of tests: ${specjvm2008.parameters.optional.tests}${line.separator}" append="true"/>
+
+        <exec executable="${specjvm2008.jdk.to.test.home}/bin/java" dir="${specjvm2008.spec.home}" append="true" failonerror="false">
+            <arg line="${specjvm2008.parameters.optional.tested.vm.options}"/>
+            <arg line="-jar SPECjvm2008.jar"/>
+            <arg line="-ikv"/>
+            <arg line="${specjvm2008.parameters.optional.tests}"/>
+            <redirector alwaysLog="true" output="${output.log}"/>
+        </exec>
+
+        <!-- count "number" of requested workloads -->
+        <echo file="${work.dir}/specjvm2008_tests.tmp">${specjvm2008.parameters.optional.tests}</echo>
+        <loadfile srcFile="${work.dir}/specjvm2008_tests.tmp" property="number.of.tests" failonerror="false">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\s*[\w\.]+\s*" replace="." flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </loadfile>
+
+        <!-- previously unset number.of.tests means the whole suite
+             run, so we set 38 dots --> 
+        <property name="number.of.tests"
+                  value="......................................" />
+
+        <!-- count "number" of executed workloads -->        
+        <copy file="${output.log}" tofile="${work.dir}/specjvm2008_runned_tests.tmp" overwrite="true" failonerror="false">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="Score on [\w\.]+:\s+[\d\.]+\s+ops/m"/>
+                </linecontainsregexp>
+                <tokenfilter>
+                    <replaceregex pattern="^.*$" replace="." flags="mg"/>
+                </tokenfilter>
+            </filterchain>
+        </copy>
+        <replaceregexp file="${work.dir}/specjvm2008_runned_tests.tmp" match="\r|\n" replace="" flags="sg"/>
+        <loadfile srcFile="${work.dir}/specjvm2008_runned_tests.tmp" property="number.of.runned.tests" failonerror="false"/>
+
+        <echo>Requested tests: (${number.of.tests})</echo>
+        <echo>Executed tests:  (${number.of.runned.tests})</echo>
+
+        <fail message="Not all workloads completed successfully">
+            <condition>
+                <not>
+                    <equals arg1="${number.of.tests}" arg2="${number.of.runned.tests}"/>
+                </not>
+            </condition>
+        </fail>
+
+    </target>
+
+    <target name="clean">
+        <description>${suite.name} clean</description>
+        <echo>${suite.name} clean does nothing.</echo>
+    </target>
+
+</project>

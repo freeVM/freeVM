@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License. -->
+
+<project name="config" default="generate-config" basedir=".">
+
+    <condition property="is.windows">
+        <os family="Windows" />
+    </condition>
+    <!-- temporary file to store intermediate results of iteration -->
+    <property name="tmp.file" location="${scripts.dir}/tmp.txt" />
+
+    <target name="generate-config">
+
+        <!--FIXME: delete dir="${config.dir}" /-->
+        <mkdir dir="${config.dir}" />
+
+        <!-- first stage: generate initial props -->
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="generate"
+                inheritall="true"
+                inheritrefs="true">
+            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
+        </subant>
+
+        <!-- second stage: re-generate properties
+             to expand required if there is a value set -->
+        <property name="all.props" location="${config.dir}/all.props" />
+        <concat destfile="${all.props}">
+            <fileset dir="${config.dir}" includes="*.properties" />
+            <filterchain>
+                <linecontainsregexp>
+                    <!-- filter out undefined props -->
+                    <regexp pattern="=[^$]" />
+                </linecontainsregexp>
+            </filterchain>
+        </concat>
+
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="re-generate"
+                inheritall="false"
+                inheritrefs="true">
+            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
+            <propertyset>
+                <propertyref name="all.props" />
+                <propertyref name="scripts.dir" />
+                <propertyref name="framework.local.configuration.file" />
+                <propertyref name="external.resources.location" />
+                <propertyset refid="global.build.parameters.id" />
+            </propertyset>
+        </subant>
+
+        <!-- third stage: extract required properties
+             to a separate file - 'required-parameters.properties'  -->
+        <ant antfile="${scripts.dir}/config.xml"
+             target="-gen-required-parameters"
+             inheritall="false">
+            <propertyset>
+                <propertyref name="all.props" />
+                <propertyref name="scripts.dir" />
+                <propertyref name="config.dir" />
+                <propertyref name="required.parameters.location" />
+                <!--propertyref name="framework.local.configuration.file" /-->
+                <propertyset refid="global.build.parameters.id" />
+            </propertyset>
+        </ant>
+
+        <!-- fourth stage: extract depends properties
+                 to a separate file - 'selected-suites.properties'  -->
+
+        <!-- get all 'depends' suites as a list -->
+        <loadfile property="depends.suites" srcfile="${all.props}">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="[^.]+\.parameters\.depends=" />
+                </linecontainsregexp>
+                <tokenfilter>
+                    <linetokenizer />
+                    <replaceregex pattern="[^.]+\.parameters\.depends=(.+)"
+                                  replace="\1," />
+                </tokenfilter>
+                <striplinebreaks />
+            </filterchain>
+        </loadfile>
+
+        <!-- check if the suites in the list were selected -->
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="-remove-if-not-selected"
+                inheritall="true"
+                inheritrefs="true">
+            <dirset dir="${adaptors.dir}" includes="${depends.suites}" />
+        </subant>
+
+        <!-- flash the list into the file -->
+        <echo message="" file="${selected.suites.configuration}" />
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="-flash-selected"
+                inheritall="false">
+            <dirset dir="${adaptors.dir}" includes="${test.suites}" />
+            <propertyset>
+                <propertyref name="selected.suites.configuration" />
+                <propertyref name="all.props" />
+            </propertyset>
+        </subant>
+    </target>
+
+    <!-- The target is workaround for properties cycle dependencies
+         parameters.xml -> adaptor.xml -> parameters.xml
+         TODO: need to resolve the cycle dependencies
+         -->
+    <target name="generate">
+
+        <basename file="${basedir}" property="suite.name" />
+
+        <subant genericantfile="${scripts.dir}/tmp-config.xml"
+                target="-generate-tmp-config"
+                inheritall="true"
+                inheritrefs="true"
+                buildpath="${scripts.dir}">
+        </subant>
+    </target>
+
+    <!-- The target is workaround for properties cycle dependencies
+             framework.local.properties
+              -> parameters.xml -> framework.local.properties
+         TODO: need to resolve the cycle dependencies
+         -->
+    <target name="re-generate">
+
+        <basename file="${basedir}" property="suite.name" />
+
+        <echo>Generate config for: ${suite.name}</echo>
+
+        <!-- Load ALL suites properties -->
+        <property file="${all.props}" />
+
+        <!-- Load local properties:
+             MUST precede load of framework properties -->
+        <loadproperties srcfile="${framework.local.configuration.file}">
+            <filterchain>
+                <expandproperties />
+                <!-- workaround for windows paths: replace '\' with '/'
+                     otherwise '\' is lost -->
+                <replaceregex pattern="\\" replace="/" flags="g" />
+            </filterchain>
+        </loadproperties>
+
+        <!-- Load framework properties -->
+        <xmlproperty file="${scripts.dir}/parameters.xml"
+                     collapseAttributes="true"
+                     semanticAttributes="true"
+                     prefix="framework" />
+
+        <!-- load external dependencies -->
+        <loadproperties srcfile="${external.resources.location}">
+            <filterchain>
+                <replaceregex pattern="\\" replace="/" flags="g" />
+            </filterchain>
+        </loadproperties>
+
+        <!-- re-expand ${suite.name} parameters -->
+        <xmlproperty file="${adaptors.dir}/${suite.name}/parameters.xml"
+                     collapseAttributes="true"
+                     semanticAttributes="true"
+                     prefix="${suite.name}" />
+
+        <echoproperties destfile="${config.dir}/${suite.name}.properties">
+            <propertyset>
+                <propertyref name="suite.name" />
+                <propertyref prefix="${suite.name}" />
+                <propertyref prefix="ext." />
+                <propertyref prefix="framework" />
+                <propertyset refid="global.build.parameters.id" />
+            </propertyset>
+
+            <!-- IMHO: the forms below may cause properties names
+                 conflicts that is hard to detect/guess:
+                 - simple form: without parameters.(required|shared) prefix
+                 - short  form: ${suite.name}.<simple form>
+                 This is BAD and should be fixed -->
+
+            <!-- required parameters in simple form (used by adaptors) -->
+            <propertyset>
+                <propertyref regex="${suite.name}\.parameters\.required" />
+                <regexpmapper from="${suite.name}\.parameters\.required\.(.*)$"
+                              to="\1" />
+            </propertyset>
+
+            <!-- required parameters in short form (used by adaptors) -->
+            <propertyset>
+                <propertyref regex="${suite.name}\.parameters\.required" />
+                <regexpmapper from="${suite.name}\.parameters\.required\.(.*)$"
+                              to="${suite.name}.\1" />
+            </propertyset>
+
+            <!-- shared parameters in simple form (used by adaptors) -->
+            <propertyset>
+                <propertyref regex="${suite.name}\.parameters\.shared" />
+                <regexpmapper from="${suite.name}\.parameters\.shared\.(.*)$"
+                              to="\1" />
+            </propertyset>
+
+            <!-- shared parameters in short form (used by adaptors) -->
+            <propertyset>
+                <propertyref regex="${suite.name}\.parameters\.shared" />
+                <regexpmapper from="${suite.name}\.parameters\.shared\.(.*)$"
+                              to="${suite.name}.\1" />
+            </propertyset>
+        </echoproperties>
+        <antcall target="-changestring-in-windows" />
+    </target>
+
+    <target name="-changestring-in-windows" if="is.windows">
+        <replace file="${config.dir}/${suite.name}.properties" token="\:" value=":" />
+    </target>
+
+    <target name="-gen-required-parameters">
+
+        <echo file="${required.parameters.location}">#
+# Auto generated required parameters settings file
+# 
+# DON'T EDIT THIS FILE: specify all values for properties in
+#                       framework local properties file
+#
+</echo>
+
+        <property name="all.props" location="${config.dir}/all.props" />
+        <concat destfile="${all.props}">
+            <fileset dir="${config.dir}" includes="*.properties" />
+            <filterchain>
+                <linecontainsregexp>
+                    <!-- filter out undefined props -->
+                    <regexp pattern="=[^$]" />
+                </linecontainsregexp>
+            </filterchain>
+        </concat>
+
+        <property file="${all.props}" />
+
+        <propertyset id="tmp.id">
+            <propertyref regex=".+parameters\.required\..+\.description$" />
+        </propertyset>
+        <property name="tmp.str" refid="tmp.id" />
+        <echo message="${tmp.str}" file="${tmp.file}" />
+
+        <ant antfile="${scripts.dir}/config.xml"
+             target="-iterate"
+             inheritall="false">
+            <propertyset>
+                <propertyref name="scripts.dir" />
+                <propertyref name="config.dir" />
+                <propertyref name="required.parameters.location" />
+            </propertyset>
+        </ant>
+
+        <delete file="${tmp.file}" />
+    </target>
+
+    <target name="-iterate">
+        <!-- check if next iteration should be done -->
+        <condition property="donext">
+            <length file="${tmp.file}" length="0" when="greater" />
+        </condition>
+        <ant antfile="${scripts.dir}/config.xml"
+             target="-flash-next-required-property"
+             inheritall="false">
+            <propertyset>
+                <propertyref name="donext" />
+                <propertyref name="scripts.dir" />
+                <propertyref name="config.dir" />
+                <propertyref name="required.parameters.location" />
+            </propertyset>
+        </ant>
+    </target>
+
+    <target name="-flash-next-required-property" if="donext">
+        <loadproperties srcfile="${tmp.file}">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^([^=]+)\.description=.*"
+                                  replace="propname=\1" />
+                </tokenfilter>
+            </filterchain>
+        </loadproperties>
+        <loadproperties srcfile="${tmp.file}">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^[^=]+=[^,]+,? ?(.*)$"
+                                  replace="rest=\1" />
+                </tokenfilter>
+            </filterchain>
+        </loadproperties>
+        <echo message="${rest}" file="${tmp.file}" />
+
+        <property file="${config.dir}/all.props" />
+        <flash-property propname="${propname}" />
+
+        <subant genericantfile="${scripts.dir}/config.xml"
+                target="-iterate"
+                inheritall="false"
+                buildpath="${scripts.dir}">
+            <propertyset>
+                <propertyref name="scripts.dir" />
+                <propertyref name="config.dir" />
+                <propertyref name="required.parameters.location" />
+            </propertyset>
+        </subant>
+
+    </target>
+
+    <macrodef name="flash-property">
+        <attribute name="propname" />
+        <sequential>
+            <echo file="${required.parameters.location}" append="true">
+#${@{propname}.description}
+@{propname}=${@{propname}}
+</echo>
+        </sequential>
+    </macrodef>
+
+    <target name="-remove-if-not-selected"
+            unless="${suite.name}.was.selected"
+            depends="-check-if-selected">
+
+        <!-- Stepan: I failed to develop one regexp. for all cases
+                     so do the removal in two steps
+             If you know the better was please let me know
+        -->
+
+        <!-- remove dependency from a suite's list -->
+        <replaceregexp file="${all.props}"
+                       match="([^.]\.parameters\.depends=.*),${suite.name}(.*)"
+                       replace="\1\2"
+                       flags="g" />
+        <replaceregexp file="${all.props}"
+                       match="([^.]\.parameters\.depends=)${suite.name},?(.*)"
+                       replace="\1\2"
+                       flags="g" />
+    </target>
+
+    <target name="-check-if-selected">
+
+        <basename file="${basedir}" property="suite.name" />
+
+        <condition property="${suite.name}.was.selected">
+            <contains string="${test.suites}," substring="${suite.name}" />
+        </condition>
+    </target>
+
+    <target name="-flash-selected">
+
+        <basename file="${basedir}" property="suite.name" />
+        <property file="${all.props}" />
+
+        <set-value suite="${suite.name}" />
+
+        <echo message="${value}${line.separator}"
+              file="${selected.suites.configuration}"
+              append="true" />
+    </target>
+
+    <macrodef name="set-value">
+        <attribute name="suite" />
+        <sequential>
+            <condition property="value"
+                       value="@{suite}.parameters.depends=${@{suite}.parameters.depends}"
+                       else="@{suite}.parameters.depends=">
+                <isset property="@{suite}.parameters.depends" />
+            </condition>
+        </sequential>
+    </macrodef>
+
+</project>

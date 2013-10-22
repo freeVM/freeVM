@@ -1,0 +1,48 @@
+diff -r -u org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/browser/Browser1.java org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/browser/Browser1.java
+--- org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/browser/Browser1.java	2007-12-14 20:51:58.000000000 +0300
++++ org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/browser/Browser1.java	2007-12-14 20:03:03.000000000 +0300
+@@ -192,7 +192,8 @@
+ 	
+ 	public static boolean test() {
+ 		int fail = 0;
+-		String[] urls = {"http://www.google.com"};
++//		String[] urls = {"http://www.google.com"};
++		String[] urls = {"SWTLOCALURL"};
+ 		for (int i = 0; i < urls.length; i++) {
+ 			boolean result = test1(urls[i]); 
+ 			if (verbose) System.out.print(result ? "." : "E");
+diff -r -u org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/browser/Browser6.java org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/browser/Browser6.java
+--- org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/browser/Browser6.java	2007-12-14 20:51:58.000000000 +0300
++++ org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/browser/Browser6.java	2007-12-14 20:02:49.000000000 +0300
+@@ -121,7 +121,8 @@
+ 	public static boolean test() {
+ 		int fail = 0;
+ 		
+-		String[] urls = {"http://www.google.com"};
++//		String[] urls = {"http://www.google.com"};
++		String[] urls = {"SWTLOCALURL"};
+ 		for (int i = 0; i < urls.length; i++) {
+ 			boolean result = test1(urls[i]); 
+ 			if (verbose) System.out.print(result ? "." : "E");
+diff -r -u org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/Test_org_eclipse_swt_browser_Browser.java org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/Test_org_eclipse_swt_browser_Browser.java
+--- org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/Test_org_eclipse_swt_browser_Browser.java	2007-12-14 20:51:57.000000000 +0300
++++ org.eclipse.swt.tests/src-swttests/org/eclipse/swt/tests/junit/Test_org_eclipse_swt_browser_Browser.java	2007-12-17 03:21:19.459393000 +0300
+@@ -361,14 +361,16 @@
+ 	
+ 	
+ 	/* THIS TEST REQUIRES WEB ACCESS! How else can we really test the http:// part of a browser widget? */
+-	browser.setUrl("http://www.eclipse.org/swt");
++//	browser.setUrl("http://www.eclipse.org/swt");
++	browser.setUrl("SWTLOCALURL");
+ 	runLoopTimer(10);
+ }
+ 
+ public void test_stop() {
+ 	shell.setText("test_stop");
+ 	/* THIS TEST REQUIRES WEB ACCESS! How else can we really test the http:// part of a browser widget? */
+-	browser.setUrl("http://www.eclipse.org/swt");
++//	browser.setUrl("http://www.eclipse.org/swt");
++	browser.setUrl("SWTLOCALURL");
+ 	runLoopTimer(1);
+ 	browser.stop();
+ 	runLoopTimer(10);

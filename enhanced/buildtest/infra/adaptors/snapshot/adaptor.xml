@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                    BT Adaptor for Harmony Classlib Project
+     ====================================================================== -->
+<project name="snapshot" default="run" basedir=".">
+
+    <condition property="is.windows">
+        <os family="Windows" />
+    </condition>
+    <condition property="is.x86_64">
+        <or>
+            <equals arg1="x86_64" arg2="${os.arch}" />
+            <equals arg1="amd64" arg2="${os.arch}" />
+        </or>
+    </condition>
+
+    <condition property="exe" value=".exe" else="">
+        <isset property="is.windows" />
+    </condition>
+
+    <!--                                 -->
+    <!-- which snapshot file to download -->
+    <!--                                 -->
+
+    <!-- Windows x86_64 -->
+    <condition property="snapshot.file"
+               value="latest-harmony-hdk-windows-x86_64.zip">
+        <and>
+            <isset property="is.windows" />
+            <isset property="is.x86_64" />
+        </and>
+    </condition>
+    <!-- Windows x86 -->
+    <condition property="snapshot.file"
+               value="latest-harmony-hdk-windows-x86.zip">
+        <and>
+            <isset property="is.windows" />
+            <not>
+                <isset property="is.x86_64" />
+            </not>
+        </and>
+    </condition>
+    <!-- Linux x86_64 -->
+    <condition property="snapshot.file"
+               value="latest-harmony-hdk-linux-x86_64.tar.gz">
+        <and>
+            <not>
+                <isset property="is.windows" />
+            </not>
+            <isset property="is.x86_64" />
+        </and>
+    </condition>
+    <!-- Linux x86 by default -->
+    <property name="snapshot.file" value="latest-harmony-hdk-linux-x86.tar.gz" />
+
+    <target name="setup"
+            depends="download.snapshot,-unzip,-gunzip,-svn.revision" />
+
+    <property name="downloads.url"
+              value="http://people.apache.org/builds/harmony/snapshots/autotesting" />
+
+    <property name="snapshot" location="${checkouts.dir}/snapshot" />
+    <condition property="is.zip">
+        <contains string="${snapshot.file}" substring=".zip" />
+    </condition>
+
+    <!-- result dir -->
+    <condition property="platform.prefix" value="Windows" else="Linux">
+        <isset property="is.windows" />
+    </condition>
+    <condition property="platform.sufix" value="x86_64" else="x86">
+        <isset property="is.x86_64" />
+    </condition>
+    <property file="${snapshot.svn.revision.file}" />
+    <property name="revision.report.dir"
+              location="${snapshot}/results/r${svn.revision}/${platform.prefix}_${platform.sufix}" />
+
+    <target name="run" depends="-unzip,-gunzip,-svn.revision">
+        <mkdir dir="${revision.report.dir}" />
+    </target>
+
+    <!--                                                   -->
+    <!--            Snapshot Downloading                   -->
+    <!-- 'usetimestamp' in get task works only for HTTP    -->
+    <!-- so all targets below are required to avoid        -->
+    <!-- snapshot downloading in case of others protocols  -->
+    <!-- on each CC cycle that in turn trigges all         -->
+    <!-- dependent suites                                  -->
+    <target name="download.snapshot" depends="-download.http,-download.file" />
+
+    <target name="-download.http"
+            if="http.url"
+            depends="-define-protocol,-setup-proxy">
+
+        <mkdir dir="${snapshot}" />
+        <get src="${downloads.url}/${snapshot.file}"
+             dest="${snapshot}/${snapshot.file}"
+             usetimestamp="true"
+             verbose="true" />
+    </target>
+
+    <target name="-setup-proxy" if="http.proxyHost">
+        <setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+    </target>
+
+    <target name="-download.file"
+            if="is.file.uptodate"
+            depends="-define-protocol">
+
+        <mkdir dir="${snapshot}" />
+        <copy file="${file.url}/${snapshot.file}"
+              tofile="${snapshot}/${snapshot.file}" />
+    </target>
+
+    <target name="-define-protocol">
+
+        <!-- extract protocol from url by setting <schema>.url' property -->
+        <tempfile property="temp.file" />
+        <echo file="${temp.file}" message="${downloads.url}" />
+        <replaceregexp file="${temp.file}" match="://" replace=".url=" />
+        <loadproperties srcFile="${temp.file}" />
+        <delete file="${temp.file}" />
+
+        <fail message="Unsupported URL protocol: ${downloads.url}">
+            <condition>
+                <not>
+                    <or>
+                        <isset property="http.url" />
+                        <isset property="file.url" />
+                    </or>
+                </not>
+            </condition>
+        </fail>
+
+        <!-- check file's timestamp -->
+        <condition property="is.file.uptodate">
+            <and>
+                <isset property="file.url" />
+                <or>
+                    <not>
+                        <available file="${snapshot}/${snapshot.file}" />
+                    </not>
+                    <uptodate srcfile="${snapshot}/${snapshot.file}"
+                              targetfile="${file.url}" />
+                </or>
+            </and>
+        </condition>
+    </target>
+
+    <!--                                   -->
+    <!--                                   -->
+    <!--                                   -->
+    <target name="-unzip" if="is.zip">
+        <delete dir="${snapshot}/hdk" />
+        <unzip src="${snapshot}/${snapshot.file}" dest="${snapshot}" />
+    </target>
+
+    <target name="-gunzip" unless="is.zip">
+
+        <delete dir="${snapshot}/hdk" />
+
+        <gunzip src="${snapshot}/${snapshot.file}" dest="${snapshot}" />
+        <untar dest="${snapshot}">
+            <fileset dir="${snapshot}">
+                <include name="*.tar" />
+            </fileset>
+        </untar>
+    </target>
+
+    <target name="-svn.revision" depends="-unzip,-gunzip">
+
+        <!-- rename 'harmony-hdk-rXXXXXX' to 'hdk' dir -->
+        <dirset id="snapshot.dir.id"
+                dir="${snapshot}"
+                includes="harmony-hdk-*" />
+        <pathconvert property="snapshot.path" refid="snapshot.dir.id" />
+        <basename file="${snapshot.path}" property="snapshot.name" />
+        <move file="${snapshot}/${snapshot.name}" tofile="${snapshot}/hdk" />
+
+        <!-- store snapshot svn revision -->
+        <echo file="${svn.revision.file}"
+              message="svn.revision=${snapshot.name}" />
+        <replaceregexp file="${svn.revision.file}"
+                       match="svn.revision=\D+(\d\d\d\d\d\d)"
+                       replace="svn.revision=\1" />
+
+        <!-- restore file permissions on extracted files -->
+        <chmod perm="a+x">
+            <fileset dir="${snapshot}/hdk/jdk/jre/bin">
+                <include name="java" />
+            </fileset>
+            <fileset dir="${snapshot}/hdk/jdk/bin">
+                <include name="*" />
+            </fileset>
+        </chmod>
+    </target>
+
+    <target name="clean">
+        <delete dir="${snapshot}" />
+    </target>
+
+    <!-- custom bootstrapper implementation -->
+    <target name="bootstrap" depends="download.snapshot"/>
+
+    <condition property="build.status" value="passed" else="failed">
+        <!-- the property is passed by CC -->
+        <equals arg1="${thisbuildsuccessful}" arg2="true" />
+    </condition>
+
+    <!--                     -->
+    <!-- snapshot publishers -->
+    <!--                     -->
+    <target name="publish-axis2_app">
+        <mkdir dir="${revision.report.dir}/axis2_app" />
+
+        <concat destfile="${revision.report.dir}/axis2_app/index.html">
+            <header trimleading="yes" filtering="no">
+                &lt;html&gt;
+            </header>
+
+            <fileset file="${results.dir}/axis2_app/Axis2-message.txt" />
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="(.*)" replace="\1&lt;br/&gt;" />
+                </tokenfilter>
+            </filterchain>
+
+            <footer trimleading="yes" filtering="no">
+                &lt;/html&gt;
+            </footer>
+        </concat>
+        <touch-status-file />
+        <archive-result/>
+    </target>
+
+    <property name="classlib-test.report"
+              value="${checkouts.dir}/classlib/build/test_report/html" />
+    <target name="publish-classlib-test" depends="-copy-report-files" />
+
+    <target name="publish-drlvm-reg-test">
+        <mkdir dir="${revision.report.dir}/drlvm-reg-test" />
+        <junitreport todir="${results.dir}/drlvm-reg-test">
+            <fileset dir="${results.dir}/drlvm-reg-test" includes="*TEST-*.xml" />
+            <report format="frames" todir="${revision.report.dir}/drlvm-reg-test" />
+        </junitreport>
+        <archive-result/>
+    </target>
+
+    <target name="publish-drlvm-test">
+        <mkdir dir="${revision.report.dir}/drlvm-test" />
+        <junitreport todir="${results.dir}/drlvm-test">
+            <fileset dir="${results.dir}/drlvm-test" includes="*TEST-*.xml" />
+            <report format="frames" todir="${revision.report.dir}/drlvm-test" />
+        </junitreport>
+        <archive-result/>
+    </target>
+
+    <target name="publish-func">
+
+        <mkdir dir="${revision.report.dir}/func/junit" />
+        <touch-status-file />
+
+        <!-- copy execurtion log -->
+        <concat destfile="${revision.report.dir}/func/index.html">
+
+            <!-- insert link to junit report -->
+            <header trimleading="yes" filtering="no">
+                &lt;html&gt;&lt;body&gt;&lt;pre&gt;
+                &lt;a href=&quot;junit/index.html&quot;&gt;JUnit report for failures&lt;a&gt;&#xA;&#xA;
+            </header>
+
+            <fileset file="${results.dir}/func/th.log" />
+
+            <footer trimleading="yes" filtering="no">
+                &lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;
+            </footer>
+        </concat>
+
+        <!-- generate junit report only for failed tests -->
+        <junitreport todir="${revision.report.dir}/func">
+            <fileset dir="${results.dir}/func" includes="TEST*-*.xml">
+                <containsregexp expression='(errors|failures)=.[1-9]' />
+                <exclude name="TESTS-TestSuites.xml" />
+            </fileset>
+            <report format="frames"
+                    todir="${revision.report.dir}/func/junit" />
+        </junitreport>
+
+        <archive-result />
+    </target>
+
+    <property name="jdktools-test.report"
+              value="${checkouts.dir}/hdk/working_jdktools/build/test_report/html" />
+    <target name="publish-jdktools-test" depends="-copy-report-files" />
+
+    <!-- JEdit testing scenario -->
+    <property name="jedit_test.junit.report"
+              value="${results.dir}/jedit_test/last" />
+    <target name="publish-jedit_test" depends="-copy-report-files" />
+
+    <!-- Jetty testing scenario -->
+    <property name="JettyScenario.report"
+              value="${results.dir}/JettyScenario/html" />
+    <target name="publish-JettyScenario" depends="-copy-report-files" />
+
+    <target name="publish-dacapo" depends="-copy-report-files" />
+
+    <target name="publish-ehwa" depends="-copy-report-files" />
+
+    <target name="publish-ehwa-api" depends="-copy-report-files" />
+
+    <target name="publish-ega" depends="-copy-report-files" />
+
+    <target name="publish-eut">
+        <mkdir dir="${revision.report.dir}/eut" />
+
+        <!-- copy all EUT report files -->
+        <copy todir="${revision.report.dir}/eut">
+            <fileset dir="${results.dir}/eut/latest"/>
+        </copy>
+
+        <touch-status-file />
+        <archive-result />
+    </target>
+
+    <target name="publish-eut33">
+        <mkdir dir="${revision.report.dir}/eut33" />
+
+        <!-- copy all EUT report files -->
+        <copy todir="${revision.report.dir}/eut33">
+            <fileset dir="${results.dir}/eut33/latest"/>
+        </copy>
+
+        <touch-status-file />
+        <archive-result />
+    </target>
+
+    <!-- Geronimo Unit Tests -->
+    <property name="gut.report" value="${results.dir}/gut/latest/html" />
+    <target name="publish-gut" depends="-copy-report-files" />
+
+    <!-- ANT testing scenario -->
+    <target name="publish-hdk_by_hdk" depends="-copy-report-files" />
+
+    <!-- JAPI report -->
+    <target name="publish-japi">
+
+        <mkdir dir="${revision.report.dir}/japi" />
+        <copy todir="${revision.report.dir}/japi">
+            <fileset dir="${results.dir}/japi">
+                <include name="index.html" />
+                <include name="japi.css" />
+            </fileset>
+        </copy>
+        <archive-result />
+    </target>
+
+    <!-- Reliability suite -->
+    <property name="reliability.junit.report"
+              value="${results.dir}/reliability/last" />
+    <target name="publish-reliability" depends="-copy-report-files" />
+
+    <!-- Scimark testing scenario -->
+    <target name="publish-scimark" depends="-copy-report-files" />
+
+    <target name="publish-stress">
+
+        <mkdir dir="${revision.report.dir}/stress/junit" />
+
+        <copy-execution-log />
+        <touch-status-file />
+
+        <!-- generate junit report only for failed tests -->
+        <junitreport todir="${revision.report.dir}/stress">
+            <fileset dir="${results.dir}/stress" includes="TEST*-*.xml">
+                <containsregexp expression='(errors|failures)=.[1-9]' />
+                <exclude name="TESTS-TestSuites.xml" />
+            </fileset>
+            <report format="frames"
+                    todir="${revision.report.dir}/stress/junit" />
+        </junitreport>
+
+        <!-- insert link to junit report -->
+        <replaceregexp file="${revision.report.dir}/stress/index.html"
+                       match="run:"
+                       replace="&lt;a href=&quot;junit/index.html&quot;&gt;JUnit report for failures&lt;a&gt;&#xA;&#xA;run:" />
+
+        <archive-result />
+    </target>
+
+    <!-- Struts testing scenario -->
+    <property name="struts_test.report"
+              value="${results.dir}/struts_test/test-results/html" />
+    <target name="publish-struts_test" depends="-copy-report-files" />
+
+    <!-- Tomcat testing scenario -->
+    <target name="publish-tomcat-scenario" depends="-copy-report-files" />
+
+    <target name="publish-tptp">
+        <mkdir dir="${revision.report.dir}/tptp" />
+
+        <concat destfile="${revision.report.dir}/tptp/index.html">
+            <header trimleading="yes" filtering="no">
+                &lt;html&gt;
+            </header>
+
+            <fileset file="${results.dir}/tptp/tptp_report/AllTests.txt" />
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="(.*)" replace="\1&lt;br/&gt;" />
+                </tokenfilter>
+            </filterchain>
+
+            <footer trimleading="yes" filtering="no">
+                &lt;/html&gt;
+            </footer>
+        </concat>
+
+        <touch-status-file />
+        <archive-result/>
+    </target>
+
+    <target name="publish-vtsvm">
+
+        <mkdir dir="${revision.report.dir}/vtsvm/junit" />
+
+        <copy-execution-log />
+        <touch-status-file />
+
+        <!-- generate junit report only for failed tests -->
+        <junitreport todir="${revision.report.dir}/vtsvm">
+            <fileset dir="${results.dir}/vtsvm" includes="TEST*-*.xml">
+                <containsregexp expression='(errors|failures)=.[1-9]' />
+                <exclude name="TESTS-TestSuites.xml" />
+            </fileset>
+            <report format="frames"
+                    todir="${revision.report.dir}/vtsvm/junit" />
+        </junitreport>
+
+        <!-- insert link to junit report -->
+        <replaceregexp file="${revision.report.dir}/vtsvm/index.html"
+                       match="run:"
+                       replace="&lt;a href=&quot;junit/index.html&quot;&gt;JUnit report for failures&lt;a&gt;&#xA;&#xA;run:" />
+
+        <archive-result />
+    </target>
+
+
+    <macrodef name="archive-result">
+        <sequential>
+            <mkdir dir="${snapshot.arch.dir}/r${svn.revision}" />
+            <delete file="${snapshot.arch.dir}/r${svn.revision}/snapshot-r${svn.revision}.${platform.prefix}_${platform.sufix}.${projectname}-status.zip"/>
+            <zip destfile="${snapshot.arch.dir}/r${svn.revision}/snapshot-r${svn.revision}.${platform.prefix}_${platform.sufix}.${projectname}-status.zip"
+                 basedir="${snapshot}/results"
+                 includes="r${svn.revision}/${platform.prefix}_${platform.sufix}/${projectname}/**"
+                 update="true" />
+        </sequential>
+    </macrodef>
+
+    <macrodef name="touch-status-file">
+        <sequential>
+            <echo file="${revision.report.dir}/${projectname}/status.txt"
+                  message="${build.status}" />
+        </sequential>
+    </macrodef>
+
+    <macrodef name="copy-execution-log">
+        <sequential>
+            <copy file="${cc.execution.log.file}"
+                  tofile="${revision.report.dir}/${projectname}/index.html" />
+        </sequential>
+    </macrodef>
+
+    <!-- Targets and macro for copying junit report files                  -->
+    <!-- The junit reports are searched in ${<suitename>.junit.report} dir -->
+    <!-- The other files   are searched in ${<suitename>.report}       dir -->
+    <!-- if there are no report files then execution log is copied         -->
+    <target name="-copy-report-files"
+            depends="-gen-junit-report,
+                     -copy-junit-report-files,
+                     -copy-execution-log">
+        <archive-result />
+    </target>
+
+    <target name="-gen-junit-report"
+            if="junit.report.dir"
+            depends="-init-publisher">
+
+        <junitreport todir="${revision.report.dir}/${projectname}">
+            <fileset dir="${junit.report.dir}" includes="TEST*-*.xml" />
+            <report format="frames"
+                    todir="${revision.report.dir}/${projectname}" />
+        </junitreport>
+    </target>
+
+    <target name="-copy-junit-report-files"
+            if="report.dir"
+            depends="-init-publisher">
+
+        <copy todir="${revision.report.dir}/${projectname}">
+            <fileset dir="${report.dir}" />
+        </copy>
+    </target>
+
+    <target name="-copy-execution-log"
+            if="exec.log.only"
+            depends="-init-publisher">
+
+        <copy-execution-log />
+        <touch-status-file />
+    </target>
+
+    <target name="-init-publisher">
+        <delete dir="${revision.report.dir}/${projectname}" />
+        <mkdir dir="${revision.report.dir}/${projectname}" />
+        <get-report-dir suitename="${projectname}" />
+    </target>
+
+    <macrodef name="get-report-dir">
+        <attribute name="suitename" />
+        <sequential>
+
+            <!-- TODO: replace with uptodate task -->
+            <!-- report files should be at least newer then tested snapshot -->
+            <condition property="junit.report.dir"
+                       value="${@{suitename}.junit.report}">
+                <available file="${@{suitename}.junit.report}" type="dir" />
+            </condition>
+
+            <condition property="report.dir" value="${@{suitename}.report}">
+                <available file="${@{suitename}.report}" type="dir" />
+            </condition>
+
+            <condition property="exec.log.only">
+                <not>
+                    <or>
+                        <isset property="junit.report.dir" />
+                        <isset property="report.dir" />
+                    </or>
+                </not>
+            </condition>
+
+        </sequential>
+    </macrodef>
+
+    <!--                                                     -->
+    <!-- clear orphan processes left by suite run            -->
+    <!-- the feature is optional (use 'do.processes.cleanup' -->
+    <!-- TODO: make the feature part of common cycle         -->
+    <!-- (not ony for snapshots)                             -->
+    <target name="clear-processes"
+            if="need.processes.cleanup"
+            depends="-init-clear-processes">
+
+        <echo>PROCESSES: ${proccess}</echo>
+        <exec executable="kill">
+            <arg line="${proccess}" />
+        </exec>
+    </target>
+
+    <target name="-init-clear-processes" unless="is.windows">
+        <exec executable="ps">
+            <arg value="a" />
+            <redirector outputproperty="proccess">
+                <outputfilterchain>
+                    <!-- select only snapshot vm -->
+                    <linecontainsregexp>
+                        <regexp pattern="\s${jvm.location}\s" />
+                    </linecontainsregexp>
+                    <!-- get processes pids -->
+                    <tokenfilter>
+                        <replaceregex pattern="^\s*(\d+).*" replace="\1 " />
+                    </tokenfilter>
+                    <striplinebreaks />
+                </outputfilterchain>
+            </redirector>
+        </exec>
+
+        <condition property="need.processes.cleanup">
+            <and>
+                <istrue value="${do.processes.cleanup}" />
+                <length string="${proccess}"
+                        trim="true"
+                        when="greater"
+                        length="0" />
+            </and>
+        </condition>
+    </target>
+
+</project>
+

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                   BT Framework Implementation Specific Code 
+     ====================================================================== 
+     Defines the following ids on the objects:
+        <propertyset id="parameters.id">
+            set of all of the parameters with keys in extended form
+            (${suite.name}.parameters.*)
+
+        <propertyset id="resolved.external.parameters.id">
+            names of resolved externals (ext.*)
+        
+        <propertyset id="required.parameters.id">
+            set of all of the required parameters with keys in extended form
+            (${suite.name}.parameters.required.${required.parameter.name})
+        
+        <propertyset id="required.parameters.simple.id">
+            set of all of the required parameters with keys in simple form
+            (${suite.name}.${required.parameter.name})
+
+        <propertyset id="shared.parameters.id">
+            set of all of the shared parameters with keys in extended form
+
+        <propertyset id="shared.parameters.simple.id">
+            set of all of the shared parameters with keys in simple form 
+
+        <propertyset id="@{suite}.parameters.id">
+            set of all of the parameters needed to be known by @{suite}
+
+-->
+<project name="framework-implementation" basedir=".">
+
+    <import file="properties.xml"/>
+
+    <!-- load information about external dependencies locations
+         obtained on setup stage -->
+    <target name="load-depends">
+        <loadproperties srcfile="${external.resources.location}">
+            <filterchain>
+                <replaceregex pattern="\\" replace="/" flags="g"/>
+            </filterchain>
+        </loadproperties>
+    </target>
+
+    <!-- load information about test run configuration
+         obtained on setup stage -->
+    <target name="load-suites-configuration">
+        <property file="${selected.suites.configuration}"/>
+    </target>
+
+    <target name="define-ant-contrib" depends="load-depends">
+        <!-- plug in the ANTCONTRIB -->
+        <taskdef resource="net/sf/antcontrib/antlib.xml">
+            <classpath>
+                <pathelement location="${ext.ant-contrib.location}" />
+            </classpath>
+        </taskdef>
+    </target>
+
+    <target name="load-framework-parameters">
+        <!-- load framework parameters file containing 
+                       external libraries descriptions -->
+        <xmlproperty 
+            file="${scripts.dir}/parameters.xml"
+            collapseAttributes="true" 
+            semanticAttributes="true"
+            prefix="framework"
+        />
+    </target>
+
+    <target name="load-required-parameters">
+        <property file="${required.parameters.location}"/>
+    </target>
+
+    <!-- Clean the suites -->
+    <target name="clean-suites" depends="define-ant-contrib">
+        <!-- FIXME: refactor as setup & run -->
+        <!-- load suites properties -->
+        <for list="${test.suites.names.list}" param="suite">
+        <sequential>
+            <echo>===========================================</echo>
+            <log message="Cleaning of '@{suite}' Test Suite.."/>
+            <call-to-adaptor suite="@{suite}" call="clean-suite"/>
+        </sequential>
+        </for>
+        <!-- TODO: check status after cleanup  -->
+    </target>
+
+    <!-- FIXME: remove macrodef after refactoring clean-suites -->
+    <macrodef name="call-to-adaptor">
+        <attribute name="suite"/>
+        <attribute name="call"/>
+        <sequential>
+            <!-- create the file for passing the values of shared properties 
+                 (they are starting with ${suite}. prefix ) -->
+            <tempfile destdir="${temp.files.dir}"
+                      property="tmp.result.file"/>
+
+            <ant dir="${adaptors.dir}/@{suite}"
+                 antfile="${scripts.dir}/exec-adaptor.xml"
+                 target="@{call}"
+                 inheritAll="true">
+                <property name="suite.name" value="@{suite}"/>
+                <property name="suite.adaptor.dir" location="${adaptors.dir}/@{suite}"/>
+                <property name="result.file.location" value="${tmp.result.file}"/>
+                <!-- pass the set of all of the parameters needed to be known 
+                     by @{suite} -->
+                <propertyset refid="@{suite}.parameters.id"/>
+            </ant>
+
+            <!-- import resulting suite's parameter values -->
+            <var file="${tmp.result.file}"/>
+
+            <!-- remove the temporary objects -->
+            <delete file="${tmp.result.file}" quiet="true" verbose="false"/>
+            <var name="tmp.result.file" unset="true"/>
+        </sequential>
+    </macrodef>
+
+    <!-- removes svn locks leaved after unsuccessful checkout or update-->
+    <macrodef name="svn-cleanup">
+        <attribute name="trunk"/>
+        <sequential>
+            <log message="Do cleanup for @{trunk}"/>
+            <delete quiet="true" verbose="false">
+                <fileset dir="@{trunk}" defaultexcludes="no" includes="**/.svn/lock"/>
+            </delete>
+        </sequential>
+    </macrodef>
+
+    <!-- Execute Ant Build in new process -->
+    <macrodef name="exec-ant">
+        <attribute name="dir" default="."/>
+        <attribute name="lib" default="${ant.home}/lib"/>
+        <attribute name="file" default="build.xml"/>
+        <attribute name="targets" default=""/>
+        <attribute name="failonerror" default="true"/>
+        <attribute name="failproperty" default="tmp.ant.exec.fail.property"/>
+        <attribute name="javaVM" default="java"/>
+        <element name="ant-params" implicit="yes" optional="yes"/>
+        <sequential>
+            <java jar="${ant.home}/lib/ant-launcher.jar"
+                  fork="true"
+                  dir="@{dir}" 
+                  failonerror="@{failonerror}"
+                  resultproperty="tmp.@{failproperty}"
+                  jvm="@{javaVM}" >
+                <sysproperty key="ant.home" value="${ant.home}"/>
+                <!-- caller's specific libraries to be used with ant -->
+                <arg line='-lib "@{lib}"'/>
+                <arg line='-lib "${ext.junit.location}"'/>
+                <!-- proxy settings (if specified) -->
+                <syspropertyset>
+                    <propertyref name="http.proxyHost"/>
+                    <propertyref name="http.proxyPort"/>
+                </syspropertyset>
+                <!-- caller's build specific staff -->
+                <ant-params/>
+                <!-- targets to execute -->
+                <arg line="-f @{file} @{targets}"/>
+            </java>
+            <!-- set up failproperty in case of Ant Build failure -->
+            <condition property="@{failproperty}" value="true">
+                <not><equals arg1="${tmp.@{failproperty}}" arg2="0"/></not>
+            </condition>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="log">
+        <attribute name="message"/>
+        <sequential>
+            <if>
+                <istrue value="${framework.parameters.optional.dolog}"/>
+            <then>
+                <echo level="warning">[${ant.project.name}]: @{message}</echo>
+            </then>
+            </if>
+        </sequential>
+    </macrodef>
+</project>
+

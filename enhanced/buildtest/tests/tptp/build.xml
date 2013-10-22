@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="run.tptp.tests" default="all" basedir=".">
+
+    <description>Run TPTP profiler testsuite</description>
+
+<!-- To run TPTP profiler tests use the following command
+
+${JAVA_HOME}/bin/java \
+    -Dtest.param="${EM_OPT}" \
+    -Dtest.timeout=${test.timeout} \
+    -Dconfigfile="$CFGFILE" \
+    -Dtest.output=${OUTPUT} \
+    -Dtest.java=${UT_RUNTIME} \
+    -Dtest.home=${TEST_HOME} \
+    -Dac.home=${AC_HOME} \
+    -Dtest.verbose=false \
+    -Xbootclasspath/p:${BOOTCLASSPATH} \
+    -classpath ${CLASSPATH} \
+    org.eclipse.tptp.ac.testautomation.AllStandaloneProfiling > ${OUTPUT}/log.txt 2>&1
+
+   where:
+
+   JAVA_HOME - reference runtime location 
+   EM_OPT - running mode 
+            for DRLVM -Xint/-Xem:opt/-Xem:jet or default +  -XX:vm.assert_dialog=false
+            for RI it is empty
+   TIME_OUT - time in milliseconds for 1 test
+   CFGFILE - configure file location 
+   OUTPUT  - output directory location
+   UT_RUNTIME - tested JRE location
+   TEST_HOME  - tests directory location
+   AC_HOME - agent directory location
+   BOOTCLASSPATH - used bootclasspath
+   CLASSPATH - used jar files                              
+
+-->
+
+    <propertyset id="specified.parameters">
+        <propertyref builtin="commandline"/>
+        <mapper type="glob" from="*" to="set.*"/>
+    </propertyset>
+
+    <condition property="tptp.os" value="win">
+        <os family="windows"/>
+    </condition>
+
+    <condition property="tptp.os" value="linux">
+        <os name="linux"/>
+    </condition>
+
+    <condition property="tptp.arch" value="em64t">
+        <or>
+            <equals arg1="x86_64" arg2="${os.arch}"/>
+            <equals arg1="amd64" arg2="${os.arch}"/>
+        </or>
+    </condition>
+
+    <condition property="tptp.arch" value="ia32">
+        <or>
+            <equals arg1="x86" arg2="${os.arch}"/>
+            <equals arg1="i386" arg2="${os.arch}"/>
+            <equals arg1="i686" arg2="${os.arch}"/>
+        </or>
+    </condition>
+
+    <condition property="tptp.arch" value="ipf">
+        <equals arg1="ia64" arg2="${os.arch}"/>
+    </condition>
+
+    <condition property="cvs.proxy"
+               value=";proxy=${http.proxyHost}"
+               else="">
+        <isset property="http.proxyHost"/>
+    </condition>
+
+    <condition property="cvs.proxyport"
+               value=";proxyport=${http.proxyPort}"
+               else="">
+        <isset property="http.proxyPort"/>
+    </condition>
+
+    <property environment="env."/>
+
+    <property name="work.dir" location="${basedir}"/>
+
+    <property name="ac.home" location="${work.dir}/tptpdc"/>
+    <property name="ac.url" value="http://mirrors.cat.pdx.edu/eclipse/tptp/4.5.0/TPTP-4.5.0M5-200802170400/agntctrl.${tptp.os}_${tptp.arch}-TPTP-4.5.0M5.zip"/>
+    <property name="ac.filename" value="agntctrl.${tptp.os}_${tptp.arch}.zip"/>
+
+    <property name="test.module" value="org.eclipse.tptp.ac.testautomation"/>
+    <property name="test.build.home" location="${work.dir}/${test.module}"/>
+    <property name="test.source.home" location="${test.build.home}"/>
+    <property name="test.cvs.root" value=":pserver${cvs.proxy}${cvs.proxyport}:anonymous@dev.eclipse.org/cvsroot/tptp"/>
+    <property name="test.cvs.module" value="test-results/platform/${test.module}"/>
+
+<!-- Default value for -Dtime.precision is 1000000 nanos (millis) to avoid test
+failures due to nonmonotonic behavior of gettimeofday() function on some linux
+systems -->
+    <property name="time.precision" value="1000000"/>
+    <property name="test.timeout" value="60000"/>
+    <property name="runner.vm.options" value=""/>
+    <property name="tested.vm.options" value=""/>
+
+    <property name="exclude.list" value="exclude.list"/>
+
+    <property name="results.dir" location="${work.dir}/results"/>
+    <property name="report.dir" location="${results.dir}/tptp_report"/>
+    <property name="failed.zip" location="${report.dir}/FailedTests.zip"/>
+    <property name="excludes.file" location="${report.dir}/exclude.list"/>
+
+    <!-- path to the reference runtime -->
+    <property name="reference.jdk" location="${env.JAVA_HOME}"/>
+    <property name="runner.jre" location="${reference.jdk}"/>
+    
+    <!-- CFGFILE, BOOTCLASSPATH, CLASSPATH arguments -->
+    <property name="config.file" location="${test.source.home}/automation-files/config/local_config_file.xml"/>
+    <property name="config.file.new" location="${report.dir}/local_config_file.xml"/>
+    
+    <property name="test.jars.dir" location="${test.source.home}/automation-files/required_jars"/>
+
+    <path id="classpath">
+        <fileset dir="${test.jars.dir}">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement location="${test.build.home}/bin"/>
+    </path>
+
+    <path id="boot.classpath">
+        <pathelement location="${test.jars.dir}/xml-apis.jar"/>
+        <pathelement location="${test.jars.dir}/xercesImpl.jar"/>
+    </path>
+
+    <property name="classes" location="${basedir}/classes" />
+    
+    <property name="runner.class" value="org.eclipse.tptp.ac.testautomation.junits.AllStandaloneProfiling"/>
+
+    <!-- ================ All ================ -->
+    <target name="all"
+            depends="setup, run"
+            description="Default target for standalone setup and run"/>
+      
+    <!-- ================ Setup ================ -->
+    <target name="setup"
+            depends="compile"
+            description="Download and install dependencies">
+        <antcall>
+            <target name="fetch-ac"/>
+            <target name="build-tests"/>
+            <propertyset refid="specified.parameters"/>
+        </antcall>
+    </target>
+
+    <target name="fetch-ac"
+            unless="set.ac.home"
+            description="Download and install TPTP Agent Controller">
+        <mkdir dir="${ac.home}"/>
+        <get src="${ac.url}"
+             dest="${work.dir}/${ac.filename}"
+             usetimestamp="true"
+             verbose="true" />
+        <unzip src="${work.dir}/${ac.filename}" dest="${ac.home}"/>
+    </target>
+
+    <target name="build-tests"
+            unless="set.test.build.home"
+            description="Get and build tptp tests">
+        <antcall>
+            <target name="checkout-tests"/>
+            <target name="compile-tests-java"/>
+            <target name="compile-tests-native"/>
+        </antcall>
+    </target>
+
+    <target name="checkout-tests"
+            unless="set.test.source.home"
+            description="Checkout tptp tests from eclipse CVS repo">
+        <cvs command="checkout -d ${test.module}"
+             cvsRoot="${test.cvs.root}"
+             package="${test.cvs.module}"
+             failonerror="true"/>
+    </target>
+
+    <target name="compile-tests-java"
+            description="Compile tptp tests classes">
+        <mkdir dir="${test.build.home}/bin"/>
+        <javac destdir="${test.build.home}/bin">
+
+            <src>
+                <pathelement location="${test.source.home}/automation-files/scenarios"/>
+                <pathelement location="${test.source.home}/src"/>
+            </src>
+
+            <include name="org/eclipse/tptp/scenario/**"/>
+            <include name="org/eclipse/tptp/ac/testautomation/junits/**"/>
+
+            <classpath refid="classpath"/>
+        </javac>
+
+    </target>
+
+    <target name="compile-tests-native"
+            description="Compile tptp tests native libraries">
+        <condition property="script.ext" value="bat" else="sh">
+            <os family="windows"/>
+        </condition>
+
+        <property name="script.orig.name"
+                  value="build_${tptp.os}_${tptp.arch}.${script.ext}"/>
+        <property name="script.dir"
+                  location="${test.build.home}/src-native"/>
+        <property name="script.name" value="build.${script.ext}"/>
+
+        <copy file="${test.source.home}/src-native/${script.orig.name}"
+              tofile="${script.dir}/${script.name}">
+            <filterchain>
+                <linecontains negate="true">
+                    <contains value="JDK="/>
+                </linecontains>
+            </filterchain>
+        </copy>
+
+        <mkdir dir="${test.source.home}/lib"/>
+
+        <exec osfamily="windows"
+              executable="cmd"
+              dir="${script.dir}"
+              failonerror="true">
+            <arg value="/c"/>
+            <arg value="${script.name}"/>
+            <env key="JDK" file="${reference.jdk}"/>
+        </exec>
+
+        <exec os="Linux"
+              executable="/bin/sh"
+              dir="${script.dir}"
+              failonerror="true">
+            <arg value="${script.name}"/>
+            <env key="JDK" file="${reference.jdk}"/>
+        </exec>
+
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes}"/>
+        <javac srcdir="${basedir}" destdir="${classes}" includes="*.java"/>
+    </target>
+
+    <!-- Tests running -->     
+    <target name="run"
+            depends="run-init,
+                     prepare-excludes,
+                     run-suite,
+                     testsCount,
+                     html-report,
+                     timestamp-report">
+        <fail message="Some tests failed on ${tested.jre}">
+            <condition>
+                <or>
+                    <isfailure code="${test.result}"/>
+                    <isfailure code="${test.count.result}"/>
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <target name="run-init">
+        <fail unless="tested.jre"
+              message="'tested.jre' property must be specified."/>
+
+        <property name="classpath" refid="classpath"/>
+        <property name="boot.classpath" refid="boot.classpath"/>
+
+        <property name="jvm.args" value="${runner.vm.options} -Dtest.param='${tested.vm.options}' -Dtest.timeout=${test.timeout} -Dtime.precision=${time.precision} -Dconfigfile=${config.file.new} -Dtest.output=${report.dir} -Dtest.java=${tested.jre} -Dtest.home=${test.build.home} -Dac.home=${ac.home} -Dtest.verbose=false -Xbootclasspath/p:${boot.classpath} "/>
+
+        <!-- Clear previous results -->
+        <delete dir="${report.dir}" failonerror="false"/>
+        <mkdir dir="${report.dir}"/>
+    </target>
+
+    <target name="prepare-excludes">
+        <!-- Copy exclude list file for updating suite's config -->
+        <copy file="${work.dir}/${exclude.list}"
+              tofile="${excludes.file}"/>
+
+        <java classname="updateExclude"
+              classpath="${classes}"
+              fork="yes"
+              failonerror="true">
+            <arg value="${config.file}"/>
+            <arg value="${config.file.new}"/>
+            <arg value="${excludes.file}.txt"/>
+            <arg value="${excludes.file}"/>
+        </java>         
+    </target>
+
+    <target name="run-suite" depends="run-init">
+        <!-- Get start time -->
+        <tstamp>
+            <format property="time.stamp" pattern="yyyy-MM-dd_HHmm"/>
+        </tstamp>
+
+        <!-- Run test suite -->
+        <java jvm="${runner.jre}/bin/java"
+              classname="${runner.class}"
+              output="${report.dir}/AllTests.txt"
+              error="${report.dir}/AllTests_error.txt"
+              resultproperty="test.result"
+              fork="yes">
+            <jvmarg line="${jvm.args}"/>
+            <arg line="${runner.arguments}"/>
+            <classpath refid="classpath"/>
+        </java>
+
+        <!-- Move thr files to xml -->
+        <move todir="${report.dir}" includeemptydirs="false">
+            <fileset dir="${report.dir}">
+                <include name="**/*.thr"/>
+            </fileset>
+            <mapper type="glob" from="*.thr" to="*.xml"/>
+        </move>   
+
+        <!-- Copy additional files from tptp tests build -->
+        <copy todir="${report.dir}" file="report.xsl"/>
+        <copy todir="${report.dir}" file="test.xsl"/>
+        
+    </target>
+
+    <target name="junit" depends="run-init">
+        <!-- Get start time -->
+        <tstamp>
+            <format property="time.stamp" pattern="yyyy-MM-dd_HHmm"/>
+        </tstamp>
+
+        <junit fork="true"
+               printsummary="true"
+               errorproperty="junit.error"
+               failureproperty="junit.failure"
+               jvm="${runner.jre}/bin/java">
+            <test name="${runner.class}"/>
+            <jvmarg line="${jvm.args}"/>
+            <classpath refid="classpath"/>
+        </junit>
+
+        <!-- Move thr files to xml -->
+        <move todir="${report.dir}" includeemptydirs="false">
+            <fileset dir="${report.dir}">
+                <include name="**/*.thr"/>
+            </fileset>
+            <mapper type="glob" from="*.thr" to="*.xml"/>
+        </move>
+        
+        <!-- Copy additional files from tptp tests build -->
+        <copy todir="${report.dir}" file="report.xsl"/>
+        <copy todir="${report.dir}" file="test.xsl"/>
+
+    </target>
+
+    <target name="testsCount">
+        <!-- Prepere summary report -->       
+        <java classname="testsCount"
+              classpath="${classes}"
+              fork="yes"
+              resultproperty="test.count.result">
+            <arg value="${report.dir}"/>
+            <arg value="${excludes.file}.txt"/>
+            <arg value="${test.build.home}"/>
+            <arg value="${test.build.home}"/>
+            <arg value="${tested.jre}"/>
+            <arg value="${os.name}_${os.version}_${os.arch}"/>
+            <arg value="${failed.zip}"/>
+        </java>         
+
+        <!-- Delete config files and exclude list  file -->
+        <delete file="${config.file.new}"/>
+        <delete file="${excludes.file}.txt"/>
+        <delete file="${excludes.file}"/>
+    </target>
+
+    <target name="html-report">
+        <xslt basedir="${report.dir}"
+              destdir="${report.dir}/html"
+              includes="report.xml"
+              style="report.xsl"/>
+
+        <replace dir="${report.dir}"
+                 includes="html/report.html"
+                 token=".xml"
+                 value=".html"/>
+
+        <!-- Somehow ant crashes with SteckOverflowError when applying xslt
+            task to the whole report.dir directory. As a workaround use subant
+            for each of report subdirs. -->
+        <subant genericantfile="${ant.file}"
+            inheritall="true"
+            target="html-for-test">
+            <dirset dir="${report.dir}" includes="*/*"/>
+            <property name="style" location="${report.dir}/test.xsl"/>
+        </subant>
+
+        <move todir="${report.dir}/html">
+            <fileset dir="${report.dir}" includes="*/*/*.html"/>
+        </move>
+
+        <zip destfile="${failed.zip}"
+             update="true"
+             basedir="${report.dir}"
+             includes="html/*/**/*.html">
+            <not>
+                <containsregexp expression="Status./strong>./td>.td>104 .PASSED."/>
+            </not>
+        </zip>
+
+        <zip destfile="${failed.zip}"
+             update="true"
+             basedir="${report.dir}"
+             includes="html/report.html">
+            <not>
+                <and>
+                    <containsregexp expression="failed./strong>./a>./td>.td>0"/>
+                    <containsregexp expression="error./strong>./a>./td>.td>0"/>
+                    <containsregexp expression="unknown./strong>./a>./td>.td>0"/>
+                </and>
+            </not>
+        </zip>
+    </target>
+
+    <target name="html-for-test">
+        <xslt basedir=""
+              destdir=""
+              includes="*.xml"
+              style="${style}"/>
+    </target>   
+
+    <target name="timestamp-report">
+        <!-- Get end time unless start time was obtained -->
+        <tstamp>
+            <format property="time.stamp" pattern="yyyy-MM-dd_HHmm"/>
+        </tstamp>
+
+        <!-- Store recent results -->
+        <copy todir="${report.dir}_${time.stamp}">
+            <fileset dir="${report.dir}"/>
+        </copy>
+    </target>
+
+</project>

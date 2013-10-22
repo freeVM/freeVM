@@ -1,0 +1,474 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:16:27
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/viewSource.jsp</h3>
+<pre>
+
+1: &lt;%@ taglib prefix=&quot;s&quot; uri=&quot;/struts-tags&quot; %&gt;
+2: &lt;html&gt;
+3: &lt;head&gt;
+4:     &lt;title&gt;View Sources&lt;/title&gt;
+5: 
+6:     &lt;jsp:include page=&quot;/ajax/commonInclude.jsp&quot;/&gt;
+7:     &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;&lt;s:url value=&quot;/struts/tabs.css&quot;/&gt;&quot;&gt;
+8:     &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;&lt;s:url value=&quot;/struts/niftycorners/niftyCorners.css&quot;/&gt;&quot;&gt;
+9:     &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;&lt;s:url value=&quot;/struts/niftycorners/niftyPrint.css&quot;/&gt;&quot; media=&quot;print&quot;&gt;
+10:     &lt;script type=&quot;text/javascript&quot; src=&quot;&lt;s:url value=&quot;/struts/niftycorners/nifty.js&quot;/&gt;&quot;&gt;&lt;/script&gt;
+11:     &lt;script type=&quot;text/javascript&quot;&gt;
+12:         window.onload = function() {
+13:             if (!NiftyCheck())
+14:                 return;
+15:             Rounded(&quot;li.tab_selected&quot;, &quot;top&quot;, &quot;white&quot;, &quot;transparent&quot;, &quot;border #ffffffS&quot;);
+16:             Rounded(&quot;li.tab_unselected&quot;, &quot;top&quot;, &quot;white&quot;, &quot;transparent&quot;, &quot;border #ffffffS&quot;);
+17:             //                Rounded(&quot;div#tab_header_main li&quot;,&quot;top&quot;,&quot;white&quot;,&quot;transparent&quot;,&quot;border #ffffffS&quot;);
+18:             // &quot;white&quot; needs to be replaced with the background color
+19:         }
+20:     &lt;/script&gt;
+21: &lt;/head&gt;
+22: &lt;body&gt;
+23: &lt;h1&gt;View Sources&lt;/h1&gt;
+24: 
+25: &lt;s:tabbedPanel id=&quot;test&quot; theme=&quot;ajax&quot;&gt;
+26: 	&lt;s:div id=&quot;one&quot; label=&quot;Page&quot; theme=&quot;ajax&quot;&gt;
+27:         &lt;h3&gt;${empty page ? &quot;Unknown page&quot; : page}&lt;/h3&gt;
+28: &lt;pre&gt;
+29: &lt;s:iterator value=&quot;pageLines&quot; status=&quot;row&quot;&gt;
+30: ${row.count}: &lt;s:property/&gt;&lt;/s:iterator&gt;
+31: &lt;/pre&gt;
+32:     &lt;/s:div&gt;
+33:     &lt;s:div id=&quot;two&quot; label=&quot;Configuration&quot; theme=&quot;ajax&quot; &gt;
+34:         &lt;h3&gt;${empty config ? &quot;Unknown configuration&quot; : config}&lt;/h3&gt;
+35: &lt;pre&gt;
+36: 
+37: &lt;s:iterator value=&quot;configLines&quot; status=&quot;row&quot;&gt;&lt;s:if test=&quot;%{(#row.count-1)==(configLines.size()/2)}&quot;&gt;
+38: &lt;span style=&quot;background-color:yellow&quot;&gt;${configLine - padding + row.count - 1}: &lt;s:property/&gt;&lt;/span&gt;&lt;/s:if&gt;&lt;s:else&gt;
+39: ${configLine - padding + row.count - 1}: &lt;s:property/&gt;&lt;/s:else&gt;&lt;/s:iterator&gt;
+40: &lt;/pre&gt;
+41:     &lt;/s:div&gt;
+42:     &lt;s:div id=&quot;three&quot; label=&quot;Java Action&quot; theme=&quot;ajax&quot;&gt;
+43:         &lt;h3&gt;${empty className ? &quot;Unknown or unavailable Action class&quot; : className}&lt;/h3&gt;
+44: &lt;pre&gt;
+45: &lt;s:iterator value=&quot;classLines&quot; status=&quot;row&quot;&gt;
+46: ${row.count}: &lt;s:property/&gt;&lt;/s:iterator&gt;
+47: &lt;/pre&gt;
+48:     &lt;/s:div&gt;
+49:     
+50: &lt;/s:tabbedPanel&gt;
+51: 
+52: &lt;/body&gt;
+53: &lt;/html&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml</h3>
+<pre>
+
+
+50:                 &lt;interceptor-ref name=&quot;params&quot; /&gt;
+51:         &lt;interceptor-ref name=&quot;static-params&quot; /&gt;
+52:                 &lt;interceptor-ref name=&quot;defaultStack&quot; /&gt;
+53:             &lt;/interceptor-stack&gt;
+54:         &lt;/interceptors&gt;
+55: 
+56:         &lt;action name=&quot;showcase&quot;&gt;
+57:             &lt;result&gt;showcase.jsp&lt;/result&gt;
+58:         &lt;/action&gt;
+59: 
+<span style="background-color:yellow">60:         &lt;action name=&quot;viewSource&quot; class=&quot;org.apache.struts2.showcase.source.ViewSourceAction&quot;&gt;</span>
+61:             &lt;result&gt;viewSource.jsp&lt;/result&gt;
+62:         &lt;/action&gt;
+63: 
+64:         &lt;action name=&quot;date&quot; class=&quot;org.apache.struts2.showcase.DateAction&quot; method=&quot;browse&quot;&gt;
+65:             &lt;result name=&quot;success&quot;&gt;/date.jsp&lt;/result&gt;
+66:         &lt;/action&gt;
+67: 
+68:     &lt;/package&gt;
+69: 
+70:     &lt;package name=&quot;skill&quot; extends=&quot;default&quot; namespace=&quot;/skill&quot;&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>/org/apache/struts2/showcase/source/ViewSourceAction.java</h3>
+<pre>
+
+1: /*
+2:  * $Id: ViewSourceAction.java 478625 2006-11-23 17:31:52Z wsmoak $
+3:  *
+4:  * Licensed to the Apache Software Foundation (ASF) under one
+5:  * or more contributor license agreements.  See the NOTICE file
+6:  * distributed with this work for additional information
+7:  * regarding copyright ownership.  The ASF licenses this file
+8:  * to you under the Apache License, Version 2.0 (the
+9:  * &quot;License&quot;); you may not use this file except in compliance
+10:  * with the License.  You may obtain a copy of the License at
+11:  *
+12:  *  http://www.apache.org/licenses/LICENSE-2.0
+13:  *
+14:  * Unless required by applicable law or agreed to in writing,
+15:  * software distributed under the License is distributed on an
+16:  * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+17:  * KIND, either express or implied.  See the License for the
+18:  * specific language governing permissions and limitations
+19:  * under the License.
+20:  */
+21: package org.apache.struts2.showcase.source;
+22: 
+23: import java.io.BufferedReader;
+24: import java.io.IOException;
+25: import java.io.InputStream;
+26: import java.io.InputStreamReader;
+27: import java.net.MalformedURLException;
+28: import java.net.URL;
+29: import java.util.ArrayList;
+30: import java.util.List;
+31: 
+32: import javax.servlet.ServletContext;
+33: 
+34: import org.apache.struts2.util.ServletContextAware;
+35: 
+36: import com.opensymphony.xwork2.ActionSupport;
+37: import com.opensymphony.xwork2.util.ClassLoaderUtil;
+38: 
+39: /**
+40:  * Processes configuration, page, and action class paths to create snippets
+41:  * of the files for display.
+42:  */
+43: public class ViewSourceAction extends ActionSupport implements ServletContextAware {
+44: 
+45:     private String page;
+46:     private String className;
+47:     private String config;
+48: 
+49:     private List pageLines;
+50:     private List classLines;
+51:     private List configLines;
+52: 
+53:     private int configLine;
+54:     private int padding = 10;
+55: 
+56:     private ServletContext servletContext;
+57: 
+58:     public String execute() throws MalformedURLException, IOException {
+59: 
+60:         if (page != null) {
+61: 
+62:             InputStream in = ClassLoaderUtil.getResourceAsStream(page.substring(page.indexOf(&quot;//&quot;)+1), getClass());
+63:             page = page.replace(&quot;//&quot;, &quot;/&quot;);
+64: 
+65:             if (in == null) {
+66:                 in = servletContext.getResourceAsStream(page);
+67:                 while (in == null &amp;&amp; page.indexOf('/', 1) &gt; 0) {
+68:                     page = page.substring(page.indexOf('/', 1));
+69:                     in = servletContext.getResourceAsStream(page);
+70:                 }
+71:             }
+72:             pageLines = read(in, -1);
+73:         }
+74: 
+75:         if (className != null) {
+76:             className = &quot;/&quot;+className.replace('.', '/') + &quot;.java&quot;;
+77:             InputStream in = getClass().getResourceAsStream(className);
+78:             if (in == null) {
+79:                 in = servletContext.getResourceAsStream(&quot;/WEB-INF/src&quot;+className);
+80:             }
+81:             classLines = read(in, -1);
+82:         }
+83: 
+84:         if (config != null) {
+85:             int pos = config.lastIndexOf(':');
+86:             configLine = Integer.parseInt(config.substring(pos+1));
+87:             config = config.substring(0, pos).replace(&quot;//&quot;, &quot;/&quot;);
+88:             configLines = read(new URL(config).openStream(), configLine);
+89:         }
+90:         return SUCCESS;
+91:     }
+92: 
+93:     /**
+94:      * @param className the className to set
+95:      */
+96:     public void setClassName(String className) {
+97:         this.className = className;
+98:     }
+99: 
+100:     /**
+101:      * @param config the config to set
+102:      */
+103:     public void setConfig(String config) {
+104:         this.config = config;
+105:     }
+106: 
+107:     /**
+108:      * @param page the page to set
+109:      */
+110:     public void setPage(String page) {
+111:         this.page = page;
+112:     }
+113: 
+114:     /**
+115:      * @param padding the padding to set
+116:      */
+117:     public void setPadding(int padding) {
+118:         this.padding = padding;
+119:     }
+120: 
+121: 
+122: 
+123:     /**
+124:      * @return the classLines
+125:      */
+126:     public List getClassLines() {
+127:         return classLines;
+128:     }
+129: 
+130:     /**
+131:      * @return the configLines
+132:      */
+133:     public List getConfigLines() {
+134:         return configLines;
+135:     }
+136: 
+137:     /**
+138:      * @return the pageLines
+139:      */
+140:     public List getPageLines() {
+141:         return pageLines;
+142:     }
+143: 
+144:     /**
+145:      * @return the className
+146:      */
+147:     public String getClassName() {
+148:         return className;
+149:     }
+150: 
+151:     /**
+152:      * @return the config
+153:      */
+154:     public String getConfig() {
+155:         return config;
+156:     }
+157: 
+158:     /**
+159:      * @return the page
+160:      */
+161:     public String getPage() {
+162:         return page;
+163:     }
+164: 
+165:     /**
+166:      * @return the configLine
+167:      */
+168:     public int getConfigLine() {
+169:         return configLine;
+170:     }
+171: 
+172:     /**
+173:      * @return the padding
+174:      */
+175:     public int getPadding() {
+176:         return padding;
+177:     }
+178: 
+179:     /**
+180:      * Reads in a strea, optionally only including the target line number
+181:      * and its padding
+182:      *
+183:      * @param in The input stream
+184:      * @param targetLineNumber The target line number, negative to read all
+185:      * @return A list of lines
+186:      */
+187:     private List read(InputStream in, int targetLineNumber) {
+188:         List snippet = null;
+189:         if (in != null) {
+190:             snippet = new ArrayList();
+191:             int startLine = 0;
+192:             int endLine = Integer.MAX_VALUE;
+193:             if (targetLineNumber &gt; 0) {
+194:                 startLine = targetLineNumber - padding;
+195:                 endLine = targetLineNumber + padding;
+196:             }
+197:             try {
+198:                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+199: 
+200:                 int lineno = 0;
+201:                 String line;
+202:                 while ((line = reader.readLine()) != null) {
+203:                     lineno++;
+204:                     if (lineno &gt;= startLine &amp;&amp; lineno &lt;= endLine) {
+205:                         snippet.add(line);
+206:                     }
+207:                 }
+208:             } catch (Exception ex) {
+209:                 // ignoring as snippet not available isn't a big deal
+210:             }
+211:         }
+212:         return snippet;
+213:     }
+214: 
+215:     public void setServletContext(ServletContext arg0) {
+216:         this.servletContext = arg0;
+217:     }
+218: 
+219: 
+220: }
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts.xml%3A60&amp;page=%2F%2FviewSource.jsp&amp;className=org.apache.struts2.showcase.source.ViewSourceAction">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

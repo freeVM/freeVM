@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License. -->
+
+<!-- ====================================================================== 
+                    BT Adaptor Executing Harmony DRLVM Tests
+     ====================================================================== -->
+<project name="drlvm-test" default="run" basedir=".">
+
+    <property name="drlvm-test.results.dir"
+              value="${results.dir}/${suite.name}" />
+
+    <target name="setup">
+        <mkdir dir="${results.dir}/${suite.name}" />
+    </target>
+
+    <target name="run" depends="-update">
+        <!-- remove old results (they should be archived after the run) -->
+        <delete quiet="true" verbose="false">
+            <fileset dir="${drlvm-test.results.dir}" includes="**/*" />
+        </delete>
+
+        <!-- time of the current test run -->
+        <tstamp>
+            <format property="drlvm-test.run.time" pattern="yyyyMMdd_HHmm" />
+        </tstamp>
+
+        <exec-ant dir="${drlvm-test.parameters.svn.drlvm.location}"
+                  targets="clean fetch-depends"
+                  failonerror="true">
+
+            <sysproperty key="hy.cfg" value="${drlvm.config}" />
+            <sysproperty key="common.resources.loc"
+                         value="${drlvm-test.parameters.svn.common_resources.location}" />
+        </exec-ant>
+
+        <!-- launch the tests kernel.test -->
+        <exec-ant dir="${drlvm-test.parameters.svn.drlvm.location}"
+                  targets="test"
+                  failonerror="false"
+                  failproperty="drlvm-test.run.failed">
+
+            <sysproperty key="hy.cfg" value="${drlvm.config}" />
+            <sysproperty key="common.resources.loc"
+                         value="${drlvm-test.parameters.svn.common_resources.location}" />
+            <sysproperty key="test.mode"
+                         value="${drlvm-test.parameters.optional.test.mode}" />
+            <sysproperty key="run.all.tests" value="true" />
+            <sysproperty key="test.hdk.home"
+                         value="${drlvm-test.parameters.required.hy.hdk}" />
+        </exec-ant>
+
+        <!-- define the resulting files -->
+        <fileset id="drlvm-test.results.set"
+                 dir="${drlvm-test.parameters.svn.drlvm.location}/build"
+                 includes="*${drlvm.config}/**/TEST-*.xml">
+            <date datetime="${drlvm-test.run.time}"
+                  pattern="yyyyMMdd_HHmm"
+                  when="after" />
+        </fileset>
+
+        <copy todir="${drlvm-test.results.dir}">
+            <fileset refid="drlvm-test.results.set" />
+            <packagemapper from="*" to="*" />
+        </copy>
+
+        <fail message="There were drlvm-test failures"
+              if="drlvm-test.run.failed" />
+    </target>
+
+    <!--                                                    -->
+    <!-- Targets and properties related to snapshot testing -->
+    <!--                                                    -->
+    <condition property="is.snapshot">
+        <equals arg1="${drlvm-test.parameters.depends}"
+                arg2="snapshot"
+                trim="yes" />
+    </condition>
+
+    <target name="-update"
+            if="is.snapshot"
+            description="adjusts tests to snapshot revision">
+
+        <exec executable="svn"
+              dir="${drlvm-test.parameters.svn.common_resources.location}"
+              failonerror="true">
+            <arg line="up -r${svn.revision} ." />
+        </exec>
+        <exec executable="svn"
+              dir="${drlvm-test.parameters.svn.drlvm.location}"
+              failonerror="true">
+            <arg line="up -r${svn.revision} ." />
+        </exec>
+    </target>
+
+</project>
+

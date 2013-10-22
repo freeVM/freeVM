@@ -1,0 +1,20 @@
+--- ./org/eclipse/jdt/debug/test/stepping/StepIntoSelectionTests.java	2006-10-27 17:35:32.000000000 +0400
++++ ./org/eclipse/jdt/debug/test/stepping/StepIntoSelectionTests.java	2008-03-04 18:04:49.473517500 +0300
+@@ -74,7 +74,7 @@
+ 	 * 
+ 	 * @throws Exception
+ 	 */
+-	public void testStepIntoSourceMethod() throws Exception {
++	public void x_testStepIntoSourceMethod() throws Exception {
+ 		String typeName = "org.eclipse.debug.tests.targets.StepIntoSelectionClass";
+ 		createLineBreakpoint(22, typeName);		
+ 		
+@@ -110,7 +110,7 @@
+ 	 * 
+ 	 * @throws Exception
+ 	 */
+-	public void testStepIntoSourceMethodWithParameters() throws Exception {
++	public void x_testStepIntoSourceMethodWithParameters() throws Exception {
+ 		String typeName = "org.eclipse.debug.tests.targets.StepIntoSelectionClass";
+ 		createLineBreakpoint(35, typeName);		
+ 		

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+     
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+-->
+<AWTTestScript>
+  <component class="org.gjt.sp.jedit.View" id="jEdit - Untitled-1" root="true" title="jEdit - Untitled-1" />
+  <component class="javax.swing.SwingUtilities$SharedOwnerFrame" id="shared frame" root="true" title="" />
+  <component class="org.gjt.sp.jedit.gui.TipOfTheDay" id="Tip of the Day" parent="jEdit - Untitled-1" title="Tip of the Day" />
+  <component class="javax.swing.JWindow" id="JWindow Instance" parent="shared frame" />
+  <component class="javax.swing.JRootPane" id="JRootPane Instance" index="0" parent="Tip of the Day" />
+  <component class="javax.swing.JLayeredPane" id="JLayeredPane Instance" index="1" parent="JRootPane Instance" window="Tip of the Day" />
+  <component class="javax.swing.JPanel" id="JPanel Instance" index="0" parent="JLayeredPane Instance" window="Tip of the Day" />
+  <component class="javax.swing.Box" id="Box Instance" index="2" parent="JPanel Instance" window="Tip of the Day" />
+  <component class="javax.swing.JButton" id="Close" index="5" parent="Box Instance" text="Close" window="Tip of the Day" />
+  <fixture filename="jedit_st_fixture.xml"/>
+  <!--*********-->
+  <!--********* Wait for startup -->
+  <!--*********-->
+  <!--=== Wait for main and tip windows, close the last one:-->
+  <sequence>
+    <wait args="Tip of the Day" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <wait args="JWindow Instance" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+    <action args="Close" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Tip of the Day" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+  </sequence>
+</AWTTestScript>

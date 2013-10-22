@@ -1,0 +1,12 @@
+diff -u -r org.eclipse.jdt.debug.tests/testprograms/org/eclipse/debug/tests/targets/StepIntoSelectionClass.java org.eclipse.jdt.debug.tests/testprograms/org/eclipse/debug/tests/targets/StepIntoSelectionClass.java
+--- org.eclipse.jdt.debug.tests/testprograms/org/eclipse/debug/tests/targets/StepIntoSelectionClass.java	2007-06-20 20:15:57.098120200 +0700
++++ org.eclipse.jdt.debug.tests/testprograms/org/eclipse/debug/tests/targets/StepIntoSelectionClass.java	2007-06-20 19:09:45.905734000 +0700
+@@ -18,7 +18,7 @@
+ public class StepIntoSelectionClass {
+ 
+ 	public static void main(String[] args) {
+-		StepIntoSelectionClass stepper = new StepIntoSelectionClass();
++		StepIntoSelectionClass stepper = new StepIntoSelectionClass(); stepper.step();
+ 		stepper.step();
+ 	}
+ 	

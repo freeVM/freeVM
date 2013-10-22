@@ -1,0 +1,86 @@
+<parameters>
+    <required/>
+
+    <!-- optional framework preferences -->
+    <optional>
+        <dolog value="false" description="Do you want to see Framework execution log?"/>
+        <upload.dir description="A directory to upload status reports to"/>
+    </optional>
+
+    <repository>
+        <noupdate description="Turns off local BTI repository updates on 'install' and 'setup' stages."/>
+        <awaited description="Pipe (|) separated list of relative path awaited to be in repository. Usefull while new test development. Value example: '|tests/new_test|'"/>
+    </repository>
+    
+    <cc>
+        <webport 
+            value="8080" 
+            description="The port on which CC will make its web publishing"/>
+        <jmxport
+            value="8000" 
+            description="The port for CC's JMX console."/>
+        <quietperiod 
+            value="0" 
+            description="The number of seconds since last SVN modification to wait before Test Suites execution."/>
+        <interval 
+            value="1800" 
+            description="Interval period in seconds to check for necessity of Test Suite Execution."/>
+        <doclean 
+            value="false" 
+            description="Do clean working CC directory before execution?"/>
+        <timeout
+            value="5000000"
+            description="Time to wait for finish of Test Suite execution."/>
+        <buildafterfailed
+            value="false"
+            description="Do recurring execution after failure?"/>
+        <get-mods-tree
+            value="false"
+            description="Obtain SVN modifications from super-suite(s). Produces nicer reports but increases strain on SVN server."/>
+    </cc>
+
+    <schedule>
+        <time description="Schedules the framework to launch test run in particular time (in HHMM format)."/>
+        <day description="Schedules the framework to launch test run in particular week day (english anycase)."/>
+    </schedule>
+
+    <usemail 
+        description="Specify the SMTP server to be used for E-Mail Notifications">
+        <always 
+            description="Do always notify Run Status or only when status is changed"
+            value="true"/>
+        <to description="E-Mail address to send notifications to"/>
+        <bcc description="list of recipients to receive blind copies of notifications"
+             value=""/>
+        <suppress.exelogs description="Define this property to suppress the execution logs publishing."/>
+        <from description="E-Mail address to send notifications from"/>
+        <subject.prefix 
+            description="Subject prefix of E-Mail Notifications"
+            value="[build-test alert]"/>
+        <subject.suffix
+            description="Subject suffix of E-Mail Notifications"
+            value=""/>
+    </usemail>
+
+    <external>
+        <ant-contrib
+            jar="ant-contrib-1.0b3.jar"
+            url="http://kent.dl.sourceforge.net/sourceforge/ant-contrib/ant-contrib-1.0b3-bin.zip"
+            md5="c5a75fc28cbc52f09bd43b5506978601"
+        />
+        <junit
+            url="http://mirrors.ibiblio.org/pub/mirrors/maven2/junit/junit/3.8.2/junit-3.8.2.jar"
+            md5="28e7eb9eeefe31a657c68755bfccc541"
+        />
+        <cc
+            url="http://downloads.sourceforge.net/cruisecontrol/cruisecontrol-bin-2.6.2.zip"
+            md5="84c613d5e65975ae05b5ace4647eb39b"
+            dir="cruisecontrol-bin-2.6.2"
+            inc="*/lib/**,*/webapps/**"
+        />
+        <xalan
+            url="http://mirrors.ibiblio.org/pub/mirrors/maven2/xalan/xalan/2.7.0/xalan-2.7.0.jar"
+            md5="a018d032c21a873225e702b36b171a10"/>
+    </external>
+</parameters>
+

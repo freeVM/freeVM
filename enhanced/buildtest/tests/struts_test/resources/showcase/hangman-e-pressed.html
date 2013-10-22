@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Showcase - Hangman</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 04:08:28
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <table bgcolor="green"> 
+  <tr> 
+    <td>
+    <img alt="Hangman" src="/struts2-showcase-2.0.6/hangman/images/hangman.png?character=E"
+           width="197" height="50" border="0"/> 
+    </td> 
+    <td width="70" align="right">
+      <div id="updateGuessLeftDiv">
+      <img alt="No. Guesses Left"
+      	   src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_1.png?character=E" width="20" height="20" border="0" />
+      </div>
+    </td>
+    <td>
+    	<img alt="Guesses Left"
+            src="/struts2-showcase-2.0.6/hangman/images/guesses-left.png?character=E" width="164" height="11" border="0"/>
+    </td>
+  </tr> 
+  <tr> 
+  	<td></td>
+    <td align="left">
+  	<div id="updateScaffoldDiv">
+    	<img src="/struts2-showcase-2.0.6/hangman/images/scaffold_1.png?character=E" border="0"/>
+    </div>
+    </td>
+    <td></td>
+    </tr> 
+  <tr>
+    <td width="160"> 
+      <p align="right">
+        <img alt="Current Guess" src="/struts2-showcase-2.0.6/hangman/images/guess.png?character=E"
+           align="MIDDLE" width="127" height="20" border="0"/></p> 
+    </td> 
+    <td>
+    <div id="updateVocabDiv">
+    		<img height="36" alt="_"
+        		src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_underscroll.png?character=E" width="36" border="0"/>
+    		<img height="36" alt="A"
+        		src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_A.png?character=E" width="36" border="0"/>
+    		<img height="36" alt="_"
+        		src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_underscroll.png?character=E" width="36" border="0"/>
+    		<img height="36" alt="A"
+        		src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_A.png?character=E" width="36" border="0"/>
+	</div>
+    </td> 
+  </tr>
+  <tr> 
+    <td valign="top"> 
+      <p align="right">
+        <img alt="Choose" src="/struts2-showcase-2.0.6/hangman/images/choose.png?character=E"
+             height="20" width="151" border="0"/>
+      </p> 
+    </td> 
+    <td width="330">
+    
+    <div id="updateCharacterAvailableDiv">
+      
+<a
+	id="F"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=F"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_F.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="G"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=G"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_G.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="H"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=H"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_H.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="I"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=I"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_I.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="J"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=J"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_J.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="K"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=K"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_K.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="L"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=L"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_L.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="M"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=M"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_M.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="N"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=N"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_N.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="O"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=O"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_O.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="P"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=P"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_P.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="Q"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=Q"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_Q.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="R"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=R"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_R.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="S"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=S"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_S.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="T"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=T"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_T.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="U"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=U"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_U.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="V"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=V"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_V.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="W"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=W"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_W.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="X"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=X"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_X.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="Y"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=Y"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_Y.png?character=E" width="36" border="0" />
+</a>
+      
+<a
+	id="Z"
+	href="/struts2-showcase-2.0.6/hangman/guessCharacterNonAjax.action?character=Z"
+
+>
+      	<img height="36" alt="" src="/struts2-showcase-2.0.6/hangman/images/Chalkboard_Z.png?character=E" width="36" border="0" />
+</a>
+	</div>
+ 
+   
+   </td>
+  </tr> 
+  <tr>
+  	<td>
+  		
+  	</td>
+  </tr>
+</table>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?character=E">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?character=E">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?character=E">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?character=E">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?character=E">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?character=E">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?character=E">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?character=E">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?character=E">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?character=E">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?character=E">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?character=E">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?character=E">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?character=E">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?character=E">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?character=E">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?character=E">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts-hangman.xml:24&className=guessCharacterAction&page=/hangman//hangman/hangmanNonAjax.ftl">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

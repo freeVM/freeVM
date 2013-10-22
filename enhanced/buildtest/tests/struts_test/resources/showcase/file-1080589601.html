@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Ajax Examples</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+    
+<!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <!--// END SNIPPET: common-include-->
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:16:23
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        Using a JSON list returned from an action (href="/JSONList.action"), without autoComplete (autoComplete="false"), use indicator, search substring (searchType="substring")
+<br/>
+<input dojoType="struts:ComboBox" id="state" style="width: 200px;" dataUrl="/struts2-showcase-2.0.6/JSONList.action" searchType="SUBSTRING" autoComplete="false" name="state" keyName="stateKey" indicator="indicator1" visibleDownArrow="true">
+
+
+
+
+<img id="indicator1" src="/struts2-showcase-2.0.6/images/indicator.gif" alt="Loading..." style="display:none"/>
+
+<br/>
+<br/>
+
+Reload on type (loadOnTextChange="true"), after 3 characters (loadMinimumCout="3", it is "3" by default), without the down arrow button (showDownArrow="false")
+<br/>
+<input dojoType="struts:ComboBox" style="width: 200px;" dataUrl="/struts2-showcase-2.0.6/JSONList.action" autoComplete="false" keyName="nullKey" indicator="indicator" loadOnType="true" loadMinimum="3" visibleDownArrow="false">
+
+
+
+
+<img id="indicator" src="/struts2-showcase-2.0.6/images/indicator.gif" alt="Loading..." style="display:none"/>
+
+<br/>
+<br/>
+
+Using a JSON list returned from an action (href="/JSONList.action"), with autoComplete (autoComplete="true")
+<br/>
+<input dojoType="struts:ComboBox" style="width: 200px;" dataUrl="/struts2-showcase-2.0.6/JSONList.action" autoComplete="true" keyName="nullKey" visibleDownArrow="true">
+
+
+
+
+
+<br/>
+<br/>
+
+Using a local list (list="{'apple','banana','grape','pear'}")
+<br/>
+<select dojoType="struts:ComboBox" style="width: 150px;" keyName="nullKey">
+    <option value="apple">apple</option>
+    <option value="banana">banana</option>
+    <option value="grape">grape</option>
+    <option value="pear">pear</option>
+</select>
+
+
+
+
+<br/>
+<br/>
+
+Force valid options (forceValidOption="true")
+<br/>
+<input dojoType="struts:ComboBox" style="width: 200px;" dataUrl="/struts2-showcase-2.0.6/JSONList.action" forceValidOption="true" keyName="nullKey" visibleDownArrow="true">
+
+
+
+
+
+<br/>
+<br/>
+
+Make dropdown's height to 180px  (dropdownHeight="180")
+<br/>
+<input dojoType="struts:ComboBox" style="width: 200px;" dataUrl="/struts2-showcase-2.0.6/JSONList.action" dropdownHeight="180" keyName="nullKey" visibleDownArrow="true">
+
+
+
+
+
+<br/>
+<br/>
+
+Disabled combobox (disabled="true")
+<br/>
+<input dojoType="struts:ComboBox" style="width: 200px;" dataUrl="/struts2-showcase-2.0.6/JSONList.action" disabled="true" keyName="nullKey" visibleDownArrow="true">
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+
+Link two autocompleter elements. When the selected value in 'Autocompleter 1' changes, the available values in 'Autocompleter 2' will change also.
+<br/>
+<form id="selectForm">
+  <p>Autocompleter 1 <select dojoType="struts:ComboBox" id="sel" forceValidOption="true" name="select" keyName="selectKey" initialValue="colors" notifyTopics="/Changed">
+    <option value="fruits">fruits</option>
+    <option value="colors" selected="selected">colors</option>
+</select>
+
+
+</p>
+</form>
+Autocompleter 2 <input dojoType="struts:ComboBox" id="ops" dataUrl="/struts2-showcase-2.0.6/nodecorate/AutocompleterExample.action" forceValidOption="true" autoComplete="false" keyName="nullKey" formId="selectForm" listenTopics="/Changed" visibleDownArrow="true">
+
+
+
+
+
+<br/>
+<br/>
+
+
+
+<hr/>
+
+
+
+<a
+	
+	href=".."
+
+>
+Back To AJAX Examples</a>
+&nbsp;
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?page=/ajax/autocompleter/index.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

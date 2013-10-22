@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:18:15
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/freemarker/customFreemarkerManagerUsage.ftl</h3>
+<pre>
+
+1: 
+2: &lt;html&gt;
+3: &lt;head&gt;
+4: 	&lt;title&gt;Showcase - Freemarker - CustomFreemarkerManager Usage&lt;/title&gt;
+5: &lt;/head&gt;
+6: &lt;body&gt;
+7: 	&lt;h1&gt;Custom Freemarker Manager Usage&lt;/h1&gt;
+8: 	
+9: 	&lt;p/&gt;
+10: 	This page shows a simple example of using a custom freemarker manager.
+11: 	The custom freemarker manager put into freemarker model an util classed 
+12: 	under the name 'customFreemarkerManagerUtil'. so one could use
+13: 	&lt;p/&gt;
+14: 	&lt;ul&gt;
+15: 		&lt;li&gt;$ { customFreemarkerManagerUtil.getTodayDate() } - to get today's date&lt;/li&gt;
+16: 		&lt;li&gt;$ { customFreemarkerManagerUtil.todayDate } - to get today's date&lt;/li&gt;
+17: 		&lt;li&gt;$ { customFreemarkerManagerUtil.getTimeNow() } - to get the time now&lt;/li&gt;
+18: 		&lt;li&gt;$ { customFreemarkerManagerUtil.timeNow } - to get the time now&lt;/li&gt;
+19: 	&lt;/ul&gt;
+20: 	 
+21: 	 Today's Date = ${customFreemarkerManagerUtil.todayDate}&lt;br/&gt;
+22: 	 Time now = ${customFreemarkerManagerUtil.getTimeNow()}&lt;br/&gt;
+23: 
+24: &lt;/body&gt;
+25: &lt;/html&gt;
+26: 
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts-freemarker.xml</h3>
+<pre>
+
+
+0: &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+1: 
+2: &lt;!DOCTYPE struts PUBLIC
+3:         &quot;-//Apache Software Foundation//DTD Struts Configuration 2.0//EN&quot;
+4:         &quot;http://struts.apache.org/dtds/struts-2.0.dtd&quot;&gt;
+5: 
+6: 
+7: &lt;struts&gt;
+8:     &lt;package name=&quot;freemarker&quot; namespace=&quot;/freemarker&quot; extends=&quot;struts-default&quot;&gt;
+<span style="background-color:yellow">9:         &lt;action name=&quot;customFreemarkerManagerDemo&quot;&gt;</span>
+10:             &lt;result type=&quot;freemarker&quot;&gt;/freemarker/customFreemarkerManagerUsage.ftl&lt;/result&gt;
+11:         &lt;/action&gt;
+12:         
+13:         &lt;action name=&quot;standardTags&quot; class=&quot;org.apache.struts2.showcase.freemarker.StandardTagsAction&quot;&gt;
+14:             &lt;result type=&quot;freemarker&quot;&gt;/freemarker/standardTags.ftl&lt;/result&gt;
+15:         &lt;/action&gt;
+16:     &lt;/package&gt;
+17: &lt;/struts&gt;	
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>/com/opensymphony/xwork2/ActionSupport.java</h3>
+<pre>
+
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-freemarker.xml%3A10&amp;page=%2Ffreemarker%2F%2Ffreemarker%2FcustomFreemarkerManagerUsage.ftl&amp;className=com.opensymphony.xwork2.ActionSupport">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

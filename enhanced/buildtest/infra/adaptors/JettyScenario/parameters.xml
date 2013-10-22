@@ -1,0 +1,78 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<parameters depends="drlvm">
+
+    <!-- Required parameters -->
+    <required>
+        <jetty.server.jvm
+            description="Path to JVM on which Jetty server will be started (current build of drlvm by default)."
+            value="${drlvm.parameters.shared.jvm.location}"/>
+        <scenario.framework.jvm
+            description="Path to JVM on which the scenario framework will be started (current build of drlvm by default)."
+            value="${drlvm.parameters.shared.jvm.location}"/>
+    </required>
+
+    <!-- Optional parameters -->
+    <optional>
+        <tested.vm.options
+            description="JVM options for tested runtime"
+            value=""/>
+        <jetty.server.port
+            description="Port on which Jetty server will startup."
+            value="7070"/>
+        <jetty.server.stop.port
+            description="Port for stopping Jetty server."
+            value="4444"/>
+        <jetty.server.timeout
+            description="Timeout for waiting Jetty server loaded (seconds)."
+            value="300"/>
+        <do.save.pages
+            description="Tells scenario whether it should store downloaded pages or not."
+            value="yes"/>
+    </optional>
+
+    <!-- External dependencies -->
+    <external>
+        <jetty-6.1.2rc1
+            url="http://dist.codehaus.org/jetty/jetty-6.1.x/jetty-6.1.2rc1.zip"
+            md5="b35a6c1767c116999a1f3d205174429c"
+            dir="jetty-6.1.2rc1"/>
+        <htmlunit-1.11
+            url="http://downloads.sourceforge.net/htmlunit/htmlunit-1.11.zip"
+            md5="829ff23c7d921b6cb04df2b6fdcd4672"
+            dir="htmlunit-1.11"
+            inc="*/lib/**,*/*.txt"/>
+    </external>
+
+    <svn>
+      <JettyScenario url="tests/JettyScenario"/>
+    </svn>
+
+    <!-- Shared parameters -->
+    <shared>
+        <!-- define where the scenario sources are placed -->
+        <trunk.dir value="${scenario.src.dir}" id="trunk.dir.id"/>
+    </shared>
+
+    <!-- CC specific configuration -->
+    <cc>
+        <!-- Run this script for publishing results -->
+        <summary value="${scenario.results.dir}/notification.txt"/>
+        <!-- Merge results with CC log -->
+        <results value="${scenario.results.dir}' pattern='TEST-*.xml"/>
+    </cc>
+</parameters>
