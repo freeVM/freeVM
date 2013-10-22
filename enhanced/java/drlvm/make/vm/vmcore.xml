@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="vmcore" default="build" basedir="../..">
+
+    <property name="hy.component" value="drlvm"/>
+    <property name="hy.module" value="vmcore"/>
+    <import file="common-vm.xml"/>
+
+    <target name="fetch-depends">
+        <fetch dep="icuhdr"/>
+        <fetch dep="icudll"/>
+    </target>
+
+    <target name="check-depends">
+        <check-one-file dest="${icuhdr}" src="${icuhdr.url}"/>
+        <check-one-file dest="${icudll}" src="${icudll.url}"/>
+    </target>
+
+    <target name="-check-setup">
+        <available file="${drlvm.include.dir}/unicode" property="icu4c.hdr.available"/>
+        <available file="${drlvm.shlib.dir}/${linklib.prefix}icuuc${linklib.suffix}" 
+            property="icu4c.lib.available"/>
+        <condition property="setup.complete">
+            <and>
+                <isset property="icu4c.hdr.available"/>
+                <isset property="icu4c.lib.available"/>
+            </and>
+        </condition>
+    </target>
+
+    <target name="setup" depends="-check-setup" unless="setup.complete">
+        <check-one-file dest="${icuhdr}" src="${icuhdr.url}"/>
+        <check-one-file dest="${icudll}" src="${icudll.url}"/>
+        <mkdir dir="${drlvm.include.dir}/unicode"/>
+        <unzip src="${icuhdr}" dest="${drlvm.include.dir}/unicode"/>
+        <unzip src="${icudll}" dest="${drlvm.bin.dir}">
+            <patternset> 
+                <exclude name="*${linklib.suffix}" unless="shlib.is.linklib"/>
+                <exclude name="*ICUInterface*" />
+            </patternset>
+        </unzip>
+        <unzip src="${icudll}" dest="${drlvm.lib.dir}">
+            <patternset> 
+                <include name="*${linklib.suffix}" unless="shlib.is.linklib"/>
+                <exclude name="*" if="shlib.is.linklib"/>
+                <exclude name="*ICUInterface*" />
+            </patternset>
+        </unzip>
+        <check-one-link message="" src="${drlvm.shlib.dir}/${icuuc.linkname}"
+            dest="${drlvm.shlib.dir}/${linklib.prefix}icuuc${linklib.suffix}"/>
+    </target>
+
+    <target name="build" depends="setup,stamp-version,-common-vm">
+        <echo message="Copying files for internationalization..."/>
+        <copy todir="${drlvm.bin.dir}" flatten="true" >
+            <!--
+                 TOFIX: move to more appropriate directory or copy in makefile?
+              -->
+            <fileset dir="modules/vm/src/main/native/vmcore/shared/init">
+                <include name="harmony*.properties" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="stamp-version" depends="-check-version,-copy-version"
+        if="svn.revision" unless="skip.svn.stamp">
+        <condition property="harmony.java.runtime.version"
+                   value="1.6.0" else="1.5.0">
+            <equals arg1="${harmony.java.version}" arg2="6.0" />
+        </condition>
+        <condition property="harmony.java.specification.version"
+                   value="1.6" else="1.5">
+            <equals arg1="${harmony.java.version}" arg2="6.0" />
+        </condition>
+        <copy file="${vm.home}/vmcore/include/version_svn_tag_orig.h"
+              tofile="${vm.home}/vmcore/include/version_svn_tag.h" overwrite="true">
+            <filterset>
+                <filter token="svn.revision" value="${svn.revision}"/>
+                <filter token="harmony.java.runtime.version"
+                        value="${harmony.java.runtime.version}" />
+                <filter token="harmony.java.specification.version"
+                        value="${harmony.java.specification.version}" />
+            </filterset>
+        </copy>
+    </target>
+    
+    <target name="-check-version" if="is.svn">
+        <uptodate property="skip.svn.stamp" 
+            srcfile="${vm.home}/.svn/entries" 
+            targetfile="${vm.home}/vmcore/include/version_svn_tag.h"/>
+    </target>
+
+    <target name="-copy-version" unless="is.svn">
+        <copy file="${vm.home}/vmcore/include/version_svn_tag_orig.h"
+              tofile="${vm.home}/vmcore/include/version_svn_tag.h" overwrite="false">
+        </copy>
+    </target>
+
+    <target name="clean" >
+        <clean-native />
+    </target>
+
+</project>
