@@ -1,0 +1,160 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+#
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+#
+# Modified to make a template file for a multi-binary package with separated
+# build-arch and build-indep targets  by Bill Allombert 2001
+
+# -lib /usr/share/java ensures that ant finds ecj.jar, etc
+ANT_FLAGS = -lib /usr/share/java \
+            -Dhy.local.zlib=true -Dhy.zip.api=false   \
+            -Dhy.no.thr=false -Dauto.fetch=true
+VMDIR=$(CURDIR)/debian/harmony-5.0-drlvm
+CLDIR=$(CURDIR)/debian/harmony-5.0-classlib
+JREDIR=$(CURDIR)/debian/harmony-5.0-jre
+JDKDIR=$(CURDIR)/debian/harmony-5.0-jdk
+HDKDIR=$(CURDIR)/debian/harmony-5.0-hdk
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O1
+endif
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	# Add here commands to configure the package.
+	patch -p0 <debian/patches/01-ignore.suffix.on.samsa.tools.diff
+	touch configure-stamp
+
+
+#Architecture 
+build: build-arch build-indep
+
+build-arch: build-arch-stamp
+build-arch-stamp: configure-stamp 
+
+	# Add here commands to compile the arch part of the package.
+	ant $(ANT_FLAGS)
+	touch $@
+
+build-indep: build-indep-stamp
+build-indep-stamp: configure-stamp 
+
+	# Add here commands to compile the indep part of the package.
+	#$(MAKE) doc
+	touch $@
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
+
+	# Add here commands to clean up after the build process.
+	ant $(ANT_FLAGS) clean
+
+	dh_clean  --exclude ./working_classlib/modules/luni/src/main/native/fdlibm_dist/Makefile.orig --exclude ./working_classlib/modules/luni/src/main/native/fdlibm_dist/fdlibm.h.orig --exclude ./working_classlib/modules/luni/src/main/native/fdlibm_dist/s_lib_version.c.orig --exclude ./working_classlib/modules/archive/src/main/native/zlib_dist/Makefile.orig
+
+install: install-indep install-arch
+install-indep:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -i  --exclude ./working_classlib/modules/luni/src/main/native/fdlibm_dist/Makefile.orig --exclude ./working_classlib/modules/luni/src/main/native/fdlibm_dist/fdlibm.h.orig --exclude ./working_classlib/modules/luni/src/main/native/fdlibm_dist/s_lib_version.c.orig --exclude ./working_classlib/modules/archive/src/main/native/zlib_dist/Makefile.orig
+	dh_installdirs -i
+
+	# Add here commands to install the indep part of the package into
+	# debian/<package>-doc.
+	#INSTALLDOC#
+
+	dh_install -i
+
+install-arch:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -s  --exclude ./working_classlib/modules/luni/src/main/native/fdlibm_dist/Makefile.orig --exclude ./working_classlib/modules/luni/src/main/native/fdlibm_dist/fdlibm.h.orig --exclude ./working_classlib/modules/luni/src/main/native/fdlibm_dist/s_lib_version.c.orig --exclude ./working_classlib/modules/archive/src/main/native/zlib_dist/Makefile.orig
+	dh_installdirs -s
+
+	mkdir -p $(VMDIR)/usr/lib/harmony-5.0/jdk/jre/bin
+	-rm -rf $(VMDIR)/usr/lib/harmony-5.0/jdk/jre/bin/drlvm
+	mv $(CURDIR)/target/hdk/jdk/jre/bin/default \
+	    $(VMDIR)/usr/lib/harmony-5.0/jdk/jre/bin/drlvm
+	mv $(CURDIR)/target/hdk/jdk/jre/bin/libhythr.so \
+	    $(VMDIR)/usr/lib/harmony-5.0/jdk/jre/bin
+	mkdir -p $(VMDIR)/usr/share/lintian/overrides
+	cp -pr $(CURDIR)/debian/harmony-5.0-drlvm.lintian \
+	    $(VMDIR)/usr/share/lintian/overrides/harmony-5.0-drlvm
+
+	mkdir -p $(CLDIR)/usr/lib/harmony-5.0/jdk
+	-rm -rf $(CLDIR)/usr/lib/harmony-5.0/jdk/jre
+	mv $(CURDIR)/target/hdk/jdk/jre $(CLDIR)/usr/lib/harmony-5.0/jdk
+
+	mkdir -p $(JREDIR)/usr/lib/harmony-5.0/jdk/jre/bin
+	mv $(CLDIR)/usr/lib/harmony-5.0/jdk/jre/bin/java \
+	   $(JREDIR)/usr/lib/harmony-5.0/jdk/jre/bin
+
+	mkdir -p $(JDKDIR)/usr/lib/harmony-5.0
+	-rm -rf $(JDKDIR)/usr/lib/harmony-5.0/jdk
+	mv $(CURDIR)/target/hdk/jdk $(JDKDIR)/usr/lib/harmony-5.0
+
+	mkdir -p $(HDKDIR)/usr/lib
+	-rm -rf $(HDKDIR)/usr/lib/harmony-5.0
+	mv $(CURDIR)/target/hdk $(HDKDIR)/usr/lib/harmony-5.0
+
+	dh_install -s
+# Must not depend on anything. This is to be called by
+# binary-arch/binary-indep
+# in another 'make' thread.
+binary-common:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs
+	dh_installexamples
+#	dh_installmenu
+#	dh_installdebconf	
+#	dh_installlogrotate	
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+#	dh_python
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress 
+	dh_fixperms
+#	dh_perl
+	dh_makeshlibs
+	dh_installdeb
+	LD_LIBRARY_PATH=debian/harmony-5.0-drlvm/usr/lib/harmony-5.0/jdk/jre/bin:debian/harmony-5.0-drlvm/usr/lib/harmony-5.0/jdk/jre/bin/drlvm:$(LD_LIBRARY_PATH) dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+# Build architecture independant packages using the common target.
+binary-indep: build-indep install-indep
+	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+
+# Build architecture dependant packages using the common target.
+binary-arch: build-arch install-arch
+	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
+
+binary: binary-arch binary-indep
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch configure
