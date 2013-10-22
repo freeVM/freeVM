@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+<properties>
+    <title>Getting Started For Users</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+</properties>
+
+<body>
+
+    <section name="Getting Started For Users">
+        <p>
+          The current document provides basic instructions for people that
+          wish to use Apache Harmony for running their Java programs. The
+          steps described below neither require development tools nor
+          necessitate compiling source code.
+        </p>
+    <p>
+      For more information on how to get you machine configured to build and
+      work with the Apache Harmony source code, refer to 
+      <a href="quickhelp_contributors.html">
+        Getting Started For Contributors</a>.
+    </p>
+        <p>
+            The required dependencies are listed below per platform.
+        </p>
+
+    <subsection name="Download the Apache Harmony Snapshot">
+
+        <p>
+            First, download the binary distribution appropriate to
+            your platform. We currently distribute binaries for Linux and 
+            Microsoft Windows. Please follow the instructions on the 
+            <a href="download.cgi">download page</a>
+            to choose and download the software.
+        </p>
+        <p>
+            Currently, the Apache Harmony project has no formal releases of 
+            its software.
+            Instead, the project offers pre-built snapshots that
+            are expected to run well on the platforms offered.
+        </p>
+
+    </subsection>
+
+    <subsection name="Unpack the Binary Distribution">
+
+        <p>
+            Once you have obtained the appropriate binary distribution,
+            you need to unpack it on your machine. In all cases, the
+            distribution will unpack into a <code>jre</code>
+            directory. Further in the document we refer to this directory
+            as the <i>root directory</i> of the distribution.
+        </p>
+<dl>
+        <dt>Linux Users</dt>
+
+        <dd>
+           Use the <code>tar</code> program as follows:
+<pre>$ tar -tzf latest-harmony-jre-linux.tar.gz</pre>
+</dd>
+        <dd>
+            This will unpack the JRE directory tree into the current directory.
+        </dd>
+        <dt>Windows Users</dt>
+        <dd>
+          Use one of <code>zip</code> utilities available for Windows to
+          unpack the distribution. The three popular ones are listed
+          below, but anything that can handle a <code>zip</code> file
+          will work:
+        <ul>
+            <li><a href="http://www.info-zip.org/">Info-ZIP</a>
+                (open source software)</li>
+            <li><a href="http://www.7-zip.org/">7-Zip</a> (free software)</li>
+            <li><a href="http://www.winzip.com/">Winzip</a> (commercial)</li>
+        </ul></dd>
+        <dd>
+            To create the JRE directory tree, extract the
+            distribution <code>zip</code> file using the utility.
+        </dd></dl>
+    </subsection>
+
+    <subsection name="Configuring Your Environment">
+        <p>
+            Apache Harmony requires no further environmental setup, but
+            sometimes other programs do. Also, it is convenient to have
+            the Apache Harmony executables on your path.
+        </p>
+        <p>
+          To set your <code>JAVA_HOME</code> and <code>PATH</code>
+          environment variables, use the commands appropriate to your
+          operating system and/or shell you are using.
+        </p>
+<dl>
+        <dt>
+          Linux Users</dt>
+        <dd>
+            The following command works for the Bash shell:
+<pre>$ cd jre
+$ export JAVA_HOME=`pwd`
+$ cd bin
+$ export PATH=`pwd`:$PATH</pre>
+</dd>
+        <dd>
+            The given command assumes your current directory is the parent
+            directory of the Harmony JRE.
+        </dd>
+      <p class="note">Note</p>
+      <p class="notetext">The <code>`</code> character is a backtick character,
+      not an apostrophe.</p>
+       <dt>Windows Users</dt>
+        <dd>
+            The following example assumes you unpacked the <code>zip</code> 
+            file into the root directory <code>C:\</code>.
+            Please adjust as necessary.
+<pre>
+C:\&gt; set JAVA_HOME=C:\jre
+C:\&gt; set PATH=C:\jre\bin;%PATH%
+</pre>
+</dd>
+      </dl>
+    </subsection>
+    <subsection name="Using Apache Harmony">
+        <p>
+            After performing aforementioned steps, you should be ready to use
+            Apache Harmony. Try running your Java application:
+        </p>
+<pre>$ java Foo
+$ java -jar myjar.jar</pre>
+      <p>In addition to standard options, you can use custom 
+      <a href="cmd_options.html">command-line options</a>
+      to adjust operation of the VM.</p>
+    </subsection>
+    </section>
+</body>
+
+</document>

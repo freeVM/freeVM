@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+    <properties>
+        <title>Older Harmony News</title>
+        <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    </properties>
+    <body>
+        <section name="Older Harmony News">
+        <!-- Please maintain reverse chronological order of new stories -->
+        <dl>
+
+        <dt>Apache Harmony 5.0 M11 now available</dt>
+        <dd>
+          The Apache Harmony development team are pleased to announce that
+          Apache Harmony 5.0M11 is available for immediate download from
+          the project website.
+          <p/>
+
+          Apache Harmony 5.0M11 is the latest stable build containing
+          <a href="http://tinyurl.com/mb6yqp">over 60 bug fixes</a>
+          and enhancements across a number of modules.
+          <p/>
+
+          As usual source code, binary builds and Debian packages are
+          available from our
+          <a href="http://harmony.apache.org/download.cgi">download site</a>.
+          Please send any feedback on these builds to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+          (<i>2009-09-01</i>)
+        </dd>
+
+        <dt>Apache Harmony 5.0 M10 declared!</dt>
+        <dd>
+          The Apache Harmony development team are pleased to announce that
+          Apache Harmony 5.0M10 is available for immediate download from
+          the project website.
+          <p/>
+
+          Apache Harmony 5.0M10 is the latest stable build containing
+          <a href="http://tinyurl.com/mkq4bv">over 50 bug fixes</a>
+          plus notable improvements to the JavaDoc comments in a number
+          of modules.
+          <p/>
+
+          As usual, source code and binary builds and Debian packages are
+          available from our
+          <a href="http://harmony.apache.org/download.cgi">download site</a>.
+          Please send any feedback on these builds to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.
+          (<i>2009-06-13</i>)
+        </dd>
+
+        <dt>Apache Harmony 5.0 M9 available for download!</dt>
+        <dd>
+          The Apache Harmony team are pleased to announce the immediate
+          availability of Apache Harmony 5.0M9.
+          <p/>
+
+          Apache Harmony 5.0M9 is the latest stable build containing
+          <a href="http://tinyurl.com/d6tu7w">numerous bug fixes</a>
+          and enhancements including:
+          <ul>
+              <li>performance: across multiple areas, including class library improvements
+                  and JIT compiler global propagation optimizations, integer MUL/DIV/REM
+                  strength reduction, and so on.</li>
+              <li>pack200: a new implementation of the JSR-200 compression technology
+                  for Java bytecodes.</li>
+              <li>porting work: in the class libraries for AIX and zOS operating systems.</li>
+              <li>bug fixing: focus on our test case enhancements, and on passing the
+                  Eclipse Test Suite.</li>
+          </ul>
+          <p/>
+
+          Source code and binary builds are available from the project
+          <a href="http://harmony.apache.org/download.cgi">download site</a>.
+          Please send feedback to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+          (<i>2009-04-15</i>)
+        </dd>
+
+        <dt>Apache Harmony 5.0 M8 now available</dt>
+        <dd>
+          The Apache Harmony team are pleased to announce the immediate
+          availability of Apache Harmony 5.0M8.
+          <p/>
+
+          Apache Harmony 5.0M8 is the latest stable build containing numerous bug
+          fixes, and enhancements to the policytool and pack200 support.
+          <p/>
+
+          Source code and binary builds are available from the project
+          <a href="http://harmony.apache.org/download.cgi">download site</a>.
+          Please send feedback to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+          (<i>2008-11-20</i>)
+        </dd>
+
+        <dt>Apache Harmony 5.0 M7 is available!</dt>
+        <dd>
+          The Apache Harmony team are pleased to announce the immediate availability
+          of Apache Harmony 5.0M7.  This is the latest stable build of the Harmony project
+          with numerous enhancements and bug fixes including:
+          <ul>
+            <li>new performance improvements, especially in object serialization and unpack200 decoding</li>
+            <li>a new 'javap' the class file disassembler tool, and alpha version of 'policytool' the security policy management tool</li>
+            <li>bug fixes and functional enhancements throughout the class libraries, especially in the Swing widget toolkit</li>
+            <li>...and many more</li>
+          </ul>
+          <p/>
+          
+          We would particularly like to thank our Google Summer of Code students
+          András Belicza (policytool) and Tharindu Mathew (Swing enhancements),
+          and welcome them to the project!
+          <p/>
+          
+          The build has been replicated to the download sites, and we recommend that
+          everyone update their current version to Apache Harmony 5.0M7.
+          <p/>
+          
+          The build is available for
+          <a href="http://harmony.apache.org/download.cgi">download</a>.
+          Please send your feedback to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+          (<i>2008-08-28</i>)
+        </dd>
+
+        <dt>Jikes RVM 3.0 + Apache Harmony!</dt>
+        <dd>
+          Ian Rogers recently announced exciting news of support for Harmony
+          class libraries running on the Jikes RVM:<p/> 
+          <i> 
+            "We are pleased to announce the release of Jikes RVM 3.0, an
+            open-source meta-circular JVM written in Java.  A new feature of
+            the release is initial support for Apache Harmony's class library."
+          </i><p/>
+          See the full announcement and details of how to combine the two projects
+          in <a href="http://markmail.org/message/5rehnbf2qj5xhiob">Ian's
+          mailing list posting</a>.
+          (<i>2008-08-27</i>)
+        </dd>
+
+        <dt>Microemulator code contribution</dt>
+        <dd>
+          Apache Harmony has broadened it's scope of code implementing the Java
+          platform APIs with the acceptance of a substantial code contribution
+          from the authors of Microemulator.
+          <p/>
+          Microemulator is a pure Java implementation of Java ME APIs in Java SE.  With
+          the emulator code it becomes possible to run MIDlet (MIDP/CLDC) based
+          applications as a standalone Java application or as web browser applet.
+          <p/>
+          Thanks to Bartek, Vlad, and Michael for this contribution to Apache Harmony!
+          (<i>2008-06-09</i>)
+        </dd>
+
+        <dt>Apache Harmony 5.0 M6 is available!</dt>
+        <dd>
+          The Apache Harmony team are pleased to announce the immediate availability
+          of Apache Harmony 5.0M6.  This is the latest stable build of the Harmony project
+          with numerous enhancements and bug fixes including:
+          <ul>
+            <li>new JIT optimizations</li>
+            <li>functional and coverage enhancements throughout the class libraries</li>
+            <li>improved VM threading design</li>
+            <li>support for full hardware addressability on 64 bit platforms</li>
+            <li>new appletviewer and unpack200 tools</li>
+            <li>...and many more</li>
+          </ul>
+          
+          The build has been replicated to the download sites, and we recommend that
+          everyone update their current version to Apache Harmony 5.0M6.
+          <p/>
+          The build is available for
+          <a href="http://harmony.apache.org/download.cgi#M6-r653525">download</a>.
+          Please send your feedback to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+          (<i>2008-05-22</i>)
+        </dd>
+
+        <dt>5.0 M5 now available</dt>
+        <dd>
+          The Apache Harmony team are pleased to announce the immediate availability
+          of Apache Harmony 5.0M5.  This is the latest stable build of the Harmony project
+          with numerous enhancements and bug fixes.  The build is being replicated to the
+          download sites, and we recommend that everyone update their current version to
+          Apache Harmony 5.0M5.
+          <p/>
+          The build is available for
+          <a href="http://harmony.apache.org/download.cgi#M5-r629320">download</a>.
+          Please send your feedback to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+          (<i>2008-02-29</i>)
+        </dd>
+
+        <dt>5.0 M4 stable build has been released</dt>
+        <dd>
+          The Apache Harmony team are pleased to announce the immediate availability
+          of Apache Harmony 5.0M4.  This is the latest stable build of the Harmony project
+          with numerous enhancements including new JIT optimizations, functional
+          and coverage enhancements throughout the class libraries, improved VM threading
+          design, and support for full hardware addressability on 64 bit platforms.
+          <p/>
+          The build is available for
+          <a href="http://harmony.apache.org/download.cgi#M4-r603534">download</a>.
+          Please send your feedback to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+          (<i>2007-12-19</i>)
+        </dd>
+
+        <dt>We now accept bug reports on other languages.</dt>
+        <dd>
+          Users may now submit bug reports, improvement suggestions or patches on their native languages.
+          We currently understand English, Chinese, and Russian. 
+         (<i>2007-10-25</i>)
+        </dd>
+        
+        <dt>5.0 M3 stable build has been released</dt>
+        <dd>
+          The build is targeted primarily to improving overall stability and
+          performance. This build contains the following enhancements:
+          an innovative fast byte code verifier, lazy resolution in all JIT
+          modes on IA32 platforms, support for Java6.0 classes in DRLVM.<p/>
+          Other areas that were improved include:
+          <ul>
+            <li>
+              Bytecode mapping in JIT - exception stack traces became more
+              comprehensive
+            </li>
+            <li>
+              Threading support was partially re-factored towards improvement
+              of reliability and maintainability
+            </li>
+            <li>
+              JIT-based JVMTI debug mode speed up by a factor of 3
+            </li>
+            <li>
+              Stability of Swing and AWT code on Windows
+            </li>
+         </ul>
+         The build is available for
+         <a href="http://harmony.apache.org/download.cgi#M3-r580985">download</a>.
+         Please send your feedback to
+         <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+         (<i>2007-10-09</i>)
+        </dd>
+        
+        <dt>Harmony 5.0 M2 Available</dt>
+        <dd>
+          We are pleased to announce the second stable build "5.0 M2".
+          In this build overall stability was improved, switch to GCv5 was made,
+          a lot of JIT optimizations were implemented, memory consumption was
+          significantly improved, API completeness came to 99.06% (without endorsed specs)
+          and many bugs were fixed. Apache Harmony encourage users to
+          <a href="http://harmony.apache.org/download.cgi#M2-r551077">download</a>
+          and try the runtime or development kit, and report their experiences to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+          (<i>2007-06-30</i>)
+        </dd>
+
+        <dt>Windows x86-64 (64-bit) Snapshots Available</dt>
+        <dd>
+          We now are offering Harmony binaries for the x86-64 architecture under
+          Windows. For more information, please
+          see our <a href="download.cgi">downloads</a> page.
+          (<i>2007-05-14</i>)
+        </dd>
+
+        <dt>First Milestone Available Now</dt>
+        <dd>
+          Apache Harmony are pleased to announce the first stable build "5.0 M1".  The code,
+          which was previously made available as "snapshot r533500", underwent additional testing
+          after a period of stabilization in the ongoing development of a full release.  Apache Harmony
+          5.0 M1 represents our best build so far, and we encourage users to
+          <a href="http://harmony.apache.org/download.cgi">download</a> and try the runtime
+          or development kit, and report their experiences to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.  
+          (<i>2007-04-30</i>)
+        </dd>
+
+        <dt>Harmony Classlib Enabled Version of JRockit VM Available for Project Use</dt>
+        <dd>
+          BEA announced the <a href="http://dev2dev.bea.com/jrockit/jrockitVM">availability</a> of
+          an evaluation version of JRockit, their world-class JVM, that works
+          with the Apache Harmony class library. Distibuted by BEA under a binary, evaluation-only
+          license, this not only demonstrates the portability of the
+          <a href="subcomponents/classlibrary/index.html">Apache Harmony class library</a>,
+          it also adds a valuable tool to help us as we continue building our independent implementation
+          of Java SE.
+          (<i>2007-01-30</i>)
+        </dd>        
+
+        <dt>JDK Snapshot Available</dt>
+        <dd>
+          Apache Harmony now has a JDK snapshot available, that includes javac, keytool,
+          and others. While not complete, it's our first step towards the standard
+          JDK distribution format expected by developers. For more information, please
+          see our <a href="download.cgi">downloads</a> page.
+          (<i>2006-12-27</i>)
+        </dd>
+
+        <dt>Linux x86-64 (64-bit) Snapshots Available</dt>
+        <dd>
+          We now are including support for the x86-64 architecture under Linux.
+          For more information, please
+          see our <a href="download.cgi">downloads</a> page.
+          (<i>2006-12-14</i>)
+        </dd>
+
+        <dt>Apache Harmony: Top-Level Project of the Apache Software Foundation</dt>
+        <dd>
+          Apache Harmony is now a top-level project of the Apache Software Foundation.
+          On October 25th, the Board of Directors voted to make Apache Harmony a
+          top-level project, and on October 29th the Apache Incubator PMC voted to
+          graduate Harmony from the Apache Incubator, having satisfied the Incubator's
+          requirements for community governance and IP oversight. We're in the process
+          of transitioning our resources and infrastructure over, so please be patient
+          while we do our move.
+          (<i>2006-10-29</i>)
+        </dd>
+
+                <dt>New JRE and HDK Snapshots Posted</dt>
+                <dd> Our <a href="download.cgi">latest snapshots</a> have
+                        lots of new fixes and features. The VM has a new GC,
+                        almost complete JVMTI, and now can co-exist with
+                        <a href="http://www.ibm.com/developerworks/java/jdk/harmony">the IBM&#174; VME</a> in
+                        the Harmony JRE structure. Our classlibrary continues to grow with new
+                        classes, notably CORBA, thanks to <a href="http://incubator.apache.org/yoko">
+                        Apache Yoko</a>.
+                        Also, the classlibrary includes many new fixes and updates.
+                        Choose the JRE to test your favorite applications, and
+                        <a href="mailing.html">give us feedback</a> on how
+                        we are doing, or use the HDK to enable faster development of the Harmony classlibrary.
+                        (<i>2006-09-28</i>)
+                 </dd>
+
+                <dt>Can Apache Harmony Help Sun Open Java?</dt>
+                <dd>We're happy to <a href="http://www.businessreviewonline.com/os/archives/2006/08/open_source_jav.html">help</a>
+                        (<i>2006-08-16</i>)</dd>
+
+                <dt>New Snapshot Posted</dt>
+                <dd>Lots of fixes and additions in the latest snapshot. (<i>2006-08-16</i>)</dd>
+
+                <dt>DRLVM Documentation Update</dt>
+                <dd>Check our new documentation on <a href="subcomponents/drlvm/index.html">DRLVM</a>
+                        including guides for building, using, debugging, GC architecture and execution manager
+                        architecture. (<i>2006-08-05</i>)</dd>
+
+                <dt>New HDK and JRE Snapshots Available</dt>
+                <dd>New <a href="http://people.apache.org/builds/harmony/snapshots/">snapshots</a>
+                        of the HDK and JRE are now available with lots of bugfixes. (<i>2006-08-04</i>)
+                </dd>
+
+                <dt>HDK and JRE Snapshots Available</dt>
+                <dd>Harmony now <a href="http://people.apache.org/builds/harmony/snapshots/">offers a snapshot</a>
+                        of it's JRE and HDK builds.
+                        The JRE snapshot is our in-progress Java Runtime Environment,
+                        including both the virtual machine and classlibrary. Note that
+                        this isn't stable, complete or compatible software. However,
+                        you can use this to run your favorite Java applications and
+                        help the project find and fix bugs, and help direct our efforts
+                        to complete the most popular parts of the classlibrary first. The HDK
+                        snapshot is a developers build, complete with classlibrary jars and
+                        native libraries, header files, and build scripts. (<i>2006-07-22</i>)
+                    </dd>
+
+                <dt>New class library snapshot build available</dt>
+                <dd>A new stable snapshot of the class libraries code is available
+                        for download from the <a href="download.cgi">Harmony downloads page</a>.
+                        These are made available for people to evaluate and experiment
+                        with the code. This snapshot contains the recently integrated
+                        Swing, AWT, and Java2D code. As always, please report bugs
+                        (and successes!) to the <a href="mailing.html">Harmony developers mailing list</a>.
+                        (<i>2006-06-30</i>)
+                  </dd>
+
+                <dt>AWT, Java2D and Swing Code Contribution</dt>
+                <dd>On May 30th, 2006 the Apache Harmony project received a
+                        <a href="http://issues.apache.org/jira/browse/HARMONY-528">
+                        substantial contribution</a> of class library code into the project.
+                        The code for AWT, Java2D, and Swing implementation has been contributed by Alexey
+                        Petrenko on behalf of Intel corp. The full announcement can be found
+                        on the <a href="mailing.html">Harmony developers mailing list</a>. Thanks to
+                        Alexey and his colleagues in the Intel Middleware Products Division!
+                        (<i>2006-05-31</i>)
+                </dd>
+
+                <dt>New class library snapshot build available</dt>
+                <dd> A new stable snapshot of the class libraries code is available
+                        for download from the <a href="download.cgi">Harmony downloads page</a>.
+                        There are source and binary downloads available for people to
+                        evaluate and experiment with the code. As always, please report bugs
+                        (and successes!) to the <a href="mailing.html">Harmony developers mailing list</a>.
+                        (<i>2006-05-12</i>)
+                   </dd>
+
+                <dt>DRL Virtual Machine Contribution</dt>
+                <dd>  On May 3rd, 2006 the Apache Harmony project received a
+                        <a href="http://issues.apache.org/jira/browse/HARMONY-438">
+                        substantial contribution </a> of virtual machine (VM) code into the project,
+                        containing a JIT, core VM, GC, bytecode verifier, etc. This was contributed by
+                        Andrey Chernyshev on behalf of Intel Corp. The full announcement can
+                        be found on the <a href="mailing.html">Harmony developers mailing list</a>.
+                        (<i>2006-05-03</i>)</dd>
+
+                <dt>Java Security Code Contribution</dt>
+                <dd>On December 30th, 2005 the Apache Harmony project accepted additional
+                        class library code into the project. The code had been contributed by
+                        Mikhail Loenko on behalf of Intel corp. The new class library code
+                        includes security, cryptography, javax.net and unit tests. Thanks to
+                        Mikhail and his colleagues in the Intel Managed Runtime Division!
+                        (<i>2006-01-16</i>)
+                </dd>
+
+                <dt>VM Interface and Core Classes Contribution</dt>
+                <dd>IBM has offered the Apache Harmony project a set of core
+                        Java classes and an implementation of a VM/class library
+                        interface. Tim Ellison wrote:<br />
+                        <i>
+                            "I'm delighted to be able to make a code contribution to the
+                            Harmony project on behalf of IBM. The code comprises a concrete implementation
+                            of the interface between virtual machine and class library that we have
+                            been discussing recently, together with a set of core Java classes."
+                        </i><br />
+                        This contribution is sufficient to run Ant and the Eclipse Java
+                        compiler, to provide a basic self-hosting environment. IBM also
+                        made a version of their J9 VM
+                        <a href="http://www.ibm.com/developerworks/java/jdk/harmony">
+                        available </a> for use by the project in evaluating this contribution.
+                        Thanks Tim and IBM :) (<i>2005-11-08</i>)
+                </dd>
+
+                <dt>"Bootstrap JVM" Contributed to Apache Harmony</dt>
+                <dd> Daniel Lydick made a contribution to the Harmony project of a basic Java Virtual Machine entitled
+                        the "Apache Harmony Bootstrap JVM." Dan offered the VM with the following goals in mind:
+                        <ul>
+                            <li>Basic platform for learning about VMs</li>
+                            <li>Boostrap and runtime framework for our eventual 'production' VM</li>
+                            <li>Help spur architectural discussion about core component designs</li>
+                        </ul>
+                        Thanks Dan! (<i>2005-09-30</i>)
+                </dd>
+
+                <dt>Source for JCVM Contributed to Apache Harmony</dt>
+                <dd>Archie Cobbs has offered for contribution to the Apache Harmony project
+                        a copy of the <a href="http://jcvm.sourceforge.net/">JCVM</a> codebase. Come and
+                        help us build on this interesting VM. Thanks Archie! (<i>2005-09-25</i>)
+                </dd>
+
+                <dt>Project accepted by Apache Incubator</dt>
+                <dd>The Apache Harmony project was accepted formally accepted for
+                        incubation by the Apache Incubator PMC. (<i>2005-05-18</i>)
+                </dd>
+            </dl>
+        </section>
+    </body>
+</document>

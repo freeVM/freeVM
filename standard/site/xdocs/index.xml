@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>Open Source Java Platform</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
+
+  <body>
+
+    <section name="Welcome to Apache Harmony&#8482; - Open Source Java&#8482; SE">
+	  <p>
+        <big>Welcome to Apache Harmony - Open Source Java SE.</big>
+      </p>
+
+      <p>
+        Apache Harmony software is a modular Java runtime with class
+        libraries and associated tools.
+      </p>
+      <p>
+        We aim to support wide range of different platforms. The main criteria
+        for whether a particular platform is supported or not is the involvement
+        of people in running tests on regular basis, reporting build status, finding
+        and fixing bugs for that platform, and so on. We have
+        <a href="http://wiki.apache.org/harmony/Platforms_to_Run_Harmony_Development_Kit_on">
+          a
+          list of platforms
+        </a> we are actively maintaining at the moment.
+      </p>
+      <p>
+        Please see the following "Getting Started" guides:
+      </p>
+      <ul>
+        <li>
+          <a href="quickhelp_users.html">Getting Started for Harmony Users</a>: for those
+          that wish to use <a href="download.cgi">pre-built snapshots</a> of Apache Harmony
+        </li>
+        <li>
+          <a href="quickhelp_contributors.html">Getting Started for Harmony Contributors</a>: for those
+          that wish to checkout and build the source of Apache Harmony.
+        </li>
+      </ul>
+    </section>
+    <section name="Harmony News">
+      <dl>
+        <dt>Apache Harmony 5.0M15 and Apache Harmony 6.0M3</dt>
+        <dd>
+          The Apache Harmony development team are pleased to announce the
+          immediate availability of their latest stable builds,
+          <a href="http://harmony.apache.org/download.cgi#Stable-5.0">Apache Harmony 5.0 Milestone 15</a>
+          and
+          <a href="http://harmony.apache.org/download.cgi#Stable-6.0">Apache Harmony 6.0 Milestone 3</a>.
+          <p/>
+          All users are encouraged to update to the latest milestones and enjoy the
+          benefits of numerous bug fixes and enhancements.  The changes are outlined in the
+          <a href="http://s.apache.org/8lU">
+          5.0M15 release notes</a> for fixes in both code streams, and
+          <a href="http://s.apache.org/Hfc">
+          6.0M3 release notes</a> for <em>additional</em> fixes specific to the 6.0 stream.
+          <p/>
+          Source code, binary builds, and Debian packages are available via 
+          <a href="http://harmony.apache.org/download.cgi">the project download site</a>.
+          <p/>
+          Whether you are a user or developer we always welcome your comments on 
+          <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.
+          <br/>  
+          (<i>2010-09-15</i>) 
+        </dd>
+      
+        <dt>Apache Harmony 5.0M14 and Apache Harmony 6.0M2</dt>
+        <dd>
+          The Apache Harmony development team are pleased to announce the
+          immediate availability of 5.0 Milestone 14 and 6.0 Milestone 2 builds.
+          <p/>
+          These new Apache Harmony milestones contain a number of important
+          fixes and enhancements to both implementation and test suites, resulting
+          in our most stable and capable builds to date.
+          <p/>
+          Comprehensive lists of <a href="http://bit.ly/bsZWyo">issues fixed in 5.0M14</a>
+          and <a href="http://bit.ly/cjv0wi">additional fixes in the 6.0M2 milestone</a>
+          are available from our bug tracking system.
+          <p/>
+          Source code, binary builds, and Debian packages are available via 
+          <a href="http://harmony.apache.org/download.cgi">the project download site</a>.
+          <p/>
+          Please send any comments to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony
+          developers' mailing list</a>.  
+          (<i>2010-06-07</i>) 
+        </dd>
+
+        <dt>Apache Harmony 5.0M13 plus <i>new</i> Apache Harmony 6.0M1 available!</dt>
+        <dd>
+          The Apache Harmony development team are delighted to announce the availability
+          of the next regular 5.0 stream milestone, labelled 5.0M13, together with the
+          first ever milestone release of the 6.0 code stream -- Apache Harmony 6.0M1. 
+          <p/>
+          The new 5.0M13 milestone contains a number of 
+          <a href="http://tinyurl.com/yzudmsj">important fixes and enhancements</a>
+          to the implementation and test suites, resulting in the most stable build yet. 
+          <p/>
+          Milestone 6.0M1 is the first stable build available from the 6.0 APIs code
+          stream, and while there are still known missing APIs, this first milestone is
+          already very capable.  Feedback is encouraged for both releases.
+          <p/>
+          Source code, binary builds and Debian packages are available from our
+          <a href="http://harmony.apache.org/download.cgi">download site</a>.
+          <p/>
+          Please send any comments to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony
+          developers' mailing list</a>.  
+          (<i>2010-03-10</i>) 
+        </dd>
+      
+        <dt>Apache Harmony M12a maintenance release</dt>
+        <dd>
+          The Apache Harmony development team have identified an issue with source
+          file comments in one particular file included in the 5.0M12 milestone
+          release.  To avoid any confusion or ambiguity arising about the use of
+          that file, the development team have released 5.0M12a as a maintenance
+          release. 
+          <p/>
+          <a href= "http://markmail.org/thread/25csio5grqekr6cf">Details of the issue</a>
+          are available on the Harmony developers' mailing list.
+          <p/>
+          Milestone 5.0M12a is functionally equivalent to 5.0M12, and
+          the source code, binary builds and Debian packages are available from our
+          <a href="http://harmony.apache.org/download.cgi">download site</a>.
+          <p/>
+          Please send any feedback to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony
+          developers' mailing list</a>.  
+          (<i>2010-01-27</i>) 
+        </dd>
+
+        <dt>New milestone build published</dt>
+        <dd>
+          The Apache Harmony developers are proud to announce the immediate
+          availability of our latest stable build, Apache Harmony 5.0
+          Milestone 12.
+          <p/>
+          This new milestone includes a number of bug fixes and enhancements,
+          including performance improvements in archive file handling and the
+          logging framework.  A <a href="http://tinyurl.com/yl3rrf4">full
+          list of issues resolved</a> is available via our tracking system.
+          <p/>
+          Apache Harmony 5.0 M12 source code, binary builds and Debian
+          packages are available from our
+          <a href="http://harmony.apache.org/download.cgi">download site</a>.
+          <p/>
+          Please send any feedback on these builds to
+          <a href="http://harmony.apache.org/mailing.html">the Harmony
+          developers' mailing list</a>.  
+          (<i>2009-12-05</i>) 
+        </dd>
+
+      </dl>
+
+      <p>
+      <i>Archived articles are <a href="newshistory.html">here</a></i>.
+      </p>
+    </section>
+
+    <section name="Project Status">
+      <p>
+        How are we doing? We're making steady progress:
+      </p>
+      <ol>
+        <li>
+          Continuous Integration using <a href="https://hudson.apache.org/hudson/view/G-L/view/Harmony/">Hudson builds</a>
+        </li>
+        <li>
+          Regular milestone builds.
+        </li>
+        <li>
+          JRE can run popular programs like Apache Tomcat, Eclipse&#8482;, Apache Maven, Apache Derby, Apache Ant
+        </li>
+        <li>
+          More than
+          <a href="http://harmony.apache.org/subcomponents/classlibrary/status.html">99% of Java 5 API complete</a>.
+          (not compatible, just completed)
+        </li>
+        <li>More than 1.25 Million Lines of Code</li>
+      </ol>
+    </section>
+  </body>
+</document>

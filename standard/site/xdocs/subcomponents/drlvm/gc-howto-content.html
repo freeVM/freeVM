@@ -1,0 +1,1377 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      
+      <meta http-equiv="Content-Type"
+      content="text/html; charset=UTF-8" />
+      <link rel="stylesheet" type="text/css" href="../../site.css" />
+      <title>
+         How to Write DRL GC
+      </title>
+   </head>
+<body>
+
+ <h1>
+         <a id="How_to_Write_DRL_GC" name="How_to_Write_DRL_GC"></a>How to
+                               Write DRL GC
+      </h1>
+  <ol id=TOC>
+  <li><a href="#About This Document">About This Document</a></li>
+  <li><a href="#Establishing the Build Infrastructure">Establishing the Build Infrastructure</a>
+       <ol>
+           <li><a href="#Creating a Directory for a New GC Module">Creating a Directory for a New GC
+           Module</a></li>
+           <li><a href="#Creating a Build Descriptor File">Creating a Build Descriptor File</a></li>
+           <li><a href="#Creating a C++ file with essential include files">Creating a C++ file with
+            Essential Include Files</a></li>
+           <li><a href="#Testing the Configuration">Testing the Configuration</a></li>
+       </ol>
+  </li>
+  <li><a href="#Implementing Collector that Uses the GC Interface">Implementing Collector that
+       Uses the GC Interface</a>
+       <ol>
+           <li><a href="#GC Lifecycle">GC Lifecycle</a></li>
+           <li><a href="#Object allocation">Object Allocation</a></li>
+           <li><a href="#Miscellaneous">Miscellaneous</a></li>
+           <li><a href="#Optional">Optional</a></li>
+           <li><a href="#The VM_GC Interface">The <code>VM_GC</code> Interface</a></li>
+       </ol>
+  </li>
+  <li><a href="#Implementing the GC Algorithm">Implementing the GC Algorithm</a>
+       <ol>
+           <li><a href="#Algorithm Overview">Algorithm Overview</a></li>
+           <li><a href="#Source Code Explained">Source Code Explained</a></li>
+       </ol>
+  </li>
+  <li><a href="#Running the VM with the Custom GC">Running the VM with the Custom GC</a></li>
+  </ol>
+                              <h2><a name="About This Document"
+                               id="About This Document">About
+                               This Document</a></h2>
+
+                            <p>This document provides instructions
+                            on creating a custom garbage collector
+                            implementation (GC, version 1.0,
+                            2006-07-20) in C++ and configuring the
+                            DRL virtual machine to use it. The
+                            document describes the major steps of
+                            this procedure, namely: establishing
+                            the build infrastructure, implementing
+                            the GC interface, implementing the GC
+                            algorithm, and running the VM with the
+                            custom GC.</p>
+
+                            <p class="note">Note</p>
+
+                            <p class="notetext">Plugging-in a
+                            user-designed garbage collector
+                            presupposes an operating DRL virtual
+                            machine built according to the
+                            instructions of the
+                            <code>README.txt</code> filesupplied
+                            with the VM source package.</p>
+                      
+
+                    
+                            <h2>
+                            <a name="Establishing the Build Infrastructure"
+                               id="Establishing the Build Infrastructure">
+                            Establishing the Build
+                            Infrastructure</a></h2>
+
+                            <p>At this stage, you create the
+                            directory and set up the build
+                            infrastructure to build the dynamic
+                            library. At the end of this stage, you
+                            will be fully set for adding the
+                            garbage collector code and building
+                            it.</p>
+
+                            <p>DRLVM can load a custom garbage
+                            collector from a dynamic library. It is
+                            recommended that you build your dynamic
+                            library using a DRLVM build
+                            infrastructure. Below is an example of
+                            creating of a build descriptor on the
+                            Windows/IA-32 architecture.</p>
+                      
+                            <h3>
+                            <a name="Creating a Directory for a New GC Module"
+                               id="Creating a Directory for a New GC Module">
+                            Creating a Directory for a New GC
+                            Module</a></h3>
+
+                            <p>The example below shows how to
+                            create a directory for a new GC
+                            module:</p>
+                            <pre>
+vm$ mkdir gc_copying
+vm$ mkdir gc_copying/src
+vm$ cd gc_copying/src
+</pre>
+
+                            <p>In the newly created directory you
+                            will store the source code. For more
+                            information, refer to the
+                            <a href="#Implementing the GC Algorithm">
+                            Implementing the GC Algorithm
+                            section.</a></p>
+                       
+                            <h3>
+                            <a name="Creating a Build Descriptor File"
+                               id="Creating a Build Descriptor File">
+                            Creating a Build Descriptor
+                            File</a></h3>
+
+                            <p>Create the build descriptor file
+                            <code>build/make/components/vm/gc_copying.xml</code>
+                            with the following content:</p>
+                            <pre>
+&lt;project name="vm.gc_copying"&gt;
+    &lt;target name="init" depends="common_vm"&gt;
+        &lt;property name="build.depends" value="extra.apr,vm.vmcore" /&gt;
+        &lt;property name="outtype" value="shared" /&gt;
+        &lt;property name="libname" value="gc_copying" /&gt;
+        &lt;property name="src" location="${build.vm.home}" /&gt;
+
+        &lt;compiler id="cpp.compiler" extends="common.cpp.compiler"&gt;
+            &lt;includepath&gt;
+                &lt;pathelement location="${extra.apr.includes}" /&gt;
+            &lt;/includepath&gt;
+
+            &lt;includepath&gt;
+                &lt;dirset dir="${build.vm.home}"&gt;
+                    &lt;include name="include" /&gt;
+                &lt;/dirset&gt;
+            &lt;/includepath&gt;
+
+            &lt;fileset dir="${src}/gc_copying/src"&gt;
+                &lt;include name="*.cpp" /&gt;
+            &lt;/fileset&gt;
+
+            &lt;defineset define="BUILDING_GC" /&gt;
+
+            &lt;select os="win" cfg="release" cxx="icl"&gt;
+                &lt;compilerarg value="/Qip" /&gt;
+            &lt;/select&gt;
+        &lt;/compiler&gt;
+
+        &lt;linker id="linker" extends="common.linker"&gt;
+            &lt;libset libs="${vm.vmcore.lib}" dir="${vm.vmcore.libdir}" /&gt;
+            &lt;select os="lnx"&gt;
+                &lt;linkerarg value="-Bsymbolic" /&gt;
+            &lt;/select&gt;
+        &lt;/linker&gt;
+    &lt;/target&gt;
+&lt;/project&gt;
+</pre>
+
+                            <p>You can add other macro definitions,
+                            include directories or
+                            compiler-specific command-line options
+                            to match your needs.</p>
+                     
+                            <h3>
+                            <a name="Creating a C++ file with essential include files"
+                               id="Creating a C++ file with essential include files">
+                            Creating a C++ file with Essential
+                            Include Files</a></h3>
+
+                            <p>Create a C++ file with essential
+                            include files, namely:</p>
+                            <pre>
+#include "open/gc.h"
+#include "open/vm_gc.h"
+#include "open/vm.h"
+
+#define LOG_DOMAIN "gc"
+#include "cxxlog.h"
+</pre>
+
+                            <p>These include files are located in
+                            directories
+                            <code>vm/include/open</code> and
+                            <code>vm/port/include.</code> Consult
+                            their content for documentation and
+                            details of the interface.</p>
+                       
+                            <h3>
+                            <a name="Testing the Configuration" id="Testing the Configuration">
+                               Testing the Configuration</a></h3>
+
+                            <p>Run the build system to test whether
+                            the infrastructure is set up
+                            correctly:</p>
+                            <pre>
+build$ build.bat -DCOMPONENTS=vm.gc_copying
+</pre>
+
+                            <p>On a successful build, the
+                            <code>.dll</code> file is placed to the
+                            VM build directory
+                            <code>build/win_ia32_icl_debug/deploy/jre/bin/.</code>
+                            The name of the directory may differ
+                            depending on your system and the
+                            compiler used.</p>
+
+                            <p class="note">Note</p>
+
+                            <p class="notetext">This empty library
+                            will not work, you have to write your
+                            GC first.</p>
+                     
+                       
+                            <h2>
+                            <a name="Implementing Collector that Uses the GC Interface"
+                               id="Implementing Collector that Uses the GC Interface">
+                               Implementing a Collector that Uses the GC Interface</a></h2>
+
+                            <p>This section lists the functions
+                            that a garbage collector interface must
+                            implement. Declarations of these
+                            functions are in <code>gc.h</code>. For
+                            details, consult the
+                            <a href="developers_guide.html">Developer's
+                            Guide</a> and documentation in
+                            <code>gc.h</code> and
+                            <code>vm_gc.h</code>.</p>
+                    
+                            <h3><a name="GC Lifecycle"
+                               id="GC Lifecycle">GC
+                               Lifecycle</a></h3>
+
+                            <ul>
+                                <li><code>gc_init()</code>
+                                initializes the garbage
+                                collector</li>
+
+                                <li><code>gc_wrapup()</code> shuts
+                                down the GC</li>
+
+                                <li>
+                                <code>gc_vm_initialized()</code>
+                                notifies the GC about the VM
+                                transition from the initialization
+                                stage to running user
+                                applications</li>
+
+                                <li><code>gc_thread_init()</code>
+                                and <code>gc_thread_kill()</code>
+                                notify the GC about creation and
+                                termination of user threads that
+                                may request memory allocation or
+                                other GC services</li>
+
+                                <li>
+                                <code>gc_class_prepared()</code>
+                                notifies the GC about loaded and
+                                prepared classes</li>
+                            </ul>
+                      
+                            <h3><a name="Object allocation"
+                               id="Object allocation">
+                               Object Allocation</a></h3>
+
+                            <ul>
+                                <li><code>gc_alloc()</code>
+                                performs slow allocation, can
+                                trigger garbage collection</li>
+
+                                <li><code>gc_alloc_fast()</code>
+                                performs faster allocation, should
+                                not trigger garbage collection</li>
+
+                                <li>
+                                <code>gc_add_root_set_entry()</code>
+                                is responsible for enumeration</li>
+
+                                <li>
+                                <code>gc_add_root_set_entry()</code>
+                                enumerates one root pointer</li>
+                            </ul>
+
+                            <p>See the
+                            <a href="developers_guide.html#Root_Set_Enumeration">
+                            Root Set Enumeration</a> section in the
+                            <a href="developers_guide.html">Developer's
+                            Guide</a> for details.</p>
+                       
+                            <h3><a name="Miscellaneous"
+                               id="Miscellaneous">Miscellaneous</a></h3>
+
+                            <ul>
+                                <li>
+                                <code>gc_supports_compressed_references()</code>
+                                indicates whether GC supports
+                                compressed references</li>
+
+                                <li>
+                                <code>gc_is_object_pinned()</code>
+                                indicates whether the GC will move
+                                an object or not</li>
+
+                                <li><code>gc_force_gc()</code>
+                                forces a garbage collection</li>
+                            </ul>
+                      
+                            <h3><a name="Optional"
+                               id="Optional">Optional</a></h3>
+
+                            <p>The virtual machine can operate
+                            without the functions listed below, but
+                            certain features will be
+                            unavailable.</p>
+
+                            <ul>
+                                <li><code>gc_free_memory()</code>
+                                returns the estimated amount of
+                                memory available for
+                                allocation</li>
+
+                                <li><code>gc_pin_object()</code>
+                                requests that the GC does not move
+                                an object</li>
+
+                                <li><code>gc_unpin_object()</code>
+                                removes the restriction on not
+                                moving an object</li>
+
+                                <li>
+                                <code>gc_get_next_live_object()</code>
+                                iterates over live objects during
+                                the stop-the-world phase of garbage
+                                collection</li>
+
+                                <li>
+                                <code>gc_finalize_on_exit()</code>
+                                transfers finalizable queue
+                                contents to the VM core on
+                                shutdown</li>
+
+                                <li>
+                                <code>gc_time_since_last_gc()</code>
+                                returns the amount of time that
+                                elapsed since the previous
+                                collection, in milliseconds</li>
+
+                                <li><code>gc_total_memory()</code>
+                                returns the overall amount of
+                                memory used for the Java heap</li>
+
+                                <li><code>gc_max_memory()</code>
+                                returns the maximum amount of
+                                memory that can be used for the
+                                Java heap</li>
+                            </ul>
+                        
+                            <h3>
+                            <a name="The VM_GC Interface"
+                               id="The VM_GC Interface">
+                            The <code>VM_GC</code>
+                            Interface</a></h3>
+
+                            <p>The garbage collector requires VM
+                            support in its operation. The virtual
+                            machine exports the <code>VM_GC</code>
+                            interface to meet the needs of the
+                            garbage collector. Besides, the GC uses
+                            the <code>VM_common</code>
+                            interface.</p>
+
+                            <p>The <code>VM_GC</code> interface
+                            describes the services that the VM
+                            provides specifically for the garbage
+                            collector. Please refer to the header
+                            file <code>vm_gc.h</code> to see the
+                            complete list and documentation.</p>
+
+                            <p>The VM exports two functions to
+                            provide the global locking service for
+                            the garbage collector:
+                            <code>vm_gc_lock_enum()</code> and
+                            <code>vm_gc_unlock_enum()</code>. These
+                            two functions differ from plain system
+                            locks in their ability to gracefully
+                            interoperate with VM threading
+                            services. In case of contention on the
+                            GC lock, that is, when multiple threads
+                            call <code>vm_gc_lock_enum()</code>
+                            simultaneously, one thread gets the
+                            lock, and others remain blocked. If the
+                            thread that grabbed the GC lock does a
+                            garbage collection, the blocked threads
+                            are considered safely suspended. Other
+                            ways to lock user threads for a long
+                            time can lead to a deadlock because the
+                            VM will have no way to find out whether
+                            the thread is blocked or running.</p>
+
+                            <p>A detailed description of GC
+                            procedure is given in the
+                            <a href="developers_guide.html">Developer's
+                            Guide</a>.</p>
+
+                            <p>DRLVM provides two functions to
+                            support thread suspension and root set
+                            enumeration simultaneously:</p>
+
+                            <ul>
+                                <li>
+                                <code>vm_enumerate_root_set_all_threads()</code>
+                                suspends all user threads and
+                                initiates root set enumeration</li>
+
+                                <li>
+                                <code>vm_resume_threads_after()</code>
+                                resumes execution of user
+                                threads</li>
+                            </ul>
+
+                            <p>These functions effectively restrict
+                            the garbage collector to stop-the-world
+                            algorithms only.</p>
+                        
+                            <h2>
+                            <a name="Implementing the GC Algorithm"
+                               id="Implementing the GC Algorithm">Implementing
+                                the GC Algorithm</a></h2>
+
+                            <p>This section gives step-by-step
+                            instructions on how to implement the
+                            garbage collection algorithm. The
+                            example shows a semispace copying
+                            collector.</p>
+
+                            <p class="note">Note</p>
+
+                            <p class="notetext">This example does
+                            not implement object finalization and
+                            weak references.</p>
+                        
+                            <h3><a name="Algorithm Overview"
+                               id="Algorithm Overview">Algorithm Overview</a></h3>
+
+                            <p>The heap is divided into two equally
+                            sized contiguous semispaces. During
+                            normal operation, only one semispace is
+                            used (<i>current semispace</i>), and
+                            the other one is <i>reserved</i> for
+                            garbage collection. Allocation requests
+                            are satisfied by contiguous allocation
+                            from the current semispace. Each
+                            application thread reserves a
+                            thread-local allocation buffer
+                            (<i>TLAB</i>) under a global lock, and
+                            serves most of the allocation requests
+                            without locking, by incrementing the
+                            allocation pointer local to the
+                            buffer.</p>
+
+                            <p>When the application requests an
+                            allocation that does not fit into the
+                            remaining free space of the current
+                            semispace, a garbage collection is
+                            initiated. The current semispace
+                            becomes the <i>evacuation space</i>
+                            (<i>fromspace</i>), and the reserved
+                            semispace becomes the <i>destination
+                            space</i> (<i>tospace</i>). The VM
+                            suspends all application threads and
+                            enumerates root references.</p>
+
+                            <p>The GC copies the objects reachable
+                            from root references to the destination
+                            space. When an object is copied from
+                            evacuation space to destination space,
+                            the GC installs the forwarding pointer
+                            in the old copy. Root references are
+                            updated to point to new object
+                            locations.</p>
+
+                            <p>After the root set enumeration is
+                            complete, the GC scans objects in the
+                            destination space. Each reached object
+                            is copied to the destination space, the
+                            forwarding pointer is installed in the
+                            old copy, and the scanned object fields
+                            are updated. For objects with
+                            forwarding pointers installed, the GC
+                            updates object fields. In this way, the
+                            GC ensures that all live objects are
+                            copied to the destination space exactly
+                            once.</p>
+
+                            <p>The destination space serves as a
+                            queue of objects to be scanned when
+                            more and more objects are copied to the
+                            destination space during heap
+                            traversal. Once all live objects are
+                            reached and copied, the scan queue
+                            stops growing, and the GC updates
+                            object fields only during the last part
+                            of the scanning process.</p>
+
+                            <p>The GC completes the scanning
+                            process when the scan pointer reaches
+                            the allocation pointer in the
+                            destination space. At this stage, all
+                            live objects have been evacuated to the
+                            destination space, and the evacuation
+                            space can be safely reclaimed. The GC
+                            then changes the semispace roles: it
+                            uses the destination space for further
+                            allocation and reserves the evacuation
+                            space for the next garbage collection.
+                            The change of the semispace roles is
+                            commonly referred to as
+                            <i>flip</i>.</p>
+
+                            <p>After the semispace flip, the GC
+                            resumes user threads.</p>
+
+                            <p>Please refer to the excellent survey
+                            for detailed description of this
+                            algorithm and other basic garbage
+                            collection techniques, "Uniprocessor
+                            Garbage Collection Techniques", Paul R.
+                            Wilson.</p>
+
+                            <h3><a name="Source Code Explained"
+                               id="Source Code Explained">Source Code Explained</a>
+                               </h3>
+
+                            <p>The full source code of the
+                            collector is available in
+                            <code>gc_copying.cpp</code>.</p>
+
+                            <p>The structure <code>TLS</code>
+                            (thread-local storage) is used for the
+                            optimizing fast path allocation. The GC
+                            allocates a buffer of free space from
+                            the heap with appropriate locking and
+                            further uses this buffer for
+                            thread-local allocation.</p>
+                            <pre>
+// This structure is allocated for each user thread.
+// It contains the thread-local allocation area.
+
+struct TLS {
+    byte* current;  // the allocation pointer
+    byte* limit;    // the end of the allocation area
+};
+</pre>
+
+                            <p>Define the main GC structure to
+                            contain the Java heap and the data
+                            necessary for GC operation, as shown
+                            below.</p>
+                            <pre>
+// Encapsulates all GC data.
+struct GC {
+
+    unsigned int semisize;   // the size of the semispace
+    unsigned int chunk_size; // the chunk size for thread-local chunks
+
+    byte* space;    // the pointer to the heap
+
+    Lock lock;      // the lock to protect global heap access
+
+    byte* fromspace;// the allocation space
+    byte* current;  // the allocation marker
+    byte* limit;    // the allocation limit
+
+    byte* tospace;  // the evacuation space
+    byte* scan;     // the scan marker
+    byte* copy;     // the copy marker
+    byte* toend;    // the evacuation space limit
+
+    // The list of thread-local storage (TLS)
+    // structures allocated for user threads.
+    std::list&lt;TLS*&gt; threads;
+
+    void init();      // configures and initalizes GC
+    void wrapup();    // destroys the heap
+
+    // Allocates an object from a thread chunk
+    // reserving space for TLS as needed.
+    byte* alloc(unsigned size, TLS* tls);
+
+    // Allocates space on the global heap.
+    byte* galloc(unsigned size);
+
+    byte* move(void*);      // moves an object
+    byte* forwarded(void*); // reads the forwarding pointer
+    void root(void**);      // handles a root reference
+    void trace(byte*);      // traces one object
+
+    // Collects garbage and allocates the object.
+    byte* collect_alloc(unsigned size, TLS* tls);
+
+    std::list&lt;InteriorPointer&gt; interior_pointers;
+    void repoint_all_roots_with_interior_points();
+};
+</pre>
+
+                            <p>The following structure stores
+                            object information: the object field
+                            layout and the object size.</p>
+                            <pre>
+// Structure OI (from "object information")
+// is used to cache GC information for each Java class
+// loaded by the virtual machine.
+// Each VTable stores the pointer to an OI (Object information) structure.
+struct OI {
+    char magic[8];      // used for debugging
+    const char *name;   // the class name (handy for debugging)
+    bool is_array;      // true if this structure describes array
+    bool has_slots;     // true if the described object has reference fields
+                        // (aka slots) and thus needs to be traced
+                        // during collection
+    int size;           // the object size or the array element size
+    int* offsets;       // zero-terminated list of slot offsets in an object
+                        // undefined for array
+};
+</pre>
+
+                            <p>The data stored in the
+                            <code>OI</code> structure is
+                            initialized and accessed by the GC
+                            only.</p>
+
+                            <p>The following structures convey the
+                            static assumptions that GC makes about
+                            object layout. The VM must use the same
+                            object layout assumptions for the
+                            correct GC operation.</p>
+
+                            <p>The <code>VTable</code> structure
+                            contains the virtual table of the
+                            object methods, and is linked from the
+                            object header. The VM reserves some
+                            space (at least 4 bytes) for exclusive
+                            use by GC. The GC uses 4 bytes of
+                            GC-private space to put the pointer to
+                            the object information structure
+                            <code>struct OI</code>.</p>
+                            <pre>
+// The VTable structure has 4 bytes reserved
+// for GC use at the beginning.
+// The pointer to the OI structure is stored there.
+struct VTable {
+    OI* oi;
+    // Other VTable fields are not used in GC.
+};
+</pre>
+
+                            <p>The GC assumes that each Java object
+                            has a fixed header: (1) a pointer to
+                            the <code>VTable</code> structure, and
+                            then a (2) 32 bit word with flags. The
+                            25 highest bits are used by the VM
+                            Thread Manager component to implement
+                            Java monitors and 7 lowest bits are
+                            used by GC and for storing the object
+                            hash code.</p>
+                            <pre>
+// Describes the object header format assumed by GC.
+struct Object {
+    VTable *vt;
+    uint32 lockword;
+};
+</pre>
+
+                            <p>The array objects have the same
+                            header, and a 4 byte length field at
+                            the offset 8.</p>
+                            <pre>
+// Describes the array header format assumed by GC.
+struct Array {
+    VTable *vt;
+    uint32 lockword;
+    uint32 length;
+};
+</pre>
+
+                            <p class="note">Note</p>
+
+                            <p class="notetext">The layout
+                            described is valid for the IA-32
+                            platform only.</p>
+
+                            <p>A number of convenience functions
+                            use object layout knowledge to perform
+                            various data manipulations. The
+                            function <code>init_vt()</code> writes
+                            the VTable pointer to an object.</p>
+                            <pre>
+void init_vt(Managed_Object_Handle p, Allocation_Handle ah) {
+    Object* obj = (Object*)p;
+    obj-&gt;vt = (VTable*)ah;
+}
+</pre>
+
+                            <p>The function <code>obj_oi()</code>
+                            retrieves object information structure
+                            pointer from an object.</p>
+                            <pre>
+OI* obj_oi(Managed_Object_Handle p) {
+    Object* obj = (Object*)p;
+    return obj-&gt;vt-&gt;oi;
+}
+</pre>
+
+                            <p>The function
+                            <code>array_length()</code> retrieves
+                            the length of an array object.</p>
+                            <pre>
+int array_length(Managed_Object_Handle p) {
+    Array* array = (Array*)p;
+    return array-&gt;length;
+}
+</pre>
+
+                            <p>The function <code>vt_oi()</code>
+                            retrieves the <code>OI</code> structure
+                            pointer from the VTable pointer.</p>
+                            <pre>
+OI* vt_oi(VTable_Handle p) {
+    VTable* vt = (VTable*)p;
+    return vt-&gt;oi;
+}
+</pre>
+
+                            <p>The function <code>ah_oi()</code>
+                            retrieves the <code>OI</code> structure
+                            pointer using
+                            <code>Allocation_Handle</code>. On
+                            32-bit architectures, the VTable
+                            pointer is a 32-bit pointer, and
+                            Allocation_Handle is a 32-bit
+                            integer.</p>
+                            <pre>
+OI* ah_oi(Allocation_Handle ah) {
+    // Allocation_Handle is a VTable pointer on 32-bit platforms.
+    return vt_oi((VTable_Handle)ah);
+}
+</pre>
+
+                            <p>The <code>object_size()</code>
+                            function computes the size of an
+                            object. Array size is calculated by
+                            summing the header size and the element
+                            size multiplied by array length.
+                            Afterwards the size is aligned to be
+                            multiple of 4. The non-array object
+                            size is cached in the OI structure.</p>
+                            <pre>
+int object_size (Managed_Object_Handle obj) {
+    OI* oi = obj_oi(obj);
+    if (oi-&gt;is_array) {
+        // 4-byte alignment
+        return ((oi-&gt;size * array_length(obj) + 12) + 3) &amp; (~3);
+    } else {
+        return oi-&gt;size;
+    }
+}
+</pre>
+
+                            <p>In this example, the garbage
+                            collector is created statically as a
+                            global instance of structure GC:</p>
+                            <pre>
+GC gc;
+</pre>
+
+                            <p>The function <code>init()</code>
+                            statically configures size parameters.
+                            Normally, this function uses the
+                            function <code>vm_get_property()</code>
+                            to read configuration options specified
+                            as property values on the command line.
+                            In this example, we use constant values
+                            for simplicity.</p>
+                            <pre>
+void GC::init() {
+    semisize = 500*1024*1024;
+    chunk_size = 64*1024;
+</pre>
+
+                            <p>As the next step, the
+                            <code>init()</code> function allocates
+                            space for the heap, divides it into two
+                            semispaces, and initializes the
+                            allocation semispace.</p>
+                            <pre>
+    space = (byte*) malloc(semisize*2);
+    assert(space); assert(((int)space &amp; 3) == 0);
+    fromspace = space;
+    tospace = fromspace + semisize; assert(((int)tospace &amp; 3) == 0);
+    toend = tospace + semisize;
+
+    INFO("heap size " &lt;&lt; mb(2*semisize) &lt;&lt; " Mb "
+            &lt;&lt; (void*)space &lt;&lt; "-" &lt;&lt; (void*)(space + 2*semisize));
+
+    current = fromspace;
+    limit = fromspace + semisize;
+
+    LOG("allocation from " &lt;&lt; (void*)current &lt;&lt; "-" &lt;&lt; (void*)limit);
+
+    memset(current, 0, limit - current);
+
+    interior_pointers.clear();
+}
+</pre>
+
+                            <p>The global allocation function uses
+                            a lock to protect the heap from
+                            simultaneous access from multiple
+                            threads. The locking mechanism is
+                            trivially implemented in a
+                            platform-dependent way. See the full
+                            source code in
+                            <code>gc_copying.cpp</code>.</p>
+                            <pre>
+byte* GC::galloc(unsigned size) {
+    byte* r = NULL;
+    lock.lock();
+    if (current + size &lt;= limit) {
+        r = current;
+        current += size;
+    }
+    lock.unlock();
+    return r;
+}
+</pre>
+
+                            <p>The local allocation function uses
+                            the thread-local allocation area for
+                            object allocation, and uses
+                            <code>galloc()</code> to allocate a new
+                            chunk for a thread-local allocation
+                            area as needed.</p>
+                            <pre>
+byte* GC::alloc(unsigned size, TLS* tls) {
+
+    byte* obj = NULL;
+
+    assert(NULL == tls-&gt;current || fromspace &lt;= tls-&gt;current);
+    assert(NULL == tls-&gt;limit || tls-&gt;limit &lt;= limit);
+
+    if (tls-&gt;current + size &lt;= tls-&gt;limit) {
+        // Allocate from the thread-local chunk if possible.
+        obj = tls-&gt;current;
+        tls-&gt;current += size;
+        return obj;
+    }
+
+    // Allocate "large" objects directly from the heap
+    // bypassing the thread-local allocation buffer
+    // to prevent inefficient handling of half-filled
+    // thread-local allocation buffers.
+    if (size &gt;= chunk_size/4) {
+        return gc.galloc(size);
+    }
+
+    // Allocate a new thread-local chunk.
+    obj = gc.galloc(chunk_size);
+    if (obj) {
+        tls-&gt;current = obj + size;
+        tls-&gt;limit = obj + chunk_size;
+    }
+
+    return obj;
+}
+</pre>
+
+                            <p>The forwarding pointers are
+                            installed in the lockword structure,
+                            the second word of an object.</p>
+                            <pre>
+byte* GC::forwarded (void* obj) {
+    int* p = (int*)obj + 1;
+    int lockword = *p;
+    if (lockword &amp; 1)
+        return (byte*)(lockword &amp; (~1));
+    else
+        return NULL;
+}
+</pre>
+
+                            <p>The function <code>move()</code>
+                            copies the object data to the
+                            evacuation semispace and installs the
+                            forwarding pointer in the old object
+                            copy.</p>
+                            <pre>
+byte* GC::move (void* obj) {
+    int size = object_size(obj);
+    assert(tospace &lt;= copy); assert(copy + size &lt;= toend);
+
+    byte* nobj = copy;
+    TRACE2("gc.move", "move " &lt;&lt; (void*)obj &lt;&lt; " -&gt; " &lt;&lt; (void*)nobj);
+    assert(((int)nobj &amp; 3) == 0);
+    memcpy(nobj, obj, size);
+    copy += size; assert(((int)copy &amp; 3) == 0);
+
+    int* plockword = (int*)obj + 1;
+    *plockword = ((int)nobj) | 1;
+
+    return nobj;
+}
+</pre>
+
+                            <p>The function <code>root()</code>
+                            handles one root during root set
+                            enumeration. If the root points to an
+                            object already reached, the root is
+                            updated with the forwarded pointer
+                            value. Otherwise, the GC moves the
+                            object to the destination space and
+                            installs the forwarding pointer in the
+                            old object copy.</p>
+                            <pre>
+void GC::root(void** root) {
+    byte* obj = (byte*)(*root);
+    byte* nobj = forwarded(obj);
+    if (NULL == nobj) {
+        nobj = move(obj);
+    }
+    TRACE2("gc.root", "root " &lt;&lt; root &lt;&lt; " repointed from "
+            &lt;&lt; (void*)obj &lt;&lt; " to " &lt;&lt; (void*)nobj);
+    *root = nobj;
+}
+</pre>
+
+                            <p>The function <code>trace()</code>
+                            scans one object.</p>
+                            <pre>
+void GC::trace (byte* obj) {
+    OI* oi = obj_oi(obj);
+    TRACE2("gc.trace", "trace " &lt;&lt; (void*)obj
+        &lt;&lt; " (" &lt;&lt; (void*)object_size(obj) &lt;&lt; ", " &lt;&lt; oi-&gt;name &lt;&lt; ")");
+    if (!oi-&gt;has_slots) return;
+    if (oi-&gt;is_array) {
+        int len = array_length(obj);
+        int i;
+        // Trace (len) elements starting from the offset 12.
+        // NB: long[] and double[] start at offset 16
+        // but never need tracing.
+        byte** elem = (byte**)(obj + 12);
+        for (i = 0; i &lt; len; i++, elem += 1) {
+            if (NULL == *elem) continue;
+            byte* nobj = forwarded(*elem);
+            if (!nobj) nobj = move(*elem);
+            TRACE2("gc.update", "elem " &lt;&lt; i &lt;&lt; " in array "
+                &lt;&lt; (void*)obj &lt;&lt; " repointed from " &lt;&lt; (void*)(*elem)
+                &lt;&lt; " to " &lt;&lt; (void*)nobj);
+            *elem = nobj;
+        }
+    } else {
+        int* poff;
+        // Use (offsets) array to get the list of reference
+        // field offsets in an object.
+        for (poff = oi-&gt;offsets; *poff; poff++) {
+            byte** field = (byte**) (obj + *poff);
+            if (NULL == *field) continue;
+            byte* nobj = forwarded(*field);
+            if (!nobj) nobj = move(*field);
+            TRACE2("gc.update", "field " &lt;&lt; *poff &lt;&lt; " in object "
+                &lt;&lt; (void*)obj &lt;&lt; " repointed from " &lt;&lt; (void*)(*field)
+                &lt;&lt; " to " &lt;&lt; (void*)nobj);
+            *field = nobj;
+        }
+    }
+}
+</pre>
+
+                            <p>The function
+                            <code>collect_alloc()</code> is the
+                            main function controlling garbage
+                            collection. This function reclaims
+                            unused memory and the retries the
+                            allocation. The GC attempts to allocate
+                            the memory before resuming other
+                            threads. This prevents the thread that
+                            triggered the garbage collection from
+                            starving.</p>
+
+                            <p class="note">Note</p>
+
+                            <p class="notetext">The thread is
+                            <i>starving</i> when it gets no
+                            resources for a long time because other
+                            threads grab the resource before it can
+                            even try. If the garbage collector
+                            resumes user threads before retrying
+                            the allocation, these threads may use
+                            all available space quickly before the
+                            allocation succeeds. In this case, the
+                            allocation will fail for an indefinite
+                            number of times.</p>
+                            <pre>
+byte* GC::collect_alloc(unsigned size, TLS* tls) {
+
+    scan = tospace;
+    copy = tospace;
+    toend = tospace + semisize;
+
+    LOG("allocated " &lt;&lt; (current - fromspace) &lt;&lt; " bytes");
+    LOG("collection to " &lt;&lt; (void*)tospace &lt;&lt; "-" &lt;&lt; (void*)toend);
+
+    vm_enumerate_root_set_all_threads();
+
+    LOG("scan");
+    while (scan &lt; copy) {
+        trace(scan);
+        scan += object_size(scan);
+    }
+
+    LOG("live " &lt;&lt; (copy-tospace) &lt;&lt; " bytes");
+
+    if( !interior_pointers.empty() ){
+        repoint_all_roots_with_interior_points();
+    }
+
+    byte* swap = tospace;
+    tospace = fromspace;
+    fromspace = swap;
+
+    current = copy;
+    limit = fromspace + semisize;
+    memset(current, 0, limit - current);
+
+    LOG("allocation from " &lt;&lt; (void*)current &lt;&lt; "-" &lt;&lt; (void*)limit);
+
+    std::list&lt;TLS*&gt;::iterator i;
+    int j;
+    for (i = gc.threads.begin(), j = 0; i != gc.threads.end(); i++, j++) {
+        (*i) -&gt; current = NULL;
+        (*i) -&gt; limit = NULL;
+    }
+    LOG2("gc.threads", "reset thread allocation areas in " &lt;&lt; j
+            &lt;&lt; " user threads");
+
+    byte* obj = NULL;
+    if (size &gt; 0) {
+        // Allocate an object before resuming threads to maintain
+        // "fairness" and prevent spurious out-of-memory errors.
+        obj = alloc(size, tls);
+    }
+
+    vm_resume_threads_after();
+    return obj;
+}
+</pre>
+
+                            <p>The exported GC interface is mostly
+                            implemented by delegating the task to
+                            the method of the structure
+                            <code>GC</code>. The GC initialization
+                            function <code>init()</code> is called
+                            from <code>gc_init()</code>.</p>
+
+                            <div class="listingblock">
+                                <div class="content">
+                                    <pre>
+<code>void gc_init() {
+    gc.init();
+}</code>
+</pre>
+                                </div>
+                            </div>
+
+                            <p>Thread local allocation areas are
+                            reset on thread creation and thread
+                            termination events.</p>
+
+                            <div class="listingblock">
+                                <div class="content">
+                                    <pre>
+<code>void gc_thread_init(void* tp) {
+    TRACE2("gc.thread", "gc_thread_init " &lt;&lt; tp);
+    TLS* tls = (TLS*) tp;
+    std::list&lt;TLS*&gt;::iterator i =
+        std::find(gc.threads.begin(), gc.threads.end(), tls);
+    assert(i == gc.threads.end());
+    gc.threads.push_back(tls);
+
+    tls-&gt;current = NULL;
+    tls-&gt;limit = NULL;
+}
+
+void gc_thread_kill(void* tp) {
+    TRACE2("gc.thread", "gc_thread_kill " &lt;&lt; tp);
+    TLS* tls = (TLS*) tp;
+    std::list&lt;TLS*&gt;::iterator i =
+        std::find(gc.threads.begin(), gc.threads.end(), tls);
+    assert(i != gc.threads.end());
+    gc.threads.erase(i);
+
+    tls-&gt;current = NULL;
+    tls-&gt;limit = NULL;
+}</code>
+</pre>
+
+                                    <p>The slow path allocation
+                                    function
+                                    <code>gc_alloc()</code> checks
+                                    whether the allocation space is
+                                    exhausted and starts garbage
+                                    collection when necessary.</p>
+                                    <pre>
+Managed_Object_Handle gc_alloc (unsigned size, Allocation_Handle ah, void *tp) {
+    Managed_Object_Handle obj;
+    TLS* tls = (TLS*) tp;
+
+    // The next-to-highest bit of the size may be set
+    // when allocating objects requiring finalization.
+    // Ignore hint for now.
+    size = size &amp; 0x3fffffff;
+
+    assert((size &amp; 3) == 0);
+    assert(ah_oi(ah)-&gt;is_array || size == ah_oi(ah)-&gt;size);
+
+    // First, try the allocation
+    obj = gc.alloc(size, tls);
+    if (!obj) {
+        // If the allocation failed,
+        // grab the global GC lock.
+        vm_gc_lock_enum();
+
+        // Multiple threads may try to get the GC lock.
+        // Only one gets it and does a collection, and others get
+        // blocked on vm_gc_lock_enum() during collection.
+
+        // Retry the allocation while holding the GC lock.
+        obj = gc.alloc(size, tls);
+
+        // The allocation will succeed if another thread
+        // has done collection while this thread was waiting for the GC lock.
+
+        if (!obj) {
+            // If the allocation failed, start a garbage collection.
+            obj = gc.collect_alloc(size, tls);
+
+            // NULL return value from collect_alloc() indicates out-of-memory.
+        }
+        vm_gc_unlock_enum();
+    }
+
+    if (obj) init_vt(obj, ah);
+    TRACE2("gc.alloc.slow", "gc_alloc(" &lt;&lt; (void*)size &lt;&lt; ", "
+            &lt;&lt; (*(OI**)ah)-&gt;name &lt;&lt; ") = " &lt;&lt; obj);
+    assert(NULL == obj ||
+        (gc.fromspace &lt;= obj &amp;&amp; obj &lt; gc.limit &amp;&amp; ((int)obj &amp; 3) == 0));
+    return obj;
+}
+</pre>
+
+                                    <p>If the memory is exhausted,
+                                    the no-collection allocation
+                                    function
+                                    <code>gc_alloc_fast()</code>
+                                    returns <code>NULL</code>, and
+                                    does not start garbage
+                                    collection.</p>
+                                    <pre>
+Managed_Object_Handle gc_alloc_fast (unsigned size, Allocation_Handle ah, void *tp) {
+    Managed_Object_Handle obj;
+    TLS* tls = (TLS*) tp;
+    size = size &amp; 0x3fffffff;
+    assert((size &amp; 3) == 0);
+    assert(ah_oi(ah)-&gt;is_array || size == ah_oi(ah)-&gt;size);
+
+    obj = gc.alloc(size, tls);
+
+    if (obj) init_vt(obj, ah);
+    TRACE2("gc.alloc.fast", "gc_alloc_fast("
+            &lt;&lt; (void*)size &lt;&lt;  ", " &lt;&lt; (*(OI**)ah)-&gt;name &lt;&lt; ") = " &lt;&lt; obj);
+    assert(NULL == obj ||
+        (gc.fromspace &lt;= obj &amp;&amp; obj &lt; gc.limit &amp;&amp; ((int)obj &amp; 3) == 0));
+    return obj;
+}
+</pre>
+
+                                    <p>The root set enumeration
+                                    function passes the root
+                                    reference to the
+                                    <code>root()</code>
+                                    function.</p>
+                                    <pre>
+void gc_add_root_set_entry(Managed_Object_Handle *ref, Boolean is_pinned) {
+    assert(!is_pinned);
+    TRACE2("gc.root", "gc_add_root_set_entry " &lt;&lt; ref &lt;&lt; " -&gt; " &lt;&lt; *ref);
+    if (NULL == *ref) return;
+    gc.root(ref);
+}
+</pre>
+
+                                    <p>The function
+                                    <code>build_slot_offset_array()</code>
+                                    is used to construct a
+                                    <code>NULL</code>-terminated
+                                    list of offsets of reference
+                                    fields.</p>
+                                    <pre>
+static int *build_slot_offset_array(Class_Handle ch)
+{
+    unsigned num_ref_fields = 0;
+    // Get the total number of fields including primitive fields.
+    unsigned num_fields = class_num_instance_fields_recursive(ch);
+
+    // Compute the number of reference fields.
+    unsigned int i;
+    for (i = 0; i &lt; num_fields; i++) {
+        // For each field, get its handle and check
+        // whether it's a reference type.
+        Field_Handle fh = class_get_instance_field_recursive(ch, i);
+        if (field_is_reference(fh)) {
+            num_ref_fields++;
+        }
+    }
+
+    if  (0 == num_ref_fields) return NULL;
+
+    // Allocate the offsets array.
+    int* ref_array = (int*) malloc((num_ref_fields+1) * sizeof(int));
+
+    // For each reference field, store its offset
+    // into the offsets array.
+    int* p = ref_array;
+    for (i = 0; i &lt; num_fields; i++) {
+        Field_Handle fh = class_get_instance_field_recursive(ch, i);
+        if (field_is_reference(fh)) {
+            *p = field_get_offset(fh);
+            p++;
+        }
+    }
+
+    // It is 0 delimited.
+    *p = 0;
+
+    return ref_array;
+}
+</pre>
+
+                                    <p>The GC caches object layout
+                                    information when the function
+                                    <code>gc_class_prepared()</code>
+                                    is called.</p>
+                                    <pre>
+void gc_class_prepared (Class_Handle ch, VTable_Handle vth) {
+    TRACE2("gc.prepared", "gc_class_prepared("
+            &lt;&lt; class_get_name(ch) &lt;&lt; ")");
+    OI** vt = (OI**) vth;
+    OI* oi = new OI;
+    *vt = oi;
+
+    memset(oi, 0, sizeof(OI));
+    strcpy(oi-&gt;magic, "   OI  ");
+    oi-&gt;name = class_get_name(ch);
+
+    if (class_is_array(ch)) {
+        oi-&gt;is_array = true;
+        // Store the array element size in the OI structure &gt; size.
+        oi-&gt;size = class_element_size(ch);
+        // Reference arrays have slots, non-reference arrays don't.
+        oi-&gt;has_slots = !class_is_non_ref_array(ch);
+        assert(NULL == oi-&gt;offsets);
+    } else {
+        oi-&gt;is_array = false;
+        // Store the object size in the OI structure &gt; size.
+        oi-&gt;size = class_get_boxed_data_size(ch);
+        assert((oi-&gt;size &amp; 3) == 0);
+        oi-&gt;offsets = build_slot_offset_array(ch);
+        oi-&gt;has_slots = (oi-&gt;offsets != NULL);
+    }
+}
+</pre>
+
+                                    <p>The function
+                                    <code>gc_force_gc()</code>
+                                    starts a forced garbage
+                                    collection using the global GC
+                                    lock to ensure that only one
+                                    thread is doing a collection at
+                                    any time. It passes null
+                                    arguments to
+                                    <code>collect_alloc()</code>,
+                                    because it requires no
+                                    allocation.</p>
+                                    <pre>
+void gc_force_gc () {
+    vm_gc_lock_enum();
+    gc.collect_alloc(0, NULL);
+    vm_gc_unlock_enum();
+}
+</pre>
+
+                                    <p>Other functions of the GC
+                                    interface are empty or trivial,
+                                    and not described in this
+                                    document. You can see the full
+                                    listing in the
+                                    <code>gc_copying.cpp</code>
+                                    file.</p>
+
+                                    <p>After you completed coding
+                                    the garbage collector, you can
+                                    build a GC dynamic library, as
+                                    described above, by typing</p>
+                                    <pre>
+build$ build.bat -DCOMPONENTS=vm.gc_copying
+</pre>
+                                </div>
+                            </div>
+                        
+                            <h2>
+                            <a name="Running the VM with the Custom GC"
+                               id="Running the VM with the Custom GC">
+                            Running the VM with the Custom
+                            GC</a></h2>
+
+                            <p>This section describes how to run
+                            the DRL virtual machine with the custom
+                            garbage collector library.</p>
+
+                            <p>You can specify the name of the
+                            dynamic library on the command line.
+                            For example, to load a GC
+                            <code>gc_copying.dll</code>, execute
+                            the following:</p>
+                            <pre>
+java -Dvm.dlls=gc_copying.dll Hello
+</pre>
+
+                            <p>The virtual machine searches for a
+                            dynamic library
+                            <code>gc_copying.dll</code> in the
+                            default locations, that is, the value
+                            for the PATH variable and the location
+                            of executable <code>java.exe</code>. The
+                            default garbage collector is
+                            <code>gc.dll</code> located in the same
+                            <code>bin/</code> directory as
+                            <code>java.exe</code>.</p>
+                    
+               
+  
+   </body>
+</html>

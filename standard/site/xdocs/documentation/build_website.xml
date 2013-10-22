@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Building and Deploying the Apache Harmony Website</title>
+  <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+ </properties>
+
+<body>
+
+<section name="Building and Deploying the Apache Harmony Website">
+
+<subsection name="Building">
+	<p>
+		The following tools are required to build the Harmony website:
+		
+		<ul>
+		    <li>
+		      <a href="http://subversion.tigris.org/">Subversion&#174;</a>
+		    </li>
+		    <li>
+		      <a href="http://ant.apache.org/">Apache Ant</a>
+		    </li>
+			<li>
+			   Java 1.4.2 JDK (Harmony is highly recommended)
+			</li>
+		</ul>
+	</p>
+	
+    <p class="note">Note:</p>
+    <p class="notetext">
+        Some versions of JRE (e.g. Hotspot 1.5 on Windows) have problems converting Russian pages,
+        in particular they corrupt UTF-8 cyrillic symbols. This can be easily detected, just open
+        any generated <a href="../index.ru.html">Russian</a> page in a browser and check if it contains 
+        unreadable symbols (like empty boxes).
+        If you see them, you must use another JRE - Harmony is the natural choice. Set 
+        <code>JAVA_HOME</code> environment variable to point to an appropriate directory and you're done.
+    </p>
+
+		<ol>
+			<li>
+			   Download the website source from Harmony subversion repository:</li>
+			   <pre>$ svn checkout https://svn.apache.org/repos/asf/harmony/standard/site/trunk site</pre>
+		
+			
+			<li>
+			   Change into the site directory:
+     <pre>$ cd site</pre> </li>
+      <li>Run the default ant script target:</li>
+			 <pre>$ ant</pre>
+			
+	    </ol>
+
+	
+	<p>
+	  At this point, you have a complete generated website and documentation in the 
+    <code>site/docs</code> subdirectory. Open the <code>index.html</code> page and start browsing.
+	</p>
+
+</subsection>
+
+<subsection name="Making Changes">
+
+  <p>
+    Making changes is straightforward.  All edits are made to the contents of the <code>xdocs/</code> 
+    subdirectory, and then rendered via the procedure above into the <code>docs/</code> directory.
+  
+</p>
+  
+  <p>
+    If you are a Harmony committer, you can simply checkin your changes. If you are not 
+    a committer, any updates and additions to the site are very welcome. Please
+    see our <a href="../get-involved.html">Get Involved</a> page for instructions
+    on how to contribute your changes.
+  </p>
+  
+</subsection>
+
+<subsection name="Deploying to Harmony Website">
+
+  <p>
+    If you are a Harmony Committer, you can commit your changes into
+ SVN.  Once committed changes in <code>site/trunk</code> should appear
+ on <a href="http://harmony.staging.apache.org/">the staging site</a>.
+ After reviewing your changes, using the username/password of
+ 'staging'/'staging', you should merge your changes
+ from <code>site/trunk</code> to <code>branches/live</code>.  To do that:
+  </p>
+  
+    <ol>
+      <li>
+        Check out the live branch:
+        <pre>$ svn checkout https://svn.apache.org/repos/asf/harmony/standard/site/branches/live live-site</pre>
+      </li>
+      <li>
+        Go to the live-site directory:
+        <pre>$ cd live-site</pre>
+      </li>      
+      <li>
+        Merge the changes from <code>site/trunk</code>:
+        <pre>$ svn merge https://svn.apache.org/repos/asf/harmony/standard/site/trunk</pre>
+      </li>
+      <li>
+        Commit the changes to the live branch (using the revision number of
+        the last change on <code>site/trunk</code>):
+        <pre>$ svn ci -m "Merging from trunk@824513"</pre>
+      </li>
+      <li>The changes should appear shortly on the live site.</li>
+    </ol>
+  
+  
+</subsection>
+</section>
+</body>
+</document>

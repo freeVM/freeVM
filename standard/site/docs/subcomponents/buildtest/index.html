@@ -1,0 +1,563 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+                                                    <meta name="author" content="Harmony Documentation Team">
+            <meta name="email" content="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Build-Test Framework</title>
+
+                        
+                        
+        <link rel="stylesheet" type="text/css" href="../../css/site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../../css/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../css/print.css" media="print" />
+
+                        
+        </head>
+
+        <body>
+			<div style="
+				clear: left;
+   				font-size: 110%;
+   				background-color: #FF0040;
+   				color: white;
+				float: left">
+
+				<b><big>Apache Harmony is retired at the Apache Software Foundation</big></b> since Nov 16, 2011.
+				<p>
+				The information on these pages may be out of date, or may refer to
+				resources that have moved or have been made read-only.
+				<br> 
+				For more information please refer to the
+				<a href="http://attic.apache.org">Apache Attic</a>
+				<p>
+			</div>
+			
+            <div id="pageHeader" style="clear: left">
+			<br>
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="../../images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement
+            <a href="http://na.apachecon.com">
+                <img id="advertisement"
+                     src="images/apachecon-na2010.gif"
+                     width="234" height="60"
+                     alt="ApacheCon US 2010" /></a>
+            -->
+
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/licenses/">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../download.cgi">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/security/">Security</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../sitemap.html">Sitemap</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.jdocs.com/harmony/5.M5/overview-summary.html">API Reference</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Foundation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/sponsorship.html ">Sponsorship</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/thanks.html ">Thanks</a>
+</li>
+           
+                        
+        
+        </ul>
+                    
+                <!-- Add the ASF birthday logo to the end of the menu -->
+                <img id="birthday"
+                     src="http://www.apache.org/images/10yearsASF_170x101.jpg"
+                     width="170" height="101"
+                     vspace="30"
+                     alt="Ten Years of the ASF" />
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                                        <h1>
+      <a name="Introduction">Introduction</a>
+    </h1>
+                        <p>
+    <p class="note">Note</p>
+    <p class="notetext">
+      This document is not complete. The final version will be finalized as
+      the framework development is completed and associated feedback is recieved.
+    </p>
+
+    <p>
+      To be part of the project and successfully contribute to it this
+      is important to know about test and release process, automation
+      for testing, available test suites and scenarios.
+      So the main target of this document is to provide a developer with all
+      required information. The information is divided into the next
+      sections:
+      <ul>
+        <li>
+          <a href="#Process">Harmony Test and Release Process</a>
+        </li>
+        <li>
+          <a href="#Automation">Framework for Testing and Automation</a>
+        </li>
+        <li>
+          <a href="#Suites">Test Suites and Scenarios</a>
+        </li>
+      </ul>
+  </p>
+</p>
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                                        <h1>
+      <a name="Harmony Test and Release Process">Harmony Test and Release Process</a>
+    </h1>
+                        <a name="Process" />
+                                <p>
+      A joint decision about a release schedule and acceptance criteria
+      is made on
+      <a href="http://harmony.apache.org/mailing.html">the Harmony mailing list</a>.
+      Currently only
+      <a href="http://harmony.apache.org/download.cgi#Stable">milestone builds</a>
+      are released - the project has no official releases. Usually the
+      milestone builds are released on 2-3 month schedule and named using
+      the next scheme: <i>Apache Harmony 5.0M&lt;milestone number&gt;</i>.
+      Before a release date there is 1 week feature freeze period and 1
+      week code freeze period. During feature freeze new functionality,
+      big changes and code redesign are forbidden; only bugs fixes and
+      code tidy-up are allowed. During code freeze period only fixes for
+      critical/blocker issues are committed.
+    </p>
+                                <p>
+      The Harmony team does its best to deliver well tested implementation.
+      As the project’s code-base consists of big number of code-lines
+      the testing became not a trivial task. So the clear testing process
+      was established, <a href="#Automation">automation for testing</a>
+      and several <a href="#Suites">test suites</a> were developed.
+    </p>
+                                <p>
+      Currently the testing process consists of two testing cycles:
+      <i>integrity testing</i> and <i>snapshot testing</i>.
+      Both cycles are based on
+      <a href="#Automation">build-test framework</a>
+    </p>
+                                <p>
+      <i>Integrity testing</i>
+      cycle is aimed to verify that code base is buildable and runs selected
+      number of suites to catch regressions early. The cycle works on debug
+      build. The integrity testing cycle is triggered by a developer commit
+      (i.e. when a code is updated in the source code repository).
+      Results of testing are
+      <a href="http://people.apache.org/~chunrong/harmony-integrity">published</a>
+      almost immediately<br />
+    </p>
+                                <p>
+      <i>Snapshot testing</i>
+      cycle is aimed to provide tested binaries on regular basis.
+      Based on integrity testing results (i.e. the build is not broken and
+      most of tests are passing) a revision for the next snapshot is chosen.
+      When the snapshot is build it is uploaded to the web site and that in
+      turn triggers the testing cycle. For each build snapshot there
+      is a page with
+      <a href="http://people.apache.org/~chunrong/snapshots/snapshots_summary.html">tests results summary</a>.
+      The page is updated dynamically as soon as results are ready.
+    </p>
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                                        <h1>
+      <a name="Framework for Testing and Automation">Framework for Testing and Automation</a>
+    </h1>
+                        <a name="Automation" />
+                                <p>
+      The
+      <a href="http://svn.apache.org/viewvc/harmony/enhanced/buildtest/trunk/infra">
+      <i>build-test framework</i></a>
+      is targeted to assist a developer with running different suites and
+      automation of testing process. The framework is a set of ANT scripts 
+      that provides necessary support to simplify installation, setup of
+      Harmony build, <a href="#Suites">test suites</a> and configuring
+      <a href="http://cruisecontrol.sourceforge.net/"><code>CruiseControl</code></a>.
+    </p>
+                                    
+    <h2>
+        <a name="Prerequisites">Prerequisites</a>
+    </h2>
+      
+                        <p> You need to obtain and install the same <a href="../../quickhelp_contributors.html">tools</a>, 
+        as for building the Apache Harmony components.
+      </p>
+                   
+                                    
+    <h2>
+        <a name="Setup">Setup</a>
+    </h2>
+      
+                        <p> Get the infrastructure by checking it out from the project Subversion® repository:</p>
+                                <pre>svn co http://svn.apache.org/repos/asf/harmony/enhanced/buildtest/trunk/infra</pre>
+                                <p>
+         With Java, Ant and SVN installed, change into the <code>infra</code>
+         directory and type:
+      </p>
+                                <pre>ant -Dtest.suites="&lt;<i>list of suites&gt;</i>" install</pre>
+                                <p>
+        This command fetches external dependencies (including
+        <code>CruiseControl</code>), checks out Harmony build and test suites
+        (if necessary), sets up testing environment. After <code>install</code>
+        is complete it may request to specify unset required properties
+        for selected suites. The <code>required-parameters.properties</code>
+        file contains a list of all required properties.
+        If a property has empty or unresolved value
+        then a property has to be set in <code>framework.local.properties</code>
+        file and <code>install</code> target has to be re-run.
+      </p>
+                                <p>
+         The next step is to setup suites. (Note: the framework saves the list
+         of installed suites so the parameter <code>-Dtest.suites=...</code>
+         is not required any more) Just simply type:
+      </p>
+                                <pre>ant setup</pre>
+                                <p>
+        This command launches <code>setup</code> target for each installed suite.
+      </p>
+                   
+                                    
+    <h2>
+        <a name="Run">Run</a>
+    </h2>
+      
+                        <p>
+        The suites' run can be launched in two ways: by the framework or by
+        <code>CruiseControl</code> tool. If a single run is needed type:
+      </p>
+                                <pre>ant run</pre>
+                                <p>
+        The command launches <code>run</code> target for each installed suite.
+      </p>
+                                <p>
+        In case when a continuous build and test process is required type:
+      </p>
+                                <pre>ant run-cc</pre>
+                                <p>
+        The given command launches <code>CruiseControl</code> with the full test set. 
+        To check status, point your browser to:
+      </p>
+                                <pre>http://localhost:8080/</pre>
+                   
+                                    
+    <h2>
+        <a name="How To">How To</a>
+    </h2>
+      
+                        <p>
+        Please use the next steps for how to organize:
+        <ul>
+          <li>
+            <a href="howto.html#Short">Short intergity testing cycle</a>
+          </li>
+          <li>
+            <a href="howto.html#Extended">Extended intergity testing cycle</a>
+          </li>
+          <li>
+            <a href="howto.html#Snapshot">Snapshot testing cycle</a>
+          </li>
+          <li>
+            <a href="howto.html#NewSuite">Integration of new suite/scenario</a>
+          </li>
+        </ul>
+     </p>
+                   
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                                        <h1>
+      <a name="Test Suites and Scenarios">Test Suites and Scenarios</a>
+    </h1>
+                        <a name="Suites" />
+                                <p>
+      The Harmony testing base can be divided into 2 main parts:
+      <i>suites</i> and <i>scenarios</i>.
+    </p>
+                                <p>
+      A <i>test suite</i> is a collection of quite
+      simple/short test cases that is used to verify that the
+      implementation follows specified behavior.
+      The project has several own test suites as well uses 3rd party
+      (external) test suites.
+    </p>
+                                <p>
+      An application <i>testing scenario</i> (or simply testing scenario)
+      is a set of actions/operations that models typical application's
+      usage/functioning.
+    </p>
+                                <p class="note">Note</p>
+                                <p class="notetext">
+      Most of suites/scenarios below can be run with and without build-test
+      framework. Please consult a suite's documentation for details.
+    </p>
+                                <p>
+      <ul>
+        <li> Harmony suites:
+          <ul>
+            <li>
+              Class library unit tests
+            </li>
+            <li>
+              DRL VM unit and regression tests
+            </li>
+            <li>
+              Functional test suite
+            </li>
+            <li>
+              JDKTools unit tests
+            </li>
+            <li>
+              Reliability test suite
+            </li>
+            <li>
+              Stress test suite
+            </li>
+            <li>
+              VM Validation test suite
+            </li>
+          </ul>
+        </li>
+        <li> External test suites:
+          <ul>
+            <li>
+              Apache Ant 1.7.0 unit tests
+            </li>
+            <li>
+              Apache Maven unit tests
+            </li>
+            <li>
+              Eclipse unit tests.
+            </li>
+            <li>
+              Eclipse TPTP tests
+            </li>
+            <li>
+              Geronimo unit tests.
+            </li>
+            <li>
+              JUnit tests
+            </li>
+            <li>
+              Mauve test suite
+            </li>
+          </ul>
+        </li>
+        <li> Application scenarios:
+          <ul>
+            <li>
+              Apache Ant scenario
+            </li>
+            <li>
+              Apache Axis2 client-server scenario
+            </li>
+            <li>
+              Apache Struts scenario
+            </li>
+            <li>
+              Apache Tomcat scenario
+            </li>
+            <li>
+              Dacapo benchmark
+            </li>
+            <li>
+              Eclipse Geronimo application 
+            </li>
+            <li>
+              Eclipse hello world application
+            </li>
+            <li>
+              JEdit scenario
+            </li>
+            <li>
+              Jetty scenario
+            </li>
+            <li>
+              LDAP scenario
+            </li>
+            <li>
+              Scimark benchmark
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </p>
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                
+                                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special">
+            	<em>Copyright &#169; 2003-2010, The Apache Software Foundation</em>
+            	<br/>
+            	Apache Harmony, the Apache Harmony logo, and the Apache feather
+            	logo are trademarks of The Apache Software Foundation.
+            	<br/>
+            	Java is a registered trademark of Oracle and/or its affiliates. Other names
+            	mentioned may be trademarks or registered trademarks of their
+            	respective owners.
+            </div>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
