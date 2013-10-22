@@ -1,0 +1,1834 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<tagfile>
+  <compound kind="file">
+    <name>DrlEMImpl.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/em/src/</path>
+    <filename>_drl_e_m_impl_8h</filename>
+    <class kind="class">RStep</class>
+    <class kind="class">RChain</class>
+    <class kind="class">DrlEMFactory</class>
+    <class kind="class">DrlEMImpl</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>EM_TBS_TICK_TIMEOUT</name>
+      <anchorfile>_drl_e_m_impl_8h.html</anchorfile>
+      <anchor>0c99531272678d17d0b8702020c40797</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::vector&lt; RChain * &gt;</type>
+      <name>RChains</name>
+      <anchorfile>_drl_e_m_impl_8h.html</anchorfile>
+      <anchor>3f3642dc2e627f73a8bfaeafc815f0bd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::vector&lt; RStep * &gt;</type>
+      <name>RSteps</name>
+      <anchorfile>_drl_e_m_impl_8h.html</anchorfile>
+      <anchor>64d36bd8edc52158756297ba66083a39</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>DrlProfileCollectionFramework.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/em/src/</path>
+    <filename>_drl_profile_collection_framework_8h</filename>
+    <class kind="class">EM_PC_Interface</class>
+    <class kind="class">MethodProfile</class>
+    <class kind="class">ProfileCollector</class>
+    <class kind="class">TbsEMClient</class>
+    <member kind="typedef">
+      <type>std::vector&lt; TbsEMClient * &gt;</type>
+      <name>TbsClients</name>
+      <anchorfile>_drl_profile_collection_framework_8h.html</anchorfile>
+      <anchor>899bcfe1ec9cef8e111368d8c8a77e19</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::vector&lt; ProfileCollector * &gt;</type>
+      <name>ProfileCollectors</name>
+      <anchorfile>_drl_profile_collection_framework_8h.html</anchorfile>
+      <anchor>c65662fa97f838656ee5cdc2c3b157cc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::vector&lt; JIT_Handle &gt;</type>
+      <name>Jits</name>
+      <anchorfile>_drl_profile_collection_framework_8h.html</anchorfile>
+      <anchor>237e5499dc564b7e2a633f160d8aeaca</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>EBProfileCollector.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/em/src/</path>
+    <filename>_e_b_profile_collector_8h</filename>
+    <class kind="class">EBProfileCollector</class>
+    <class kind="class">EBMethodProfile</class>
+    <member kind="typedef">
+      <type>std::map&lt; Method_Handle, EBMethodProfile * &gt;</type>
+      <name>EBProfilesMap</name>
+      <anchorfile>_e_b_profile_collector_8h.html</anchorfile>
+      <anchor>7df3469e8f48d3d2f9e8dfa9d727c67e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::vector&lt; EBMethodProfile * &gt;</type>
+      <name>EBProfiles</name>
+      <anchorfile>_e_b_profile_collector_8h.html</anchorfile>
+      <anchor>3feb07903ca9941787ca95a8af1c9395</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>Method_Profile_Handle</type>
+      <name>eb_profiler_create_profile</name>
+      <anchorfile>_e_b_profile_collector_8h.html</anchorfile>
+      <anchor>065fea40985b19ef0dbaf64229ee9801</anchor>
+      <arglist>(PC_Handle ph, Method_Handle mh)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>eb_profiler_get_entry_counter_addr</name>
+      <anchorfile>_e_b_profile_collector_8h.html</anchorfile>
+      <anchor>976a99a621955b26baf9c93b26c9a164</anchor>
+      <arglist>(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>eb_profiler_get_backedge_counter_addr</name>
+      <anchorfile>_e_b_profile_collector_8h.html</anchorfile>
+      <anchor>ab6f6b5decbf3135c5ddc7f83a38176c</anchor>
+      <arglist>(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="function">
+      <type>void __stdcall</type>
+      <name>eb_profiler_sync_mode_callback</name>
+      <anchorfile>_e_b_profile_collector_8h.html</anchorfile>
+      <anchor>f25350e35aa20fe1291259407c2dc43c</anchor>
+      <arglist>(PC_Handle mph)</arglist>
+    </member>
+    <member kind="function">
+      <type>char</type>
+      <name>eb_profiler_is_in_sync_mode</name>
+      <anchorfile>_e_b_profile_collector_8h.html</anchorfile>
+      <anchor>fd4bb4da2b583191776595bb0baded23</anchor>
+      <arglist>(PC_Handle pch)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>eb_profiler_get_entry_threshold</name>
+      <anchorfile>_e_b_profile_collector_8h.html</anchorfile>
+      <anchor>dd3f74a3847f7c98dc42503cdf935b9f</anchor>
+      <arglist>(PC_Handle pch)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>eb_profiler_get_backedge_threshold</name>
+      <anchorfile>_e_b_profile_collector_8h.html</anchorfile>
+      <anchor>e993bf82df6daa687d01b40f744c90c8</anchor>
+      <arglist>(PC_Handle pch)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>EdgeProfileCollector.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/em/src/</path>
+    <filename>_edge_profile_collector_8h</filename>
+    <class kind="class">EdgeProfileCollector</class>
+    <class kind="class">EdgeMethodProfile</class>
+    <member kind="typedef">
+      <type>std::map&lt; Method_Handle, EdgeMethodProfile * &gt;</type>
+      <name>EdgeProfilesMap</name>
+      <anchorfile>_edge_profile_collector_8h.html</anchorfile>
+      <anchor>dbdc48b644fcb00cc580411b2b4f0a0f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::vector&lt; EdgeMethodProfile * &gt;</type>
+      <name>EdgeProfiles</name>
+      <anchorfile>_edge_profile_collector_8h.html</anchorfile>
+      <anchor>dedacd3c84f4796d9ed5e479fa5f3bce</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>Method_Profile_Handle</type>
+      <name>edge_profiler_create_profile</name>
+      <anchorfile>_edge_profile_collector_8h.html</anchorfile>
+      <anchor>937a7b26ea5a0cd019f97b62fee6ebf6</anchor>
+      <arglist>(PC_Handle ph, Method_Handle mh, uint32 numCounters, uint32 *counterKeys, uint32 checkSum)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>edge_profiler_get_num_counters</name>
+      <anchorfile>_edge_profile_collector_8h.html</anchorfile>
+      <anchor>597ee5f3d034cf12e9847af49ee60ae8</anchor>
+      <arglist>(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>edge_profiler_get_checksum</name>
+      <anchorfile>_edge_profile_collector_8h.html</anchorfile>
+      <anchor>beb143fcc0bfa6dc8f9c4439b535217f</anchor>
+      <arglist>(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>edge_profiler_get_entry_counter_addr</name>
+      <anchorfile>_edge_profile_collector_8h.html</anchorfile>
+      <anchor>22b471575f430c63df3a4adc3af20dc4</anchor>
+      <arglist>(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>edge_profiler_get_counter_addr</name>
+      <anchorfile>_edge_profile_collector_8h.html</anchorfile>
+      <anchor>12ac75ffd8d7e26b4d12c895759a5bb2</anchor>
+      <arglist>(Method_Profile_Handle mph, uint32 key)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>edge_profiler_get_entry_threshold</name>
+      <anchorfile>_edge_profile_collector_8h.html</anchorfile>
+      <anchor>a2031dd6e7cb96a7c2d574bda2563170</anchor>
+      <arglist>(PC_Handle pch)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>edge_profiler_get_backedge_threshold</name>
+      <anchorfile>_edge_profile_collector_8h.html</anchorfile>
+      <anchor>7505e52e7d55ce19b8434ebc6dff0a05</anchor>
+      <arglist>(PC_Handle pch)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>em.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>em_8h</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>OPEN_EM</name>
+      <anchorfile>em_8h.html</anchorfile>
+      <anchor>611e3aa2b2243e893cdd9fdd846873e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OPEN_EM_VERSION</name>
+      <anchorfile>em_8h.html</anchorfile>
+      <anchor>a464216f50c3487d84bac5319a5b3cf5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void *</type>
+      <name>EM_Handle</name>
+      <anchorfile>em_8h.html</anchorfile>
+      <anchor>01d9ea5bd73583448706e6660e47cc34</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void *</type>
+      <name>JIT_Handle</name>
+      <anchorfile>em_8h.html</anchorfile>
+      <anchor>8e9c9fdbc225616cb7bf7f5b73ed63c9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void *</type>
+      <name>PC_Handle</name>
+      <anchorfile>em_8h.html</anchorfile>
+      <anchor>8335add99f801e8a42896bd91ad95ddb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void *</type>
+      <name>Method_Profile_Handle</name>
+      <anchorfile>em_8h.html</anchorfile>
+      <anchor>a251b01e58425a99107b56f0b131a1cd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>JIT_Result</name>
+      <anchor>15a76398d8f446341b33954c9adbb9e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>JIT_SUCCESS</name>
+      <anchor>15a76398d8f446341b33954c9adbb9e9b5713c2df48c24bf56d7ad2a132723af</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>JIT_FAILURE</name>
+      <anchor>15a76398d8f446341b33954c9adbb9e9197ecbc367ebfcbcba28727f71f3f866</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>EM_JIT_PC_Role</name>
+      <anchor>55fba0f11f26aef9e1f883ceaf463a5b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EM_JIT_PROFILE_ROLE_GEN</name>
+      <anchor>55fba0f11f26aef9e1f883ceaf463a5bbadc285b2214c7a52911a3a4be849618</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EM_JIT_PROFILE_ROLE_USE</name>
+      <anchor>55fba0f11f26aef9e1f883ceaf463a5ba439fe5ae8e905ef4d80045ad0912654</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>em_intf.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/</path>
+    <filename>em__intf_8h</filename>
+    <member kind="function">
+      <type>VMEXPORT JIT_Handle</type>
+      <name>vm_load_jit</name>
+      <anchorfile>em__intf_8h.html</anchorfile>
+      <anchor>5b6f1503ce7b27c0607460838dfdc735</anchor>
+      <arglist>(const char *file_name, apr_dso_handle_t **handle)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>em_profile_access.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>em__profile__access_8h</filename>
+    <class kind="struct">EM_ProfileAccessInterface</class>
+    <member kind="enumeration">
+      <name>EM_PCTYPE</name>
+      <anchor>bbd26d71893067b7b1eaeda5153f33d2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EM_PCTYPE_ENTRY_BACKEDGE</name>
+      <anchor>bbd26d71893067b7b1eaeda5153f33d283a43800b1c3b97f6e0a6c3efe248729</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EM_PCTYPE_EDGE</name>
+      <anchor>bbd26d71893067b7b1eaeda5153f33d294667331a7970886904e1219291c2a3c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EM_PCTYPE_VALUE</name>
+      <anchor>bbd26d71893067b7b1eaeda5153f33d26f8b50eee390c96bbfc78045a4247f27</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>em_vm.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>em__vm_8h</filename>
+    <class kind="struct">_OpenEmVm</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>OPEN_INTF_EM_VM</name>
+      <anchorfile>em__vm_8h.html</anchorfile>
+      <anchor>0b7fdced85b5552a95dc7e7a6bbe8f0a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OPEN_EM_VM_PROFILER_NEEDS_THREAD_SUPPORT</name>
+      <anchorfile>em__vm_8h.html</anchorfile>
+      <anchor>6d6df422518248b038a41577e71f13f8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OPEN_EM_VM_PROFILER_THREAD_TIMEOUT</name>
+      <anchorfile>em__vm_8h.html</anchorfile>
+      <anchor>4e15451681ec14eac7f858ffb11ed093</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>_OpenEmVm *</type>
+      <name>OpenEmVmHandle</name>
+      <anchorfile>em__vm_8h.html</anchorfile>
+      <anchor>cee764a538026fdeac32d8698d0c375c</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>jit_intf.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/</path>
+    <filename>jit__intf_8h</filename>
+    <member kind="typedef">
+      <type>const void *</type>
+      <name>Arg_List_Iterator</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>559048016c68aba1fd19ef861e9d637f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>const void *</type>
+      <name>Arg_List_Iter</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>75bbfd41120113c050b2ea8175f74da0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Field_Handle</type>
+      <name>resolve_field</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>135c38600bb4f13e48b43aba7fa00bf5</anchor>
+      <arglist>(Compile_Handle h, Class_Handle c, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Method_Handle</type>
+      <name>resolve_nonstatic_method</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>253e0f2540d505f7faef1b9e5b4ff923</anchor>
+      <arglist>(Compile_Handle h, Class_Handle c, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Method_Handle</type>
+      <name>resolve_special_method</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>a1e6f17b5bd3e2ab4c78fd163e72f7ac</anchor>
+      <arglist>(Compile_Handle h, Class_Handle c, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Boolean</type>
+      <name>vm_instanceof_class</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>b7a6816bc1c19f0b18dd4f2d69d37910</anchor>
+      <arglist>(Class *s, Class *t)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Class_Handle</type>
+      <name>resolve_class_new</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>135d698a6ac2ca4f6faff5d3ca8a9234</anchor>
+      <arglist>(Compile_Handle h, Class_Handle c, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Class_Handle</type>
+      <name>resolve_class</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>3f6f47afde3c83a228dbcd76dd340495</anchor>
+      <arglist>(Compile_Handle h, Class_Handle c, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Boolean</type>
+      <name>field_is_public</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>213b8887b753c599803b0fa200919940</anchor>
+      <arglist>(Field_Handle f)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT unsigned</type>
+      <name>field_get_flags</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>a4f7bcfb23aae4064701fd6c27e3b566</anchor>
+      <arglist>(Field_Handle f)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Java_Type</type>
+      <name>field_get_type</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>6d78ea5805f7d8eba65f760e393424c5</anchor>
+      <arglist>(Field_Handle f)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Boolean</type>
+      <name>field_is_injected</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>28ad5dcdf404c4f43b99d2c629c41ad4</anchor>
+      <arglist>(Field_Handle f)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Boolean</type>
+      <name>method_is_public</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>4c5b3ae9fbe768d5442744a3ee5589c7</anchor>
+      <arglist>(Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT unsigned</type>
+      <name>method_get_max_locals</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>37f60fbd9f4fcce33d31760e446f2d03</anchor>
+      <arglist>(Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT unsigned</type>
+      <name>method_get_flags</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>09c0cc47ec840c6e44afe6af85f42e64</anchor>
+      <arglist>(Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Boolean</type>
+      <name>method_uses_fastcall</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>f8dbfbc9dd6c70596f28bb9f2fc9a6e8</anchor>
+      <arglist>(Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Boolean</type>
+      <name>method_is_fake</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>3ea379271fb1cb1e155901113b07c275</anchor>
+      <arglist>(Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT unsigned</type>
+      <name>method_number_throws</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>be71ed1d9c95d4645b3781bdcc79496a</anchor>
+      <arglist>(Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Class_Handle</type>
+      <name>method_get_throws</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>04bc292bc9ffa9d95611530e948af5f8</anchor>
+      <arglist>(Method_Handle m, unsigned idx)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Method_Side_Effects</type>
+      <name>method_get_side_effects</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>3a25bfa34c5d919dd8a35cd470fbc66a</anchor>
+      <arglist>(Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>method_set_side_effects</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>f3740b8fcde149de7273924af2007c85</anchor>
+      <arglist>(Method_Handle m, Method_Side_Effects mse)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Java_Type</type>
+      <name>method_get_return_type</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>fd7e7e88f8cb7b18204dcc1645081b50</anchor>
+      <arglist>(Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Class_Handle</type>
+      <name>method_get_return_type_class</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>2f8fc5d4815239292952609bfa7fca5b</anchor>
+      <arglist>(Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Arg_List_Iterator</type>
+      <name>initialize_arg_list_iterator</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>2e0026f536cf9cfea8b96a6aaf740584</anchor>
+      <arglist>(const char *descr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Arg_List_Iterator</type>
+      <name>method_get_argument_list</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>3c42f16fbc3e8297d10f5f293591c5da</anchor>
+      <arglist>(Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Java_Type</type>
+      <name>curr_arg</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>7103f7d4f7247c9488c5b36bc362eace</anchor>
+      <arglist>(Arg_List_Iterator iter)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Class_Handle</type>
+      <name>get_curr_arg_class</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>a4a0ff967e7952125230395aeb94b930</anchor>
+      <arglist>(Arg_List_Iterator iter, Method_Handle m)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Arg_List_Iterator</type>
+      <name>advance_arg_iterator</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>7cfa2e2ba926f968bb65c63857eb7530</anchor>
+      <arglist>(Arg_List_Iterator iter)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>method_set_inline_assumption</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>23701505d31e457571ba301d96b1e9aa</anchor>
+      <arglist>(Compile_Handle h, Method_Handle caller, Method_Handle callee)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Boolean</type>
+      <name>method_has_annotation</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>8ddb31f15254372f11e1d1a39f4fc519</anchor>
+      <arglist>(Method_Handle target, Class_Handle antn_type)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT unsigned</type>
+      <name>class_get_flags</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>fefde67be9b6ad56da3bf9ad7c3c6005</anchor>
+      <arglist>(Class_Handle cl)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT unsigned</type>
+      <name>class_number_fields</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>f8613ec1e6a99845a2d15c7d99ff1d2a</anchor>
+      <arglist>(Class_Handle ch)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Field_Handle</type>
+      <name>class_get_field</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>5d73a5127c1b360f90f20c94b3594373</anchor>
+      <arglist>(Class_Handle ch, unsigned idx)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT int</type>
+      <name>class_get_super_offset</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>9cdbeefbebc417b8b47ecff277008bc8</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Field_Handle</type>
+      <name>class_get_field_by_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>6f96f3c81191d4777936eab59d2904fe</anchor>
+      <arglist>(Class_Handle ch, const char *name)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Method_Handle</type>
+      <name>class_get_method_by_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>a02fea46184646bf334a19c84c3e0dca</anchor>
+      <arglist>(Class_Handle ch, const char *name)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT int</type>
+      <name>class_get_depth</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>7ad6431da56c5dbb20b8604f2ef97c67</anchor>
+      <arglist>(Class_Handle cl)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Boolean</type>
+      <name>class_has_non_default_finalizer</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>ad7614385a4053e6ade8dce630c744e1</anchor>
+      <arglist>(Class_Handle cl)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT unsigned</type>
+      <name>class_number_implements</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>c96f722365b05eab32944c4ef37cca94</anchor>
+      <arglist>(Class_Handle ch)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Class_Handle</type>
+      <name>class_get_implements</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>d721fe0034d2f9aa5e32b6e2c8a55d8e</anchor>
+      <arglist>(Class_Handle ch, unsigned idx)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>class_get_source_file_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>c4958fbf1bd9edf1a973720ba700104c</anchor>
+      <arglist>(Class_Handle cl)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Boolean</type>
+      <name>class_property_is_interface</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>8b1666de8a0873ed58b7c1c18ba40cd5</anchor>
+      <arglist>(Class_Handle ch)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT uint32</type>
+      <name>class_get_num_array_dimensions</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>af697969172d16551bd4bd2abe97bccc</anchor>
+      <arglist>(Class_Handle cl, unsigned short cpIndex)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT ClassLoaderHandle</type>
+      <name>class_get_class_loader</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>445692f68f270c413b7aefede6e96c00</anchor>
+      <arglist>(Class_Handle c)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>class_throw_linking_error_for_jit</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>d95a378c73c86d879653ba0c6283f84a</anchor>
+      <arglist>(Class_Handle ch, unsigned cp_index, unsigned opcode)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>class_throw_linking_error</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>7763a5c28a10dd9f60366d62ada04b50</anchor>
+      <arglist>(Class_Handle ch, unsigned cp_index, unsigned opcode)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Class_Handle</type>
+      <name>class_load_class_by_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>af54fe2617f619360de739a66fd50a8a</anchor>
+      <arglist>(const char *name, Class_Handle c)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Class_Handle</type>
+      <name>class_load_class_by_descriptor</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>ac851c61a96ec75cda7bbfe176841cbc</anchor>
+      <arglist>(const char *descr, Class_Handle c)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Method_Handle</type>
+      <name>class_lookup_method_recursively</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>7601c1c1dcb2e8cdc3929b6ab86d726e</anchor>
+      <arglist>(Class_Handle clss, const char *name, const char *descr)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Boolean</type>
+      <name>class_is_cp_entry_resolved</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>471bf2e11c66990977600f1a344e542a</anchor>
+      <arglist>(Compile_Handle ch, Class_Handle clazz, unsigned cp_index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Class_Handle</type>
+      <name>class_find_loaded</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>82fa50b6abf368ea1be136548c92a754</anchor>
+      <arglist>(ClassLoaderHandle, const char *)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Class_Handle</type>
+      <name>class_find_class_from_loader</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>e6369ee8c9bbf1a9a3dff2756cc1488c</anchor>
+      <arglist>(ClassLoaderHandle, const char *, Boolean init)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>const_pool_get_field_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>838aa9dff99b3972e276199a32756ef2</anchor>
+      <arglist>(Class_Handle cl, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>const_pool_get_field_class_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>111db47e28a66060d7c9dad5fc37d5aa</anchor>
+      <arglist>(Class_Handle cl, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>const_pool_get_field_descriptor</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>455bd185f3f6ba931db9220014a17d00</anchor>
+      <arglist>(Class_Handle cl, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>const_pool_get_method_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>0c8fec809608077ca164ff9ad5a860dc</anchor>
+      <arglist>(Class_Handle cl, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>const_pool_get_method_class_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>4bce00560541c532d38f4ab608e10573</anchor>
+      <arglist>(Class_Handle cl, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>const_pool_get_method_descriptor</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>646e9f7eaf514d8c1f2d11ffadcdb666</anchor>
+      <arglist>(Class_Handle cl, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>const_pool_get_class_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>a3207254a4074b7c7c4a9f3032e7bf15</anchor>
+      <arglist>(Class_Handle cl, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>const_pool_get_interface_method_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>eb779ca5eed394f2f0a69223b31addd2</anchor>
+      <arglist>(Class_Handle cl, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>const_pool_get_interface_method_class_name</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>f7958895f7c1f5d250777348f35344b8</anchor>
+      <arglist>(Class_Handle cl, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT const char *</type>
+      <name>const_pool_get_interface_method_descriptor</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>3743248f94b58864c022a255dca6994b</anchor>
+      <arglist>(Class_Handle cl, unsigned index)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT Compile_Handle</type>
+      <name>jit_get_comp_handle</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>1906dcf1ef8280ebe14ebe72b578b6df</anchor>
+      <arglist>(JIT_Handle j)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>core_free</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>620ceda2839b587c5742f33f594f4e1c</anchor>
+      <arglist>(void *)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>compiled_method_load</name>
+      <anchorfile>jit__intf_8h.html</anchorfile>
+      <anchor>83c198da727846870ce6c952f6dfeac3</anchor>
+      <arglist>(Method_Handle method, uint32 codeSize, void *codeAddr, uint32 mapLength, AddrLocation *addrLocationMap, void *compileInfo, Method_Handle outer_method)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>MTable.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/em/src/</path>
+    <filename>_m_table_8h</filename>
+    <class kind="class">MTable</class>
+    <class kind="class">MTable::MethodInfo</class>
+    <class kind="class">MTable::MethodFilter</class>
+    <class kind="class">MTable::NumRangeMethodFilter</class>
+    <class kind="class">MTable::NameMethodFilter</class>
+    <class kind="class">MTable::BCSizeMethodFilter</class>
+    <member kind="function">
+      <type>bool</type>
+      <name>startsWith</name>
+      <anchorfile>_m_table_8h.html</anchorfile>
+      <anchor>11c9a498274d9d966fdf7a40305a1be9</anchor>
+      <arglist>(const std::string &amp;str, const std::string &amp;prefix)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>isNum</name>
+      <anchorfile>_m_table_8h.html</anchorfile>
+      <anchor>b45d5505610e35bb5310e3f78d4ae66f</anchor>
+      <arglist>(const std::string &amp;str)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>_OpenEmVm</name>
+    <filename>struct___open_em_vm.html</filename>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>ExecuteMethod</name>
+      <anchorfile>struct___open_em_vm.html</anchorfile>
+      <anchor>d2148221a5733cd65a71a2876bd1362e</anchor>
+      <arglist>)(jmethodID meth, jvalue *return_value, jvalue *args)</arglist>
+    </member>
+    <member kind="variable">
+      <type>JIT_Result(*</type>
+      <name>CompileMethod</name>
+      <anchorfile>struct___open_em_vm.html</anchorfile>
+      <anchor>7f1f89d351a1255dae17bc86e42be91c</anchor>
+      <arglist>)(Method_Handle method_handle)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>RegisterCodeChunk</name>
+      <anchorfile>struct___open_em_vm.html</anchorfile>
+      <anchor>b8c6c53261d76072c0a35c8b48d5afe9</anchor>
+      <arglist>)(Method_Handle method_handle, void *code_addr, size_t size, void *data)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Method_Handle(*</type>
+      <name>LookupCodeChunk</name>
+      <anchorfile>struct___open_em_vm.html</anchorfile>
+      <anchor>ad7d265cdd092deb3696d9fceda7e1f7</anchor>
+      <arglist>)(void *addr, Boolean is_ip_past, void **code_addr, size_t *size, void **data)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean(*</type>
+      <name>UnregisterCodeChunk</name>
+      <anchorfile>struct___open_em_vm.html</anchorfile>
+      <anchor>4adf082842dc7550169959a7a5b4bbd0</anchor>
+      <arglist>)(void *addr)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>ProfilerThreadTimeout</name>
+      <anchorfile>struct___open_em_vm.html</anchorfile>
+      <anchor>8d0a7b1615bd773c399ce3869e2c2534</anchor>
+      <arglist>)()</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>ClassloaderUnloadingCallback</name>
+      <anchorfile>struct___open_em_vm.html</anchorfile>
+      <anchor>4f122d94b138c682a86925262cd3a4c5</anchor>
+      <arglist>)(ClassLoaderHandle class_handle)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>DrlEMFactory</name>
+    <filename>class_drl_e_m_factory.html</filename>
+    <member kind="function" static="yes">
+      <type>static DrlEMImpl *</type>
+      <name>createAndInitEMInstance</name>
+      <anchorfile>class_drl_e_m_factory.html</anchorfile>
+      <anchor>8f5d19a01bb52bfb91ef1c2ec51c7292</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static DrlEMImpl *</type>
+      <name>getEMInstance</name>
+      <anchorfile>class_drl_e_m_factory.html</anchorfile>
+      <anchor>1ec545514dd2b7f1f48185cda5d46e67</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static void</type>
+      <name>deinitEMInstance</name>
+      <anchorfile>class_drl_e_m_factory.html</anchorfile>
+      <anchor>d2cd8ed96aeae38ae20a9a836432f638</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>DrlEMImpl</name>
+    <filename>class_drl_e_m_impl.html</filename>
+    <base>EM_PC_Interface</base>
+    <member kind="function">
+      <type></type>
+      <name>DrlEMImpl</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>eafd0f92cde15d4f47d33acdb6386f06</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~DrlEMImpl</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>85e2b647114ba0f2adf4ae33835b813b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual bool</type>
+      <name>init</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>b396ac28db9c1f3ad114279d6b10e509</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>deinit</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>51d53e37940c6f9f57a937f12ef5baba</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>executeMethod</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>e86dcb11312527aff85717cabf05bdf7</anchor>
+      <arglist>(jmethodID meth, jvalue *return_value, jvalue *args)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual JIT_Result</type>
+      <name>compileMethod</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>525b82af247ddc2452e1d45044225976</anchor>
+      <arglist>(Method_Handle method_handle)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>registerCodeChunk</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>aeae5eca4db8a4eb630d8aa7a17badd9</anchor>
+      <arglist>(Method_Handle method_handle, void *code_addr, size_t size, void *data)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual Method_Handle</type>
+      <name>lookupCodeChunk</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>ac29b8903743c63ee2c3dc9019c35e1b</anchor>
+      <arglist>(void *addr, Boolean is_ip_past, void **code_addr, size_t *size, void **data)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual Boolean</type>
+      <name>unregisterCodeChunk</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>328a6b443da59d16f162602c2c2fd28d</anchor>
+      <arglist>(void *addr)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual unsigned int</type>
+      <name>getNumProfilerThreads</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>62027e02d3c354652047052b6b3c33d4</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>classloaderUnloadingCallback</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>00f7b982ae26ac5801d026bf746dbcb4</anchor>
+      <arglist>(ClassLoaderHandle class_handle)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>methodProfileIsReady</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>91d58a73fe957cf74d6d63665662f900</anchor>
+      <arglist>(MethodProfile *mp)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual bool</type>
+      <name>needTbsThreadSupport</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>d62293d042d59393c882179f394531ff</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>tbsTimeout</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>3c6cacce538016db293759bb20c0d6a4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual int</type>
+      <name>getTbsTimeout</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>162c81737e7d6829fd7c35f59c4202e2</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>ProfileCollector *</type>
+      <name>getProfileCollector</name>
+      <anchorfile>class_drl_e_m_impl.html</anchorfile>
+      <anchor>b0ed40ea962ca27db204ecf214d827c6</anchor>
+      <arglist>(EM_PCTYPE type, JIT_Handle jh, EM_JIT_PC_Role jitRole) const </arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>EBMethodProfile</name>
+    <filename>class_e_b_method_profile.html</filename>
+    <base>MethodProfile</base>
+    <member kind="function">
+      <type></type>
+      <name>EBMethodProfile</name>
+      <anchorfile>class_e_b_method_profile.html</anchorfile>
+      <anchor>8f0c84a7704439a21739d3476226655b</anchor>
+      <arglist>(EBProfileCollector *pc, Method_Handle mh)</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32</type>
+      <name>entryCounter</name>
+      <anchorfile>class_e_b_method_profile.html</anchorfile>
+      <anchor>c4bb1e15b0cb7b3b5709b4e59260ab11</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32</type>
+      <name>backedgeCounter</name>
+      <anchorfile>class_e_b_method_profile.html</anchorfile>
+      <anchor>fae372d851fb5906963329ff5ee4ac59</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>EBProfileCollector</name>
+    <filename>class_e_b_profile_collector.html</filename>
+    <base>ProfileCollector</base>
+    <base>TbsEMClient</base>
+    <member kind="enumeration">
+      <name>EB_ProfilerMode</name>
+      <anchor>9254d60ac0d057c453fd001a50b8bef0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EB_PCMODE_ASYNC</name>
+      <anchor>9254d60ac0d057c453fd001a50b8bef05f4d92c8f9a3c6f20254d0a4446f912f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EB_PCMODE_SYNC</name>
+      <anchor>9254d60ac0d057c453fd001a50b8bef074f1749c3e7d4ba393fb1455acfba8f8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>EBProfileCollector</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>f5e3e0e08223ce4fc60ff0ad98ca8817</anchor>
+      <arglist>(EM_PC_Interface *em, const std::string &amp;name, JIT_Handle genJit, EB_ProfilerMode _mode, uint32 _eThreshold, uint32 _bThreshold, uint32 _initialTimeout=0, uint32 _timeout=0)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~EBProfileCollector</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>65424a36e457c04311374e4b390b82cc</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual TbsEMClient *</type>
+      <name>getTbsEmClient</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>95a495c5f9f48e3212c62a8fd675ca3b</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual uint32</type>
+      <name>getInitialTimeout</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>ce0bb44d70c7d3efe8c1c2bed4e1942d</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual uint32</type>
+      <name>getTimeout</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>f2564cbe6ad3ab4d6a201dc7418f6f4c</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>onTimeout</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>fdc32e7c4bb4a4eb643fb3719f3b3bef</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual MethodProfile *</type>
+      <name>getMethodProfile</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>ecbe783f5c429b3b7885841d78a347ca</anchor>
+      <arglist>(Method_Handle mh) const </arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>classloaderUnloadingCallback</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>33becff92a3ecd2f54e2c80155eebd72</anchor>
+      <arglist>(ClassLoaderHandle h)</arglist>
+    </member>
+    <member kind="function">
+      <type>EBMethodProfile *</type>
+      <name>createProfile</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>526c8f94d4cb12b104f8badf47da9429</anchor>
+      <arglist>(Method_Handle mh)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>syncModeJitCallback</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>3a4e6c287fe0f650301545bd28194fc7</anchor>
+      <arglist>(MethodProfile *mp)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>getEntryThreshold</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>949203c4caae8768d711ab2894ada9b2</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>getBackedgeThreshold</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>5918c158df64e9489a12c431a6648c68</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>EB_ProfilerMode</type>
+      <name>getMode</name>
+      <anchorfile>class_e_b_profile_collector.html</anchorfile>
+      <anchor>1c78069309b17410b3733cf9f95300d3</anchor>
+      <arglist>() const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>EdgeMethodProfile</name>
+    <filename>class_edge_method_profile.html</filename>
+    <base>MethodProfile</base>
+    <member kind="function">
+      <type></type>
+      <name>EdgeMethodProfile</name>
+      <anchorfile>class_edge_method_profile.html</anchorfile>
+      <anchor>7d1129291e4cd2843564d6a3e308f9bb</anchor>
+      <arglist>(EdgeProfileCollector *pc, Method_Handle mh)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>dump</name>
+      <anchorfile>class_edge_method_profile.html</anchorfile>
+      <anchor>6b6f7f59d6894c7588fcf0725a26b473</anchor>
+      <arglist>(const char *banner)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setHotMethod</name>
+      <anchorfile>class_edge_method_profile.html</anchorfile>
+      <anchor>2b35190e6b816c5dd4fd301fe0e1f388</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>isHot</name>
+      <anchorfile>class_edge_method_profile.html</anchorfile>
+      <anchor>2f93db90b50c5bee04415549d6c3f22b</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32 *</type>
+      <name>getCounter</name>
+      <anchorfile>class_edge_method_profile.html</anchorfile>
+      <anchor>54ad0cd5b7f42301e249c50d8f8e8929</anchor>
+      <arglist>(uint32 key) const</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32</type>
+      <name>entryCounter</name>
+      <anchorfile>class_edge_method_profile.html</anchorfile>
+      <anchor>bd16ac62ca9b0ebe53ff4d4728c9eb76</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::vector&lt; uint32 &gt;</type>
+      <name>counters</name>
+      <anchorfile>class_edge_method_profile.html</anchorfile>
+      <anchor>40b2710321550c9e952ccddd4d8b45f8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>EdgeMap</type>
+      <name>cntMap</name>
+      <anchorfile>class_edge_method_profile.html</anchorfile>
+      <anchor>620f46f10af03161389df14f3a3e5421</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32</type>
+      <name>checkSum</name>
+      <anchorfile>class_edge_method_profile.html</anchorfile>
+      <anchor>4050b2d662acddd9a28f5354686de101</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>EdgeProfileCollector</name>
+    <filename>class_edge_profile_collector.html</filename>
+    <base>ProfileCollector</base>
+    <base>TbsEMClient</base>
+    <member kind="function">
+      <type></type>
+      <name>EdgeProfileCollector</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>64464f78f22c86783b07832e7aedf908</anchor>
+      <arglist>(EM_PC_Interface *em, const std::string &amp;name, JIT_Handle genJit, uint32 _initialTimeout, uint32 _timeout, uint32 _eThreshold, uint32 _bThreshold)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~EdgeProfileCollector</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>1eacc3a76d97ce8f0a5cdcbb4019bfd9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual TbsEMClient *</type>
+      <name>getTbsEmClient</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>f4f9ea515860c34a1f74be7c895234b9</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual uint32</type>
+      <name>getInitialTimeout</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>0e1a813cfecde48e1120404766d03661</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual uint32</type>
+      <name>getTimeout</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>2de9227301305bdd4a7f579e6f19cd2c</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>onTimeout</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>baae606ffb034eeafe09d6780107875a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>classloaderUnloadingCallback</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>f5f3af6896b431b7d49a1e2e6d922909</anchor>
+      <arglist>(ClassLoaderHandle h)</arglist>
+    </member>
+    <member kind="function">
+      <type>MethodProfile *</type>
+      <name>getMethodProfile</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>7c879eac225a8aa4cd22cab81833b5ec</anchor>
+      <arglist>(Method_Handle mh) const </arglist>
+    </member>
+    <member kind="function">
+      <type>EdgeMethodProfile *</type>
+      <name>createProfile</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>b3b3a7d31bb674866584f8a0674a525e</anchor>
+      <arglist>(Method_Handle mh, uint32 numCounters, uint32 *counterKeys, uint32 checkSum)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>getEntryThreshold</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>9651edf4f073cdd9a1029026b12e78e6</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>getBackedgeThreshold</name>
+      <anchorfile>class_edge_profile_collector.html</anchorfile>
+      <anchor>c185bedfc5533207c9a6cc55898431be</anchor>
+      <arglist>() const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>EM_PC_Interface</name>
+    <filename>class_e_m___p_c___interface.html</filename>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~EM_PC_Interface</name>
+      <anchorfile>class_e_m___p_c___interface.html</anchorfile>
+      <anchor>111847b2ecc922a7ce780af42e21a688</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual void</type>
+      <name>methodProfileIsReady</name>
+      <anchorfile>class_e_m___p_c___interface.html</anchorfile>
+      <anchor>f76481d4f70a34407b192633b0cbcc32</anchor>
+      <arglist>(MethodProfile *mp)=0</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>EM_ProfileAccessInterface</name>
+    <filename>struct_e_m___profile_access_interface.html</filename>
+    <member kind="variable">
+      <type>EM_PCTYPE(*</type>
+      <name>get_pc_type</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>1dcfb68b2e8a1ae137f8d9992be472ae</anchor>
+      <arglist>)(EM_Handle _this, PC_Handle pc)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Method_Profile_Handle(*</type>
+      <name>get_method_profile</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>d04afa967bd5f05f66a30776c11f9f97</anchor>
+      <arglist>)(EM_Handle _this, PC_Handle pc, Method_Handle mh)</arglist>
+    </member>
+    <member kind="variable">
+      <type>PC_Handle(*</type>
+      <name>get_pc</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>b23afb371c776934588ba3b7ff677393</anchor>
+      <arglist>)(EM_Handle _this, EM_PCTYPE profile_type, JIT_Handle jh, EM_JIT_PC_Role jit_role)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Method_Profile_Handle(*</type>
+      <name>eb_profiler_create_profile</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>3b2b34a0aaddfc8a20d1edd8e79ed349</anchor>
+      <arglist>)(PC_Handle ph, Method_Handle mh)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void *(*</type>
+      <name>eb_profiler_get_entry_counter_addr</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>4ee282ffdbce6ea34512dcbd47edd162</anchor>
+      <arglist>)(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void *(*</type>
+      <name>eb_profiler_get_backedge_counter_addr</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>b4f60232a03ecc3252d89c8db256531d</anchor>
+      <arglist>)(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="variable">
+      <type>char(*</type>
+      <name>eb_profiler_is_in_sync_mode</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>47602b316a4e5819c45e212a8f0dfe78</anchor>
+      <arglist>)(PC_Handle pch)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>eb_profiler_sync_mode_callback</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>9da9a70f2067a44b0bbb889c39fadb57</anchor>
+      <arglist>)(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32(*</type>
+      <name>eb_profiler_get_entry_threshold</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>be2e260e93875c37462178c4e531899d</anchor>
+      <arglist>)(PC_Handle pch)</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32(*</type>
+      <name>eb_profiler_get_backedge_threshold</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>b4f55baf4499960093780f5814247e1d</anchor>
+      <arglist>)(PC_Handle pch)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Method_Profile_Handle(*</type>
+      <name>edge_profiler_create_profile</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>b4c7762faaf3f5fd8714c03ebd540513</anchor>
+      <arglist>)(PC_Handle ph, Method_Handle mh, uint32 numEdgeCounters, uint32 *counterKeys, uint32 checkSum)</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32(*</type>
+      <name>edge_profiler_get_num_counters</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>19df1812f920a783a1ba5cf8c898adf6</anchor>
+      <arglist>)(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32(*</type>
+      <name>edge_profiler_get_checksum</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>95328a5a09b2207aee0d216b1a0eda3a</anchor>
+      <arglist>)(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void *(*</type>
+      <name>edge_profiler_get_counter_addr</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>4d584f2887b8d764515aa854fe3f5653</anchor>
+      <arglist>)(Method_Profile_Handle mph, uint32 key)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void *(*</type>
+      <name>edge_profiler_get_entry_counter_addr</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>b68800b8097eef4b6d67c54349eb4246</anchor>
+      <arglist>)(Method_Profile_Handle mph)</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32(*</type>
+      <name>edge_profiler_get_entry_threshold</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>0b99a697ca8d810a02eb0789ef7ce0d3</anchor>
+      <arglist>)(PC_Handle pch)</arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32(*</type>
+      <name>edge_profiler_get_backedge_threshold</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>89c93122ac454fa09405f899e13db27d</anchor>
+      <arglist>)(PC_Handle pch)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Method_Profile_Handle(*</type>
+      <name>value_profiler_create_profile</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>5e43879dec7e551299361e91f40cd64d</anchor>
+      <arglist>)(PC_Handle pch, Method_Handle mh, uint32 numKeys, uint32 *keys)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>value_profiler_add_value</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>f302590bb7343abd0d7e1d7755716387</anchor>
+      <arglist>)(Method_Profile_Handle mph, uint32 instructionKey, POINTER_SIZE_INT valueToAdd)</arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT(*</type>
+      <name>value_profiler_get_top_value</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>15ad860ba57f83c33b3ff0a71e2d2691</anchor>
+      <arglist>)(Method_Profile_Handle mph, uint32 instructionKey)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>value_profiler_dump_values</name>
+      <anchorfile>struct_e_m___profile_access_interface.html</anchorfile>
+      <anchor>51c8596e67835598eebaf41aebf3e28d</anchor>
+      <arglist>)(Method_Profile_Handle mph, std::ostream &amp;os)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>MethodProfile</name>
+    <filename>class_method_profile.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>MethodProfile</name>
+      <anchorfile>class_method_profile.html</anchorfile>
+      <anchor>48f68c833b41cbf3c41022fa840413fc</anchor>
+      <arglist>(ProfileCollector *_pc, Method_Handle _mh)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~MethodProfile</name>
+      <anchorfile>class_method_profile.html</anchorfile>
+      <anchor>d4046682f61ee49c3f2b455ab73f7325</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type>ProfileCollector *</type>
+      <name>pc</name>
+      <anchorfile>class_method_profile.html</anchorfile>
+      <anchor>6d66184fce14509b7f3e9a1b1f0b63cb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Method_Handle</type>
+      <name>mh</name>
+      <anchorfile>class_method_profile.html</anchorfile>
+      <anchor>93fe1eab11852f45dc18b9ae2fb408c8</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>MTable</name>
+    <filename>class_m_table.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>MTable</name>
+      <anchorfile>class_m_table.html</anchorfile>
+      <anchor>b866c50c8f69dc641c188cfbf2dc3b4c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~MTable</name>
+      <anchorfile>class_m_table.html</anchorfile>
+      <anchor>8f21c97af0eb7e70ec08426f8da55af5</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>addMethodFilter</name>
+      <anchorfile>class_m_table.html</anchorfile>
+      <anchor>00cc5ef8b8937878df956533e751dc08</anchor>
+      <arglist>(const std::string &amp;configLine)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>addNumRangeMethodFilter</name>
+      <anchorfile>class_m_table.html</anchorfile>
+      <anchor>6829af61715741f528388d7a52833523</anchor>
+      <arglist>(bool accept, size_t start, size_t end)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>addBCSizeMethodFilter</name>
+      <anchorfile>class_m_table.html</anchorfile>
+      <anchor>6b9be88f962498fa094cf1e6a4ad2682</anchor>
+      <arglist>(bool accept, size_t start, size_t end)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>addNameMethodFilter</name>
+      <anchorfile>class_m_table.html</anchorfile>
+      <anchor>d94b15f46475a8aa51931aecf7b36457</anchor>
+      <arglist>(bool accept, const std::string &amp;className, const std::string &amp;methodName, const std::string &amp;signature)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>acceptMethod</name>
+      <anchorfile>class_m_table.html</anchorfile>
+      <anchor>9eda8f0e4ab15ef6f001c9c08ca616a5</anchor>
+      <arglist>(Method_Handle mh, size_t num) const </arglist>
+    </member>
+    <class kind="class">MTable::BCSizeMethodFilter</class>
+    <class kind="class">MTable::MethodFilter</class>
+    <class kind="class">MTable::MethodInfo</class>
+    <class kind="class">MTable::NameMethodFilter</class>
+    <class kind="class">MTable::NumRangeMethodFilter</class>
+  </compound>
+  <compound kind="class">
+    <name>ProfileCollector</name>
+    <filename>class_profile_collector.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>ProfileCollector</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>fa49775bf43629a426ffe5c3fabdebb7</anchor>
+      <arglist>(EM_PC_Interface *_em, const std::string &amp;_name, EM_PCTYPE _type, JIT_Handle _genJit)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~ProfileCollector</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>9c96c7f305096667f7293556a1f12037</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual TbsEMClient *</type>
+      <name>getTbsEmClient</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>9305352c935c494f2d13042d4aeaac75</anchor>
+      <arglist>() const=0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual MethodProfile *</type>
+      <name>getMethodProfile</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>d5666281c2e984c4a66a20c9e12230c7</anchor>
+      <arglist>(Method_Handle mh) const =0</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>addUseJit</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>7bc2ec03dfe6005119636fccc8786c6a</anchor>
+      <arglist>(JIT_Handle jit)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>classloaderUnloadingCallback</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>b433c338cdf0b9656d520d65c2f0653a</anchor>
+      <arglist>(ClassLoaderHandle h)</arglist>
+    </member>
+    <member kind="variable">
+      <type>EM_PC_Interface *</type>
+      <name>em</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>402aa0ce1784b2c3c4b356bebc44670b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>name</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>a4f8d252d449a0849b1b39de23fb29b8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>EM_PCTYPE</type>
+      <name>type</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>d755a2c2ef8a1af8c56157fcf286a1e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>JIT_Handle</type>
+      <name>genJit</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>90304dc2bc25b48ba5b8c1c5efc83b75</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Jits</type>
+      <name>useJits</name>
+      <anchorfile>class_profile_collector.html</anchorfile>
+      <anchor>9af0c6f09cb8644407b158a4b876a108</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>RChain</name>
+    <filename>class_r_chain.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>RChain</name>
+      <anchorfile>class_r_chain.html</anchorfile>
+      <anchor>655c2198a3def2b21a7725830f82c22a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~RChain</name>
+      <anchorfile>class_r_chain.html</anchorfile>
+      <anchor>6829b0c5fb84b28aebae37c3390944ed</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>acceptMethod</name>
+      <anchorfile>class_r_chain.html</anchorfile>
+      <anchor>5d8e2382a3005d72cdf68eb115dae03b</anchor>
+      <arglist>(Method_Handle mh, size_t n) const </arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>addMethodFilter</name>
+      <anchorfile>class_r_chain.html</anchorfile>
+      <anchor>eee6a1a35121c9e4d9646ec5c175a74f</anchor>
+      <arglist>(const std::string &amp;filterString)</arglist>
+    </member>
+    <member kind="variable">
+      <type>RSteps</type>
+      <name>steps</name>
+      <anchorfile>class_r_chain.html</anchorfile>
+      <anchor>719be4fae3f89999e9c052d3b2766ed0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>MTable</type>
+      <name>methodTable</name>
+      <anchorfile>class_r_chain.html</anchorfile>
+      <anchor>9a3e54978c307d0c3dc06c80573c8339</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>RStep</name>
+    <filename>class_r_step.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>RStep</name>
+      <anchorfile>class_r_step.html</anchorfile>
+      <anchor>d198943a177feef386cb3644c1fd9352</anchor>
+      <arglist>(JIT_Handle _jit, const std::string &amp;_jitName, RChain *_chain, apr_dso_handle_t *_libHandle)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~RStep</name>
+      <anchorfile>class_r_step.html</anchorfile>
+      <anchor>ce38737011dfb1950f05c8c36735c16d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="variable">
+      <type>JIT_Handle</type>
+      <name>jit</name>
+      <anchorfile>class_r_step.html</anchorfile>
+      <anchor>e8332f5b92760867abaaaebfa28aba00</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>jitName</name>
+      <anchorfile>class_r_step.html</anchorfile>
+      <anchor>3cdbb2d9932a282fc121409a44537c23</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>catName</name>
+      <anchorfile>class_r_step.html</anchorfile>
+      <anchor>8c1387e33fc91352a3ed305f09a6cefc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>RChain *</type>
+      <name>chain</name>
+      <anchorfile>class_r_step.html</anchorfile>
+      <anchor>c13474a6d54fdf4275760d797dfb2f69</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>loggingEnabled</name>
+      <anchorfile>class_r_step.html</anchorfile>
+      <anchor>7ecf74e88d86dd2016eefa9baee9cf15</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>apr_dso_handle_t *</type>
+      <name>libHandle</name>
+      <anchorfile>class_r_step.html</anchorfile>
+      <anchor>97f5ff218bf77d638a67fa96c069713c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool(*</type>
+      <name>enable_profiling</name>
+      <anchorfile>class_r_step.html</anchorfile>
+      <anchor>bf848d25a512d7c5371ccbb689ec1e5b</anchor>
+      <arglist>)(JIT_Handle, PC_Handle, EM_JIT_PC_Role)</arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>profile_notification_callback</name>
+      <anchorfile>class_r_step.html</anchorfile>
+      <anchor>c7d2c254c3d9952ebc2f31126a8a0355</anchor>
+      <arglist>)(JIT_Handle, PC_Handle, Method_Handle)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>TbsEMClient</name>
+    <filename>class_tbs_e_m_client.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>TbsEMClient</name>
+      <anchorfile>class_tbs_e_m_client.html</anchorfile>
+      <anchor>278cf6a12d1972804a6a5fc295e4cf40</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~TbsEMClient</name>
+      <anchorfile>class_tbs_e_m_client.html</anchorfile>
+      <anchor>328d139e97199a6692e5cd697fe2893c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual uint32</type>
+      <name>getInitialTimeout</name>
+      <anchorfile>class_tbs_e_m_client.html</anchorfile>
+      <anchor>5cb954581efd00003bf5952c95b7415d</anchor>
+      <arglist>() const=0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual uint32</type>
+      <name>getTimeout</name>
+      <anchorfile>class_tbs_e_m_client.html</anchorfile>
+      <anchor>939f3b2d6257fd3cfc6f83b1da0dd54a</anchor>
+      <arglist>() const=0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual void</type>
+      <name>onTimeout</name>
+      <anchorfile>class_tbs_e_m_client.html</anchorfile>
+      <anchor>e86e79a7bc11b2e67bc86f0bb4de48ac</anchor>
+      <arglist>()=0</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual uint32</type>
+      <name>getNextTick</name>
+      <anchorfile>class_tbs_e_m_client.html</anchorfile>
+      <anchor>919303fb0c677bb15f6e089b27cea2f4</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>setNextTick</name>
+      <anchorfile>class_tbs_e_m_client.html</anchorfile>
+      <anchor>29c66a12f3ffa7d073c8449da58ccda6</anchor>
+      <arglist>(uint32 n)</arglist>
+    </member>
+  </compound>
+</tagfile>

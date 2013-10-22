@@ -1,0 +1,4448 @@
+<?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
+<tagfile>
+  <compound kind="file">
+    <name>collector.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/thread/</path>
+    <filename>collector_8h</filename>
+    <class kind="struct">Collector</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>NORMAL_SIZE_SEGMENT_GRANULARITY_BITS</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>f8ba6934ca220e1ce3077fa01bf82c3d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>NORMAL_SIZE_SEGMENT_GRANULARITY</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>2782ded064c6b71978648a36782f1630</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>NORMAL_SIZE_SEGMENT_NUM</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>9462f0790fc445ed05621b18d096c8b9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SIZE_TO_SEGMENT_INDEX</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>eb012aaf00edab03ebd28c531161cb28</anchor>
+      <arglist>(size)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SEGMENT_INDEX_TO_SIZE</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>161c42848ed440cf1778c0a85db3fff1</anchor>
+      <arglist>(index)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>collector_destruct</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>0d33d35d9365bb3d736274357babb493</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>collector_initialize</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>855718e6da35e83e255e6896b1d73b94</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>collector_reset</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>b4d7f36d7bc90ed984b8374302a48a58</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>collector_execute_task</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>0f71b7a573ea1694319c4c83615a3233</anchor>
+      <arglist>(GC *gc, TaskType task_func, Space *space)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>collector_execute_task_concurrent</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>e95f3dba33ee96d49152bb9cfba857f4</anchor>
+      <arglist>(GC *gc, TaskType task_func, Space *space, unsigned int num_collectors)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>collector_release_weakref_sets</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>1c2748f9fbab822d6bd719a354b658b2</anchor>
+      <arglist>(GC *gc, unsigned int num_collectors)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>collector_restore_obj_info</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>ccacb67e5befb582a692c96cb83e5366</anchor>
+      <arglist>(Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_hook_for_collector_init</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>0320597d9e1cdfbbcbc12696695bae25</anchor>
+      <arglist>(Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>is_collector_finished</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>e2e639b99ba829936d5b5f0014f1ca39</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>wait_collection_finish</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>420375904657239951582a08a7680297</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_collection_result</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>9373156326863f56642fbd9a78a6c803</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_reset_collect_result</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>d012569ca6106240b574a4c58ce34d0a</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>is_collector_local_alloc</name>
+      <anchorfile>collector_8h.html</anchorfile>
+      <anchor>af106ee9f571ccba9c784173dc9d9df9</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>fspace.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/trace_forward/</path>
+    <filename>fspace_8h</filename>
+    <member kind="typedef">
+      <type>Blocked_Space</type>
+      <name>Fspace</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>0a1ee2012b5396ab544213aaa82e0ca4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>Fspace *</type>
+      <name>fspace_initialize</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>a8acca31c6ecb0c437c22f9d39d58178</anchor>
+      <arglist>(GC *gc, void *start, POINTER_SIZE_INT fspace_size, POINTER_SIZE_INT commit_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>fspace_destruct</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>47dd94dda4ac7af98fa047ee1fc715de</anchor>
+      <arglist>(Fspace *fspace)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>fspace_free_space_size</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>ada687dab4326e21f0f3f597bd8a22c7</anchor>
+      <arglist>(Fspace *nos)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>fspace_used_space_size</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>fb7474ee6b62086aa2c2020504c83995</anchor>
+      <arglist>(Fspace *nos)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>fspace_heap_start_adjust</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>00d7627717d826df889414684d77bc87</anchor>
+      <arglist>(Fspace *fspace, void *new_heap_start, POINTER_SIZE_INT new_heap_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>fspace_alloc</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>0001586a516a783d2296af79ade39d49</anchor>
+      <arglist>(unsigned size, Allocator *allocator)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>fspace_alloc_block</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>9b09dc8c7ae54e2ddc6efc01705983f0</anchor>
+      <arglist>(Fspace *fspace, Allocator *allocator)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>fspace_reset_after_collection</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>77bba6054aa0eaad492b4858bc37c116</anchor>
+      <arglist>(Fspace *fspace)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gen_forward_pool</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>b88204bf1ce14d330c2c1deb850d3f52</anchor>
+      <arglist>(Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gen_forward_steal</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>4c7d59feb07d91f58eaa08d687505ab5</anchor>
+      <arglist>(Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>nongen_slide_copy</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>05e397c2c4d9bc74506453aa533969cc</anchor>
+      <arglist>(Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>fspace_collection</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>4b3b8eb2156565958e4e1d77bd86ef67</anchor>
+      <arglist>(Fspace *fspace)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>forward_first_half</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>fb4837f8dd68f8e29f0056fe45d5dca6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>object_forwarding_boundary</name>
+      <anchorfile>fspace_8h.html</anchorfile>
+      <anchor>ab0aecf5ec8fbd8b2ed5cd9bdecfdcca</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>gc.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/include/open/</path>
+    <filename>gc_8h</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_OBJECT_ALIGNMENT</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>2829c549c88f82d3d2eb0423e86d414c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_force_gc</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>39127f4fd57eef7e8898a1ddefa07098</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int64</type>
+      <name>gc_total_memory</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>7bcb1b938d1ab523ca0638db25526bd5</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int64</type>
+      <name>gc_max_memory</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>f6fdd3e193b8314444e6707f17043015</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int64</type>
+      <name>gc_free_memory</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>012dae57769b691038a0ce341675101d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_is_object_pinned</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>99d618103fc0cfc461905c5a01b36a7f</anchor>
+      <arglist>(Managed_Object_Handle obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_class_prepared</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>76617bcedc9e24a83e47731bae2f1c30</anchor>
+      <arglist>(Class_Handle ch, VTable_Handle vth)</arglist>
+    </member>
+    <member kind="function">
+      <type>int64</type>
+      <name>gc_get_collection_count</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>cdd1ae174432577e9446b89c23d9acca</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int64</type>
+      <name>gc_get_collection_time</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>fbbe2d49b86baa0778c09eefc420f926</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="typedef">
+      <type>void *</type>
+      <name>Thread_Handle</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>4527ed2193d8094d3b5a108abef2ba32</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_thread_init</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>2a40bfac9c162aa2a5c3e20f159fc36b</anchor>
+      <arglist>(void *gc_information)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_thread_kill</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>d45e22b73f5a30732556861371759f8c</anchor>
+      <arglist>(void *gc_information)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>vm_iterate_threads</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>c0c3197301e8aa22c395e71bc002b95e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_iterate_thread</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>102b8aa8e3719e76f39aebc111296ef4</anchor>
+      <arglist>(Thread_Handle thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>vm_suspend_thread</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>8ae27ead06e40ffe09ba4ca0939c466e</anchor>
+      <arglist>(Thread_Handle thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_thread_suspended</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>78522721ab44728df9d8449c14e8ba10</anchor>
+      <arglist>(Thread_Handle thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>vm_enumerate_thread_root_set</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>a50c9904148f0f1786bcee6caf5c6aca</anchor>
+      <arglist>(Thread_Handle thread)</arglist>
+    </member>
+    <member kind="function">
+      <type>VMEXPORT void</type>
+      <name>vm_enumerate_global_root_set</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>dc32d8ca99b9c801d2fd3eebbef8b3d0</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GCExport</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>81fcc009f47408a44372a8392507077d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BITS_PER_BYTE</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>369ecd38b3ab077fc235f892354bb46f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>NEXT_TO_HIGH_BIT_SET_MASK</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>793871c3e34e62c041444eec143e3842</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>NEXT_TO_HIGH_BIT_CLEAR_MASK</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>711865edab513e1984fc6f5010e581db</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned int</type>
+      <name>gc_time_since_last_gc</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>0e53a703c7a36ea4dedd2f6cfe6159ce</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>gc_heap_base_address</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>b0860bb3e4ef0696ef42f686ed2f2ac9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>gc_heap_ceiling_address</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>744cc230ff757e6f218ba2e622a7f2c3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>gc_init</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>2219b56191a9f64d39946d12e4fcba1a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_test_safepoint</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>c19b42050dff047f1d0f0f7a149d755c</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_supports_frontier_allocation</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>1315d477e0a6ef29636c415025fd22da</anchor>
+      <arglist>(unsigned *offset_of_current, unsigned *offset_of_limit)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_vm_initialized</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>7c79e8effeb09d4850a4f9713836b564</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_wrapup</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>5ff092626dee2bae894be76fac81f830</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_add_root_set_entry</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>bbf60a495af4409510234b350e45bd63</anchor>
+      <arglist>(Managed_Object_Handle *ref, Boolean is_pinned)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_add_compressed_root_set_entry</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>d70a51a28e456dbe215451b2336a40da</anchor>
+      <arglist>(uint32 *ref, Boolean is_pinned)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_add_weak_root_set_entry</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>5f0dc3bc779ca12d08de0180aeb1b0b2</anchor>
+      <arglist>(Managed_Object_Handle *slot, Boolean is_pinned, Boolean is_short_weak)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_add_root_set_entry_managed_pointer</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>8dc020cd9f69ca688cbc2fc8c214b1c4</anchor>
+      <arglist>(void **slot, Boolean is_pinned)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_add_root_set_entry_interior_pointer</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>5d668f3e91361c77c2e5fb5f2d8b0931</anchor>
+      <arglist>(void **slot, int offset, Boolean is_pinned)</arglist>
+    </member>
+    <member kind="function">
+      <type>Managed_Object_Handle</type>
+      <name>gc_alloc_fast</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>4b4fe81dbdc77121fad2708f83ad3caf</anchor>
+      <arglist>(unsigned size, Allocation_Handle type, void *thread_pointer)</arglist>
+    </member>
+    <member kind="function">
+      <type>Managed_Object_Handle</type>
+      <name>gc_alloc</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>35a75c768f276016f4fc5ac0279c5765</anchor>
+      <arglist>(unsigned size, Allocation_Handle type, void *thread_pointer)</arglist>
+    </member>
+    <member kind="function">
+      <type>Managed_Object_Handle</type>
+      <name>gc_pinned_malloc_noclass</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>b70b661fc322c740f6d80ec692ef5210</anchor>
+      <arglist>(unsigned size)</arglist>
+    </member>
+    <member kind="function">
+      <type>Managed_Object_Handle</type>
+      <name>gc_alloc_pinned</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>d6f110a15dd4ed4cf7b81d0100c1cefa</anchor>
+      <arglist>(unsigned size, Allocation_Handle type, void *thread_pointer)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_requires_barriers</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>cd925b0759a881359bc139b9403a22de</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_supports_compressed_references</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>926b00265b084669bae8725c69f9243d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_write_barrier</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>587b758904e50f4cddb3cac9b055fcc9</anchor>
+      <arglist>(Managed_Object_Handle p_base_of_obj_with_slot)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_heap_wrote_object</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>af790401ccb8e6885578892182c958e5</anchor>
+      <arglist>(Managed_Object_Handle p_base_of_object_just_written)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_heap_write_global_slot</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>7d1c590191db4b3ed837a152e721665c</anchor>
+      <arglist>(Managed_Object_Handle *p_slot, Managed_Object_Handle value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_heap_write_global_slot_compressed</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>49d8de1920a3f990e8daa819a6c259eb</anchor>
+      <arglist>(uint32 *p_slot, Managed_Object_Handle value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_heap_write_ref</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>e8422d2c3b6d4ed781a7c0141bb2d183</anchor>
+      <arglist>(Managed_Object_Handle p_base_of_object_with_slot, unsigned offset, Managed_Object_Handle value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_heap_slot_write_ref</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>7ec5b262059f83483fd994ae98c8fdf0</anchor>
+      <arglist>(Managed_Object_Handle p_base_of_object_with_slot, Managed_Object_Handle *p_slot, Managed_Object_Handle value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_heap_slot_write_ref_compressed</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>8f13b25d23f673c350f4ec2dd572763a</anchor>
+      <arglist>(Managed_Object_Handle p_base_of_object_with_slot, uint32 *p_slot, Managed_Object_Handle value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_pin_object</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>2ef343f531ca2cacb28c328b15cf2b35</anchor>
+      <arglist>(Managed_Object_Handle *p_object)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_unpin_object</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>283cd2a6e4aec7a0318ef2a3de3df1a5</anchor>
+      <arglist>(Managed_Object_Handle *p_object)</arglist>
+    </member>
+    <member kind="function">
+      <type>int32</type>
+      <name>gc_get_hashcode</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>cd4f3b3443c91702a8eb799fbd1da0c5</anchor>
+      <arglist>(Managed_Object_Handle object)</arglist>
+    </member>
+    <member kind="function">
+      <type>Managed_Object_Handle</type>
+      <name>gc_get_next_live_object</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>c46a0690d24ad5220a48bad40c0a0b45</anchor>
+      <arglist>(void *iterator)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_iterate_heap</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>39769b015d1fdf9f4c5fd3794fff2ffb</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_finalize_on_exit</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>45feebf234662e53fb1e603a4150e98d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_set_mutator_block_flag</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>705f0fd77ba651caf40fc6e760b67cbf</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_clear_mutator_block_flag</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>c340c4b34816da375f5908caeaf43999</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_supports_class_unloading</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>131d20043682252d19b81ed0b820b918</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void JNICALL</type>
+      <name>Java_java_lang_ref_Reference_enqueue_reference</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>109e746eef78fb57ad759e83f3f33c10</anchor>
+      <arglist>(JNIEnv *the_env, jobject p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>jobject JNICALL</type>
+      <name>Java_java_lang_ref_Reference_get</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>73a3194f747ba5146fb79dad163e765d</anchor>
+      <arglist>(JNIEnv *the_env, jobject p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void JNICALL</type>
+      <name>Java_java_lang_ref_Reference_register_phantom_ref</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>c70a9e906754c45cf5869995ecb48b0f</anchor>
+      <arglist>(JNIEnv *the_env, jobject p_obj, jobject referent)</arglist>
+    </member>
+    <member kind="function">
+      <type>void JNICALL</type>
+      <name>Java_java_lang_ref_Reference_register_soft_ref</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>b4ca8f0ecdeb5fca563fc8decfd81903</anchor>
+      <arglist>(JNIEnv *the_env, jobject p_obj, jobject referent)</arglist>
+    </member>
+    <member kind="function">
+      <type>void JNICALL</type>
+      <name>Java_java_lang_ref_Reference_register_weak_ref</name>
+      <anchorfile>gc_8h.html</anchorfile>
+      <anchor>e85e9c734ee30f551bf6b78958d1c25f</anchor>
+      <arglist>(JNIEnv *the_env, jobject p_obj, jobject referent)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>gc_block.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/common/</path>
+    <filename>gc__block_8h</filename>
+    <class kind="struct">Block_Header</class>
+    <class kind="union">Block</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_SHIFT_COUNT</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>a947716bf37197c5c45767fe3dc38f86</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_SIZE_BYTES</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>52bcef1a16c004cf2b6fe98be160046b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_HEADER_VARS_SIZE_BYTES</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>c68ef1660493829b511a984e320702a3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SECTOR_SIZE_SHIFT_COUNT</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>6fde75e3b8a2a492e57ad7a83109e24b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SECTOR_SIZE_BYTES</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>cefb9aa0bfa178d2e7b367d28a9a99e8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>SECTOR_SIZE_WORDS</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>d9fa494e2a3e165ec5923db3eea11e73</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OFFSET_TABLE_COMPUTE_DIVISOR</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>a6ed27b21cf55c54cfd820ad75342bf4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OFFSET_TABLE_COMPUTED_SIZE_BYTE</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>310c6614cb32d38be473d6211109f486</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OFFSET_TABLE_SIZE_BYTES</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>016a950d3d52bfefa764dbbea4891eee</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OFFSET_TABLE_SIZE_WORDS</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>8a73dac3011e33e0583949713c647bb9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OBJECT_INDEX_TO_OFFSET_TABLE</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>e3650b6cb87c2c6e05c116b627673a65</anchor>
+      <arglist>(p_obj)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_HEADER_SIZE_BYTES</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>f5caf971ea04a15889cd32b9c217c8a2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_BODY_SIZE_BYTES</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>0d7b1a144ab472a60b4e1e424c3c3c41</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_BODY</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>04feeed6254bf740940d90294649c3ba</anchor>
+      <arglist>(block)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_END</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>538cd63baab086b90ff988fad13aa928</anchor>
+      <arglist>(block)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_LOW_MASK</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>c9055c6a8cdf2d96c34b83dcd75f348b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_HIGH_MASK</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>86841516493e1cc4d16e683caba0dcec</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_HEADER</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>70dd3e154bdc9956ce8ad7c283f45d63</anchor>
+      <arglist>(addr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_INDEX</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>dbb1adefbd3b83805a65a139c87e0a25</anchor>
+      <arglist>(addr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_BLOCK_INDEX_FROM</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>b24a664390a2d3adb4156bc9011276c4</anchor>
+      <arglist>(heap_start, addr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ADDRESS_OFFSET_TO_BLOCK_HEADER</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>3037749fed07594c6d40b781d91bedcb</anchor>
+      <arglist>(addr)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ADDRESS_OFFSET_IN_BLOCK_BODY</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>8b20f84c3e232e8cad8eaac4de258780</anchor>
+      <arglist>(addr)</arglist>
+    </member>
+    <member kind="enumeration">
+      <name>Block_Status</name>
+      <anchor>99ee28e3f9d63d21b5e3b32a98e40176</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>BLOCK_NIL</name>
+      <anchor>99ee28e3f9d63d21b5e3b32a98e40176792a6a056d7da53b69ea17246d1f9942</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>BLOCK_FREE</name>
+      <anchor>99ee28e3f9d63d21b5e3b32a98e4017666f7c4b791a21b63f042cba72ff82b68</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>BLOCK_IN_USE</name>
+      <anchor>99ee28e3f9d63d21b5e3b32a98e40176d965e22b01ec72fe19da53be2778f99c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>BLOCK_USED</name>
+      <anchor>99ee28e3f9d63d21b5e3b32a98e4017684e947f4c6715d01606438e2e8471c38</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>BLOCK_IN_COMPACT</name>
+      <anchor>99ee28e3f9d63d21b5e3b32a98e40176b02cd95eb883161fe593de6eec518289</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>BLOCK_COMPACTED</name>
+      <anchor>99ee28e3f9d63d21b5e3b32a98e401762681c8200d8da54b1e5a307810ac40b7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>BLOCK_TARGET</name>
+      <anchor>99ee28e3f9d63d21b5e3b32a98e401763090fe36e328db79bd99081af988632b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>BLOCK_DEST</name>
+      <anchor>99ee28e3f9d63d21b5e3b32a98e40176de0e705f31c087fcdc05db70da76abe7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>block_init</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>98bbdc26e7a3ad60f895721b00aa85d4</anchor>
+      <arglist>(Block_Header *block)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>block_reset</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>265ac90d81f9b80fafbdef08632429fc</anchor>
+      <arglist>(Block_Header *block)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>block_destruct</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>bf5fe0716b75425ea53081f111e0dc24</anchor>
+      <arglist>(Block_Header *block)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>obj_end</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>9c2995c724eadee685bd9b9c777f5aed</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>obj_set_prefetched_next_pointer</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>5469fae8eef39a9da62f239406a48426</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj, Partial_Reveal_Object *raw_prefetched_next)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>obj_get_prefetched_next_pointer</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>6082a49c06683a7f8b324fb86bd88cbe</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>next_marked_obj_in_block</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>a7cf8fe818d5226b8952007bebf81d6d</anchor>
+      <arglist>(Partial_Reveal_Object *cur_obj, Partial_Reveal_Object *block_end)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>obj_get_fw_in_table</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>b0c69ee0fae6f9f62729f47e7b4e197e</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>block_clear_table</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>bbf491355568e8f9b7ae0507b6f9d61a</anchor>
+      <arglist>(Block_Header *block)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>block_get_first_marked_object</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>71d932ecf6901ebe5908086a9e80d91b</anchor>
+      <arglist>(Block_Header *block, void **start_pos)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>block_get_next_marked_object</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>1eed9b342de1a8c43f89b64a1713f7fd</anchor>
+      <arglist>(Block_Header *block, void **start_pos)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>block_get_first_marked_obj_prefetch_next</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>b55f42d947c88fd9f4539bc207955012</anchor>
+      <arglist>(Block_Header *block, void **start_pos)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>block_get_first_marked_obj_after_prefetch</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>aa064314954616f7c4fd8bf6793f3503</anchor>
+      <arglist>(Block_Header *block, void **start_pos)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>block_get_next_marked_obj_prefetch_next</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>d8c20ad555cb8f962ddc9f0b2e9e6bb3</anchor>
+      <arglist>(Block_Header *block, void **start_pos)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>block_get_next_marked_obj_after_prefetch</name>
+      <anchorfile>gc__block_8h.html</anchorfile>
+      <anchor>9cb7313b3589fe495a7333d5aa1e5e77</anchor>
+      <arglist>(Block_Header *block, void **start_pos)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>gc_common.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/common/</path>
+    <filename>gc__common_8h</filename>
+    <class kind="struct">GC</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_GEN_STATS</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>b6505a59dd19a07a0c0840ce9e714e1d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>null</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>c97b8ee753e4405397a42ad5799b0f9e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>KB</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>1841fd1a462d245d8c73dce55e2f45da</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MB</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>a6b38d492364d98453284934ed7caee9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>verbose_print_size</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>99191f78b612da7b0515fdd629dd1293</anchor>
+      <arglist>(size)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BITS_PER_BYTE</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>369ecd38b3ab077fc235f892354bb46f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BYTES_PER_WORD</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>30e2dbd8894c1d74113bb0c6695bcaec</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BITS_PER_WORD</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>f859a98f57110e5243e8f0541319e43b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MASK_OF_BYTES_PER_WORD</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>9fbc779838f2ad24c949fb98d689fa87</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BIT_SHIFT_TO_BITS_PER_BYTE</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>5c9b028338a3aeff6a0563a3c60f673c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BIT_SHIFT_TO_BYTES_PER_WORD</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>96f5cb2dda19b15cd763ccadae25a025</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BIT_SHIFT_TO_BITS_PER_WORD</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>c723e6320602e09edc421755ab8106b9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BIT_SHIFT_TO_KILO</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>3b0528dd9c7bbfbb5ae47b5abe86a28d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BIT_MASK_TO_BITS_PER_WORD</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>fd3fa9504883bc9963eaa0a0e3527585</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BITS_OF_POINTER_SIZE_INT</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>88e5442f795d4c65f1321b151e06c193</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BYTES_OF_POINTER_SIZE_INT</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>fb61b267bb741335efa5dffa1248358f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>BIT_SHIFT_TO_BYTES_OF_POINTER_SIZE_INT</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>ca07dae2cf22500708e5c8d7c69512ad</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_OBJ_SIZE_THRESHOLD</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>bc566c4b8567dbdca7c4f1386008b014</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>USE_32BITS_HASHCODE</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>5065e388d016f0549600b6c76d3c3584</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>REF</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>a3b633c1a963f8868f44e8fc27904649</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void(*)</type>
+      <name>TaskType</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>17d004f79b90c28b7e5186bd663e4527</anchor>
+      <arglist>(void *)</arglist>
+    </member>
+    <member kind="enumeration">
+      <name>Collection_Algorithm</name>
+      <anchor>eaf3c231cd135e1e15f9b53da3bf3ee8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>COLLECTION_ALGOR_NIL</name>
+      <anchor>eaf3c231cd135e1e15f9b53da3bf3ee88313aa448a662b2ece3fc466bdea943c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MINOR_GEN_FORWARD_POOL</name>
+      <anchor>eaf3c231cd135e1e15f9b53da3bf3ee80bbf2632a05426f4d79a1299015dc19b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MINOR_NONGEN_FORWARD_POOL</name>
+      <anchor>eaf3c231cd135e1e15f9b53da3bf3ee8bff0d338bb1ef4a8a34460529c5dc4c7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MINOR_GEN_SEMISPACE_POOL</name>
+      <anchor>eaf3c231cd135e1e15f9b53da3bf3ee8401bd8615ccb065aa68327e08fc40abf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MINOR_NONGEN_SEMISPACE_POOL</name>
+      <anchor>eaf3c231cd135e1e15f9b53da3bf3ee8546c8151f096b9cbae3598b280e26339</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MAJOR_COMPACT_SLIDE</name>
+      <anchor>eaf3c231cd135e1e15f9b53da3bf3ee8ceb40f06c810f00be8a7304454009aac</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MAJOR_COMPACT_MOVE</name>
+      <anchor>eaf3c231cd135e1e15f9b53da3bf3ee8ffa9076042ff755a001b6aaf2223ca2c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MAJOR_MARK_SWEEP</name>
+      <anchor>eaf3c231cd135e1e15f9b53da3bf3ee825f506e9996d64fcf24a45f073bff76d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>Collection_Kind</name>
+      <anchor>36ac488071536c0b19b81951f79cef68</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>GEN_GC</name>
+      <anchor>36ac488071536c0b19b81951f79cef6808b5d643d78e9170a98a4f1928829f7c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MARK_SWEEP_GC</name>
+      <anchor>36ac488071536c0b19b81951f79cef684471ad02625aedd2541d18f049a9f064</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MOVE_COMPACT_NO_LOS</name>
+      <anchor>36ac488071536c0b19b81951f79cef689382ce0be2a9e663dcb6138e427ceebf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>GC_BASIC_KIND_MASK</name>
+      <anchor>36ac488071536c0b19b81951f79cef68b4c4f17b3813475d8188d577ec4ceecd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MINOR_COLLECTION</name>
+      <anchor>36ac488071536c0b19b81951f79cef68a242482dbd161ac0b325360732176392</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MAJOR_COLLECTION</name>
+      <anchor>36ac488071536c0b19b81951f79cef680b6ce92e8b6028b58616486a4bb044bd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>NORMAL_MAJOR_COLLECTION</name>
+      <anchor>36ac488071536c0b19b81951f79cef68dee9657ec96f7b237bb93a6cf9745707</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>FALLBACK_COLLECTION</name>
+      <anchor>36ac488071536c0b19b81951f79cef68540d2037e9f1e07e5292c694d7b5bc8a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EXTEND_COLLECTION</name>
+      <anchor>36ac488071536c0b19b81951f79cef681bfc30082198cba46da0c260aab88be8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MS_COLLECTION</name>
+      <anchor>36ac488071536c0b19b81951f79cef682ed0167a822cb5712d22ff57d553e56d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MS_COMPACT_COLLECTION</name>
+      <anchor>36ac488071536c0b19b81951f79cef68ce379f2c832a4263931c38bd77b28d3c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MC_COLLECTION</name>
+      <anchor>36ac488071536c0b19b81951f79cef68a7c5655d6803897a542dbac5d6609833</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>GC_CAUSE</name>
+      <anchor>3250691e11db677f03fa5c72e5d409a5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>GC_CAUSE_NIL</name>
+      <anchor>3250691e11db677f03fa5c72e5d409a5298d46b67fb5b7fca0c0cf46a994bc69</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>GC_CAUSE_NOS_IS_FULL</name>
+      <anchor>3250691e11db677f03fa5c72e5d409a54fb8c66eaee1f5a93ecd8177df7194d2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>GC_CAUSE_LOS_IS_FULL</name>
+      <anchor>3250691e11db677f03fa5c72e5d409a5991694191b3a198baf15e300f4b82ee5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>GC_CAUSE_COS_IS_FULL</name>
+      <anchor>3250691e11db677f03fa5c72e5d409a5738a8e07d19b57c5e294a969572da332</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>GC_CAUSE_WSPACE_IS_FULL</name>
+      <anchor>3250691e11db677f03fa5c72e5d409a55c3490c6e647b17b7fa8c6e8b9361aca</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>GC_CAUSE_RUNTIME_FORCE_GC</name>
+      <anchor>3250691e11db677f03fa5c72e5d409a56bea8b5dad64214739b3e835ac198a54</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Partial_Reveal_Object *</type>
+      <name>obj_ptr_to_ref</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>499ee5d43878304788dd331c3a856fc0</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Partial_Reveal_Object *</type>
+      <name>ref_to_obj_ptr</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>feebd6ad01f847342d947dd1e55360e6</anchor>
+      <arglist>(Partial_Reveal_Object *ref)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Partial_Reveal_Object *</type>
+      <name>read_slot</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>02f25e504a68b430d5f485fc47fd7dd6</anchor>
+      <arglist>(Partial_Reveal_Object **p_slot)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE void</type>
+      <name>write_slot</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>573d4c5696148927a879cc69d8928bc8</anchor>
+      <arglist>(Partial_Reveal_Object **p_slot, Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>round_up_to_size</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>ede2602d439fdd8ccd1693b44bbe2cff</anchor>
+      <arglist>(POINTER_SIZE_INT size, int block_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>round_down_to_size</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>17c9c83ae9b32b83710a0ed9246e6b6d</anchor>
+      <arglist>(POINTER_SIZE_INT size, int block_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>int *</type>
+      <name>object_ref_iterator_init</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>bab06cf019c68e82b7f6fc77965e8525</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Partial_Reveal_Object **</type>
+      <name>object_ref_iterator_get</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>d5aee5719a09dec9a3ec5a611f633ed7</anchor>
+      <arglist>(int *iterator, Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>int *</type>
+      <name>object_ref_iterator_next</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>c6618a9305af2c36dba034f521d9fe27</anchor>
+      <arglist>(int *iterator)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_is_marked_in_vt</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>cf0ff50cea41ea35af276f095ef2f42c</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_mark_in_vt</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>3a2a2ae4740019519a7b3f70f168faed</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>obj_unmark_in_vt</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>f543552ea40eb63ef434cf5f4b6923a0</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>obj_clear_dual_bits_in_vt</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>bf297ee88e780a80d5305853663907a1</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_is_marked_or_fw_in_oi</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>35e988d21c243967101b20e82621ea3f</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>obj_clear_dual_bits_in_oi</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>21ad9cd92fcbc16242eec203700e6be2</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Partial_Reveal_Object *</type>
+      <name>obj_get_fw_in_oi</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>25e1fd8857f45c2d15e88417e5372a1a</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_is_fw_in_oi</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>337368ceb0587fec7c14760a7b55c86d</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>obj_set_fw_in_oi</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>d803836344b28c36a082ba39201854ab</anchor>
+      <arglist>(Partial_Reveal_Object *obj, void *dest)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_is_marked_in_oi</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>0ae9b9edf0fe020438300b20d7341b27</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Boolean</type>
+      <name>obj_mark_in_oi</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>eaa620b71da1f777e76944ff28ddcbc8</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>obj_unmark_in_oi</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>f09b882a9ed0977d2240b52e2f4961bb</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_is_dirty_in_oi</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>98f35fd7ec50bc0e0a915ec830f41d85</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_dirty_in_oi</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>8120467a2366a297b90341550d42e469</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>is_obj_alloced_live</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>e6d707265f069254f751fe7742516446</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_enable_alloc_obj_live</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>f4fe73225fb51d0817d7cb84677d8a80</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_disable_alloc_obj_live</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>fbdb6eae80900178190ba764186a62cc</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_is_survivor</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>74cfce09572db9d52a4c3a4faf01245e</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>obj_set_age_bit</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>f3e6c440c28c87042f8671a903371c64</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>obj_clear_age_bit</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>94c6e1d8231baa2ebabffdfa40586af3</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_is_remembered</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>eb49b2c5ea9dcba590ba838869e2112a</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>obj_set_rem_bit</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>68504be6e836f85819fdec851b7c732b</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>obj_clear_rem_bit</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>676d89459b92020365ac6ff565d75917</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mark_scan_pool</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>87b5f6872d319dabaec9137f78dedb6c</anchor>
+      <arglist>(Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mark_scan_heap</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>1310f83ec4bf685e13292e65de46a968</anchor>
+      <arglist>(Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>gc_heap_base</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>d305706af0696821f13c7e97fff64c5c</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>gc_heap_ceiling</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>e9a114b2c90ba296d9eed7f961270bed</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>address_belongs_to_gc_heap</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>4523bdb91287b4383ab1bc402b6a9518</anchor>
+      <arglist>(void *addr, GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_belongs_to_gc_heap</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>c2e6b585860500be0700f4a5f5c0bdac</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_match_kind</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>0bea11610233b5c80b7273fd8e06501c</anchor>
+      <arglist>(GC *gc, unsigned int kind)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_match_either_kind</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>17f005f612ee5e84b35699a3e9ff1041</anchor>
+      <arglist>(GC *gc, unsigned int multi_kinds)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned int</type>
+      <name>gc_get_processor_num</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>3f03f86bd8d32924ea77ad0a8b8cd4ac</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_parse_options</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>ee45b3b89dd472af020b2507226d497f</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_reclaim_heap</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>c2709f9d85bbe7ce7b95d31a7430fbbf</anchor>
+      <arglist>(GC *gc, unsigned int gc_cause)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_prepare_rootset</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>9bf497a5b2ef96a58c1788313d272fb7</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>int64</type>
+      <name>get_collection_end_time</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>4d8a221542cdfabe36aae691f6b87ecf</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_init_collector_alloc</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>8cc706e4c39f5750d2c62d700fd7a022</anchor>
+      <arglist>(GC *gc, Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_reset_collector_alloc</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>8b149db56fc6a7359305dcdbc9ce1f56</anchor>
+      <arglist>(GC *gc, Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_destruct_collector_alloc</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>1f72a1f8172eed764b2e58328647fc61</anchor>
+      <arglist>(GC *gc, Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Boolean</type>
+      <name>addr_belongs_to_nos</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>59e61a087d117d76614b186ae87d8014</anchor>
+      <arglist>(void *addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Boolean</type>
+      <name>obj_belongs_to_nos</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>d2c740653e601fb33bd597a175b3a751</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>obj_is_moved</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>12e5365e6484ca72aa437fb9c617b043</anchor>
+      <arglist>(Partial_Reveal_Object *p_obj)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>IS_FALLBACK_COMPACTION</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>dbd7a5fd2fdd069f41674feb5d99986b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>HEAP_NULL</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>e08cc9be00380f84aad310fde82486f8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>volatile Boolean</type>
+      <name>obj_alloced_live</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>14aa7e12bd3c9419711bf75f963e0b6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>NOS_PARTIAL_FORWARD</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>e3d9688ac46b39e60fa9276b0be9d5c4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>nos_boundary</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>02beafdacf3d7bcc84fdc34d5394a70c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>los_boundary</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>3e4aca7460d9913b048c7a4bf6fd7b1a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean *</type>
+      <name>p_global_lspace_move_obj</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>3c15fbf4a2cfc7e50ab98914d0a2dd98</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>TRACE_JLC_VIA_VTABLE</name>
+      <anchorfile>gc__common_8h.html</anchorfile>
+      <anchor>a753b7f217e33d1a614f4075308a77df</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>gc_for_class.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/common/</path>
+    <filename>gc__for__class_8h</filename>
+    <class kind="struct">GC_VTable_Info</class>
+    <class kind="struct">Partial_Reveal_VTable</class>
+    <class kind="struct">Partial_Reveal_Object</class>
+    <class kind="struct">Partial_Reveal_Array</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>CONST_MARK_BIT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>81579810e824e619e37b9acd0fe03e56</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>CLEAR_VT_MARK</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>50822260f96bd45ebe377f12ebe362d0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DUAL_MARKBITS</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>363b732a5bdcb71038bb648b1626ea41</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>DUAL_MARKBITS_MASK</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>4542363facfd4055512ddee8b1d93fed</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>MARK_BIT_FLIPPING</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>ab5b6d4a092dfbe6aea3d8084add2504</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FLIP_MARK_BIT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>07cc0ac2b1e724b2d2d98a26e2417c43</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FLIP_FORWARD_BIT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>6d07411c9c38057511e09b6f6250d2f2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FORWARD_BIT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>4cf58f127cf8e83ad8812c79314d1dc4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OBJ_DIRTY_BIT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>fd88502744f7df18bf98c0b784a6ec6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OBJ_AGE_BIT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>0488f8ab511dcf02118fc82f73d9a8cf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>OBJ_REM_BIT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>63b8e78db941245cb1f4ff0039dcc95a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>0a91d9ecd2a00d55ae95e416ee160ee7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VT_SIZE_INT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>b00242a90ed2bde2a773d4b960a50cd6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_CLASS_FLAG_FINALIZER</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>3dc8bc7ebfb03b5f643b4953006ea0ed</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_CLASS_FLAG_ARRAY</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>650f3791d90292d2eacc515c96017872</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_CLASS_FLAG_REFS</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>8f75dc85b85e2679e71ccb4bd57c65ec</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_CLASS_IS_REF_ARRAY</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>5a4db7458afd328b1317507ae6932f6c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_CLASS_FLAGS_MASK</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>746a5a52142a8c07dfe54b3344541367</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GC_OBJECT_ALIGN_MASK</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>f4853552317a6c2ada67beca585b061f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GCVT_ALIGNMENT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>91fd53efe031b05bc5d177bddcb7b693</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>GCVT_ALIGN_MASK</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>e629d63540b1f87486dc50b6cb58f51e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>CL_PROP_REFERENCE_TYPE_SHIFT</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>31bca112db47206cf0358016088d48d7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>CL_PROP_REFERENCE_TYPE_MASK</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>ea335f90c9c8fe0ef98096dbf3807d6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>void *</type>
+      <name>Thread_Handle</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>4527ed2193d8094d3b5a108abef2ba32</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>POINTER_SIZE_INT</type>
+      <name>Obj_Info_Type</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>544078a30df4f9efafb578bc55c242e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>VT_Mark_Status</name>
+      <anchor>3bc5df4556e9fa09706d0f55d8cc9018</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VT_UNMARKED</name>
+      <anchor>3bc5df4556e9fa09706d0f55d8cc901819b00d9fc51499dde80673ad85cbcd8f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VT_MARKED</name>
+      <anchor>3bc5df4556e9fa09706d0f55d8cc9018a95c931b0ad196cd1dc90a23a01e5b17</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VT_FALLBACK_MARKED</name>
+      <anchor>3bc5df4556e9fa09706d0f55d8cc9018900cc932cf6d1385694ac8195180f176</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Partial_Reveal_VTable *</type>
+      <name>encode_vt</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>f68ccc495de78e3a6b9d30254e8ae1d8</anchor>
+      <arglist>(Partial_Reveal_VTable *vt)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Partial_Reveal_VTable *</type>
+      <name>decode_vt</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>c76601e739c57d4e1c3c1308051213bf</anchor>
+      <arglist>(Partial_Reveal_VTable *vt)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Obj_Info_Type</type>
+      <name>get_obj_info_raw</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>56d55fa9733d975043cb5fa7d9cdeb01</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Obj_Info_Type</type>
+      <name>get_obj_info</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>8b7080a08e9fb166303db97f16646b71</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE void</type>
+      <name>set_obj_info</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>005efb35c52a1e57fb1aeb43fa781bae</anchor>
+      <arglist>(Partial_Reveal_Object *obj, Obj_Info_Type new_obj_info)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Obj_Info_Type *</type>
+      <name>get_obj_info_addr</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>9e1b8b0be5eebe347d471575e11325d3</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Partial_Reveal_VTable *</type>
+      <name>obj_get_vt_raw</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>05df1e39efa88ef9d5a11c12f40d995d</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Partial_Reveal_VTable **</type>
+      <name>obj_get_vt_addr</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>ec47680651d8d0c8a32f59cfb62bc6f4</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Partial_Reveal_VTable *</type>
+      <name>obj_get_vt</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>366f4d25b5ea023c1f2d6eb5f7ec3df3</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE void</type>
+      <name>obj_set_vt</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>e8e6386b360923516886913b8f3cddd9</anchor>
+      <arglist>(Partial_Reveal_Object *obj, Partial_Reveal_VTable *ah)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE GC_VTable_Info *</type>
+      <name>vtable_get_gcvt_raw</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>7542085b44f2d3500fa23b026628ab80</anchor>
+      <arglist>(Partial_Reveal_VTable *vt)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE GC_VTable_Info *</type>
+      <name>vtable_get_gcvt</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>b13161a45d3cd3f9ec29b001d54a62fb</anchor>
+      <arglist>(Partial_Reveal_VTable *vt)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE void</type>
+      <name>vtable_set_gcvt</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>9e19b01f8dbff72d60ead01d05ae5ac8</anchor>
+      <arglist>(Partial_Reveal_VTable *vt, GC_VTable_Info *new_gcvt)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE GC_VTable_Info *</type>
+      <name>obj_get_gcvt_raw</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>0803a676124b6a352aadddabf0e5a17d</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE GC_VTable_Info *</type>
+      <name>obj_get_gcvt</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>8dfe83596b7c54761a83416d74f488dd</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Boolean</type>
+      <name>object_has_ref_field</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>fc17d2b41719fb29069a3d3dbcc4dbee</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Boolean</type>
+      <name>object_has_ref_field_before_scan</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>bfae2c53d32fc735ee81213f4fdf9a2f</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE unsigned int</type>
+      <name>object_ref_field_num</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>ba8a43fe724682c1d225478b28e2e8bd</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Boolean</type>
+      <name>object_is_array</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>0e998bcf6e6ea0ac23601dc4af4d8965</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Boolean</type>
+      <name>obj_is_primitive_array</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>f60bc2bd9f21bb9af81b76f0e0f1a6b5</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Class_Handle</type>
+      <name>obj_get_class_handle</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>227d063256518352c08df1f600550c38</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE unsigned int</type>
+      <name>nonarray_object_size</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>30de9f8f01b38f1b0e60354727e0e740</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE unsigned int</type>
+      <name>array_first_element_offset</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>f1a4cc15e68e9288413eacbcaac36d1c</anchor>
+      <arglist>(Partial_Reveal_Array *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE unsigned int</type>
+      <name>array_object_size</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>0f1214cc9fcb58cfbf54399692707b7d</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE unsigned int</type>
+      <name>vm_object_size</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>44302241f3953e0d9edbdb7a507ba5b4</anchor>
+      <arglist>(Partial_Reveal_Object *obj)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE WeakReferenceType</type>
+      <name>special_reference_type</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>d90e2fbb150ba4825382c31467ff6ddc</anchor>
+      <arglist>(Partial_Reveal_Object *p_reference)</arglist>
+    </member>
+    <member kind="function">
+      <type>FORCE_INLINE Boolean</type>
+      <name>type_has_finalizer</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>eb8cbe004bbb2d44e402e2ed6eeac24f</anchor>
+      <arglist>(Partial_Reveal_VTable *vt)</arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>Cur_Mark_Bit</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>8ce35be945b45eeeab793b5ed3b2eb06</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>Cur_Forward_Bit</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>203631c740c92cbda0f143e462a68b69</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>vtable_base</name>
+      <anchorfile>gc__for__class_8h.html</anchorfile>
+      <anchor>48d911fdb457342a4c58f4133ef15630</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>gc_platform.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/common/</path>
+    <filename>gc__platform_8h</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>MAP_ANONYMOUS</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>e4f86bff73414c5fc08c058f957212f0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>PREFETCH_SUPPORTED</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>65c5db5e130354f3b3bc236bc6e3d602</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FORCE_INLINE</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>c032d233a8ebfcd82fd49d0824eefb18</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>PREFETCH</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>59e87faf077b439e224c9fb08a2eaa52</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ABS_DIFF</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>7ed278d0b27f57843a35faedaaee1f7a</anchor>
+      <arglist>(x, y)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>USEC_PER_SEC</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>6a69d6cbdab5f24c2e66959293f210c1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VmThreadHandle</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>6e5b864cd92a8f83cd5a978958af1970</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>VmEventHandle</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>7d3af765dc130dc2183f6d17ad801a9f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>THREAD_OK</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>cb1485efbb3effddddffc70a31bfa326</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>THREAD_GROUP</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>cdc04be7f9c39e25172a4053f7f774c3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>try_lock</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>6edd23ab5558e3520fc25cb3f246d049</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>lock</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>93f50dc61b972754c8b666ba9c272dc4</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>unlock</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>56dc631d218355c200ec10d8376d72be</anchor>
+      <arglist>(x)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>volatile unsigned int</type>
+      <name>SpinLock</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>5e87320b4da3e57354714d6ed198bda5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>Lock_State</name>
+      <anchor>c0ee7f5c799e83e6f9f27743ae1c60bc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>FREE_LOCK</name>
+      <anchor>c0ee7f5c799e83e6f9f27743ae1c60bc4811d774dd3f08888fe69b918b5f2da6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>LOCKED</name>
+      <anchor>c0ee7f5c799e83e6f9f27743ae1c60bc6b4af979c9694e48f340397ac08dfd1c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>hythread_group_t</type>
+      <name>get_gc_thread_group</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>44d8cee8cf0b6ce879f06b721cfea8e3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>vm_wait_event</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>1c16f4f28aa43f47df41017771add7e4</anchor>
+      <arglist>(hysem_t event)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>vm_set_event</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>7861cd6f36a75a9b55b43022e0d21684</anchor>
+      <arglist>(hysem_t event)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>vm_reset_event</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>28a06cd8ea11c6cb351baabad61b7aac</anchor>
+      <arglist>(hysem_t event)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>vm_create_event</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>80f92ff0a9588eb547772e9e011d0fe4</anchor>
+      <arglist>(hysem_t *event)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>vm_thread_yield</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>59b8a959a691c9370b1d66cb1cada3fd</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>vm_thread_local</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>7b2ad867a40517d19d0a3e36b8678095</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>vm_create_thread</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>ea0d01105792d794fd8ecd4851651d1a</anchor>
+      <arglist>(int(*func)(void *), void *data)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>vm_thread_is_suspend_enable</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>7055f21fdcb98611f1a9ddf96a3ee4a6</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>atomic_casptr</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>6abb625da226553bdf1dea5dfc007be1</anchor>
+      <arglist>(volatile void **mem, void *with, const void *cmp)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>atomic_casptrsz</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>0f4d83e99f0c843f22f9cdd62147bf53</anchor>
+      <arglist>(volatile POINTER_SIZE_INT *mem, POINTER_SIZE_INT swap, POINTER_SIZE_INT cmp)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>atomic_cas32</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>0e4d958428e9631f22848812d63537b2</anchor>
+      <arglist>(volatile unsigned int *mem, apr_uint32_t swap, apr_uint32_t cmp)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>atomic_inc32</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>9deef56757a7a26eeda71dfd12cf3b3a</anchor>
+      <arglist>(volatile unsigned int *mem)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>atomic_dec32</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>c15df7a973b807a72f74de28c2bd8655</anchor>
+      <arglist>(volatile unsigned int *mem)</arglist>
+    </member>
+    <member kind="function">
+      <type>uint32</type>
+      <name>atomic_add32</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>e846d291408afc75b5297f403cacc70d</anchor>
+      <arglist>(volatile unsigned int *mem, unsigned int val)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned int</type>
+      <name>vm_get_system_alloc_unit</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>9c1ca01e63bf2907419c2771c973ffdf</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>vm_map_mem</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>0ee403a8a42400c7a4594a1f48c214e7</anchor>
+      <arglist>(void *start, POINTER_SIZE_INT size)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>vm_unmap_mem</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>7288b74aa68822303352728bc0a2aff1</anchor>
+      <arglist>(void *start, POINTER_SIZE_INT size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>vm_alloc_mem</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>3277a97f68c92633f508c3a9a5f7d15a</anchor>
+      <arglist>(void *start, POINTER_SIZE_INT size)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>vm_free_mem</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>babfeb8b7135e4bbb9a656d236d4b528</anchor>
+      <arglist>(void *start, POINTER_SIZE_INT size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>vm_reserve_mem</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>e1d575e962a7476e5fcc8c331acc7de9</anchor>
+      <arglist>(void *start, POINTER_SIZE_INT size)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>vm_release_mem</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>77e4925adf04097995769997571320a6</anchor>
+      <arglist>(void *start, POINTER_SIZE_INT size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>vm_commit_mem</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>2851cc56ad48754aaab1fbab6881c2d3</anchor>
+      <arglist>(void *start, POINTER_SIZE_INT size)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>vm_decommit_mem</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>2fc90defaad73356290dc1220b37d199</anchor>
+      <arglist>(void *start, POINTER_SIZE_INT size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mem_fence</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>0b5398e6623fdae9352d09da02776373</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>int64</type>
+      <name>time_now</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>b4aeac20c5276dd6626ad91c2cd90a4d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>string_to_upper</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>1aaf45c966c3872f8c4994b4792281b7</anchor>
+      <arglist>(char *s)</arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>large_page_hint</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>e3357d53df1417517b6637707465d48d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>hythread_group_t</type>
+      <name>gc_thread_group</name>
+      <anchorfile>gc__platform_8h.html</anchorfile>
+      <anchor>198ed803bc20d86e7d9604e6dfc3c801</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>gen.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/gen/</path>
+    <filename>gen_8h</filename>
+    <class kind="struct">GC_Gen</class>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_is_gen_mode</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>ffa09db99c89af313422fc7fa6bd5257</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_enable_gen_mode</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>3902f20c6d2308d50ea89acf6572fc57</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_disable_gen_mode</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>d75eb68d2f5bf1460cff117edb1580b9</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_set_gen_mode</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>5aaaea958b5bea055521f4a2c2d4881b</anchor>
+      <arglist>(Boolean status)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_initialize</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>f621cc536d08155c1de74d7078fc2b0c</anchor>
+      <arglist>(GC_Gen *gc, POINTER_SIZE_INT initial_heap_size, POINTER_SIZE_INT final_heap_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_destruct</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>0b938f4b99ab7b8cb757f947a139c5fa</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_collection_verbose_info</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>9099140f4da1eaa5e1a8585717a5a554</anchor>
+      <arglist>(GC_Gen *gc, int64 pause_time, int64 mutator_time)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_space_verbose_info</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>1d001d3546f5e24bc1b98f4deb13537f</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_init_verbose</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>88c1ef7d73d096cc791a05fe2a22d62e</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_wrapup_verbose</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>c4d1f4b89845a1694a800e93ec1f3468</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>gc_gen_free_memory_size</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>d060fe5727ed426b4ec4eb09d6229b22</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>gc_gen_total_memory_size</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>cc2c6640900349e9e2544a07bf8c66af</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_nos_initialize</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>8549409c8687c51b3c69f62157d23482</anchor>
+      <arglist>(GC_Gen *gc, void *start, POINTER_SIZE_INT nos_size, POINTER_SIZE_INT commit_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_nos_destruct</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>653808b9b0ee916fcf4e546cc13dd7eb</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_mos_initialize</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>5d85c60fb22d6e4daa4c46e8565bfdc7</anchor>
+      <arglist>(GC_Gen *gc, void *start, POINTER_SIZE_INT mos_size, POINTER_SIZE_INT commit_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_mos_destruct</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>66882388ec0325d4d85200a21aa1e8a3</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_los_initialize</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>944284183b1bc31a040c7efe156e3090</anchor>
+      <arglist>(GC_Gen *gc, void *start, POINTER_SIZE_INT los_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_los_destruct</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>700138948d54e33b09811375701972f0</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>Space *</type>
+      <name>space_of_addr</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>75d76ce74f3bc87c3b7dad1cc9b7048d</anchor>
+      <arglist>(GC *gc, void *addr)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>los_try_alloc</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>9838ae28a2e9824cfab11c62d173084e</anchor>
+      <arglist>(POINTER_SIZE_INT size, GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>Space *</type>
+      <name>gc_get_nos</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>373ec1681ef88b28d7654b5f8d51a403</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>Space *</type>
+      <name>gc_get_mos</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>94af9b78f0fe40fa276843af1c04ed27</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>Space *</type>
+      <name>gc_get_los</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>75536bfb97d7eb3a358e5f96a1811783</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_set_nos</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>4a21f21194ce1cd515f4b04e37b32ff6</anchor>
+      <arglist>(GC_Gen *gc, Space *nos)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_set_mos</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>a7dd1cfdda6587bac740659b078b89f1</anchor>
+      <arglist>(GC_Gen *gc, Space *mos)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_set_los</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>6e7790db6464adb6a3a91ed53cae0a74</anchor>
+      <arglist>(GC_Gen *gc, Space *los)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_decide_collection_algorithm</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>499cfd67258dbb11b22dcc3fbd470e4a</anchor>
+      <arglist>(GC_Gen *gc, char *minor_algo, char *major_algo)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_decide_collection_kind</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>c177c527deafae6d88ed83f58e47dd8a</anchor>
+      <arglist>(GC_Gen *gc, unsigned int cause)</arglist>
+    </member>
+    <member kind="function">
+      <type>unsigned int</type>
+      <name>gc_next_collection_kind</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>30f8e7070264e7d9e5444fa7ae310fb3</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_adapt</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>07cea0452944e2cadef6f6613f9fc315</anchor>
+      <arglist>(GC_Gen *gc, int64 pause_time)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_reclaim_heap</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>cd90d71546b34265d736273cf463b436</anchor>
+      <arglist>(GC_Gen *gc, int64 gc_start_time)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_assign_free_area_to_mutators</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>2894971a78b0ed363b090f7613fd748a</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_init_collector_alloc</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>42b15dfd7ead7e91647d8429a157c61c</anchor>
+      <arglist>(GC_Gen *gc, Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_reset_collector_alloc</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>3bf1ad4f348df09182474edd4bb133d5</anchor>
+      <arglist>(GC_Gen *gc, Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_destruct_collector_alloc</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>391c80077ea7cee4e0a28471cd3e3ed8</anchor>
+      <arglist>(GC_Gen *gc, Collector *collector)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_adjust_heap_size</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>6a52ad0f7441fab9eecc133f17f88893</anchor>
+      <arglist>(GC_Gen *gc, int64 pause_time)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_update_space_before_gc</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>ef91dcd534d209391d8625d0edd4e22c</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_update_space_after_gc</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>29fa0c16e2ac280d537e427d57b298e4</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_mode_adapt_init</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>9a797855e3bc8f098dd395dc48cdaed1</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_iterate_heap</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>900fe1bc740f45ef380fdbe217a908f8</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_gen_start_concurrent_mark</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>3620b6bfbf98db8bda2f196007248ecb</anchor>
+      <arglist>(GC_Gen *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>mos_free_space_size</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>2a84ea9495be307faf92f67c1aabb643</anchor>
+      <arglist>(Space *mos)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>nos_free_space_size</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>bd6ff782bb7403ef668cea984891b951</anchor>
+      <arglist>(Space *nos)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>mos_used_space_size</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>79ea504051c4c2ec531ae66d87013eb6</anchor>
+      <arglist>(Space *mos)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>nos_used_space_size</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>8b87e83b32e786f8776584a04dbedfd8</anchor>
+      <arglist>(Space *nos)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>nos_space_adjust</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>6f549b52d74fd84cf3649171e1399a1b</anchor>
+      <arglist>(Space *space, void *new_nos_boundary, POINTER_SIZE_INT new_nos_size)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>gen_mode</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>2ec092133a77fb9732a4ef7b7e1e00d1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>NOS_SIZE</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>8ac658925f3cf0ce49057ab435a832a3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>min_heap_size_bytes</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>ed8240b4e3cabddfc6e93c47cddf96b1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>max_heap_size_bytes</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>c036cda58f78c96c98c23b224c5cc369</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>min_nos_size_bytes</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>e374455449c87d1fd47682b1cad9663f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>max_nos_size_bytes</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>a42d0c8d8490ffa0929aa8c5e6dedfe8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space_Alloc_Func</type>
+      <name>mos_alloc</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>7bbefd4d669c4328318d047a4079fd5a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space_Alloc_Func</type>
+      <name>nos_alloc</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>c57198b85fe22d122c128db78e54c860</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space_Alloc_Func</type>
+      <name>los_alloc</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>eaf016e1cd8c9dfa1d02a1c4064ea058</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>GEN_NONGEN_SWITCH</name>
+      <anchorfile>gen_8h.html</anchorfile>
+      <anchor>32b100725ccd50673099e04c70deb21b</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>interior_pointer.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/common/</path>
+    <filename>interior__pointer_8h</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>add_root_set_entry_interior_pointer</name>
+      <anchorfile>interior__pointer_8h.html</anchorfile>
+      <anchor>b8380216d4681d04feb5f7d407c5c7d6</anchor>
+      <arglist>(void **slot, int offset, Boolean is_pinned)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_copy_interior_pointer_table_to_rootset</name>
+      <anchorfile>interior__pointer_8h.html</anchorfile>
+      <anchor>0030d74fb88c82b4191abbf59b33f42b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>update_rootset_interior_pointer</name>
+      <anchorfile>interior__pointer_8h.html</anchorfile>
+      <anchor>3ee0df8ede1f61577bc64d3c597d1020</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_reset_interior_pointer_table</name>
+      <anchorfile>interior__pointer_8h.html</anchorfile>
+      <anchor>ae6db50a627102b64a19e890f3acd569</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>mspace.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/mark_compact/</path>
+    <filename>mspace_8h</filename>
+    <class kind="struct">Mspace</class>
+    <member kind="function">
+      <type>Mspace *</type>
+      <name>mspace_initialize</name>
+      <anchorfile>mspace_8h.html</anchorfile>
+      <anchor>470400d88705404efa5829c3855c919f</anchor>
+      <arglist>(GC *gc, void *reserved_base, POINTER_SIZE_INT mspace_size, POINTER_SIZE_INT commit_size)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mspace_destruct</name>
+      <anchorfile>mspace_8h.html</anchorfile>
+      <anchor>769ff2dc018e4b55e9b7598f45320b94</anchor>
+      <arglist>(Mspace *mspace)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>mspace_free_space_size</name>
+      <anchorfile>mspace_8h.html</anchorfile>
+      <anchor>acec2aa126ac70766cab28a91353b89a</anchor>
+      <arglist>(Mspace *mos)</arglist>
+    </member>
+    <member kind="function">
+      <type>POINTER_SIZE_INT</type>
+      <name>mspace_used_space_size</name>
+      <anchorfile>mspace_8h.html</anchorfile>
+      <anchor>003f2556e49a91d5c96658787078ad3e</anchor>
+      <arglist>(Mspace *mos)</arglist>
+    </member>
+    <member kind="function">
+      <type>void *</type>
+      <name>mspace_alloc</name>
+      <anchorfile>mspace_8h.html</anchorfile>
+      <anchor>eb0184c9d69631b77c1af027d1e6f62f</anchor>
+      <arglist>(unsigned size, Allocator *allocator)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mspace_collection</name>
+      <anchorfile>mspace_8h.html</anchorfile>
+      <anchor>bd639e16c3b87be233177831f363fb94</anchor>
+      <arglist>(Mspace *mspace)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mspace_reset_after_collection</name>
+      <anchorfile>mspace_8h.html</anchorfile>
+      <anchor>0043f16801108427f7ce1e7d5850940b</anchor>
+      <arglist>(Mspace *mspace)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mspace_fix_after_copy_nursery</name>
+      <anchorfile>mspace_8h.html</anchorfile>
+      <anchor>26499be10354c8eb85db660e9332a4f9</anchor>
+      <arglist>(Collector *collector, Mspace *mspace)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mspace_set_expected_threshold_ratio</name>
+      <anchorfile>mspace_8h.html</anchorfile>
+      <anchor>3d633b8de9b159eeec43d87b9375e8d4</anchor>
+      <arglist>(Mspace *mspace, float threshold_ratio)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>mutator.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/thread/</path>
+    <filename>mutator_8h</filename>
+    <class kind="struct">Mutator</class>
+    <member kind="function">
+      <type>void</type>
+      <name>mutator_initialize</name>
+      <anchorfile>mutator_8h.html</anchorfile>
+      <anchor>76012f8cac8191cedb517a8dfa1ee7b4</anchor>
+      <arglist>(GC *gc, void *tls_gc_info)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mutator_destruct</name>
+      <anchorfile>mutator_8h.html</anchorfile>
+      <anchor>b35fa896877f8b877bcec0f8e8f543e3</anchor>
+      <arglist>(GC *gc, void *tls_gc_info)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mutator_reset</name>
+      <anchorfile>mutator_8h.html</anchorfile>
+      <anchor>b73734b94ed7c4dc3dc529f3c779a831</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_reset_mutator_context</name>
+      <anchorfile>mutator_8h.html</anchorfile>
+      <anchor>155acb73459e9f35c0deb5891fba276c</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_prepare_mutator_remset</name>
+      <anchorfile>mutator_8h.html</anchorfile>
+      <anchor>074d9dde610f7fde9d9b2c1e86bca05a</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>Boolean</type>
+      <name>gc_local_dirtyset_is_empty</name>
+      <anchorfile>mutator_8h.html</anchorfile>
+      <anchor>e855389520ffd5da666349d2bd11c52b</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>Vector_Block *</type>
+      <name>gc_get_local_dirty_set</name>
+      <anchorfile>mutator_8h.html</anchorfile>
+      <anchor>6eea2c287000f1e8d3ae0456b0473425</anchor>
+      <arglist>(GC *gc, unsigned int shared_id)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>mutator_post_signal</name>
+      <anchorfile>mutator_8h.html</anchorfile>
+      <anchor>908abc0d84d7c06e8bec832a57fe3396</anchor>
+      <arglist>(Mutator *mutator, unsigned int handshake_signal)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>wait_mutator_signal</name>
+      <anchorfile>mutator_8h.html</anchorfile>
+      <anchor>0c41650fec47e6a37dfb5c7af1f7b35d</anchor>
+      <arglist>(Mutator *mutator, unsigned int handshake_signal)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>verify_live_heap.h</name>
+    <path>C:/cvn_rep/source/trunk/working_vm/vm/gc_gen/src/verify/</path>
+    <filename>verify__live__heap_8h</filename>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_init_heap_verification</name>
+      <anchorfile>verify__live__heap_8h.html</anchorfile>
+      <anchor>1a2da147c8edb30a3ef7ae0aebc502c8</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_terminate_heap_verification</name>
+      <anchorfile>verify__live__heap_8h.html</anchorfile>
+      <anchor>6c7b2d3c2464cb97d78f06984910eb10</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>gc_verify_heap</name>
+      <anchorfile>verify__live__heap_8h.html</anchorfile>
+      <anchor>b9f5100d5c3bf4974581af3eb9a764ef</anchor>
+      <arglist>(GC *gc, Boolean is_before_gc)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>event_mutator_allocate_newobj</name>
+      <anchorfile>verify__live__heap_8h.html</anchorfile>
+      <anchor>e8d5bf758d5e685896e98edd7d365097</anchor>
+      <arglist>(Partial_Reveal_Object *p_newobj, POINTER_SIZE_INT size, VT vt_raw)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>event_gc_collect_kind_changed</name>
+      <anchorfile>verify__live__heap_8h.html</anchorfile>
+      <anchor>0385f8beeffe2fafe2189173c4b511b5</anchor>
+      <arglist>(GC *gc)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>verify_live_heap</name>
+      <anchorfile>verify__live__heap_8h.html</anchorfile>
+      <anchor>eb9b22bb45e054fa1cbf60dedc6eaa5d</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="page">
+    <name>allocation</name>
+    <title>Allocation of objects.</title>
+    <filename>allocation</filename>
+  </compound>
+  <compound kind="page">
+    <name>gc_finalization_and_weak_refs</name>
+    <title>Finalization and weak references design in GC</title>
+    <filename>gc_finalization_and_weak_refs</filename>
+    <docanchor file="gc_finalization_and_weak_refs">gc_finalization</docanchor>
+    <docanchor file="gc_finalization_and_weak_refs">gc_finalization_and_weak_refs_requirements</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>gc_vm_interface</name>
+    <title>GC-VM interface</title>
+    <filename>gc_vm_interface</filename>
+  </compound>
+  <compound kind="union">
+    <name>Block</name>
+    <filename>union_block.html</filename>
+    <member kind="variable">
+      <type>Block_Header</type>
+      <name>header</name>
+      <anchorfile>union_block.html</anchorfile>
+      <anchor>2e4ee7b1e4efa0c654ca5b0298c089cc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned char</type>
+      <name>raw_bytes</name>
+      <anchorfile>union_block.html</anchorfile>
+      <anchor>16d196d4633037fce5a58c52421d47af</anchor>
+      <arglist>[(1&lt;&lt; 15)]</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>Block_Header</name>
+    <filename>struct_block___header.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>base</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>c8a59ea9aea5333023983d563552eddb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>free</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>05534a0be785c43912ed65d8cfefe8d1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>ceiling</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>8ff5705ee8928604359deba696df7ccc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>new_free</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>add304b0f3a96e82c99cc6bcad8bce6d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>block_idx</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>2af655822f9ef4b08a6ba3cea18ebf3f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>volatile unsigned int</type>
+      <name>status</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>e0f728fdaf7a9c63bd0ca395db63daf2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>volatile unsigned int</type>
+      <name>num_live_objs</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>2f40fb9c09a14c895c7a4eef65a45b49</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>volatile unsigned int</type>
+      <name>dest_counter</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>d654b547cbb312f3d26c82ecbcd76fd8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Partial_Reveal_Object *</type>
+      <name>src</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>dcccd808fab3ad7413b689964b03363b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Partial_Reveal_Object *</type>
+      <name>next_src</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>88f5ef264c6d176fa59c3e24cbeead7e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Block_Header *</type>
+      <name>next</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>0ec79283d5b575821425a60e2fdb1399</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>table</name>
+      <anchorfile>struct_block___header.html</anchorfile>
+      <anchor>ca2183221177c85e2025e930d9e9dd9b</anchor>
+      <arglist>[1]</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>Collector</name>
+    <filename>struct_collector.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>free</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>2e16728b1991ab446001d4d757930946</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>ceiling</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>45917172b53fe5cbfd53e2475b5de73b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>end</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>8826076291fc9e0068e78c54806ce83e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>alloc_block</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>bdb944878ae99952623b20937198493c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Chunk_Header ***</type>
+      <name>local_chunks</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>4710c34bbc05ef2fbe068bea376cf57e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space *</type>
+      <name>alloc_space</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>16afe39fd7b143df576b7269e62bb6d0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>GC *</type>
+      <name>gc</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>091406bd291a007e0a426dce659b2c8b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>VmThreadHandle</type>
+      <name>thread_handle</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>9fbeeb7f0f817f0386fa7ebb0cfe57ef</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>handshake_signal</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>412e308e0dfdf6e25a0ecb149fe0730b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_alloc_blocks</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>7c94d2f297e9063eb249706a6af600f1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space *</type>
+      <name>collect_space</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>0f61774c4fd080825fdf445af13b0a87</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Allocator *</type>
+      <name>backup_allocator</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>5e119ebe91f6c8080c274b37ceaff5d2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>trace_stack</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>565f50ee49e25607b4efaf7320dca0d8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>rep_set</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>af7ee3758c1a487c5ebc06380adfe5a8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>rem_set</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>cba01a0dc9cf3340f4a19029ec2578b5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>softref_set</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>fbc565dd0506bd6dcd811cf1c8455534</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>weakref_set</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>fe7f26f83946de5ecaaf3daab6bce812</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>phanref_set</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>39a2e8e5ebef50c027b502ac577308af</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>VmEventHandle</type>
+      <name>task_assigned_event</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>0baa838ff3f425ec256a66fb12bd20e5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>VmEventHandle</type>
+      <name>task_finished_event</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>7d4448a47e21278d119fd1179a372841</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Block_Header *</type>
+      <name>cur_compact_block</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>6b4ab16bc62d0548645e24f9f0812ced</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Block_Header *</type>
+      <name>cur_target_block</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>534efb8ce702f006c4747cc2b6c2c9aa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Free_Chunk_List *</type>
+      <name>free_chunk_list</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>133e203e37b544bc719ed69375ccd43c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>live_obj_size</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>eb9757af73823606cd80ae538eb49ffb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>live_obj_num</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>c8324c9ff9462f80fbd2dfb4248d7b94</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void(*</type>
+      <name>task_func</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>0188151b8ce8018cc8aad6533f470597</anchor>
+      <arglist>)(void *)</arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>non_los_live_obj_size</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>a98766001b4bf95c750d6a74cd07e6a0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>los_live_obj_size</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>f8b26d2c4d40fe993d805ad2dfe06b36</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>segment_live_size</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>79460e3934d8b31dd7325ac77c370473</anchor>
+      <arglist>[(GC_OBJ_SIZE_THRESHOLD/(1&lt;&lt; 8))]</arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>result</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>a2f28086ebc0f34bb70d11396d3b964d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>collector_is_active</name>
+      <anchorfile>struct_collector.html</anchorfile>
+      <anchor>42e8a9e8a832a692c763e068aa4f3850</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>GC</name>
+    <filename>struct_g_c.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>physical_start</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>53bcfa8f7a98d44e0930a600d803788b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>heap_start</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>af4f176c6e6fa4153d7c2f96e515a432</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>heap_end</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>d872fdf5fdf7c3f06ac53f7c9fd4c10b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>reserved_heap_size</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>03b07cd22ebb121430a760dba8387a61</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>committed_heap_size</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>55b97eedfb5b84b34a4260e75fab271f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_collections</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>52e6be0ac0a17809d68df23cd22105e3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>in_collection</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>da0798e3d21632a152e39b9ca8b107a7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int64</type>
+      <name>time_collections</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>11f078b71c7a09dc85775f54810c7a85</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>float</type>
+      <name>survive_ratio</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>81e803fbca5a4e9f4b9b40bbbcde2af0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Mutator *</type>
+      <name>mutator_list</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>ccea4abc97a76e9e153e2831d00f4572</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>mutator_list_lock</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>301c3d0774f68290479e9aea8b592df7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_mutators</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>dabfe21992629c893cc069bd5a19030f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Collector **</type>
+      <name>collectors</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>f4d6dfec6acb5d5b101926587cb20996</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_collectors</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>d66bcdc8b63e5f2d82ec9961ce73b678</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_active_collectors</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>5e48e498fcfe30d3c2a4364bfee8514d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Marker **</type>
+      <name>markers</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>fbc6986b6ed981a7e91ec13c3d6dd806</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_markers</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>6cae9bbee1f2ecc4adbac6d4bcd92e7f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_active_markers</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>86f2a48cb7ffa7f590f870e9a0989f5b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>GC_Metadata *</type>
+      <name>metadata</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>b4e5900996e862a5a444e1c7ad7f3d89</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Finref_Metadata *</type>
+      <name>finref_metadata</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>f740aa9e8ef1a8317a8374e6ea24b151</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>collect_kind</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>3e50482398c02b548a94228be040260b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>last_collect_kind</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>5fd93fd634d0ab9defb11d332590eb15</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>cause</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>361bd5ae5ceaf23e25aa6ca0b513c562</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>collect_result</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>9d7212544311a2f3ed81be970136aad6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>generate_barrier</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>2ad15380e875565fcf1a64987fab02b2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>root_set</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>ad984bbae25b97e30fb14a5655f553c4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>weakroot_set</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>5b2409dba61908f6942b59517614d51c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>uncompressed_root_set</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>f23ff981bf42f119bdaaec83ce2ca796</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space_Tuner *</type>
+      <name>tuner</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>ea946b75f694fbc7631dfae4bfe9956e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>gc_concurrent_status</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>97bc8f7e56559545126cf9dbbc8920cb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Collection_Scheduler *</type>
+      <name>collection_scheduler</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>933b9c9acafb81f2797590f63ffe3862</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>concurrent_mark_lock</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>9685bf2d303f25c85f489706e4251b92</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>enumerate_rootset_lock</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>d966a9239ec45b7afbadc001b6f0adb5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>concurrent_sweep_lock</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>df351b45e3dccc269e74d4534b0614e3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>collection_scheduler_lock</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>a2de779546b93d2a155bd4e13e92c2ab</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>_system_alloc_unit</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>282714aa03eb8075eae4adef80375ab9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>_machine_page_size_bytes</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>0dad4bcba259a4788e7f65fb7fcdfeda</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>_num_processors</name>
+      <anchorfile>struct_g_c.html</anchorfile>
+      <anchor>7980b5857ca5b88761d0ec4c3896370f</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>GC_Gen</name>
+    <filename>struct_g_c___gen.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>physical_start</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>924b41959868eb8bb3314e518acd48f3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>heap_start</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>f3ff34f5f248076530c061fcb0285e6c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>heap_end</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>7d5667024f7cf4548c186ead61242096</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>reserved_heap_size</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>8357b19772f2abdd1700cb96b101e07f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>committed_heap_size</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>1fc47aadb306e527808f0dcfbd9a46ea</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_collections</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>d381b06f976ad8b5a1a1ec0fb575e69c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>in_collection</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>78d8b9ec7425497dc767ee07c55e1516</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int64</type>
+      <name>time_collections</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>51e4ab184d5e9fddc692c2712568782c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>float</type>
+      <name>survive_ratio</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>532daadbceed74f060f786dc21293c99</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Mutator *</type>
+      <name>mutator_list</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>4a93d3532c5a8cf105174e158612a2bc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>mutator_list_lock</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>26740a4e60018ce7ef6dfa53933badf5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_mutators</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>94f9c176d3c21b52f7792c7ac9aab215</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Collector **</type>
+      <name>collectors</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>11dbe9a381266b6edf1435c72bb6bd48</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_collectors</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>436de02027951bd4c965e4baf69d87f0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_active_collectors</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>6c849fe7c765d03344f277a9a908da82</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Marker **</type>
+      <name>markers</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>0d02cbbee3586416fea31a76b41f896f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_markers</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>62a9beb79303345c73f0248a2b4e2978</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_active_markers</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>23826ae98b4f04faa7bcaa9518d0b5b8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>GC_Metadata *</type>
+      <name>metadata</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>a8b13ba79714587e45df4c6e546b4ef6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Finref_Metadata *</type>
+      <name>finref_metadata</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>2446d864cb945ab826edb8f24d8b5c4a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>collect_kind</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>6e69e291e89b67fef862cdaaf451124b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>last_collect_kind</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>f59541c55741552feb2208d92163c686</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>cause</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>e193eb1249fe6f2bbae2bbfc9555647e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>collect_result</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>85c982189de72166b20fa255d0fee399</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>generate_barrier</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>47e71bb478b73f7e10a5cf4293ee44ad</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>root_set</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>f0c100b3f787ccb2f59eca28d50d95ad</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>weakroot_set</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>7bbb4ba70848799dab66541dd8d9715b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>uncompressed_root_set</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>426652349381b6d621308b463df73d0d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space_Tuner *</type>
+      <name>tuner</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>52080aa7d946ded94381d36e16b1117a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>gc_concurrent_status</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>0fedf64a4850ccaecf06922e53530a19</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Collection_Scheduler *</type>
+      <name>collection_scheduler</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>8f83c0e5015572f690c0ca8ca5c29143</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>concurrent_mark_lock</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>898a6fd19bea50e96d85b26fd5f35ef4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>enumerate_rootset_lock</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>896035de6c9a1340fa57e8a0f225f733</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>concurrent_sweep_lock</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>fdda40bbbca1a30aa4b930290e05b7fa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>collection_scheduler_lock</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>1674a75c45ac4f4a7659f43d627bbe01</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>_system_alloc_unit</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>fa08c684b7528505808deb1229666898</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>_machine_page_size_bytes</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>22ac63eba64e3b8fed2bbdff6d8625f5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>_num_processors</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>394e8bd4d4c10c5994a9b7a48dd9f446</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Block *</type>
+      <name>blocks</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>b5fe7584888e1c642819710c1fa78b69</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space *</type>
+      <name>nos</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>374f89eb7e57ca5eeff2c2cdd1a635b0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space *</type>
+      <name>mos</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>e010b11a9ded5a86d7d8c142bf945686</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space *</type>
+      <name>los</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>5d5081a7edf79eaf71a4af6ff6a96b02</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>force_major_collect</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>e1e86ae7108c8ebe48d15ffdb521ef4e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Gen_Mode_Adaptor *</type>
+      <name>gen_mode_adaptor</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>a210935166b0031ec100855a360a25f5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>force_gen_mode</name>
+      <anchorfile>struct_g_c___gen.html</anchorfile>
+      <anchor>9ec46e0adf49c5bb0b1bb944334a32d6</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>GC_VTable_Info</name>
+    <filename>struct_g_c___v_table___info.html</filename>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>gc_number_of_ref_fields</name>
+      <anchorfile>struct_g_c___v_table___info.html</anchorfile>
+      <anchor>52a1b013b7528668b497e7ea0514e865</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint32</type>
+      <name>gc_class_properties</name>
+      <anchorfile>struct_g_c___v_table___info.html</anchorfile>
+      <anchor>a01766523a6590e80e43f984de4a8b10</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>gc_allocated_size</name>
+      <anchorfile>struct_g_c___v_table___info.html</anchorfile>
+      <anchor>3b3bdae004c1b63d345f82890989cc8f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>array_elem_size</name>
+      <anchorfile>struct_g_c___v_table___info.html</anchorfile>
+      <anchor>bdaed4fa111cb696507b1fe237639151</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>array_first_elem_offset</name>
+      <anchorfile>struct_g_c___v_table___info.html</anchorfile>
+      <anchor>713ef1bfab5b3e1e4faf9ed38a29ac9a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>const char *</type>
+      <name>gc_class_name</name>
+      <anchorfile>struct_g_c___v_table___info.html</anchorfile>
+      <anchor>380deada218a169138885425114c5809</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Class_Handle</type>
+      <name>gc_clss</name>
+      <anchorfile>struct_g_c___v_table___info.html</anchorfile>
+      <anchor>7614e22430b408d14be0d618f0045db5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>gc_ref_offset_array</name>
+      <anchorfile>struct_g_c___v_table___info.html</anchorfile>
+      <anchor>7467d5f8ee87346b4df6b55588100173</anchor>
+      <arglist>[1]</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>Mspace</name>
+    <filename>struct_mspace.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>heap_start</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>86ae79bdf76a72dae7de374cbe5b8a83</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>heap_end</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>f8c39212baca788d9e6002e5e4e3f969</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>reserved_heap_size</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>a47bc6b9f326a1d20171a53737f4158f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>committed_heap_size</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>1ecd7d95994f2ad4c9f04d3017359627</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_collections</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>c3ed5b248f768dc0a848318c37486473</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int64</type>
+      <name>time_collections</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>ff6f73941b22ddb26abc1a843cd53142</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>float</type>
+      <name>survive_ratio</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>f123aa7a26b4d5d08f97e4a8065e2be8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>collect_algorithm</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>73008a3f8852f2ca8893ddca2147a0da</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>GC *</type>
+      <name>gc</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>8bbf7f39930d924ca52c7ed9a27d9d6f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Boolean</type>
+      <name>move_object</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>7e07484ba301641c7dc7eab38fa25ff0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space_Statistics *</type>
+      <name>space_statistic</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>95d8450920c1a70ee08015c3d1998d09</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>volatile uint64</type>
+      <name>last_alloced_size</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>5f6f0191e4996f4e5fc7e3101039a026</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64</type>
+      <name>accumu_alloced_size</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>4071a71bfede99f63656c5a8133835f8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64</type>
+      <name>total_alloced_size</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>667fec596f92f3ffcad88752a01adc89</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64</type>
+      <name>last_surviving_size</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>0609f007da9bcdf2c97f14b1d1c44f07</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>uint64</type>
+      <name>period_surviving_size</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>9dedf5740e5747a3e4d15e528983d21c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Block *</type>
+      <name>blocks</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>f61b366dd7f00c6fc0a48b439c23bdb8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>first_block_idx</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>efe60c4588f427b7e668c9d4969efa54</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>ceiling_block_idx</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>27996fcb5ec9239be62c05cea5dfd2c8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>volatile unsigned int</type>
+      <name>free_block_idx</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>7b5b2985cb02babfc3053af0a634ff11</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_used_blocks</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>8c0975afad86426aa7b229a50491ae5e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_managed_blocks</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>66f0fef1713b94e80074b289a6a0111f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_total_blocks</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>70444b277b17a66b7e1b78c4493034f5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>volatile Block_Header *</type>
+      <name>block_iterator</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>ddbbb191888e365e0a9c8c54d713fbd2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>float</type>
+      <name>expected_threshold_ratio</name>
+      <anchorfile>struct_mspace.html</anchorfile>
+      <anchor>41e2f778f8b0922fe41d17b76758b5e9</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>Mutator</name>
+    <filename>struct_mutator.html</filename>
+    <member kind="variable">
+      <type>void *</type>
+      <name>free</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>77cdb36d841c0b5e725e171438ffea9e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>ceiling</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>0a0402933fe79e109bb516858a18b33e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>end</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>77923c282f552b7eeb766b03ecce69a3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>void *</type>
+      <name>alloc_block</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>8bb796927a8ccaa5876a570467f98bc6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Chunk_Header ***</type>
+      <name>local_chunks</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>cb8a673e10fc9230a46bec03f64616ff</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Space *</type>
+      <name>alloc_space</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>13bbe4ecef73a5752cec5dc982aab01d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>GC *</type>
+      <name>gc</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>41f3cea9307a1e885bbedaf300abddbb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>VmThreadHandle</type>
+      <name>thread_handle</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>f4f05d293283f3d97802e75ae1cb5636</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>volatile unsigned int</type>
+      <name>handshake_signal</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>4730fa82a087dcaefc4988bc6cae7f25</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>num_alloc_blocks</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>d22f89f87f821b6212ca09b9dfdf2722</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>rem_set</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>356665c8a1fa1107c62b62cb952ea5f9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>obj_with_fin</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>b572f5433043c91c08c7bfeb9c66f0f3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Mutator *</type>
+      <name>next</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>1e7a146a3ca91dc2f937300bfd0a5b46</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Vector_Block *</type>
+      <name>dirty_set</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>8b8862bb67d90f803c0e4776da7bd73e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>SpinLock</type>
+      <name>dirty_set_lock</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>35c371935ddf1d12b80d10798767e8ef</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>dirty_obj_slot_num</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>cecb680c58c6018c5f6a0d49c89e759b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>dirty_obj_num</name>
+      <anchorfile>struct_mutator.html</anchorfile>
+      <anchor>b4977e15f7615111467e6b31c838efc0</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>Partial_Reveal_Array</name>
+    <filename>struct_partial___reveal___array.html</filename>
+    <member kind="variable">
+      <type>Partial_Reveal_Array::@2</type>
+      <name>@3</name>
+      <anchorfile>struct_partial___reveal___array.html</anchorfile>
+      <anchor>22a204ce409b5b603098978c68b8f269</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Partial_Reveal_VTable *</type>
+      <name>vt_raw</name>
+      <anchorfile>union_partial___reveal___array_1_1@2.html</anchorfile>
+      <anchor>f32173eb9d3383ee5d320c82973b8e4f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>padding</name>
+      <anchorfile>union_partial___reveal___array_1_1@2.html</anchorfile>
+      <anchor>5595a814bb631de21b9d750a1ef01e05</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Obj_Info_Type</type>
+      <name>obj_info</name>
+      <anchorfile>struct_partial___reveal___array.html</anchorfile>
+      <anchor>6a3abc68ca20803dad809f4738e9b2f9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>array_len</name>
+      <anchorfile>struct_partial___reveal___array.html</anchorfile>
+      <anchor>e8a049c10b3777404930c30a9328f709</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>Partial_Reveal_Object</name>
+    <filename>struct_partial___reveal___object.html</filename>
+    <member kind="variable">
+      <type>Partial_Reveal_Object::@0</type>
+      <name>@1</name>
+      <anchorfile>struct_partial___reveal___object.html</anchorfile>
+      <anchor>5bce7006a2d8457c7918e0f8cad9e5e6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Partial_Reveal_VTable *</type>
+      <name>vt_raw</name>
+      <anchorfile>union_partial___reveal___object_1_1@0.html</anchorfile>
+      <anchor>2fd71191c9dd87b3504edd18e72b8507</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>POINTER_SIZE_INT</type>
+      <name>padding</name>
+      <anchorfile>union_partial___reveal___object_1_1@0.html</anchorfile>
+      <anchor>2291890796c49c025cf805ee40b3202e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Obj_Info_Type</type>
+      <name>obj_info</name>
+      <anchorfile>struct_partial___reveal___object.html</anchorfile>
+      <anchor>c504369e3e58dc06c01f01203e38627e</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>Partial_Reveal_VTable</name>
+    <filename>struct_partial___reveal___v_table.html</filename>
+    <member kind="variable">
+      <type>GC_VTable_Info *</type>
+      <name>gcvt</name>
+      <anchorfile>struct_partial___reveal___v_table.html</anchorfile>
+      <anchor>9581971d902f5e930a50eb71351a7b80</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Partial_Reveal_Object *</type>
+      <name>jlC</name>
+      <anchorfile>struct_partial___reveal___v_table.html</anchorfile>
+      <anchor>03dd935315ece1dfaaeaee88e1af3993</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>unsigned int</type>
+      <name>vtmark</name>
+      <anchorfile>struct_partial___reveal___v_table.html</anchorfile>
+      <anchor>37c900356034cd50ef434cca69d01616</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+</tagfile>

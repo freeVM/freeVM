@@ -1,0 +1,356 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+                                                    <meta name="author" content="Harmony Documentation Team">
+            <meta name="email" content="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Good Issue Resolution Guideline</title>
+
+                        
+                
+        <link rel="stylesheet" type="text/css" href="css/site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/print.css" media="print" />
+
+                        
+        </head>
+
+        <body>
+			<div style="
+				clear: left;
+   				font-size: 110%;
+   				background-color: #FF0040;
+   				color: white;
+				float: left">
+
+				<b><big>Apache Harmony is retired at the Apache Software Foundation</big></b> since Nov 16, 2011.
+				<p>
+				The information on these pages may be out of date, or may refer to
+				resources that have moved or have been made read-only.
+				<br> 
+				For more information please refer to the
+				<a href="http://attic.apache.org">Apache Attic</a>
+				<p>
+			</div>
+			
+            <div id="pageHeader" style="clear: left">
+			<br>
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="./images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement
+            <a href="http://na.apachecon.com">
+                <img id="advertisement"
+                     src="images/apachecon-na2010.gif"
+                     width="234" height="60"
+                     alt="ApacheCon US 2010" /></a>
+            -->
+
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="./index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/licenses/">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./download.cgi">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./faq.html">FAQ</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/security/">Security</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./sitemap.html">Sitemap</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="./get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="./svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.jdocs.com/harmony/5.M5/overview-summary.html">API Reference</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Foundation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/sponsorship.html ">Sponsorship</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/thanks.html ">Thanks</a>
+</li>
+           
+                        
+        
+        </ul>
+                    
+                <!-- Add the ASF birthday logo to the end of the menu -->
+                <img id="birthday"
+                     src="http://www.apache.org/images/10yearsASF_170x101.jpg"
+                     width="170" height="101"
+                     vspace="30"
+                     alt="Ten Years of the ASF" />
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                                        <h1>
+      <a name="Good Issue Resolution Guideline">Good Issue Resolution Guideline</a>
+    </h1>
+                        <p>
+      This guideline provides step-by-step instructions on reporting, resolving 
+      and closing issues. If you cannot do one of the steps, then write a comment to the issue.
+    </p>
+                                    
+    <h2>
+        <a name="Reporting Issues">Reporting Issues</a>
+    </h2>
+      
+                        <ol>
+        <li>State the expected behavior and the
+            actual behavior of Harmony code explicitly. Use links to 
+            specifications, references, etc.</li>
+        <li>Create a test case as small as possible. A patch
+            to test is highly appreciated.</li>
+        <li>Provide maximum information about steps necessary to reproduce the bug.
+            If a patch for the test has not been supplied, provide as much
+            diagnostic information about the failure as possible: stack trace,
+            failure output, expected output, etc.</li>
+        <li>Use issue links if applicable.</li>
+        <li>Check the issue resolution, when it is committed. Add a comment.</li>
+    </ol>
+                   
+                                    
+    <h2>
+        <a name="Resolving Issues">Resolving Issues</a>
+    </h2>
+      
+                        <p>To resolve an issue, define its type first.</p>
+                                <dl>
+        <dt>If the issue is a non-bug difference, not a bug or invalid,
+            you should do the following:</dt>
+            <dd><ol>
+                <li>Discuss the issue on the 
+                <a href="mailing.html">developer mailing list</a>.</li>
+                <li>Add a link to the discussion thread as a comment to the issue.</li>
+            </ol>
+        </dd>
+        
+       <dt>If the issue is a bug, you should do the following:</dt>
+            <dd><ol>
+                <li>
+                  Notify the community that you started investigation by adding
+                  a comment to the issue and send a message to the 
+                  <a href="mailing.html">developer mailing list</a>.
+                  If you cannot create a patch, add another comment with your 
+                  investigation results.</li>
+                <li>If reporter did not provide a patch to test:
+                    <ul>
+                        <li>Try to create a patch to test.</li>
+                        <li>If you cannot create a patch, write a comment about it.</li>
+                    </ul>
+                </li>
+                <li>
+                  Create a patch to fix the issue. If you have any questions,
+                  discuss them on the <a href="mailing.html">developer mailing list</a>.
+                  Add a link to the discussion as a comment.</li>
+                <li>All patches, such as tests and fixes, should be relative to the directory where 
+                the main <code>build.xml</code> is:<br />
+                <code>http://svn.apache.org/repos/asf/harmony/enhanced/java/trunk/classlib</code>,<br />
+                or to the module root directory.</li>
+                <li>Test and fix patches should be in different files.</li>
+                <li>If the patch requires adding, removing or moving some files in the repository, 
+                provide the appropriate script.</li>
+                <li>Check that all unit tests pass.</li>
+                <li>If the issue is application-oriented, check the application.</li>
+                <li>Use issue links if applicable.</li>
+            </ol>
+      </dd></dl>
+                   
+                                    
+    <h2>
+        <a name="Closing Issues">Closing Issues</a>
+    </h2>
+      
+                        <p>To close an issue, define its type first.</p>
+                                <dl>
+        <dt>If the issue is a non-bug difference, not a bug or invalid, you should do the following:</dt>
+        <dd> Close the issue.</dd>
+            <dt>If the issue is a bug, you should do the following: </dt>
+              <dd>  <ol>
+                    <li>If a patch to test is available, apply it.</li>
+                    <li>Check that the test fails.</li>
+                    <li>Apply the fix for the issue.</li>
+                    <li>Check that test succeeds now.</li>
+                    <li>Make sure that all unit tests pass.</li>
+                    <li>For application-oriented issues, check the application.</li>
+                    <li>If there are any problems on previous steps, post a comment to
+                    JIRA and let "resolution provider" resolve them.</li>
+                    <li>Make sure that the issue reporter is happy with the resolution.</li>
+                    <li>Add revision info into the JIRA issue.</li>
+                </ol>
+         </dd></dl>
+                   
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                
+                                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special">
+            	<em>Copyright &#169; 2003-2010, The Apache Software Foundation</em>
+            	<br/>
+            	Apache Harmony, the Apache Harmony logo, and the Apache feather
+            	logo are trademarks of The Apache Software Foundation.
+            	<br/>
+            	Java is a registered trademark of Oracle and/or its affiliates. Other names
+            	mentioned may be trademarks or registered trademarks of their
+            	respective owners.
+            </div>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

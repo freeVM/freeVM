@@ -1,0 +1,342 @@
+<?xml version="1.0"?>
+
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>Apache Harmony Committers</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
+
+  <body>
+    <p>
+      If you would like to contribute to Harmony, please see the
+      <a href="roadmap.html">roadmap</a> list to find areas where you can contribute.
+      If there is nothing in there that suits your interest, but you still have
+      ideas, please feel free to suggest them on
+      <a href="mailing.html">the mailing list</a>.
+    </p>
+    <section name="People">
+
+      <dl>
+        <dt>
+          <strong>Apache Harmony Developers</strong>
+        </dt>
+        <dd>
+          All of the volunteers who are contributing time, code, documentation,
+          or resources to the Apache Harmony Project. A developer that makes sustained,
+          welcome contributions to the project for over six months is usually
+          invited to become a Committer, though the exact timing of such
+          invitations depends on many factors.
+        </dd>
+        <dt>
+          <strong>Apache Harmony Committers</strong>
+        </dt>
+
+        <dd>
+          The group of volunteers who are responsible for the technical
+          aspects of the Apache Harmony Project. This group has
+          write access to the appropriate source repositories and these
+          volunteers may cast binding votes on any technical discussion.
+
+          <p>
+            Membership as a Committer is by invitation only and must
+            be approved by consensus of the active Apache PMC members.
+            A Committer is considered inactive by their own declaration or by
+            not contributing in any form to the project for over six months.
+            An inactive member can become active again by reversing whichever
+            condition made them inactive (<em>i.e.</em>, by reversing their
+            earlier declaration or by once again contributing toward the
+            project's work). Membership can be revoked by a unanimous vote of
+            all the active PMC members (except the member in question if they
+            are a PMC member).
+          </p>
+
+         <p>
+           Active:
+         </p>
+
+          <table>
+            <tr>
+              <th class="TableHeading">Name</th>
+              <th class="TableHeading">Organization</th>
+              <th class="TableHeading">Status</th>
+            </tr>
+            <tr>
+              <td>Ilya Berezhniuk</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Nathan Beyer</td>
+              <td class="TableCell">Independent</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Oliver Deakin</td>
+              <td>IBM UK</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Tim Ellison</td>
+              <td class="TableCell">IBM UK</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Alexei Fedotov</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Mikhail Fursov</td>
+              <td class="TableCell">Independent</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Mark Hindess</td>
+              <td>IBM UK</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Sian January</td>
+              <td class="TableCell">IBM UK</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Chunrong Lai</td>
+              <td>Intel CN</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Xiao-Feng Li</td>
+              <td class="TableCell">Intel</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>(Leo)Yi Lei Li</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Mikhail Loenko</td>
+              <td class="TableCell">Independent</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>(Jimmy)Jing Lv</td>
+              <td>IBM CN</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Geir Magnusson Jr.</td>
+              <td class="TableCell">Joost</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Mikhail Markov</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Stepan Mishura</td>
+              <td class="TableCell">Independent</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Nadya Morozova</td>
+              <td>Intel</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Egor Pasko</td>
+              <td class="TableCell">Independent</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Andrey Pavlenko</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Pavel Pervov</td>
+              <td class="TableCell">Independent</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Alexey Petrenko</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">(Sean)Xiao Xia Qiu</td>
+              <td class="TableCell">IBM CN</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Gregory Shimansky</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Aleksey Shipilev</td>
+              <td class="TableCell">Independent</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Alexey Varlamov</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">(Tony)Yue Hao Wu</td>
+              <td class="TableCell">IBM CN</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>(Paulex)Pu Yang</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">Alexei Zakharov</td>
+              <td class="TableCell">Independent</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>Vasily Zakharov</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td class="TableCell">(Regis)Rui Zhi Xu</td>
+              <td class="TableCell">IBM CN</td>
+              <td class="TableCell">A</td>
+            </tr>
+            <tr>
+              <td>(Kevin)Kai Zhou</td>
+              <td>IBM CN</td>
+              <td>A</td>
+            </tr>
+          </table>
+         <p>
+           Inactive:
+         </p>
+
+          <table>
+            <tr>
+              <th class="TableHeading">Name</th>
+              <th class="TableHeading">Organization</th>
+              <th class="TableHeading">Status</th>
+            </tr>
+            
+            <tr>
+              <td>Archie Cobbs</td>
+              <td>Awarix</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td>George Harley</td>
+              <td>IBM UK</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td>Alexey A Ivanov</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td>Vladimir Ivanov</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td>(Richard)Yanxuan Liang</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td>Dan Lydick</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td>David Tanzer</td>
+              <td>?</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td>Weldon Washburn</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+            <tr>
+              <td>(Andrew)Huang Zhu Zhang</td>
+              <td>Independent</td>
+              <td>A</td>
+            </tr>
+          </table>
+
+          <p>
+            Status:
+          </p>
+
+          <ul>
+            <li> R = regular ASF committer status </li>
+            <li>
+              A = Authorized Contributor
+              for listed enhanced IP rules modules
+            </li>
+          </ul>
+        </dd>
+        <dt>
+          <strong>Apache Harmony Project Management Committee</strong>
+        </dt>
+        <dd>
+          The group of volunteers who are responsible for managing the Apache
+          Harmony Project. This includes deciding what is distributed
+          as products of the Project, maintaining the
+          Project's shared resources, speaking on behalf of the Project,
+          resolving license disputes regarding Apache products, nominating
+          new PMC members or committers, and establishing these guidelines.
+
+          <p>
+            Membership in the Apache PMC is by invitation only and must
+            be approved by consensus of the active Apache PMC members.
+            A PMC member is considered inactive by their own declaration or by
+            not contributing in any form to the project for over six months.
+            An inactive member can become active again by reversing whichever
+            condition made them inactive (<em>i.e.</em>, by reversing their
+            earlier declaration or by once again contributing toward the
+            project's work). Membership can be revoked by a unanimous vote of
+            all the active PMC members other than the member in question.
+          </p>
+
+          <p>
+            Our goal is that every committer willing and interested in the day-to-day
+            oversight and management of the project will be invited at the right time
+            to join the PMC. Our goal is 100% of the committers on the PMC.
+          </p>
+
+        </dd>
+
+      </dl>
+    </section>
+  </body>
+</document>

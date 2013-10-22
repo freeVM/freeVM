@@ -1,0 +1,271 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type"
+      content="text/html; charset=UTF-8" />
+      <link rel="stylesheet" type="text/css" href="../../site.css" />
+      <title>
+         Crash and signals handler in Apache Harmony
+      </title>
+   </head>
+
+
+<body>
+<h1>Crash and signals handler in Apache Harmony</h1>
+<p>Apache Harmony Crash and signals handler (CH) is used for a platform-independent
+handling of runtime errors and exceptions in a program. CH may be used as a portable
+signal abstraction layer, but its main purpose is to provide a facility for
+post mortem analysis of managed runtime applications that use just-in-time
+compilers (JITs) to generate user application
+executable code. This makes crash handling library of Apache Harmony unique
+among other facilities because they cannot analyze the native stack of compiled
+code. An application that does not utilize runtime compilers can use this
+library as well, such an application would provide no information
+about compiled methods to crash handler and therefore it would analyze only its
+native code.</p>
+<h2>1.  Terminology</h2>
+<p><i>CH</i> &ndash; acronym used to identify the component crash and <i>signals</i> handling of Apache Harmony.</p>
+<p><i>Signal</i> &ndash; an event delivered by the operating system to an application under
+certain conditions. Signal is a name traditionally used on UNIX systems. On
+Windows* OS, such events are called exceptions. In this document, the term <i>signal</i> is used to define both signal and
+exception depending on the target platform, unless stated otherwise.</p>
+<h2>2.  How the crash handler works</h2>
+<p>Upon its initialization, the crash handler library registers to receive a
+big number of signals (exceptions on Windows), all of which are usually considered
+fatal for most applications. CH allows the application to make a decision
+whether the crash sequence should be started when a signal is delivered to the
+application. To filter such events, the application can register callbacks for
+each signal type that it is interested in, so the execution flow follows one of
+these paths:</p>
+<ol>
+<li>
+If a
+callback returns a non-zero value, the signal is considered handled and the
+application does not crash. Instead, CH transfers execution control to the
+register context that the application may update in order not to receive the
+signal again.
+</li><li>
+If a callback
+returns zero, the signal is considered fatal, and a crash sequence is started. </li>
+</ol>
+<p>CH
+outputs information about the location of the crash based on the crash
+information flags that the application set. These flags control the amount of
+information that CH prints. In addition, the application may specify its own
+callbacks to dump some application specific information, e.g. its data tables.</p>
+<p>The following sequence describes signal handling in detail.</p>
+<ol>
+<li>
+An
+operating system delivers a signal to the application. The signal is handled by
+the crash handler's registered signal handler.</li>
+<li>
+CH exits
+the signal handler context, because the OS signal handler context may be unsafe
+for performing certain operations, such as synchronization. To exit the
+context, CH:
+<ol> 
+<li>Modifies the system-specific register context.</li>
+<li>Saves the original register context at the position pointed by stack pointer register
+from the crash register context for future use.</li>
+<li> Exits the signal handler. </li>
+</ol></li>
+<li>CH checks
+whether the application has registered a callback for the type of the received
+signal. Callbacks must be thread-safe, because signals may occur simultaneously
+in different threads.
+<ol>
+<li>  
+If the signal type has no registered callback, CH considers the signal fatal and initiates
+the crash sequence. </li>
+<li>
+If the signal type has a registered callback, CH calls the callback to determine
+whether such signal is fatal for the application.
+<ol><li>
+If the application
+handles the signal, CH transfers execution control to the registers that
+application specified in its callback.</li>
+<li> If the application
+doesn't handle the signal, CH considers the signal fatal and initiates the crash
+sequence.</li>
+</ol></li></ol></li>
+<li>
+CH locks a
+global synchronization lock, so that no other crashes can be processed. If the application
+crashes in a different thread, that crash is ignored.</li>
+<li>
+CH goes
+through the list of flags and outputs the information about the crashed
+application based on their values. The application may change these flags at
+any moment; e.g. if some types of signals require a special type of output.
+When CH prints the stack trace for the crash point, it may use the function
+specified by the application to iterate over the compiled code. See section 3.2
+for its description.</li>
+<li>
+After all
+information is dumped, CH calls application crash callbacks one by one.
+Different application components may register their crash actions to dump their
+specific data. If a crash happens while dumping such tables, the next
+application crash callback is called (this functionality is in development). Because
+these kinds of callbacks are called in a synchronized region, they don't have
+to be thread-safe.</li>
+<li>
+CH unregisters signal handlers previously registered to define
+default OS specific action depending on the signal that was received by the
+application.</li>
+<li>
+CH
+transfers control to the original register's context. If the application
+previously set the CH flag to call the debugger, CH unlocks the global crash
+lock and calls the platform-specific debugger for analyzing the crash at the
+point where the original signal occurred. If some other threads also crashed
+and are waiting on the crash handler lock, the behavior depends on OS
+processing for multiple crashes in different threads.</li>
+</ol>
+<h2>3.  Using crash and signals handler from an
+application</h2>
+<p>The crash handler API is defined in port_crash_handler.h
+and port_frame_info.h header files. The API consists
+of 2 parts, initialization and output management.</p>
+<h3>3.1    
+Initialization</h3>
+<p>Initialization is the main part of the CH library. It is done with a
+function port_init_crash_handler(). To process
+signals in a specific way, the application must supply an array of signal
+handling callbacks (see section 2) and a pointer to the stack iteration
+function, which performs lookup through compiled methods and returns method
+names and other relevant information (see section 3.2 for details).</p>
+<h3>3.2    
+Stack
+iteration callback</h3>
+<p>To iterate over compiled methods, CH uses the application defined
+function. It has quite complicated semantics, for exact specification see port_frame_info.h header file.</p>
+<p>When a signal is considered fatal, CH prints the execution stack for the
+crashed thread. For that, CH identifies methods in the stack via the IP
+register and finds out whether the crash happened in a compiled method using
+stack iteration callback in the following algorithm:</p>
+<ol>
+<li>
+CH
+initializes port_stack_frame_info with zeroes and
+calls stack iteration callback.</li>
+<li>
+If stack
+iteration callback returns non-zero value, it means that it requires some
+internal state to be allocated in port_stack_frame_info
+structure. CH allocates a buffer of requested size, initializes it with zeroes
+and continues.
+<ol>
+<li>a.  
+If stack
+iteration returns zero, it means that it knows method pointed to by IP in
+register context, and it filled up information about it in port_stack_frame_info.
+Fields that were filled up by stack iteration callback are printed by CH.
+<br/>Optionally when stack iteration callback returns zero, it updates
+register context and internal stack iteration information in port_stack_frame_info to point to a previous method in the
+stack. This functionality necessary if application needs to
+display a continuous stack of compiled method.</li>
+<li>
+If stack iteration
+callback returns -1 it means that register context points to a method not known
+by the application as compiled. In this case CH switches to iteration through
+native code using its platform depending heuristics. In any case, the
+application can return information about the current frame in the port_stack_frame_info structure. If some zeroed fields of
+the structure are filled by the application, they are displayed in the stack
+dump.</li>
+</ol></li>
+<li>
+CH goes
+back to step 2 until it reaches the condition that stack iteration callback
+returned -1 and native unwinding heuristics is unable to unwind the stack
+further (see section 4.2).</li></ol>
+<h3>3.3    
+Output
+management</h3>
+<p>CH has a set of flags that control its output in case of a crash. The application
+may specify its own mode of output using the port_crash_handler_set_flags() function. These
+flags may be changed at any time to adjust the output of information depending
+on the crash that happened. For example, for a failed assertion it is probably
+not necessary to print a register context because it gives no useful
+information.</p>
+<p>Additionally, CH allows the application to dump additional information
+in case of a crash. The application may add multiple callbacks using the port_crash_handler_add_action() function. Each application component may then dump its
+internal data separately.</p>
+<h3>3.4    
+Shutdown</h3>
+<p>When the application shuts down, it may unregister
+CH so that all signal handlers are assigned their default values. This option
+is useful at the late stages of shutdown when the application cannot handle
+crashes and output any application-specific data (e.g. all tables are already
+de-allocated). To unregister the crash handler,
+application may use the port_shutdown_crash_handler()
+function.</p>
+<h2>4.  Implementation notes</h2>
+<p>The crash handler has some design decisions that may affect its usage in
+specific scenarios. This section describes them.</p>
+<h3>4.1    
+Stack
+overflow handling</h3>
+<p>Application callbacks for the signals are called when the OS signal
+handler has already exited. When CH starts processing the signal, some signal
+information needed is already lost. Because storing this information for every
+received signal may reduce the application performance, in case of a crash, CH
+sets thread-local indicators and continues execution in the original register
+context to catch the same signal again and perform required crash processing
+inside the OS signal handler. This technique does not work for the stack
+overflow exception on Windows, because access to the protected memory region which
+caused the signal is restored automatically in OS signal delivery. The problem
+affects creating minidumps on Windows and displaying a message box for calling
+a debugger. This limitation can disappear together with fixing <a
+href="https://issues.apache.org/jira/browse/HARMONY-5617">HARMONY-5617</a>.</p>
+<h3>4.2    
+Compiled
+and native stack</h3>
+<p>In the previous CH implementation, stack iteration was based on the
+compiled stack. Even if native stack unwinding was not done, stack iteration
+continued and printed the whole compiled stack even with no native stack
+information; the whole compiled stack was printed with or without native stack
+information. In the current CH implementation, native stack unwinding takes a
+lead in stack iteration. When the current frame cannot be unwound with the application
+callback and the native stack unwinding algorithm, the iteration stops, even if
+more compiled frames are present.</p>
+<h3>4.3    
+Creating
+core dumps on Linux</h3>
+<p>Core dump is created on Linux when the default signal handler is called
+for some signals. When application requests to call the debugger in case of a crash,
+the application does not actually crash, but continues execution as a debugged
+application. Therefore, when the debugger is called on Linux, core dump is not
+generated.</p>
+<h3>4.4    
+Working
+with libraries</h3>
+<p>The Harmony Crash Handler is mostly designed as a crash handler for a
+standalone application. There may be problems using it with libraries linked to
+another application, which may have its own signal handling routines.</p>
+<h3>4.5    
+Windows
+compatibility</h3>
+<p>On Windows, CH uses VEH (Vectored Exception Handler) for centralized signals
+catching. This functionality is unavailable on Windows versions earlier than
+Windows XP/Windows Server 2003, so CH cannot be used on Windows 2000 and
+earlier.</p>
+</body>
+</html>

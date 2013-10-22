@@ -1,0 +1,687 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+                                                    <meta name="author" content="Harmony Documentation Team">
+            <meta name="email" content="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Getting Started For Contributors</title>
+
+                        
+                
+        <link rel="stylesheet" type="text/css" href="css/site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/print.css" media="print" />
+
+                        
+        </head>
+
+        <body>
+			<div style="
+				clear: left;
+   				font-size: 110%;
+   				background-color: #FF0040;
+   				color: white;
+				float: left">
+
+				<b><big>Apache Harmony is retired at the Apache Software Foundation</big></b> since Nov 16, 2011.
+				<p>
+				The information on these pages may be out of date, or may refer to
+				resources that have moved or have been made read-only.
+				<br> 
+				For more information please refer to the
+				<a href="http://attic.apache.org">Apache Attic</a>
+				<p>
+			</div>
+			
+            <div id="pageHeader" style="clear: left">
+			<br>
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="./images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement
+            <a href="http://na.apachecon.com">
+                <img id="advertisement"
+                     src="images/apachecon-na2010.gif"
+                     width="234" height="60"
+                     alt="ApacheCon US 2010" /></a>
+            -->
+
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="./index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/licenses/">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./download.cgi">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./faq.html">FAQ</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/security/">Security</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./sitemap.html">Sitemap</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="./get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="./svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.jdocs.com/harmony/5.M5/overview-summary.html">API Reference</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Foundation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/sponsorship.html ">Sponsorship</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/thanks.html ">Thanks</a>
+</li>
+           
+                        
+        
+        </ul>
+                    
+                <!-- Add the ASF birthday logo to the end of the menu -->
+                <img id="birthday"
+                     src="http://www.apache.org/images/10yearsASF_170x101.jpg"
+                     width="170" height="101"
+                     vspace="30"
+                     alt="Ten Years of the ASF" />
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                                        <h1>
+      <a name="Getting Started For Contributors">Getting Started For Contributors</a>
+    </h1>
+                        <p>
+      Follow these instructions to get configured to build and
+      work with the Apache Harmony source code. To get the Harmony code
+      and build it, follow these steps:</p>
+                                <ol>
+      <li>
+        <a href="#1. Prerequisites">Get all required prerequisites.</a>
+      </li>
+      <li>
+        <a href="#2. Checking out the Federated Build Tree">Check out the source code.</a>
+      </li>
+      <li>
+        <a href="#3. Starting the Federated Build">Build the source code.</a>
+      </li>
+    </ol>
+                                <p>
+      After successfully building the source code, you will be able to
+      <a href="#Running Java Applications">run Java applications</a> with Harmony.
+    </p>
+                                <p>
+      If you only need building specific parts of the source code and not the whole JDK, 
+      you can <a href="download.cgi">download</a>
+      a HDK (<a href="hdk.html">Harmony Java Developer's Kit</a>) bundle,
+      obtain the source code and follow       
+      <a href="#Detailed Building Instructions for Components">component-wise instructions</a>.
+    </p>
+                                <p class="note">Note:</p>
+                                <p class="notetext">
+      The build is evolving. If you come across a problem, double-check the <a href="mailing.html">mailing list</a> archives, <a href="faq.html">FAQ</a>
+      and the <a href="http://wiki.apache.org/harmony/DrlvmBuildTroubleshooting">build
+      troubleshooting page</a> : your issue may have been already discovered and
+      resolved. Otherwise, you can write a new mail to ask for help and support.
+    </p>
+                                    
+    <h2>
+        <a name="1. Prerequisites">1. Prerequisites</a>
+    </h2>
+      
+                        <p>
+        <strong>Basic Prerequisites</strong>
+      </p>
+                                <p>The tools you must have to be able to work with Harmony are:
+      </p>
+                                <ul>
+        <li>
+          <a href="http://ant.apache.org/">Apache Ant</a> version 1.7.0 or higher
+        </li>
+        <li>
+          <a href="http://subversion.tigris.org/">Subversion®</a> version 1.3 or higher
+        </li>
+        <li>
+          <a href="">Java SE 5 JDK</a>
+        </li>
+      </ul>
+                                <p class="note">Note</p>
+                                <p class="notetext">
+        If you are working from behind a firewall, you may need to configure
+        the proxy setting for <code>ant</code> and <code>svn</code> tools.<br />
+        For the <code>ant</code> tool, set the <code>ANT_OPTS</code> environment
+        variable to point to: <code>
+          <br />
+          -Dhttp.proxyHost=&lt;host&gt;<br />
+          -Dhttp.proxyPort=&lt;proxy&gt;
+        </code><br />
+        For the <code>svn</code> tool, follow the instructions appropriate to
+        the version of the tool you use. For example, edit <code>~/.subversion/servers</code>
+        file for console version of <code>svn</code>.
+      </p>
+                                <p>Optional (but recommended) prerequisite is an Eclipse™ Java Compiler (ECJ), version 3.2 or higher. 
+      You need to <a href="http://download.eclipse.org/eclipse/downloads/">download</a> 
+      standalone ecj.jar and put it to <code>ANT_HOME/lib</code> directory.
+      Alternatively, you can switch to any other Java 1.5 compiler supported by Ant
+      via overriding <code>hy.javac.compiler</code> property.
+      </p>
+                                <p>
+        The other prerequisites for building Harmony differ by platform. For
+        examples of platform-specific setup instructions, please see these
+        <a href="http://wiki.apache.org/harmony/DevelopmentPlatformConfiguration">community maintained</a>
+        descriptions. Below is a generic guideline for each platform. <br />
+        To learn which platforms are currently supported, see the
+        <a href="roadmap.html#Porting Matrix">Porting Matrix</a>.
+      </p>
+                                <table>
+                        <tr>
+                        <th class="TableHeading" colspan="" rowspan="" width="">
+                
+            On Windows
+          
+        </th>
+                                <th class="TableHeading" colspan="" rowspan="" width="">
+                
+            On Linux
+          
+        </th>
+            </tr>
+                                <tr>
+                        <td class="TableCell" colspan="" rowspan="">
+    
+                
+            <ul>
+              <li>
+            
+                  Windows Platform SDK
+                </li>
+              <li>
+                <a href="http://www.microsoft.com/products">
+                  Microsoft Visual Studio.NET
+                  2003
+                </a>
+              </li>
+              <li>
+                Optionally, an external compiler, such as:
+                <ul>
+                  <li>Microsoft 32-bit C/C++ Compiler, version 7 or higher</li>
+                  <li>
+                    <a href="http://www.intel.com/cd/software/products/asmo-na/eng/compilers/index.htm">
+                      Intel C++ Compiler</a>, version 9.0
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          
+        </td>
+                                <td class="TableCell" colspan="" rowspan="">
+    
+                
+            <ul>
+              <li>
+                gcc compiler, version 3.3.3 or higher<br />
+                Versions below 3.3.3 have not been tested but might work.
+              </li>
+              <li>g++ compiler</li>
+              <li>make</li>
+              <li>liblcms1-dev</li>
+              <li>libpng12-dev</li>
+              <li>libjpeg62-dev</li>
+              <li>libx11-dev</li>
+              <li>libxft-dev</li>
+              <li>binutils-dev</li>
+              <li>libxml2-dev</li>
+              <li>x11proto-xext-dev</li>
+              <li>libxtst-dev</li>
+            </ul>
+          
+        </td>
+            </tr>
+            </table>
+                                <p class="note">Note:</p>
+                                <p class="notetext">
+      You have to ensure you properly configured the tools in the user environment, 
+      please refer to corresponding manuals as needed. In particular, 
+      the working environment should be such that the PATH environment variable 
+      contains all of the directories where the executables of the tools 
+      are located and that all of those executables can be successfully invoked 
+      from the command line. <br />
+      For example, for using a C++ compiler on Windows you'd typically need to 
+      launch a specific batch script, such as 
+      "Visual Studio .NET 2003 Command Prompt", prior to building.
+      </p>
+                                <p>
+        <strong>Additional Prerequisites</strong>
+      </p>
+                                <p>
+        The build system requires additional software and libraries shared
+        across different parts of the build or specific for individual build parts.
+        The list is evolving, so the safest way to get and configure all the required software
+        is to let the build download it from the Internet.
+      </p>
+                                <p>
+        Here is the list of additional tools required for one of the build parts, DRLVM.
+        The list applies to Windows and Linux users.
+      </p>
+                                <ul>
+        <li>
+          <a href="http://sourceforge.net/project/showfiles.php?group_id=36177">
+            Cpp Tasks</a> collection,
+            version 1.0 beta 3 or higher (downloaded)
+        </li>
+        <li>
+          <a href="http://www.zlib.net">Zlib</a> library, binaries,
+          version 1.2.1 or higher (Windows only, downloaded)
+        </li>
+        <li>
+          <a href="http://apr.apache.org/download.cgi">Apache Portable Runtime Layer</a>,
+          version 1.2.12 (downloaded)
+        </li>
+      </ul>
+                                <p>
+        You can download these resources prior to building a component,
+        and specify the resulting locations (e.g. by editing 
+        <code>make/depends.properties</code> in component's workspace).
+        However, because the list of software is subject to change, we do <b>not</b> recommend
+        that you download the software and not let the build do that for you.
+      </p>
+                   
+                                    
+    <h2>
+        <a name="2. Checking out the Federated Build Tree">2. Checking out the Federated Build Tree</a>
+    </h2>
+      
+                        <p>
+        The Harmony codebase is divided into many separate parts. To create
+        a working JDK, you need a <i>class library</i>, a <i>virtual machine</i> 
+        and <i>jdktools</i>. To
+        obtain these parts, use the <i>federated build</i> tree and then work
+        within the class library directory and the VM directory as you choose.
+        Currently, the federated build uses the DRLVM virtual machine.
+      </p>
+                                <p>
+        To check out the federated build, use the following command:
+      </p>
+                                <pre>$ svn co http://svn.apache.org/repos/asf/harmony/enhanced/java/trunk </pre>
+                                <p>
+        This command checks out a directory structure that contains
+        <code>classlib</code>, <code>drlvm</code> and <code>jdktools</code>
+        directories.
+      </p>
+                                <p class="note">Note</p>
+                                <p class="notetext">
+        If the root of the federated build is multiple levels deep in
+        your file system, the very long paths within class library might
+        result in a SVN checkout failure on Windows. The solution is to
+        move the tree upwards in your file system or switch operating systems.
+      </p>
+                   
+                                    
+    <h2>
+        <a name="3. Starting the Federated Build">3. Starting the Federated Build</a>
+    </h2>
+      
+                        <p>
+        Now you should be ready to build the code. For the first time you build,
+        you might want to fetch all the dependencies.
+        If you do not, or if in the future a new dependency is added, the build will tell
+        you what to do, so that you can do this step periodically. To fetch the
+        dependencies and check out, build, and package snapshots of the JRE, JDK and HDK, 
+        type the following command in the root directory of the federated build:
+      </p>
+                                <pre>$ ant -Dauto.fetch=true all</pre>
+                                <p>
+        This variant of command downloads all the required third-party components that can be
+        distributed under licences different from the Apache license; see <code>THIRD_PARTY_NOTICES.txt</code>
+        in the root directory for details. This is only needed during your first build. For
+        subsequent builds, just type:
+      </p>
+                                <pre>$ ant</pre>
+                                <p>
+        If you have a Linux system with libstdc++.so.5 instead of libstdc++.so.6, please use the
+        <i><b>use.libstdc++5=true</b></i> option. Using the proper version of C++ Standard Library is
+        a requirement of the ICU libraries used.
+      </p>
+                                <pre>$ ant -Duse.libstdc++5=true</pre>
+                                <p class="note">Note</p>
+                                <p class="notetext">
+        If you choose to build from the federated build root, you may need to
+        increase the Java heap available to Ant.  We suggest setting the "ANT_OPTS" environment
+        variable as ANT_OPTS='-Xms256m -Xmx512m' in the manner appropriate for your
+        operating system.
+        <br />This recommendation is especially actual if you're building on Windows: 
+        otherwise Ant can crash in obscure way (e.g. with a mysterious InvocationTargetException).
+      </p>
+                                <p>
+        Because running Ant in the root directory builds the full JDK, it can be inconvenient
+        for a developer focused on a specific area. If you are not interested in building
+        the full HDK, follow the <a href="#Detailed Building Instructions for Components">detailed instructions</a>
+        to build each component of JRE separately.
+      </p>
+                   
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                                        <h1>
+      <a name="Detailed Building Instructions for Components">Detailed Building Instructions for Components</a>
+    </h1>
+                        <p>If you do not need to build the whole HDK and did not execute <code>ant</code>
+    in <a href="#3. Starting the Federated Build">step 3</a>, follow these instructions to
+    build each component in turn and assemble the JRE from them. The building
+    procedure consists of the following steps:</p>
+                                <ol>
+      <li>
+        <a href="#1. Updating the Source Trees">Update the source trees.</a>
+      </li>
+      <li>
+        <a href="#2. Building the Components">Build the JDK components.</a>
+      </li>
+      <li>
+        <a href="#3. Combining JRE from Built Components">Combine class libraries and VM into JRE.</a>
+      </li>
+    </ol>
+                                    
+    <h2>
+        <a name="1. Updating the Source Trees">1. Updating the Source Trees</a>
+    </h2>
+      
+                        <p>
+          Any time going forward, you can bring any directory to current SVN
+          revision simply by doing <code>svn update</code> in any directory.
+        </p>
+                                <pre>
+$ cd classlib
+$ svn update</pre>
+                                <p>
+          After executing <code>svn update</code>, your tree will
+          reflect any modifications made to the SVN repository. If you are a
+          project committer, you can make commits from within this tree, as it
+          is a normal SVN checkout.
+        </p>
+                                <p class="note">Note</p>
+                                <p class="notetext">
+          If you fail to rebuild class library after the <code>svn update</code> command,
+          clean previous build results:
+        </p>
+                                <pre>$ ant clean</pre>
+                   
+                                    
+    <h2>
+        <a name="2. Building the Components">2. Building the Components</a>
+    </h2>
+      
+                        <p>
+        Now you should be ready to build the code. You need to build components in this order:
+        first the class library, then DRLVM and last jdktools, to satisfy their build dependencies. 
+        Each next component takes necessary artifacts from it's predecessor and 
+        assembles a working JRE/JDK as part of its build.
+      </p>
+                                <p>
+        All components have unified build interfaces, i.e. they support the same basic set of Ant targets
+        and properties. Thus the following instructions are given by the example of class library, 
+        but apply to any other component.
+      </p>
+                                <p>
+          For the first time you build, you might want to fetch all the external
+          component dependencies. If you do not, or if in the future a new
+          dependency is added, the build will tell you what to do, so that you
+          can do this step periodically. To fetch the dependencies
+          and then build the component, use the following commands:
+        </p>
+                                <pre>
+$ cd classlib
+$ ant fetch-depends
+$ ant</pre>
+                                <p>
+          Move on to validate the build. Each component provides a decent set of 
+          unit and functional tests and normally should pass 100% of them.
+          Note, you can only test the class libraries in case you have a virtual machine. 
+          You can use a VM other than DRLVM, see
+          <a href="#3. Combining JRE from Built Components">Combining JRE from Built Components</a>.
+          If you want to use DRLVM, proceed with the instruction to build it.
+          <br />
+          Run the following command to build and run the full test suite for the component:
+        </p>
+                                <pre>$ ant test</pre>
+                                <p>
+        At this point, the build is complete. A produced JRE is in the <code>deploy/jdk/jre</code> subdirectory 
+        of the component workspace.
+        </p>
+                                <p class="note">Note</p>
+                                <p class="notetext">
+          DRLVM creates the deploy subdirectory only if <code>deploy.canonical.flag</code> property was 
+          set to <code>TRUE</code>. Otherwise you can find the build artifacts deeper 
+          in <code>build/&lt;platform-specific&gt;/deploy/jdk/jre</code> directories.
+        </p>
+                                <p> 
+          You can get more information on build nuances of each component by running:
+        </p>
+                                <pre>$ ant help</pre>
+                   
+                                    
+    <h2>
+        <a name="3. Combining JRE from Built Components">3. Combining JRE from Built Components</a>
+    </h2>
+      
+                        <p>
+          <b>Class library developers</b> can work with DRLVM or install
+          another compatible VM. For example, you can use the
+          <a href="http://www.ibm.com/developerworks/java/jdk/harmony/index.html">
+            IBM® virtual machine
+          </a> that has been generously made available for the project's
+          development needs by IBM under a non-open source, binary evaluation license.
+          To install the VM, follow the instructions that accompany that VM.
+          You can expand the class library code over the top of the Harmony directory (so that the 'jdk'
+          directories line-up)
+        </p>
+                                <pre>
+On Windows:
+$ unzip &lt;path_to_vm_zip&gt; -d ../..
+
+On Linux:
+$ tar xzf &lt;path_to_vm_tarball&gt; --directory ../..</pre>
+                                <p>
+          To work with the Harmony class library, refer to the
+          <a href="subcomponents/classlibrary/index.html">
+            class library subcomponent
+          </a>.
+        </p>
+                                <p>
+          <b>DRLVM developers</b> work with the result of the
+          DRLVM build step, which is a JRE containing DRLVM and the
+          class library.
+        </p>
+                   
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                                        <h1>
+      <a name="Running Java Applications">Running Java Applications</a>
+    </h1>
+                        <p>
+        Ensure that the <code>JAVA_HOME</code> environment variable is unset, or pointing
+        to the Harmony build directory (<code>deploy/jdk/jre</code> if you've built it as described above).
+      </p>
+                                <p>
+        Run Java applications normally using the launcher in
+        <code>deploy/jdk/jre/bin</code>:
+      </p>
+                                <pre>
+$ deploy/jdk/jre/bin/java -showversion -jar helloworld.jar
+Apache Harmony Launcher:
+(c) Copyright 1991, 2006 The Apache Software Foundation or its licensors, as applicable.
+java version &quot;1.5.0&quot;
+pre-alpha : not complete or compatible
+svn = r479551, (Nov 27 2006), Windows/ia32/msvc 1310, debug build
+http://harmony.apache.org
+Hello world!</pre>
+                                <p>
+      Eclipse IDE users can <a href="documentation/eclipse_update.html">install
+      the Harmony plug-in</a> for developing and running with the Apache Harmony
+      VM.
+    </p>
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                
+                                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special">
+            	<em>Copyright &#169; 2003-2010, The Apache Software Foundation</em>
+            	<br/>
+            	Apache Harmony, the Apache Harmony logo, and the Apache feather
+            	logo are trademarks of The Apache Software Foundation.
+            	<br/>
+            	Java is a registered trademark of Oracle and/or its affiliates. Other names
+            	mentioned may be trademarks or registered trademarks of their
+            	respective owners.
+            </div>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
