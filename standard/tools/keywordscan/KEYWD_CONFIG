@@ -1,0 +1,12 @@
+# Configfile for running keyword scan
+#
+KeywordInputFileName:/home/zoe/keywd/keywords.txt
+ReportFileName:/home/zoe/keywd/Hykeywords.CSV
+ScanRootDirectory:/home/zoe/keywd/Harmony
+# 
+# Comment the next line if you want exact case matches
+#
+#CaseInsensitive
+#
+# Warn if these file types exist in the source tree (comma separated list, no spaces)
+FileTypes:zip,tar,gz,jar

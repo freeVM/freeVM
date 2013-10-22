@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl"?>
+<rdf:RDF xml:lang="en"
+         xmlns="http://usefulinc.com/ns/doap#" 
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns:asfext="http://projects.apache.org/ns/asfext#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/">
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+  <Project rdf:about="http://harmony.apache.org/">
+    <created>2010-11-24</created>
+    <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
+    <name>Apache Harmony</name>
+    <homepage rdf:resource="http://harmony.apache.org/" />
+    <asfext:pmc rdf:resource="http://attic.apache.org" />
+    <shortdesc>A Java SE 5 and 6 runtime and development kit.</shortdesc>
+    <description> Apache Harmony software is a modular Java runtime with class libraries and associated tools.
+    </description>
+    <bug-database rdf:resource="http://issues.apache.org/jira/browse/HARMONY" />
+    <mailing-list rdf:resource="http://harmony.apache.org/mailing.html" />
+    <download-page rdf:resource="http://harmony.apache.org/download.cgi" />
+    <programming-language>Java</programming-language>
+    <programming-language>C</programming-language>
+    <category rdf:resource="http://projects.apache.org/category/virtual-machine" />
+    <category rdf:resource="http://projects.apache.org/category/retired" />
+    <release>
+      <Version>
+        <name>Harmony 5.0 M15</name>
+        <created>2010-09-01</created>
+        <revision>5.0M15</revision>
+      </Version>
+    </release>
+    <release>
+      <Version>
+        <name>Harmony 6.0 M3</name>
+        <created>2010-09-02</created>
+        <revision>6.0M3</revision>
+      </Version>
+    </release>
+    <repository>
+      <SVNRepository>
+        <location rdf:resource="https://svn.apache.org/repos/asf/harmony/"/>
+        <browse rdf:resource="http://svn.apache.org/viewvc/harmony/"/>
+      </SVNRepository>
+    </repository>
+    <maintainer>
+      <foaf:Person>
+        <foaf:name>Nathan Beyer</foaf:name>
+          <foaf:mbox rdf:resource="mailto:ndbeyer@apache.org"/>
+      </foaf:Person>
+    </maintainer>
+    <asfext:implements><asfext:Standard>
+      <asfext:title>Java SE 5</asfext:title>
+      <asfext:body>JCP</asfext:body>
+      <asfext:id>java-se-5</asfext:id>
+      <asfext:url rdf:resource="http://download.oracle.com/javase/1.5.0/docs/"/>
+    </asfext:Standard></asfext:implements>
+    <asfext:implements><asfext:Standard>
+      <asfext:title>Java SE 6</asfext:title>
+      <asfext:body>JCP</asfext:body>
+      <asfext:id>java-se-6</asfext:id>
+      <asfext:url rdf:resource="http://download.oracle.com/javase/6/docs/"/>
+    </asfext:Standard></asfext:implements>
+  </Project>
+</rdf:RDF>

@@ -1,0 +1,5073 @@
+#!/usr/bin/perl -w
+#
+# <@LICENSE>
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to you under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at:
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# </@LICENSE>
+
+=head1 NAME
+
+jdwp-dump - Perl script for decoding JDWP messages from IP packets
+
+=head1 SYNOPSIS
+
+  # live decode
+  # decode JDWP packets that are visible on the interface eth0
+  jdwp-dump eth0 port 8000
+
+  # batch decode
+  # sniff 100 JDWP packets from eth0 and write them to jdwp.tcp
+  # then later decode JDWP messages from tcpdump file
+  tcpdump -w jdwp.tcp -i eth0 -c 100 -s 32768 tcp and port 8000
+  jdwp-dump jdwp.tcp
+
+=head1 DESCRIPTION
+
+This script is an JDWP message decoder for IP packets.  Packets can be
+decoded live by sniffing traffic on a network interface or they can be
+batched processed by reading them from a tcpdump file.
+
+=cut
+
+use strict;
+use Getopt::Long;
+use Net::Pcap;
+use Pod::Usage;
+use Socket qw/inet_ntoa/;
+use Time::HiRes;
+$|=1;
+
+my $verbose;
+my $packet_print = 1;
+my $tcp_print;
+my $message_hex_print;
+my $help;
+my $man;
+my $normalize_constants;
+GetOptions('verbose+' => \$verbose,
+           'packet!' => \$packet_print,
+           'tcp!' => \$tcp_print,
+           'hex!' => \$message_hex_print,
+           'normalize_constants!' => \$normalize_constants,
+           'help|?|h' => \$help,
+           'man' => \$man,
+          ) or pod2usage(2);
+pod2usage(1) if ($help);
+pod2usage(-exitstatus => 0, -verbose => 2) if ($man);
+
+my $err = '';
+my $dev = shift || Net::Pcap::lookupdev(\$err);
+$err and die 'lookupdev: '.$err;
+my $snaplen = 32768;
+my $promisc = 1;
+my $timeout = 100;
+my $glob = {};
+$glob->{t} = Time::HiRes::time;
+sub normalize_id;
+my $spec;
+{
+  local $/ = undef;
+  my $eval = <DATA>;
+  close(DATA);
+  eval $eval;
+  if ($@) {
+    die 'DATA: ', $@;
+  }
+  $spec->{modkind} =
+    {
+     1 => { name => 'Count' },
+     2 => { name => 'Conditional' },
+     3 => { name => 'ThreadOnly' },
+     4 => { name => 'ClassOnly' },
+     5 => { name => 'ClassMatch' },
+     6 => { name => 'ClassExclude' },
+     7 => { name => 'LocationOnly' },
+     8 => { name => 'ExceptionOnly' },
+     9 => { name => 'FieldOnly' },
+     10 => { name => 'Step' },
+     11 => { name => 'InstanceOnly' },
+     12 => { name => 'SourceNameMatch' },
+    };
+  $spec->{pretty} =
+    {
+     refTypeTag => 'typetag',
+     modKind => 'modkind',
+     suspendPolicy => 'suspendpolicy',
+     size => 'stepsize',
+     depth => 'stepdepth',
+     sigbyte => 'tag',
+     eventKind => 'eventkind',
+     threadStatus => ['threadstatus'],
+     suspendStatus => ['suspendstatus'],
+     status => ['classstatus'], # why not hex in spec like other flags?
+    };
+  $spec->{id_type} = {};
+  foreach (qw/classID interfaceID arrayTypeID/) {
+    $spec->{id_type}->{$_} = 'referenceTypeID';
+  }
+  foreach (qw/threadID threadGroupID stringID classLoaderID classObjectID
+              arrayID referenceTypeID/) {
+    $spec->{id_type}->{$_} = 'objectID';
+  }
+}
+
+my $pcap;
+if ($dev =~ /\.tcp$/) {
+  # seems to be a file
+  # assume the filter was provide to the tcpdump command
+  $pcap = Net::Pcap::open_offline($dev, \$err);
+  $err and die 'Net::Pcap::open_offline failed: '.$err;
+} else {
+  # seems to be a device
+  my $net;
+  my $mask;
+  Net::Pcap::lookupnet($dev, \$net, \$mask, \$err);
+  $err and die 'Net::Pcap::lookupnet failed: '.$err;
+
+  $pcap = Net::Pcap::open_live($dev, $snaplen, $promisc, $timeout, \$err);
+  $err and die 'Net::Pcap::open_offline failed: '.$err;
+
+  my $filter;
+  Net::Pcap::compile($pcap, \$filter, 'udp and port 3865', 1, $mask);
+  $err and die 'Net::Pcap::compile failed: '.$err;
+
+  Net::Pcap::setfilter($pcap, $filter);
+}
+print STDERR "Processing $dev\n" if ($verbose);
+
+Net::Pcap::loop($pcap, -1, \&packet, '');
+Net::Pcap::close($pcap);
+
+printf STDERR
+       "Elapsed processing time: %.02f\n", Time::HiRes::time - $glob->{t}
+  if ($verbose);
+
+END {
+  print STDERR 'Trace contained ', $glob->{count}, " packets\n" if ($verbose);
+}
+
+sub packet {
+  my $user = shift;
+  my $hdr = shift;
+  my $pkt = shift;
+
+  $glob->{start} = $hdr->{tv_sec}+$hdr->{tv_usec}/1000000
+    unless (exists $glob->{start});
+  $glob->{end} = ($hdr->{tv_sec}+$hdr->{tv_usec}/1000000);
+  my $time = $glob->{end} - $glob->{start};
+  $glob->{count}++;
+  printf(STDERR
+         "Packet: %4d len=%-4d t=%-6.4fs\n",
+         $glob->{count}, $hdr->{len}, $time) if ($packet_print);
+
+  my $mac_dst = unpack_byte_len($pkt, 6);
+  my $mac_src = unpack_byte_len($pkt, 6);
+  my $type = unpack_16bit($pkt);
+  # $pkt is now IP layer
+  if ($type != 0x0800) {
+    warn " not IP protocol\n";
+    return;
+  }
+
+  my $byte = unpack 'C', $pkt;
+  my $ip_ver = ($byte&0xf0) >> 4;
+  my $ip_len = ($byte&0xf) << 2;
+  if ($ip_ver != 4) {
+    warn " not IPv4\n";
+    return;
+  }
+
+  my $ip_hdr = unpack_byte_len($pkt, $ip_len);
+  # $pkt is now TCP layer
+  my ($proto,$src,$dst) = unpack('x9 C x2 a4 a4',$ip_hdr);
+  unless ($proto == 6) {
+    warn " not TCP\n";
+    return;
+  }
+
+  my ($srcp, $dstp, $offset, $flags) = unpack('n n x4 x4 C C',$pkt);
+  my $tcp_len = $offset >> 2;
+  my $tcp_hdr = unpack_byte_len($pkt, $tcp_len);
+  # $pkt is now payload
+  my %flags = ();
+  $flags{'URG'}++ if ($flags & 0x20);
+  $flags{'ACK'}++ if ($flags & 0x10);
+  $flags{'PSH'}++ if ($flags & 0x08);
+  $flags{'RST'}++ if ($flags & 0x04);
+  $flags{'SYN'}++ if ($flags & 0x02);
+  $flags{'FIN'}++ if ($flags & 0x01);
+
+  printf("TCP: src=%s:%d dst=%s:%d len=%d F=%02x[%s]\n",
+         inet_ntoa($src), $srcp,
+         inet_ntoa($dst), $dstp,
+         $tcp_len, $flags, join ',', sort keys %flags) if ($tcp_print);
+
+  return unless (defined $pkt && $pkt ne '');
+  my $key = $src.':'.$srcp.'-'.$dst.':'.$dstp;
+  if ($pkt eq 'JDWP-Handshake') {
+    my $who = exists $glob->{key}->{'debugger'} ? 'vm' : 'debugger';
+    $glob->{key}->{$who} = $key;
+    $glob->{who}->{$key} = $who;
+    print "$who: JDWP-Handshake\n\n";
+    return;
+  }
+
+  my $who = ''; # $glob->{who}->{$key};
+  if (exists $glob->{frag}->{$key}) {
+      print STDERR "Restoring payload\n" if ($verbose);
+      $pkt = $glob->{frag}->{$key}.$pkt;
+      delete $glob->{frag}->{$key};
+  }
+
+  while ($pkt) {
+    my $save = $pkt;
+    my $len = unpack_32bit($pkt);
+    my $id = unpack_32bit($pkt);
+    my $flags = unpack_8bit($pkt);
+    my $data_len = $len - 11; # header is 11 bytes
+    if (length $pkt < $data_len+2) { # still 2 bytes of header
+      print STDERR "Saving payload\n" if ($verbose);
+      $glob->{frag}->{$key} = $save;
+      last;
+    }
+    undef $save; # we don't need this anymore
+
+    print $who, ': ';
+
+    my ($error, $cmd_set, $cmd, $data);
+    my $spec_type;
+    if ($flags&0x80) {
+      $spec_type = 'reply';
+      $error = unpack_16bit($pkt);
+      $data = unpack_byte_len($pkt, $data_len);
+      print 'Reply: id=', $id, ' error=', error_str($error), "\n";
+      $cmd_set = $glob->{id}->{$id}->{cmd_set};
+      $cmd = $glob->{id}->{$id}->{cmd};
+      print '  ', cmd_str($cmd_set, $cmd), "\n";
+
+    } else {
+      $spec_type = 'out';
+      $cmd_set = unpack_8bit($pkt);
+      $cmd = unpack_8bit($pkt);
+      $data = unpack_byte_len($pkt, $data_len);
+      print 'Command: id=', $id, ' ', cmd_str($cmd_set, $cmd), "\n";
+      $glob->{id}->{$id} =
+        {
+         cmd_set => $cmd_set,
+         cmd => $cmd,
+        };
+    }
+    next if (defined $error && $error != 0);
+    print hex_dump($data, '  ') if ($message_hex_print);
+    unless (exists $spec->{cmd_set}->{$cmd_set}) {
+      print "Unsupported command set\n";
+      next;
+    }
+    my $cmd_spec = $spec->{cmd_set}->{$cmd_set}->{cmd}->{$cmd};
+    unless ($cmd_spec) {
+      print "Unsupported command\n";
+      next;
+    }
+    my $data_spec = $cmd_spec->{$spec_type};
+    my $results = {};
+    parse_data($data, $data_spec, '  ', $results);
+    if ($cmd_set == 1 && $cmd == 7 && $spec_type eq 'reply') {
+      # 1:7 VirtualMachine:IDSizes
+      # check that id sizes are supported
+      foreach (qw/fieldIDSize methodIDSize objectIDSize referenceTypeIDSize
+                  frameIDSize/) {
+        die "Sorry, only $_ size of 8 is supported, not ".$results->{$_}
+          unless ($results->{$_} == 8);
+      }
+    } elsif ($cmd_set == 11 && $cmd == 1) {
+      # 11:1 ThreadReference:Name
+      if ($spec_type eq 'out') {
+        $glob->{thread_name_request}->{$id} = $results->{thread};
+      } elsif (exists $glob->{thread_name_request}->{$id}) {
+        set_name('threadID',
+                 $glob->{thread_name_request}->{$id} => $results->{threadName});
+      }
+    } elsif ($cmd_set == 1 && $cmd == 2) {
+      # 1:2 VirtualMachine:ClassesBySignature
+      if ($spec_type eq 'out') {
+        $glob->{classesbysignature_request}->{$id} = $results->{signature};
+      } elsif (exists $glob->{classesbysignature_request}->{$id}) {
+        foreach my $class (@{$results->{classes_repeats}}) {
+          set_name('classID',
+              $class->{typeID} => $glob->{classesbysignature_request}->{$id});
+        }
+      }
+    } elsif ($cmd_set == 2 && $cmd == 15 && $spec_type eq 'reply') {
+      # 2:15 ReferenceType:MethodsWithGeneric
+      foreach my $method (@{$results->{declared_repeats}}) {
+        my $str = $method->{name}; # .' '.$method->{signature}; # too long
+        set_name('methodID', $method->{methodID} => $str);
+      }
+    } elsif ($cmd_set == 2 && $cmd == 14 && $spec_type eq 'reply') {
+      # 2:14 ReferenceType:FieldsWithGeneric
+      foreach my $field (@{$results->{declared_repeats}}) {
+        my $str = $field->{name}.' '.$field->{signature}; # too long
+        set_name('fieldID', $field->{fieldID} => $str);
+      }
+    } elsif ($cmd_set == 6 && $cmd == 1) {
+      # 6:1 Method:LineTable
+      if ($spec_type eq 'out') {
+        $glob->{linetable_request}->{$id} =
+          $results->{refType}.'!'.$results->{methodID};
+      } elsif (exists $glob->{linetable_request}->{$id}) {
+        my $last;
+        foreach my $line (@{$results->{lines_repeats}}) {
+          set_line($glob->{linetable_request}->{$id}, $line);
+        }
+      }
+    }
+
+
+    if ($cmd_set == 64 && $cmd == 100 && $spec_type eq 'out') {
+      foreach my $ev (@{$results->{events_repeats}}) {
+        next unless ($ev->{eventKind} == 8 &&
+                     $ev->{eventKind_case}->{refTypeTag} == 1);
+        set_name('classID', $ev->{eventKind_case}->{typeID},
+                 $ev->{eventKind_case}->{signature});
+      }
+    }
+  } continue {
+    print "\n";
+  }
+}
+
+sub parse_data {
+  my ($data_spec, $prefix, $results) = @_[1..3];
+  $prefix = '  ' unless ($prefix);
+  $results = {} unless ($results);
+  foreach my $elt (@$data_spec) {
+    if ($elt eq 'other') {
+      print $prefix, "unsupported data?\n";
+      next;
+    }
+    my $method = 'parse_type_'.$elt->{type};
+    $method =~ s/\W/_/g;
+    my $val;
+    {
+      no strict qw/refs/;
+      $val = &{$method}($_[0], $elt, $prefix, $results);
+    }
+    next unless (defined $val);
+    $results->{$elt->{name}} = $val;
+    my $type = $elt->{type};
+    if ($elt->{type} eq 'referenceTypeID') {
+      # apply normalization based on refTypeTag
+      $type = exists $results->{refTypeTag}
+        ? (lc $spec->{typetag}->{$results->{refTypeTag}}->{name}).'ID'
+        : 'classID';
+    }
+    print $prefix, $elt->{type}, ' ', $elt->{name}, ': ',
+                   pretty_print({ val => $val,
+                                  type => $type,
+                                  name => $elt->{name}}), "\n";
+  }
+  return;
+}
+
+sub pretty_print {
+  my $val = shift;
+  my $type = '';
+  my $name = '';
+  my $context;
+  if (ref $val eq 'HASH') {
+    $type = $val->{type} || '';
+    $name = $val->{name} || '';
+    $context = $val->{context} || '';
+    $val = $val->{val};
+  }
+  if (ref $val eq 'ARRAY') {
+    return join " ", map { pretty_print($_) } @$val;
+  }
+  my $annotation = get_name($type => $val);
+  if ($type eq 'lineCodeIndex') {
+    my $line = get_line($context, $val);
+    $annotation = 'line '.$line if (defined $line);
+  }
+  my $pretty = $spec->{pretty}->{$name};
+  if (ref $pretty eq 'ARRAY') {
+    $val = pretty_bits($pretty->[0], $val)
+  } elsif (ref $pretty eq 'CODE') {
+    $val = $pretty->($val)
+  } elsif ($pretty) {
+    $val = pretty($pretty, $val)
+  }
+  if ($type =~ /ID$/) {
+    $val = sprintf "0x%x", $val;
+  }
+#  if ($type =~ /ID$/) {
+#    $val = normalize_id($type => $val);
+#  } elsif ($type eq 'int' && $name =~ /ID$/) {
+#    $val = normalize_id($name => $val);
+#  }
+  $val .= '('.$annotation.')' if ($annotation);
+  # options bit flags?
+  return $val;
+}
+
+sub unpack_64bit {
+  return unless (length($_[0]) >= 8);
+  my $v = unpack('Q>', $_[0]);
+  substr($_[0], 0, 8, '');
+  $v;
+}
+
+sub unpack_32bit {
+  return unless (length($_[0]) >= 4);
+  my $v = unpack('N', $_[0]);
+  substr($_[0], 0, 4, '');
+  $v;
+}
+
+sub unpack_16bit {
+  return unless (length($_[0]) >= 2);
+  my $v = unpack('n', $_[0]);
+  substr($_[0], 0, 2, '');
+  $v;
+}
+
+sub unpack_8bit {
+  return unless (length $_[0]);
+  my $v = unpack('C', $_[0]);
+  substr($_[0], 0, 1, '');
+  $v;
+}
+
+sub unpack_byte_len {
+  substr($_[0], 0, $_[1], '');
+}
+
+sub parse_type_byte {
+  unpack_8bit(@_);
+}
+
+sub parse_type_boolean {
+  unpack_8bit(@_) ? 'true' : 'false';
+}
+
+sub parse_type_int {
+  unpack_32bit(@_);
+}
+
+sub parse_type_long {
+  unpack_64bit(@_);
+}
+
+sub parse_type_string {
+  return unless (length($_[0]) >= 4);
+  my $l = unpack('N', $_[0]);
+  substr($_[0], 0, 4, '');
+  return unless (length($_[0]) >= $l);
+  substr($_[0], 0, $l, '');
+}
+
+sub parse_type_objectID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_tagged_objectID {
+  my $tag = chr unpack_8bit($_[0]);
+  my $object = unpack_64bit(@_);
+  return [$tag, { val => $object, type => 'objectID'} ];
+}
+
+sub parse_type_threadID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_threadGroupID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_stringID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_classLoaderID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_classObjectID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_arrayID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_referenceTypeID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_classID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_interfaceID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_arrayTypeID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_methodID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_fieldID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_frameID {
+  unpack_64bit(@_);
+}
+
+sub parse_type_location {
+  my $tag = unpack_8bit($_[0]);
+  my $classID = parse_type_classID($_[0]);
+  my $methodID = parse_type_methodID($_[0]);
+  my $index = unpack_64bit($_[0]);
+  return [
+          { val => $tag, type => 'type_tag' },
+          { val => $classID, type => 'classID' },
+          { val => $methodID, type => 'methodID' },
+          { val => $index, type => 'lineCodeIndex',
+            context => $classID.'!'.$methodID,
+          }
+         ];
+}
+
+sub parse_type_value {
+  my $tag = unpack_8bit($_[0]);
+  return parse_untagged_value(chr($tag), $_[0]);
+}
+
+sub parse_type_untagged_value {
+  unpack_64bit($_[0]);
+}
+
+sub parse_untagged_value {
+  my ($tag) = @_;
+  my %obj = ( B => 'C', C => 'H4', F => 'H8', D => 'H16', I => 'N',
+              J => 'Q>', S => 'n', V => 'a0', Z => 'C', );
+  my $pack = exists $obj{$tag} ? $obj{$tag} : 'H16';
+  my $val;
+  ($val, $_[1]) = unpack $pack.' a*', $_[1];
+  if ($tag eq 'Z') {
+    $val = $val ? 'true' : 'false';
+  }
+  return $tag.' '.$val;
+}
+
+sub parse_type_repeat {
+  my ($elt, $prefix, $results) = @_[1..3];
+  print $prefix, '  repeat ', $elt->{name}, " times:\n";
+  $prefix .= '  ';
+  my $sub_res = $results->{$elt->{name}.'_repeats'} = [];
+  my $num = $results->{$elt->{name}} or do {
+    print $prefix, "Empty\n";
+    return
+  };
+  foreach my $i (0..$num-1) {
+    $sub_res->[$i] = {};
+    parse_data($_[0], $elt->{items}, $prefix, $sub_res->[$i]);
+  }
+  return
+}
+
+sub parse_type_case {
+  my ($elt, $prefix, $results) = @_[1..3];
+  return unless ($results->{$elt->{name}} eq $elt->{value});
+#  print $prefix, 'case ', $elt->{name}, ' == ', $elt->{value}, ":\n";
+  my $sub_res = $results->{$elt->{name}.'_case'} = {};
+  parse_data($_[0], $elt->{items}, $prefix.'  ', $sub_res);
+  return
+}
+
+sub pretty {
+  my $str = $_[1];
+  return $str unless (exists $spec->{$_[0]}->{$_[1]});
+  return $str.':'.$spec->{$_[0]}->{$_[1]}->{name};
+}
+
+sub pretty_bits {
+  my $str = $_[1];
+  my @bits = ();
+  foreach (keys %{$spec->{$_[0]}}) {
+    push @bits, $spec->{$_[0]}->{$_}->{name} if ($_[1] & $_);
+  }
+  return @bits ? $str.':'.(join '|',@bits) : $str;
+}
+
+sub error_str {
+  my $str = $_[0];
+  return $str unless (exists $spec->{error}->{$_[0]});
+  return $str.':'.$spec->{error}->{$_[0]}->{name};
+}
+
+sub cmd_str {
+  my $str = $_[0].':'.$_[1];
+  return $str unless (exists $spec->{cmd_set}->{$_[0]});
+  my $c = $spec->{cmd_set}->{$_[0]};
+  $str .= ' '.$c->{name};
+  return $str unless (exists $c->{cmd}->{$_[1]});
+  return $str.':'.$c->{cmd}->{$_[1]}->{name};
+}
+
+sub normalize_type {
+  $spec->{id_type}->{$_[0]} || $_[0]
+}
+
+sub normalize_id {
+  my ($type, $id) = @_;
+  print STDERR "norm: @_ ... ";
+  $type = normalize_type($type);
+  print STDERR $type," ";
+  unless (exists $glob->{norm}->{$type}->{map}->{$id}) {
+    unless ($normalize_constants) {
+      print STDERR $id, "\n";
+      return $id;
+    }
+    $glob->{norm}->{$type}->{next} = 1
+      unless (exists $glob->{norm}->{$type}->{next});
+    $glob->{norm}->{$type}->{map}->{$id} =
+      sprintf "0x%x", $glob->{norm}->{$type}->{next}++;
+  }
+  print STDERR $glob->{norm}->{$type}->{map}->{$id}, "\n";
+  return $glob->{norm}->{$type}->{map}->{$id}
+}
+
+sub set_name {
+  my ($type, $id, $name) = @_;
+  $glob->{norm}->{$type}->{name}->{$id} = $name;
+}
+
+sub get_name {
+  my ($type, $id) = @_;
+  $glob->{norm}->{$type}->{name}->{$id}
+}
+
+sub set_line {
+  my ($location, $line) = @_;
+#print STDERR "set_line: $location ", $line->{lineNumber}, " ", $line->{lineCodeIndex}, "\n";
+  push @{$glob->{lines}->{$location}}, $line;
+}
+
+sub get_line {
+  my ($location, $index) = @_;
+  return unless (exists $glob->{lines}->{$location});
+#print STDERR "get_line: $location $index\n";
+  foreach my $line (reverse @{$glob->{lines}->{$location}}) {
+#    print STDERR "get_line:   ", $line->{lineNumber}, " ", $line->{lineCodeIndex}, "\n";
+    return $line->{lineNumber} if ($index >= $line->{lineCodeIndex});
+  }
+  return;
+}
+
+sub hex_dump {
+  my $data = shift;
+  my $prefix = shift || '';
+  return '' unless (defined $data);
+  my $str='';
+  foreach my $line ($data=~m!(.{1,16})!gs) {
+
+    # write all printable characters or dots
+    my $printable=$line;
+    $printable=~s/[^ -~]/./g; # replace non-printables with .
+    $str.=$prefix.sprintf '  %-16s ',$printable;
+
+    # write the hex dump
+    $str.=sprintf '%02x ',ord($_) foreach (split(//,$line));
+    $str.="\n";
+  }
+  return $str;
+}
+
+=head1 SEE ALSO
+
+Net::Pcap(3), tcpdump(8)
+
+=head1 BUGS
+
+If you find some (and it shouldn't be difficult), then please let me know.
+
+=head1 AUTHOR
+
+Mark Hindess, E<lt>mark.hindess@googlemail.comE<gt>
+
+=head1 COPYRIGHT
+
+Apache License, Version 2.0, see http://www.apache.org/licenses/LICENSE-2.0
+
+=cut
+
+__DATA__
+#############################################################
+##                                                         ##
+## THIS STRUCTURE WAS AUTOMATICALLY GENERATED BY jdwp-spec ##
+##                                                         ##
+#############################################################
+$spec = {
+  classstatus => {
+    '1' => {
+      desc => '',
+      name => 'VERIFIED'
+    },
+    '2' => {
+      desc => '',
+      name => 'PREPARED'
+    },
+    '4' => {
+      desc => '',
+      name => 'INITIALIZED'
+    },
+    '8' => {
+      desc => '',
+      name => 'ERROR'
+    }
+  },
+  cmd_set => {
+    '1' => {
+      cmd => {
+        '1' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'Version',
+          out   => [],
+          reply => [
+            {
+              desc => 'Text information on the VM version',
+              name => 'description',
+              type => 'string'
+            },
+            {
+              desc => 'Major JDWP Version number',
+              name => 'jdwpMajor',
+              type => 'int'
+            },
+            {
+              desc => 'Minor JDWP Version number',
+              name => 'jdwpMinor',
+              type => 'int'
+            },
+            {
+              desc => 'Target VM JRE version, as in the java.version property',
+              name => 'vmVersion',
+              type => 'string'
+            },
+            {
+              desc => 'Target VM name, as in the java.vm.name property',
+              name => 'vmName',
+              type => 'string'
+            }
+          ]
+        },
+        '10' => {
+          error => {},
+          name  => 'Exit',
+          out   => [
+            {
+              desc => 'the exit code',
+              name => 'exitCode',
+              type => 'int'
+            }
+          ],
+          reply => []
+        },
+        '11' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'CreateString',
+          out   => [
+            {
+              desc => 'UTF-8 characters to use in the created string.',
+              name => 'utf',
+              type => 'string'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Created string (instance of java.lang.String)',
+              name => 'stringObject',
+              type => 'stringID'
+            }
+          ]
+        },
+        '12' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'Capabilities',
+          out   => [],
+          reply => [
+            {
+              desc =>
+'Can the VM watch field modification, and therefore can it send the Modification Watchpoint Event?',
+              name => 'canWatchFieldModification',
+              type => 'boolean'
+            },
+            {
+              desc =>
+'Can the VM watch field access, and therefore can it send the Access Watchpoint Event?',
+              name => 'canWatchFieldAccess',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM get the bytecodes of a given method?',
+              name => 'canGetBytecodes',
+              type => 'boolean'
+            },
+            {
+              desc =>
+'Can the VM determine whether a field or method is synthetic? (that is, can the VM determine if the method or the field was invented by the compiler?)',
+              name => 'canGetSyntheticAttribute',
+              type => 'boolean'
+            },
+            {
+              desc =>
+                'Can the VM get the owned monitors infornation for a thread?',
+              name => 'canGetOwnedMonitorInfo',
+              type => 'boolean'
+            },
+            {
+              desc =>
+                'Can the VM get the current contended monitor of a thread?',
+              name => 'canGetCurrentContendedMonitor',
+              type => 'boolean'
+            },
+            {
+              desc =>
+                'Can the VM get the monitor information for a given object?',
+              name => 'canGetMonitorInfo',
+              type => 'boolean'
+            }
+          ]
+        },
+        '13' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'ClassPaths',
+          out   => [],
+          reply => [
+            {
+              desc =>
+'Base directory used to resolve relative paths in either of the following lists.',
+              name => 'baseDir',
+              type => 'string'
+            },
+            {
+              desc => 'Number of paths in classpath.',
+              name => 'classpaths',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'One component of classpath',
+                  name => 'path',
+                  type => 'string'
+                }
+              ],
+              name => 'classpaths',
+              type => 'repeat'
+            },
+            {
+              desc => 'Number of paths in bootclasspath.',
+              name => 'bootclasspaths',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'One component of bootclasspath',
+                  name => 'path',
+                  type => 'string'
+                }
+              ],
+              name => 'bootclasspaths',
+              type => 'repeat'
+            }
+          ]
+        },
+        '14' => {
+          error => {},
+          name  => 'DisposeObjects',
+          out   => [
+            {
+              desc => 'Number of object dispose requests that follow',
+              name => 'requests',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The object ID',
+                  name => 'object',
+                  type => 'objectID'
+                },
+                {
+                  desc =>
+'The number of times this object ID has been part of a packet received from the back-end. An accurate count prevents the object ID from being freed on the back-end if it is part of an incoming packet, not yet handled by the front-end.',
+                  name => 'refCnt',
+                  type => 'int'
+                }
+              ],
+              name => 'requests',
+              type => 'repeat'
+            }
+          ],
+          reply => []
+        },
+        '15' => {
+          error => {},
+          name  => 'HoldEvents',
+          out   => [],
+          reply => []
+        },
+        '16' => {
+          error => {},
+          name  => 'ReleaseEvents',
+          out   => [],
+          reply => []
+        },
+        '17' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'CapabilitiesNew',
+          out   => [],
+          reply => [
+            {
+              desc =>
+'Can the VM watch field modification, and therefore can it send the Modification Watchpoint Event?',
+              name => 'canWatchFieldModification',
+              type => 'boolean'
+            },
+            {
+              desc =>
+'Can the VM watch field access, and therefore can it send the Access Watchpoint Event?',
+              name => 'canWatchFieldAccess',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM get the bytecodes of a given method?',
+              name => 'canGetBytecodes',
+              type => 'boolean'
+            },
+            {
+              desc =>
+'Can the VM determine whether a field or method is synthetic? (that is, can the VM determine if the method or the field was invented by the compiler?)',
+              name => 'canGetSyntheticAttribute',
+              type => 'boolean'
+            },
+            {
+              desc =>
+                'Can the VM get the owned monitors infornation for a thread?',
+              name => 'canGetOwnedMonitorInfo',
+              type => 'boolean'
+            },
+            {
+              desc =>
+                'Can the VM get the current contended monitor of a thread?',
+              name => 'canGetCurrentContendedMonitor',
+              type => 'boolean'
+            },
+            {
+              desc =>
+                'Can the VM get the monitor information for a given object?',
+              name => 'canGetMonitorInfo',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM redefine classes?',
+              name => 'canRedefineClasses',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM add methods when redefining classes?',
+              name => 'canAddMethod',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM redefine classesin arbitrary ways?',
+              name => 'canUnrestrictedlyRedefineClasses',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM pop stack frames?',
+              name => 'canPopFrames',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM filter events by specific object?',
+              name => 'canUseInstanceFilters',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM get the source debug extension?',
+              name => 'canGetSourceDebugExtension',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM request VM death events?',
+              name => 'canRequestVMDeathEvent',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM set a default stratum?',
+              name => 'canSetDefaultStratum',
+              type => 'boolean'
+            },
+            {
+              desc =>
+'Can the VM return instances, counts of instances of classes and referring objects?',
+              name => 'canGetInstanceInfo',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM request monitor events?',
+              name => 'canRequestMonitorEvents',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM get monitors with frame depth info?',
+              name => 'canGetMonitorFrameInfo',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM filter class prepare events by source name?',
+              name => 'canUseSourceNameFilters',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM return the constant pool information?',
+              name => 'canGetConstantPool',
+              type => 'boolean'
+            },
+            {
+              desc => 'Can the VM force early return from a method?',
+              name => 'canForceEarlyReturn',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved22',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved23',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved24',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved25',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved26',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved27',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved28',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved29',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved30',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved31',
+              type => 'boolean'
+            },
+            {
+              desc => 'Reserved for future capability',
+              name => 'reserved32',
+              type => 'boolean'
+            }
+          ]
+        },
+        '18' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'One of the refTypes is not a known ID.',
+            '21'  => 'One of the refTypes is not the ID of a reference type.',
+            '60' =>
+'The virtual machine attempted to read a class file and determined that the file is malformed or otherwise cannot be interpreted as a class file.',
+            '61' =>
+              'A circularity has been detected while initializing a class.',
+            '62' =>
+'The verifier detected that a class file, though well formed, contained some sort of internal inconsistency or security problem.',
+            '63' => 'Adding methods has not been implemented.',
+            '64' => 'Schema change has not been implemented.',
+            '66' =>
+'A direct superclass is different for the new class version, or the set of directly implemented interfaces is different and canUnrestrictedlyRedefineClasses is false.',
+            '67' =>
+'The new class version does not declare a method declared in the old class version and canUnrestrictedlyRedefineClasses is false.',
+            '68' =>
+              'A class file has a version number not supported by this VM.',
+            '69' =>
+'The class name defined in the new class file is different from the name in the old class object.',
+            '70' =>
+'The new class version has different modifiers and and canUnrestrictedlyRedefineClasses is false.',
+            '71' =>
+'A method in the new class version has different modifiers than its counterpart in the old class version and and canUnrestrictedlyRedefineClasses is false.',
+            '99' =>
+'No aspect of this functionality is implemented (CapabilitiesNew.canRedefineClasses is false)'
+          },
+          name => 'RedefineClasses',
+          out  => [
+            {
+              desc => 'Number of reference types that follow.',
+              name => 'classes',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The reference type.',
+                  name => 'refType',
+                  type => 'referenceTypeID'
+                },
+                {
+                  desc => 'Number of bytes defining class (below)',
+                  name => 'classfile',
+                  type => 'int'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'byte in JVM class file format.',
+                      name => 'classbyte',
+                      type => 'byte'
+                    }
+                  ],
+                  name => 'classfile',
+                  type => 'repeat'
+                }
+              ],
+              name => 'classes',
+              type => 'repeat'
+            }
+          ],
+          reply => []
+        },
+        '19' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'SetDefaultStratum',
+          out  => [
+            {
+              desc =>
+'default stratum, or empty string to use reference type default.',
+              name => 'stratumID',
+              type => 'string'
+            }
+          ],
+          reply => []
+        },
+        '2' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name => 'ClassesBySignature',
+          out  => [
+            {
+              desc =>
+'JNI signature of the class to find (for example, "Ljava/lang/String;").',
+              name => 'signature',
+              type => 'string'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Number of reference types that follow.',
+              name => 'classes',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Kind of following reference type.',
+                  name => 'refTypeTag',
+                  type => 'byte'
+                },
+                {
+                  desc => 'Matching loaded reference type',
+                  name => 'typeID',
+                  type => 'referenceTypeID'
+                },
+                {
+                  desc => 'The current class status.',
+                  name => 'status',
+                  type => 'int'
+                }
+              ],
+              name => 'classes',
+              type => 'repeat'
+            }
+          ]
+        },
+        '20' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'AllClassesWithGeneric',
+          out   => [],
+          reply => [
+            {
+              desc => 'Number of reference types that follow.',
+              name => 'classes',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Kind of following reference type.',
+                  name => 'refTypeTag',
+                  type => 'byte'
+                },
+                {
+                  desc => 'Loaded reference type',
+                  name => 'typeID',
+                  type => 'referenceTypeID'
+                },
+                {
+                  desc => 'The JNI signature of the loaded reference type.',
+                  name => 'signature',
+                  type => 'string'
+                },
+                {
+                  desc =>
+'The generic signature of the loaded reference type or an empty string if there is none.',
+                  name => 'genericSignature',
+                  type => 'string'
+                },
+                {
+                  desc => 'The current class status.',
+                  name => 'status',
+                  type => 'int'
+                }
+              ],
+              name => 'classes',
+              type => 'repeat'
+            }
+          ]
+        },
+        '21' => {
+          error => {
+            '103' => 'refTypesCount is less than zero.',
+            '112' => 'The virtual machine is not running.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'InstanceCounts',
+          out  => [
+            {
+              desc =>
+                'Number of reference types that follow. Must be non-negative.',
+              name => 'refTypesCount',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'A reference type ID.',
+                  name => 'refType',
+                  type => 'referenceTypeID'
+                }
+              ],
+              name => 'refTypesCount',
+              type => 'repeat'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of counts that follow.',
+              name => 'counts',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc =>
+'The number of instances for the corresponding reference type in \'Out Data\'.',
+                  name => 'instanceCount',
+                  type => 'long'
+                }
+              ],
+              name => 'counts',
+              type => 'repeat'
+            }
+          ]
+        },
+        '3' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'AllClasses',
+          out   => [],
+          reply => [
+            {
+              desc => 'Number of reference types that follow.',
+              name => 'classes',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Kind of following reference type.',
+                  name => 'refTypeTag',
+                  type => 'byte'
+                },
+                {
+                  desc => 'Loaded reference type',
+                  name => 'typeID',
+                  type => 'referenceTypeID'
+                },
+                {
+                  desc => 'The JNI signature of the loaded reference type',
+                  name => 'signature',
+                  type => 'string'
+                },
+                {
+                  desc => 'The current class status.',
+                  name => 'status',
+                  type => 'int'
+                }
+              ],
+              name => 'classes',
+              type => 'repeat'
+            }
+          ]
+        },
+        '4' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'AllThreads',
+          out   => [],
+          reply => [
+            {
+              desc => 'Number of threads that follow.',
+              name => 'threads',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'A running thread',
+                  name => 'thread',
+                  type => 'threadID'
+                }
+              ],
+              name => 'threads',
+              type => 'repeat'
+            }
+          ]
+        },
+        '5' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'TopLevelThreadGroups',
+          out   => [],
+          reply => [
+            {
+              desc => 'Number of thread groups that follow.',
+              name => 'groups',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'A top level thread group',
+                  name => 'group',
+                  type => 'threadGroupID'
+                }
+              ],
+              name => 'groups',
+              type => 'repeat'
+            }
+          ]
+        },
+        '6' => {
+          error => {},
+          name  => 'Dispose',
+          out   => [],
+          reply => []
+        },
+        '7' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'IDSizes',
+          out   => [],
+          reply => [
+            {
+              desc => 'fieldID size in bytes',
+              name => 'fieldIDSize',
+              type => 'int'
+            },
+            {
+              desc => 'methodID size in bytes',
+              name => 'methodIDSize',
+              type => 'int'
+            },
+            {
+              desc => 'objectID size in bytes',
+              name => 'objectIDSize',
+              type => 'int'
+            },
+            {
+              desc => 'referenceTypeID size in bytes',
+              name => 'referenceTypeIDSize',
+              type => 'int'
+            },
+            {
+              desc => 'frameID size in bytes',
+              name => 'frameIDSize',
+              type => 'int'
+            }
+          ]
+        },
+        '8' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'Suspend',
+          out   => [],
+          reply => []
+        },
+        '9' => {
+          error => {},
+          name  => 'Resume',
+          out   => [],
+          reply => []
+        }
+      },
+      name => 'VirtualMachine'
+    },
+    '10' => {
+      cmd => {
+        '1' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '506' => 'The string is invalid.'
+          },
+          name => 'Value',
+          out  => [
+            {
+              desc => 'The String object ID.',
+              name => 'stringObject',
+              type => 'objectID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'UTF-8 representation of the string value.',
+              name => 'stringValue',
+              type => 'string'
+            }
+          ]
+        }
+      },
+      name => 'StringReference'
+    },
+    '11' => {
+      cmd => {
+        '1' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.'
+          },
+          name => 'Name',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The thread name.',
+              name => 'threadName',
+              type => 'string'
+            }
+          ]
+        },
+        '10' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+'If thread is not a known ID or the asynchronous exception has been garbage collected.'
+          },
+          name => 'Stop',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            },
+            {
+              desc =>
+'Asynchronous exception. This object must be an instance of java.lang.Throwable or a subclass',
+              name => 'throwable',
+              type => 'objectID'
+            }
+          ],
+          reply => []
+        },
+        '11' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.'
+          },
+          name => 'Interrupt',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => []
+        },
+        '12' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.'
+          },
+          name => 'SuspendCount',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of outstanding suspends of this thread.',
+              name => 'suspendCount',
+              type => 'int'
+            }
+          ]
+        },
+        '13' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'OwnedMonitorsStackDepthInfo',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of owned monitors',
+              name => 'owned',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'An owned monitor',
+                  name => 'monitor',
+                  type => 'tagged-objectID'
+                },
+                {
+                  desc => 'Stack depth location where monitor was acquired',
+                  name => 'stack_depth',
+                  type => 'int'
+                }
+              ],
+              name => 'owned',
+              type => 'repeat'
+            }
+          ]
+        },
+        '14' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '13' =>
+              'If the specified thread has not been suspended by an event.',
+            '15' => 'Thread has not been started or is now dead.',
+            '20' => 'Thread or value is not a known ID.',
+            '31' => 'There are no more Java or JNI frames on the call stack.',
+            '32' =>
+'Attempted to return early from a frame corresponding to a native method. Or the implementation is unable to provide this functionality on this frame.',
+            '34' =>
+'Value is not an appropriate type for the return value of the method.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'ForceEarlyReturn',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            },
+            {
+              desc => 'The value to return.',
+              name => 'value',
+              type => 'value'
+            }
+          ],
+          reply => []
+        },
+        '2' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.'
+          },
+          name => 'Suspend',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => []
+        },
+        '3' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.'
+          },
+          name => 'Resume',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => []
+        },
+        '4' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.'
+          },
+          name => 'Status',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'One of the thread status codes See JDWP.ThreadStatus',
+              name => 'threadStatus',
+              type => 'int'
+            },
+            {
+              desc => 'One of the suspend status codes See JDWP.SuspendStatus',
+              name => 'suspendStatus',
+              type => 'int'
+            }
+          ]
+        },
+        '5' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.'
+          },
+          name => 'ThreadGroup',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The thread group of this thread.',
+              name => 'group',
+              type => 'threadGroupID'
+            }
+          ]
+        },
+        '6' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.'
+          },
+          name => 'Frames',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            },
+            {
+              desc => 'The index of the first frame to retrieve.',
+              name => 'startFrame',
+              type => 'int'
+            },
+            {
+              desc =>
+                'The count of frames to retrieve (-1 means all remaining).',
+              name => 'length',
+              type => 'int'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of frames retreived',
+              name => 'frames',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The ID of this frame.',
+                  name => 'frameID',
+                  type => 'frameID'
+                },
+                {
+                  desc => 'The current location of this frame',
+                  name => 'location',
+                  type => 'location'
+                }
+              ],
+              name => 'frames',
+              type => 'repeat'
+            }
+          ]
+        },
+        '7' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.'
+          },
+          name => 'FrameCount',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The count of frames on this thread\'s stack.',
+              name => 'frameCount',
+              type => 'int'
+            }
+          ]
+        },
+        '8' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'OwnedMonitors',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of owned monitors',
+              name => 'owned',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'An owned monitor',
+                  name => 'monitor',
+                  type => 'tagged-objectID'
+                }
+              ],
+              name => 'owned',
+              type => 'repeat'
+            }
+          ]
+        },
+        '9' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'thread is not a known ID.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'CurrentContendedMonitor',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The contended monitor, or null if there is no current contended monitor.',
+              name => 'monitor',
+              type => 'tagged-objectID'
+            }
+          ]
+        }
+      },
+      name => 'ThreadReference'
+    },
+    '12' => {
+      cmd => {
+        '1' => {
+          error => {
+            '11'  => 'Thread group invalid.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'group is not a known ID.'
+          },
+          name => 'Name',
+          out  => [
+            {
+              desc => 'The thread group object ID.',
+              name => 'group',
+              type => 'threadGroupID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The thread group\'s name.',
+              name => 'groupName',
+              type => 'string'
+            }
+          ]
+        },
+        '2' => {
+          error => {
+            '11'  => 'Thread group invalid.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'group is not a known ID.'
+          },
+          name => 'Parent',
+          out  => [
+            {
+              desc => 'The thread group object ID.',
+              name => 'group',
+              type => 'threadGroupID'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The parent thread group object, or null if the given thread group is a top-level thread group',
+              name => 'parentGroup',
+              type => 'threadGroupID'
+            }
+          ]
+        },
+        '3' => {
+          error => {
+            '11'  => 'Thread group invalid.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'group is not a known ID.'
+          },
+          name => 'Children',
+          out  => [
+            {
+              desc => 'The thread group object ID.',
+              name => 'group',
+              type => 'threadGroupID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of live child threads.',
+              name => 'childThreads',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'A direct child thread ID.',
+                  name => 'childThread',
+                  type => 'threadID'
+                }
+              ],
+              name => 'childThreads',
+              type => 'repeat'
+            },
+            {
+              desc => 'The number of active child thread groups.',
+              name => 'childGroups',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'A direct child thread group ID.',
+                  name => 'childGroup',
+                  type => 'threadGroupID'
+                }
+              ],
+              name => 'childGroups',
+              type => 'repeat'
+            }
+          ]
+        }
+      },
+      name => 'ThreadGroupReference'
+    },
+    '13' => {
+      cmd => {
+        '1' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'arrayObject is not a known ID.',
+            '508' => 'The array is invalid.'
+          },
+          name => 'Length',
+          out  => [
+            {
+              desc => 'The array object ID.',
+              name => 'arrayObject',
+              type => 'arrayID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The length of the array.',
+              name => 'arrayLength',
+              type => 'int'
+            }
+          ]
+        },
+        '2' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'arrayObject is not a known ID.',
+            '504' => 'If index is beyond the end of this array.',
+            '508' => 'The array is invalid.'
+          },
+          name => 'GetValues',
+          out  => [
+            {
+              desc => 'The array object ID.',
+              name => 'arrayObject',
+              type => 'arrayID'
+            },
+            {
+              desc => 'The first index to retrieve.',
+              name => 'firstIndex',
+              type => 'int'
+            },
+            {
+              desc => 'The number of components to retrieve.',
+              name => 'length',
+              type => 'int'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The retrieved values. If the values are objects, they are tagged-values; otherwise, they are untagged-values',
+              name => 'values',
+              type => 'arrayregion'
+            }
+          ]
+        },
+        '3' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'arrayObject is not a known ID.',
+            '504' => 'If index is beyond the end of this array.',
+            '508' => 'The array is invalid.'
+          },
+          name => 'SetValues',
+          out  => [
+            {
+              desc => 'The array object ID.',
+              name => 'arrayObject',
+              type => 'arrayID'
+            },
+            {
+              desc => 'The first index to set.',
+              name => 'firstIndex',
+              type => 'int'
+            },
+            {
+              desc => 'The number of values to set.',
+              name => 'values',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'A value to set.',
+                  name => 'value',
+                  type => 'untagged-value'
+                }
+              ],
+              name => 'values',
+              type => 'repeat'
+            }
+          ],
+          reply => []
+        }
+      },
+      name => 'ArrayReference'
+    },
+    '14' => {
+      cmd => {
+        '1' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '507' => 'The class loader is invalid.'
+          },
+          name => 'VisibleClasses',
+          out  => [
+            {
+              desc => 'The class loader object ID.',
+              name => 'classLoaderObject',
+              type => 'classLoaderID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of visible classes.',
+              name => 'classes',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Kind of following reference type.',
+                  name => 'refTypeTag',
+                  type => 'byte'
+                },
+                {
+                  desc => 'A class visible to this class loader.',
+                  name => 'typeID',
+                  type => 'referenceTypeID'
+                }
+              ],
+              name => 'classes',
+              type => 'repeat'
+            }
+          ]
+        }
+      },
+      name => 'ClassLoaderReference'
+    },
+    '15' => {
+      cmd => {
+        '1' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '102' => 'The specified event type id is not recognized.',
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '21'  => 'Invalid class.',
+            '23'  => 'Invalid method.',
+            '24'  => 'Invalid location.',
+            '25'  => 'Invalid field.',
+            '506' => 'The string is invalid.',
+            '512' => 'The count is invalid.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'Set',
+          out  => [
+            {
+              desc =>
+'Event kind to request. See JDWP.EventKind for a complete list of events that can be requested.',
+              name => 'eventKind',
+              type => 'byte'
+            },
+            {
+              desc =>
+'What threads are suspended when this event occurs? Note that the order of events and command replies accurately reflects the order in which threads are suspended and resumed. For example, if a VM-wide resume is processed before an event occurs which suspends the VM, the reply to the resume command will be written to the transport before the suspending event.',
+              name => 'suspendPolicy',
+              type => 'byte'
+            },
+            {
+              desc =>
+'Constraints used to control the number of generated events.Modifiers specify additional tests that an event must satisfy before it is placed in the event queue. Events are filtered by applying each modifier to an event in the order they are specified in this collection Only events that satisfy all modifiers are reported. A value of 0 means there are no modifiers in the request. Filtering can improve debugger performance dramatically by reducing the amount of event traffic sent from the target VM to the debugger VM.',
+              name => 'modifiers',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Modifier kind',
+                  name => 'modKind',
+                  type => 'byte'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Count before event. One for one-off.',
+                      name => 'count',
+                      type => 'int'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '1'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'For the future',
+                      name => 'exprID',
+                      type => 'int'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '2'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Required thread',
+                      name => 'thread',
+                      type => 'threadID'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '3'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Required class',
+                      name => 'clazz',
+                      type => 'referenceTypeID'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '4'
+                },
+                {
+                  items => [
+                    {
+                      desc =>
+'Required class pattern. Matches are limited to exact matches of the given class pattern and matches of patterns that begin or end with \'*\'; for example, "*.Foo" or "java.*".',
+                      name => 'classPattern',
+                      type => 'string'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '5'
+                },
+                {
+                  items => [
+                    {
+                      desc =>
+'Disallowed class pattern. Matches are limited to exact matches of the given class pattern and matches of patterns that begin or end with \'*\'; for example, "*.Foo" or "java.*".',
+                      name => 'classPattern',
+                      type => 'string'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '6'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Required location',
+                      name => 'loc',
+                      type => 'location'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '7'
+                },
+                {
+                  items => [
+                    {
+                      desc =>
+'Exception to report. Null (0) means report exceptions of all types. A non-null type restricts the reported exception events to exceptions of the given type or any of its subtypes.',
+                      name => 'exceptionOrNull',
+                      type => 'referenceTypeID'
+                    },
+                    {
+                      desc => 'Report caught exceptions',
+                      name => 'caught',
+                      type => 'boolean'
+                    },
+                    {
+                      desc =>
+'Report uncaught exceptions. Note that it is not always possible to determine whether an exception is caught or uncaught at the time it is thrown. See the exception event catch location under composite events for more information.',
+                      name => 'uncaught',
+                      type => 'boolean'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '8'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Type in which field is declared.',
+                      name => 'declaring',
+                      type => 'referenceTypeID'
+                    },
+                    {
+                      desc => 'Required field',
+                      name => 'fieldID',
+                      type => 'fieldID'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '9'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Thread in which to step',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'size of each step. See JDWP.StepSize',
+                      name => 'size',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'relative call stack limit. See JDWP.StepDepth',
+                      name => 'depth',
+                      type => 'int'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '10'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Required \'this\' object',
+                      name => 'instance',
+                      type => 'objectID'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '11'
+                },
+                {
+                  items => [
+                    {
+                      desc =>
+'Required source name pattern. Matches are limited to exact matches of the given pattern and matches of patterns that begin or end with \'*\'; for example, "*.Foo" or "java.*".',
+                      name => 'sourceNamePattern',
+                      type => 'string'
+                    }
+                  ],
+                  name  => 'modKind',
+                  type  => 'case',
+                  value => '12'
+                }
+              ],
+              name => 'modifiers',
+              type => 'repeat'
+            }
+          ],
+          reply => [
+            {
+              desc => 'ID of created request',
+              name => 'requestID',
+              type => 'int'
+            }
+          ]
+        },
+        '2' => {
+          error => {
+            '102' => 'The specified event type id is not recognized.',
+            '112' => 'The virtual machine is not running.'
+          },
+          name => 'Clear',
+          out  => [
+            {
+              desc => 'Event kind to clear',
+              name => 'eventKind',
+              type => 'byte'
+            },
+            {
+              desc => 'ID of request to clear',
+              name => 'requestID',
+              type => 'int'
+            }
+          ],
+          reply => []
+        },
+        '3' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name  => 'ClearAllBreakpoints',
+          out   => [],
+          reply => []
+        }
+      },
+      name => 'EventRequest'
+    },
+    '16' => {
+      cmd => {
+        '1' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '30' => 'Invalid jframeID.',
+            '35' => 'Invalid slot.'
+          },
+          name => 'GetValues',
+          out  => [
+            {
+              desc => 'The frame\'s thread.',
+              name => 'thread',
+              type => 'threadID'
+            },
+            {
+              desc => 'The frame ID.',
+              name => 'frame',
+              type => 'frameID'
+            },
+            {
+              desc => 'The number of values to get.',
+              name => 'slots',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The local variable\'s index in the frame.',
+                  name => 'slot',
+                  type => 'int'
+                },
+                {
+                  desc => 'A tag identifying the type of the variable',
+                  name => 'sigbyte',
+                  type => 'byte'
+                }
+              ],
+              name => 'slots',
+              type => 'repeat'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The number of values retrieved, always equal to slots, the number of values to get.',
+              name => 'values',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The value of the local variable.',
+                  name => 'slotValue',
+                  type => 'value'
+                }
+              ],
+              name => 'values',
+              type => 'repeat'
+            }
+          ]
+        },
+        '2' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '30' => 'Invalid jframeID.'
+          },
+          name => 'SetValues',
+          out  => [
+            {
+              desc => 'The frame\'s thread.',
+              name => 'thread',
+              type => 'threadID'
+            },
+            {
+              desc => 'The frame ID.',
+              name => 'frame',
+              type => 'frameID'
+            },
+            {
+              desc => 'The number of values to set.',
+              name => 'slotValues',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The slot ID.',
+                  name => 'slot',
+                  type => 'int'
+                },
+                {
+                  desc => 'The value to set.',
+                  name => 'slotValue',
+                  type => 'value'
+                }
+              ],
+              name => 'slotValues',
+              type => 'repeat'
+            }
+          ],
+          reply => []
+        },
+        '3' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '30' => 'Invalid jframeID.'
+          },
+          name => 'ThisObject',
+          out  => [
+            {
+              desc => 'The frame\'s thread.',
+              name => 'thread',
+              type => 'threadID'
+            },
+            {
+              desc => 'The frame ID.',
+              name => 'frame',
+              type => 'frameID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The \'this\' object for this frame.',
+              name => 'objectThis',
+              type => 'tagged-objectID'
+            }
+          ]
+        },
+        '4' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '13' =>
+              'If the specified thread has not been suspended by an event.',
+            '20' => 'thread is not a known ID.',
+            '30' => 'Invalid jframeID.',
+            '31' => 'There are no more Java or JNI frames on the call stack.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'PopFrames',
+          out  => [
+            {
+              desc => 'The thread object ID.',
+              name => 'thread',
+              type => 'threadID'
+            },
+            {
+              desc => 'The frame ID.',
+              name => 'frame',
+              type => 'frameID'
+            }
+          ],
+          reply => []
+        }
+      },
+      name => 'StackFrame'
+    },
+    '17' => {
+      cmd => {
+        '1' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.'
+          },
+          name => 'ReflectedType',
+          out  => [
+            {
+              desc => 'The class object.',
+              name => 'classObject',
+              type => 'classObjectID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Kind of following reference type.',
+              name => 'refTypeTag',
+              type => 'byte'
+            },
+            {
+              desc => 'reflected reference type',
+              name => 'typeID',
+              type => 'referenceTypeID'
+            }
+          ]
+        }
+      },
+      name => 'ClassObjectReference'
+    },
+    '2' => {
+      cmd => {
+        '1' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.'
+          },
+          name => 'Signature',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The JNI signature for the reference type.',
+              name => 'signature',
+              type => 'string'
+            }
+          ]
+        },
+        '10' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.'
+          },
+          name => 'Interfaces',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of implemented interfaces',
+              name => 'interfaces',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'implemented interface.',
+                  name => 'interfaceType',
+                  type => 'interfaceID'
+                }
+              ],
+              name => 'interfaces',
+              type => 'repeat'
+            }
+          ]
+        },
+        '11' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.'
+          },
+          name => 'ClassObject',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'class object.',
+              name => 'classObject',
+              type => 'classObjectID'
+            }
+          ]
+        },
+        '12' => {
+          error => {
+            '101' => 'If the extension is not specified.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'SourceDebugExtension',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'extension attribute',
+              name => 'extension',
+              type => 'string'
+            }
+          ]
+        },
+        '13' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.'
+          },
+          name => 'SignatureWithGeneric',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The JNI signature for the reference type.',
+              name => 'signature',
+              type => 'string'
+            },
+            {
+              desc =>
+'The generic signature for the reference type or an empty string if there is none.',
+              name => 'genericSignature',
+              type => 'string'
+            }
+          ]
+        },
+        '14' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '22'  => 'Class has been loaded but not yet prepared.'
+          },
+          name => 'FieldsWithGeneric',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Number of declared fields.',
+              name => 'declared',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Field ID.',
+                  name => 'fieldID',
+                  type => 'fieldID'
+                },
+                {
+                  desc => 'The name of the field.',
+                  name => 'name',
+                  type => 'string'
+                },
+                {
+                  desc => 'The JNI signature of the field.',
+                  name => 'signature',
+                  type => 'string'
+                },
+                {
+                  desc =>
+'The generic signature of the field, or an empty string if there is none.',
+                  name => 'genericSignature',
+                  type => 'string'
+                },
+                {
+                  desc =>
+'The modifier bit flags (also known as access flags) which provide additional information on the field declaration. Individual flag values are defined in the  VM Specification.In addition, The 0xf0000000 bit identifies the field as synthetic, if the synthetic attribute capability is available.',
+                  name => 'modBits',
+                  type => 'int'
+                }
+              ],
+              name => 'declared',
+              type => 'repeat'
+            }
+          ]
+        },
+        '15' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '22'  => 'Class has been loaded but not yet prepared.'
+          },
+          name => 'MethodsWithGeneric',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Number of declared methods.',
+              name => 'declared',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Method ID.',
+                  name => 'methodID',
+                  type => 'methodID'
+                },
+                {
+                  desc => 'The name of the method.',
+                  name => 'name',
+                  type => 'string'
+                },
+                {
+                  desc => 'The JNI signature of the method.',
+                  name => 'signature',
+                  type => 'string'
+                },
+                {
+                  desc =>
+'The generic signature of the method, or an empty string if there is none.',
+                  name => 'genericSignature',
+                  type => 'string'
+                },
+                {
+                  desc =>
+'The modifier bit flags (also known as access flags) which provide additional information on the method declaration. Individual flag values are defined in the  VM Specification.In addition, The 0xf0000000 bit identifies the method as synthetic, if the synthetic attribute capability is available.',
+                  name => 'modBits',
+                  type => 'int'
+                }
+              ],
+              name => 'declared',
+              type => 'repeat'
+            }
+          ]
+        },
+        '16' => {
+          error => {
+            '103' => 'maxInstances is less than zero.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'Instances',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            },
+            {
+              desc =>
+'Maximum number of instances to return. Must be non-negative. If zero, all instances are returned.',
+              name => 'maxInstances',
+              type => 'int'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of instances that follow.',
+              name => 'instances',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'An instance of this reference type.',
+                  name => 'instance',
+                  type => 'tagged-objectID'
+                }
+              ],
+              name => 'instances',
+              type => 'repeat'
+            }
+          ]
+        },
+        '17' => {
+          error => {
+            '101' =>
+'The class file version information is absent for primitive and array types.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.'
+          },
+          name => 'ClassFileVersion',
+          out  => [
+            {
+              desc => 'The class.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Major version number',
+              name => 'majorVersion',
+              type => 'int'
+            },
+            {
+              desc => 'Minor version number',
+              name => 'minorVersion',
+              type => 'int'
+            }
+          ]
+        },
+        '18' => {
+          error => {
+            '101' =>
+'The Constant Pool information is absent for primitive and array types.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '99' =>
+'If the target virtual machine does not support the retrieval of constant pool information.'
+          },
+          name => 'ConstantPool',
+          out  => [
+            {
+              desc => 'The class.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'Total number of constant pool entries plus one. This corresponds to the constant_pool_count item of the Class File Format in the Java Virtual Machine Specification.',
+              name => 'count',
+              type => 'int'
+            },
+            {
+              desc => '',
+              name => 'bytes',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Raw bytes of constant pool',
+                  name => 'cpbytes',
+                  type => 'byte'
+                }
+              ],
+              name => 'bytes',
+              type => 'repeat'
+            }
+          ]
+        },
+        '2' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.'
+          },
+          name => 'ClassLoader',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The class loader for the reference type.',
+              name => 'classLoader',
+              type => 'classLoaderID'
+            }
+          ]
+        },
+        '3' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.'
+          },
+          name => 'Modifiers',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Modifier bits as defined in the  VM Specification',
+              name => 'modBits',
+              type => 'int'
+            }
+          ]
+        },
+        '4' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '22'  => 'Class has been loaded but not yet prepared.'
+          },
+          name => 'Fields',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Number of declared fields.',
+              name => 'declared',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Field ID.',
+                  name => 'fieldID',
+                  type => 'fieldID'
+                },
+                {
+                  desc => 'Name of field.',
+                  name => 'name',
+                  type => 'string'
+                },
+                {
+                  desc => 'JNI Signature of field.',
+                  name => 'signature',
+                  type => 'string'
+                },
+                {
+                  desc =>
+'The modifier bit flags (also known as access flags) which provide additional information on the field declaration. Individual flag values are defined in the  VM Specification.In addition, The 0xf0000000 bit identifies the field as synthetic, if the synthetic attribute capability is available.',
+                  name => 'modBits',
+                  type => 'int'
+                }
+              ],
+              name => 'declared',
+              type => 'repeat'
+            }
+          ]
+        },
+        '5' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '22'  => 'Class has been loaded but not yet prepared.'
+          },
+          name => 'Methods',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Number of declared methods.',
+              name => 'declared',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Method ID.',
+                  name => 'methodID',
+                  type => 'methodID'
+                },
+                {
+                  desc => 'Name of method.',
+                  name => 'name',
+                  type => 'string'
+                },
+                {
+                  desc => 'JNI signature of method.',
+                  name => 'signature',
+                  type => 'string'
+                },
+                {
+                  desc =>
+'The modifier bit flags (also known as access flags) which provide additional information on the method declaration. Individual flag values are defined in the  VM Specification.In addition, The 0xf0000000 bit identifies the method as synthetic, if the synthetic attribute capability is available.',
+                  name => 'modBits',
+                  type => 'int'
+                }
+              ],
+              name => 'declared',
+              type => 'repeat'
+            }
+          ]
+        },
+        '6' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '25'  => 'Invalid field.'
+          },
+          name => 'GetValues',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            },
+            {
+              desc => 'The number of values to get',
+              name => 'fields',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'A field to get',
+                  name => 'fieldID',
+                  type => 'fieldID'
+                }
+              ],
+              name => 'fields',
+              type => 'repeat'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The number of values returned, always equal to fields, the number of values to get.',
+              name => 'values',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The field value',
+                  name => 'value',
+                  type => 'value'
+                }
+              ],
+              name => 'values',
+              type => 'repeat'
+            }
+          ]
+        },
+        '7' => {
+          error => {
+            '101' => 'The source file attribute is absent.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.'
+          },
+          name => 'SourceFile',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The source file name. No path information for the file is included',
+              name => 'sourceFile',
+              type => 'string'
+            }
+          ]
+        },
+        '8' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.'
+          },
+          name => 'NestedTypes',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of nested classes and interfaces',
+              name => 'classes',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Kind of following reference type.',
+                  name => 'refTypeTag',
+                  type => 'byte'
+                },
+                {
+                  desc => 'The nested class or interface ID.',
+                  name => 'typeID',
+                  type => 'referenceTypeID'
+                }
+              ],
+              name => 'classes',
+              type => 'repeat'
+            }
+          ]
+        },
+        '9' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.'
+          },
+          name => 'Status',
+          out  => [
+            {
+              desc => 'The reference type ID.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Status bits:See JDWP.ClassStatus',
+              name => 'status',
+              type => 'int'
+            }
+          ]
+        }
+      },
+      name => 'ReferenceType'
+    },
+    '3' => {
+      cmd => {
+        '1' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'clazz is not a known ID.',
+            '21'  => 'clazz is not the ID of a class.'
+          },
+          name => 'Superclass',
+          out  => [
+            {
+              desc => 'The class type ID.',
+              name => 'clazz',
+              type => 'classID'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The superclass (null if the class ID for java.lang.Object is specified).',
+              name => 'superclass',
+              type => 'classID'
+            }
+          ]
+        },
+        '2' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+'clazz is not a known ID or a value of an object field is not a known ID.',
+            '21' => 'clazz is not the ID of a class.',
+            '22' => 'Class has been loaded but not yet prepared.',
+            '25' => 'Invalid field.'
+          },
+          name => 'SetValues',
+          out  => [
+            {
+              desc => 'The class type ID.',
+              name => 'clazz',
+              type => 'classID'
+            },
+            {
+              desc => 'The number of fields to set.',
+              name => 'values',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Field to set.',
+                  name => 'fieldID',
+                  type => 'fieldID'
+                },
+                {
+                  desc => 'Value to put in the field.',
+                  name => 'value',
+                  type => 'untagged-value'
+                }
+              ],
+              name => 'values',
+              type => 'repeat'
+            }
+          ],
+          reply => []
+        },
+        '3' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '13' =>
+              'If the specified thread has not been suspended by an event.',
+            '20' => 'clazz is not a known ID.',
+            '21' => 'clazz is not the ID of a class.',
+            '23' => 'methodID is not the ID of a method.'
+          },
+          name => 'InvokeMethod',
+          out  => [
+            {
+              desc => 'The class type ID.',
+              name => 'clazz',
+              type => 'classID'
+            },
+            {
+              desc => 'The thread in which to invoke.',
+              name => 'thread',
+              type => 'threadID'
+            },
+            {
+              desc => 'The method to invoke.',
+              name => 'methodID',
+              type => 'methodID'
+            },
+            {
+              desc => '',
+              name => 'arguments',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The argument value.',
+                  name => 'arg',
+                  type => 'value'
+                }
+              ],
+              name => 'arguments',
+              type => 'repeat'
+            },
+            {
+              desc => 'Invocation options',
+              name => 'options',
+              type => 'int'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The returned value.',
+              name => 'returnValue',
+              type => 'value'
+            },
+            {
+              desc => 'The thrown exception.',
+              name => 'exception',
+              type => 'tagged-objectID'
+            }
+          ]
+        },
+        '4' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '13' =>
+              'If the specified thread has not been suspended by an event.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '21' => 'clazz is not the ID of a class.',
+            '23' => 'methodID is not the ID of a method.'
+          },
+          name => 'NewInstance',
+          out  => [
+            {
+              desc => 'The class type ID.',
+              name => 'clazz',
+              type => 'classID'
+            },
+            {
+              desc => 'The thread in which to invoke the constructor.',
+              name => 'thread',
+              type => 'threadID'
+            },
+            {
+              desc => 'The constructor to invoke.',
+              name => 'methodID',
+              type => 'methodID'
+            },
+            {
+              desc => '',
+              name => 'arguments',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The argument value.',
+                  name => 'arg',
+                  type => 'value'
+                }
+              ],
+              name => 'arguments',
+              type => 'repeat'
+            },
+            {
+              desc => 'Constructor invocation options',
+              name => 'options',
+              type => 'int'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The newly created object, or null if the constructor threw an exception.',
+              name => 'newObject',
+              type => 'tagged-objectID'
+            },
+            {
+              desc => 'The thrown exception, if any; otherwise, null.',
+              name => 'exception',
+              type => 'tagged-objectID'
+            }
+          ]
+        }
+      },
+      name => 'ClassType'
+    },
+    '4' => {
+      cmd => {
+        '1' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '508' => 'The array is invalid.'
+          },
+          name => 'NewInstance',
+          out  => [
+            {
+              desc => 'The array type of the new instance.',
+              name => 'arrType',
+              type => 'arrayTypeID'
+            },
+            {
+              desc => 'The length of the array.',
+              name => 'length',
+              type => 'int'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The newly created array object.',
+              name => 'newArray',
+              type => 'tagged-objectID'
+            }
+          ]
+        }
+      },
+      name => 'ArrayType'
+    },
+    '5' => {
+      cmd  => {},
+      name => 'InterfaceType'
+    },
+    '6' => {
+      cmd => {
+        '1' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '23'  => 'methodID is not the ID of a method.'
+          },
+          name => 'LineTable',
+          out  => [
+            {
+              desc => 'The class.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            },
+            {
+              desc => 'The method.',
+              name => 'methodID',
+              type => 'methodID'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'Lowest valid code index for the method, >=0, or -1 if the method is native',
+              name => 'start',
+              type => 'long'
+            },
+            {
+              desc =>
+'Highest valid code index for the method, >=0, or -1 if the method is native',
+              name => 'end',
+              type => 'long'
+            },
+            {
+              desc =>
+                'The number of entries in the line table for this method.',
+              name => 'lines',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc =>
+'Initial code index of the line, start <= lineCodeIndex < end',
+                  name => 'lineCodeIndex',
+                  type => 'long'
+                },
+                {
+                  desc => 'Line number.',
+                  name => 'lineNumber',
+                  type => 'int'
+                }
+              ],
+              name => 'lines',
+              type => 'repeat'
+            }
+          ]
+        },
+        '2' => {
+          error => {
+            '101' => 'there is no variable information for the method.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '23'  => 'methodID is not the ID of a method.'
+          },
+          name => 'VariableTable',
+          out  => [
+            {
+              desc => 'The class.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            },
+            {
+              desc => 'The method.',
+              name => 'methodID',
+              type => 'methodID'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The number of words in the frame used by arguments. Eight-byte arguments use two words; all others use one.',
+              name => 'argCnt',
+              type => 'int'
+            },
+            {
+              desc => 'The number of variables.',
+              name => 'slots',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc =>
+'First code index at which the variable is visible (unsigned). Used in conjunction with length. The variable can be get or set only when the current codeIndex <= current frame code index < codeIndex + length',
+                  name => 'codeIndex',
+                  type => 'long'
+                },
+                {
+                  desc => 'The variable\'s name.',
+                  name => 'name',
+                  type => 'string'
+                },
+                {
+                  desc => 'The variable type\'s JNI signature.',
+                  name => 'signature',
+                  type => 'string'
+                },
+                {
+                  desc =>
+'Unsigned value used in conjunction with codeIndex. The variable can be get or set only when the current codeIndex <= current frame code index < code index + length',
+                  name => 'length',
+                  type => 'int'
+                },
+                {
+                  desc => 'The local variable\'s index in its frame',
+                  name => 'slot',
+                  type => 'int'
+                }
+              ],
+              name => 'slots',
+              type => 'repeat'
+            }
+          ]
+        },
+        '3' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '23'  => 'methodID is not the ID of a method.',
+            '99' =>
+'If the target virtual machine does not support the retrieval of bytecodes.'
+          },
+          name => 'Bytecodes',
+          out  => [
+            {
+              desc => 'The class.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            },
+            {
+              desc => 'The method.',
+              name => 'methodID',
+              type => 'methodID'
+            }
+          ],
+          reply => [
+            {
+              desc => '',
+              name => 'bytes',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'A Java bytecode.',
+                  name => 'bytecode',
+                  type => 'byte'
+                }
+              ],
+              name => 'bytes',
+              type => 'repeat'
+            }
+          ]
+        },
+        '4' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '23'  => 'methodID is not the ID of a method.',
+            '99' => 'If the target virtual machine does not support this query.'
+          },
+          name => 'IsObsolete',
+          out  => [
+            {
+              desc => 'The class.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            },
+            {
+              desc => 'The method.',
+              name => 'methodID',
+              type => 'methodID'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'true if this method has been replacedby a non-equivalent method usingthe RedefineClasses command.',
+              name => 'isObsolete',
+              type => 'boolean'
+            }
+          ]
+        },
+        '5' => {
+          error => {
+            '101' => 'there is no variable information for the method.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'refType is not a known ID.',
+            '21'  => 'refType is not the ID of a reference type.',
+            '23'  => 'methodID is not the ID of a method.'
+          },
+          name => 'VariableTableWithGeneric',
+          out  => [
+            {
+              desc => 'The class.',
+              name => 'refType',
+              type => 'referenceTypeID'
+            },
+            {
+              desc => 'The method.',
+              name => 'methodID',
+              type => 'methodID'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The number of words in the frame used by arguments. Eight-byte arguments use two words; all others use one.',
+              name => 'argCnt',
+              type => 'int'
+            },
+            {
+              desc => 'The number of variables.',
+              name => 'slots',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc =>
+'First code index at which the variable is visible (unsigned). Used in conjunction with length. The variable can be get or set only when the current codeIndex <= current frame code index < codeIndex + length',
+                  name => 'codeIndex',
+                  type => 'long'
+                },
+                {
+                  desc => 'The variable\'s name.',
+                  name => 'name',
+                  type => 'string'
+                },
+                {
+                  desc => 'The variable type\'s JNI signature.',
+                  name => 'signature',
+                  type => 'string'
+                },
+                {
+                  desc =>
+'The variable type\'s generic signature or an empty string if there is none.',
+                  name => 'genericSignature',
+                  type => 'string'
+                },
+                {
+                  desc =>
+'Unsigned value used in conjunction with codeIndex. The variable can be get or set only when the current codeIndex <= current frame code index < code index + length',
+                  name => 'length',
+                  type => 'int'
+                },
+                {
+                  desc => 'The local variable\'s index in its frame',
+                  name => 'slot',
+                  type => 'int'
+                }
+              ],
+              name => 'slots',
+              type => 'repeat'
+            }
+          ]
+        }
+      },
+      name => 'Method'
+    },
+    '64' => {
+      cmd => {
+        '100' => {
+          name => 'Composite',
+          out  => [
+            {
+              desc => 'Which threads where suspended by this composite event?',
+              name => 'suspendPolicy',
+              type => 'byte'
+            },
+            {
+              desc => 'Events in set.',
+              name => 'events',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Event kind selector',
+                  name => 'eventKind',
+                  type => 'byte'
+                },
+                {
+                  items => [
+                    {
+                      desc =>
+'Request that generated event (or 0 if this event is automatically generated.',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Initial thread',
+                      name => 'thread',
+                      type => 'threadID'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '90'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Stepped thread',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Location stepped to',
+                      name => 'location',
+                      type => 'location'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '1'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'thread which hit breakpoint',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Location hit',
+                      name => 'location',
+                      type => 'location'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '2'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'thread which entered method',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'The initial executable location in the method.',
+                      name => 'location',
+                      type => 'location'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '40'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'thread which exited method',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Location of exit',
+                      name => 'location',
+                      type => 'location'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '41'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Thread which exited method',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Location of exit',
+                      name => 'location',
+                      type => 'location'
+                    },
+                    {
+                      desc => 'Value that will be returned by the method',
+                      name => 'value',
+                      type => 'value'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '42'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Thread which is trying to enter the monitor',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Monitor object reference',
+                      name => 'object',
+                      type => 'tagged-objectID'
+                    },
+                    {
+                      desc => 'location of contended monitor enter',
+                      name => 'location',
+                      type => 'location'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '43'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Thread which entered monitor',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Monitor object reference',
+                      name => 'object',
+                      type => 'tagged-objectID'
+                    },
+                    {
+                      desc => 'location of contended monitor enter',
+                      name => 'location',
+                      type => 'location'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '44'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Thread which entered monitor',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Monitor object reference',
+                      name => 'object',
+                      type => 'tagged-objectID'
+                    },
+                    {
+                      desc => 'location contended monitor enter',
+                      name => 'location',
+                      type => 'location'
+                    },
+                    {
+                      desc => 'thread wait time in milliseconds',
+                      name => 'timeout',
+                      type => 'long'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '45'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Thread which entered monitor',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Monitor object reference',
+                      name => 'object',
+                      type => 'tagged-objectID'
+                    },
+                    {
+                      desc => 'location contended monitor enter',
+                      name => 'location',
+                      type => 'location'
+                    },
+                    {
+                      desc => 'true if timed out',
+                      name => 'timed_out',
+                      type => 'boolean'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '46'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Thread with exception',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc =>
+'Location of exception throw (or first non-native location after throw if thrown from a native method)',
+                      name => 'location',
+                      type => 'location'
+                    },
+                    {
+                      desc => 'Thrown exception',
+                      name => 'exception',
+                      type => 'tagged-objectID'
+                    },
+                    {
+                      desc =>
+'Location of catch, or 0 if not caught. An exception is considered to be caught if, at the point of the throw, the current location is dynamically enclosed in a try statement that handles the exception. (See the JVM specification for details). If there is such a try statement, the catch location is the first location in the appropriate catch clause. If there are native methods in the call stack at the time of the exception, there are important restrictions to note about the returned catch location. In such cases, it is not possible to predict whether an exception will be handled by some native method on the call stack. Thus, it is possible that exceptions considered uncaught here will, in fact, be handled by a native method and not cause termination of the target VM. Furthermore, it cannot be assumed that the catch location returned here will ever be reached by the throwing thread. If there is a native frame between the current location and the catch location, the exception might be handled and cleared in that native method instead.Note that compilers can generate try-catch blocks in some cases where they are not explicit in the source code; for example, the code generated for synchronized and finally blocks can contain implicit try-catch blocks. If such an implicitly generated try-catch is present on the call stack at the time of the throw, the exception will be considered caught even though it appears to be uncaught from examination of the source code.',
+                      name => 'catchLocation',
+                      type => 'location'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '4'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Started thread',
+                      name => 'thread',
+                      type => 'threadID'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '6'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Ending thread',
+                      name => 'thread',
+                      type => 'threadID'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '7'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc =>
+'Preparing thread. In rare cases, this event may occur in a debugger system thread within the target VM. Debugger threads take precautions to prevent these events, but they cannot be avoided under some conditions, especially for some subclasses of java.lang.Error. If the event was generated by a debugger system thread, the value returned by this method is null, and if the requested suspend policy for the event was EVENT_THREAD all threads will be suspended instead, and the composite event\'s suspend policy will reflect this change. Note that the discussion above does not apply to system threads created by the target VM during its normal (non-debug) operation.',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Kind of reference type. See JDWP.TypeTag',
+                      name => 'refTypeTag',
+                      type => 'byte'
+                    },
+                    {
+                      desc => 'Type being prepared',
+                      name => 'typeID',
+                      type => 'referenceTypeID'
+                    },
+                    {
+                      desc => 'Type signature',
+                      name => 'signature',
+                      type => 'string'
+                    },
+                    {
+                      desc => 'Status of type. See JDWP.ClassStatus',
+                      name => 'status',
+                      type => 'int'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '8'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Type signature',
+                      name => 'signature',
+                      type => 'string'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '9'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Accessing thread',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Location of access',
+                      name => 'location',
+                      type => 'location'
+                    },
+                    {
+                      desc => 'Kind of reference type. See JDWP.TypeTag',
+                      name => 'refTypeTag',
+                      type => 'byte'
+                    },
+                    {
+                      desc => 'Type of field',
+                      name => 'typeID',
+                      type => 'referenceTypeID'
+                    },
+                    {
+                      desc => 'Field being accessed',
+                      name => 'fieldID',
+                      type => 'fieldID'
+                    },
+                    {
+                      desc => 'Object being accessed (null=0 for statics',
+                      name => 'object',
+                      type => 'tagged-objectID'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '20'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    },
+                    {
+                      desc => 'Modifying thread',
+                      name => 'thread',
+                      type => 'threadID'
+                    },
+                    {
+                      desc => 'Location of modify',
+                      name => 'location',
+                      type => 'location'
+                    },
+                    {
+                      desc => 'Kind of reference type. See JDWP.TypeTag',
+                      name => 'refTypeTag',
+                      type => 'byte'
+                    },
+                    {
+                      desc => 'Type of field',
+                      name => 'typeID',
+                      type => 'referenceTypeID'
+                    },
+                    {
+                      desc => 'Field being modified',
+                      name => 'fieldID',
+                      type => 'fieldID'
+                    },
+                    {
+                      desc => 'Object being modified (null=0 for statics',
+                      name => 'object',
+                      type => 'tagged-objectID'
+                    },
+                    {
+                      desc => 'Value to be assigned',
+                      name => 'valueToBe',
+                      type => 'value'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '21'
+                },
+                {
+                  items => [
+                    {
+                      desc => 'Request that generated event',
+                      name => 'requestID',
+                      type => 'int'
+                    }
+                  ],
+                  name  => 'eventKind',
+                  type  => 'case',
+                  value => '99'
+                }
+              ],
+              name => 'events',
+              type => 'repeat'
+            }
+          ]
+        }
+      },
+      name => 'Event'
+    },
+    '8' => {
+      cmd  => {},
+      name => 'Field'
+    },
+    '9' => {
+      cmd => {
+        '1' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.'
+          },
+          name => 'ReferenceType',
+          out  => [
+            {
+              desc => 'The object ID',
+              name => 'object',
+              type => 'objectID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'Kind of following reference type.',
+              name => 'refTypeTag',
+              type => 'byte'
+            },
+            {
+              desc => 'The runtime reference type.',
+              name => 'typeID',
+              type => 'referenceTypeID'
+            }
+          ]
+        },
+        '10' => {
+          error => {
+            '103' => 'maxReferrers is less than zero.',
+            '112' => 'The virtual machine is not running.',
+            '20'  => 'object is not a known ID.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'ReferringObjects',
+          out  => [
+            {
+              desc => 'The object ID',
+              name => 'object',
+              type => 'objectID'
+            },
+            {
+              desc =>
+'Maximum number of referring objects to return. Must be non-negative. If zero, all referring objects are returned.',
+              name => 'maxReferrers',
+              type => 'int'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The number of objects that follow.',
+              name => 'referringObjects',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'An object that references this object.',
+                  name => 'instance',
+                  type => 'tagged-objectID'
+                }
+              ],
+              name => 'referringObjects',
+              type => 'repeat'
+            }
+          ]
+        },
+        '2' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '25' => 'Invalid field.'
+          },
+          name => 'GetValues',
+          out  => [
+            {
+              desc => 'The object ID',
+              name => 'object',
+              type => 'objectID'
+            },
+            {
+              desc => 'The number of values to get',
+              name => 'fields',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Field to get.',
+                  name => 'fieldID',
+                  type => 'fieldID'
+                }
+              ],
+              name => 'fields',
+              type => 'repeat'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+'The number of values returned, always equal to \'fields\', the number of values to get. Field values are ordered in the reply in the same order as corresponding fieldIDs in the command.',
+              name => 'values',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The field value',
+                  name => 'value',
+                  type => 'value'
+                }
+              ],
+              name => 'values',
+              type => 'repeat'
+            }
+          ]
+        },
+        '3' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '25' => 'Invalid field.'
+          },
+          name => 'SetValues',
+          out  => [
+            {
+              desc => 'The object ID',
+              name => 'object',
+              type => 'objectID'
+            },
+            {
+              desc => 'The number of fields to set.',
+              name => 'values',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'Field to set.',
+                  name => 'fieldID',
+                  type => 'fieldID'
+                },
+                {
+                  desc => 'Value to put in the field.',
+                  name => 'value',
+                  type => 'untagged-value'
+                }
+              ],
+              name => 'values',
+              type => 'repeat'
+            }
+          ],
+          reply => []
+        },
+        '5' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '99' =>
+              'The functionality is not implemented in this virtual machine.'
+          },
+          name => 'MonitorInfo',
+          out  => [
+            {
+              desc => 'The object ID',
+              name => 'object',
+              type => 'objectID'
+            }
+          ],
+          reply => [
+            {
+              desc =>
+                'The monitor owner, or null if it is not currently owned.',
+              name => 'owner',
+              type => 'threadID'
+            },
+            {
+              desc => 'The number of times the monitor has been entered.',
+              name => 'entryCount',
+              type => 'int'
+            },
+            {
+              desc =>
+'The number of threads that are waiting for the monitor 0 if there is no current owner',
+              name => 'waiters',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'A thread waiting for this monitor.',
+                  name => 'thread',
+                  type => 'threadID'
+                }
+              ],
+              name => 'waiters',
+              type => 'repeat'
+            }
+          ]
+        },
+        '6' => {
+          error => {
+            '10' =>
+              'Passed thread is null, is not a valid thread or has exited.',
+            '112' => 'The virtual machine is not running.',
+            '13' =>
+              'If the specified thread has not been suspended by an event.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.',
+            '21' => 'clazz is not the ID of a reference type.',
+            '23' => 'methodID is not the ID of a method.'
+          },
+          name => 'InvokeMethod',
+          out  => [
+            {
+              desc => 'The object ID',
+              name => 'object',
+              type => 'objectID'
+            },
+            {
+              desc => 'The thread in which to invoke.',
+              name => 'thread',
+              type => 'threadID'
+            },
+            {
+              desc => 'The class type.',
+              name => 'clazz',
+              type => 'classID'
+            },
+            {
+              desc => 'The method to invoke.',
+              name => 'methodID',
+              type => 'methodID'
+            },
+            {
+              desc => 'The number of arguments.',
+              name => 'arguments',
+              type => 'int'
+            },
+            {
+              items => [
+                {
+                  desc => 'The argument value.',
+                  name => 'arg',
+                  type => 'value'
+                }
+              ],
+              name => 'arguments',
+              type => 'repeat'
+            },
+            {
+              desc => 'Invocation options',
+              name => 'options',
+              type => 'int'
+            }
+          ],
+          reply => [
+            {
+              desc => 'The returned value, or null if an exception is thrown.',
+              name => 'returnValue',
+              type => 'value'
+            },
+            {
+              desc => 'The thrown exception, if any.',
+              name => 'exception',
+              type => 'tagged-objectID'
+            }
+          ]
+        },
+        '7' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.'
+          },
+          name => 'DisableCollection',
+          out  => [
+            {
+              desc => 'The object ID',
+              name => 'object',
+              type => 'objectID'
+            }
+          ],
+          reply => []
+        },
+        '8' => {
+          error => { '112' => 'The virtual machine is not running.' },
+          name => 'EnableCollection',
+          out  => [
+            {
+              desc => 'The object ID',
+              name => 'object',
+              type => 'objectID'
+            }
+          ],
+          reply => []
+        },
+        '9' => {
+          error => {
+            '112' => 'The virtual machine is not running.',
+            '20' =>
+              'If this reference type has been unloaded and garbage collected.'
+          },
+          name => 'IsCollected',
+          out  => [
+            {
+              desc => 'The object ID',
+              name => 'object',
+              type => 'objectID'
+            }
+          ],
+          reply => [
+            {
+              desc => 'true if the object has been collected; false otherwise',
+              name => 'isCollected',
+              type => 'boolean'
+            }
+          ]
+        }
+      },
+      name => 'ObjectReference'
+    }
+  },
+  error => {
+    '0' => {
+      desc => 'No error has occurred.',
+      name => 'NONE'
+    },
+    '10' => {
+      desc => 'Passed thread is null, is not a valid thread or has exited.',
+      name => 'INVALID_THREAD'
+    },
+    '100' => {
+      desc => 'Invalid pointer.',
+      name => 'NULL_POINTER'
+    },
+    '101' => {
+      desc => 'Desired information is not available.',
+      name => 'ABSENT_INFORMATION'
+    },
+    '102' => {
+      desc => 'The specified event type id is not recognized.',
+      name => 'INVALID_EVENT_TYPE'
+    },
+    '103' => {
+      desc => 'Illegal argument.',
+      name => 'ILLEGAL_ARGUMENT'
+    },
+    '11' => {
+      desc => 'Thread group invalid.',
+      name => 'INVALID_THREAD_GROUP'
+    },
+    '110' => {
+      desc =>
+'The function needed to allocate memory and no more memory was available for allocation.',
+      name => 'OUT_OF_MEMORY'
+    },
+    '111' => {
+      desc =>
+'Debugging has not been enabled in this virtual machine. JVMTI cannot be used.',
+      name => 'ACCESS_DENIED'
+    },
+    '112' => {
+      desc => 'The virtual machine is not running.',
+      name => 'VM_DEAD'
+    },
+    '113' => {
+      desc => 'An unexpected internal error has occurred.',
+      name => 'INTERNAL'
+    },
+    '115' => {
+      desc =>
+'The thread being used to call this function is not attached to the virtual machine. Calls must be made from attached threads.',
+      name => 'UNATTACHED_THREAD'
+    },
+    '12' => {
+      desc => 'Invalid priority.',
+      name => 'INVALID_PRIORITY'
+    },
+    '13' => {
+      desc => 'If the specified thread has not been suspended by an event.',
+      name => 'THREAD_NOT_SUSPENDED'
+    },
+    '14' => {
+      desc => 'Thread already suspended.',
+      name => 'THREAD_SUSPENDED'
+    },
+    '15' => {
+      desc => 'Thread has not been started or is now dead.',
+      name => 'THREAD_NOT_ALIVE'
+    },
+    '20' => {
+      desc => 'If this reference type has been unloaded and garbage collected.',
+      name => 'INVALID_OBJECT'
+    },
+    '21' => {
+      desc => 'Invalid class.',
+      name => 'INVALID_CLASS'
+    },
+    '22' => {
+      desc => 'Class has been loaded but not yet prepared.',
+      name => 'CLASS_NOT_PREPARED'
+    },
+    '23' => {
+      desc => 'Invalid method.',
+      name => 'INVALID_METHODID'
+    },
+    '24' => {
+      desc => 'Invalid location.',
+      name => 'INVALID_LOCATION'
+    },
+    '25' => {
+      desc => 'Invalid field.',
+      name => 'INVALID_FIELDID'
+    },
+    '30' => {
+      desc => 'Invalid jframeID.',
+      name => 'INVALID_FRAMEID'
+    },
+    '31' => {
+      desc => 'There are no more Java or JNI frames on the call stack.',
+      name => 'NO_MORE_FRAMES'
+    },
+    '32' => {
+      desc => 'Information about the frame is not available.',
+      name => 'OPAQUE_FRAME'
+    },
+    '33' => {
+      desc => 'Operation can only be performed on current frame.',
+      name => 'NOT_CURRENT_FRAME'
+    },
+    '34' => {
+      desc => 'The variable is not an appropriate type for the function used.',
+      name => 'TYPE_MISMATCH'
+    },
+    '35' => {
+      desc => 'Invalid slot.',
+      name => 'INVALID_SLOT'
+    },
+    '40' => {
+      desc => 'Item already set.',
+      name => 'DUPLICATE'
+    },
+    '41' => {
+      desc => 'Desired element not found.',
+      name => 'NOT_FOUND'
+    },
+    '50' => {
+      desc => 'Invalid monitor.',
+      name => 'INVALID_MONITOR'
+    },
+    '500' => {
+      desc => 'object type id or class tag.',
+      name => 'INVALID_TAG'
+    },
+    '502' => {
+      desc => 'Previous invoke not complete.',
+      name => 'ALREADY_INVOKING'
+    },
+    '503' => {
+      desc => 'Index is invalid.',
+      name => 'INVALID_INDEX'
+    },
+    '504' => {
+      desc => 'The length is invalid.',
+      name => 'INVALID_LENGTH'
+    },
+    '506' => {
+      desc => 'The string is invalid.',
+      name => 'INVALID_STRING'
+    },
+    '507' => {
+      desc => 'The class loader is invalid.',
+      name => 'INVALID_CLASS_LOADER'
+    },
+    '508' => {
+      desc => 'The array is invalid.',
+      name => 'INVALID_ARRAY'
+    },
+    '509' => {
+      desc => 'Unable to load the transport.',
+      name => 'TRANSPORT_LOAD'
+    },
+    '51' => {
+      desc => 'This thread doesn\'t own the monitor.',
+      name => 'NOT_MONITOR_OWNER'
+    },
+    '510' => {
+      desc => 'Unable to initialize the transport.',
+      name => 'TRANSPORT_INIT'
+    },
+    '511' => {
+      desc => '',
+      name => 'NATIVE_METHOD'
+    },
+    '512' => {
+      desc => 'The count is invalid.',
+      name => 'INVALID_COUNT'
+    },
+    '52' => {
+      desc => 'The call has been interrupted before completion.',
+      name => 'INTERRUPT'
+    },
+    '60' => {
+      desc =>
+'The virtual machine attempted to read a class file and determined that the file is malformed or otherwise cannot be interpreted as a class file.',
+      name => 'INVALID_CLASS_FORMAT'
+    },
+    '61' => {
+      desc => 'A circularity has been detected while initializing a class.',
+      name => 'CIRCULAR_CLASS_DEFINITION'
+    },
+    '62' => {
+      desc =>
+'The verifier detected that a class file, though well formed, contained some sort of internal inconsistency or security problem.',
+      name => 'FAILS_VERIFICATION'
+    },
+    '63' => {
+      desc => 'Adding methods has not been implemented.',
+      name => 'ADD_METHOD_NOT_IMPLEMENTED'
+    },
+    '64' => {
+      desc => 'Schema change has not been implemented.',
+      name => 'SCHEMA_CHANGE_NOT_IMPLEMENTED'
+    },
+    '65' => {
+      desc =>
+        'The state of the thread has been modified, and is now inconsistent.',
+      name => 'INVALID_TYPESTATE'
+    },
+    '66' => {
+      desc =>
+'A direct superclass is different for the new class version, or the set of directly implemented interfaces is different and canUnrestrictedlyRedefineClasses is false.',
+      name => 'HIERARCHY_CHANGE_NOT_IMPLEMENTED'
+    },
+    '67' => {
+      desc =>
+'The new class version does not declare a method declared in the old class version and canUnrestrictedlyRedefineClasses is false.',
+      name => 'DELETE_METHOD_NOT_IMPLEMENTED'
+    },
+    '68' => {
+      desc => 'A class file has a version number not supported by this VM.',
+      name => 'UNSUPPORTED_VERSION'
+    },
+    '69' => {
+      desc =>
+'The class name defined in the new class file is different from the name in the old class object.',
+      name => 'NAMES_DONT_MATCH'
+    },
+    '70' => {
+      desc =>
+'The new class version has different modifiers and and canUnrestrictedlyRedefineClasses is false.',
+      name => 'CLASS_MODIFIERS_CHANGE_NOT_IMPLEMENTED'
+    },
+    '71' => {
+      desc =>
+'A method in the new class version has different modifiers than its counterpart in the old class version and and canUnrestrictedlyRedefineClasses is false.',
+      name => 'METHOD_MODIFIERS_CHANGE_NOT_IMPLEMENTED'
+    },
+    '99' => {
+      desc => 'The functionality is not implemented in this virtual machine.',
+      name => 'NOT_IMPLEMENTED'
+    }
+  },
+  eventkind => {
+    '1' => {
+      desc => '',
+      name => 'SINGLE_STEP'
+    },
+    '10' => {
+      desc => '',
+      name => 'CLASS_LOAD'
+    },
+    '100' => {
+      desc => 'Never sent across JDWP',
+      name => 'VM_DISCONNECTED'
+    },
+    '2' => {
+      desc => '',
+      name => 'BREAKPOINT'
+    },
+    '20' => {
+      desc => '',
+      name => 'FIELD_ACCESS'
+    },
+    '21' => {
+      desc => '',
+      name => 'FIELD_MODIFICATION'
+    },
+    '3' => {
+      desc => '',
+      name => 'FRAME_POP'
+    },
+    '30' => {
+      desc => '',
+      name => 'EXCEPTION_CATCH'
+    },
+    '4' => {
+      desc => '',
+      name => 'EXCEPTION'
+    },
+    '40' => {
+      desc => '',
+      name => 'METHOD_ENTRY'
+    },
+    '41' => {
+      desc => '',
+      name => 'METHOD_EXIT'
+    },
+    '42' => {
+      desc => '',
+      name => 'METHOD_EXIT_WITH_RETURN_VALUE'
+    },
+    '43' => {
+      desc => '',
+      name => 'MONITOR_CONTENDED_ENTER'
+    },
+    '44' => {
+      desc => '',
+      name => 'MONITOR_CONTENDED_ENTERED'
+    },
+    '45' => {
+      desc => '',
+      name => 'MONITOR_WAIT'
+    },
+    '46' => {
+      desc => '',
+      name => 'MONITOR_WAITED'
+    },
+    '5' => {
+      desc => '',
+      name => 'USER_DEFINED'
+    },
+    '6' => {
+      desc => '',
+      name => 'THREAD_START'
+    },
+    '7' => {
+      desc => 'obsolete - was used in jvmdi',
+      name => 'THREAD_END'
+    },
+    '8' => {
+      desc => '',
+      name => 'CLASS_PREPARE'
+    },
+    '9' => {
+      desc => '',
+      name => 'CLASS_UNLOAD'
+    },
+    '90' => {
+      desc => 'obsolete - was used in jvmdi',
+      name => 'VM_INIT'
+    },
+    '99' => {
+      desc => '',
+      name => 'VM_DEATH'
+    }
+  },
+  invokeoptions => {
+    '1' => {
+      desc => 'otherwise, all threads started.',
+      name => 'INVOKE_SINGLE_THREADED'
+    },
+    '2' => {
+      desc => 'otherwise, normal virtual invoke (instance methods only)',
+      name => 'INVOKE_NONVIRTUAL'
+    }
+  },
+  stepdepth => {
+    '0' => {
+      desc =>
+        'Step into any method calls that occur before the end of the step.',
+      name => 'INTO'
+    },
+    '1' => {
+      desc =>
+        'Step over any method calls that occur before the end of the step.',
+      name => 'OVER'
+    },
+    '2' => {
+      desc => 'Step out of the current method.',
+      name => 'OUT'
+    }
+  },
+  stepsize => {
+    '0' => {
+      desc =>
+        'Step by the minimum possible amount (often a bytecode instruction).',
+      name => 'MIN'
+    },
+    '1' => {
+      desc =>
+'Step to the next source line unless there is no line number information in which case a MIN step is done instead.',
+      name => 'LINE'
+    }
+  },
+  suspendpolicy => {
+    '0' => {
+      desc => 'Suspend no threads when this event is encountered.',
+      name => 'NONE'
+    },
+    '1' => {
+      desc => 'Suspend the event thread when this event is encountered.',
+      name => 'EVENT_THREAD'
+    },
+    '2' => {
+      desc => 'Suspend all threads when this event is encountered.',
+      name => 'ALL'
+    }
+  },
+  suspendstatus => {
+    '1' => {
+      desc => '',
+      name => 'SUSPEND_STATUS_SUSPENDED'
+    }
+  },
+  tag => {
+    '103' => {
+      desc => '\'g\' - a ThreadGroup object (objectID size).',
+      name => 'THREAD_GROUP'
+    },
+    '108' => {
+      desc => '\'l\' - a ClassLoader object (objectID size).',
+      name => 'CLASS_LOADER'
+    },
+    '115' => {
+      desc => '\'s\' - a String object (objectID size).',
+      name => 'STRING'
+    },
+    '116' => {
+      desc => '\'t\' - a Thread object (objectID size).',
+      name => 'THREAD'
+    },
+    '66' => {
+      desc => '\'B\' - a byte value (1 byte).',
+      name => 'BYTE'
+    },
+    '67' => {
+      desc => '\'C\' - a character value (2 bytes).',
+      name => 'CHAR'
+    },
+    '68' => {
+      desc => '\'D\' - a double value (8 bytes).',
+      name => 'DOUBLE'
+    },
+    '70' => {
+      desc => '\'F\' - a float value (4 bytes).',
+      name => 'FLOAT'
+    },
+    '73' => {
+      desc => '\'I\' - an int value (4 bytes).',
+      name => 'INT'
+    },
+    '74' => {
+      desc => '\'J\' - a long value (8 bytes).',
+      name => 'LONG'
+    },
+    '76' => {
+      desc => '\'L\' - an object (objectID size).',
+      name => 'OBJECT'
+    },
+    '83' => {
+      desc => '\'S\' - a short value (2 bytes).',
+      name => 'SHORT'
+    },
+    '86' => {
+      desc => '\'V\' - a void value (no bytes).',
+      name => 'VOID'
+    },
+    '90' => {
+      desc => '\'Z\' - a boolean value (1 byte).',
+      name => 'BOOLEAN'
+    },
+    '91' => {
+      desc => '\'[\' - an array object (objectID size).',
+      name => 'ARRAY'
+    },
+    '99' => {
+      desc => '\'c\' - a class object object (objectID size).',
+      name => 'CLASS_OBJECT'
+    }
+  },
+  threadstatus => {
+    '0' => {
+      desc => '',
+      name => 'ZOMBIE'
+    },
+    '1' => {
+      desc => '',
+      name => 'RUNNING'
+    },
+    '2' => {
+      desc => '',
+      name => 'SLEEPING'
+    },
+    '3' => {
+      desc => '',
+      name => 'MONITOR'
+    },
+    '4' => {
+      desc => '',
+      name => 'WAIT'
+    }
+  },
+  typetag => {
+    '1' => {
+      desc => 'ReferenceType is a class.',
+      name => 'CLASS'
+    },
+    '2' => {
+      desc => 'ReferenceType is an interface.',
+      name => 'INTERFACE'
+    },
+    '3' => {
+      desc => 'ReferenceType is an array.',
+      name => 'ARRAY'
+    }
+  }
+};
