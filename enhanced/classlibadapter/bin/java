@@ -1,0 +1,53 @@
+#!/bin/sh
+
+export JCHEVM_HOME=/usr/local
+ADAPTER=${0%bin/java}
+if [ -z "$ADAPTER" ]; then
+  ADAPTER=.
+fi
+CLASSLIB_HOME=$ADAPTER/../classlib/deploy/jdk/jre
+
+die() {
+  echo "$@"
+  exit
+}
+
+test -d $CLASSLIB_HOME/lib/boot || \
+  die CLASSLIB_HOME should be set to the path of Harmony jre
+
+JC_BIN=$JCHEVM_HOME/bin/jc
+JCZIP=$JCHEVM_HOME/share/jc/jc.zip
+KERNEL=$ADAPTER/build/classes
+#NIO=$ADAPTER/build/classes
+#ADAPTER_JARS=$KERNEL:$NIO
+ADAPTER_JARS=$KERNEL
+CLASSLIB_JARS=$(ls $CLASSLIB_HOME/lib/boot/*.jar $CLASSLIB_HOME/lib/boot/*/*.jar | tr '\n' ':')
+
+JC_BOOT=$JCZIP:$ADAPTER_JARS:$CLASSLIB_JARS
+ADAPTER_LIBS=$ADAPTER
+CLASSLIB_LIBS=$CLASSLIB_HOME/bin
+JC_LIB_PATH=$ADAPTER_LIBS:$CLASSLIB_LIBS
+
+while [ -n "$1" ]; do
+  
+  case "$1" in
+    -Xbootclasspath/a:*)
+      JC_BOOT=$JC_BOOT:${1#-Xbootclasspath/a:}:
+      ;;
+    -Xbootclasspath/p:*)
+      JC_BOOT=${1#-Xbootclasspath/p:}:$JC_BOOT
+      ;;
+    -showversion*)
+      # not supported ignoring
+      ;;
+    *)
+      args[${#args[@]}]="$1"
+      ;;
+  esac
+  shift
+done
+
+export LD_LIBRARY_PATH=$ADAPTER_LIBS:$CLASSLIB_LIBS:$LD_LIBRARY_PATH
+
+exec $JC_BIN -Djava.library.path=$JC_LIB_PATH \
+             -Djava.boot.class.path=$JC_BOOT "${args[@]}"
