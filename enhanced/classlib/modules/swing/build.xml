@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<project name="SWING Build" default="build" basedir=".">
+    <description>Build for SWING component</description>
+
+    <!-- import common properties -->
+    <property name="hy.hdk" location="${basedir}/../../deploy" />
+    <import file="${hy.hdk}/build/ant/properties.xml" />
+
+    <!-- set global properties for this build. -->
+    <xmlproperty file="make/hyproperties.xml" semanticAttributes="true" />
+
+    <property name="hy.swing.src.main.java.platform"
+              value="${hy.swing.src.main.java}/../${hy.os}" />
+
+    <property name="hy.swing.src.test.java.platform"
+              value="${hy.swing.src.test.java}/../${hy.os}" />
+
+    <fileset id="classes" dir="${hy.build}">
+        <or>
+            <present targetdir="${hy.swing.src.main.java}" />
+            <present targetdir="${hy.swing.src.main.java}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+            <present targetdir="${hy.swing.src.main.java.platform}" />
+            <present targetdir="${hy.swing.src.main.java.platform}">
+                <mapper type="regexp"
+                        from="^(.*?)(\$$[^/\\\.]*)?\.class$$"
+                        to="\1.java"/>
+            </present>
+        </or>
+    </fileset>
+
+    <property file="../../make/depends.properties" />
+
+    <target name="build" depends="compile-java, copy-resources, build-jar" />
+
+    <target name="test" depends="-test-module">
+        <fail message="Some tests failed">
+            <condition>
+                <or>
+                    <isset property="test.failures" />
+                    <isset property="test.errors" />
+                </or>
+            </condition>
+        </fail>
+    </target>
+
+    <!-- internal target for local and global test run sequence -->
+    <target name="-test-module" depends="build, run-tests" />
+
+    <target name="clean">
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar" />
+        <delete file="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}-src.jar" />
+        <delete failonerror="false">
+            <fileset refid="classes" />
+            <fileset dir="${hy.swing.bin.test}" />
+        </delete>
+    </target>
+
+    <target name="compile-java">
+        <echo message="Compiling SWING classes" />
+
+        <mkdir dir="${hy.build}" />
+
+        <javac sourcepath=""
+               destdir="${hy.build}"
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+
+            <src>
+                <pathelement location="${hy.swing.src.main.java}"/>
+                <pathelement location="${hy.swing.src.main.java.platform}" />
+            </src>
+
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+        </javac>
+    </target>
+
+    <target name="copy-resources">
+        <mkdir dir="${hy.build}" />
+        <copy todir="${hy.build}" includeemptydirs="false">
+            <fileset dir="${hy.swing.src.main.java}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="build-jar" depends="svn-info">
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}.jar"
+             manifest="${hy.swing}/META-INF/MANIFEST.MF">
+            <fileset refid="classes" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+
+        <jar destfile="${hy.jdk}/jre/lib/boot/${hy.swing.packaging.jarname}-src.jar">
+            <fileset dir="${hy.swing.src.main.java}" />
+            <manifest>
+                <attribute name="Implementation-Version" value="${svn.info}"/> 
+            </manifest>
+
+            <metainf file="${hy.hdk}/NOTICE"/>
+            <metainf file="${hy.hdk}/LICENSE"/>
+        </jar>
+    </target>
+
+    <target name="compile-tests">
+        <echo message="Compiling SWING tests" />
+
+        <mkdir dir="${hy.swing.bin.test}" />
+
+        <javac srcdir="${hy.swing.src.test.api}/java/common"
+               destdir="${hy.swing.bin.test}"
+               sourcepath=""
+               compiler="${hy.javac.compiler}"
+               memoryMaximumSize="${hy.javac.maxmem}"
+               source="${hy.javac.source}" 
+               target="${hy.javac.target}"
+               debug="${hy.javac.debug}">
+               
+            <bootclasspath>
+                <fileset dir="${hy.jdk}/jre/lib/boot">
+                    <include name="**/*.jar" />
+                </fileset>
+            </bootclasspath>
+            <classpath location="../../build/tests" />
+            <classpath location="${hy.hdk}/build/test/support.jar" /> 
+        </javac>
+    </target>
+
+    <target name="run-tests" depends="compile-tests,copy-test-resources">
+
+        <mkdir dir="${hy.tests.reports}" />
+
+        <property name="test.jre.home" value="${hy.jdk}/jre" />
+
+        <junit fork="yes"
+               forkmode="${hy.test.forkmode}"
+               timeout="${hy.test.timeout}"
+               printsummary="withOutAndErr"
+               errorproperty="test.errors"
+               failureproperty="test.failures"
+               showoutput="on"
+               dir="${basedir}"
+               jvm="${test.jre.home}/bin/java">
+
+            <formatter type="xml" />
+
+            <test name="${test.case}" todir="${hy.tests.reports}"
+                  if="test.case" />
+            <jvmarg value="-Xbootclasspath/a:${hy.swing.bin.test}${path.separator}../../${junit.jar}${path.separator}${hy.hdk}/build/test/support.jar"/>
+
+            <batchtest todir="${hy.tests.reports}" haltonfailure="no"
+                unless="test.case">
+
+                <fileset dir="${hy.swing.src.test.api}/java/common">
+                    <include name="**/*Test*.java"/>
+                    <!-- Failing with SEGV in XmuLookupStandardColormap -->
+                    <exclude name="javax/swing/JEditorPaneTest.java" />
+
+                    <exclude name="javax/swing/AccessibleJComponent_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/AccessibleJComponent_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JComponent_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JFormattedTextField_CommitActionRTest.java"/>
+                    <exclude name="javax/swing/JInternalFrame_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JTextField_NotifyActionRTest.java"/>
+                    <exclude name="javax/swing/ProgressMonitorTest.java"/>
+                    <exclude name="javax/swing/RobotTestCase.java"/>
+                    <exclude name="javax/swing/SerializableTestCase.java"/>
+                    <exclude name="javax/swing/SpringTest.java"/>
+                    <exclude name="javax/swing/SwingWaitTestCase.java"/>
+                    <exclude name="javax/swing/TestBundle.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicDesktopPaneUIActionsTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicMenuUI_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicOptionPaneUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicTreeUITest.java"/>
+                    <exclude name="javax/swing/table/BasicSwingTableTestCase.java"/>
+                    <exclude name="javax/swing/text/DefaultCaret_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/text/DefaultEditorKitTest.java"/>
+                    <exclude name="javax/swing/text/DefaultEditorKit_Actions_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/text/FlowViewTest.java"/>
+                    <exclude name="javax/swing/text/GapContentTest.java"/>
+                    <exclude name="javax/swing/text/GapContent_InternalTest.java"/>
+                    <exclude name="javax/swing/text/InternationalFormatterTest.java"/>
+                    <exclude name="javax/swing/text/ParagraphViewTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_LayoutTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_LineViewTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_LineView_UpdateTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_VisualPositionTest.java"/>
+                    <exclude name="javax/swing/text/StringContentTest.java"/>
+                    <exclude name="javax/swing/text/StringContentTest_CommonTests.java"/>
+                    <exclude name="javax/swing/text/StyleConstantsTest.java"/>
+                    <exclude name="javax/swing/text/StyleContextTest.java"/>
+                    <exclude name="javax/swing/text/StyledEditorKitTest.java"/>
+                    <exclude name="javax/swing/text/TextAction_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/text/ViewTestHelpers.java"/>
+                    <exclude name="javax/swing/text/View_ForwardUpdateRTest.java"/>
+
+                    <exclude name="javax/swing/JComboBoxTest.java"/>
+                    <exclude name="javax/swing/JComponentTest.java"/>
+                    <exclude name="javax/swing/JMenuTest.java"/>
+                    <exclude name="javax/swing/JSplitPaneTest.java"/>
+                    <exclude name="javax/swing/JTableTest.java"/>
+                    <exclude name="javax/swing/RepaintManagerTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicBordersTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicComboBoxUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicLookAndFeelTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicProgressBarUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicSplitPaneDividerTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicSplitPaneUITest.java"/>
+                    <exclude name="javax/swing/plaf/metal/MetalComboBoxUITest.java"/>
+                    <exclude name="javax/swing/plaf/metal/MetalLookAndFeelTest.java"/>
+                    <exclude name="javax/swing/text/GlyphView_AttributesTest.java"/>
+                    <exclude name="org/apache/harmony/x/swing/plaf/resources/basic/BasicResourceBundleTest.java"/>
+
+                    <exclude name="javax/swing/BoxLayoutTest.java"/>
+                    <exclude name="javax/swing/CellRendererPaneTest.java"/>
+                    <exclude name="javax/swing/DefaultDesktopManagerTest.java"/>
+                    <exclude name="javax/swing/ImageIcon_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JComponent_AddRemoveNotifyTest.java"/>
+                    <exclude name="javax/swing/JDialogTest.java"/>
+                    <exclude name="javax/swing/JEditorPane_AccessibleJEditorPaneHTMLTest.java"/>
+                    <exclude name="javax/swing/JEditorPane_AccessibleJEditorPaneTest.java"/>
+                    <exclude name="javax/swing/JEditorPane_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JFormattedTextFieldTest.java"/>
+                    <exclude name="javax/swing/JFrameRTest.java"/>
+                    <exclude name="javax/swing/JFrameTest.java"/>
+                    <exclude name="javax/swing/JLabelTest.java"/>
+                    <exclude name="javax/swing/JListTest.java"/>
+                    <exclude name="javax/swing/JOptionPaneRTest.java"/>
+                    <exclude name="javax/swing/JOptionPaneTest.java"/>
+                    <exclude name="javax/swing/JPopupMenuTest.java"/>
+                    <exclude name="javax/swing/JRootPaneRTest.java"/>
+                    <exclude name="javax/swing/JRootPaneTest.java"/>
+                    <exclude name="javax/swing/JTextArea_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/JTextFieldTest.java"/>
+                    <exclude name="javax/swing/JViewportTest.java"/>
+                    <exclude name="javax/swing/JWindowTest.java"/>
+                    <exclude name="javax/swing/LayoutFocusTraversalPolicyTest.java"/>
+                    <exclude name="javax/swing/OverlayLayoutTest.java"/>
+                    <exclude name="javax/swing/PopupFactoryRTest.java"/>
+                    <exclude name="javax/swing/PopupFactoryTest.java"/>
+                    <exclude name="javax/swing/PopupTest.java"/>
+                    <exclude name="javax/swing/ProgressMonitorInputStreamTest.java"/>
+                    <exclude name="javax/swing/SortingFocusTraversalPolicyRTest.java"/>
+                    <exclude name="javax/swing/SwingUtilitiesRTest.java"/>
+                    <exclude name="javax/swing/SwingUtilitiesTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicCheckBoxMenuItemUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicComboPopupTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicEditorPaneUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicGraphicsUtilsTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicInternalFrameTitlePaneTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicMenuItemUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicOptionPaneUI_ButtonAreaLayoutTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicRadioButtonMenuItemUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicRootPaneUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicScrollBarUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicTabbedPaneUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicTableUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicTextAreaUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicTextFieldUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicTextPaneUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicToolBarUI$DragWindowTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicToolBarUITest.java"/>
+                    <exclude name="javax/swing/plaf/metal/MetalComboBoxIconTest.java"/>
+                    <exclude name="javax/swing/plaf/metal/MetalRootPaneUI$MetalRootLayoutTest.java"/>
+                    <exclude name="javax/swing/plaf/metal/MetalRootPaneUIRTest.java"/>
+                    <exclude name="javax/swing/plaf/metal/MetalRootPaneUITest.java"/>
+                    <exclude name="javax/swing/plaf/metal/MetalToolBarUITest.java"/>
+                    <exclude name="javax/swing/plaf/metal/MetalTreeUITest.java"/>
+                    <exclude name="javax/swing/text/DefaultCaretTest.java"/>
+                    <exclude name="javax/swing/text/DefaultCaret_BidiTest.java"/>
+                    <exclude name="javax/swing/text/DefaultEditorKitRTest.java"/>
+                    <exclude name="javax/swing/text/DefaultHighlighterTest.java"/>
+                    <exclude name="javax/swing/text/DefaultHighlighter_DefaultHighlightPainterTest.java"/>
+                    <exclude name="javax/swing/text/FieldViewTest.java"/>
+                    <exclude name="javax/swing/text/JTextComponentTest.java"/>
+                    <exclude name="javax/swing/text/JTextComponent_AccessibleJTextComponentTest.java"/>
+                    <exclude name="javax/swing/text/JTextComponent_AccessibleJTextComponent_variousTextTest.java"/>
+                    <exclude name="javax/swing/text/JTextComponent_IMLocationTest.java"/>
+                    <exclude name="javax/swing/text/JTextComponent_IMTest.java"/>
+                    <exclude name="javax/swing/text/JTextComponent_MultithreadedTest.java"/>
+                    <exclude name="javax/swing/text/JTextComponent_byAuxiliaryComponentTest.java"/>
+                    <exclude name="javax/swing/text/PasswordViewTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewI18N_ModelViewTest.java"/>
+                    <exclude name="javax/swing/text/PlainViewTest.java"/>
+                    <exclude name="javax/swing/text/PlainView_ChangesTest.java"/>
+                    <exclude name="javax/swing/text/UtilitiesTest.java"/>
+                    <exclude name="javax/swing/text/View_NextVisualPositionFromTest.java"/>
+                    <exclude name="javax/swing/text/WrappedPlainViewRTest.java"/>
+                    <exclude name="javax/swing/text/WrappedPlainViewTest.java"/>
+
+                    <exclude name="javax/swing/JInternalFrameTest.java"/>
+                    <exclude name="javax/swing/JTextAreaTest.java"/>
+                    <exclude name="javax/swing/SortingFocusTraversalPolicyTest.java"/>
+                    <exclude name="javax/swing/event/AncestorEventTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicInternalFrameUITest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicTextUITest.java"/>
+
+                    <exclude name="javax/swing/JColorChooserTest.java"/>
+                    <exclude name="javax/swing/colorchooser/ColorChooserComponentFactoryTest.java"/>
+                    <exclude name="javax/swing/plaf/basic/BasicColorChooserUITest.java"/>
+
+                </fileset>
+            </batchtest>
+        </junit>
+        <antcall target="touch-failures-file" />
+        <antcall target="touch-errors-file" />
+    </target>
+
+    <target name="touch-failures-file" if="test.failures">
+        <echo file="${hy.tests.reports}/test.failures"
+            append="true">swing${line.separator}</echo>
+    </target>
+
+    <target name="touch-errors-file" if="test.errors">
+        <echo file="${hy.tests.reports}/test.errors"
+            append="true">swing${line.separator}</echo>
+    </target>
+
+    <target name="copy-test-resources">
+        <mkdir dir="${hy.swing.bin.test}" />
+        <copy todir="${hy.swing.bin.test}" includeemptydirs="false">
+            <fileset dir="${hy.swing.src.test.resources}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+    </target>
+
+</project>
