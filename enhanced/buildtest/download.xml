@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+-->
+<project default="download">
+    <description>
+        Framework for managing project dependencies
+    </description>
+
+    <!-- temporary file to store intermediate results of iteration -->
+    <property name="tmp.file" value="tmp.txt" />
+
+    <!-- root directory for storing downloaded files -->
+    <property name="depends" value="depends" />
+
+    <!-- ============================
+        Entry point of the framework
+        ============================ -->
+    <target name="download"
+            depends="-setup-proxy"
+            description="Downloads dependencies">
+
+        <!-- default properties file -->
+        <property name="props.file" value="parameters.xml" />
+
+        <xmlproperty file="${props.file}" />
+
+        <!-- flash propertyset as string to file for iteration   -->
+        <!-- the string has the following format:                -->
+        <!--     "name1=file1, name2=file2 ..."                  -->
+        <propertyset id="tmp.id">
+            <propertyref regex="parameters\.external\..+\.file$" />
+            <regexpmapper from="parameters\.external\.(.+)\.file$" to="\1" />
+        </propertyset>
+        <property name="tmp.str" refid="tmp.id" />
+        <echo message="${tmp.str}" file="${tmp.file}" />
+
+        <!-- iterate over propertyset fetching required dependencies -->
+        <ant antfile="download.xml" target="-iterate" inheritall="false">
+            <propertyset>
+                <propertyref prefix="parameters.external" />
+            </propertyset>
+        </ant>
+
+        <delete file="${tmp.file}" />
+    </target>
+
+    <!-- ============================
+        Targets for iteration over propertyset of external dependencies
+        ============================ -->
+    <target name="-next" if="donext">
+        <!-- make ant iterate over propertyset:                 -->
+        <!-- load a name of dependency from temporary file and  -->
+        <!-- flash the rest of dependencies back to the file.   -->
+        <loadproperties srcfile="${tmp.file}">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^([^=]+)=.*" replace="name=\1" />
+                </tokenfilter>
+            </filterchain>
+        </loadproperties>
+        <loadproperties srcfile="${tmp.file}">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="^[^=]+=[^,]+,? ?(.*)$"
+                                  replace="rest=\1" />
+                </tokenfilter>
+            </filterchain>
+        </loadproperties>
+        <echo message="${rest}" file="${tmp.file}" />
+
+        <!-- do download for the dependency -->
+        <fetch resource="${name}" />
+
+        <ant antfile="download.xml" target="-iterate" inheritall="false">
+            <propertyset>
+                <propertyref prefix="parameters.external" />
+            </propertyset>
+        </ant>
+    </target>
+
+    <target name="-iterate">
+        <!-- check if next iteration should be done -->
+        <condition property="donext">
+            <length file="${tmp.file}" length="0" when="greater" />
+        </condition>
+        <ant antfile="download.xml" target="-next" inheritAll="false">
+            <propertyset>
+                <propertyref prefix="parameters.external" />
+                <propertyref name="donext" />
+            </propertyset>
+        </ant>
+    </target>
+
+    <!-- ============================
+        Downloading dependencies 
+        ============================ -->
+    <macrodef name="fetch">
+        <attribute name="resource" />
+        <sequential>
+            <property name="url"
+                      value="${parameters.external.@{resource}.url}" />
+            <property name="dirlocation"
+                      location="${depends}/${parameters.external.@{resource}.dir}" />
+            <property name="filelocation"
+                      location="${dirlocation}/${parameters.external.@{resource}.file}" />
+            <available property="exists" type="file" file="${filelocation}" />
+            <condition property="md5"
+                       value="${parameters.external.@{resource}.md5}">
+                <isset property="parameters.external.@{resource}.md5" />
+            </condition>
+
+            <ant antfile="download.xml" target="-download" />
+        </sequential>
+    </macrodef>
+
+    <target name="-download" depends="-really-download,-check-md5" />
+
+    <target name="-really-download" unless="exists">
+        <mkdir dir="${dirlocation}" />
+        <get verbose="true"
+             usetimestamp="true"
+             src="${url}"
+             dest="${filelocation}" />
+    </target>
+
+    <target name="-check-md5" if="md5">
+        <checksum file="${filelocation}" property="cur.md5" />
+        <condition property="md5.verified" value="true">
+            <equals arg1="${cur.md5}" arg2="${md5}" />
+        </condition>
+        <fail unless="md5.verified">
+...
+
+File ${filelocation} has incorrect md5 checksum.  Expected:
+  ${md5}
+found:
+  ${cur.md5}
+
+            </fail>
+        <echo>Checksum verified for ${filelocation}</echo>
+    </target>
+
+    <!-- ============================
+        Set up the proxy
+        ============================ -->
+    <target name="-setup-proxy"
+            if="http.proxyHost"
+            description="Set up the proxy">
+        <echo>Setting up the proxy: ${http.proxyHost}:${http.proxyPort}</echo>
+        <setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
+    </target>
+</project>
