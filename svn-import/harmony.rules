@@ -1,0 +1,734 @@
+#
+# (c) 2013, Adaptive Alchemy, LLC 
+#
+# Licensed under the Apache Software License 2.0 without warranty
+#
+# These is a rules file for conversion from SVN to GIT
+
+create repository harmony
+end repository
+
+create repository buildtest
+end repository
+
+create repository classlibadapter
+end repository
+
+create repository java
+end repository
+
+create repository microemulator
+end repository
+
+create repository tools
+end repository
+
+create repository standard-classlib
+end repository
+
+create repository enhanced-classlib
+end repository
+
+create repository site
+end repository
+
+create repository drlvm
+end repository
+
+create repository jdktools
+end repository
+
+# Newly added repos
+create repository admin
+end repository
+
+create repository archive
+end repository
+
+create repository common_resources
+end repository
+
+create repository jchevm
+end repository
+
+create repository sandbox
+end repository
+# End newly added repos
+
+include ignore-toplevel.common
+include ignore-incubator.common
+
+
+match /harmony/standard/classlib/trunk/
+  repository standard-classlib
+  branch master
+end match
+
+match /harmony/standard/classlib/branches/([^/]+)/
+  repository standard-classlib
+  branch apache-branch-standard-classlib-\1
+end match
+
+match /harmony/standard/classlib/tags/([^/]+)/
+  repository standard-classlib
+  branch refs/tags/apache-tag-standard-classlib-\1
+end match
+
+match /harmony/standard/classlib/
+  repository standard-classlib
+  branch master
+end match
+
+match /incubator/harmony/standard/classlib/trunk/
+  repository standard-classlib
+  branch master
+end match
+
+match /incubator/harmony/standard/classlib/branches/([^/]+)/
+  repository standard-classlib
+  branch apache-branch-standard-classlib-\1
+end match
+
+match /incubator/harmony/standard/classlib/tags/([^/]+)/
+  repository standard-classlib
+  branch refs/tags/apache-tag-standard-classlib-\1
+end match
+
+match /incubator/harmony/standard/classlib/
+  repository standard-classlib
+  branch master
+end match
+
+
+match /harmony/standard/site/trunk/
+  repository site
+  branch master
+end match
+
+match /harmony/standard/site/branches/([^/]+)/
+  repository site
+  branch apache-branch-site-\1
+end match
+
+match /harmony/standard/site/tags/([^/]+)/
+  repository site
+  branch refs/tags/apache-tag-site-\1
+end match
+
+match /harmony/standard/site/
+  repository site
+  branch master
+end match
+
+match /incubator/harmony/standard/site/trunk/
+  repository site
+  branch master
+end match
+
+match /incubator/harmony/standard/site/branches/([^/]+)/
+  repository site
+  branch apache-branch-site-\1
+end match
+
+match /incubator/harmony/standard/site/tags/([^/]+)/
+  repository site
+  branch refs/tags/apache-tag-site-\1
+end match
+
+match /incubator/harmony/standard/site/
+  repository site
+  branch master
+end match
+
+match /harmony/enhanced/buildtest/trunk/
+  repository buildtest
+  branch master
+end match
+
+match /harmony/enhanced/buildtest/branches/([^/]+)/
+  repository buildtest
+  branch apache-branch-buildtest-\1
+end match
+
+match /harmony/enhanced/buildtest/tags/([^/]+)/
+  repository buildtest
+  branch refs/tags/apache-tag-buildtest-\1
+end match
+
+# copy continuation of buildtest/trunk/
+match /harmony/enhanced/buildtest/branches/2.0/
+  action recurse
+  repository buildtest
+  branch master
+end match
+
+match /harmony/enhanced/buildtest/trunk/
+end match
+
+match /harmony/enhanced/buildtest/branches/
+end match
+
+match /harmony/enhanced/buildtest/tags/
+end match
+
+match /harmony/enhanced/buildtest/
+  repository buildtest
+  branch master
+end match
+
+match /incubator/harmony/enhanced/buildtest/trunk/
+  repository buildtest
+  branch master
+end match
+
+match /incubator/harmony/enhanced/buildtest/branches/([^/]+)/
+  repository buildtest
+  branch apache-branch-buildtest-\1
+end match
+
+match /incubator/harmony/enhanced/buildtest/tags/([^/]+)/
+  repository buildtest
+  branch refs/tags/apache-tag-buildtest-\1
+end match
+
+match /incubator/harmony/enhanced/buildtest/
+  repository buildtest
+  branch master
+end match
+
+match /harmony/enhanced/classlibadapter/trunk/
+  repository classlibadapter
+  branch master
+end match
+
+match /harmony/enhanced/classlibadapter/branches/([^/]+)/
+  repository classlibadapter
+  branch apache-branch-classlibadapter-\1
+end match
+
+match /harmony/enhanced/classlibadapter/tags/([^/]+)/
+  repository classlibadapter
+  branch refs/tags/apache-tag-classlibadapter-\1
+end match
+
+match /harmony/enhanced/classlibadapter/
+  repository classlibadapter
+  branch master
+end match
+
+match /incubator/harmony/enhanced/classlibadapter/trunk/
+  repository classlibadapter
+  branch master
+end match
+
+match /incubator/harmony/enhanced/classlibadapter/branches/([^/]+)/
+  repository classlibadapter
+  branch apache-branch-classlibadapter-\1
+end match
+
+match /incubator/harmony/enhanced/classlibadapter/tags/([^/]+)/
+  repository classlibadapter
+  branch refs/tags/apache-tag-classlibadapter-\1
+end match
+
+match /incubator/harmony/enhanced/classlibadapter/
+  repository classlibadapter
+  branch master
+end match
+
+match /harmony/enhanced/java/trunk/
+  repository java
+  branch master
+end match
+
+match /harmony/enhanced/java/branches/([^/]+)/
+  repository java
+  branch apache-branch-java-\1
+end match
+
+match /harmony/enhanced/java/tags/([^/]+)/
+  repository java
+  branch refs/tags/apache-tag-java-\1
+end match
+
+match /harmony/enhanced/java/
+  repository java
+  branch master
+end match
+
+match /incubator/harmony/enhanced/java/trunk/
+  repository java
+  branch master
+end match
+
+match /incubator/harmony/enhanced/java/branches/([^/]+)/
+  repository java
+  branch apache-branch-java-\1
+end match
+
+match /incubator/harmony/enhanced/java/tags/([^/]+)/
+  repository java
+  branch refs/tags/apache-tag-java-\1
+end match
+
+match /incubator/harmony/enhanced/java/
+  repository java
+  branch master
+end match
+
+match /harmony/enhanced/microemulator/trunk/
+  repository microemulator
+  branch master
+end match
+
+match /harmony/enhanced/microemulator/branches/([^/]+)/
+  repository microemulator
+  branch apache-branch-microemulator-\1
+end match
+
+match /harmony/enhanced/microemulator/tags/([^/]+)/
+  repository microemulator
+  branch refs/tags/apache-tag-microemulator-\1
+end match
+
+match /harmony/enhanced/microemulator/
+  repository microemulator
+  branch master
+end match
+
+match /incubator/harmony/enhanced/microemulator/trunk/
+  repository microemulator
+  branch master
+end match
+
+match /incubator/harmony/enhanced/microemulator/branches/([^/]+)/
+  repository microemulator
+  branch apache-branch-microemulator-\1
+end match
+
+match /incubator/harmony/enhanced/microemulator/tags/([^/]+)/
+  repository microemulator
+  branch refs/tags/apache-tag-microemulator-\1
+end match
+
+match /incubator/harmony/enhanced/microemulator/
+  repository microemulator
+  branch master
+end match
+
+match /harmony/enhanced/tools/trunk/
+  repository tools
+  branch master
+end match
+
+match /harmony/enhanced/tools/branches/([^/]+)/
+  repository tools
+  branch apache-branch-tools-\1
+end match
+
+match /harmony/enhanced/tools/tags/([^/]+)/
+  repository tools
+  branch refs/tags/apache-tag-tools-\1
+end match
+
+match /harmony/enhanced/tools/
+  repository tools
+  branch master
+end match
+
+match /incubator/harmony/enhanced/tools/trunk/
+  repository tools
+  branch master
+end match
+
+match /incubator/harmony/enhanced/tools/branches/([^/]+)/
+  repository tools
+  branch apache-branch-tools-\1
+end match
+
+match /incubator/harmony/enhanced/tools/tags/([^/]+)/
+  repository tools
+  branch refs/tags/apache-tag-tools-\1
+end match
+
+match /incubator/harmony/enhanced/tools/
+  repository tools
+  branch master
+end match
+
+match /incubator/harmony/enhanced/classlib/trunk/
+  repository enhanced-classlib
+  branch master
+end match
+
+match /incubator/harmony/enhanced/classlib/branches/([^/]+)/
+  repository enhanced-classlib
+  branch apache-branch-enhanced-classlib-\1
+end match
+
+match /incubator/harmony/enhanced/classlib/tags/([^/]+)/
+  repository enhanced-classlib
+  branch refs/tags/apache-tag-enhanced-classlib-\1
+end match
+
+match /incubator/harmony/enhanced/classlib/
+  repository enhanced-classlib
+  branch apache-branch-enhanced-classlib
+end match
+
+match /incubator/harmony/enhanced/drlvm/trunk/
+  repository drlvm
+  branch master
+end match
+
+match /incubator/harmony/enhanced/drlvm/branches/([^/]+)/
+  repository drlvm
+  branch apache-branch-drlvm-\1
+end match
+
+match /incubator/harmony/enhanced/drlvm/tags/([^/]+)/
+  repository drlvm
+  branch refs/tags/apache-tag-drlvm-\1
+end match
+
+match /incubator/harmony/enhanced/drlvm/
+  repository drlvm
+  branch master
+end match
+
+match /harmony/enhanced/jdktools/trunk/
+  repository jdktools
+  branch master
+end match
+
+match /harmony/enhanced/jdktools/branches/([^/]+)/
+  repository jdktools
+  branch apache-branch-jdktools-\1
+end match
+
+match /harmony/enhanced/jdktools/tags/([^/]+)/
+  repository jdktools
+  branch refs/tags/apache-tag-jdktools-\1
+end match
+
+match /incubator/harmony/enhanced/jdktools/trunk/
+  repository jdktools
+  branch master
+end match
+
+match /incubator/harmony/enhanced/jdktools/branches/([^/]+)/
+  repository jdktools
+  branch apache-branch-jdktools-\1
+end match
+
+match /incubator/harmony/enhanced/jdktools/tags/([^/]+)/
+  repository jdktools
+  branch refs/tags/apache-tag-jdktools-\1
+end match
+
+
+
+match /incubator/harmony/enhanced/tools/trunk/
+  repository tools
+  branch master
+end match
+
+match /incubator/harmony/enhanced/tools/
+  repository tools
+  branch master
+end match
+
+match /harmony/enhanced/admin/trunk/
+  repository admin
+  branch master
+end match
+
+match /harmony/enhanced/admin/branches/([^/]+)/
+  repository admin
+  branch apache-branch-admin-\1
+end match
+
+match /harmony/enhanced/admin/tags/([^/]+)/
+  repository admin
+  branch refs/tags/apache-tag-admin-\1
+end match
+
+match /harmony/enhanced/admin/
+  repository admin
+  branch master
+end match
+
+match /incubator/harmony/enhanced/admin/trunk/
+  repository admin
+  branch master
+end match
+
+match /incubator/harmony/enhanced/admin/branches/([^/]+)/
+  repository admin
+  branch apache-branch-admin-\1
+end match
+
+match /incubator/harmony/enhanced/admin/tags/([^/]+)/
+  repository admin
+  branch refs/tags/apache-tag-admin-\1
+end match
+
+match /incubator/harmony/enhanced/admin/
+  repository admin
+  branch master
+end match
+
+match /harmony/enhanced/archive/trunk/
+  repository archive
+  branch master
+end match
+
+match /harmony/enhanced/archive/branches/([^/]+)/
+  repository archive
+  branch apache-branch-archive-\1
+end match
+
+match /harmony/enhanced/archive/tags/([^/]+)/
+  repository archive
+  branch refs/tags/apache-tag-archive-\1
+end match
+
+match /harmony/enhanced/archive/
+  repository archive
+  branch master
+end match
+
+match /incubator/harmony/enhanced/archive/trunk/
+  repository archive
+  branch master
+end match
+
+match /incubator/harmony/enhanced/archive/branches/([^/]+)/
+  repository archive
+  branch apache-branch-archive-\1
+end match
+
+match /incubator/harmony/enhanced/archive/tags/([^/]+)/
+  repository archive
+  branch refs/tags/apache-tag-archive-\1
+end match
+
+match /incubator/harmony/enhanced/archive/
+  repository archive
+  branch master
+end match
+
+match /harmony/enhanced/common_resources/trunk/
+  repository common_resources
+  branch master
+end match
+
+match /harmony/enhanced/common_resources/branches/([^/]+)/
+  repository common_resources
+  branch apache-branch-common_resources-\1
+end match
+
+match /harmony/enhanced/common_resources/tags/([^/]+)/
+  repository common_resources
+  branch refs/tags/apache-tag-common_resources-\1
+end match
+
+match /harmony/enhanced/common_resources/
+  repository common_resources
+  branch master
+end match
+
+match /incubator/harmony/enhanced/common_resources/trunk/
+  repository common_resources
+  branch master
+end match
+
+match /incubator/harmony/enhanced/common_resources/branches/([^/]+)/
+  repository common_resources
+  branch apache-branch-common_resources-\1
+end match
+
+match /incubator/harmony/enhanced/common_resources/tags/([^/]+)/
+  repository common_resources
+  branch refs/tags/apache-tag-common_resources-\1
+end match
+
+match /incubator/harmony/enhanced/common_resources/
+  repository common_resources
+  branch master
+end match
+
+match /harmony/enhanced/jchevm/trunk/
+  repository jchevm
+  branch master  
+end match
+
+match /harmony/enhanced/jchevm/branches/([^/]+)/
+  repository jchevm
+  branch apache-branch-jchevm-\1
+end match
+
+match /harmony/enhanced/jchevm/tags/([^/]+)/
+  repository jchevm
+  branch refs/tags/apache-tag-jchevm-\1
+end match
+
+match /harmony/enhanced/jchevm/
+  repository jchevm
+  branch master
+end match
+
+match /incubator/harmony/enhanced/jchevm/trunk/
+  repository jchevm
+  branch master  
+end match
+
+match /incubator/harmony/enhanced/jchevm/branches/([^/]+)/
+  repository jchevm
+  branch apache-branch-jchevm-\1
+end match
+
+match /incubator/harmony/enhanced/jchevm/tags/([^/]+)/
+  repository jchevm
+  branch refs/tags/apache-tag-jchevm-\1
+end match
+
+match /incubator/harmony/enhanced/jchevm/
+  repository jchevm
+  branch master
+end match
+
+match /harmony/enhanced/sandbox/trunk/
+  repository sandbox
+  branch master
+end match
+
+match /harmony/enhanced/sandbox/branches/([^/]+)/
+  repository sandbox
+  branch apache-branch-sandbox-\1
+end match
+
+match /harmony/enhanced/sandbox/tags/([^/]+)/
+  repository sandbox
+  branch refs/tags/apache-tag-sandbox-\1
+end match
+
+match /harmony/enhanced/sandbox/
+  repository sandbox
+  branch master
+end match
+
+match /harmony/enhanced/trunk/sandbox/
+  repository sandbox
+  branch master
+end match
+
+match /harmony/enhanced/branches/([^/]+)/sandbox/
+  repository sandbox
+  branch apache-branch-enhanced-\1-sandbox
+end match
+
+match /harmony/enhanced/tags/([^/]+)/sandbox/
+  repository sandbox
+  branch refs/tags/apache-tag-enhanced-\1-sandbox
+end match
+
+match /incubator/harmony/enhanced/sandbox/trunk/
+  repository sandbox
+  branch master
+end match
+
+match /incubator/harmony/enhanced/sandbox/branches/([^/]+)/
+  repository sandbox
+  branch apache-branch-sandbox-\1
+end match
+
+match /incubator/harmony/enhanced/sandbox/tags/([^/]+)/
+  repository sandbox
+  branch refs/tags/apache-tag-sandbox-\1
+end match
+
+match /incubator/harmony/enhanced/sandbox/
+  repository sandbox
+  branch master
+end match
+
+match /incubator/harmony/enhanced/trunk/sandbox/
+  repository sandbox
+  branch master
+end match
+
+match /incubator/harmony/enhanced/branches/([^/]+)/sandbox/
+  repository sandbox
+  branch apache-branch-enhanced-\1-sandbox
+end match
+
+match /incubator/harmony/enhanced/tags/([^/]+)/sandbox/
+  repository sandbox
+  branch refs/tags/apache-tag-enhanced-\1-sandbox
+end match
+
+match /harmony/enhanced/trunk/
+  repository java
+  branch master
+end match
+
+match /harmony/enhanced/branches/([^/]+)/
+  repository java
+  branch apache-branch-enhanced-\1-java
+end match
+
+match /harmony/enhanced/tags/([^/]+)/
+  repository java
+  branch refs/tags/apache-tag-enhanced-\1-java
+end match
+
+
+match /incubator/harmony/enhanced/trunk/
+  repository java
+  branch master
+end match
+
+match /incubator/harmony/enhanced/branches/([^/]+)/
+  repository java
+  branch apache-branch-enhanced-\1-java
+end match
+
+match /incubator/harmony/enhanced/tags/([^/]+)/
+  repository java
+  branch refs/tags/apache-tag-tools-\1-java
+end match
+
+match /harmony/trunk/enhanced/sandbox
+  repository sandbox
+  branch apache-branch-harmony-trunk-sandbox
+end match
+
+match /harmony/branches/([^/]+)/enhanced/sandbox
+  repository sandbox
+  branch apache-branch-harmony-\1-sandbox
+end match
+
+match /harmony/tags/([^/]+)/enhanced/sandbox
+  repository sandbox
+  branch refs/tags/apache-tag-harmony-\1-sandbox
+end match
+
+match /harmony/
+  repository harmony
+  branch master
+end match
+
+match /incubator/harmony/
+  repository harmony
+  branch master 
+end match
+
+match /incubator/
+end match
+
+match /
+end match
+
+
+
