@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>Supported Platforms</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
+
+<body>
+
+<section name="Supported Platforms">
+  <p>
+    Apache Harmony's primary goal is a complete Java SE implementation on a wide
+    range of platforms.
+  </p>
+  <p>
+    The project offers pre-built snapshots and source code for a number of platforms,
+    summarized in the table below. You can get Apache Harmony builds at our
+    <a href="download.cgi">download page</a>. Please use the <a href="mailing.html">mailing
+    list</a> to report errors and user experience. 
+  </p>
+
+        <table border="1">
+          <tr>
+            <td class="TableCell"  align="center"></td>
+            <th>Windows* 2000</th>
+            <th>Windows XP, 2003, Vista</th>
+            <th>Linux* OS</th>
+            <th>FreeBSD</th>
+            <th>AIX</th>
+            <th>OS X</th>
+          </tr>
+          <tr>
+            <th>IA-32 (Pentium III or better)</th>
+            <td class="TableCell"  align="center">?</td>
+            <td class="TableCell"  align="center">+</td>
+            <td class="TableCell"  align="center">+</td>
+            <td class="TableCell"  align="center">?</td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+          </tr>
+          <tr>
+            <th>
+              x86_64 (EM64T, AMD64)<br/>
+            </th>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center">+</td>
+            <td class="TableCell"  align="center">+</td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+          </tr>
+          <tr>
+            <th>
+              Itanium (IA64, IPF)<br/>
+            </th>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center">?</td>
+            <td class="TableCell"  align="center">+</td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+          </tr>
+          <tr>
+            <th>PPC32</th>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center">?</td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+          </tr>
+          <tr>
+            <th>PPC64</th>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center">?</td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center">?</td>
+            <td class="TableCell"  align="center"></td>
+          </tr>
+          <tr>
+            <th>zSeries (31 bit)</th>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center">?</td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+            <td class="TableCell"  align="center"></td>
+          </tr>
+        </table>
+ <p>
+          <b>Legend</b>
+          <ul>
+            <li>&quot;+&quot; - Supported (sure-to-work)</li>
+            <li>&quot;?&quot; - In progress</li>
+            <li>&quot;-&quot; - Will Not Support</li>
+            <li>&quot; &quot; (empty) - N/A or Maybe</li>
+           </ul>
+ </p>
+ <subsection name="List of Sure-to-work Platforms">
+ 
+  <p>
+    We're now focusing on Windows* and Linux* operating
+    systems on x86 and x86_64 architectures, while testing and ports to other platforms
+    are also highly welcomed. Specifically, Harmony Development Kit is tested to
+    work on the following platforms on a regular basis. 
+    For the most up-to-date information on supported platforms, please visit the 
+    dedicated <a href="http://wiki.apache.org/harmony/Platforms_to_Run_Harmony_Development_Kit_on" target="_blank">Wiki</a> page.
+  </p>
+<ul>
+<li>Windows XP x86</li>
+<li>Windows Server 2003 on x86 and x86_64 platforms</li>
+<li>Windows Vista on x86 and x86_64 platforms</li>
+<li>Windows XP with VS.NET 2005 Community Edition</li>
+<li>Ubuntu 6 x86</li>
+<li>Ubuntu 5 x86</li>
+<li>Ubuntu on IA-32 and IA-64 platforms</li>
+<li>RHEL version 2.6.9</li>
+<li>RHEL on IA-32 and IA64 platforms</li>
+<li>Fedora Core 5 x86</li>
+<li>FC4/5</li>
+<li>FC on IA-32 and IA-64 platforms</li>
+<li>SUSE version 9, 10, 11 on x86, x86_64 and IPF (aka ia64)</li>
+<li>Debian 3.1 x86</li>
+<li>Gentoo with gcc 4.1.1 on x86 and x86_64</li>
+</ul>
+</subsection>
+  
+</section>
+</body>
+</document>
+ 

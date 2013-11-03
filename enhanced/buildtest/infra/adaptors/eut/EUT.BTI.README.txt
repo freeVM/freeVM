@@ -1,0 +1,114 @@
+        ==========================================================
+        Running Eclipse Unit Tests under BT infrastructure
+        ==========================================================
+
+
+This document describes how to run Eclipse Unit Tests (EUT) on Apache
+Harmony within Apache Harmony Build&Test infrastructure
+(https://issues.apache.org/jira/browse/HARMONY-3501). Please see BTI's README.txt
+for general instructions on BT usage. The following platforms are currently
+supported: Windows x86, Linux x86, Linux x86_64.
+
+---------------
+Archive Content
+---------------
+
+This archive contains scripts for running EUT within BT. The directories structure
+within BT trunk directory is as follows:
+
++<BTI trunk>/
+|-+adaptors/                        - scripts connecting test suites to BTI (called "adaptors")
+|  |
+|  |-+eut/                          - EUT suite adaptor directory
+|     |
+|     |--adaptor.xml                - EUT suite adaptor
+|     |
+|     |--EUT.BTI.README.txt         - this readme file
+|     |
+|     |--parameters.xml             - parameters file
+|
+|-+tests/                           - test suites integrated into BTI
+|  |
+|  |-+eut/                          - EUT scripts directory
+|     |
+|     |-+extra/                     - extra scripts and patches that might be useful for EUT runs
+|     |
+|     |--build.xml                  - main EUT suite launching script
+|     |
+|     |--efl.${os}.${arch}          - platform specific expected failures lists
+|     |
+|     |--EUT.README.txt             - readme file describing standalone EUT run (without BTI)
+|     |
+|     |--eut.properties             - EUT properties (used when running without BTI)
+
+
+-----------------------------------------------------------------
+Running Eclipse Unit Tests on Harmony JRE under BT infrastructure
+-----------------------------------------------------------------
+
+1. Follow instructions from <BTI trunk>/README.txt to satisfy general BTI
+   pre-requisites (install necessary software, specify environment variables,
+   specify proxy settings if necessary).
+
+2. Unpack this archive to <BTI trunk> directory
+
+3. Perform setup:
+   buildtest -Dtest.suites="classlib,drlvm,eut" setup
+
+4. For Linux only: make sure that you have X server up and running and set
+   environment variable DISPLAY to appropriate value
+
+4. Configure BT for EUT run:
+   * Specify appropriate options for the JRE under test in
+   <BTI trunk>/framework.local.properties file by setting
+   eut.parameters.optional.tested.vm.options=<options>. By default,
+   eut.parameters.optional.tested.vm.options="-showversion -Xmx512m -XX:vm.assert_dialog=false"
+
+   * If you need to run only few specific suites, not all EUT test suites, edit
+   <BTI trunk>/framework.local.properties and specify:
+   eut.parameters.optional.tests=suite1,suite2,...
+
+   * If you need to modify test suite execution timeout (default is 2 hours),
+    edit <BTI trunk>/framework.local.properties and specify:
+    eut.parameters.optional.timeout=<timeout in milliseconds>
+
+   * If you want to run Team CVS tests, edit <BTI trunk>/framework.local.properties
+     and specify:
+    eut.parameters.optional.cvs_user=<the account used to connect to the cvs repository>
+    eut.parameters.optional.cvs_password=<the account password>
+    eut.parameters.optional.cvs_host=<the name of the cvs server>
+    eut.parameters.optional.cvs_root=<the repository path>
+
+   * For Linux only: if you have the windowing system other than GTK (motif most
+   probably), specify:
+   eut.parameters.optional.ws=motif
+
+   * Specify appropriate mail settings in <BTI trunk>/framework.local.properties
+   file if you want Cruise Control to send mail notifications
+
+   * Modify platform specific expected failures list in <BTI trunk>/tests/eut
+   if necessary. It should be named as efl.${os}.${arch} where ${os}.${arch}
+   can be windows.x86, linux.x86 or linux.x86_64
+
+5. Build classlib and drlvm and run EUT on this Harmony JRE:
+   buildtest -Dtest.suites="classlib,drlvm,eut" run
+
+6. To continuously perform Harmony JRE build (classlib and drlvm) and EUT run
+   under Cruise Control:
+   buildtest -Dtest.suites="classlib,drlvm,eut" run-cc
+
+7. Results summary can be found in the file <BTI trunk>/build/results/<timestamp>/report.txt,
+   detailed tests output is stored in the file <BTI trunk>/build/results/<timestamp>/output.txt,
+   where <timestamp> is the directory name based suite's run date and time. Note
+   that expected failures list (specific for the platform) are used to process EUT
+   run results and only unexpected failures, error and crashes are reported.
+   Full test results list (including expected failures) in xml and html format
+   can be found at <BTI trunk>/build/results/<timestamp>/results.
+   If you run EUT under Cruise Control ("run-cc" target) and specified mail
+   settings in the <BTI trunk>/framework.local.properties file, mail notifications
+   with results summary will also be sent to the specified e-mail address.
+
+--------------------------------
+DISCLAIMER AND LEGAL INFORMATION
+--------------------------------
+Other brands and names are the property of their respective owners.

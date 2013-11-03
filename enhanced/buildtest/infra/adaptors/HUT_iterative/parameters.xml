@@ -1,0 +1,56 @@
+<parameters depends="classlib,drlvm">
+    <!-- required -->
+    <required>
+	<path.jre 
+		description="Path to JRE Under Test"
+		value="${drlvm.parameters.shared.jre.dir}"/>		    																			
+	<vmname
+		description="Name of tested VM"
+		value="drl"/>
+	<forkmode
+		description="Could be once or perTest"
+		value="once"/>
+        <classlib.trunk 
+        	description="Path to Classlib Workspace" 
+        	value="${classlib.parameters.shared.trunk.dir}"/>
+	<repetitions.number
+	        description="The number of iterations to run tests of every module"
+		value="50"/>
+    </required>
+
+    <!-- optional values -->
+    <optional>
+	<timeout
+		description="Time in milliseconds, 
+				after that period HUT iterative run will be halted
+				259200 sec = 72 hours"
+		value="259200000"/>
+	<quiteperiod
+		description="Time in seconds after last modification, before new build is started
+				seems not to have much sense for classlib tests running"
+		value="180"/>
+	<interval
+		description="Time in seconds between two subsequent builds
+				32400=3.5 days, twice a week"
+		value="20"/>
+		<!--value="302400"/-->
+    </optional>
+
+    <!-- shared values -->
+    <external>
+        <xalan
+	    jar="xalan-2.7.0.jar"
+            url="http://mirrors.ibiblio.org/pub/mirrors/maven2/xalan/xalan/2.7.0/xalan-2.7.0.jar"
+            md5="a018d032c21a873225e702b36b171a10" 
+        />
+    </external>
+    <shared>
+    </shared>
+
+    <!-- CC specific configuration -->
+    <cc 
+        config="${adaptors.dir}/${suite.name}/cc/HUT_iterative-project.xml"
+	publisher="${adaptors.dir}/${suite.name}/cc/publisher.xml"
+        trigger="${classlib.parameters.shared.trunk.dir}/${suite.name}.trigger"
+    />
+</parameters>

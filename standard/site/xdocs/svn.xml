@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<document>
+
+    <properties>
+        <title>Apache Harmony Source Code</title>
+        <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+    </properties>
+    <body>
+
+        <section name="Apache Harmony Source Code">
+            <p>
+                We provide tarballs of the source code, you can just <a href="download.cgi">download</a> 
+                a stable milestone build or a recent snapshot.
+            </p>
+            <p>
+                And if you want to be on the bleeding-edge of the development effort, access repository.
+                The Harmony project uses the
+                <a href="http://subversion.tigris.org/">Subversion&#174;</a> version control
+                system.  If you're new to Subversion, you can check out the
+                <a href="http://svnbook.red-bean.com/">online book</a> about Subversion.</p>
+                <p class="note">Note</p>
+                <p class="notetext">Currently, we are using Subversion 1.1.x (there are separate
+                versions of the book covering 1.0 and 1.1).</p>
+
+            <subsection name="Web Access to Subversion">
+                <p>
+                    If you just want to browse the source code, you can use the
+                    <a href="http://svn.apache.org/viewcvs.cgi/harmony/?root=Apache-SVN">
+                        ViewCVS
+                        web interface
+                    </a> to Subversion. This is current at all times.
+                </p>
+            </subsection>
+
+            <subsection name="Normal Subversion Access">
+                <p>
+                    Anyone can check code out of Subversion repository. You only need to specify a
+                    username and password in order to update the Subversion repository, and only
+                    Harmony committers have the permissions to do that. We run Subversion
+                    over standard HTTP/HTTPS, so hopefully you won't have problems with intervening
+                    firewalls.
+                </p>
+
+                <h3>Check out from Subversion</h3>
+                <p>Again, anyone can do this. Use a command like:</p>
+                <pre>svn checkout http://svn.apache.org/repos/asf/harmony/enhanced/java/trunk</pre>
+
+                <h3>Commit Changes to Subversion</h3>
+                <p>
+                    Any Harmony committer should have a shell account on
+                    <code>svn.apache.org</code>. Before you can commit, you'll need to set a
+                    Subversion password for yourself. To do that, log in to
+                    <code>svn.apache.org</code> and run the command <code>svnpasswd</code>.
+                </p>
+                <p>Once your password is set, you can use a command like this to commit:</p>
+                <pre>svn commit</pre>
+                <p>
+                    If Subversion can't figure out your username, you can tell it
+                    explicitly:
+                </p>
+                <pre>svn --username you commit</pre>
+                <p>
+                    Subversion will prompt you for a password, and once you enter it once, it
+                    will remember it for you.</p>
+                    <p class="note">Note</p>
+                    <p class="notetext">This is the password you configured with
+                    <code>svnpasswd</code>, not your shell or other password.</p>
+                    <p class="notetext">Write-access assumes HTTPS connection,
+                    so you may need to perform <code>svn switch</code> prior to committing.
+                </p>
+            </subsection>
+
+        </section>
+    </body>
+</document>

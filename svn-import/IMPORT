@@ -1,0 +1,157 @@
+(c) 2013, Adaptive Alchemy, LLC Licensed under the Creative Commons Attribution
+license
+
+Conversion of Apache Harmony SVN repository to a GIT repository performed
+September - October 2013 ZipVM / Adaptive Alchemy, LLC
+
+We are providing this as a general overview of the process we used to convert
+the ASF Harmony SVN repository to GIT.
+
+Tools used for importing Apache Harmony SVN repo into GIT repository:
+
+svnsync - used to make a local read only copy of the Apache Software Foundation
+SVN repository - if you decide to do this you will need a lot of patience
+
+KDE project svn2git - used to import the subprojects into separate git repos
+initially - reference:
+http://blog.smartbear.com/software-quality/migrating-from-subversion-to-git-
+lessons-learned/ - project page: https://gitorious.org/svn2git
+
+harmony.rules and *.common - The rules files we finally came to through analysis
+of the SVN repository, trial and error, and a lot of pain.
+
+We wrote a lot of bash shell scripts and generally used the Linux command line a
+lot, mainly producing and analyzing SVN logs.  Some of the key scripts are here.
+
+The key thing to understand is that the initial phase of the conversion process,
+using svn-all-fast-import and the rules files created a number of separate
+repositories with a bunch of tags and a nice group of branches. We went through
+each repository and cleaned up the tag and branches names.  But the directory
+stucture was flat.  That is for example, the site repository's root directory
+contained everything in /harmony/standard/site.  So we went ahead and renamed
+these directories to be where they are supposed to be and checked that stuff in.
+
+We then had to bring together all of the separate repos into the single
+repository you have now.  This is how we determined we needed to put this
+together, directory-wise:
+
+Assembly plan:
+
+HEAD of master:
+
+/harmony / enhanced    / admin
+   ...   /    ...      / archive
+   ...   /    ...      / buildtest
+   ...   /    ...      / classlibadapter
+   ...   /    ...      / java
+   ...   /    ...      / jchevm
+   ...   /    ...      / microemulator
+   ...   /    ...      / sandbox
+   ...   /    ...      / tools
+   
+   ...   /  standard   / classlib  { standard-classlib }
+   ...   /  standard   / site
+   
+In master but "suppressed" (deleted) as in the original SVN repo:
+
+/harmony  /  enhanced  / java   / common_resources
+   ...    /     ...    /  ...   / jdktools
+   ...    /     ...    / drlvm
+   ...    /     ...    / classlib { enhanced-classlib }
+
+
+-------------------------------------------------
+
+Import "master" branches into the same "master" branch in freevm.
+
+Combine correspondingly versioned tags across subprojects.
+
+Repository branches
+
+admin: 
+	- apache-admin-master   DONE
+	
+archive:
+	- apache-archive-master DONE
+	
+buildtest:
+	- apache-buildtest-master DONE
+	- tag-apache-buildtest-1.0 DONE
+	- apache-buildtest-2.0 DONE
+	
+classlibadapter:
+	- apache-classlibadapter-master DONE
+	
+common_resources:
+	- apache-common_resources-master    DONE
+	- tag-apache-common_resources-5.0m12a DONE
+	
+drlvm:
+	- apache-drlvm-master DONE
+	
+enhanced-classlib:
+	- apache-enhanced-classlib-master DONE
+	- apache-enhanced-classlib DONE
+	- apache-enhanced-classlib-archive DONE
+	- apache-enhanced-classlib-pre-vme-v2-changes DONE
+	
+harmony:
+	- apache-harmony-master DONE
+	
+java:
+	- apache-java-master   DONE
+	- tag-apache-enhanced-5.0m12a-java  DONE
+	- apache-enhanced-java6-java DONE
+	- tag-apache-java-java6 DONE
+	- apache-java-mrh  DONE
+	- apache-java-omd DONE
+	
+jchevm:
+	- apache-jchevm-master  DONE
+	
+jdktools:
+	- apache-jdktools-master   DONE
+	- tag-apache-jdktools-5.0m12a DONE
+	- tag-apache-jdktools-java6 DONE
+	
+microemulator:
+	- apache-microemulator-master DONE
+	
+sandbox:
+	- apache-sandbox-master  DONE
+	
+site:
+	- apache-site-master  DONE
+	- apache-site-live DONE
+	
+standard-classlib:
+	- apache-standard-classlib-master DONE
+	- apache-standard-classlib-java5 DONE
+	
+tools:
+	- apache-tools-master DONE
+	
+
+Note that all of the *-master branches were just merged together into the master
+branch you have now.  Also, some of the versioned branches were brought
+together. You will not see all of these branch names and may see others in the
+final repo, as these include the intermediate results.  These will also not
+match the harmony.rules file, as these are "cleaned up" branch names.
+
+Note that we did our best to be faithful to the structure and contents of ASF's
+Harmony repository.  However, we cannot guarantee that we didn't make any
+mistakes. That is the main reason we are including all of this information.
+
+Regarding the authors_emails.txt file, this is just the mapping from ASF user id
+to author name.  We could not reliably retrieve email information, so all emails
+are simply asf@asf.org  The user id to name mapping was derived from public
+information on ASF's website.
+
+Each original SVN commit exists with the original SVN location and revision.
+
+Here is the really important part: If you come across anything in the repository
+that leads you to believe we may have made a mistake in the conversion process,
+please let us know, along with your reasoning.
+
+
+

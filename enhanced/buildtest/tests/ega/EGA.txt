@@ -1,0 +1,357 @@
+Eclipse Geronimo Application (EGA) scenario for Eclipse 3.2.1
+
+-------------------------------------------------------------
+ This file describes original manual EGA test scenario 
+ after which the automated EGA scenario was developed
+-------------------------------------------------------------
+
+Software requirements:
+
+	1. Eclipse-SDK-3.2.1
+	2. J2SE 1.5 JDK
+	3. Maven 2.0.4 (or higher)
+
+Preparation:
+
+1. Create workspace folders tree
+	<working_dir>
+	<working_dir>/project
+	<working_dir>/.m2/repository
+
+2. Download Geronimo-1.2-beta sources archive (geronimo-1.2-beta-src.*),
+   for example, from http://apache.ziply.com/geronimo/1.2-beta.
+   Unpack it to <working_dir>/project/geronimo-1.2-beta directory.
+
+3. Edit maven repository location in <maven_home>/conf/settings.xml 
+   to point to <working_dir>/project/.m2/repository directory.
+   Edit proxy settings if needed.
+
+4. Set JAVA_HOME to point to JDK 1.5. Set MAVEN_OPTS=-Xmx512m. 
+   If you are using the SUN JDK, you may also need to increase 
+   the maximum permanent size: MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=128m"
+   
+   Change directory to <working_dir>/project/geronimo-1.2-beta and call:
+
+	<maven_home>/bin/mvn eclipse:eclipse
+
+   This command prepares Geronimo projects to work with Eclipse.
+   
+5. Clean scenario run configuration:
+
+   	- Remove all data from <eclipse_home>/configuration directory,
+   	  except config.ini file.
+   	  
+   	- Remove <working_dir>/workspace directory if present.
+   
+6. Follow EGA steps
+
+
+EGA steps:
+
+
+1. Start Eclipse
+
+	1.1 Start Eclipse 3.2.1 on the tested JRE. The following commands may be used:
+	
+		<java_home>/bin/java -Xmx1024M -Xms512M \
+		                     -cp <eclipse_home>/startup.jar \
+							 -Dosgi.install.area=<eclipse_home> \
+							 org.eclipse.core.launcher.Main \
+							 -ws $ws -os $os -arch $os_arch 
+		or
+	    	
+	    <eclipse_home>/eclipse -vm <java_home>/bin/java -vmargs -Xmx1024M -Xms512M
+	    	
+	    'Workspace Launcher' window should popup.
+
+	1.2 Select <working_dir>/workspace as Eclipse workspace directory. Press OK button.
+
+    1.3 Check that 'Java - Eclipse SDK' window is appeared.
+
+
+2. Prepare environment
+
+	2.1 Close 'Welcome' page.
+
+    2.2 Uncheck Project->Build Automatically.
+
+    2.3 Select 'Window->Preferences'.
+
+    2.4 On the left plane of Preferences window select Java->Build Path->Classpath Variables.
+
+	2.5 Press 'New' button.
+        Ensure that widow 'New Variable Entry' appeared.
+
+    2.5 Type 'M2_REPO' as variable name and '<working_dir>/project/.m2/repository' as value.
+        Press OK button.
+
+ 
+3. Importing project from <working_dir>/project
+
+	3.1 Select 'File->Import...'
+        Ensure that widow 'Import' appeared.
+
+	3.2 Select 'General->Existing Projects into Workspace'.
+        Press 'Next' button.
+
+	3.3 Select root directory: <working_dir>/project/geronimo-1.2-beta/modules.
+	    Press Browse or Refresh button. 
+        Check that Geronimo modules are recognized as projects.
+
+	3.4 Select the following 26 modules to import:
+	
+			ge-activemq-rar
+			geronimo-activation
+			geronimo-activemq-gbean-management
+			geronimo-axis
+			geronimo-client
+			geronimo-clustering
+			geronimo-clustering-wadi
+			geronimo-common
+			geronimo-converter
+			geronimo-core
+			geronimo-deploy-config
+			geronimo-deploy-jsr88
+			geronimo-derby
+			geronimo-interceptor
+			geronimo-j2ee
+			geronimo-jmx-remoting
+			geronimo-kernel
+			geronimo-mail
+			geronimo-management
+			geronimo-naming
+			geronimo-security
+			geronimo-system
+			geronimo-transaction
+			geronimo-transformer
+			geronimo-util
+			geronimo-webservices
+
+	3.5 Check 'Copy projects into workspace'.
+
+	3.6 Press 'Finish' button. 
+        Wait until Geronimo modules imported into workspace.
+
+	3.7 Select 'File->Import...'
+        Ensure that widow 'Import' appeared.
+
+	3.8 Select 'General->Existing Projects' into Workspace.
+        Press 'Next' button.
+
+	3.9 Select root directory: <working_dir>/project/geronimo-1.2-beta/testsupport
+	    Press Browse or Refresh button. 
+        Check that Geronimo testsupport modules are recognized as projects.
+
+	3.10 Press Finish button. 
+         Wait until Geronimo testsupport modules imported into workspace.
+
+
+4. Clean projects
+
+	4.1 Select 'Project->Clean'. Wait until 'Clean' window appeared.
+
+	4.2 Uncheck 'Start a build immediately'. Press OK button.
+        Wait till projects are cleaned.
+
+
+5. Build projects
+
+	5.1 Select 'Project->Build All'. Wait till projects are built. 
+
+
+6. Open Navigator view 
+
+	6.1 Select 'Window->View->Navigator'
+	    Check that 'Navigator' view is opened.
+	
+
+7. Fix JUnit test from geronimo-common module (skip if already fixed)
+
+	7.1 Select 'Navigate->Open Resource'.
+	
+	7.2 Type PropertyEditorsTest.java in 'Open Resource' dialog.
+	    Press OK button. Check that PropertyEditorsTest.java is opened.
+	    
+	7.3 Select 'Navigate->Go to Line...'
+	
+	7.4 In 'Go to Line' dialog type line number 52 to go to 
+	    string 'protected void setUp() throws Exception {'.
+	
+	7.5 Press ENTER and add line 
+	    Class.forName("org.apache.geronimo.common.propertyeditor.PropertyEditors");
+	    to setUp() method.
+	    
+	7.6 Save PropertyEditorsTest.java
+	
+	7.7 Close PropertyEditorsTest.java
+
+
+8.  Run JUnit tests from geronimo-common module
+
+	8.1 In Navigator pane select geronimo-common module.
+
+	8.2 Select 'Run->Run...' Wait till 'Run' window appeared.
+	
+	8.3 In the left pane of 'Run' window select JUnit.
+                  
+	8.4 Press 'New' button.
+        Wait till new configuration is created.
+            
+	8.5 Press 'Run' button to run all JUnit tests for geronimo-common project.
+        Wait till tests are run and check run results.
+
+
+9. Modify Java class
+	
+	9.1 In navigator view select geronimo-kernel module and select 'Navigate->Go Into'.
+	    Check that only geronimo-kernel sources displayed in Navigator view.
+
+	9.2 In navigator view expand src->main->java->org->apache->geronimo->gbean; 
+        open GBeanData.java (double click or press Enter).
+        Check that GBeanData class is opened in the main pane.
+
+	9.3 Select 'Edit->Find/Replace...'
+        Wait till Find/Replace dialog is appeared.
+
+	9.4 Search for getAbstractName() method – type getAbstractName in Find edit box 
+	    and press Find button.
+
+	9.5 Close 'Find/Replace' dialog.
+
+	9.6 Press 'End' key to go to the end of line 'public AbstractName getAbstractName() {'
+
+	9.7 Press 'Enter' key and type 'System.out.println("Method getAbstractName() was called!");'
+
+	9.8 Press 'Ctrl+S' or select 'File->Save' to save changes.
+
+
+10. Create JUnit Test
+
+	10.1 In navigator view expand src->test->java->org->apache->geronimo->gbean.
+
+	10.2 Select 'File->New->JUnit Test Case'. 
+        Check that 'New JUnit Test Case' window is appeared.
+
+	10.3 Enter SimpleGBeanDataTest as test name.
+
+	10.4 Enter org.apache.geronimo.gbean.GBeanData as class under test.
+
+	10.5 Press 'Next' button.
+
+	10.6 On the next pane select getAbstractName() as method under test.
+
+	10.7 Press 'Finish' button. Check that SimpleGBeanDataTest.java is created.
+
+	10.8 Find string fail(""Not yet implemented""); and replace it with 
+         System.out.println(new GBeanData().getAbstractName());
+
+	10.9 Save SimpleGBeanDataTest.java test
+
+	10.10 Close SimpleGBeanDataTest.java test
+
+
+11. Build project 
+
+	11.1 Select 'Project->Build Project'. 
+	     Wait till project geronimo-kernel is built.
+
+
+12. Run created JUnit test
+
+	12.1 In navigator view select SimpleGBeanDataTest.java, 
+         select 'Run->Run As->JUnit Test'. Wait till test is run. 
+         Check test run result.    
+        
+
+13. Debug
+
+	13.1 Click on GBeanData.java in the main pane, select 'Navigate->Go' to Line or press 'Ctrl+L'. 
+         Wait till 'Go to Line' dialog appeared.
+
+	13.2 Type 75 as line number and press OK button.
+
+	13.3 Ensure that cursor is on System.out.println("Method getAbstractName() was called!"); 
+         and select 'Run->Toggle Line Breakpoint'. Ensure that breakpoint is set.
+
+	13.4 Select 'Run->Debug...' Wait Debug window to appear.
+
+	13.5 Select JUnit->SimpleGbeanDataTest configuration, set vm options on Arguments tab,
+	     if needed, and press Debug button.
+
+	13.6 When 'Confirm Perspective Switch' dialog appears click YES 
+
+	13.7 Check that debug is stopped at breakpoint: the corresponding GBeanData.java line is highlighted.
+
+	13.8 Click 'Step Over' icon (or use F6); check that 'Method getAbstractName() was called!' appeared in the console.
+
+	13.9 Click 'Step Over' icon (or use F6); check SimpleGbeanDataTest.java is opened and 'null' appeared in the console.
+
+	13.10 Click 'Step Over' icon (or use F6) one more time.
+
+	13.11 Click 'Resume' icon (or use F8); check that debug process is terminated.
+
+
+14. Switch to Java perspective
+
+	14.1 Select 'Window->Open Perspective->Java'. Check that Java perspective is appeared.
+
+	14.2 Close SimpleGbeanDataTest.java.
+
+
+15. Clean environment: unset breakpoint 
+
+	15.1 Open GBeanData.java source if it is not opened, 
+         Go to line System.out.println("Method getAbstractName() was called!"); 
+         Unset breakpoint.
+
+
+16. Clean environment: remove class modifications 
+
+	16.1 Open GBeanData.java source if it is not opened, 
+         Delete line System.out.println("Method getAbstractName() was called!"); 
+         Click 'Ctrl+S' to save changes, close Class.java
+
+
+17. Clean environment: remove JUnit test 
+
+	17.1 In Navigator view select SimpleGbeanDataTest.java press delete.
+
+	17.2 When confirm test deletion dialog appears press Yes button.
+
+
+18. Clean environment: remove run configurations
+
+	18.1 Select 'Run->Run...' Wait 'Run' window to appear.
+
+	18.2 Select JUnit->SimpleGBeanDataTest configuration in right pane, press Delete.
+
+	18.3 When 'Confirm Launch Configuration' dialog appears press OK button.
+
+	18.4 Select JUnit->geronimo-common configuration in right pane, press 'Delete'.
+
+	18.5 When 'Confirm Launch Configuration' dialog appears press OK button.
+
+	18.6 Close 'Run' window.
+
+
+19. Clean environment: reset Java perspective
+	
+	19.1 Select 'Window->Reset Perspective'. Check that perspective is reset. 
+
+	19.2 Restore folders structure in Package Explorer view.
+
+
+20. Help
+
+	20.1 Select 'Help->Help Contents'. Check that Help window is opened.
+
+ 	20.2 Close Help.
+
+	
+Repeat steps 4-20 N times
+
+21. Exit Eclipse
+
+
+
+

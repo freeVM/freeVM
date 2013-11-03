@@ -1,0 +1,19 @@
+<parameters>
+    <!-- shared values -->
+    <shared>
+        <!-- define the place where classlib workspace will be placed -->
+        <trunk.dir value="${checkouts.dir}/classlib" id="trunk.dir.id"/>
+        <!-- the trunk url for svn -->
+        <svn.url value="http://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk"/>
+    </shared>
+
+    <svn>
+      <classlib url="http://svn.apache.org/repos/asf/harmony/enhanced/classlib/trunk" />
+    </svn>
+
+    <!-- CC specific configuration -->
+    <cc publish="false">
+        <!-- reference to the value by parameter ID -->
+        <usesvn refid="trunk.dir.id"/>
+    </cc>
+</parameters>

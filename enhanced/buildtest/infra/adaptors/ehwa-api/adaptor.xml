@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ======================================================================
+         BT Adaptor for Eclipse Hello World Application (EHWA) scenario
+     ====================================================================== -->
+
+<project name="ehwa-api" default="run" basedir=".">
+
+    <!--
+        Properties for Eclipse installation
+    -->
+    <condition property="eclipse.archive" value="eclipse-SDK-3.2.1-win32.zip">
+        <isset property="is.windows.x86" />
+    </condition>
+
+    <condition property="eclipse.archive"
+               value="eclipse-SDK-3.2.1-win32-x86_64.zip">
+        <isset property="is.windows.x86_64" />
+    </condition>
+
+    <condition property="eclipse.archive"
+               value="eclipse-SDK-3.2.1-linux-gtk.tar.gz">
+        <isset property="is.linux.x86" />
+    </condition>
+
+    <condition property="eclipse.archive"
+               value="eclipse-SDK-3.2.1-linux-gtk-x86_64.tar.gz">
+        <isset property="is.linux.x86_64" />
+    </condition>
+
+    <condition property="eclipse-3.2.1.homedir"
+               value="${external.libs.dir}/eclipse-3.2.1-win-x86">
+        <isset property="is.windows.x86" />
+    </condition>
+
+    <condition property="eclipse-3.2.1.homedir"
+               value="${external.libs.dir}/eclipse-3.2.1-win-x86_64">
+        <isset property="is.windows.x86_64" />
+    </condition>
+
+    <condition property="eclipse-3.2.1.homedir"
+               value="${external.libs.dir}/eclipse-3.2.l-lnx-x86">
+        <isset property="is.linux.x86" />
+    </condition>
+
+    <condition property="eclipse-3.2.1.homedir"
+               value="${external.libs.dir}/eclipse-3.2.1-lnx-x86_64">
+        <isset property="is.linux.x86_64" />
+    </condition>
+
+    <condition property="eclipse.exists">
+        <available file="${eclipse-3.2.1.homedir}/eclipse/startup.jar" />
+    </condition>
+
+    <condition property="eclipse.archive.exists">
+        <available file="${external.arch.dir}/${eclipse.archive}" />
+    </condition>
+
+    <!-- Setup of the EHWA scenario -->
+    <target name="setup"
+            description="Setup configuration for EHWA scenario run">
+        <log message="============= Adaptor for ${suite.name}: Set Up ..." />
+
+        <log message="Installing Eclipse..." />
+        <antcall target="-install-eclipse" />
+    </target>
+
+    <!-- Run of the EHWA scenario -->
+    <target name="run" depends="-update">
+        <log message="============= Adaptor for ${suite.name}: Run ..." />
+
+        <exec-ant dir="${ehwa-api.parameters.svn.ehwa-api.location}/tests"
+                  file="ehwa-test.xml"
+                  targets="fetch-depends"
+                  failonerror="true">
+
+            <sysproperty key="common.resources.loc"
+                         value="${ehwa-api.parameters.svn.common_resources.location}" />
+        </exec-ant>
+
+        <exec-ant dir="${ehwa-api.parameters.svn.ehwa-api.location}/tests"
+                  file="ehwa-test.xml"
+                  targets="ehwa">
+
+            <sysproperty key="eclipse.home"
+                         value="${eclipse-3.2.1.homedir}/eclipse" />
+            <sysproperty key="test.mode"
+                         value="${ehwa-api.parameters.optional.test.mode}" />
+            <sysproperty key="test.jre.home"
+                         value="${ehwa-api.parameters.required.tested.runtime}" />
+            <sysproperty key="common.resources.loc"
+                         value="${ehwa-api.parameters.svn.common_resources.location}" />
+
+            <!-- then the path to plugin zip is ${checkouts.dir}/ehwa/ehwa.zip -->
+            <sysproperty key="test.home" value="${checkouts.dir}" />
+        </exec-ant>
+    </target>
+
+
+    <!-- Targets for Eclipse downloading and installing -->
+
+    <target name="-install-eclipse"
+            description="download and install Eclipse SDK 3.2.1 if it doesn't exist already"
+            depends="-install-eclipse-win,-install-eclipse-lnx" />
+
+    <target name="-install-eclipse-win"
+            if="is.windows"
+            unless="eclipse.exists"
+            depends="-download-eclipse">
+        <unzip src="${external.arch.dir}/${eclipse.archive}"
+               dest="${eclipse-3.2.1.homedir}" />
+    </target>
+
+    <target name="-install-eclipse-lnx"
+            if="is.linux"
+            unless="eclipse.exists"
+            depends="-download-eclipse">
+        <gunzip src="${external.arch.dir}/${eclipse.archive}"
+                dest="${temp.files.dir}/ehwa_eclipse_tmp.tar" />
+
+        <untar src="${temp.files.dir}/ehwa_eclipse_tmp.tar"
+               dest="${eclipse-3.2.1.homedir}" />
+
+        <delete file="${temp.files.dir}/ehwa_eclipse_tmp.tar" />
+    </target>
+
+    <target name="-download-eclipse" unless="eclipse.archive.exists">
+        <get src="${ehwa-api.parameters.optional.eclipse.download.address}/${eclipse.archive}"
+             dest="${external.arch.dir}/${eclipse.archive}"
+             usetimestamp="false"
+             verbose="true" />
+    </target>
+
+    <!--                                                    -->
+    <!-- Targets and properties related to snapshot testing -->
+    <!--                                                    -->
+    <condition property="is.snapshot">
+        <equals arg1="${ehwa-api.parameters.depends}"
+                arg2="snapshot"
+                trim="yes" />
+    </condition>
+
+    <target name="-update"
+            if="is.snapshot"
+            description="adjusts tests to snapshot revision">
+
+        <exec executable="svn"
+              dir="${ehwa-api.parameters.svn.common_resources.location}"
+              failonerror="true">
+            <arg line="up -r${svn.revision} ." />
+        </exec>
+        <exec executable="svn"
+              dir="${ehwa-api.parameters.svn.ehwa-api.location}"
+              failonerror="true">
+            <arg line="up -r${svn.revision} ." />
+        </exec>
+    </target>
+
+</project>
+

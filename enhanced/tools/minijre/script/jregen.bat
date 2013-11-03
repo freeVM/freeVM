@@ -1,0 +1,1 @@
+@java -Xms128m -Xmx256m -classpath %~dp0\..\lib\minjre.jar org.crazynut.harmony.minjre.bin.GenerateJre %*

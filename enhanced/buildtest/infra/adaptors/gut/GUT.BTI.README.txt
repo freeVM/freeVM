@@ -1,0 +1,84 @@
+        ==========================================================
+        Running Apache Geronimo Unit Tests under BT infrastructure
+        ==========================================================
+
+
+This document describes how to run Apache Geronimo Unit Tests (GUT) on Apache
+Harmony within Apache Harmony Build&Test infrastructure
+(https://issues.apache.org/jira/browse/HARMONY-3501). Please see BTI's README.txt
+for general instructions on BT usage. The following platforms are currently
+supported: Windows x86, Linux x86, Linux x86_64.
+
+---------------
+Archive Content
+---------------
+
+This archive contains scripts for running EUT within BT. The directories structure
+within BT trunk directory is as follows:
+
++<BTI trunk>/
+|-+adaptors/                        - scripts connecting test suites to BTI (called "adaptors")
+|  |
+|  |-+gut/                          - GUT suite adaptor directory
+|     |
+|     |--adaptor.xml                - GUT suite adaptor
+|     |
+|     |--GUT.BTI.README.txt         - this readme file
+|     |
+|     |--parameters.xml             - parameters file
+|
+|-+tests/                           - test suites integrated into BTI
+   |
+   |-+gut/                          - GUT scripts directory
+      |
+      |--alltests.list              - list of all Geronimo Unit Tests; used by exclude.lists feature
+      |
+      |--build.xml                  - main GUT suite launching script
+      |
+      |--exclude.list.example       - exclude.list format example
+      |
+      |--exclude.list.${os}.${arch} - platform specific exclude.lists
+      |
+      |--GUT.README.txt             - readme file describing standalone GUT run (without BTI)
+      |
+      |--gut.properties             - GUT properties (used when running without BTI)
+
+
+-----------------------------------------------------------------
+Running Apache Geronimo Unit Tests on Harmony JRE under BT infrastructure
+-----------------------------------------------------------------
+
+1. Follow instructions from <BTI trunk>/README.txt to satisfy general BTI
+   pre-requisites (install necessary software, specify environment variables,
+   specify proxy settings if necessary).
+
+2. Unpack this archive to <BTI trunk> directory
+
+3. Perform setup:
+
+     buildtest -Dtest.suites="classlib,drlvm,gut" setup
+
+4. Configure BT for GUT run:
+
+   * Specify appropriate options for the JRE under test in <BTI trunk>/framework.local.properties
+     file by setting gut.parameters.optional.tested.vm.options=<options>. By default,
+     gut.parameters.optional.vm.options=""
+
+   * Specify appropriate mail settings in <BTI trunk>/framework.local.properties file
+     if you want Cruise Control to send mail notifications.
+
+   * Modify platform specific exclude.list in <BTI trunk>/tests/eut if necessary. It should be named
+     as exclude.list.${os}.${arch} where ${os}.${arch} can be windows.x86, linux.x86 or linux.x86_64.
+
+5. Build classlib and drlvm and run GUT on it:
+
+     buildtest -Dtest.suites="classlib,drlvm,gut" run
+
+6. To continuously perform Harmony JRE build (classlib and drlvm) and EUT run under Cruise Control:
+
+     buildtest -Dtest.suites="classlib,drlvm,gut" run-cc
+
+--------------------------------
+DISCLAIMER AND LEGAL INFORMATION
+--------------------------------
+Other brands and names are the property of their respective owners.

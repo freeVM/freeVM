@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="Eclipse Update Site for the Apache Harmony Project" url="http://harmony.apache.org/eclipse/update/">
+      This is the Eclipse update site hosting plug-ins for the Apache Harmony project.
+   </description>
+   <feature url="features/org.apache.harmony.eclipse.jdt.launching.feature_1.3.3.jar" id="org.apache.harmony.eclipse.jdt.launching.feature" version="1.3.3">
+      <category name="VM Install Types"/>
+   </feature>
+   <category-def name="VM Install Types" label="Apache Harmony runtime support">
+      <description>
+         Support for Apache Harmony runtimes.
+      </description>
+   </category-def>
+</site>

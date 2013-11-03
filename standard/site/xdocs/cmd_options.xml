@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>JRE Command-Line Options</title>
+    <author email="dev@harmony.apache.org">Harmony Documentation Team</author>
+  </properties>
+
+  <body>
+
+    <section name="Harmony JRE Command-Line Options">
+      <p>
+	Command-Line options can be either standard or non-standard.
+	While the first set is valid for any JVM the second set of options are specific for a particular VM.
+        This document provides information on command-line options supported by the DRL virtual machine (DRLVM),
+        including component-specific options and properties that can be used during code development and issue evaluation.
+      </p>
+
+      <subsection name="Standard JRE Options">
+
+        <p>
+          To get the list of standard JRE options, run DRLVM with the <code>-help</code> option:
+        </p>
+        <pre>java -help</pre>
+      </subsection>
+
+      <subsection name="Non-standard JRE Options">
+
+        <p>
+	  Harmony non-standard options can be divided into the following groups:
+	  <ul>	
+		<li> 
+			"-X"  options are commonly used non-standard options. 	
+		        To get the list of non-standard JRE options supported by DRLVM 
+			run the VM with the <code>-X</code> option:
+		        <pre>java -X</pre>
+		</li>
+		<li>
+			"-XX" options are non-standard component-specific options.
+		</li>
+	  </ul>
+        </p>
+      </subsection>
+
+      <subsection name="Component-specific Options and Properties">
+
+        <p>
+          <em>
+
+            (since revision r549299, (Jun 21 2007))
+
+          </em>
+
+        </p>
+
+        <h3>VM Core (vm/vmcore)</h3>
+
+
+        <table>
+          <tr>
+            <th class="TableHeading" width="50%">
+              Options
+
+            </th>
+            <th  class="TableHeading" width="50%">
+              Comments
+            </th>
+          </tr>
+          <tr>
+
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:vm.assert_dialog=&lt;true|false&gt;</code>
+
+              </strong>
+            </td>
+
+            <td class="TableCell">
+              Prevents assertion failures from popping up a dialog box.  Default is <code>false</code>.
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:vm.crash_handler=&lt;true|false&gt;</code>
+              </strong>
+            </td>
+            <td class="OddRowCell">
+              Invokes the <code>gdb</code> debugger on crashes (POSIX only). Default is <code>false</code>.
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:vm.finalize=&lt;true|false&gt;</code>
+
+              </strong>
+            </td>
+            <td class="TableCell">
+              Disables finalization subsystem, that is, prevents starting finalization 
+		threads and ignores finalization requests from the GC.  Default is <code>true</code>.
+            </td>
+          </tr>
+          <tr>
+            <td  class="OddRowCell">
+              <strong>
+              <code>-XX:vm.jvmti_compiled_method_load_inlined=&lt;true|false&gt;</code>
+              </strong>
+            </td>
+            <td class="OddRowCell">
+              Reports inlined methods with <code>JVMTI_EVENT_COMPILED_METHOD_LOAD</code>; 
+	      relevant for the optimizing JIT compiler.   Default is <code>false</code>.
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:vm_bootclasspath_appendclasspath=&lt;true|false&gt;</code>
+              </strong>
+            </td>
+            <td class="TableCell">
+              Appends classpath to the bootclasspath.   Default is <code>false</code>.
+            </td>
+          </tr>
+
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:vm.dlls=&lt;list&gt;</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              A <code>PATH_SEPARATOR</code>-delimited list of modular dynamic libraries (GC/etc.) to load at startup
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:thread.soft_unreservation=&lt;true|false&gt;</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+                "soft" unreservation allows transferring lock thread locality from one thread to another. 
+                This can give performance benefits on applications with many uncontended and mainly thread-local locks.
+                Be aware that it can introduce performance penalties on applications that have 
+                many uncontended, but not thread-local locks.
+                Default is <code>false</code>.
+            </td>
+          </tr>
+
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:vm.sort_fields=&lt;true|false&gt;</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+                Enables sorting class fields in size-decreasing order to ensure proper alignment. 
+                Default is <code>false</code>.
+            </td>
+          </tr>
+
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:vm.compact_fields=&lt;true|false&gt;</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+                Enables compacting class fields in order to fill the gaps induced by field alignment.
+                Default is <code>false</code>.
+            </td>
+          </tr>
+
+        </table>
+
+
+        <h3 >Execution Manager (vm/em)</h3>
+
+
+        <table>
+          <tr>
+            <th class="TableHeading" width="50%">
+              Options
+            </th>
+
+            <th class="TableHeading" width="50%">
+              Comments
+            </th>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-Xverbose:em</code>
+              </strong>
+
+
+            </td>
+            <td class="TableCell">
+
+              Prints method compilation events to <code>stdout</code> to detect the method that failed to compile (not an EM option, but very informative for EM behavior);
+              <br/><i>Available in the debug build only</i>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-Xem:&lt;config&gt;</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+              Specifies the Execution Manager configuration file to use; choose one of the predefined files
+              (<a href="#EMClient">client</a>, <a href="#EMServer">server</a>, <a href="#EMServerAggressive">server_aggressive</a>, <a href="#EMOpt">opt</a>, <a href="#EMJet">jet</a>)
+              <br/>or specify your own
+
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <a name="EMClient"></a>
+                <code>-Xem:client</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Sets the optimization sequence for client applications;
+              <br/><i>The default EM configuration</i>
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <a name="EMServer"></a>
+                <code>-Xem:server</code>
+              </strong>
+
+
+            </td>
+            <td class="TableCell">
+
+              Sets the optimization sequence for server applications: the <code>server</code> mode execution
+              analogous to <strong>
+                <code>java -server</code>
+              </strong> in <code>HotSpot</code>)
+
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <a name="EMServerAggressive"></a>
+                <code>-Xem:server_aggressive</code>
+              </strong>
+
+
+            </td>
+            <td class="OddRowCell">
+
+              Sets the optimization sequence for server applications to perform at high speed
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <a name="EMJet"></a>
+                <code>-Xem:jet</code>
+              </strong>
+
+
+            </td>
+            <td class="TableCell">
+              Configures VM to use only the fast-compiling non-optimizing JIT Jitrino.JET
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <a name="EMOpt"></a>
+                <code>-Xem:opt</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Configures VM to use only the aggressively optimizing JIT compiler Jitrino.OPT
+            </td>
+
+          </tr>
+
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+
+                <code>
+                  -XX:em.dll=&lt;dll&gt;
+              </code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+              Use to specify DRLVM-execution manager (EM) dll to load at startup.
+            </td>
+
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+
+                <code>
+                  -XX:em.jitPath=&lt;path&gt;
+              </code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Use to override the default path for all JIT dlls in <code>EM.conf</code> with path.
+          </td>
+
+        </tr>
+        <tr>
+          <td class="TableCell">
+
+            <strong>
+
+              <code>
+                -XX:em.JIT_NAME.jitPath=&lt;path&gt;
+              </code>
+            </strong>
+
+          </td>
+          <td class="TableCell">
+            Use to override the default path for <code>JIT_NAME</code> JIT dll in <code>EM.conf</code> with path.
+          </td>
+
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+
+                <code>
+                  -XX:em.properties=&lt;path&gt;
+              </code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Sets up a path to em configuration file to use.
+            </td>
+
+        </tr>
+        </table>
+        <h3>JIT Compiler (vm/jitrino)</h3>
+
+
+        <table>
+          <tr>
+            <th class="TableHeading" width="50%">
+
+              Options
+
+            </th>
+            <th class="TableHeading" width="50%">
+              Comments
+            </th>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:jit.arg.log=&lt;log_type&gt;</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+              Enables compilation logging for the Jitrino.OPT JIT compiler;
+              <br/><code>&lt;log_type&gt;</code> is a comma-separated list of the logging types to enable (see below the examples)
+
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:jit.arg.log=rt</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Turns ON all run-time logging
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+
+              <strong>
+                <code>-XX:jit.arg.log=ct,dbg</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+              Turns ON compile-time logging and debug information
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:jit.arg.log=ct,irdump,dotdump,info</code>
+              </strong>
+
+
+            </td>
+            <td class="OddRowCell">
+              Turns ON full compile-time logging for Jitrino;
+              <br/><i>WARNING: takes much disk space</i>
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:jit.p.filter=.main -XX:jit.p.arg.log=ct,irdump,dotdump</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+
+              Turns ON compile-time logging for methods with names starting with <code>main</code>
+
+
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:jit.p.filter=java/lang/Math. -XX:jit.p.arg.log=ct,irdump,dotdump</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Turns ON logging for all methods of a single class
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+
+              <strong>
+                <code>-XX:jit.arg.codegen.iprof=on</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+
+              Enables internal profiler dumps <code>iprof.stat</code> in Jitrino.OPT;
+              <br/><i>
+                Requires <code>iprof.cfg</code>
+              </i>
+
+            </td>
+          </tr>
+        </table>
+
+
+        <h3>GCv5 (vm/gc_gen)</h3>
+
+
+        <table>
+          <tr>
+            <th class="TableHeading" width="50%">
+
+              Options
+            </th>
+            <th class="TableHeading" width="50%">
+              Comments
+            </th>
+          </tr>
+
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:gc.prefetch=&lt;true|false&gt;</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+               Enables prefetching a platform-specific distance ahead 
+               when allocating in the TLAB (Thread local allocation buffer). Default is <code>false</code>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:gc.prefetch_distance=N</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+               Sets number of bytes prefetched in advance. Default is <code>1KB</code>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:gc.zeroing_size=N</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+               Sets number of bytes cleared ahead when allocating 
+               a new block for a thread or no space remains in previous cleared area
+               to hold a newly allocated object. Default is <code>2KB</code>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:gc.minor_algorithm=STRING</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+               Sets GC minor collection algorithm. The following algos are available:
+               <code>MINOR_NONGEN_FORWARD_POOL, MINOR_GEN_FORWARD_POOL, MINOR_NONGEN_SEMISPACE_POOL, MINOR_GEN_SEMISPACE_POOL</code>.
+               <br>Default is <code>MINOR_NONGEN_FORWARD_POOL</code></br>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:gc.tospace_size=N</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+                Sets to-space size for semi-space collection algo to hold 
+                objects survived in NOS after a collection. Default is 1/8 of NOS size
+            </td>
+          </tr>
+
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:gc.nos_size=N</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Specifies a fixed size for NOS (nursery object space or young generation)
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:gc.num_collectors=N</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+
+              Specifies the number of collectors used for collections for parallel collection. 
+              Default value is usually equals to number of cores available to java process
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:gc.use_large_page=&lt;true|false&gt; for Windows or <br>&lt;hugetlbfs mount point&gt; for Linux</br></code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Turns ON/OFF large page support of the platform. Default is <code>false</code>
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:gc.verify=&lt;true|false&gt;</code>
+              </strong>
+
+
+            </td>
+            <td class="TableCell">
+              Turns ON/OFF GC verifier for GC debugging, type to see available options. Default is <code>false</code>
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:gc.force_major_collect=&lt;true|false&gt;</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Forces every collection to be full heap collection (i.e., no minor collections). Default is <code>false</code>
+            </td>
+          </tr>
+          <tr>
+
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:gc.ignore_finref=&lt;true|false&gt;</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+              Turns ON/OFF processing of finalizer and weak references.  Default is <code>false</code>
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:-gc.heap_iteration</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Disables JVMTI functionality of heap iteration
+
+            </td>
+          </tr>
+        </table>
+
+
+        <h3>GCv41 (vm/gc_cc)</h3>
+
+
+        <table>
+          <tr>
+            <th class="TableHeading" width="50%">
+              Options
+            </th>
+            <th class="TableHeading" width="50%">
+              Comments
+            </th>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-verbose:gc</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+              Enables init messages from GC and information about GC pauses
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:-gc.adaptive</code>
+              </strong>
+
+
+            </td>
+            <td class="OddRowCell">
+              Disables adaptive selection between GC algorithms: copying and sliding compaction
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:gc.type=N</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+
+              Specifies the number of the GC algorithm to use (use together with <code>-Dgc.adaptive=0</code>);
+              <br/>Available algorithms: 1.copying + fallback to sliding compaction; 2.full collection using sliding compaction; 3.sliding compaction
+
+
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:+gc.heap_iteration</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+
+              Enables heap iteration support needed for using the JVMTI function <code>IterateOverHeap</code>
+
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:+gc.ignore_finalizers</code>
+              </strong>
+
+
+            </td>
+            <td class="TableCell">
+              Ignores finalizable objects, that is, stops tracking reachability of finalizable object, 
+              <br/>does not revive them or pass revived objects to VM for finalization
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:+gc.lp</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+
+              On Windows, enables (<code>+</code>) or disables (<code>-</code>) using large pages for more effective TLB utilization;
+              <br/>Use <code>-verbose:gc.lp</code> for more diagnostics
+
+
+            </td>
+          </tr>
+          <tr>
+            <td class="TableCell">
+
+              <strong>
+                <code>-XX:gc.lp=/mnt/huge</code>
+              </strong>
+
+            </td>
+            <td class="TableCell">
+
+              On Linux, enables (<code>1</code>) or disables (<code>0</code>) using large pages for more effective TLB utilization; huge pages are allocated with the <code>mmap</code> method.
+              <br/>Specify the mount point where <code>hugetlbfs</code> is mounted. Use <code>-verbose:gc.lp</code> for more diagnostics
+
+
+            </td>
+          </tr>
+          <tr>
+            <td class="OddRowCell">
+
+              <strong>
+                <code>-XX:+gc.remember_root_set</code>
+              </strong>
+
+            </td>
+            <td class="OddRowCell">
+              Enables a root-set caching mode;
+              <br/>By default, the copying collector starts evacuating objects as soon as it starts receiving roots during root set enumeration. This option disables immediate evacuation and ensures no objects are moved until the root-set enumeration is complete
+            </td>
+          </tr>
+        </table>
+
+      </subsection>
+    </section>
+  </body>
+</document>

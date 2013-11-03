@@ -1,0 +1,460 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+                                                    <meta name="author" content="Harmony Documentation Team">
+            <meta name="email" content="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Apache Harmony DRL Virtual Machine</title>
+
+                        
+                        
+        <link rel="stylesheet" type="text/css" href="../../css/site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../../css/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../css/print.css" media="print" />
+
+                        
+        </head>
+
+        <body>
+			<div style="
+				clear: left;
+   				font-size: 110%;
+   				background-color: #FF0040;
+   				color: white;
+				float: left">
+
+				<b><big>Apache Harmony is retired at the Apache Software Foundation</big></b> since Nov 16, 2011.
+				<p>
+				The information on these pages may be out of date, or may refer to
+				resources that have moved or have been made read-only.
+				<br> 
+				For more information please refer to the
+				<a href="http://attic.apache.org">Apache Attic</a>
+				<p>
+			</div>
+			
+            <div id="pageHeader" style="clear: left">
+			<br>
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="../../images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement
+            <a href="http://na.apachecon.com">
+                <img id="advertisement"
+                     src="images/apachecon-na2010.gif"
+                     width="234" height="60"
+                     alt="ApacheCon US 2010" /></a>
+            -->
+
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/licenses/">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../download.cgi">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/security/">Security</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../sitemap.html">Sitemap</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.jdocs.com/harmony/5.M5/overview-summary.html">API Reference</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Foundation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/sponsorship.html ">Sponsorship</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/thanks.html ">Thanks</a>
+</li>
+           
+                        
+        
+        </ul>
+                    
+                <!-- Add the ASF birthday logo to the end of the menu -->
+                <img id="birthday"
+                     src="http://www.apache.org/images/10yearsASF_170x101.jpg"
+                     width="170" height="101"
+                     vspace="30"
+                     alt="Ten Years of the ASF" />
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                                        <h1>
+      <a name="DRLVM">DRLVM</a>
+    </h1>
+                        <p> 
+    DRLVM stands for Dynamic Runtime Layer Virtual Machine, a clean-room implementation of the J2SE 1.5.0
+        virtual machine.
+    </p>
+                                <p>
+    Key goals of DRL include the following: 
+    </p>
+                                <ul>
+        <li><em>Modularity:</em> Functionality is grouped into a limited number of 
+        coarse-grained modules with well defined interfaces. </li>
+        <li><em>Pluggability:</em> Module implementations can be replaced at compile time or run time. 
+        Multiple implementations of a given module are possible. </li>
+        <li><em>Consistency:</em> Interfaces are consistent across platforms. </li>
+        <li><em>Performance:</em> Interfaces fully enable implementation of modules optimized for specific target platforms.</li>
+    </ul>
+                                <p>
+        The following documentation links are specific to the DRLVM virtual machine
+        effort underway at Apache Harmony.
+    </p>
+                                    
+    <h2>
+        <a name="Developing and Building the code">Developing and Building the code</a>
+    </h2>
+      
+                        <ul>
+            <li>
+                <a href="http://svn.apache.org/viewvc/harmony/enhanced/java/trunk/drlvm/README.txt?view=co">
+                  README</a>
+              <br />
+              Source package and building instructions for the VM source code.
+              </li>
+            <li>
+              <a href="getting_started.html">
+                Getting Started with DRLVM
+              </a>
+              <br />
+              Basic usage scenarios of VM: starting an application, working in Eclipse™
+            </li>
+            <li> <a href="debugging_VM_and_JIT.html">Debugging VM and JIT</a>
+              <br />
+              Guide to debugging VM and Jitrino.JET source code covering
+              basic actions and some useful tips
+            </li> 
+        </ul>
+                   
+                                    
+    <h2>
+        <a name="Architecture and Component Documentation">Architecture and Component Documentation</a>
+    </h2>
+      
+                        <ul>
+            <li>
+                <a href="developers_guide.html">Developer's Guide</a>
+                <br />
+                In-depth description of the DRLVM internal architecture and components' interaction
+                <br />
+                Now with additions in separate documents:
+            </li>
+          <ul>
+            <li>
+              <a href="EM.html">Execution Manager Component Description</a>
+              <br />
+              Detailed description of the Execution Manager current implementation
+              <br />
+             </li>
+             
+            <li>
+              <a href="TM.html">Thread Manager Component Description</a>
+              <br />
+              Detailed description of the Thread Manager current implementation
+              <br />
+               </li>
+            <li>
+               <a href="kernel_classes.html">Kernel Classes Component Description</a>
+               <br />
+               Detailed description of the kernel classes implementation with focus on the native part of
+               kernel classes and the internal kernel classes interface.
+               <br />
+             </li>
+               <li>
+               <a href="JIT.html">JIT Compiler Component Description</a>
+               <br />
+               Detailed description of the Jitrino just-in-time compiler implementation; gives details on
+               the internal architecture of the Jitrino.JET baseline compiler and Jitrino.OPT optimizing compiler,
+               as well as processes running inside them.
+             <br />
+               Relies on the other component descriptions and the
+              <a href="JIT_PMF.html">Jitrino Pipeline Management Framework</a> description.
+            </li>
+            <ul>
+            <li>
+               <a href="JIT_PMF.html">Jitrino Pipeline Management Framework</a>
+             <br />
+              Detailed description of the pipeline management framework
+              that provides complete control over just-in-time compilation process through
+              the Java property mechanism. The description covers the PMF application to
+              the command-line interface and to the Jitrino logging system.
+              <br />
+              Relies on the <a href="JIT.html">JIT Compiler Component Description</a>,
+              which gives a general definition of PMF.
+            </li>
+             <li>
+               <a href="internal_profiler.html">Jitrino Internal Profiler Description</a>
+             <br />
+              Description of the code generator's internal profiler tool (iprof) for Jitrino.OPT
+              just-in-time compiler, which defines the tool, illustrates its sample output and
+              configuration mechanisms
+              <br />
+              Relies on the <a href="JIT.html">JIT Compiler Component Description</a>,
+              which gives a general definition of just-in-time compilation and code generation processes.
+            </li>
+            </ul>
+            <li>
+               <a href="verifier.html">Bytecode Verifier</a>
+             <br />
+              Technical Details for Harmony Bytecode Verifier, including algorithm description.
+            </li>
+            <li>
+              <a href="encoder_library.html">Encoder Library for
+                  IA-32/Intel64</a><br />
+                Description of the encoder library for code generation; the document focuses
+                on the specifics of the current implementation showing the encoder library 
+                structure and role inside the DRL virtual machine.
+              
+            </li>
+            <li>
+             <a href="gc-v5.html">Generational Garbage Collector Component Description</a>
+              <br />
+              Detailed description of the GCv5 current design and implementation, including
+              key GC-related terms, GC history and current architecture.
+              <br />
+             </li>
+            <li>
+              <a href="crash_handler.html">Universal signals,
+              exceptions and crash handler</a>
+              <br />
+              Description of signals, exceptions and crash handler
+              used in DRLVM: its internal algorithms, and how it
+              communicates with the rest of VM application.
+            </li>
+            <li>
+              Implementation of <a href="http://java.sun.com/j2se/1.5.0/docs/guide/jvmti/jvmti.html">JVMTI API</a> components in DRLVM
+            </li>
+              <ul>
+              <li>
+                Implementation of <a href="breakpoints_and_ss.html">breakpoints and single step</a>
+                JVMTI functionality in JIT mode.
+              </li>
+              <li>
+               <a href="JVMTI-PopFrame.html">JVMTI PopFrame Implementation</a>
+               <br />
+                Details on the PopFrame implementation as currently done in DRLVM. 
+                The document indicates the functions responsible for the operation and 
+                gives info on specifics of the current implementation. 
+              </li>
+              </ul>
+            <li>
+              Native Code Access Interface (NCAI) Implementation
+            </li>
+            <ul>
+              <li>
+                <a href="NCAI.html">NCAI Implementation</a>
+                <br />
+                Details of NCAI implementation in DRLVM.
+              </li>
+              <li>
+                <a href="NCAI_spec.html">NCAI Description</a>
+                <br />
+                Description of NCAI interface partially implemented in DRLVM.
+              </li>
+            </ul>
+          </ul>
+          
+        <li><a href="DoxygenStart.html">DRLVM Source Code Generated Documentation Index</a>
+        </li>
+        </ul>
+                   
+                                    
+    <h2>
+        <a name="How-tos and Guides">How-tos and Guides</a>
+    </h2>
+      
+                        <p>This section lists the various guides to specific aspects of the Virtual Machine. </p>
+                                <ul>
+            <li>
+              <a href="emguide.html">Configuring Execution Manager</a>
+              <br />
+              Guide to Execution Manager (EM) options and configuration file format.<br />
+            </li>
+            <li>
+              <a href="gc-howto.html">How to write DRL GC</a>
+              <br />
+              Instructions on creating a custom garbage collector implementation in C++
+              and configuring the DRL virtual machine to use it with a real-life example
+              of a copying GC implementation (source included)
+            </li>
+        </ul>
+                   
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                
+                                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special">
+            	<em>Copyright &#169; 2003-2010, The Apache Software Foundation</em>
+            	<br/>
+            	Apache Harmony, the Apache Harmony logo, and the Apache feather
+            	logo are trademarks of The Apache Software Foundation.
+            	<br/>
+            	Java is a registered trademark of Oracle and/or its affiliates. Other names
+            	mentioned may be trademarks or registered trademarks of their
+            	respective owners.
+            </div>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

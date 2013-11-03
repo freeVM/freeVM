@@ -1,0 +1,21 @@
+<parameters>
+
+    <shared>
+        <arch.dir value="${cc.log.dir}"/>
+        <jre value="${checkouts.dir}/snapshot/hdk/jdk/jre"/>
+        <jdk value="${checkouts.dir}/snapshot/hdk/jdk"/>
+        <hdk value="${checkouts.dir}/snapshot/hdk"/>
+        <jvm.location value="${checkouts.dir}/snapshot/hdk/jdk/jre/bin/java${exe}"/>
+        <svn.revision.file location="${checkouts.dir}/snapshot/svn.revision"/>
+
+        <do.processes.cleanup
+            description="Whether to kill orphan processes(Linux only)"
+            value="false"/>
+    </shared>
+
+    <mail summary="${svn.revision.file}"/>
+
+    <cc trigger="${snapshot}/${snapshot.file}"
+        bootstrapper="${adaptors.dir}/snapshot/adaptor.xml"
+    />
+</parameters>

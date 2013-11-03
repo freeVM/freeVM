@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Edit Employee</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:17:59
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>Edit Employee</h1>
+
+
+
+			
+<form id="save" name="editForm" onsubmit="return true;" action="/struts2-showcase-2.0.6/employee/save.action" method="POST">
+<table class="wwFormTable">
+    <tr>
+    <td class="tdLabel"><label for="save_currentEmployee_empId" class="label">Employee Id:</label></td>
+    <td
+><input type="text" name="currentEmployee.empId" value="1" id="save_currentEmployee_empId"/>
+</td>
+</tr>
+
+    <tr>
+    <td class="tdLabel"><label for="save_currentEmployee_firstName" class="label">employee.firstName:</label></td>
+    <td
+><input type="text" name="currentEmployee.firstName" value="Alan" id="save_currentEmployee_firstName"/>
+</td>
+</tr>
+
+    <tr>
+    <td class="tdLabel"><label for="save_currentEmployee_lastName" class="label">employee.lastName:</label></td>
+    <td
+><input type="text" name="currentEmployee.lastName" value="Smithee" id="save_currentEmployee_lastName"/>
+</td>
+</tr>
+
+    <tr>
+    <td class="tdLabel"><label for="save_currentEmployee_birthDate" class="label">Birthdate:</label></td>
+    <td
+><script type="text/javascript">
+    dojo.require("dojo.widget.DatePicker");
+</script>
+<div
+        dojoType="dropdowndatepicker"    id="save_currentEmployee_birthDate"    value="2007-04-06T15:15:59"    name="dojo.currentEmployee.birthDate"    inputName="currentEmployee.birthDate"  saveFormat="rfc"></div>
+</td>
+</tr>
+
+
+    <tr>
+    <td class="tdLabel"><label for="save_currentEmployee_salary" class="label">Salary:</label></td>
+    <td
+><input type="text" name="currentEmployee.salary" value="2000.0" id="save_currentEmployee_salary"/>
+</td>
+</tr>
+
+    <tr>
+	<td valign="top" align="right">
+    </td>
+    <td valign="top" align="left">
+
+<input type="checkbox" name="currentEmployee.married" value="true" checked="checked" id="save_currentEmployee_married"/>
+<input type="hidden" name="__checkbox_currentEmployee.married" value="true"/> <label for="save_currentEmployee_married" class="checkboxLabel">Married</label> </td>
+</tr>
+
+
+    <tr>
+    <td class="tdLabel"><label for="save_currentEmployee_position" class="label">Position:</label></td>
+    <td
+>
+<script type="text/javascript">
+	function autoPopulate_currentEmployee.position(targetElement) {
+		targetElement.form.elements['currentEmployee.position'].value=targetElement.options[targetElement.selectedIndex].value;
+	}
+</script>
+<input type="text" name="currentEmployee.position" value="Developer" id="save_currentEmployee_position"/>
+<br/>
+<select onChange="autoPopulate_currentEmployee.position(this);">
+    <option value="Developer" selected="selected">Developer</option>
+    <option value="System Architect">System Architect</option>
+    <option value="Sales Manager">Sales Manager</option>
+    <option value="CEO">CEO</option>
+</select>
+    </td>
+</tr>
+
+
+    <tr>
+    <td class="tdLabel"><label for="save_currentEmployee_mainSkill_name" class="label">Main Skill:</label></td>
+    <td
+><select name="currentEmployee.mainSkill.name" id="save_currentEmployee_mainSkill_name">
+    <option value="WW-JUN">WW-JUN</option>
+    <option value="SPRING-DEV">SPRING-DEV</option>
+    <option value="WW-SEN" selected="selected">WW-SEN</option>
+
+
+</select>
+</td>
+</tr>
+
+    <tr>
+    <td class="tdLabel"><label for="save_selectedSkills" class="label">Other Skills:</label></td>
+    <td
+><select name="selectedSkills" id="save_selectedSkills" multiple="multiple">
+    <option value="WW-JUN">Struts Junior Developer</option>
+    <option value="SPRING-DEV">Spring Developer</option>
+    <option value="WW-SEN">Struts Senior Developer</option>
+
+
+</select>
+</td>
+</tr>
+
+    <tr>
+    <td class="tdLabel"><label for="save_currentEmployee_password" class="label">Password:</label></td>
+    <td
+><input type="password" name="currentEmployee.password" id="save_currentEmployee_password"/>
+</td>
+</tr>
+
+    <tr>
+    <td class="tdLabel"></td>
+    <td
+>
+<input type="radio" name="currentEmployee.level" id="save_currentEmployee_levelJunior" checked="checked" value="Junior"/><label for="save_currentEmployee_levelJunior">Junior</label>
+<input type="radio" name="currentEmployee.level" id="save_currentEmployee_levelSenior" value="Senior"/><label for="save_currentEmployee_levelSenior">Senior</label>
+<input type="radio" name="currentEmployee.level" id="save_currentEmployee_levelMaster" value="Master"/><label for="save_currentEmployee_levelMaster">Master</label>
+    </td>
+</tr>
+
+
+    <tr>
+    <td class="tdLabel"><label for="save_currentEmployee_comment" class="label">Comment:</label></td>
+    <td
+><textarea name="currentEmployee.comment" cols="50" rows="3" id="save_currentEmployee_comment">Nice guy</textarea>
+</td>
+</tr>
+
+    <tr>
+    <td colspan="2"><div align="right"><input type="submit" id="save_0" value="Save"/>
+</div></td>
+</tr>
+
+</table></form>
+
+
+
+
+<p><a href="/struts2-showcase-2.0.6/employee/list.action">employee.backtolist</a></p>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:99&className=org.apache.struts2.showcase.action.EmployeeAction&page=/employee//empmanager/editEmployee.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

@@ -1,0 +1,3751 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+                                                    <meta name="author" content="Harmony Documentation Team">
+            <meta name="email" content="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - DRLVM Developer's Guide</title>
+
+                        
+                        
+        <link rel="stylesheet" type="text/css" href="../../css/site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../../css/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../css/print.css" media="print" />
+
+                        
+        </head>
+
+        <body>
+			<div style="
+				clear: left;
+   				font-size: 110%;
+   				background-color: #FF0040;
+   				color: white;
+				float: left">
+
+				<b><big>Apache Harmony is retired at the Apache Software Foundation</big></b> since Nov 16, 2011.
+				<p>
+				The information on these pages may be out of date, or may refer to
+				resources that have moved or have been made read-only.
+				<br> 
+				For more information please refer to the
+				<a href="http://attic.apache.org">Apache Attic</a>
+				<p>
+			</div>
+			
+            <div id="pageHeader" style="clear: left">
+			<br>
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="../../images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement
+            <a href="http://na.apachecon.com">
+                <img id="advertisement"
+                     src="images/apachecon-na2010.gif"
+                     width="234" height="60"
+                     alt="ApacheCon US 2010" /></a>
+            -->
+
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/licenses/">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../download.cgi">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../faq.html">FAQ</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/security/">Security</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../sitemap.html">Sitemap</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="../../svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.jdocs.com/harmony/5.M5/overview-summary.html">API Reference</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="../../subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Foundation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/sponsorship.html ">Sponsorship</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/thanks.html ">Thanks</a>
+</li>
+           
+                        
+        
+        </ul>
+                    
+                <!-- Add the ASF birthday logo to the end of the menu -->
+                <img id="birthday"
+                     src="http://www.apache.org/images/10yearsASF_170x101.jpg"
+                     width="170" height="101"
+                     vspace="30"
+                     alt="Ten Years of the ASF" />
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                
+                                                    <div>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements. See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License. You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+      <title>
+         DRLVM Virtual Machine Developer's Guide
+      </title>
+      <link rel="Stylesheet" type="text/css" href="site.css" />
+   </head>
+   <body>
+      <h1>
+         <a id="Top" name="Top"></a>Dynamic Runtime Layer Virtual Machine
+         Developer's Guide
+      </h1>
+      <ol id="TOC">
+         <li><a href="#Revision_History">Revision History</a></li>
+         <li><a href="#About_this_document">1. About This Document</a>
+            <ol>
+            <li><a href="#Purpose">1.1 Purpose</a></li>
+            <li><a href="#Intended_Audience">1.2 Intended Audience</a></li>
+            <li><a href="#Using_this_document">1.3 Using This Document</a></li>
+            <li><a href="#Conventions_and_Symbols">1.4 Conventions and Symbols</a></li>
+            </ol>
+        </li>
+        <li><a href="#VM_Architecture">2. VM Architecture</a>
+            <ol>
+            <li><a href="#Overview">2.1 Overview</a></li>
+            <li><a href="#About_Components">2.2 About Components</a>
+                <ol>
+                 <li><a href="#CompInterfInst">2.2.1 Components, Interfaces, and Instances</a></li>
+                 <li><a href="#Linking_Models">2.2.2 Linking Models</a></li>
+                </ol>
+            </li>
+            <li><a href="#Component_Manager">2.3 Component Manager</a></li>
+            <li><a href="#Package_Layout">2.4 Package Layout</a></li>
+            <li><a href="#Data_Structures">2.5 Data Structures</a>
+                <ol>
+                <li><a href="#Object_Layout">2.5.1 Object Layout</a></li>
+                <li><a href="#Compressed_References">2.5.2 Compressed References</a></li>
+                </ol>
+            </li>
+            </ol>
+       </li>
+       <li><a href="#Components">3. Components</a>
+           <ol>
+           <li><a href="#Major_Components">3.1 Component Structure</a></li>
+           <li><a href="#VM_Core">3.2 VM Core</a>
+               <ol>
+               <li><a href="#Kernel_Classes">3.2.1 Kernel Classes</a></li>
+               <li><a href="#Native_Code_Support">3.2.2 Native Code Support</a></li>
+               <li><a href="#JVMTI_Support">3.2.3 JVMTI Support</a></li>
+               <li><a href="#Class_Support">3.2.4 Class Support</a></li>
+               <li><a href="#VM_Services">3.2.5 Services</a></li>
+               <li><a href="#Utilities">3.2.6 Utilities</a></li>
+               <li><a href="#Initialization_Module">3.2.7 Initialization Module</a></li>
+              </ol>
+          </li>
+          <li><a href="#EE">3.3 Execution Engine</a>
+              <ol>
+              <li><a href="#JIT_Compiler">3.3.1 JIT Compiler</a></li>
+              <li><a href="#Interpreter">3.3.2 Interpreter</a></li>
+              </ol>
+          </li>
+          <li><a href="#EM">3.4 Execution Manager</a></li>
+          <li><a href="#Thread_Manager">3.5 Thread Manager</a></li>
+          <li><a href="#GC">3.6 Garbage Collector</a></li>
+          <li><a href="#Porting_Layer">3.7 Porting Layer</a></li>
+          <li><a href="#Class_Libraries">3.8 Class Libraries</a></li>
+       </ol>
+    </li>
+    <li><a href="#Processes">4. Processes</a>
+        <ol>
+        <li><a href="#Initialization">4.1 Initialization</a>
+            <ol>
+            <li><a href="#1stpass">4.1.1 Parsing Arguments</a></li>
+            <li><a href="#Creating_VM">4.1.2 Creating the VM</a></li>
+            <li><a href="#VMStarter">4.1.3 VMStarter Class</a></li>
+            </ol>
+        </li>
+        <li><a href="#Verification">4.2 Verification</a>
+            <ol>
+            <li><a href="#Optimized_Verification">4.2.1 Optimized Verification Procedure</a></li>
+            <li><a href="#Verifications_Classification">4.2.2 Verifications Classification</a></li>
+            </ol>
+        </li>
+        <li><a href="#Stack_Walking">4.3 Stack Walking</a>
+            <ol>
+            <li><a href="#About_the_Stack">4.3.1 About the Stack</a></li>
+            <li><a href="#Stack">4.3.2 Stack Walking</a></li>
+            <li><a href="#Stack_Iterator">4.3.3 Stack Iterator</a></li>
+            <li><a href="#Stack_Trace">4.3.4 Stack Trace</a></li>
+            </ol>
+        </li>
+        <li><a href="#Root_Set_Enumeration">4.4 Root Set Enumeration</a>
+            <ol>
+            <li><a href="#Roots">4.4.1 About Roots</a></li>
+            <li><a href="#Method">4.4.2 Black-box Method</a></li>
+            <li><a href="#Enumeration">4.4.3 Enumeration Procedure</a></li>
+            </ol>
+        </li>
+        <li><a href="#Exception_Handling">4.5 Exception Handling</a>
+            <ol>
+            <li><a href="#Throwing">4.5.1 Throwing Exceptions</a></li>
+            <li><a href="#Raising_Exceptions">4.5.2 Raising Exception</a></li>
+            <li><a href="#Choosing">4.5.3 Choosing the Exception Handling Mode</a></li>
+            </ol>
+        </li>
+        <li><a href="#Finalization">4.6 Finalization</a></li>
+            <ol>
+            <li><a href="#FP">4.6.1 Finalization Procedure</a></li>
+            <li><a href="#Work_Balance">4.6.2 Work Balancing Subsystem</a></li>
+            </ol>
+        </li>
+        <li><a href="#Inter_Component_Optimizations">4.7 Inter-component Optimizations</a>
+            <ol>
+            <li><a href="#Fast_Subtype_Checking">4.7.1 Fast Subtype Checking</a></li>
+            <li><a href="#Direct_Call_Conversion">4.7.2 Direct-call Conversion</a></li>
+            <li><a href="#Fast_Constant_String">4.7.3 Fast Constant-string Instantiation</a></li>
+            <li><a href="#Lazy_Exceptions">4.7.4 Lazy Exceptions</a></li>
+            </ol>
+        </li>
+        <li><a href="#VM_Shutdown">4.8 VM Shutdown</a></li>
+      </ol>
+      </li>
+   <li><a href="#References">5. References</a></li>
+ </ol>
+      <h1>
+         <a id="Revision_History" name="Revision_History"></a>Revision History
+      </h1>
+      <table>
+         <tr>
+            <th class="TableHeading">
+               Version
+            </th>
+            <th class="TableHeading">
+               Version Information
+            </th>
+            <th class="TableHeading">
+               Date
+            </th>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               Initial version
+            </td>
+            <td class="TableCell">
+               Intel, Nadya Morozova: document created.
+            </td>
+            <td class="TableCell">
+               November 16, 2005
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               1.0
+            </td>
+            <td class="TableCell">
+               Intel, Nadya Morozova: document updated and expanded.
+            </td>
+            <td class="TableCell">
+               March 2, 2006
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               1.5
+            </td>
+            <td class="TableCell">
+               Sveta Konovalova: redundant legal notes removed.
+            </td>
+            <td class="TableCell">
+               November 22, 2006
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               2.0
+            </td>
+            <td class="TableCell">
+               Nadya Morozova: document restructured, component implementation
+               specifics removed, VM processes described in greater detail.
+            </td>
+            <td class="TableCell">
+               November 24, 2006
+            </td>
+         </tr>
+      </table>
+      <h1>
+         <a id="About_this_document" name="About_this_document"></a>1. About
+         This Document
+      </h1>
+      <h2>
+         <a id="Purpose" name="Purpose"></a>1.1 Purpose
+      </h2>
+      <p>
+         This document introduces DRL, the dynamic run-time layer, explains
+         basic concepts and terms, and gives an overview of the product's
+         structure and interfaces for inter-component communication. Special
+         focus is given to the virtual machine, DRLVM. Use this document to
+         focus on the DRLVM implementation specifics and to understand the
+         internal peculiarities of the product.
+      </p>
+      <p>
+         The document describes version 1 of the DRL virtual machine donated in
+         March 2006.
+      </p>
+      <h2>
+         <a id="Intended_Audience" name="Intended_Audience"></a>1.2 Intended
+         Audience
+      </h2>
+      <p>
+         The target audience for the document includes a wide community of
+         engineers interested in using DRLVM and in working further with the
+         product to contribute to its development.
+      </p>
+      <h2>
+         <a id="Using_This_Document" name="Using_This_Document"></a>1.3 Using
+         This Document
+      </h2>
+      <p>
+         This document consists of several major parts describing the key
+         processes and components of the DRL virtual machine, as follows:
+      </p>
+      <ul>
+         <li>
+            <a href="#VM_Architecture">Architecture</a>: description of VM
+            internal architecture, its components and their interaction
+            principles
+         </li>
+         <li>
+            <a href="#Components">Components</a>: definitions of required VM
+            components, their role in the VM architecture
+         </li>
+         <li>
+            <a href="#Processes">Processes</a>: overview and step-by-step
+            description of key VM processes, from initialization to destruction
+            through stack walking, object finalization, and so on
+         </li>
+      </ul>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Conventions_and_Symbols" name="Conventions_and_Symbols"></a>1.4
+         Conventions and Symbols
+      </h2>
+      <p>
+         This document uses the <a href="../../documentation/conventions.html">unified
+         conventions</a> for the DRL documentation kit.
+      </p>
+      <p>
+         The table below provides the definitions of all acronyms used in the
+         document.
+      </p>
+      <table class="normalTable" border="0" cellpadding="0">
+         <tr>
+            <th class="TableHeading">
+               Acronym
+            </th>
+            <th class="TableHeading">
+               Definition
+            </th>
+            <th class="TableHeading">
+               Acronym
+            </th>
+            <th class="TableHeading">
+               Definition
+            </th>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               API
+            </td>
+            <td class="TableCell">
+               Application Program Interface
+            </td>
+            <td class="TableCell">
+               JNI
+            </td>
+            <td class="TableCell">
+               Java<a href="#*">*</a> Native Interface
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               APR
+            </td>
+            <td class="TableCell">
+               Apache Portable Runtime Layer
+            </td>
+            <td class="TableCell">
+               JVM
+            </td>
+            <td class="TableCell">
+               Java<a href="#*">*</a> Virtual Machine
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               CFG
+            </td>
+            <td class="TableCell">
+               Control Flow Graph
+            </td>
+            <td class="TableCell">
+               JVMTI
+            </td>
+            <td class="TableCell">
+               JVM Tool Interface
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               CG
+            </td>
+            <td class="TableCell">
+               Code Generator
+            </td>
+            <td class="TableCell">
+               LIR
+            </td>
+            <td class="TableCell">
+               Low-level Intermediate Representation
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               CLI
+            </td>
+            <td class="TableCell">
+               Common Language Interface
+            </td>
+            <td class="TableCell">
+               LMF
+            </td>
+            <td class="TableCell">
+               Last Managed Frame
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               DFG
+            </td>
+            <td class="TableCell">
+               Data Flow Graph
+            </td>
+            <td class="TableCell">
+               LOB
+            </td>
+            <td class="TableCell">
+               Large Object Block
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               DPGO
+            </td>
+            <td class="TableCell">
+               Dynamic Profile-guided Optimizations
+            </td>
+            <td class="TableCell">
+               LOS
+            </td>
+            <td class="TableCell">
+               Large Object Space
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               DRL
+            </td>
+            <td class="TableCell">
+               Dynamic Run-time Layer
+            </td>
+            <td class="TableCell">
+               OS
+            </td>
+            <td class="TableCell">
+               Operating System
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               DRLVM
+            </td>
+            <td class="TableCell">
+               Dynamic Run-time Layer Virtual Machine
+            </td>
+            <td class="TableCell">
+               PC
+            </td>
+            <td class="TableCell">
+               Profile Collector
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               EE
+            </td>
+            <td class="TableCell">
+               Execution Engine
+            </td>
+            <td class="TableCell">
+               SIMD
+            </td>
+            <td class="TableCell">
+               Single Instruction Multiple Data
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               EM
+            </td>
+            <td class="TableCell">
+               Execution Manager
+            </td>
+            <td class="TableCell">
+               SOB
+            </td>
+            <td class="TableCell">
+               Single Object Block
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               FP
+            </td>
+            <td class="TableCell">
+               Floating Point
+            </td>
+            <td class="TableCell">
+               SSA
+            </td>
+            <td class="TableCell">
+               Single Static Assignment
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               GC
+            </td>
+            <td class="TableCell">
+               Garbage Collector
+            </td>
+            <td class="TableCell">
+               SSE, SSE2
+            </td>
+            <td class="TableCell">
+               Streaming SIMD Extensions (2)
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               HIR
+            </td>
+            <td class="TableCell">
+               High-level Intermediate Representation
+            </td>
+            <td class="TableCell">
+               STL
+            </td>
+            <td class="TableCell">
+               Standard Template Library
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               IR
+            </td>
+            <td class="TableCell">
+               Intermediate Representation
+            </td>
+            <td class="TableCell">
+               TBS
+            </td>
+            <td class="TableCell">
+               Time-based Sampling
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               J2SE<a href="#*">*</a> 
+            </td>
+            <td class="TableCell">
+               Java<a href="#*">*</a> 2 Standard Edition
+            </td>
+            <td class="TableCell">
+               TLS
+            </td>
+            <td class="TableCell">
+               Thread Local Storage
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               JCL
+            </td>
+            <td class="TableCell">
+               Java<a href="#*">*</a> Class Libraries
+            </td>
+            <td class="TableCell">
+               TM
+            </td>
+            <td class="TableCell">
+               Thread Manager
+            </td>
+         </tr>
+         <tr>
+            <td class="TableCell">
+               JIT
+            </td>
+            <td class="TableCell">
+               Just-in-time Compiler
+            </td>
+            <td class="TableCell">
+               VM
+            </td>
+            <td class="TableCell">
+               Virtual Machine, same as JVM in current document
+            </td>
+         </tr>
+      </table>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="VM_Architecture" name="VM_Architecture"></a>2. VM Architecture
+      </h1>
+      <h2>
+         <a id="Overview" name="Overview"></a>2.1 Overview
+      </h2>
+      <p>
+         The Dynamic Runtime Layer (DRL) is a clean-room implementation of the
+         Java<a href="#*">*</a> 2 Platform, Standard Edition (J2SE<a
+         href="#*">*</a>) 1.5.0. This Java<a href="#*">*</a> run-time
+         environment consists of the virtual machine (DRLVM), and a set of
+         Java<a href="#*">*</a> class libraries (JCL). The product is released
+         in open source. The virtual machine is written in C++ code and a small
+         amount of assembly code. This document focuses on the virtual machine,
+         and gives a short overview of the class libraries supporting it.
+      </p>
+      <p>
+         Key features of DRL include the following:
+      </p>
+      <ul>
+         <li>
+            <i>Modularity</i>: Functionality is grouped into a limited number
+            of coarse-grained modules with well-defined interfaces.
+         </li>
+         <li>
+            <i>Pluggability</i>: Module implementations can be replaced at
+            compile time or run time. Multiple implementations of a given
+            module are possible.
+         </li>
+         <li>
+            <i>Consistency</i>: Interfaces are consistent across platforms.
+         </li>
+         <li>
+            <i>Performance</i>: Interfaces fully enable implementation of
+            modules optimized for specific target platforms.
+         </li>
+      </ul>
+      <h2>
+         <a id="About_Components" name="About_Components"></a>2.2 About
+         Components
+      </h2>
+      <p>
+         The DRL virtual machine reconciles high performance with extensive use
+         of well-defined interfaces between its components.
+      </p>
+      <h3>
+         <a id="CompInterfInst" name="CompInterfInst"></a> 2.2.1 Components,
+         Interfaces, and Instances
+      </h3>
+      <p>
+         A <em>component</em> corresponds to one static or dynamic library, so
+         that several libraries linked statically or dynamically at run time
+         make up the managed run-time environment. For details on components
+         linking, see section <a href="#linking_models">2.2.2 Linking
+         Models</a>.
+      </p>
+      <p>
+         DRLVM components communicate via functional interfaces. An
+         <em>interface</em> is a pointer to a table of function pointers to
+         pure C methods. Interfaces have string names, which unambiguously
+         identify their function table layout. Each component exposes the
+         <em>default interface</em> to communicate with the <a
+         href="#Component_Manager">component manager</a>, and one or more
+         interfaces for communication with other components.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         In the current version, only the <a href="#EM">execution manager</a>
+         uses the component manager. Other components will migrate to this new
+         model in further releases.
+      </p>
+      <p>
+         DRL can also operate with co-existing component instances, as the
+         Invocation API [<a href="#Invoc_api_ref">7</a>] requires. An
+         <em>instance</em> of a component contains a pointer to its default
+         interface and component-specific data. The <a
+         href="#Porting_Layer">porting layer</a> always has exactly one
+         instance. This allows a compiler to inline calls to the porting layer
+         functions. Other components have the same number of instances as the
+         VM core does.
+      </p>
+      <p class="class">
+         Background
+      </p>
+      <p class="notetext">
+         In Java<a href="#*">*</a> programming, components, interfaces, and
+         instances can be described in terms of classes, interfaces and
+         objects. A VM component encapsulates common features, attributes, and
+         properties of virtual machines, and maps to a Java<a href="#*">*</a>
+         class. VM interfaces are tables of methods implemented and exposed by
+         the class. If several virtual machines exist in the same address
+         space, they all expose the same interfaces. These VM instances are
+         instances of the VM class, or objects.<br />
+          The <a href="#Component_Manager">component manager</a> enables
+         explicit creation of component instances by exposing the
+         <code>CreateNewInstance()</code> function, which corresponds to the
+         Java<a href="#*">*</a> operator <code>new()</code>. Components with
+         only one instance correspond to static class methods in Java<a
+         href="#*">*</a>. All components are initialized at load time.
+      </p>
+      <p>
+         Subsequent sections define each component and provide information on
+         public interfaces, dependencies and other component specifics.
+      </p>
+      <h3>
+         <a id="linking_Models" name="linking_Models"></a>2.2.2 Linking Models
+      </h3>
+      <p>
+         Libraries corresponding to different DRL components are linked by one
+         of the following models:
+      </p>
+      <ul>
+         <li>
+            Unconditionally required components, such as the porting layer, are
+            plugged at the source level and linked statically to the main
+            executable. The same applies to the code that loads other
+            components; see section <a href="#Component_Manager">2.3 Component
+            Manager</a>.
+         </li>
+         <li>
+            Components required by the VM configuration, such as a specific
+            garbage collector or a JIT compiler, are loaded at run time based
+            on the configuration settings. For example, the virtual machine on
+            a multiprocessor system can load a more complex garbage collector
+            that takes advantage of parallel processing.
+         </li>
+         <li>
+            Third-party components shipped as dynamic libraries, such as the <a
+            href="#Memory_Management">memory manager</a>, are also loaded at
+            run time.
+         </li>
+      </ul>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Component_Manager" name="Component_Manager"></a>2.3 Component
+         Manager
+      </h2>
+      <p>
+         The <em>component manager</em> is a subcomponent of the VM core
+         responsible for loading and subsequent initialization of VM
+         components.
+      </p>
+      <p>
+         During the loading stage, the component manager queries the default
+         interface from each loading component, and then makes this information
+         available at the initialization stage via interface queries. The
+         component manager also enables instance creation for interfaces.
+         Currently, only the vm core and the execution manager use the
+         component manager loading scheme.
+      </p>
+      <h2>
+         <a id="Package_Layout" name="Package_Layout"></a>2.4. Package Layout
+      </h2>
+      <p>
+         The general distribution of source code in the package is to have a
+         directory for each major component, such as <code>jitrino/</code> for
+         the just-in-time compiler and <code>port/</code> for porting
+         functionality. For a comprehensive list of the current DRLVM package
+         layout, consult the README file in the root directory of the source
+         package.
+      </p>
+      <h2>
+         <a id="Data_Structures" name="Data_Structures"></a>2.5 Data Structures
+      </h2>
+      <p>
+         This section provides an overview of data structures in DRLVM, typical
+         examples of data structures, and the exposed data layout of public
+         data structures.
+      </p>
+      <p>
+         In DRLVM, all data structures are divided into the following groups:
+      </p>
+      <ul>
+         <li>
+            <i>Private</i> data structures can only be used inside a specific
+            DRLVM component. Other components can only access such data
+            structures via exported component interfaces.
+         </li>
+         <li>
+            <i>Public</i> data structures shared across different DRLVM
+            components as listed in this section.
+         </li>
+      </ul>
+      <p>
+         For example, when compiling an access operation to an instance field,
+         the JIT calls the public <code>VM_JIT</code> interface function to
+         obtain the offset, and uses the result to generate the appropriate
+         load instruction. Another example is the VM core internal
+         representation of a class object.
+      </p>
+      <h3>
+         <a id="Object_Layout" name="Object_Layout"></a>2.5.1 Object Layout
+      </h3>
+      <p>
+         DRLVM exports data structures in accordance with the JNI [<a
+         href="#JNI_ref">5</a>] and JVMTI [<a href="#JVMTI_ref">4</a>]
+         standards. In addition to these structures, DRLVM shares information
+         about an object layout across its components. In particular, the
+         Java<a href="#*">*</a> Native Interface does not specify the structure
+         of <code>jobject</code>, but DRLVM defines it internally as
+         illustrated below.
+      </p>
+<pre>
+typedef struct ManagedObject {
+  VTable *vt;
+  uint32 obj_info;
+  /* Class-specific data */
+} ManagedObject;
+struct _jobject { ManagedObject* object; }
+typedef struct _jobject*  jobject;
+</pre>
+      <p>
+         The <code>jobject</code> structure contains the following elements:
+      </p>
+      <ul>
+         <li>
+            The <code>vt</code> field points to the object virtual-method
+            table. 
+            <p>
+               <a id="vtable" name="vtable"></a>Each class has one
+               <i>virtual-method table</i> (VTable) with class-specific
+               information to perform common operations, such as getting
+               pointers to virtual methods. The VTable is shared across all
+               instances of a class. During garbage collection, the VTable
+               supplies such information as the size of the object and the
+               offset of each reference stored in an instance.
+            </p>
+         </li>
+         <li>
+            The <code>obj_info</code> field is used during synchronization and
+            garbage collection. This is a 32-bit value on all supported
+            architectures. This field also stores the hash code of an instance.
+         </li>
+      </ul>
+      <p>
+         Class-instance fields immediately follow the <code>vt</code> and
+         <code>obj_info</code> fields. Representation of array instances is
+         shared between the garbage collector and the JIT compiler. The VM core
+         determines the specific offsets to store the array length and the
+         first element of the array. This way, the VM core makes these fields
+         available for the garbage collector and the JIT via the VM interface.
+      </p>
+      <p class="example">
+         Example
+      </p>
+      <p class="exampletext">
+         The excerpt of code below illustrates the usage of an object structure
+         in DRLVM for the <code>GetBooleanField()</code> JNI function.
+      </p>
+<pre class="exampletext">
+typedef jobject ObjectHandle;
+
+jboolean JNICALL GetBooleanField(JNIEnv *env,
+                                 jobject obj,
+                                 jfieldID fieldID)
+{
+    Field *f = (Field *) fieldID;
+    /* Initialize the class if the field is accessed */
+    if (!ensure_initialised(env, f-&gt;get_class())) {
+        return 0; /* Error */
+    }
+
+    ObjectHandle h = (ObjectHandle) obj;
+
+    tmn_suspend_disable();       //-- Do not allow GC suspension --v
+    Byte *java_ref = (Byte *)h-&gt;object;
+    jboolean val = *(jboolean *)(java_ref + offset);
+    tmn_suspend_enable();        //--------------------------------^
+
+    return val;
+} // GetBooleanField
+</pre>
+      <h3>
+         <a id="Compressed_References" name="Compressed_References"></a>2.5.2
+         Compressed References
+      </h3>
+      <p>
+         To decrease memory footprint on 64-bit platforms [<a
+         href="#compres_ref">11</a>], direct object and VTable pointers are
+         compressed in an object to 32-bit values.
+      </p>
+      <p>
+         To calculate a direct heap pointer, the system adds the pointer to the
+         heap base to the compressed value from the reference field. Similarly,
+         a direct pointer to an object VTable consists of the compressed value
+         stored in the first 32 bits of the object and of the base VTable
+         pointer. This limits the maximum heap size to 4 GB, but significantly
+         reduces the average object size and the work set size, and improves
+         cache performance.
+      </p>
+      <p>
+         Apart from the basic assumptions about object layout and the VTable
+         cache, all interaction between major DRLVM components is achieved
+         through function calls.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Components" name="Components"></a>3. Components
+      </h1>
+      <p>
+         This part of the guide defines required virtual machine components and
+         gives an overview of their interaction.
+      </p>
+      <h2>
+         <a id="Major_Components" name="Major_Components"></a>3.1 Component
+         Structure
+      </h2>
+      <p>
+         Figure 1 below displays the major DRL components and their interfaces.
+      </p>
+      <p style="text-align: center">
+         <img src="images/DRL_structure.gif" alt="Major DRL Components"
+         width="578" height="542" border="0" />
+      </p>
+      <p class="special">
+         <a id="FigureDRLComponents" name="FigureDRLComponents"></a>Figure 1.
+         Major DRL Components
+      </p>
+      <p>
+         Figure 1 demonstrates the Java<a href="#*">*</a> run-time environment
+         (JRE) that consists of the <a href="#Class_Libraries">Java* class
+         libraries</a> (JCL) constituting the application programming interface
+         (API) and the Java<a href="#*">*</a> virtual machine with a number of
+         subcomponents listed below. In Figure 1, each component has a
+         different color. Interfaces exported by a component and calls that
+         this component does to interfaces of other components are marked with
+         the component color. Rectangles are used to show what supplementary
+         terms designate.
+      </p>
+      <p>
+         Currently, the DRL virtual machine consists of the following
+         components:
+      </p>
+      <ul>
+         <li>
+            The <a href="#VM_Core">VM core</a> with its subcomponents
+            concentrates most of the JVM control functions.
+         </li>
+         <li>
+            The <a href="#EE">execution engine</a> is the generic term for
+            components that execute bytecode or prepare it for execution. DRLVM
+            currently features the following execution engines: 
+            <ul>
+               <li>
+                  The <a href="#JIT_Compiler">just-in-time compiler</a> for
+                  compilation and execution of method code
+               </li>
+               <li>
+                  The <a href="#Interpreter">interpreter</a> for easier
+                  debugging
+               </li>
+            </ul>
+         </li>
+         <li>
+            The <a href="#EM">execution manager</a> selects the execution
+            engine for compiling a method, handles profiles and the dynamic
+            recompilation logic.
+         </li>
+         <li>
+            The <a href="#GC">garbage collector</a> allocates Java<a
+            href="#*">*</a> objects in the heap memory and reclaims unreachable
+            objects using various algorithms, for example, <code>gc_gen</code>
+            is a generational garbage collection and <code>gc_v4</code> uses
+            the mark-compact garbage collection algorithm.
+         </li>
+         <li>
+            The <a href="#Porting_Layer">porting layer</a> hides
+            platform-specific details from other VM components behind a single
+            interface. In the current implementation, the porting layer is
+            based on the Apache Portable Runtime layer [<a
+            href="#APR_ref">14</a>].
+         </li>
+      </ul>
+      <p>
+         Depending on the configuration, you can use multiple execution engine
+         components, for example, an interpreter and optimizing JIT.
+         Simultaneous use of multiple JIT compilers can provide different
+         trade-offs between compile time and code quality. You can aslo plug in
+         your custom components instead of the ones DRLVM includes by default,
+         provided that your components exports the required interface
+         functions. For an example of plugging in a custom garbage collector,
+         see <a href="gc-howto.html">How to Write DRL GC</a>.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="VM_Core" name="VM_Core"></a>3.2 VM Core
+      </h2>
+      <p>
+         The VM core consists of common VM blocks defined by the JVM
+         specification [<a href="#JVM_spec_ref">1</a>] and of elements specific
+         for the DRLVM implementation, as follows:
+      </p>
+      <ul>
+         <li>
+            The <a href="#Kernel_Classes">kernel classes</a> component includes
+            a subset of the Java<a href="#*">*</a> class library closely tied
+            with the virtual machine. Kernel class native methods are exported
+            as ordinary native methods from the VM executable to link the
+            Java<a href="#*">*</a> kernel classes with other DRLVM components
+            and for <a href="#Class_Libraries">class library</a> purposes.
+         </li>
+         <li>
+            The <a href="#JNI_support">JNI support</a> component supports
+            execution of native methods for Java<a href="#*">*</a> classes
+            implements the Java<a href="#*">*</a> native interface API [<a
+            href="#JNI_ref">5</a>].
+         </li>
+         <li>
+            The <a href="#JVMTI_Support">JVMTI support</a> component enables
+            loading of the debugging agent, and provides functionality for
+            running debug scenarios, see the JVM Tool Interface Specification
+            [<a href="#JVMTI_ref">4</a>].
+         </li>
+         <li>
+            <a href="#Class_Support">Class support</a> is responsible for class
+            loading and related procedures.
+         </li>
+         <li>
+            <a href="#VM_Services">VM services</a> is an abstract term that
+            denotes run-time and compile-time utilities provided by the VM core
+            for the JIT compiler, the garbage collector and the class library
+            natives.
+         </li>
+         <li>
+            <a href="#Utilities">Utilities</a> are a set of functions used by
+            the VM core during normal operation.
+         </li>
+         <li>
+            The verifier component responsible for <a
+            href="#Verification">verification</a> procedures.
+         </li>
+         <li>
+            Exception handling code works to <a
+            href="#Exception_Handling">catch exceptions</a>.
+         </li>
+         <li>
+            Stack support is involved in <a href="#Stack_Walking">stack
+            walking</a> operations.
+         </li>
+      </ul>
+      <p>
+         The VM core interacts with the following DRL components:
+      </p>
+      <ul>
+         <li>
+            The <a href="#JIT_Compiler">just-in-time compiler</a> to compile
+            Java<a href="#*">*</a> code into native code and then execute it
+         </li>
+         <li>
+            The <a href="#Interpreter">interpreter</a> to execute Java<a
+            href="#*">*</a> code
+         </li>
+         <li>
+            The <a href="#GC">garbage collector</a> to allocate and free memory
+            inside the virtual machine and to enumerate the root set when
+            needed
+         </li>
+         <li>
+            The <a href="#EM">execution manager</a> to select the execution
+            engine for Java<a href="#*">*</a> code
+         </li>
+         <li>
+            The <a href="#Class_Libraries">Java* class libraries</a> to
+            interact with the user Java<a href="#*">*</a> code
+         </li>
+         <li>
+            The <a href="#Thread_Manager">thread manager</a> to handle
+            threading
+         </li>
+      </ul>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="Kernel_Classes" name="Kernel_Classes"></a>3.2.1 Kernel Classes
+      </h3>
+      <p>
+         The VM kernel classes link the virtual machine with the Java<a
+         href="#*">*</a> class libraries (JCL), and consist of the Java<a
+         href="#*">*</a> part and the native part. Examples of kernel classes
+         include <code>java.lang.Object</code> and
+         <code>java.lang.reflect.Field</code>. For details on the current
+         implementation, see the <a href="kernel_classes.html">Kernel Classes
+         document</a>.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="Native_Code_Support" name="Native_Code_Support"></a>3.2.2
+         Native Code Support
+      </h3>
+      <p>
+         The native code support component consists of two parts: execution of
+         native methods used by Java<a href="#*">*</a> classes, and an
+         implementation of the Java<a href="#*">*</a> Native Interface (JNI)
+         API for native code. Execution of native methods is defined by the
+         Java<a href="#*">*</a> Language specification [<a
+         href="#Java_lang_spec_ref">2</a>] and JNI is defined by the JNI
+         specification [<a href="#JNI_ref">5</a>].
+      </p>
+      <dl>
+         <dt>
+            <a id="Execution_of_Native_Methods"
+            name="Execution_of_Native_Methods"></a>Execution of Native Methods
+         </dt>
+         <dd>
+            <p>
+               The virtual machine calls native methods differently with the
+               JIT and with the interpreter as described below.
+            </p>
+            <ul>
+               <li>
+                  <i>In the interpreter mode</i>, native code is called
+                  directly with static stubs, and the interpreter performs all
+                  the operations done by wrappers in the JIT execution mode.
+               </li>
+               <li>
+                  <i>In the JIT mode</i>, the virtual machine generates special
+                  wrappers for calling native methods, which perform
+                  synchronization for synchronized native methods and record
+                  information for stack unwinding and enumeration of references
+                  used in native code. The wrapper code is generated for a
+                  native method when the method is called for the first time,
+                  and further on, the wrapper is called from JIT-compiled code
+                  directly.<br />
+                   For optimization purposes, the current implementation uses
+                  an inline sequence of instructions to allocate and initialize
+                  JNI handles directly. This improves performance of
+                  applications that contain multiple JNI calls.
+               </li>
+            </ul>
+         </dd>
+         <dt>
+            <a id="JNI_support" name="JNI_support"></a>JNI Support
+         </dt>
+         <dd>
+            <p>
+               The Java<a href="#*">*</a> Native Interface is a set of
+               functions, which enable native code to access Java<a
+               href="#*">*</a> classes, objects, methods, and all the
+               functionality available for a regular method of a Java<a
+               href="#*">*</a> class.
+            </p>
+            <p>
+               The JNI implementation mostly consists of wrappers to different
+               components of the virtual machine. For example, class operations
+               are wrappers for the class support component, method calls are
+               wrappers that invoke the JIT or the interpreter, and object
+               fields and arrays are accessed directly by using the known
+               object layout.
+            </p>
+            <p class="example">
+               Example
+            </p>
+            <p class="exampletext">
+               The following code is implementation of the
+               <code>IsAssignableFrom</code> JNI function, which uses the class
+               support interface:
+            </p>
+<pre class="exampletext">
+#include &ldquo;vm_utils.h&rdquo;
+#include &ldquo;jni_utils.h&rdquo;
+
+jboolean JNICALL IsAssignableFrom(JNIEnv * UNREF env,
+   jclass clazz1,
+   jclass clazz2)
+{
+  TRACE2("jni", "IsAssignableFrom called");
+  assert(hythread_is_suspend_enabled());
+  Class* clss1 = jclass_to_struct_Class(clazz1);
+  Class* clss2 = jclass_to_struct_Class(clazz2);
+
+  Boolean isAssignable = class_is_subtype(clss1, clss2);
+  if (isAssignable) {
+ return JNI_TRUE;
+  } else {
+ return JNI_FALSE;
+  }
+} //IsAssignableFrom
+</pre>
+            <p class="exampletext">
+               This code fragment shows a wrapper to the <a
+               href="#Class_Support">class loader</a> internal function
+               <code>class_is_subtype()</code>, which checks whether a class
+               extends another class. This function works with internal class
+               loader type <code>Class</code>, which is an internal
+               representation of the loaded class instance. To obtain a pointer
+               to the <code>Class</code> instance, the code uses
+               <code>jclass_to_struct_Class()</code> class loader interface
+               functions. <code>TRACE2</code> is a call to <a href="#Logger">VM
+               logging facilities</a>.
+            </p>
+         </dd>
+      </dl>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="JVMTI_Support" name="JVMTI_Support"></a>3.2.3 JVMTI Support
+      </h3>
+      <p>
+         In DRLVM, the JVMTI support component implements the standard JVMTI
+         interface responsible for debugging and profiling.
+      </p>
+      <p>
+         The DRLVM implementation of JVMTI mostly consists of wrapper
+         functions, which request service and information from other VM parts,
+         such as the class loader, the JIT, the interpreter, and the thread
+         management functionality. Another part of JVMTI implementation is
+         written for service purposes, and comprises agent loading and
+         registration, events management, and API extensions support.
+      </p>
+      <p>
+         The JVMTI support component is responsible for the following groups of
+         operations:
+      </p>
+      <ul>
+         <li>
+            <i>Debugging</i>: control of threads and thread groups, stack
+            inspection, local variables access, access to information on
+            objects and classes, fields and methods, support of breakpoints,
+            and JNI function calls interception
+         </li>
+         <li>
+            <i>Profiling</i>: classes redefinition for Java<a href="#*">*</a>
+            bytecode instrumentation
+         </li>
+         <li>
+            <i>General</i>: getting VM capabilities, registering event
+            callbacks, requesting supported API extensions, and other
+            operations
+         </li>
+      </ul>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         The debugging and profiling functionality of the JVMTI support
+         component rely on support from <a href="#EE">execution engines</a>.
+      </p>
+      <p>
+         See tutorial <i>Creating a Debugging and Profiling Agent with
+         JVMTI</i> [<a href="#debug_tut_ref">8</a>] for examples of JVMTI API
+         usage.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="Class_Support" name="Class_Support"></a>3.2.4 Class Support
+      </h3>
+      <p>
+         In DRLVM, the class loading process goes in accordance with the JVM
+         specification [<a href="#JVM_spec_ref">1</a>] and includes class
+         loading, class preparation, resolution, and initialization operations.
+         The VM interface responsible for class support also contains several
+         groups of functions that other VM components use to get information on
+         loaded classes and other class-related data structures. For example,
+         JVMTI functions <code>RedefineClasses()</code> and
+         <code>GetLoadedClasses()</code> use utility interfaces provided by
+         class support.
+      </p>
+      <p>
+         The class support component has the following major goals:
+      </p>
+      <ul>
+         <li>
+            Load binary class data from <code>.class</code> files and
+            <code>.jar</code> archives from the bootstrap class loader
+         </li>
+         <li>
+            Create internal (VM) representations of classes from byte arrays
+         </li>
+         <li>
+            Provide access to information on classes, methods, and fields for
+            various VM modules
+         </li>
+         <li>
+            Provide instruments for class redefinition and class support
+            related events required for JVMTI
+         </li>
+         <li>
+            Communicate with the verifier on verification of methods bytecode
+         </li>
+      </ul>
+      <p class="class">
+         <a id="Classification" name="Classification"></a>Classification of
+         Class Support Interfaces
+      </p>
+      <p>
+         Class support functions can be divided into the following groups:
+      </p>
+      <dl>
+         <dt>
+            <a id="Class_Loading" name="Class_Loading"></a>Class Loading
+         </dt>
+         <dd>
+            <p>
+               Comprises functions for loading classes, searching for loaded
+               classes inside VM structures, and JVMTI class redefinition. The
+               functions obtain bytes from the Java<a href="#*">*</a> class
+               libraries via the descendants of the
+               <code>java.lang.ClassLoader</code> class or from the files and
+               directories listed in the <code>vm.boot.class.path</code>
+               property. These functions also bind loaded classes with the
+               defining class loader and provide information on all loaded
+               classes.
+            </p>
+         </dd>
+         <dt>
+            <a id="Class_Manipulation" name="Class_Manipulation"></a>Class
+            Manipulation
+         </dt>
+         <dd>
+            <p>
+               Provides access to class properties, such as the internal (VM)
+               and the external (Java<a href="#*">*</a>) names, access and
+               properties flags, the super-class and the defining class, as
+               well as super interfaces, inner classes, methods, fields, and
+               attributes.<br />
+                Supports <i>class resolution</i> by resolving symbolic
+               references in the run-time constant pool of the class.
+            </p>
+         </dd>
+         <dt>
+            <a id="Method_Manipulation" name="Method_Manipulation"></a>Method
+            Manipulation
+         </dt>
+         <dd>
+            <p>
+               Provides access to the properties of methods of a class, such as
+               the name of the method, descriptor, signature, access and
+               properties flags, bytecode, local variables information, stack,
+               exceptions, handlers, attributes, and the declaring class.<br />
+                Functions of this group also enable adding new versions of
+               JIT-compiled methods code and storing service information about
+               compiled code.
+            </p>
+         </dd>
+         <dt>
+            <a id="Field_Access" name="Field_Access"></a>Field Access
+         </dt>
+         <dd>
+            <p>
+               Contains functions that provide access to the properties of
+               class fields, that is, to the name, descriptor, containing
+               class, and the class of the field.
+            </p>
+         </dd>
+         <dt>
+            <a name="Type_Access" id="Type_Access"></a>Type
+            Access
+         </dt>
+         <dd>
+            <p>
+               Provides access to generalized information on classes for the
+               JIT compiler and other DRLVM components. These can easily be
+               adapted to work with non-Java<a href="#*">*</a> virtual
+               machines, for example, with the ECMA Common Language
+               Infrastructure. Type access functions provide descriptions of
+               both Java<a href="#*">*</a> types, such as managed pointers,
+               arrays, and primitive types, and non-Java<a href="#*">*</a>
+               types, such as non-managed pointers, method pointers, vectors,
+               unboxed data, and certain unsigned primitive types.
+            </p>
+         </dd>
+      </dl>
+      <p class="class">
+         <a id="Internel" name="Internal"></a> Internal Class Support Data
+         Structures
+      </p>
+      <p>
+         The VM core stores information about every class, field, and method
+         loaded as described below.
+      </p>
+      <ul>
+         <li>
+            <i>Class data structure</i> includes attributes of the class
+            (public, final, and abstract attributes, the element type for an
+            array class, and others), information about inner classes,
+            references to static initializers, and references to finalizers.
+            The structure also references the virtual-method table (VTable) of
+            the class shared by all instances of that class.
+         </li>
+         <li>
+            <i>Field data structure</i> includes reflection information, such
+            as name, type, and reference to the declaring class, as well as
+            internal DRLVM information, such as the fields offset from the base
+            of the object for instance fields and the fields address in memory
+            for static fields.
+         </li>
+         <li>
+            <i>Method data structure</i> contains compiled method code and the
+            information on methods similar to the field data structure content.
+         </li>
+      </ul>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="VM_Services" name="VM_Services"></a>3.2.5 VM Services
+      </h3>
+      <p>
+         VM services is an abstract term that denotes various service functions
+         that the VM core provides for external DRLVM components. The current
+         implementation has no exact match to VM services in the code, but
+         rather an assembly of support functions. Below is the list of
+         currently provided the VM services grouped by the time when they are
+         requested.
+      </p>
+      <dl>
+         <dt>
+            <a id="Compile_Time_Services"
+            name="Compile_Time_Services"></a>Compile-time Services
+         </dt>
+         <dd>
+            <p>
+               During compile time, the JIT compiler uses the following VM
+               services:
+            </p>
+            <ul>
+               <li>
+                  The <code>dump</code> services for dumping generated stubs
+                  and methods to the file in a human readable form.
+               </li>
+               <li>
+                  Services providing access to the hash table of all loaded
+                  methods.
+               </li>
+               <li>
+                  Catch handler registration used by the JIT to provide
+                  information for the VM exception handling mechanism.
+               </li>
+               <li>
+                  Services providing access to method code chunks.
+               </li>
+               <li>
+                  Services providing access to a method information block with
+                  data managed by a specific JIT compiler. For example, Jitrino
+                  stores stack maps and garbage collection status in the block.
+               </li>
+               <li>
+                  Management of blocks of compiled code.
+               </li>
+            </ul>
+            <p>
+               Certain services make a part of class support interface, for
+               example, type management and class resolution. For details, see
+               section <a href="#Class_Support">3.2.4 Class Support</a>.
+            </p>
+         </dd>
+         <dt>
+            <a id="Runtime_Services" name="Runtime_Services"></a>Run-time
+            Services
+         </dt>
+         <dd>
+            <p>
+               JIT-compiled code accesses the following groups of services at
+               run time:
+            </p>
+            <ul>
+               <li>
+                  <strong>With M2nFrames</strong>: Calls to these functions
+                  push M2nFrames to the top of the stack to store an initial
+                  stack state for exceptional stack unwinding and local
+                  references for root enumeration purposes. These services can
+                  perform all the operations of an ordinary JNI function. The
+                  group consists of the following operations: 
+                  <ul>
+                     <li>
+                        Throwing exceptions, including special services to
+                        throw lazy exceptions and standard exceptions
+                     </li>
+                     <li>
+                        Synchronization primitives
+                     </li>
+                     <li>
+                        Launching class initialization
+                     </li>
+                     <li>
+                        Implementing <code>checkcast()</code> and
+                        <code>instanceof()</code> checks
+                     </li>
+                     <li>
+                        Creating arrays, including multidimensional arrays
+                     </li>
+                  </ul>
+               </li>
+               <li>
+                  <strong>Without M2nFrames:</strong> Calls to VM functions
+                  that do not push an M2nFrame on the stack and, therefore,
+                  cannot throw exceptions, use stack walking, call Java<a
+                  href="#*">*</a> code or launch garbage collection. The
+                  following frequently used services are invoked without
+                  pushing an M2nFrame on the stack: 
+                  <ul>
+                     <li>
+                        Loading constant strings from a constant pool
+                     </li>
+                     <li>
+                        Storing objects into an array
+                     </li>
+                     <li>
+                        Lookup of an interface VTable
+                     </li>
+                     <li>
+                        Copying an array
+                     </li>
+                     <li>
+                        Converting floating, double and integer types
+                     </li>
+                     <li>
+                        Binary operations
+                     </li>
+                  </ul>
+                  <p>
+                     These services prevent thread suspension in their code.
+                     Most direct call functions that implement operations or
+                     cast types only return a required result. Storing a
+                     reference to an array uses another convention because it
+                     returns <code>NULL</code> for success, or a class handler
+                     of an exception to throw.
+                  </p>
+               </li>
+            </ul>
+         </dd>
+      </dl>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="Utilities" name="Utilities"></a>3.2.6 Utilities
+      </h3>
+      <p>
+         This layer provides common general-purpose utilities. The main
+         requirements for these utilities include platform independence for
+         DRLVM interfaces, thread and stack unwind safety. The utilities layer
+         has the following key features:
+      </p>
+      <ul>
+         <li>
+            Platform-independent interfaces
+         </li>
+         <li>
+            Thread safety to support the multi-thread environment of the VM
+            core
+         </li>
+         <li>
+            Focus on memory management tools to enable safe stack unwinding
+         </li>
+      </ul>
+      <p>
+         The following two main subcomponents constitute the utilities layer:
+      </p>
+      <dl>
+         <dt>
+            <a id="Memory_Management" name="Memory_Management"></a>Memory
+            Management
+         </dt>
+         <dd>
+            <p>
+               This utility is responsible for allocating and freeing the
+               memory in native code. The current implementation provides two
+               types of memory allocation mechanisms, as follows:
+            </p>
+            <ul>
+               <li>
+                  Direct allocation through standard <code>malloc()</code>,
+                  <code>free()</code>, <code>realloc()</code> system calls
+               </li>
+               <li>
+                  Allocation based on the Apache Portable Runtime (APR) layer
+                  memory pools [<a href="#APR_ref">14</a>]
+               </li>
+            </ul>
+            <p>
+               Memory management functionality is concentrated in
+               <code>port/include/port_malloc.h</code> and
+               <code>port/include/tl/memory_pool.h</code>.
+            </p>
+         </dd>
+         <dt>
+            <a id="Logger" name="Logger"></a>Logging
+         </dt>
+         <dd>
+            <p>
+               The current logging system is based on a custom logger which
+               may be configured via
+<a href="http://java.sun.com/j2se/1.5.0/docs/guide/jni/spec/invocation.html#wp16334">JNI_CreateJavaVM</a>
+               function. The <code>port/include/logger.h</code> header file
+               describes the pure C programmatic logger interface. 
+               The <code>clog.h</code> and <code>cxxlog.h</code> header files
+               in the same directory
+               contain a number of convenience macros improving effectiveness
+               of the logger for C and C++ code respectively.
+            </p>
+            <p>
+               Each logging message has a header that may include its category,
+               timestamp, location, and other information. Logging messages can
+               be filtered by category for each logging level. You can use
+               specific command-line options to configure the logger and make
+               maximum use of its capabilities. See help message <code>java
+               -X</code> for details on the logger command-line options.
+            </p>
+            <p>The current VM logging system supports internationalization,
+               so that VM can print messages in the language of the customer
+               system. To use the internationalization feature, set
+               one of the <code>LC_ALL</code>, <code>LC_MESSAGES</code> or
+               <code>LANG</code> system environment variables to the
+               <code>&lt;Lang&gt;_&lt;Region&gt;.&lt;Variant&gt;</code>
+               locale. You can find a list of localized messages for
+               a specific locale in the 
+               <code>&lt;drlvm_trunk&gt;/vm/vmcore/src/init/harmony_&lt;locale_name&gt;.properties</code>
+               message catalogue. For a convenient set of macros for printing
+               internationalized messages, refer to the <code>clog.h</code>,
+               <code>cxxlog.h</code> header files.
+           </p>
+           <p>A record from the message catalogue has the following structure:<br>
+              <code><b>&lt;XXXX&gt;&lt;YYY&gt;=&lt;localized_message&gt;</b></code><br>
+              Where:</ br>
+              <ul><li><code>&lt;XXXX&gt;</code> - a set of four letters; the current implementation contains
+              <code>&lt;ECHO&gt;</code>, <code>&lt;LDIE&gt;</code> and <code>&lt;WARN&gt;</code> sets;</li>
+              <li><code>&lt;YYY&gt;</code> - the localized message number, for example <code>&lt;005&gt;</code>;</li>
+              <li><code>&lt;localized_message&gt;</code> - the message written in the native language
+              (may be UTF8 coded), which can contain some substitution parameters, 
+              for example <code>&lt;message with two parameters {0} and {1}&gt;</code>.</li>
+</ul>
+           </p>
+           <p class="example">Example</p>
+           <p class="exampletext">Here is the example of using the <code><b>&lt;ECHO030=Unknown option {0}&gt;</b></code>
+            record from the message catalogue in VM code:</p>
+<pre>LECHO(30, "Unknown option {0}" << option);</pre>
+           
+         </dd>
+      </dl>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         Other components can use their own utilities. For example, the <a
+         href="#JIT_Compiler">Jitrino compiler</a> features an internal logging
+         system and supports its own memory manager. Check component
+         documentation for more details.
+      </p>
+      <h2>
+        <a id="Initialization_Module" name="Initialization_Module"></a>
+        3.2.7 Initialization Module
+      </h2>
+      <p>The initialization module is a part of VM core component responsible
+         for basic operations of the virtual machine, specifically
+         <a href="#Initialization">initialization</a>, parsing command-line input,
+         <a href="#Finalization">object finalization</a>, and <a href="#VM_Shutdown">VM shutdown</a>.
+         This section describes the part of VM initialization responsible for handling VM properties.</p>
+ <h3><a id="vm_properties" name="vm_properties">VM Properties</a>
+ </h3>
+ <p>VM properties are a VM Core part providing centralized access to the common
+ properties table that is unique for the whole VM. A property is a pair of 
+ strings <code>&lt;key&gt; and &lt;value&gt;</code>. Properties represent configuration settings
+ for a separate component, such as VM Core, GC, JIT, or for the whole system,
+ and serve for communication between different components.</p>
+ <p>The current VM properties module is thread-safe and supports two types of properties:</p>
+ <ul>
+ <li><b>Public properties</b> available for all VM subcomponents and for Java applications
+        by means of the <code>java.lang.System.getProperties()</code> method. To initialize
+        these properties, use the <code>-D&lt;key&gt;=&lt;value&gt;</code> command-line option.
+        For details on the <code>-D</code> command-line option, see the help message
+        <code>java -help</code>. <br/>Inside VM, the table of public properties is identified by
+        the <code>JAVA_PROPERTIES</code> value of the <code>PropertyTable</code> type.</li>
+<li><b>Private properties</b> available inside VM only. To initialize these properties,
+       use the <code>-XX&lt;key&gt;=&lt;value&gt;</code> command-line option. For details on
+       the <code>-XX</code> command-line option, see the help message
+       <code>java -X</code>. <br/>Inside VM, the table of private properties is identified by
+       the <code>VM_PROPERTIES</code> value of the <code>PropertyTable</code> type. </li></ul>
+
+<p class="note">Note</p>
+<p class="notetext">In the current implementation, property values can be <code>NULL</code>.</p>
+<p>
+For exported interface functions, refer to the <code>vm/include/open/vm.h</code>
+header file.<br>
+For properties constants, refer to the <code>vm/include/vm_properties.h</code>
+header file.<br>
+For properties definitions, refer to the <code>vm/vmcore/include/properties.h</code>
+header file.<br>
+</p>
+
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="EE" name="EE"></a>3.3 Execution Engine
+      </h2>
+      <p>
+         The <i>execution engine</i> is any component that can execute
+         bytecode, with the compiler and the interpreter as its two main types.
+         These two execution engines are drastically different: the
+         just-in-time compiler translates bytecode into native code and then
+         executes it, whereas the interpreter reads the original bytecode and
+         executes a short sequence of corresponding C/C++ code. Interpretation
+         is simpler, but substantially slower than executing JIT-compiled code.
+         The subsequent sections give definitions to the two types of execution
+         engines as per DRLVM architecture requirements.
+      </p>
+      <h3>
+         <a id="JIT_Compiler" name="JIT_Compiler"></a>3.3.1 JIT Compiler
+      </h3>
+      <p>
+         DRLVM requires a <i>just-in-time compiler</i> to effectively compile
+         method bytecode into executable code and run this code at run time.
+         The current version of the DRL virtual machine is supplied with the
+         just-in-time compiler codenamed Jitrino.
+      </p>
+      <p>
+         DRLVM has no specific requirements for optimizations that a JIT
+         compiler can perform. Moreover, the JIT can run a quick compilation
+         with virtually no optimizations applied, as the Jitrino baseline
+         compiler does.
+      </p>
+      <p>
+         The JIT compiler interacts with:
+      </p>
+      <ul>
+         <li>
+            The <a href="#VM_Core">VM core</a> core to use specific internal
+            structures and support the <a href="#Root_Set_Enumeration">root set
+            enumeration</a> and <a href="#Stack">stack walking</a> processes.
+         </li>
+         <li>
+            The <a href="#EM">execution manager</a> that decides which
+            execution engine to use to compile certain methods and provides an
+            execution engine with profile access interface.
+         </li>
+      </ul>
+      <p>
+         For a detailed description of the just-in-time compiler that is
+         currently supplied with the virtual machine, see the <a href="JIT.html">Jitrino</a> 
+        component description.
+      </p>
+      <h3>
+         <a id="Interpreter" name="Interpreter"></a>3.3.2 Interpreter
+      </h3>
+      <p>
+         The interpreter component executes Java<a href="#*">*</a> bytecode and
+         is used in the VM interchangeably with the JIT compiler. In the
+         current implementation, the interpreter is mainly used to simplify
+         debugging. The interpreter also enables VM portability because most of
+         its code is platform-independent.
+      </p>
+      <p>
+         In the current DRLVM implementation, the interpreter interacts with
+         the VM core to do the following:
+      </p>
+      <ul>
+         <li>
+            Handle VM requests for bytecode execution
+         </li>
+         <li>
+            Enable VM code debugging
+         </li>
+         <li>
+            Provide its own mechanism handling JNI methods, different from the
+            <em>Native Code Support</em> in the VM core
+         </li>
+         <li>
+            Assist the virtual machine in supporting <a
+            href="#JVMTI_Support">JVMTI</a> to enable stack walking, stack
+            frame examination, method entry and exit events, breakpoints,
+            single step and PopFrame functions
+         </li>
+      </ul>
+      <p>
+         For that, the interpreter exports its enumeration, stack trace
+         generation and JVMTI support functions via a single method table
+         making up the <em>Interpreter</em> interface.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="EM" name="EM"></a>3.4 Execution Manager
+      </h2>
+      <p>
+         The <i>execution manager</i> (EM) is a component responsible for
+         compilation and recompilation of managed code scenarios at run time.
+         The execution manager makes decisions for recompilation of a method
+         based on the profiles that are collected by <i>profile collectors</i>.
+         Every profile contains specific optimization data and is associated
+         with the method code compiled by a particular JIT.
+      </p>
+      <p>
+         The execution manager instantiates JIT compilers and/or the
+         interpreter, configures them to use compilation profiles, and
+         determines the recompilation logic.
+      </p>
+      <p>
+         In the DRL virtual machine, the execution manager must be able to
+         interact with the following components:
+      </p>
+      <ul>
+         <li>
+            The <a href="#VM_Core">VM core</a> to handle its bytecode
+            compilation and execution requests
+         </li>
+         <li>
+            The <a href="#JIT_Compiler">just-in-time compiler</a> or multiple
+            compilers to collect compilation of method bytecode and gather
+            profile information on JIT compilers used in the active VM
+            configuration
+         </li>
+         <li>
+            The <a href="#Interpreter">interpreter</a> to execute code
+         </li>
+      </ul>
+      <p>
+         For details on the EM supplied with the current version of the DRL
+         virtual machine, see the <a href="EM.html">Execution Manager Component
+         Description</a>.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Thread_Manager" name="Thread_Manager"></a>3.5 Thread Manager
+      </h2>
+      <p>
+         The <i>thread manager</i> (TM) component provides threading
+         functionality inside the virtual machine and the class libraries. The
+         purpose of thread management is to hide platform specifics from the
+         rest of the VM, and to adapt OS threading functions to the Java<a
+         href="#*">*</a> run-time environment. Thus, TM interacts with most
+         DRLVM components, such as the <a href="#VM_Core">VM core</a>, the <a
+         href="#GC">garbage collector</a> and the <a href="#JIT_Compiler">JIT
+         compiler</a>.
+      </p>
+      <p>
+         The following components rely on TM for their successful operation:
+      </p>
+      <ul>
+         <li>
+            The <a href="#VM_Core">VM core</a> (kernel classes, JVMTI) to
+            support <code>java.lang.Object</code> and
+            <code>java.lang.Thread</code> API, as well as JVMTI in basic
+            manipulation, interruption, suspension operations, handling
+            monitors, and so on.
+         </li>
+         <li>
+            The <a href="#GC">garbage collector</a> to handle thread
+            manipulation requests for root set enumeration and garbage
+            collection activities. GC works with the native layer of the thread
+            manager.
+         </li>
+         <li>
+            The <a href="#JIT_Compiler">JIT compiler</a> uses stubs provided by
+            TM to optimize performance-critical synchronization primitives.
+         </li>
+      </ul>
+      <p>
+         The thread manager relies on the following components for support:
+      </p>
+      <ul>
+         <li>
+            The <a href="#VM_Core">VM core</a> to access object layout data and
+            for binding <code>java.lang.Thread</code> objects with
+            corresponding native threads. TM also relies on VM core <a
+            href="#JNI_support">JNI support</a> to obtain the JNI environment
+            for a particular thread.
+         </li>
+         <li>
+            The <a href="#Porting_Layer">porting layer</a> to interact with the
+            underlying operating system and enable portability for threading.
+            The TM native layer queries functions of the APR interfaces and the
+            <code>apr_thread_ext</code> interface.
+         </li>
+      </ul>
+      <p>
+         For a detailed description of the current implementation, see the <a
+         href="TM.html">Thread Manager description</a>.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="GC" name="GC"></a>3.6 Garbage Collector
+      </h2>
+      <p>
+         The garbage collector (GC) component is responsible for allocation and
+         reclamation of Java<a href="#*">*</a> objects in the heap. The garbage
+         collector automatically reclaims the objects that cannot be reached
+         and thus cannot influence the program behavior. The VM can allocate
+         new objects in the space recycled by the GC.
+      </p>
+      <p>
+         This component interacts with the following components:
+      </p>
+      <ul>
+         <li>
+            The <a href="#VM_Core">VM core</a> to access data on the internal
+            structure of objects and for several other operations
+         </li>
+         <li>
+            The <a href="#Thread_Manager">thread manager</a> to manage threads
+            responsible for GC specific operations
+         </li>
+         <li>
+            The <a href="#EE">execution engine</a>: the <a
+            href="#JIT_Compiler">JIT compiler</a> and the <a
+            href="#Interpreter">interpreter</a> to enumerate the set of root
+            references on the stack
+         </li>
+         <li>
+            The JIT-compiled code to handle its object allocation requests
+         </li>
+      </ul>
+      <p>
+         VM-level requirements for the garbage collector component are compiled
+         in the document <a href="gc-howto.html">How to Write DRL GC</a>. That
+         document gives detailed instructions on how to create and plug in a
+         garbage collector that can be plugged into DRLVM. For details on the
+         current implementation, parse the GC source code using Doxygen.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Porting_Layer" name="Porting_Layer"></a>3.7 Porting Layer
+      </h2>
+      <p>
+         The porting layer provides unified interfaces to low-level system
+         routines across different platforms. The porting layer mainly covers
+         the following functional areas:
+      </p>
+      <ul>
+         <li>
+            System and environment information
+         </li>
+         <li>
+            Native and virtual memory management
+         </li>
+         <li>
+            Shared libraries support
+         </li>
+         <li>
+            File information and I/O
+         </li>
+         <li>
+            Networking
+         </li>
+         <li>
+            Atomic operations
+         </li>
+         <li>
+            Synchronization primitives
+         </li>
+         <li>
+            Low-level facilities for manipulating native processes and threads.
+            
+            <p class="note">
+               Note
+            </p>
+            <p class="notetext">
+               For most components, high-level threading provided by the <a
+               href="#Thread_Manager">thread manager</a> interface suffices.
+            </p>
+         </li>
+      </ul>
+      <p>
+         To maximize benefits of the porting layer, other components interact
+         with the underlying operating system and hardware via this component.
+      </p>
+      <p>
+         Currently, most DRLVM code uses the <a href="#APR_ref">Apache Portable
+         Runtime</a> library as a base porting library. However, certain VM
+         parts are still not completely ported to APR and access the operating
+         system directly. The DRL porting library also includes about 20
+         additional functions and macros, designed as potential extensions to
+         APR. These additions mostly relate to querying system information and
+         virtual memory management. For a detailed description of the DRLVM
+         porting layer extensions, see the Porting Layer description document.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Class_Libraries" name="Class_Libraries"></a>3.8 Class Libraries
+      </h2>
+      <p>
+         The class libraries complement the DRLVM to provide a full J2SE<a
+         href="#*">*</a>-compliant run-time environment. The class libraries
+         contain all classes defined by J2SE<a href="#*">*</a> specification
+         [<a href="#Java_api_ref">6</a>] except for the set of <a
+         href="#Kernel_Classes">kernel classes</a>.
+      </p>
+      <p>
+         The DRL class libraries must satisfy the following requirements:
+      </p>
+      <ul>
+         <li>
+            Class files format is compliant with the JVM Specification [<a
+            href="#JVM_spec_ref">1</a>].
+         </li>
+         <li>
+            Class files major version is 49 or earlier.
+         </li>
+         <li>
+            Provided API complies with the J2SE<a href="#*">*</a> 1.5.0
+            specification.
+         </li>
+      </ul>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         DRLVM does not require the full J2SE<a href="#*">*</a> API set in
+         order to be functional.
+      </p>
+      <p class="notetext">
+         At startup, DRLVM preloads approximately 20 classes, including the
+         kernel classes. The minimal subset for the VM startup is defined by
+         the dependencies of the preloaded classes, which can vary in different
+         implementations. You can get the exact list from DRLVM sources, mainly
+         from <code>vmcore\src\init\vm_init.cpp</code> file.
+      </p>
+      <p>
+         The class libraries interact with the VM through the following
+         interfaces:
+      </p>
+      <ul>
+         <li>
+            <a href="#Kernel_Classes">Kernel classes</a> for applying basic
+            Java<a href="#*">*</a> functionality
+         </li>
+         <li>
+            The <a href="#JNI_support">Java Native Interface</a> (JNI) for
+            communication between Java<a href="#*">*</a> classes and native
+            code, as defined in the JNI specification [<a
+            href="#JNI_ref">5</a>]
+         </li>
+         <li>
+            The VMI Interface (written in C) used by native parts of the class
+            libraries to access VM functionality not available through the
+            kernel classes or the JNI framework [<a
+            href="#SVN_IBMdoc_ref">20</a>]
+         </li>
+         <li>
+            The VM accessors (written in Java<a href="#*">*</a>) used by Java<a
+            href="#*">*</a> classes to access VM functionality not available
+            through the kernel classes or the JNI framework
+         </li>
+      </ul>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         The current implementation of VM accessors is built on top of JNI.
+         Future implementations may utilize the VM-specific Fast (Raw) Native
+         Interface or any intrinsic mechanism in order to achieve the better
+         performance.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h1>
+         <a id="Processes" name="Processes"></a>4. Processes
+      </h1>
+      <p>
+         This part of the Developer's Guide describes the key processes of VM
+         operation. The description of each process includes the process
+         definition, the enumeration of components involved and the
+         step-by-step procedure making up the process. In some processes,
+         multiple VM components are involved, whereas in others, one component
+         can play the key role. The current version of the document includes
+         descriptions of the following components:
+      </p>
+      <ul>
+         <li>
+            <a href="#Initialization">VM Initialization</a>
+         </li>
+         <li>
+            <a href="#Class_loading">Class loading</a>
+         </li>
+         <li>
+            <a href="#Verification">Verification</a>
+         </li>
+         <li>
+            <a href="#Stack_Walking">Stack walking</a>
+         </li>
+         <li>
+            <a href="#Root_Set_Enumeration">Root Set Enumeration</a>
+         </li>
+         <li>
+            <a href="#Exception_Handling">Exception Handling</a>
+         </li>
+         <li>
+            <a href="#Finalization">Finalization</a>
+         </li>
+      </ul>
+      <p>
+         This part also covers several DRLVM enhancements that involve multiple
+         components, described under the common heading of <a
+         href="#Inter_component_Optimizations">Inter-component
+         Optimizations</a>.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Initialization" name="Initialization"></a>4.1 Initialization
+      </h2>
+      <p>
+         VM initialization is a sequence of operations performed at the virtual
+         machine start-up before execution of user applications. Currently,
+         DRLVM does not support the invocation API [<a
+         href="#Invoc_api_ref">7</a>], and initialization follows the sequence
+         described below. The subsection <a href="#VM_Shutdown">4.8
+         VM Shutdown</a> below also describes the virtual machine
+         shutdown sequence.
+      </p>
+      <p>
+         The <code>main(&hellip;)</code> function is responsible for the major
+         stages of initialization sequence and does the following:
+      </p>
+      <ol>
+         <li>
+            Initializes the logger
+         </li>
+         <li>
+            Parses the arguments
+         </li>
+         <li>
+            Creates a VM instance by calling the <code>create_vm()</code>
+            function
+         </li>
+         <li>
+            Runs the user application by calling the <a
+            href="#vmstarterstart"><code>VMStarter.start()</code></a> method
+         </li>
+         <li>
+            Destroys the VM instance by calling the <code>destroy_vm()</code>
+            function
+         </li>
+      </ol>
+      <p>
+         The subsequent sections describe these initialization stages in
+         greater detail.
+      </p>
+      <h3>
+         <a id="1stPass" name="1stPass"></a> 4.1.1 Parsing Arguments
+      </h3>
+      <p>
+         At this stage, the VM splits all command-line arguments into the
+         following groups:
+      </p>
+      <ul>
+         <li>
+            <code>&lt;vm-arguments&gt;</code> for initializing the VM instance
+         </li>
+         <li>
+            <code>&lt;class-name | -jar jar-file&gt;</code> for the name or
+            class or <code>.jar</code> file
+         </li>
+         <li>
+            <code>&lt;java-arguments&gt;</code> for the user application
+         </li>
+      </ul>
+      <p>
+         The virtual machine then creates the <code>JavaVMInitArgs</code>
+         structure from <code>&lt;vm-arguments&gt;</code>.
+      </p>
+      <h3>
+         <a id="Creating_VM" name="Creating_VM"></a> 4.1.2 Creating the VM
+      </h3>
+      <p>
+         The <code>create_vm()</code> function is a prototype for
+         <code>JNI_CreateJavaVM()</code> responsible for creating and
+         initializing the virtual machine. This function does the following:
+      </p>
+      <ol>
+         <li value="0">
+            Gets the component manager instance and registers a new VM
+            instance in the component manager.
+         </li>
+         <li>
+            For Linux<a href="#*">*</a> platforms, initializes the threading
+            system.<br />
+             No actions are performed on Windows<a href="#*">*</a> platforms.
+            Other steps apply to both operating systems.
+         </li>
+         <li>
+            Attaches the current thread. This is the first step of the
+            three-step procedure of attaching the thread to the VM. See steps
+            15 and 19 for further steps of the attaching procedure. 
+            <ol>
+               <li>
+                  Creates synchronization objects.
+               </li>
+               <li>
+                  Initializes the <code>VM_thread</code> structure and stores
+                  the structure in the thread local storage.
+               </li>
+            </ol>
+         </li>
+         <li>
+            Initializes the VM global synchronization locks.
+         </li>
+         <li>
+            Loads the garbage collector and interpreter libraries.
+         </li>
+         <li>
+            Initializes basic VM properties, such as <code>java.home</code>,
+            <code>java.library.path</code>, and
+            <code>vm.boot.class.path</code>, according to the location of the
+            VM library.<br />
+             The list of boot class path <code>.jar</code> files is hard-coded
+            into the VM library. Use <code>&ndash;Xbootclasspath</code>
+            command-line options to change the settings.
+         </li>
+         <li>
+            Initializes system signal handlers.
+         </li>
+         <li>
+            Parses VM arguments.
+         </li>
+         <li>
+            Initializes JIT compiler instances.
+         </li>
+         <li>
+            Initializes the VM memory allocator.
+         </li>
+         <li>
+            Initializes the garbage collector by calling
+            <code>gc_init()</code>.
+         </li>
+         <li>
+            Preloads basic API native code dynamic libraries. 
+            <p class="note">
+               Note
+            </p>
+            <p class="notetext">
+               The private <code>vm.other_natives_dlls</code> property defines
+               the list of libraries to be loaded.
+            </p>
+         </li>
+         <li>
+            Initializes the JNI support VM core component.
+         </li>
+         <li>
+            Initializes the JVMTI support functionality, loads agent dynamic
+            libraries. At this step, the <em>primordial phase</em> starts.
+         </li>
+         <li>
+            Attaches the current thread and creates the <a
+            href="#M2nFrame">M2nFrame</a> at the top of the stack (step 2).
+         </li>
+         <li>
+            Initializes the bootstrap class loader.
+         </li>
+         <li>
+            Preloads the classes required for further VM operation.
+         </li>
+         <li>
+            Caches the class handles for the core classes into the VM
+            environment.
+         </li>
+         <li>
+            Attaches the current thread (step 3). 
+            <ol>
+               <li>
+                  Creates the <code>java.lang.Thread</code> object for the
+                  current thread.
+               </li>
+               <li>
+                  Creates the thread group object for the main thread group and
+                  includes the main thread in this group.
+               </li>
+               <li>
+                  Sets the system class loader by calling
+                  <code>java.lang.ClassLoader.getSystemClassLoader()</code>.
+               </li>
+            </ol>
+         </li>
+         <li>
+            Sends the <code>VMStart</code> JVMTI event. This step begins the
+            <em>start phase</em>.
+         </li>
+         <li>
+            Sends the <code>ThreadStart</code> JVMTI event for the main thread.
+            Send the <code>VMInit</code> JVMTI event. At this stage, the
+            <em>live phase</em> starts.
+         </li>
+         <li>
+            Calls the <a
+            href="#vmstarterinit"><code>VMStarter.initialize()</code></a>
+            method.
+         </li>
+      </ol>
+      <h3>
+         <a id="VMStarter" name="VMStarter"></a> 4.1.3 VMStarter Class
+      </h3>
+      <p>
+         This Java<a href="#*">*</a> class supports specific VM core tasks by
+         providing the following methods:
+      </p>
+      <dl>
+         <dt>
+            <a id="vmstarterinit" name="vmstarterinit"></a>initialize()
+         </dt>
+         <dd>
+            Called by the <code>create_vm()</code> method, does the following: 
+            <ul>
+               <li>
+                  Starts the finalizer and execution manager helper threads
+               </li>
+               <li>
+                  Registers the shutdown hook for proper helper threads
+                  shutdown
+               </li>
+            </ul>
+         </dd>
+         <dt>
+            <a id="vmstartershutdown" name="vmstartershutdown"></a>shutdown()
+         </dt>
+         <dd>
+            Called by the <code>destroy_vm()</code> method, does the following:
+            
+            <ul>
+               <li>
+                  Waits for non-daemon threads
+               </li>
+               <li>
+                  Calls the <code>System.exit()</code> method
+               </li>
+            </ul>
+         </dd>
+         <dt>
+            <a id="vmstarterstart" name="vmstarterstart"></a>start()
+         </dt>
+         <dd>
+            Runs the user application: 
+            <ul>
+               <li>
+                  Initializes the system class loader
+               </li>
+               <li>
+                  Loads the main class of the application
+               </li>
+               <li>
+                  Obtains the <code>main()</code> method via reflection
+               </li>
+               <li>
+                  Starts the thread that invokes the <code>main()</code> method
+                  and caches exceptions from this method
+               </li>
+            </ul>
+         </dd>
+      </dl>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Verification" name="Verification"></a>4.2 Verification
+      </h2>
+      <p>
+         According to the JVM specification [<a href="#JVM_spec_ref">1</a>],
+         the verifier is activated during class loading, before the preparation
+         stage, and consequently, before the start of class initialization.
+         Verification of a class consists of the following passes:
+      </p>
+      <ol>
+         <li>
+            Verifying the class file structure
+         </li>
+         <li>
+            Checking class data, that is, the logical structure of the data
+         </li>
+         <li>
+            Verifying bytecode instructions for the methods of the class
+         </li>
+         <li>
+            Linking the class in run time (handled by the resolver)
+         </li>
+      </ol>
+      <p>
+         Subsequent sections present specifics of verification performed in
+         DRLVM.
+      </p>
+      <h3>
+         <a id="Optimized_Verification" name="Optimized_Verification"></a>
+         4.2.1 Optimized Verification Procedure
+      </h3>
+      <p>
+         The current version of the verifier is optimized to minimize
+         performance impact of the time-consuming bytecode verification. The
+         improved verification procedure is described below:
+      </p>
+      <blockquote>
+         <p>
+            <i>Stage 1</i>: When checking methods of a class, the verifier
+            scans dependencies on other classes, methods, and fields. The
+            verifier only checks this information if the referenced element is
+            loaded. For unloaded elements handling, see Stage 2.
+         </p>
+         <p>
+            <i>Stage 2</i>: The verifier generates a list of constraints to be
+            checked during the next stage. <em>Constraints</em> contain
+            information on verification checks that cannot be performed because
+            referenced elements have not been loaded. The verifier stores the
+            list of constraints in the checked class data.
+         </p>
+         <p>
+            <i>Stage 3</i>: Before class initialization, the verifier goes over
+            the list of previously generated constraints. Provided all exit
+            criteria are met, the verification of the class completes
+            successfully and initialization of the class begins.
+         </p>
+      </blockquote>
+      <p>
+         The verifier releases the constraints data when the class is unloaded.
+      </p>
+      <h3>
+         <a id="Verifications_Classification"
+         name="Verifications_Classification"></a>4.2.2 Verifications
+         Classification
+      </h3>
+      <p>
+         For optimization purposes, all verification procedures have been
+         divided into the following groups:
+      </p>
+      <ul>
+         <li>
+            Simple verifications that check the following: 
+            <ul>
+               <li>
+                  Targets of control-flow instructions
+               </li>
+               <li>
+                  Local variables usage
+               </li>
+               <li>
+                  Reference to the constant pool
+               </li>
+               <li>
+                  Exception handlers
+               </li>
+               <li>
+                  Instruction operands
+               </li>
+            </ul>
+            <p>
+               The verifier can perform these checks without constructing the
+               control flow graph.
+            </p>
+         </li>
+         <li>
+            Complex verifications that check the following: 
+            <ul>
+               <li>
+                  End of code
+               </li>
+               <li>
+                  Stack depth
+               </li>
+               <li>
+                  Valid types in the stack
+               </li>
+               <li>
+                  Class members access
+               </li>
+               <li>
+                  Method invocation, assignment and value set conversions
+               </li>
+               <li>
+                  Initialization
+               </li>
+            </ul>
+            <p>
+               For these operations, the bytecode verifier analyzes the control
+               and data flow graphs.
+            </p>
+         </li>
+      </ul>
+      <p class="class">
+         Background
+      </p>
+      <p class="notetext">
+         The <i>control flow graph</i> (CFG) is a data structure, which is an
+         abstract representation of a procedure or program. Each node in the
+         graph represents a basic block without jumps or jump targets. Directed
+         edges represent jumps in the control flow.
+      </p>
+      <p class="notetext">
+         The <i>data flow graph</i> (DFG) is a graph reflecting data
+         dependencies between code instructions of a procedure or program. The
+         data flow graph provides global information about how a procedure or a
+         larger segment of a program manages its data.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         In addition, a group of classes is declared as trusted. The verifier
+         skips these classes to minimize performance impact. The group of
+         trusted classes mostly includes system classes.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Stack_Walking" name="Stack_Walking"></a>4.3 Stack Walking
+      </h2>
+      <h3>
+         <a id="About_the_Stack" name="About_the_Stack"></a>4.3.1 About the
+         Stack
+      </h3>
+      <p>
+         The stack is a set of frames created to store local method
+         information. The stack is also used to transfer parameters to the
+         called method and to get back a value from this method. Each frame in
+         the stack stores information about one method. Each stack corresponds
+         to one thread.
+      </p>
+      <p class="note">
+         <a id="Note1_in_Stack_overview"
+         name="Note1_in_Stack_overview"></a>Note
+      </p>
+      <p class="notetext">
+         The JIT compiler can combine in-lined methods into one for performance
+         optimization. In this case, all combined methods information is stored
+         in one stack frame.
+      </p>
+      <p>
+         The VM uses native frames related to native C/C++ code and managed
+         frames for Java<a href="#*">*</a> methods compiled by the JIT.
+         Interaction between native methods is platform-specific. To transfer
+         data and control between managed and native frames, the VM uses
+         special managed-to-native frames, or <em>M2nFrames</em>.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         In the interpreter mode, the VM creates several native frames instead
+         of one managed frame for a Java<a href="#*">*</a> method. These native
+         frames store data for interpreter functions, which interpret the
+         Java<a href="#*">*</a> method code step by step.
+      </p>
+      <p class="class">
+         <a id="M2nFrame" name="M2nFrame"></a>M2nFrames
+      </p>
+      <p>
+         M2nFrames contain the following:
+      </p>
+      <ul>
+         <li>
+            Snapshot of CPU registers, which enables iteration over method
+            frames and exception propagation. The VM uses the stack pointer and
+            the instruction pointer to identify the method and to find the
+            boundaries of the method stack frame. The VM uses values of
+            callee-saves registers to correctly restore the register context.
+            The VM performs this operation when transferring control to
+            exception handlers that are defined in the methods located lower on
+            the execution stack.
+         </li>
+         <li>
+            Pointer to the previous M2nFrame. All M2nFrames are linked into a
+            list, with the head pointer kept in thread-local structure
+            <code>VM_thread</code>. The list is terminated with a dummy frame
+            with zero contents.
+         </li>
+         <li>
+            Container of object handles that are indirect pointers to the
+            Java<a href="#*">*</a> heap. Native code must use object handles to
+            enable root set enumeration. During this process, the VM traverses
+            the list of M2nFrames for each thread and enumerates object handles
+            from each frame.
+         </li>
+      </ul>
+      <h3>
+         <a id="Stack" name="Stack"></a>4.3.2 Stack Walking
+      </h3>
+      <p>
+         Stack walking is the process of going from one frame on the stack to
+         another. Typically, this process is activated during exception
+         throwing and root set enumeration. In DRLVM, stack walking follows
+         different procedures depending on the type of the frame triggering
+         iteration, as described below.
+      </p>
+      <p>
+         The system identifies whether the thread is in a managed or in a
+         native frame and follows one of the scenarios described below.
+      </p>
+      <ul>
+         <li>
+            <i>For managed frames</i>, the VM core calls the <a
+            href="#JIT_Compiler">JIT</a> to get the previous frame. Using this
+            call for the found managed frame, the VM core can find all previous
+            managed frames one by one. In the end, the compiler returns the
+            pointer to the parent native frame, as shown in Figure 2.
+         </li>
+         <li>
+            <i>For native frames</i>, the VM core finds the last M2nFrame, that
+            is, the frame at the end of the M2nFrame list for the current
+            thread. Each thread has a pointer to the last M2nFrame in the
+            thread-local storage (TLS in figure). This frame contains
+            information on how to find the managed frame immediately before the
+            M2nFrame and all previous M2nFrames, as shown in Figure 3.
+         </li>
+      </ul>
+      <p>
+         Figure 4 below gives an example of a stack structure with M2nFrames
+         and managed frames movement indicated.
+      </p>
+      <p style="text-align: center">
+         <img src="images/Stack_managed.gif" alt="package" width="206"
+         height="188" />
+      </p>
+      <p class="special">
+         Figure 2. Stack Walking from a Managed Frame
+      </p>
+      <p style="text-align: center">
+         <img src="images/Stack_native.gif" alt="package" width="309"
+         height="218" />
+      </p>
+      <p class="special">
+         Figure 3. Stack Walking from a Native Frame
+      </p>
+      <p style="text-align: center">
+         <img src="images/Stack.gif" alt="package" width="308" height="410" />
+      </p>
+      <p class="special">
+         Figure 4. LMF List after the Call to a Native Method
+      </p>
+      <p>
+         The main component responsible for stack walking is the stack
+         iterator.
+      </p>
+      <h3>
+         <a id="Stack_Iterator" name="Stack_Iterator"></a>4.3.3 Stack Iterator
+      </h3>
+      <p>
+         The stack iterator enables moving through a list of native and Java<a
+         href="#*">*</a> code frames. The stack iterator performs the following
+         functions:
+      </p>
+      <ul>
+         <li>
+            Transferring control to another frame of the current thread, that
+            is, changing the thread context to continue execution in the
+            exception handler
+         </li>
+         <li>
+            Root set enumeration for the stack of the current thread
+         </li>
+         <li>
+            Stack walking, to construct the stack trace, to perform a security
+            check or to find the exception handler
+         </li>
+      </ul>
+      <h3>
+         <a id="Stack_Trace" name="Stack_Trace"></a>4.3.4 Stack Trace
+      </h3>
+      <p>
+         The stack trace converts stack information obtained from the iterator
+         and transfers this data to the
+         <code>org.apache.harmony.vm.VMStack</code> class.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         One frame indicated by the iterator may correspond to more than one
+         line in the stack trace because of method in-lining (see the <a
+         href="#Note1_in_Stack_overview">first note</a> in <i>About the
+         Stack</i>).
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Root_Set_Enumeration" name="Root_Set_Enumeration"></a>4.4 Root
+         Set Enumeration
+      </h2>
+      <p>
+         DRLVM automatically manages the Java<a href="#*">*</a> heap by using
+         tracing collection techniques.
+      </p>
+      <h3>
+         <a id="Roots" name="Roots"></a>4.4.1 About Roots
+      </h3>
+      <p>
+         <em>Root set enumeration</em> is the process of collecting the initial
+         set of references to live objects, the <em>roots</em>. Defining the
+         root set enables the garbage collector to determine a set of all
+         objects directly reachable from the all running threads and to reclaim
+         the rest of the heap memory. The set of all live objects includes
+         objects referred by roots and objects referred by other live objects.
+         This way, the set of all live objects can be constructed by means of
+         transitive closure of the objects referred by the root set.
+      </p>
+      <p>
+         Roots consist of:
+      </p>
+      <ul>
+         <li>
+            Global references, such as static fields of classes, JNI global
+            handles, interned string references
+         </li>
+         <li>
+            Thread-specific references in managed stack frames, local JNI
+            handles, and the per-thread data structures maintained by the VM
+            core
+         </li>
+      </ul>
+      <h3>
+         <a id="Method" name="Method"></a>4.4.2 Black-box Method
+      </h3>
+      <p>
+         In DRLVM, the <em>black-box method</em> is designed to accommodate
+         precise enumeration of the set of root references. The GC considers
+         everything outside the Java<a href="#*">*</a> heap as a black box, and
+         has little information about the organization of the virtual machine.
+         The GC relies on the support of the VM core to enumerate the root set.
+         In turn, the VM considers the thread stack as the black box, and uses
+         the services provided by the JIT and interpreter to iterate over the
+         stack frames and enumerate root references in each stack frame.
+      </p>
+      <p>
+         Enumeration of a method stack frame is best described in terms of safe
+         points and GC maps. <a id="GC_map" name="GC_map"></a>The <em>GC
+         map</em> is the data structure for finding all live object pointers in
+         the stack frame. Typically, the GC map contains the list of method
+         arguments and local variables of the reference type, as well as spilt
+         over registers, in the form of offsets from the stack pointer. The GC
+         map is associated with a specific point in the method, the <em>safe
+         point</em>. The JIT determines the set of safe points at the method
+         compile time, and the interpreter does this at run time. This way,
+         call sites and backward branches enter the list. During method
+         compilation, the JIT constructs the GC maps for each safe point. The
+         interpreter does not use stack maps, but keeps track of object
+         references dynamically, at run time. With the black-box method, the VM
+         has little data on the thread it needs to enumerate, only the register
+         context.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="Enumeration" name="Enumeration"></a> 4.4.3 Enumeration
+         Procedure
+      </h3>
+      <p>
+         When the GC decides to do garbage collection, it enumerates all roots
+         as described below.
+      </p>
+      <ol>
+         <li>
+            The garbage collector calls the VM core function
+            <code>vm_enumerate_root_set_all_threads()</code>. 
+            <p class="note">
+               Note
+            </p>
+            <p class="notetext">
+               Currently, the DRLVM implementation does not support concurrent
+               garbage collectors.
+            </p>
+         </li>
+         <li>
+            The VM core suspends all threads.
+         </li>
+         <li>
+            The VM core enumerates all the global and thread-local references
+            in the run-time data structures: the VM enumerates each frame of
+            each thread stack.<br />
+             For each frame produced by the JIT-compiled code, it is necessary
+            to enumerate the roots on that frame and to unwind to the previous
+            frame. For that, the VM calls methods
+            <code>JIT_get_root_set_from_stack_frame()</code> and
+            <code>JIT_unwind_stack_frame()</code>. 
+            <ol>
+               <li>
+                  The VM identifies the method that owns the stack frame by
+                  looking up the instruction pointer value in the method code
+                  block tables.
+               </li>
+               <li>
+                  The VM passes the instruction pointer and the stack pointer
+                  registers to the JIT compiler.
+               </li>
+               <li>
+                  The JIT identifies the safe point and finds the GC map
+                  associated with the code address.
+               </li>
+               <li>
+                  The JIT consults the GC map for the safe point, and
+                  enumerates the root set for the frame. For that, the JIT
+                  calls the function <code>gc_add_root_set_entry()</code> for
+                  each stack location containing pointers to the Java<a
+                  href="#*">*</a> heap [<a
+                  href="#GC_article_ref">12</a>].<br />
+                   The interpreter uses its own stack frame format and
+                  enumerates all thread stack trace when the interpreter
+                  function <code>interpreter_enumerate_thread()</code> is
+                  called.
+               </li>
+            </ol>
+         </li>
+         <li>
+            The VM core and the execution engine communicate the roots to the
+            garbage collector by calling the function
+            <code>gc_add_root_set_entry(ManagedObject)</code>. 
+            <p class="note">
+               Note
+            </p>
+            <p class="notetext">
+               The parameter points to the root, not to the object the root
+               points to. This enables the garbage collector to update the root
+               in case it has changed object locations during the collection.
+            </p>
+         </li>
+         <li>
+            The VM core returns from
+            <code>vm_enumerate_root_set_all_threads()</code>, so that the
+            garbage collector has all the roots and proceeds to collect objects
+            no longer in use, possibly moving some of the live objects.
+         </li>
+         <li>
+            The GC determines the set of reachable objects by tracing the
+            reference graph. In the graph, Java<a href="#*">*</a> objects are
+            vertices and directed edges are connectors between the objects
+            having reference pointers to other objects.
+         </li>
+         <li>
+            The GC calls the VM function
+            <code>vm_resume_threads_after()</code>. The VM core resumes all
+            threads, so that the garbage collector can proceed with the
+            allocation request that triggered the garbage collection.
+         </li>
+      </ol>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Exception_Handling" name="Exception_Handling"></a>4.5 Exception
+         Handling
+      </h2>
+      <p>
+         The exceptions interface handles exceptions inside the virtual machine
+         and consists of the following function groups:
+      </p>
+      <p>
+         The exceptions interface includes the following function groups:
+      </p>
+      <ul>
+         <li>
+            <i>Basic functions</i> are responsible for throwing exceptions and
+            getting information on the current state of the system.
+         </li>
+         <li>
+            <i>Printing</i> functions provide exception data when no standard
+            Java<a href="#*">*</a> handlers have caught the exception.
+         </li>
+         <li>
+            <i>Utilities</i> create exception objects from native code.
+         </li>
+         <li>
+            <i>Asserts</i> verify that the code obeys certain semantic checks.
+         </li>
+      </ul>
+      <p>
+         In DRLVM, two ways of handling exceptions are available: exception
+         throwing and raising exceptions, as described below.
+      </p>
+      <h3>
+         <a id="Throwing" name="Throwing"></a>4.5.1 Throwing Exceptions
+      </h3>
+      <p>
+         When an exception is thrown, the virtual machine tries to find the
+         exception handler provided by the JIT and registered for the specified
+         exception kind and code address range. If the handler is available,
+         the VM transfers control to it; otherwise, the VM unwinds the stack
+         and transfers control to the previous native frame. This mode employs
+         the <code>exn_throw_*()</code> functions.
+      </p>
+      <p>
+         Exceptions are thrown in Java<a href="#*">*</a> code and in small
+         parts of internal VM native code. Because stack unwinding is enabled
+         for these areas of native code, they are <em>unwindable</em> and
+         marked as <code>THROW_AREA</code>.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         Exceptions cannot be thrown in the interpreter mode.
+      </p>
+      <p>
+         With stack unwinding, throwing exception runs faster than raising
+         exceptions.
+      </p>
+      <h3>
+         <a id="Raising_Exceptions" name="Raising_Exceptions"></a>4.5.2 Raising
+         Exceptions
+      </h3>
+      <p>
+         When the VM raises an exception, a flag is set that an exception
+         occurred, and the function exits normally. This approach is similar to
+         the one used in JNI [<a href="#JNI_ref">5</a>]. Call the following
+         functions to perform exception-raising operations:
+      </p>
+      <ul>
+         <li>
+            To raise an exception, use the <code>exn_raise()</code> function.
+         </li>
+         <li>
+            To get the current exception, use <code>exn_get_*()</code> set of
+            functions.
+         </li>
+         <li>
+            To check whether the exception is raised, use the
+            <code>exn_raised()</code> function. This function returns a Boolean
+            value, and not the exception object. This technique saves VM
+            resources because no new copy of the exception object is created.
+         </li>
+      </ul>
+      <p>
+         Raising exceptions is used in internal VM functions during JIT
+         compilation of Java<a href="#*">*</a> methods, in the interpreter, and
+         in the Java<a href="#*">*</a> Native Interface [<a
+         href="#JNI_ref">5</a>]. With these, stack unwinding is used and
+         corresponding areas of code are therefore <em>non-unwindable</em> and
+         marked as <code>RAISE_AREA</code>.
+      </p>
+      <p>
+         The usage is especially important at start-up time when no stack has
+         been formed.
+      </p>
+      <h3>
+         <a id="Choosing" name="Choosing"></a>4.5.3 Choosing the Exception
+         Handling Mode
+      </h3>
+      <p>
+         DRLVM provides the following facilities to set the exception handling
+         mode:
+      </p>
+      <ul>
+         <li>
+            Check whether the current code area is unwindable by using the
+            function <code>is_unwindable()</code>. If it is not, change the
+            setting by using the function <code>set_unwindable()</code>. This
+            type of exception mode switching can be unsafe and should be used
+            with caution.
+         </li>
+         <li>
+            Switch from <code>THROW_AREA</code> to <code>RAISE_AREA</code> by
+            using the macro <code>BEGIN_RAISE_AREA</code>. Switch back by using
+            the <code>END_RAISE_AREA</code> macro.
+         </li>
+      </ul>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Finalization" name="Finalization"></a>4.6 Finalization
+      </h2>
+      <p>
+         <em>Finalization</em> is the process of reclaiming unused system
+         resources after garbage collection. The DRL finalization fully
+         complies with the specification [<a href="#JVM_spec_ref">1</a>]. The
+         VM core and the garbage collector cooperate inside the virtual machine
+         to enable finalizing unreachable objects.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         In DRL, the virtual machine tries to follow the reverse finalization
+         order, so that the object created last is the first to be finalized;
+         however, the VM does not guarantee that finalization follows this or
+         any specific order.
+      </p>
+      <h3>
+         <a id="FP" name="FP"></a> 4.6.1 Finalization Procedure
+      </h3>
+      <p>
+         As Figure 5 shows, several queues can store references to finalizable
+         objects:
+      </p>
+      <ul>
+         <li>
+            <em>GC live objects queue</em> for marked objects.
+         </li>
+         <li>
+            <em>GC buffering queue</em> for unmarked objects. This queue is
+            empty most of the time.
+         </li>
+         <li>
+            <em>VM core queue</em> for objects unreachable from the root and
+            scheduled for finalization.
+         </li>
+      </ul>
+      <p style="text-align: center">
+         <img src="images/final_queques.gif" alt="package" width="410"
+         height="161" />
+      </p>
+      <p class="special">
+         Figure 5. Finalization Framework
+      </p>
+      <p>
+         The garbage collector uses these queues at different stages of the GC
+         procedure to enumerate the root set and kick off finalization for
+         unreachable objects, as follows.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <ol>
+         <li>
+            <p class="class">
+               Object Allocation
+            </p>
+            <p>
+               During object allocation, the garbage collector places
+               references to finalizable objects into the live object queue, as
+               shown in Figure 6. Functions <code>gc_alloc()</code> and
+               <code>gc_alloc_fast()</code> register finalizable objects with
+               the queue.
+            </p>
+            <p style="text-align: center">
+               <img src="images/final_alloc_all.gif" alt="package" width="386"
+               height="180" />
+            </p>
+            <p class="special">
+               Figure 6. Allocation of Finalizable Objects
+            </p>
+         </li>
+         <li>
+            <p class="class">
+               After Mark Scan
+            </p>
+            <p>
+               After marking all reachable objects, the GC moves the remaining
+               object references to the unmarked objects queue. Figure 7
+               illustrates this procedure: grey squares stand for marked object
+               references, and white square are the unmarked object references.
+            </p>
+            <p style="text-align: center">
+               <img src="images/final_unmarked_queue.gif" alt="package"
+               width="392" height="158" />
+            </p>
+            <p class="special">
+               Figure 7. Unmarked Objects Queue Usage
+            </p>
+         </li>
+         <li>
+            <p class="class">
+               Filling in the Finalizable Objects Queue
+            </p>
+            <p>
+               From the buffering queue, the GC transfers unmarked object
+               references to the VM queue, as shown in Figure 8. To place a
+               reference into the queue, the garbage collector calls the
+               <code>vm_finalize_object()</code> function for each reference
+               until the unmarked objects queue is empty.
+            </p>
+            <p style="text-align: center">
+               <img src="images/final_final_queue.gif" alt="package"
+               width="413" height="161" />
+            </p>
+            <p class="special">
+               Figure 8. Finalization Scheduling
+            </p>
+         </li>
+         <li>
+            <p class="class">
+               Activating the Finalizer Thread
+            </p>
+            <p>
+               Finally, the GC calls the <code>vm_hint_finalize()</code>
+               function that wakes up finalizer threads. All finalizer threads
+               are pure Java<a href="#*">*</a> threads, see section <a
+               href="#work_balance">4.6.2 Work Balancing Subsystem</a>.<br />
+                Each active thread takes one object to finalize and does the
+               following:
+            </p>
+            <ol>
+               <li>
+                  Gets references to the object from the VM queue
+               </li>
+               <li>
+                  Removes the reference from the queue
+               </li>
+               <li>
+                  Calls the <code>finalize()</code> function for the object
+               </li>
+            </ol>
+            <p>
+               If the number of active threads is greater than the number of
+               objects, the threads that have nothing to finalize are
+               transferred to the sleep mode, as shown in Figure 9.
+            </p>
+            <p style="text-align: center">
+               <img src="images/final_threads.gif" alt="package" width="523"
+               height="253" />
+            </p>
+            <p class="special">
+               Figure 9. Finalizer Threads
+            </p>
+         </li>
+      </ol>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h3>
+         <a id="Work_Balance" name="Work_Balance"></a>4.6.2 Work Balancing
+         Subsystem
+      </h3>
+      <p>
+         The work balancing subsystem dynamically adjusts the number of running
+         finalizer threads to prevent an overflow of the Java<a href="#*">*</a>
+         heap by finalizable objects. This subsystem operates with two kinds of
+         finalizer threads: permanent and temporary. During normal operation
+         with a limited number of finalizable objects, permanent threads can
+         cover all objects scheduled for finalization. When permanent threads
+         are insufficient, the work balancing subsystem activates temporary
+         finalizer threads as needed.
+      </p>
+      <p>
+         The current implementation uses an adaptive algorithm of assumptions
+         because calculating the exact number of threads required for
+         finalizing objects in the queue is inadequate. WBS assumes that a
+         certain number N of threads is optimal for finalizing objects at a
+         given point in time. With this in mind, you can make the following
+         conclusions:
+      </p>
+      <ul>
+         <li>
+            Number N-1 finalizer threads is not enough because the Java<a
+            href="#*">*</a> heap will get filled with finalizable objects.
+         </li>
+         <li>
+            Number N+1 threads is an excess quantity that will cause certain
+            threads to wait.
+         </li>
+      </ul>
+      <p>
+         WBS strives to get as near to the optimal number N as possible. In
+         more detail, the work balancing subsystem operates in the following
+         stages:
+      </p>
+      <dl>
+         <dt>
+            Stage 1: Permanent finalizer threads only
+         </dt>
+         <dd>
+            <p>
+               Object allocation starts. Only permanent finalizer threads run.
+               The garbage collector uses the hint counter variable to track
+               finalizable objects and increases the value of the hint counter
+               by 1 when allocating a finalizable object.
+            </p>
+         </dd>
+         <dt>
+            Stage 2: Temporary finalizer activated
+         </dt>
+         <dd>
+            <p>
+               The number of objects scheduled for finalization increases, and
+               at some point in time, the hint counter value exceeds a certain
+               threshold (currently set to 128).<br />
+                At this stage, the garbage collector calls the
+               <code>vm_hint_finalize()</code> function before performing the
+               requested allocation. This function is also called after each
+               garbage collection.
+            </p>
+            <ol>
+               <li>
+                  The <code>vm_hint_finalize()</code> function checks whether
+                  any objects remain in the queue of objects to finalize. The
+                  number of objects, if any, is not taken into account.
+               </li>
+               <li>
+                  If the queue is not empty, the work balancing subsystem
+                  assumes that the current quantity of finalizer threads is not
+                  enough and creates additional temporary finalizer threads.
+               </li>
+            </ol>
+            <p class="note">
+               Note
+            </p>
+            <p class="notetext">
+               With this algorithm, the frequency of checking the state of the
+               finalizable objects queue depends on the frequency of
+               finalizable object allocation and garbage collection procedures.
+               In other words, the more frequently the system tries to allocate
+               a finalizable object or to do garbage collection, the more
+               frequently the <code>vm_hint_finalize()</code> function is
+               called and the state of the queue is checked.
+            </p>
+         </dd>
+         <dt>
+         </dt>
+         <dt>
+            Stage 3: Temporary finalizer threads destroyed
+         </dt>
+         <dd>
+            <p>
+               Because the optimum number of finalizer threads is unknown, WBS
+               can create more threads than suffice. With these excess
+               finalizer threads, the number of objects to finalize starts
+               decreasing, but the number of finalizer threads continues to
+               grow. By the time the number of finalizer threads reaches 2N, no
+               objects remain in the queue, because at this time an optimum
+               finalization system could finalize the same quantity of objects
+               as current.
+            </p>
+            <p>
+               When the finalization queue is empty, temporary threads are
+               destroyed and the work balancing cycle restarts.
+            </p>
+         </dd>
+      </dl>
+      <p>
+         Figure 10 demonstrates variations in the number of finalizer threads
+         over time.
+      </p>
+      <p style="text-align: center">
+         <img
+         alt="Graphic showing variations of the number of threads with time"
+         src="images/final_graph.gif" width="613" height="269" alt="package" />
+      </p>
+      <p class="special">
+         Figure 10. Variations in Number of Running Finalizer Threads
+      </p>
+      <p>
+         As a result, the number of running finalizer threads in the current
+         work balancing subsystem can vary between 0 and 2N.
+      </p>
+      <p class="note">
+         Note
+      </p>
+      <p class="notetext">
+         The maximum value for 2N is 256 running finalization threads.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="Inter_Component_Optimizations"
+         name="Inter_Component_Optimizations"></a>4.7 Inter-component
+         Optimizations
+      </h2>
+      <p>
+         In DRLVM, safety requirements and dynamic class loading affect the
+         applicability and effectiveness of traditional compiler optimizations,
+         such as null-check elimination or array-bounds checking. To improve
+         performance, DRLVM applies inter-component optimizations to reduce or
+         eliminate these safety overheads, and to ensure effective operation in
+         the presence of dynamic loading.
+      </p>
+      <p>
+         Inter-component optimizations include various optimization techniques
+         supported by more than one component in DRLVM, as described in the
+         subsequent sections.
+      </p>
+      <h3>
+         <a id="Fast_Subtype_Checking" name="Fast_Subtype_Checking"></a>4.7.1
+         Fast Subtype Checking
+      </h3>
+      <p>
+         Java<a href="#*">*</a> programs widely use inheritance. The VM needs
+         to check whether an object is an instance of a specific super type
+         thousand of times per second. These type tests are the result of
+         explicit checks in application code (for example, the Java<a
+         href="#*">*</a> <code>checkcast</code> bytecode), as well as implicit
+         checks during array stores (for example, Java<a href="#*">*</a>
+         <code>aastore</code> bytecode). The array store checks verify that the
+         types of objects being stored into arrays are compatible with the
+         element types of the arrays. Although functions
+         <code>checkcast()</code>, <code>instanceof()</code>, and
+         <code>aastore()</code> take up at most a couple of percent of the
+         execution time for Java<a href="#*">*</a> benchmarks, that is enough
+         to justify some degree of in-lining. The VM core provides an interface
+         to allow JIT compilers to perform a faster, in-lined type check under
+         certain commonly used conditions.
+      </p>
+      <h3>
+         <a id="Direct_Call_Conversion" name="Direct_Call_Conversion"></a>4.7.2
+         Direct-call Conversion
+      </h3>
+      <p>
+         In DRLVM, Java<a href="#*">*</a> virtual functions are called
+         indirectly by using a pointer from a VTable even when the target
+         method is precisely known. This is done because a method may not have
+         been compiled yet, or it may be recompiled in the future. By using an
+         indirect call, the JIT-compiled code for a method can easily be
+         changed after the method is first compiled, or after it is
+         recompiled.<br />
+          Because indirect calls may require additional instructions (at least
+         on the Itanium&reg; processor family), and may put additional pressure
+         on the branch predictor, converting them into direct calls is
+         important. For direct-call conversion, the VM core includes a callback
+         mechanism to enable the JIT compiler to patch direct calls when the
+         targets change due to compilation or recompilation. When the JIT
+         produces a direct call to a method, it calls a function to inform the
+         VM core. If the target method is compiled, the VM core calls back into
+         the JIT to patch and redirect the call.
+      </p>
+      <h3>
+         <a id="Fast_Constant_String" name="Fast_Constant_String"></a>4.7.3
+         Fast Constant-string Instantiation
+      </h3>
+      <p>
+         Constant-string instantiation is common in Java<a href="#*">*</a>
+         applications, and DRLVM, loads constant strings at run time in a
+         single load, as is with static fields. To use this optimization,
+         Jitrino calls the class loader interface function
+         <code>class_get_const_string_intern_addr()</code> at compile time.
+         This function interns the string and returns the address of a location
+         pointing to the interned string. Note that the VM core reports this
+         location as part of the root set during garbage collection.<br />
+          Because string objects are created at compile time regardless of the
+         control paths actually executed, the optimization applied blindly to
+         all JIT-compiled code, might result in allocation of a significant
+         number of unnecessary string objects. To avoid this, apply the
+         heuristic method of not using fast strings in exception handlers.
+      </p>
+      <h3>
+         <a id="Lazy_Exceptions" name="Lazy_Exceptions"></a>4.7.4 Lazy
+         Exceptions
+      </h3>
+      <p>
+         Certain applications make extensive use of exceptions for control
+         flow. Often, however, the exception object is not used in the
+         exception handler. In such cases, the time spent on creating the
+         exception object and creating and recording the stack trace in the
+         exception object is wasted. The lazy exceptions optimization enables
+         the JIT compiler and the VM core to cooperate on eliminating the
+         creation of exception objects with an ordinary constructor in case
+         these objects are not used later on.
+      </p>
+      <p>
+         To implement lazy exceptions, the JIT compiler finds the exception
+         objects that are used only in the <code>throw</code> statements in the
+         compiled method. The JIT compiler analyzes the constructors of these
+         objects for possible side effects. If the constructor has no side
+         effects, the JIT removes the exception object construction
+         instructions and substitutes a <code>throw</code> statement with a
+         call to a run-time function that performs the lazy exception throwing
+         operation. During execution of the new function, the VM core unwinds
+         the stack to find the matching handler, and does one of the following
+         depending on the exception object state:
+      </p>
+      <ul>
+         <li>
+            If the exception object is not used in the handler, the VM core
+            transfers control to the handler without creating the exception
+            object and the associated stack trace.
+         </li>
+         <li>
+            If the exception object is used inside the handler, the VM core
+            creates the exception object and invokes the constructor passing
+            the appropriate arguments to it.
+         </li>
+      </ul>
+      <p>
+         The lazy exceptions technique significantly improves performance. For
+         more information on exceptions in DRLVM, see section <a
+         href="#Exception_Handling">3.9 Exception Handling</a>.
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+      <h2>
+         <a id="VM_Shutdown" name="VM_Shutdown"></a>4.8 VM Shutdown
+      </h2>
+      <p>
+         The VM destruction functionality is currently part of the
+         initialization interface. Specifically, the <code>destroy_vm()</code>
+         function that triggers the VM shutdown procedure is in the
+         <code>VMStarter</code> class. This function is a prototype for
+         <code>JNI_DestroyJavaVM()</code> responsible for terminating operation
+         of a VM instance. This function calls the <a
+         href="#vmstartershutdown"><code>VMStarter.shutdown()</code></a>
+         method.
+      </p>
+      <h1>
+         <a id="References" name="References"></a>11. References
+      </h1>
+      <p>
+         This section lists the external references to various sources used in
+         DRLVM documentation, and to standards applied to DRLVM implementation.
+      </p>
+      <p>
+         [<a id="JVM_spec_ref" name="JVM_spec_ref">1</a>] Java<a
+         href="#*">*</a> Virtual Machine Specification, <a
+         href="http://java.sun.com/docs/books/vmspec/2nd-edition/html/VMSpecTOC.doc.html"
+          target="_blank">http://java.sun.com/docs/books/vmspec/2nd-edition/html/VMSpecTOC.doc.html</a>
+      </p>
+      <p>
+         [<a id="Java_lang_spec_ref" name="Java_lang_spec_ref"
+         target="_blank">2</a>]Java<a href="#*">*</a> Language Specification,
+         Third Edition, <a href="http://java.sun.com/docs/books/jls/"
+         target="_blank">http://java.sun.com/docs/books/jls/</a>
+      </p>
+      <p>
+         [<a id="JIT_spec_ref" name="JIT_spec_ref" target="_blank">3</a>]JIT
+         Compiler Interface Specification, Sun Microsystems, <a
+         href="http://java.sun.com/docs/jit_interface.html"
+         target="_blank">http://java.sun.com/docs/jit_interface.html</a>
+      </p>
+      <p>
+         [<a id="JVMTI_ref" name="JVMTI_ref" target="_blank">4</a>]JVM Tool
+         Interface Specification, <a
+         href="http://java.sun.com/j2se/1.5.0/docs/guide/jvmti/jvmti.html"
+         target="_blank">http://java.sun.com/j2se/1.5.0/docs/guide/jvmti/jvmti.html</a>
+      </p>
+      <p>
+         [<a id="JNI_ref" name="JNI_ref" target="_blank">5</a>] Java<a
+         href="#*">*</a> Native Interface Specification, <a
+         href="http://java.sun.com/j2se/1.5.0/docs/guide/jni/spec/jniTOC.html"
+         target="_blank">http://java.sun.com/j2se/1.5.0/docs/guide/jni/spec/jniTOC.html</a>
+      </p>
+      <p>
+         [<a id="Java_api_ref" name="Java_api_ref" target="_blank">6</a>]Java<a
+         href="#*">*</a> API Specification, <a
+         href="http://java.sun.com/j2se/1.5.0/docs/api"
+         target="_blank">http://java.sun.com/j2se/1.5.0/docs/api</a>
+      </p>
+      <p>
+         [<a id="Invoc_api_ref" name="Invoc_api_ref">7</a>] Java<a
+         href="#*">*</a> Invocation API Specification, <a
+         href="http://java.sun.com/j2se/1.5.0/docs/guide/jni/spec/invocation.html"
+          target="_blank">http://java.sun.com/j2se/1.5.0/docs/guide/jni/spec/invocation.html</a>
+      </p>
+      <p>
+         [<a id="debug_tut_ref" name="debug_tut_ref">8</a>]Creating a Debugging
+         and Profiling Agent with JVMTI tutorial, <a
+         href="http://java.sun.com/developer/technicalArticles/Programming/jvmti/index.html"
+          target="_blank">http://java.sun.com/developer/technicalArticles/Programming/jvmti/index.html</a>
+      </p>
+      <p>
+         [<a id="harmony_ref" name="harmony_ref">9</a>] Apache Harmony project,
+         <a href="http://harmony.apache.org/"
+         target="_blank">http://harmony.apache.org/</a>.
+      </p>
+      <p>
+         [<a id="Intel_manual_ref" name="Intel_manual_ref">10</a>] <i>IA-32
+         Intel Architecture Software Developer's Manual</i>, Intel Corp., <a
+         href="http://www.intel.com/design"
+         target="_blank">http://www.intel.com/design</a>
+      </p>
+      <p>
+         [<a id="compres_ref" name="compres_ref">11</a>] Ali-Reza
+         Adl-Tabatabai, Jay Bharadwaj, Michal Cierniak, Marsha Eng, Jesse Fang,
+         Brian T. Lewis, Brian R. Murphy, and James M. Stichnoth, <i>Improving
+         64-Bit Java<a href="#*">*</a> IPF Performance by Compressing Heap
+         References, Proceedings of the International Symposium on Code
+         Generation and Optimization</i> (CGO&rsquo;04), 2004, <a
+         href="http://www.cgo.org/cgo2004/"
+         target="_blank">http://www.cgo.org/cgo2004/</a>
+      </p>
+      <p>
+         [<a id="GC_article_ref" name="GC_article_ref">12</a>] Stichnoth, J.M.,
+         Lueh, G.-Y. and Cierniak, M., <i>Support for Garbage Collection at
+         Every Instruction in a Java<a href="#*">*</a> Compiler</i>, <i>ACM
+         Conference on Programming Language Design and Implementation</i>,
+         Atlanta, Georgia, 1999, <a href="http://www.cs.rutgers.edu/pldi99/"
+         target="_blank">http://www.cs.rutgers.edu/pldi99/</a>
+      </p>
+      <p>
+         [<a id="GC_article2_ref" name="GC_article2_ref">13</a>] Wilson, P.R.,
+         <i>Uniprocessor Garbage Collection Techniques</i>, in revision
+         (accepted for ACM Computing Surveys). <a href="http://ftp.cs.utexas.edu/pub/garbage/bigsurv.ps"
+         target="_blank">http://http.cs.utexas.edu/pub/garbage/bigsurv.ps</a>
+      </p>
+      <p>
+         [<a id="APR_ref" name="APR_ref">14</a>] Apache Portable Runtime
+         library, <a href="http://apr.apache.org/"
+         target="_blank">http://apr.apache.org/</a>
+      </p>
+      <p>
+         [<a id="Muchnik_ref" name="Muchnik_ref">15</a>] S. Muchnick,
+         <i>Advanced Compiler Design and Implementation</i>, Morgan Kaufmann,
+         San Francisco, CA, 1997.
+      </p>
+      <p>
+         [<a id="value_number_ref" name="value_number_ref">16</a>] P. Briggs,
+         K.D., Cooper and L.T. Simpson, <i>Value Numbering. Software-Practice
+         and Experience</i>, vol. 27(6), June 1997, <a
+         href="http://www.informatik.uni-trier.de/~ley/db/journals/spe/spe27.html"
+          target="_blank">http://www.informatik.uni-trier.de/~ley/db/journals/spe/spe27.html</a>
+      </p>
+      <p>
+         [<a id="enumer_ref" name="enumer_ref">17</a>] R. Bodik, R. Gupta, and
+         V. Sarkar, <i>ABCD: Eliminating Array-Bounds Checks on Demand, in
+         proceedings of the SIGPLAN &rsquo;00 Conference on Program Language
+         Design and Implementation</i>, Vancouver, Canada, June 2000, <a
+         href="http://research.microsoft.com/~larus/pldi2000/pldi2000.htm"
+         target="_blank">http://research.microsoft.com/~larus/pldi2000/pldi2000.htm</a>
+      </p>
+      <p>
+         [<a id="Wilson_GC_Ref" name="Wilson_GC_Ref"></a>18] Paul R. Wilson,
+         <em>Uniprocessor garbage collection techniques</em>, Yves Bekkers and
+         Jacques Cohen (eds.), Memory Management - International Workshop IWMM
+         92, St. Malo, France, September 1992, proceedings published as
+         Springer-Verlag Lecture Notes in Computer Science no. 637.
+      </p>
+      <p>
+         [<a id="Venners_Inside_VM_ref" name="Venners_Inside_VM_ref"></a>19]
+         Bill Venners, <em>Inside Java 2 Virtual Machine</em>, <a
+         href="http://www.artima.com/insidejvm/ed2/"
+         target="_blank">http://www.artima.com/insidejvm/ed2/</a>
+      </p>
+      <p>
+         [<a id="SVN_IBMdoc_ref" name="SVN_IBMdoc_ref"></a>20] Harmony Class
+         Library Porting Documentation, <a
+  href="http://svn.apache.org/viewvc/"
+          target="_blank">http://svn.apache.org/viewvc/</a>
+        *checkout*/harmony/enhanced/java/trunk/classlib/doc/vm_doc/html/index.html?content-type=text%2Fplain</p>
+      <p>
+         [<a id="CodePosit_ref" name="CodePosit_ref"></a>21]Karl Pettis, Robert
+         C. Hansen, <em>Profile Guided Code Positioning</em>, <a
+         href="http://www.informatik.uni-trier.de/~ley/db/conf/pldi/pldi90.html"
+          target="_blank">http://www.informatik.uni-trier.de/~ley/db/conf/pldi/pldi90.html</a>
+      </p>
+      <p class="backtotop">
+         <a href="#Top">Back to Top</a>
+      </p>
+        <p>
+         <a id="*" name="*">*</a> Other brands and names are the property of
+         their respective owners.
+      </p>
+   </body>
+</html>
+
+
+
+
+
+
+</div>
+                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special">
+            	<em>Copyright &#169; 2003-2010, The Apache Software Foundation</em>
+            	<br/>
+            	Apache Harmony, the Apache Harmony logo, and the Apache feather
+            	logo are trademarks of The Apache Software Foundation.
+            	<br/>
+            	Java is a registered trademark of Oracle and/or its affiliates. Other names
+            	mentioned may be trademarks or registered trademarks of their
+            	respective owners.
+            </div>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

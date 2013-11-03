@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                          CC to Ant Adaptors Execution 
+     ====================================================================== -->
+<project name="cc-ant" default="cc-publish" basedir=".">
+
+    <import file="properties.xml"/>
+
+    <property file="${properties.dump.file}"/>
+    <property file="${framework.properties.file}"/>
+    <import file="${framework.implementation.file}"/>
+
+    <property name="suite.adaptor.dir" 
+              value="${root.dir}/adaptors/${suite.name}"/>
+    
+    <property name="suite.adaptor.dir" 
+              value="${root.dir}/adaptors/${suite.name}"/>
+    
+    <!-- Called from CC to launch the test suite named ${test.suite} -->
+    <target name="cc-run" depends="define-ant-contrib">
+        <log message="Test Suite '${suite.name}' execution. Repository updated: ${repository.updated}"/>
+
+        <echo file="${cc.execution.log.file}" 
+              message="&lt;html>&lt;body>"/>
+        <echo file="${cc.execution.log.file}" append="true"
+              message="&lt;pre>&lt;a style='font-size: 80%;'>"/>
+        <record name="${cc.execution.log.file}" append="yes" action="start"/>
+        <trycatch property="exception" reference="execution.exception.ref">
+        <try>
+            <check-depends suite="${suite.name}" />
+            <runtarget target="-export-svn-revision"/>
+            
+            <ant dir="${root.dir}/adaptors/${suite.name}" 
+                 antfile="adaptor.xml" 
+                 target="run"
+                 inheritAll="true"/>
+            <record name="${cc.execution.log.file}" action="stop"/>
+        </try>
+        <catch>
+            <record name="${cc.execution.log.file}" emacsmode="true"/>
+            <echo>
+The execution FAILED with the following exception:
+${exception}
+</echo>
+            <record name="${cc.execution.log.file}" action="stop"/>
+        </catch>
+        </trycatch>
+        <echo file="${cc.execution.log.file}" append="true" 
+              message="&lt;/a>&lt;/pre>"/>
+        <echo file="${cc.execution.log.file}" append="true" 
+              message="&lt;/body>&lt;/html>"/>
+        <fail message="${exception}" if="exception"/>
+    </target>
+
+    <macrodef name="check-depends">
+        <attribute name="suite"/>
+        <sequential>
+            <condition property="is.snapshot">
+                <and>
+                    <contains string="${@{suite}.parameters.depends}"
+                              substring="snapshot" />
+                    <available file="${config.dir}/snapshot.properties" />
+                </and>
+            </condition>
+        </sequential>
+    </macrodef>
+
+    <target name="-export-svn-revision" if="is.snapshot" >
+
+        <!-- TODO: the target should update workspaces by svn.xml -->
+        <loadproperties srcFile="${config.dir}/snapshot.properties">
+            <filterchain>
+                <linecontainsregexp>
+                    <regexp pattern="snapshot.svn.revision.file=" />
+                </linecontainsregexp>
+            </filterchain>
+        </loadproperties>
+        
+        <loadproperties srcFile="${snapshot.svn.revision.file}" />
+    </target>
+
+    <!-- Called from CC to launch the custom ant publisher for test suite -->
+    <!-- Does nothing if the execution has been skipped (due to failures
+         of preceding suites) -->
+    <target name="cc-publish-custom" 
+            depends="define-ant-contrib"
+            if="framework.parameters.usemail" 
+            unless="${suite.name}.parameters.run.skipped">
+        <dirname property="publisher.dir" file="${publisher.location}"/>
+        <log message="Calling Custom Publisher ${publisher.location} at ${publisher.dir} for ${suite.name}"/>
+        <ant dir="${publisher.dir}" 
+             antfile="${publisher.location}" 
+             target="publish"
+             inheritAll="true"/>
+    </target>
+    
+    <!-- Called from CC to execute custom bootstrapper -->
+    <target name="cc-bootstrap" 
+            depends="define-ant-contrib"
+            unless="${suite.name}.parameters.run.skipped">
+        <dirname property="bootstrapper.dir" file="${bootstrapper.location}"/>
+        <log message="Calling Custom Bootstrapper ${publisher.location} at ${publisher.dir} for ${suite.name}"/>
+        <ant dir="${bootstrapper.dir}" 
+             antfile="${bootstrapper.location}" 
+             target="bootstrap"
+             inheritAll="true"/>
+    </target>
+    
+    <!-- Called from CC to launch the default ant publisher for test suite -->
+    <target name="cc-publish" 
+            depends="define-ant-contrib"
+            if="framework.parameters.usemail"
+            unless="${suite.name}.parameters.run.skipped">
+        
+        <available file="${cc.execution.log.file}" property="cc.execution.log.file.available"/>
+        <runtarget target="-store-cc-logs"/>
+        <!-- attach execution log file in case of failure -->
+        <condition property="mail.execution.log" 
+            value="${temp.files.dir}/execution_log.zip">
+            <and>
+                <isfalse value="${thisbuildsuccessful}"/>
+                <not><isset 
+                    property="framewrok.parameters.usemail.suppress.exelogs"/>
+                </not>
+                <not><isset 
+                    property="${suite.name}.parameters.mail.suppress.exelogs"/>
+                </not>
+                <available file="${cc.execution.log.file}"/>
+            </and>
+        </condition>
+
+        <!-- compose message from CC logs (it there is no message file
+             provided by test suite) -->
+        <condition property="mail.message" value="${cc.message.file}">
+            <not>
+            <or>
+                <isset property="${suite.name}.parameters.cc.message"/>
+                <isset property="${suite.name}.parameters.mail.message"/>
+            </or>
+            </not>
+        </condition>
+
+        <!-- do mail notification -->
+        <ant dir="${scripts.dir}" 
+             antfile="${scripts.dir}/publisher.xml" 
+             target="publish"
+             inheritAll="false">
+            <propertyset>
+                <!-- use test suite specific mail parameters -->
+                <propertyref prefix="${suite.name}.parameters.mail."/>
+                <globmapper from="${suite.name}.parameters.mail.*" to="mail.*"/>
+            </propertyset>
+            <propertyset>
+                <!-- use test suite specific cc parameters -->
+                <propertyref name="${suite.name}.parameters.cc.to"/>
+                <propertyref name="${suite.name}.parameters.cc.from"/>
+                <propertyref name="${suite.name}.parameters.cc.message"/>
+                <propertyref name="${suite.name}.parameters.cc.summary"/>
+                <propertyref name="${suite.name}.parameters.cc.attachs"/>
+                <globmapper from="${suite.name}.parameters.cc.*" to="mail.*"/>
+            </propertyset>
+            <propertyset>
+                <!-- use framework defined cc parameters -->
+                <propertyref prefix="framework.parameters.usemail"/>
+                <globmapper from="framework.parameters.usemail*" to="mail*"/>
+            </propertyset>
+            <propertyset>
+                <propertyref name="thisbuildsuccessful"/>
+                <propertyref name="lastbuildsuccessful"/>
+                <propertyref regex="^framework.parameters.*"/>
+                <propertyref regex="^mail.*"/>
+            </propertyset>
+        </ant>
+        
+        <condition property="upload.dir"
+                   value="${framework.parameters.optional.upload.dir}">
+            <and>
+                <isset property="framework.parameters.optional.upload.dir" />
+
+                <!-- workaround: ANT 1.7 XmlProperty task sets empty value -->
+                <length string="${framework.parameters.optional.upload.dir}"
+                        when="greater"
+                        length="0" />
+            </and>
+        </condition>
+
+        <propertycopy property="skip.upload" from="${suite.name}.parameters.cc.skip.upload" silent="true"/>
+        <runtarget target="upload-status-report"/>
+        
+    </target>
+
+    <target name="-store-cc-logs" if="cc.execution.log.file.available">
+        <property name="suite.results.dir" location="${results.dir}/${suite.name}"/>
+        <mkdir dir="${suite.results.dir}"/>
+        <delete file="${temp.files.dir}/execution_log.zip" 
+                    failonerror="false"/>
+        <copy file="${cc.execution.log.file}" todir="${suite.results.dir}"/>
+        <zip destfile="${temp.files.dir}/execution_log.zip">
+            <fileset file="${cc.execution.log.file}"/>
+        </zip>
+
+        <!-- compose summary from CC logs -->
+        <runtarget target="-compose-message-file"/>
+        <copy file="${cc.message.file}" todir="${suite.results.dir}" failonerror="false"/>
+    </target>
+
+    <!-- compose message from CC logs -->
+    <target name="-compose-message-file"
+            unless="mail.message">
+        <property name="cc.xsl.files.dir"
+                  value="${ext.cc.location}/webapps/cruisecontrol/xsl"/>
+        <property name="cc.message.file"
+                  value="${temp.files.dir}/${suite.name}-email-message.txt"/>
+        <xslt basedir="${scripts.dir}/xslt"
+              in="${logdir}/${logfile}"
+              style="${scripts.dir}/xslt/br.xsl"
+              out="${cc.message.file}"
+              classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar"/>
+    </target>
+    
+    <target name="upload-status-report" if="upload.dir" unless="skip.upload">
+        <property name="cc.xsl.files.dir"
+                  value="${ext.cc.location}/webapps/cruisecontrol/xsl"/>
+        <property name="status.report.dir"
+                  value="${results.dir}/${hy.platform}/${suite.name}"/>
+        <property name="status.report.index"
+                  value="${status.report.dir}/index.html"/>
+        
+        <delete dir="${status.report.dir}" quiet="true"/>
+        <mkdir dir="${status.report.dir}"/>
+        
+        <copy file="${scripts.dir}/xslt/status.xsl" todir="${cc.xsl.files.dir}"/>
+        <xslt in="${logdir}/${logfile}"
+              style="${cc.xsl.files.dir}/status.xsl"
+              out="${status.report.index}"
+              classpath="${ext.xalan.location}:${ext.cc.location}/lib/serializer-2.7.0.jar">
+              <param name="title" expression="Status of ${suite.name} on ${hy.platform}"/>
+        </xslt>
+        
+        <copy file="${cc.execution.log.file}" todir="${status.report.dir}"/>
+            
+        <condition property="build.status" value="passed" else="failed">
+            <istrue value="${thisbuildsuccessful}"/>
+        </condition>
+        <echo file="${status.report.dir}/status.txt" message="status=${build.status}${line.separator}timestamp=${builddate}" />
+
+        <zip destfile="${upload.dir}/${hy.platform}.${suite.name}.status.zip"
+             basedir="${results.dir}"
+             includes="${hy.platform}/${suite.name}/**"
+             update="true" />
+    </target>
+
+</project>

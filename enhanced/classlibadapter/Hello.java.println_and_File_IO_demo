@@ -1,0 +1,60 @@
+import java.io.*;
+
+class Hello extends Thread {
+
+public static void main(String args[])
+{
+ String ss = System.getProperty("os.encoding");
+ System.out.println("os.encoding = " + ss);
+ ss = System.getProperty("file.encoding");
+ System.out.println("file.encoding = " + ss);
+ ss = System.getProperty("console.encoding");
+ System.out.println("console.encoding = " + ss);
+ ss = System.getProperty("platform.encoding");
+ System.out.println("platform.encoding = " + ss);
+
+ for (int gg = 0; gg < 1; gg++) {
+      //System.out.println("One entire string of characters");
+      //System.out.println("this is sunny wather finally");
+      //System.out.write('4');
+      //System.out.println("red shirt blue pants");
+      
+
+	try {
+		// NOTE: All this simple app does is write to a file, then
+		// immediately read it back.
+
+		FileOutputStream fos = new FileOutputStream("c:\\temp\\readwrite.junk");
+
+		for (int ii = 0; ii < 50; ii++) {
+			fos.write(ii);
+		}
+
+		FileInputStream fis = new FileInputStream("c:\\temp\\readwrite.junk");
+	
+		for (int zz = 0; zz < 50; zz++) {
+			int qq = fis.read();
+			System.out.println("data = " + qq);
+		}
+		File ff = new File("c:\\temp\\String.txt");
+		System.out.println(ff);
+		if (ff.exists()) {
+			System.out.println("it exists");
+		}
+		else System.out.println("it does not exist");
+			
+		
+	} catch (Exception e) { System.out.println("some kinda problem..." + e); }	
+
+   
+    }
+
+}
+
+//public void run() {
+//    while(true) {
+//      System.out.write('*');
+//    }
+//}
+
+}

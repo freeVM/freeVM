@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Showcase - Conversion - Set</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:17:46
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <p/>
+An example populating a Set of object (Address.java) into Struts' action (AddressAction.java)
+
+<p/>
+
+See the jsp code <a
+	
+	href="/struts2-showcase-2.0.6/conversion/showAddressJspCode.action"
+
+>
+here.</a>
+<br/>
+See the code for PersonAction.java <a
+	
+	href="/struts2-showcase-2.0.6/conversion/showAddressActionJavaCode.action"
+
+>
+here.</a>
+<br/>
+See the code for Person.java <a
+	
+	href="/struts2-showcase-2.0.6/conversion/showAddressJavaCode.action"
+
+>
+here.</a>
+<br/>
+
+<p/>
+
+				
+<form id="submitAddressesInfo" name="submitAddressesInfo" onsubmit="return true;" action="/struts2-showcase-2.0.6/conversion/submitAddressesInfo.action" method="POST">
+<table class="wwFormTable">
+		
+			<tr>
+    <td class="tdLabel"><label for="submitAddressesInfo_addresses('id0')_address" class="label">Address 0:</label></td>
+    <td
+><input type="text" name="addresses('id0').address" value="" id="submitAddressesInfo_addresses('id0')_address"/>
+</td>
+</tr>
+
+		
+			<tr>
+    <td class="tdLabel"><label for="submitAddressesInfo_addresses('id1')_address" class="label">Address 1:</label></td>
+    <td
+><input type="text" name="addresses('id1').address" value="" id="submitAddressesInfo_addresses('id1')_address"/>
+</td>
+</tr>
+
+		
+			<tr>
+    <td class="tdLabel"><label for="submitAddressesInfo_addresses('id2')_address" class="label">Address 2:</label></td>
+    <td
+><input type="text" name="addresses('id2').address" value="" id="submitAddressesInfo_addresses('id2')_address"/>
+</td>
+</tr>
+
+		
+		<tr>
+    <td colspan="2"><div align="right"><input type="submit" id="submitAddressesInfo_0" value="Submit"/>
+</div></td>
+</tr>
+
+	</table></form>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts-conversion.xml:32&className=org.apache.struts2.showcase.conversion.AddressAction&page=/conversion/enterAddressInfo.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

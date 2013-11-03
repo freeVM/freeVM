@@ -1,0 +1,332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+#document()
+<!-- end the processing -->
+
+## This is where the macro's live
+
+#macro ( table $table)
+<table>
+    #foreach ( $items in $table.getChildren() )
+        #if ($items.getName().equals("tr"))
+            #tr ($items)
+        #end
+    #end
+</table>
+#end
+
+#macro ( tr $tr)
+<tr>
+    #foreach ( $items in $tr.getChildren() )
+        #if ($items.getName().equals("td"))
+            #td ($items)
+        #elseif ($items.getName().equals("th"))
+            #th ($items)
+        #end
+    #end
+</tr>
+#end
+
+#macro ( td $value)
+#if ($value.getAttributeValue("colspan"))
+#set ($colspan = $value.getAttributeValue("colspan"))
+#end
+#if ($value.getAttributeValue("rowspan"))
+#set ($rowspan = $value.getAttributeValue("rowspan"))
+#end
+#if ($value.getAttributeValue("class"))
+#set ($class = $value.getAttributeValue("class"))
+#end
+<td class="$!class" colspan="$!colspan" rowspan="$!rowspan">
+    
+        #if ($value.getText().length() != 0 || $value.hasChildren())
+        $value.getContent()
+        #else
+        &nbsp;
+        #end
+</td>
+#end
+
+#macro ( th $value)
+#if ($value.getAttributeValue("colspan"))
+#set ($colspan = $value.getAttributeValue("colspan"))
+#end
+#if ($value.getAttributeValue("rowspan"))
+#set ($rowspan = $value.getAttributeValue("rowspan"))
+#end
+#if ($value.getAttributeValue("width"))
+#set ($width = $value.getAttributeValue("width"))
+#end
+<th class="TableHeading" colspan="$!colspan" rowspan="$!rowspan" width="$!width">
+        #if ($value.getText().length() != 0 || $value.hasChildren())
+        $value.getContent()
+        #else
+        &nbsp;
+        #end
+</th>
+#end
+
+#macro ( projectanchor $name $value )
+#if ($value.startsWith("http://"))
+    <a href="$value">$name</a>
+#elseif ($value.startsWith("/site/"))
+    <a href="http://harmony.apache.org$value">$name</a>
+#else
+    <a href="$relativePath$value">$name</a>
+#end
+#end
+
+#macro ( metaauthor $author $email )
+            <meta name="author" content="$author">
+            <meta name="email" content="$email">
+#end
+
+#macro ( image $value )
+#if ($value.getAttributeValue("width"))
+#set ($width=$value.getAttributeValue("width"))
+#end
+#if ($value.getAttributeValue("height"))
+#set ($height=$value.getAttributeValue("height"))
+#end
+#if ($value.getAttributeValue("align"))
+#set ($align=$value.getAttributeValue("align"))
+#end
+<img src="$relativePath$value.getAttributeValue("src")" width="$!width" height="$!height" align="$!align">
+#end
+
+#macro ( source $value)
+<pre>$escape.getText($value.getText())</pre>
+#end
+
+#macro ( subsection $subsection)
+    
+    <h2>
+        <a name="$subsection.getAttributeValue("name")">$subsection.getAttributeValue("name")</a>
+    </h2>
+      
+    #foreach ( $items in $subsection.getChildren() )
+        #if ($items.getName().equals("img"))
+            #image ($items)
+        #elseif ($items.getName().equals("source"))
+            #source ($items)
+        #elseif ($items.getName().equals("table"))
+            #table ($items)
+        #else
+            $items
+        #end
+    #end
+       
+#end
+
+
+#macro (docinclude $name)
+<div>
+#include($name)
+</div>
+#end
+
+#macro ( section $section)
+    <h1>
+      <a name="$section.getAttributeValue("name")">$section.getAttributeValue("name")</a>
+    </h1>
+    #foreach ( $items in $section.getChildren() )
+        #if ($items.getName().equals("img"))
+            #image ($items)
+        #elseif ($items.getName().equals("source"))
+            #source ($items)
+        #elseif ($items.getName().equals("table"))
+            #table ($items)
+        #elseif ($items.getName().equals("subsection"))
+            #subsection ($items)
+        #else
+            $items
+        #end
+    #end
+    <p class="backtotop"><a href="#top">Back to top</a></p>
+#end
+
+#macro ( makeProject )
+
+    <!-- ============================================================ -->
+
+    #set ($menus = $project.getChild("body").getChildren("menu"))
+    #foreach ( $menu in $menus )
+        <p class="menuItem">$menu.getAttributeValue("name")</p>
+        <ul>
+        #foreach ( $item in $menu.getChildren() )
+            #set ($name = $item.getAttributeValue("name"))
+            <li class="menuItem">#projectanchor($name $item.getAttributeValue("href"))</li>
+           
+            #foreach ( $subitem in $item.getChildren() )
+              #set ($name = $subitem.getAttributeValue("name"))
+               <table>
+              <tr><td class="menuItem">
+                &nbsp;&nbsp;&nbsp;&nbsp;#projectanchor($name $subitem.getAttributeValue("href"))
+                </td></tr>
+              </table>
+            #end            
+            
+        #end
+
+        </ul>
+    #end
+#end
+
+#macro (getProjectImage)
+  #if ($project.getChild("logo"))
+    #set ( $logoString = $project.getChild("logo").getAttributeValue("href") )
+    #if ( $logoString.startsWith("/") )
+      <a id="harmonyLogo" href="$project.getAttributeValue("href")"><img src="$relativePath$logoString" alt="$project.getChild("logo").getText()"
+          width="415" height="50" /></a>
+    #else
+      <a id="harmonyLogo" href="$project.getAttributeValue("href")"><img src="$relativePath/$logoString" alt="$project.getChild("logo").getText()"
+          width="415" height="50" /></a>
+    #end
+  #end
+#end
+
+#macro (printMeta $metaElement)
+<meta #set ($attribs = $metaElement.getAttributes())
+#foreach ($a in $attribs) $a.getName()="$a.getValue()" #end />
+#end
+
+#macro (document)
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+            #set ($authors = $root.getChild("properties").getChildren("author"))
+            #foreach ( $au in $authors )
+                #metaauthor ( $au.getText() $au.getAttributeValue("email") )
+            #end
+
+           #set ($metas = $root.getChildren("meta"))
+
+            ##    Parse meta directives such as
+            ##    <meta name="keyword" content="harmony, java"/>
+            #foreach ($meta in $metas) #printMeta($meta) #end
+
+            ##    Support for <base> tags.
+            #if ($root.getChild("properties").getChild("base"))
+              #set ($url = $root.getChild("properties").getChild("base").getAttributeValue("href"))
+              <base href="$url"/>
+            #end
+
+            <title>$project.getChild("title").getText() - $root.getChild("properties").getChild("title").getText()</title>
+
+            #set ($links = $root.getChild("properties").getChildren("link"))
+            #foreach ( $link in $links )
+            $link
+            #end
+
+        #set ($csspath = "")
+        #if (!$relativePath.equals("."))
+            #set ($csspath = "${relativePath}/")
+        #end
+
+        <link rel="stylesheet" type="text/css" href="${csspath}css/site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="${csspath}css/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="${csspath}css/print.css" media="print" />
+
+            #if ($root.getChild("properties").getChild("style"))
+                $root.getChild("properties").getChild("style")
+            #end
+            
+        </head>
+
+        <body>
+			<div style="
+				clear: left;
+   				font-size: 110%;
+   				background-color: #FF0040;
+   				color: white;
+				float: left">
+
+				<b><big>Apache Harmony is retired at the Apache Software Foundation</big></b> since Nov 16, 2011.
+				<p>
+				The information on these pages may be out of date, or may refer to
+				resources that have moved or have been made read-only.
+				<br> 
+				For more information please refer to the
+				<a href="http://attic.apache.org">Apache Attic</a>
+				<p>
+			</div>
+			
+            <div id="pageHeader" style="clear: left">
+			<br>
+            <!-- Logo -->
+            #getProjectImage()
+
+            <!-- Advertisement
+            <a href="http://na.apachecon.com">
+                <img id="advertisement"
+                     src="images/apachecon-na2010.gif"
+                     width="234" height="60"
+                     alt="ApacheCon US 2010" /></a>
+            -->
+
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                #makeProject()
+                
+                <!-- Add the ASF birthday logo to the end of the menu -->
+                <img id="birthday"
+                     src="http://www.apache.org/images/10yearsASF_170x101.jpg"
+                     width="170" height="101"
+                     vspace="30"
+                     alt="Ten Years of the ASF" />
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                #set ($allSections = $root.getChild("body").getChildren("section"))
+                #foreach ( $section in $allSections )
+                    #section ($section)
+                #end
+
+                #set ($allInclude = $root.getChild("body").getChildren("docinclude"))
+                #foreach($inc in $allInclude)
+                    #docinclude($inc.getAttributeValue("name"))
+                #end
+            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special">
+            	<em>Copyright &#169; 2003-2010, The Apache Software Foundation</em>
+            	<br/>
+            	Apache Harmony, the Apache Harmony logo, and the Apache feather
+            	logo are trademarks of The Apache Software Foundation.
+            	<br/>
+            	Java is a registered trademark of Oracle and/or its affiliates. Other names
+            	mentioned may be trademarks or registered trademarks of their
+            	respective owners.
+            </div>
+        </body>
+    </html>
+#end
+

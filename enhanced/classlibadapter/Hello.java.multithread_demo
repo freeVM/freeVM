@@ -1,0 +1,30 @@
+
+class Hello extends Thread {
+
+public static void main(String args[])
+{
+
+   byte [] ba = new byte[64];
+
+   ba [0] = 'H'; ba [1] = 'e'; ba [2] = 'l'; ba [3] = 'l'; ba [4] = 'o';
+
+   ba [5] = ' '; ba [6] = 'W'; ba [7] = 'o'; ba [8] = 'r'; ba [9] = 'l';  ba[10] = 'd'; ba[11] = ' ';
+
+   
+   Thread tr = new Hello();
+   tr.start();	
+
+    while(true) { //////////for(int ss = 0; ss < 20; ss++) {
+      for (int qq = 0; qq < 12; qq++) {
+            System.out.write(ba[qq]);
+      }
+      System.out.write('\n');
+    }
+ 
+}
+public void run() {
+    while(true) {
+      System.out.write('*');
+    }
+}
+}

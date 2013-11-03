@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<!-- ====================================================================== 
+                        Status Publisher Implementation
+     ====================================================================== -->
+<project name="publisher" default="publish" basedir=".">
+
+    <import file="properties.xml"/>
+
+    <target name="-configure" if="mail">
+
+        <!-- if was configured always notify about run status -->
+        <!-- or, in case of run-status change                 -->
+        <condition property="to" value="${mail.to}">
+            <or>
+                <istrue value="${mail.always}" />
+                <not>
+                    <equals arg1="${thisbuildsuccessful}"
+                            arg2="${lastbuildsuccessful}" />
+                </not>
+            </or>
+        </condition>
+
+        <!-- if was configured always notify about FAILED status  -->
+        <!-- the notification is sent to mail.bcc list only       -->
+        <condition property="to" value="${mail.bcc}">
+            <and>
+                <isset property="mail.bcc" />
+                <isset property="mail.if.failed" />
+                <isfalse value="${thisbuildsuccessful}" />
+            </and>
+        </condition>
+
+        <condition property="if.mail.summary">
+            <and>
+                <isset property="to" />
+                <available file="${mail.summary}" />
+            </and>
+        </condition>
+        <condition property="if.mail.message">
+            <and>
+                <isset property="to" />
+                <available file="${mail.message}" />
+            </and>
+        </condition>
+    </target>
+
+    <target name="-load.mail.summary" if="if.mail.summary" depends="-configure">
+        <loadfile property="mail.summary.content" srcFile="${mail.summary}" />
+    </target>
+
+    <target name="-load.mail.message" if="if.mail.message" depends="-configure">
+        <loadfile property="mail.message.content" srcFile="${mail.message}" />
+    </target>
+
+    <!-- implement publisher interface -->
+    <target name="publish"
+            if="to"
+            depends="-configure,-load.mail.summary,-load.mail.message">
+
+        <condition property="mail.execution.status"
+                   value="PASSED"
+                   else="FAILED">
+            <istrue value="${thisbuildsuccessful}" />
+        </condition>
+
+        <!-- compose subject line -->
+        <property name="mail.subject.suffix" value="" />
+        <property name="mail.subject.line"
+                  value="${mail.subject.prefix} ${mail.execution.status} ${os.name} ${hy.arch}: ${suite.name} ${mail.subject.suffix}" />
+
+        <!-- empty message by default -->
+        <property name="mail.summary.content" value="" />
+        <property name="mail.message.content" value="" />
+
+        <!-- no execution logs to send by default -->
+        <property name="mail.execution.log" value="" />
+        <!-- no attachments by default -->
+        <property name="mail.attachs" value="" />
+
+        <log message=""/>
+        <log message="    Sending mail notification:"/>
+        <log message="        smtp: '${mail}'"/>
+        <log message="        to: '${to}'"/>
+        <log message="        bcc: '${mail.bcc}'"/>
+        <log message="        from: '${mail.from}'"/>
+        <log message="    Files to attach: ${mail.attachs}"/>
+        <log message="    Execution logs file: ${mail.execution.log}"/>
+        <log message=""/>
+
+        <trycatch property="mail.sending.exception">
+        <try>
+            <mail mailhost="${mail}"
+                  tolist="${to}"
+                  from="${mail.from}"
+                  bcclist="${mail.bcc}"
+                  subject="${mail.subject.line}"
+                  files="${mail.attachs},${mail.execution.log}">
+                <message>${mail.summary.content}${line.separator}${mail.message.content}</message>
+            </mail>
+        </try>
+        <catch>
+            <echo>
+--------
+WARNING: Mail notification sending for Test Suite '${suite.name}' FAILED
+-------- with the following exception:
+${mail.sending.exception}
+
+</echo>
+        </catch>
+        </trycatch>
+    </target>
+
+</project>
+

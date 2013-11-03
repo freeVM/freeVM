@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright 2006 The Apache Software Foundation or its licensors, as applicable
+     
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. 
+-->
+<!--AWTTestScript slow="true"-->
+<AWTTestScript>
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="About jEdit..." index="0" parent="JPopupMenu Instance 9" text="About jEdit..." window="jEdit - Untitled-1" />
+  <component class="javax.swing.Box" id="Box Instance" index="2" parent="JPanel Instance" window="Tip of the Day" />
+  <component class="javax.swing.Box" id="Box Instance 10" index="2" parent="JPanel Instance 16" window="No Compiler Defined" />
+  <component class="javax.swing.Box" id="Box Instance 11" index="1" parent="JPanel Instance 20" window="Pick a Color" />
+  <component class="javax.swing.Box" id="Box Instance 12" index="0" parent="HelpSearchPanel Instance" window="jEdit Help 2" />
+  <component class="javax.swing.Box" id="Box Instance 2" index="1" parent="JPanel Instance 2" window="Options: jEdit: Editing" />
+  <component class="javax.swing.Box" id="Box Instance 3" index="5" parent="JPanel Instance 8" window="Commando" />
+  <component class="javax.swing.Box" id="Box Instance 4" index="7" parent="JPanel Instance 8" window="Commando" />
+  <component class="javax.swing.Box" id="Box Instance 5" index="2" parent="JPanel Instance 12" window="File System Browser 2" />
+  <component class="javax.swing.Box" id="Box Instance 6" index="0" parent="VFSBrowser Instance" window="jEdit - Untitled-1" />
+  <component class="javax.swing.Box" id="Box Instance 7" index="0" parent="Box Instance 6" window="jEdit - Untitled-1" />
+  <component class="javax.swing.Box" id="Box Instance 8" index="0" parent="Box Instance 7" window="jEdit - Untitled-1" />
+  <component class="javax.swing.Box" id="Box Instance 9" index="0" parent="Console Instance" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.browser.BrowserView" id="BrowserView Instance" index="1" parent="VFSBrowser Instance 2" window="File System Browser 2" />
+  <component class="org.gjt.sp.jedit.browser.BrowserView" id="BrowserView Instance 2" index="1" parent="VFSBrowser Instance" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JButton" id="Cancel" index="3" parent="Box Instance 2" text="Cancel" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JButton" id="Choose" index="4" parent="JPanel Instance 10" text="Choose" window="File System Browser 2" />
+  <component class="org.gjt.sp.jedit.gui.RolloverButton" icon="Clear.png" id="Clear.png" index="7" parent="Box Instance 9" text="" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JButton" id="Close" index="5" parent="Box Instance" text="Close" window="Tip of the Day" />
+  <component class="javax.swing.JTabbedPane" id="ColorChooser.tabPane" index="0" name="ColorChooser.tabPane" parent="JColorChooser Instance" window="Pick a Color" />
+  <component class="org.gjt.sp.jedit.gui.ColorWellButton" id="ColorWellButton Instance" index="5" parent="textarea" text="" window="Options: jEdit: Editing" />
+  <!--component class="javax.swing.JList" id="ComboBox.list" index="0" name="ComboBox.list" parent="JViewport Instance 3" window="Options: jEdit: Editing" /-->
+  <component class="javax.swing.JList" id="ComboBox.list" index="0" parent="JViewport Instance 3" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JScrollPane" id="ComboBox.scrollPane" index="0" name="ComboBox.scrollPane" parent="ComboPopup.popup" window="Options: jEdit: Editing" />
+  <!--component class="javax.swing.JPopupMenu" id="ComboPopup.popup" index="0" invoker="JComboBox Instance" name="ComboPopup.popup" /-->
+  <component class="javax.swing.JPopupMenu" id="ComboPopup.popup" index="0" invoker="JComboBox Instance" />
+  <component class="console.commando.CommandoDialog" id="Commando" parent="jEdit - Untitled-1" title="Commando" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="Commando..." index="3" parent="JPopupMenu Instance 6" text="Commando..." window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="Compile Current Buffer..." parent="JPopupMenu Instance 6" text="Compile Current Buffer..." window="jEdit - Untitled-1" />
+  <component class="javax.swing.JMenuItem" id="Console" index="0" parent="JPopupMenu Instance 4" text="Console" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenu" id="Console 2" index="4" parent="JPopupMenu Instance 5" text="Console" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JMenuItem" id="Console 3" index="0" parent="JPopupMenu Instance 4" text="Console" window="jEdit - Untitled-1" />
+  <component class="console.Console" id="Console Instance" index="0" parent="JPanel Instance 15" window="jEdit - Untitled-1" />
+  <component class="console.ConsolePane" id="ConsolePane Instance" index="0" parent="JViewport Instance 5" window="jEdit - Untitled-1" />
+  <component class="javax.swing.colorchooser.DefaultSwatchChooserPanel" id="DefaultSwatchChooserPanel Instance" index="0" parent="JPanel Instance 21" window="Pick a Color" />
+  <component class="org.gjt.sp.jedit.gui.DockableWindowManager" id="DockableWindowManager Instance" index="0" parent="JPanel Instance" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.EditPane" id="EditPane Instance" index="2" parent="DockableWindowManager Instance" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="Exit" index="18" parent="JPopupMenu Instance 2" text="Exit" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenu" id="File" index="0" parent="JMenuBar Instance" text="File" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JMenuItem" id="File System Browser" index="0" parent="JPopupMenu Instance 3" text="File System Browser" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.browser.VFSFileChooserDialog" id="File System Browser 2" parent="jEdit - Untitled-1" title="File System Browser" />
+  <component class="org.gjt.sp.jedit.browser.VFSFileNameField" id="File name:" index="1" label="File name:" parent="Box Instance 5" window="File System Browser 2" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="Find..." index="0" parent="JPopupMenu Instance 7" text="Find..." window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="Global Options..." index="15" parent="JPopupMenu Instance" text="Global Options..." window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenu" id="Help" index="9" parent="JMenuBar Instance" text="Help" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.help.HelpSearchPanel" id="HelpSearchPanel Instance" index="1" parent="JTabbedPane Instance 3" window="jEdit Help 2" />
+  <component class="org.gjt.sp.jedit.gui.HistoryTextField" id="HistoryTextField Instance" index="2" parent="Box Instance 12" window="jEdit Help 2" />
+  <component class="javax.swing.JButton" id="JButton Instance" index="0" parent="JComboBox Instance" text="" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JColorChooser" id="JColorChooser Instance" index="0" parent="JPanel Instance 20" window="Pick a Color" />
+  <component class="javax.swing.JComboBox" id="JComboBox Instance" index="1" parent="JTable Instance" window="Options: jEdit: Editing" />
+  <component class="org.gjt.sp.jedit.textarea.JEditTextArea" id="JEditTextArea Instance" index="0" parent="EditPane Instance" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JEditorPane" id="JEditorPane Instance" index="0" parent="JViewport Instance 7" window="jEdit Help 2" />
+  <component class="javax.swing.JLayeredPane" id="JLayeredPane Instance" index="1" parent="JRootPane Instance" window="Tip of the Day" />
+  <component class="javax.swing.JLayeredPane" id="JLayeredPane Instance 2" index="1" parent="JRootPane Instance 2" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JLayeredPane" id="JLayeredPane Instance 3" index="1" parent="JRootPane Instance 3" window="Commando" />
+  <component class="javax.swing.JLayeredPane" id="JLayeredPane Instance 4" index="1" parent="JRootPane Instance 4" window="File System Browser 2" />
+  <component class="javax.swing.JLayeredPane" id="JLayeredPane Instance 5" index="1" parent="JRootPane Instance 5" window="File System Browser 2" />
+  <component class="javax.swing.JLayeredPane" id="JLayeredPane Instance 6" index="1" parent="JRootPane Instance 6" window="File System Browser 2" />
+  <component class="javax.swing.JLayeredPane" id="JLayeredPane Instance 7" index="1" parent="JRootPane Instance 7" window="No Compiler Defined" />
+  <component class="javax.swing.JLayeredPane" id="JLayeredPane Instance 8" index="1" parent="JRootPane Instance 8" window="Pick a Color" />
+  <component class="javax.swing.JLayeredPane" id="JLayeredPane Instance 9" index="1" parent="JRootPane Instance 9" window="jEdit Help 2" />
+  <component class="javax.swing.JList" id="JList Instance" index="0" parent="JViewport Instance 8" window="jEdit Help 2" />
+  <component class="javax.swing.JMenuBar" id="JMenuBar Instance" index="2" parent="JLayeredPane Instance" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JPanel" id="JPanel Instance" index="0" parent="JLayeredPane Instance" window="Tip of the Day" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 10" index="1" parent="JPanel Instance 9" window="File System Browser 2" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 11" index="0" parent="JLayeredPane Instance 5" window="File System Browser 2" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 12" index="1" parent="JPanel Instance 11" window="File System Browser 2" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 13" index="8" parent="DockableWindowManager Instance" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 14" index="0" parent="JLayeredPane Instance 6" window="File System Browser 2" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 15" index="9" parent="DockableWindowManager Instance" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 16" index="0" parent="JLayeredPane Instance 7" window="No Compiler Defined" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 17" index="0" parent="JPanel Instance 16" window="No Compiler Defined" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 18" index="0" parent="JPanel Instance 17" window="No Compiler Defined" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 19" index="1" parent="Box Instance 10" window="No Compiler Defined" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 2" index="0" parent="JLayeredPane Instance 2" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 20" index="1" parent="JLayeredPane Instance 8" window="Pick a Color" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 21" index="0" parent="ColorChooser.tabPane" window="Pick a Color" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 22" index="0" parent="DefaultSwatchChooserPanel Instance" window="Pick a Color" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 23" index="1" parent="JTabbedPane Instance 2" window="No Compiler Defined" />
+  <component borderTitle="Orientation" class="javax.swing.JPanel" id="JPanel Instance 24" index="1" parent="JPanel Instance 23" window="No Compiler Defined" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 25" index="1" parent="JPanel Instance 24" window="No Compiler Defined" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 26" index="2" parent="JTabbedPane Instance 2" window="No Compiler Defined" />
+  <component borderTitle="Sides" class="javax.swing.JPanel" id="JPanel Instance 27" index="2" parent="JPanel Instance 26" window="No Compiler Defined" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 28" index="1" parent="JPanel Instance 27" window="No Compiler Defined" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 29" index="0" parent="JTabbedPane Instance 2" window="No Compiler Defined" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 3" index="1" parent="JSplitPane Instance" window="Options: jEdit: Editing" />
+  <component borderTitle="Print Service" class="javax.swing.JPanel" id="JPanel Instance 30" index="0" parent="JPanel Instance 29" window="No Compiler Defined" />
+  <component borderTitle="Media" class="javax.swing.JPanel" id="JPanel Instance 31" index="0" parent="JPanel Instance 23" window="No Compiler Defined" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 32" index="0" parent="JLayeredPane Instance 9" window="jEdit Help 2" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 33" index="1" parent="JSplitPane Instance 4" window="jEdit Help 2" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 4" index="4" parent="DockableWindowManager Instance" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 5" index="5" parent="DockableWindowManager Instance" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 6" index="0" parent="JLayeredPane Instance 3" window="Commando" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 7" index="0" parent="JTabbedPane Instance" window="Commando" />
+  <component borderTitle="Paths" class="javax.swing.JPanel" id="JPanel Instance 8" index="1" parent="JPanel Instance 7" window="Commando" />
+  <component class="javax.swing.JPanel" id="JPanel Instance 9" index="0" parent="JLayeredPane Instance 4" window="File System Browser 2" />
+  <component class="javax.swing.JPopupMenu" id="JPopupMenu Instance" index="0" invoker="Utilities" />
+  <component class="javax.swing.JPopupMenu" id="JPopupMenu Instance 2" index="0" invoker="File" />
+  <component class="javax.swing.JPopupMenu" id="JPopupMenu Instance 3" index="0" invoker="ToolbarMenu.gif" />
+  <component class="javax.swing.JPopupMenu" id="JPopupMenu Instance 4" index="0" invoker="ToolbarMenu.gif 2" />
+  <component class="javax.swing.JPopupMenu" id="JPopupMenu Instance 5" index="0" invoker="Plugins" />
+  <component class="javax.swing.JPopupMenu" id="JPopupMenu Instance 6" index="0" invoker="Console 2" />
+  <component class="javax.swing.JPopupMenu" id="JPopupMenu Instance 7" index="0" invoker="Search" />
+  <component class="javax.swing.JPopupMenu" id="JPopupMenu Instance 8" index="0" invoker="JavaStyle" />
+  <component class="javax.swing.JPopupMenu" id="JPopupMenu Instance 9" index="0" invoker="Help" />
+  <component class="javax.swing.JRootPane" id="JRootPane Instance" index="0" parent="Tip of the Day" />
+  <component class="javax.swing.JRootPane" id="JRootPane Instance 2" index="0" parent="Options: jEdit: Editing" />
+  <component class="javax.swing.JRootPane" id="JRootPane Instance 3" index="0" parent="Commando" />
+  <component class="javax.swing.JRootPane" id="JRootPane Instance 4" index="0" parent="File System Browser 2" />
+  <component class="javax.swing.JRootPane" id="JRootPane Instance 5" index="0" parent="File System Browser 2" />
+  <component class="javax.swing.JRootPane" id="JRootPane Instance 6" index="0" parent="File System Browser 2" />
+  <component class="javax.swing.JRootPane" id="JRootPane Instance 7" index="0" parent="No Compiler Defined" />
+  <component class="javax.swing.JRootPane" id="JRootPane Instance 8" index="0" parent="Pick a Color" />
+  <component class="javax.swing.JRootPane" id="JRootPane Instance 9" index="0" parent="jEdit Help 2" />
+  <component class="javax.swing.JScrollPane" id="JScrollPane Instance" index="0" parent="JSplitPane Instance" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JScrollPane" id="JScrollPane Instance 2" index="0" parent="docking" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JScrollPane" id="JScrollPane Instance 3" index="1" parent="JSplitPane Instance 2" window="File System Browser 2" />
+  <component class="javax.swing.JScrollPane" id="JScrollPane Instance 4" index="1" parent="Console Instance" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JScrollPane" id="JScrollPane Instance 5" index="1" parent="JSplitPane Instance 3" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JScrollPane" id="JScrollPane Instance 6" index="1" parent="JPanel Instance 33" window="jEdit Help 2" />
+  <component class="javax.swing.JScrollPane" id="JScrollPane Instance 7" index="1" parent="HelpSearchPanel Instance" window="jEdit Help 2" />
+  <component class="javax.swing.JSplitPane" id="JSplitPane Instance" index="0" parent="JPanel Instance 2" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JSplitPane" id="JSplitPane Instance 2" index="0" parent="BrowserView Instance" window="File System Browser 2" />
+  <component class="javax.swing.JSplitPane" id="JSplitPane Instance 3" index="0" parent="BrowserView Instance 2" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JSplitPane" id="JSplitPane Instance 4" index="0" parent="JPanel Instance 32" window="jEdit Help 2" />
+  <component class="javax.swing.JTabbedPane" id="JTabbedPane Instance" index="1" parent="JPanel Instance 6" window="Commando" />
+  <component class="javax.swing.JTabbedPane" id="JTabbedPane Instance 2" index="0" parent="JPanel Instance 16" window="No Compiler Defined" />
+  <component class="javax.swing.JTabbedPane" id="JTabbedPane Instance 3" index="0" parent="JSplitPane Instance 4" window="jEdit Help 2" />
+  <component class="javax.swing.JTable" id="JTable Instance" index="0" parent="JViewport Instance 2" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JTextField" id="JTextField Instance" index="3" parent="JPanel Instance 8" window="Commando" />
+  <component class="javax.swing.JTextField" id="JTextField Instance 2" index="0" parent="Box Instance 3" window="Commando" />
+  <component class="javax.swing.JTextField" id="JTextField Instance 3" index="0" parent="Box Instance 4" window="Commando" />
+  <component class="javax.swing.JToggleButton" id="JToggleButton Instance" index="3" parent="JPanel Instance 5" text="" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JToggleButton" id="JToggleButton Instance 2" index="2" parent="JPanel Instance 4" text="" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JTree" id="JTree Instance" index="0" parent="JViewport Instance" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JViewport" id="JViewport Instance" index="0" parent="JScrollPane Instance" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JViewport" id="JViewport Instance 2" index="0" parent="JScrollPane Instance 2" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JViewport" id="JViewport Instance 3" index="0" parent="ComboBox.scrollPane" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JViewport" id="JViewport Instance 4" index="0" parent="JScrollPane Instance 3" window="File System Browser 2" />
+  <component class="javax.swing.JViewport" id="JViewport Instance 5" index="0" parent="JScrollPane Instance 4" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JViewport" id="JViewport Instance 6" index="0" parent="JScrollPane Instance 5" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JViewport" id="JViewport Instance 7" index="0" parent="JScrollPane Instance 6" window="jEdit Help 2" />
+  <component class="javax.swing.JViewport" id="JViewport Instance 8" index="0" parent="JScrollPane Instance 7" window="jEdit Help 2" />
+  <component class="javax.swing.JWindow" id="JWindow Instance" parent="shared frame" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenu" id="JavaStyle" index="7" parent="JPopupMenu Instance 5" text="JavaStyle" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="JavaStyle Reformat Buffer" index="0" parent="JPopupMenu Instance 8" text="JavaStyle Reformat Buffer" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JRadioButton" id="Landscape" index="1" parent="JPanel Instance 25" text="Landscape" window="No Compiler Defined" />
+  <component class="javax.swing.colorchooser.MainSwatchPanel" id="MainSwatchPanel Instance" index="0" parent="JPanel Instance 22" window="Pick a Color" />
+  <component class="javax.swing.JDialog" id="No Compiler Defined" parent="jEdit - Untitled-1" title="No Compiler Defined" />
+  <component class="javax.swing.JButton" id="OK" index="1" parent="Box Instance 2" text="OK" window="Options: jEdit: Editing" />
+  <component class="javax.swing.JButton" id="OK 2" index="1" parent="Box Instance 11" text="OK" window="Pick a Color" />
+  <component class="org.gjt.sp.jedit.gui.RolloverButton" icon="Open.png" id="Open.png" index="2" parent="Box Instance 3" text="" window="Commando" />
+  <component class="org.gjt.sp.jedit.gui.RolloverButton" icon="Open.png" id="Open.png 2" index="2" parent="Box Instance 4" text="" window="Commando" />
+  <component class="org.gjt.sp.jedit.options.GlobalOptions" id="Options: jEdit: Editing" parent="jEdit - Untitled-1" title="Options: jEdit: Editing" />
+  <component class="org.gjt.sp.jedit.gui.EnhancedDialog" id="Pick a Color" parent="Options: jEdit: Editing" title="Pick a Color" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenu" id="Plugins" index="8" parent="JMenuBar Instance" text="Plugins" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JButton" id="Print" index="2" parent="JPanel Instance 19" text="Print" window="No Compiler Defined" />
+  <component class="javax.swing.JCheckBox" id="Print To File" index="9" parent="JPanel Instance 30" text="Print To File" window="No Compiler Defined" />
+  <component class="javax.swing.JDialog" id="Print To File 2" parent="No Compiler Defined" title="Print To File" />
+  <component class="javax.swing.JDialog" id="Print To File 3" parent="No Compiler Defined" title="Print To File" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="Print..." index="15" parent="JPopupMenu Instance 2" text="Print..." window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.gui.EnhancedButton" icon="Reload.png" id="Reload.png" index="1" parent="Box Instance 8" text="" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JButton" id="Replace All" index="2" parent="JPanel Instance 19" text="Replace All" window="No Compiler Defined" />
+  <component class="org.gjt.sp.jedit.gui.HistoryTextField" id="Replace with:" index="5" label="Replace with:" parent="JPanel Instance 18" window="No Compiler Defined" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="Run Current Buffer..." index="6" parent="JPopupMenu Instance 6" text="Run Current Buffer..." window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="Save As..." index="11" parent="JPopupMenu Instance 2" text="Save As..." window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenu" id="Search" index="2" parent="JMenuBar Instance" text="Search" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.gui.HistoryTextField" id="Search for: (press up arrow to recall previous)" index="1" label="Search for: (press up arrow to recall previous)" parent="JPanel Instance 18" window="No Compiler Defined" />
+  <component class="javax.swing.JComboBox" id="Size:" index="1" label="Size:" parent="JPanel Instance 31" window="No Compiler Defined" />
+  <component class="org.gjt.sp.jedit.textarea.TextAreaPainter" id="TextAreaPainter Instance" index="0" parent="JEditTextArea Instance" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.gui.TipOfTheDay" id="Tip of the Day" parent="jEdit - Untitled-1" title="Tip of the Day" />
+  <component class="javax.swing.JButton" icon="ToolbarMenu.gif" id="ToolbarMenu.gif" index="1" parent="JPanel Instance 4" text="" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JButton" icon="ToolbarMenu.gif" id="ToolbarMenu.gif 2" index="1" parent="JPanel Instance 5" text="" window="jEdit - Untitled-1" />
+  <component class="javax.swing.JRadioButton" id="Tumble" index="1" parent="JPanel Instance 28" text="Tumble" window="No Compiler Defined" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenu" id="Utilities" index="6" parent="JMenuBar Instance" text="Utilities" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.browser.VFSBrowser" id="VFSBrowser Instance" index="0" parent="JPanel Instance 13" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.browser.VFSBrowser" id="VFSBrowser Instance 2" index="0" parent="JPanel Instance 14" window="File System Browser 2" />
+  <component class="org.gjt.sp.jedit.browser.VFSDirectoryEntryTable" id="VFSDirectoryEntryTable Instance" index="0" parent="JViewport Instance 4" window="File System Browser 2" />
+  <component class="org.gjt.sp.jedit.browser.VFSDirectoryEntryTable" id="VFSDirectoryEntryTable Instance 2" index="0" parent="JViewport Instance 6" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.options.DockingOptionPane" id="docking" index="0" name="docking" parent="JPanel Instance 3" window="Options: jEdit: Editing" />
+  <component class="org.gjt.sp.jedit.View" id="jEdit - Untitled-1" root="true" title="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.menu.EnhancedMenuItem" id="jEdit Help" index="1" parent="JPopupMenu Instance 9" text="jEdit Help" window="jEdit - Untitled-1" />
+  <component class="org.gjt.sp.jedit.help.HelpViewer" id="jEdit Help 2" root="true" title="jEdit Help" />
+  <component class="javax.swing.SwingUtilities$SharedOwnerFrame" id="shared frame" root="true" title="" />
+  <component class="org.gjt.sp.jedit.options.TextAreaOptionPane" id="textarea" index="0" name="textarea" parent="JPanel Instance 3" window="Options: jEdit: Editing" />
+  <launch args="[]" class="org.gjt.sp.jedit.jEdit" classpath="." method="main" />
+  <!--*********-->
+  <!--********* Wait for startup, customize-->
+  <!--*********-->
+  <!--=== Wait for main and tip windows, close the last one:-->
+  <sequence>
+    <wait args="jEdit - Untitled-1" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <wait args="Tip of the Day" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <wait args="JWindow Instance" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+    <action args="Close" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Tip of the Day" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+  </sequence>
+  <!--=== Docking options:-->
+  <sequence>
+    <action args="Global Options..." method="actionSelectMenuItem" />
+    <wait args="Options: jEdit: Editing" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="JTree Instance,[5]" class="javax.swing.JTree" method="actionSelectRow" />
+    <action args="JTable Instance,&quot;floating&quot;" class="javax.swing.JTable" method="actionDrag" />
+    <event component="JTable Instance" kind="MOUSE_RELEASED" type="MouseEvent" x="307" y="9" />
+    <event component="JButton Instance" kind="MOUSE_RELEASED" type="MouseEvent" x="7" y="9" />
+    <!--action args="ComboBox.list,&quot;bottom&quot;" class="javax.swing.JList" method="actionSelectRow" /-->
+    <assert value="floating" component="JComboBox Instance" method="getSelectedItem" />
+    <action args="JComboBox Instance,bottom" class="javax.swing.JComboBox" method="actionSelectItem" />
+    <!--assert value="bottom" component="JComboBox Instance" method="getSelectedItem" /-->
+    <action args="JTable Instance,&quot;floating&quot;" class="javax.swing.JTable" method="actionDrag" />
+    <event component="JTable Instance" kind="MOUSE_RELEASED" type="MouseEvent" x="304" y="38" />
+    <event component="JButton Instance" kind="MOUSE_RELEASED" type="MouseEvent" x="4" y="13" />
+    <action args="ComboBox.list,&quot;bottom&quot;" class="javax.swing.JList" method="actionSelectRow" />
+    <action args="JTable Instance,&quot;floating&quot;" class="javax.swing.JTable" method="actionDrag" />
+    <event component="JTable Instance" kind="MOUSE_RELEASED" type="MouseEvent" x="305" y="66" />
+    <event component="JButton Instance" kind="MOUSE_RELEASED" type="MouseEvent" x="5" y="16" />
+    <action args="ComboBox.list,&quot;bottom&quot;" class="javax.swing.JList" method="actionSelectRow" />
+    <action args="JTable Instance,&quot;floating&quot;" class="javax.swing.JTable" method="actionDrag" />
+    <event component="JTable Instance" kind="MOUSE_RELEASED" type="MouseEvent" x="306" y="85" />
+    <event component="JButton Instance" kind="MOUSE_RELEASED" type="MouseEvent" x="6" y="10" />
+    <action args="ComboBox.list,&quot;left&quot;" class="javax.swing.JList" method="actionSelectRow" />
+    <action args="OK" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Options: jEdit: Editing" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+  </sequence>
+  <!--=== Enable File System Browser and Console:-->
+  <sequence>
+    <wait args="JToggleButton Instance 2" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="JToggleButton Instance 2" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="JToggleButton Instance" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="JToggleButton Instance" class="javax.swing.AbstractButton" method="actionClick" />
+  </sequence>
+  <!--*********-->
+  <!--********* Create, compile and run simple java class-->
+  <!--*********-->
+  <!--=== Input Hello app code:-->
+  <sequence>
+    <action args="TextAreaPainter Instance,(45%2c22)" class="org.gjt.sp.jedit.textarea.TextAreaPainter" method="actionClick" />
+    <action args="JEditTextArea Instance,public class Hello {" method="actionKeyString" />
+    <action args="JEditTextArea Instance,VK_ENTER" method="actionKeyStroke" />
+    <action args="JEditTextArea Instance, public static v" method="actionKeyString" />
+    <action args="JEditTextArea Instance,oid main(String[] args) {" method="actionKeyString" />
+    <action args="JEditTextArea Instance,VK_ENTER" method="actionKeyStroke" />
+    <action args="JEditTextArea Instance, System.out.println(&quot;Hello!" method="actionKeyString" />
+    <action args="JEditTextArea Instance,&quot;);" method="actionKeyString" />
+    <action args="JEditTextArea Instance,VK_ENTER" method="actionKeyStroke" />
+    <action args="JEditTextArea Instance,VK_BACK_SPACE" method="actionKeyStroke" />
+    <action args="JEditTextArea Instance,}" method="actionKeyString" />
+    <action args="JEditTextArea Instance,VK_ENTER" method="actionKeyStroke" />
+    <action args="JEditTextArea Instance,VK_BACK_SPACE" method="actionKeyStroke" />
+    <action args="JEditTextArea Instance,}" method="actionKeyString" />
+    <action args="JEditTextArea Instance,VK_ENTER" method="actionKeyStroke" />
+  </sequence>
+  <!--=== Save Untitled-1 buffer as Hello.java-->
+  <sequence>
+    <action args="Save As..." method="actionSelectMenuItem" />
+    <wait args="File System Browser 2" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="File name:,Hello.java" method="actionKeyString" />
+    <action args="Choose" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="File System Browser 2" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+    <!--=== Make sure frame title changed properly-->
+    <assert component="jEdit - Untitled-1" method="getTitle" value="jEdit - Hello.java" />
+  </sequence>
+  <!--=== Compile Hello.java buffer, check compilation status (pane subtext)-->
+  <sequence>
+    <action args="Clear.png" class="javax.swing.AbstractButton" method="actionClick" />
+    <action args="Plugins" class="abbot.tester.ComponentTester" method="actionSelectMenuItem" />
+    <action args="Compile Current Buffer..." method="actionSelectMenuItem" />
+    <wait args="Commando" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="OK" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Commando" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+    <!--Wait for successfull compilation finish (up to 30 sec.)-->
+    <expression desc="int counter=0; for (;counter&lt;300;counter++) {  if (component(&quot;ConsolePane Instance&quot;).getText().indexOf(&quot;Process java exited with code 0&quot;) == -1) {   Thread.sleep(100);   continue;  }  break; } if (counter == 300) {  fail(&quot;Probably Compilation Failed&quot;); };"><![CDATA[int counter=0;
+for (;counter<300;counter++) {
+ if (component("ConsolePane Instance").getText().indexOf("Process javac exited with code 0") == -1) {
+  Thread.sleep(100);
+  continue;
+ }
+ break;
+}
+if (counter == 300) {
+ fail("Probably Hello.java compilation Failed");
+};]]></expression>
+  </sequence>
+  <!--=== Make sure Hello.class appears in FS browser pane after directory reloading-->
+  <sequence>
+    <action args="Reload.png" class="javax.swing.AbstractButton" method="actionClick" />
+    <action args="VFSDirectoryEntryTable Instance 2,&quot;Hello.class&quot;" class="javax.swing.JTable" method="actionSelectCell" />
+  </sequence>
+  <!--=== Run Hello app, check execution status (pane subtext)-->
+  <sequence>
+    <action args="Clear.png" class="javax.swing.AbstractButton" method="actionClick" />
+    <action args="Plugins" method="actionSelectMenuItem" />
+    <action args="Run Current Buffer..." method="actionSelectMenuItem" />
+    <wait args="Commando" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="OK" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Commando" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+    <!--Wait for successfull finish (up to 30 sec.)-->
+    <expression desc="if (component(&quot;ConsolePane Instance&quot;) != null) { "><![CDATA[int counter=0;
+for (;counter<300;counter++) {
+ if (component("ConsolePane Instance").getText().indexOf("Process java exited with code 0") == -1) {
+  Thread.sleep(100);
+  continue;
+ }
+ break;
+}
+if (counter == 300) {
+ fail("Probably Hello.class run failed");
+};]]></expression>
+  </sequence>
+  <!--=== Modify Hello.java (search/replace)-->
+  <sequence>
+    <action args="TextAreaPainter Instance,(0%2c11)" class="org.gjt.sp.jedit.textarea.TextAreaPainter" method="actionClick" />
+    <action args="Find..." method="actionSelectMenuItem" />
+    <wait args="No Compiler Defined" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="Search for: (press up arrow to recall previous),&quot;Hello!&quot;" method="actionKeyString" />
+    <action args="Replace with:,0" class="javax.swing.text.JTextComponent" method="actionClick" />
+    <action args="Replace with:,System.getProperty(&quot;java.home&quot;)" method="actionKeyString" />
+    <action args="Replace All" class="javax.swing.AbstractButton" method="actionClick" />
+    <action args="Close" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="No Compiler Defined" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+  </sequence>
+  <!--=== Use JavaStyle plugin to reformat Hello.java-->
+  <sequence>
+    <action args="JavaStyle Reformat Buffer" method="actionSelectMenuItem" />
+  </sequence>
+  <!--=== Save changes (CTRL-S)-->
+  <sequence>
+    <action args="JEditTextArea Instance,VK_S,CTRL_MASK" method="actionKeyStroke" />
+  </sequence>
+  <!--=== Compile Hello.java buffer AGAIN, check compilation status (pane subtext)-->
+  <sequence>
+    <action args="Clear.png" class="javax.swing.AbstractButton" method="actionClick" />
+    <action args="Plugins" class="abbot.tester.ComponentTester" method="actionSelectMenuItem" />
+    <action args="Compile Current Buffer..." method="actionSelectMenuItem" />
+    <wait args="Commando" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="OK" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Commando" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+    <!--Wait for successfull compilation finish (up to 30 sec.)-->
+    <expression desc="int counter=0; for (;counter&lt;300;counter++) {  if (component(&quot;ConsolePane Instance&quot;).getText().indexOf(&quot;Process javac exited with code 0&quot;) == -1) {   Thread.sleep(100);   continue;  }  break; } if (counter == 300) {  fail(&quot;Probably Compilation Failed&quot;); };"><![CDATA[int counter=0;
+for (;counter<300;counter++) {
+ if (component("ConsolePane Instance").getText().indexOf("Process javac exited with code 0") == -1) {
+  Thread.sleep(100);
+  continue;
+ }
+ break;
+}
+if (counter == 300) {
+ fail("Probably Hello.java compilation Failed");
+};]]></expression>
+  </sequence>
+  <!--=== Run Hello app AGAIN, check execution status (pane subtext)-->
+  <sequence>
+    <action args="Clear.png" class="javax.swing.AbstractButton" method="actionClick" />
+    <action args="Run Current Buffer..." method="actionSelectMenuItem" />
+    <wait args="Commando" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="OK" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Commando" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+    <!--Wait for successfull finish (up to 30 sec.)-->
+    <expression desc="int counter=0; for (;counter&lt;300;counter++) {  if (component(&quot;ConsolePane Instance&quot;).getText().indexOf(&quot;Process java exited with code 0&quot;) == -1) {   Thread.sleep(100);   continue;  }  break; } if (counter == 300) {  fail(&quot;Probably Hello.class run failed&quot;); };"><![CDATA[int counter=0;
+for (;counter<300;counter++) {
+ if (component("ConsolePane Instance").getText().indexOf("Process java exited with code 0") == -1) {
+  Thread.sleep(100);
+  continue;
+ }
+ break;
+}
+if (counter == 300) {
+ fail("Probably Hello.class run failed");
+};]]></expression>
+  </sequence>
+  <!--*********-->
+  <!--********* Use misc functions-->
+  <!--*********-->
+  <!--=== Change Text Area background color-->
+  <sequence>
+    <action args="Global Options..." method="actionSelectMenuItem" />
+    <wait args="Options: jEdit: Editing" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="JTree Instance,[16]" class="javax.swing.JTree" method="actionSelectRow" />
+    <action args="ColorWellButton Instance" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Pick a Color" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="MainSwatchPanel Instance,(234%2c49)" class="javax.swing.colorchooser.MainSwatchPanel" method="actionClick" />
+    <action args="OK 2" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Pick a Color" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+    <action args="OK" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Options: jEdit: Editing" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+    <assert component="TextAreaPainter Instance" method="getBackground" value="java.awt.Color[r=255,g=255,b=0]" />
+  </sequence>
+  <!--=== Print to file-->
+  <sequence>
+    <action args="Print..." method="actionSelectMenuItem" />
+    <wait args="No Compiler Defined" class="abbot.tester.ComponentTester" method="assertComponentShowing" timeout="30000" />
+    <action args="Print To File" class="javax.swing.AbstractButton" method="actionClick" />
+    <action args="Print" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Print To File 3" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="OK" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="Print To File 3" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+    <wait args="No Compiler Defined" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+  </sequence>
+  <!--=== Make sure out.prn appears in FS browser pane after directory reloading-->
+  <sequence>
+    <action args="Reload.png" class="javax.swing.AbstractButton" method="actionClick" />
+    <action args="VFSDirectoryEntryTable Instance 2,&quot;out.prn&quot;" class="javax.swing.JTable" method="actionSelectCell" />
+  </sequence>
+  <!--=== Help/About-->
+  <sequence>
+    <action args="Help" method="actionSelectMenuItem" />
+    <action args="About jEdit..." method="actionSelectMenuItem" />
+    <wait args="No Compiler Defined" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <action args="3000" method="actionDelay" />
+    <action args="Print" class="javax.swing.AbstractButton" method="actionClick" />
+    <wait args="No Compiler Defined" class="abbot.tester.ComponentTester" invert="true" method="assertComponentShowing" />
+  </sequence>
+  <!--=== Help jEdit/find "font"/Choose printing from results (exact text match)-->
+  <sequence>
+    <action args="jEdit Help" method="actionSelectMenuItem" />
+    <wait args="jEdit Help 2" class="abbot.tester.ComponentTester" method="assertComponentShowing" />
+    <expression><![CDATA[assertTrue("Help text missing", (component("JEditorPane Instance").getText().indexOf("Useful menu commands:") != -1));]]></expression>
+    <action args="JTabbedPane Instance 3,&quot;Search&quot;" class="javax.swing.JTabbedPane" method="actionSelectTab" />
+    <action args="HistoryTextField Instance,0" class="javax.swing.text.JTextComponent" method="actionClick" />
+    <action args="HistoryTextField Instance,font" method="actionKeyString" />
+    <action args="HistoryTextField Instance,notify-field-accept" class="javax.swing.JComponent" method="actionActionMap" />
+    <action args="JList Instance,&quot;Printing&quot;" class="javax.swing.JList" method="actionSelectRow" />
+    <expression><![CDATA[assertTrue("Printing Help text missing", (component("JEditorPane Instance").getText().indexOf("If a header with the file name should be printed on each page.") != -1));]]></expression>
+    <action args="jEdit Help 2" class="java.awt.Window" method="actionClose" />
+  </sequence>
+  <terminate />
+</AWTTestScript>

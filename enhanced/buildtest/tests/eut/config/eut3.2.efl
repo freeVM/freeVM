@@ -1,0 +1,219 @@
+#
+# This file contains the Expected Failure List (EFL) of EUT3.2 tests 
+# for the run on Harmony DRLVM for all platforms.
+#
+# This file is used for generating results/<date>/report.txt and summary
+# index.htm files by ./build.xml using information from 
+# results/<date>/results/xml/*.xml and results/<date>/output.txt.
+#
+# The following rules are used to create this file:
+#
+# - specify test suite name to expect failure for all tests in suite, like
+#   "org.eclipse.jdt.ui.tests.LeakTestSuite"
+#
+# - specify particular test name to expect its failure, the test name 
+#   is to be taken from results\<date>\results\xml\*.xml, like
+#   "org.eclipse.jdt.core.tests.compiler.regression.LookupTest.test044 - 1.4"
+
+###############################################################################
+#
+# These tests unexpectedly PASSED during M3 snapshoot testing - keep them for
+# now
+#
+
+# passes on RI, fails on Harmony due to "timeout is not enough"
+org.eclipse.jdt.debug.tests.core.MethodBreakpointTests.testInnerClassesHit
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=161555
+# Summary: ...testDeleteTwoMethods is failing on IBM 1.5 VM
+org.eclipse.jdt.core.tests.model.ReconcilerTests.testDeleteTwoMethods
+
+###############################################################################
+#
+# Failure analysis is required
+#
+org.eclipse.ltk.core.refactoring.tests.AllTests
+
+###############################################################################
+#
+# Failure is caused by Harmony bug
+#
+
+# HARMONY-3850 ([classlib] 2 EUT tests from core.runtime suite fail)
+org.eclipse.core.tests.runtime.content.IContentTypeManagerTest.testRootElementAndDTDDescriber
+
+# HARMONY-3359 ([drlvm][jit][jet][EUT] "testClass" test fails 12 times in
+# org.eclipse.ui.tests suit)
+org.eclipse.ui.tests.dynamicplugins.BrowserTests.testClass 
+org.eclipse.ui.tests.dynamicplugins.PreferencePageTests.testClass
+org.eclipse.ui.tests.dynamicplugins.PropertyPageTests.testClass
+org.eclipse.ui.tests.dynamicplugins.HelpSupportTests.testClass
+org.eclipse.ui.tests.dynamicplugins.DecoratorTests.testClass
+org.eclipse.ui.tests.dynamicplugins.StartupTests.testClass
+org.eclipse.ui.tests.dynamicplugins.EditorTests.testClass
+org.eclipse.ui.tests.dynamicplugins.IntroTests.testClass
+org.eclipse.ui.tests.dynamicplugins.PerspectiveTests.testClass
+org.eclipse.ui.tests.dynamicplugins.ViewTests.testClass
+org.eclipse.ui.tests.dynamicplugins.NewWizardTests.testClass
+org.eclipse.ui.tests.dynamicplugins.ObjectContributionTests.testClass
+
+# HARMONY-3362 ([classlib][EUT] 3 tests fail in 
+# org.eclipse.jface.tests.databinding suit)
+org.eclipse.jface.tests.databinding.ObservableTest.testAddChangeListener
+org.eclipse.jface.tests.databinding.DatabindingContextTest.testBindValueModel
+org.eclipse.jface.tests.databinding.DatabindingContextTest.testBindValueTarget
+
+# HARMONY-4189 ([classlib][launcher][eut] Harmony JRE java launcher strips
+# quotes for JVM properties)
+org.eclipse.jdt.debug.tests.core.ArgumentTests.testVMArgStandardEmbeddedQuotes
+org.eclipse.jdt.debug.tests.core.ArgumentTests.testVMArgEmbeddedQuotes
+
+
+###############################################################################
+#
+# Failure is caused by Eclipse bug
+#
+# TODO - need to double check the issue is not reproducible on EUT 3.3 because
+# the fix might be integrated to special Eclipse branch (not R-3.3 one).
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=195509
+# Summary: Need to improve classpath resolution for Apache Harmony in 
+#          org/eclipse/jdt/core/tests/util/Util.java
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0641 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0800 - 1.5
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=195526
+# Summary: ...GenericTypeTest.test0744 depends on non-specified package-private
+#          class HashMap.Entry implementation
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0744 - 1.5 
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=181026
+# Summary: support for adding JREs from definition files
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testArchiveSourceContainerMemento
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testAutoDetectRootSourceLookupPositive
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testAutoDetectRootSourceLookupNegative
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testSourceLookupPositive
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testSourceLookupNegative
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testPartiallyQualifiedSourceLookupPositive
+org.eclipse.jdt.debug.tests.core.ExternalArchiveSourceContainerTests.testAutoDetectUnqualifiedSourceLookupPositive
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=158518
+# Summary: Remove dependency of GenericTypeTest#test370 on SUN internal APIs
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0370 - 1.5
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=176157
+# Summary: testAttributeProposals test fails on Harmony VM due to inconsistent
+#          check
+org.eclipse.ant.tests.ui.editor.CodeCompletionTest.testAttributeProposals
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=161492 (see also HARMONY-3390)
+# Summary: org.eclipse.jdt.apt.tests.annotations.mirrortest.
+#          MirrorTestAnnotationProcessor.testPackagegImpl fails assertion 
+#          test on IBM Java2 5.0
+org.eclipse.jdt.apt.tests.MirrorTests.testMirror
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=189146 (see also HARMONY-3391)
+# Summary: [test] The test NLSSourceModifierTest.testBug95708_2 is seems to be
+#          incorrect
+org.eclipse.jdt.ui.tests.nls.NLSSourceModifierTest.testBug95708_2
+org.eclipse.jdt.ui.tests.nls.NLSSourceModifierTest.testInsertionOrder2
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=146215
+# Summary: JDT Core tests should not be dependent on HashMap implementation
+org.eclipse.jdt.core.tests.model.JavaProjectTests.testExtraJavaLikeExtension1
+org.eclipse.jdt.core.tests.model.JavaProjectTests.testUserLibrary
+org.eclipse.jdt.core.tests.model.ClasspathTests.testEncodeDecodeEntry02
+org.eclipse.jdt.core.tests.model.ClasspathTests.testEncodeDecodeEntry04
+org.eclipse.jdt.core.tests.model.ClasspathTests.testEncodeDecodeEntry05
+org.eclipse.jdt.core.tests.model.ClasspathTests.testUnknownAttributes
+org.eclipse.jdt.core.tests.model.ClasspathTests.testUnknownElements2
+org.eclipse.jdt.core.tests.model.WorkingCopyOwnerTests.testBecomeWorkingCopy3
+org.eclipse.jdt.core.tests.model.JavaLikeExtensionsTests.testGetJavaLikeExtensions01
+org.eclipse.jdt.core.tests.model.JavaLikeExtensionsTests.testGetJavaLikeExtensions02
+org.eclipse.jdt.core.tests.model.DeleteTests.testDeleteMultipleMembersFromVariousCUs
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=187223
+# Summary: CompletionTestsRequestor2.getReversedResults has incorrect 
+#          comparator
+org.eclipse.jdt.core.tests.model.JavadocTypeCompletionModelTest.test022
+
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=188648
+# Summary: ECJ compiler fails to find boot classes on Harmony
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test009 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test010 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test011 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test013 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test014 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test015 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test016 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test017 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test019 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test020 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test021 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test024 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test025 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test026 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test027 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test028 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test030 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test032 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test033 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test034 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test035 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test036 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test037 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test039 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test040 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test041 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test042 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test043 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test046 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test047 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test048 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test049 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test050 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test051 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test052 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.BatchCompilerTest.test053 - 1.5
+
+# https://bugs.eclipse.org/bugs/show_bug.cgi?id=188103 (see also HARMONY-3393)
+# Summaary: [1.5][compiler] Inappropriate usage of HashSet
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0109 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0110 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0111 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0429 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0444 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0499 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0719 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0720 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0729 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0768 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0777 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0778 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0968 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0989 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0991 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.GenericTypeTest.test0992 - 1.5
+org.eclipse.jdt.core.tests.compiler.regression.MethodVerifyTest.test088 - 1.5
+
+
+##############################################################################
+#
+# Invalid tests 
+# (no tests failure evaluation is required)
+#
+
+# Invalid: JVMPI is unsupported - deprecated functionality
+org.eclipse.jdt.ui.tests.LeakTestSuite
+
+# Invalid: intermittently fails on RI (see technical details in HARMONY-3851)
+org.eclipse.core.tests.internal.runtime.PlatformURLSessionTest.test1OutputOnReadOnly
+org.eclipse.core.tests.internal.runtime.PlatformURLSessionTest.test2Resolution
+
+# Invalid: intermittently fails on RI
+org.eclipse.core.tests.runtime.jobs.JobTest.testGetResult
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_copy
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_custom_StyledText.test_paste
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_copy
+org.eclipse.swt.tests.junit.Test_org_eclipse_swt_widgets_Text.test_pasteIndex: efl.linux.x86

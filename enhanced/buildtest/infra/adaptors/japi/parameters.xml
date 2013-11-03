@@ -1,0 +1,41 @@
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<parameters>
+    <required>
+        <harmony.home description="Path to Harmony Runtime"
+            value="${drlvm.parameters.shared.jvm.location}"/>
+        <harmony.name description="Harmony name in JAPI report"
+            value="Harmony"/>
+        <ri.home description="Path to RI Runtime"
+            value="${java.home}"/>
+        <ri.name description="RI name in JAPI report"
+            value="RI"/>
+        <japi.home description="Path to JAPI tool" />
+    </required>
+
+    <external>
+<!-- FIXME
+        <japi
+            url="http://www.kaffe.org/~stuart/japi/japitools-0.9.7.zip"
+            md5="b35a6c1767c116999a1f3d205174429c"
+            dir="japitools-0.9.7"/>
+-->
+    </external>
+
+    <shared/>
+    <cc/>
+</parameters>

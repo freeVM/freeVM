@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>View Sources</title>
+    <link href="/struts2-showcase-2.0.6/styles/main.css" rel="stylesheet" type="text/css" media="all"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css" rel="stylesheet" type="text/css"/>
+    <link href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <script language="JavaScript" type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js"></script>
+
+    <script language="JavaScript" type="text/javascript">
+
+        window.onload=function(){
+            if(!NiftyCheck())
+                return;
+            Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
+            Rounded("div#outer-header", "all", "white", "#818EBD", "smooth border #434F7C");
+            Rounded("div#footer", "all", "white", "#818EBD", "smooth border #434F7C");
+        }
+
+    </script>
+
+    <!--// START SNIPPET: common-include-->
+<link rel="stylesheet" href="/struts2-showcase-2.0.6/struts/xhtml/styles.css" type="text/css"/>
+<script language="JavaScript" type="text/javascript">
+    // Dojo configuration
+    djConfig = {
+        baseRelativePath: "/struts2-showcase-2.0.6/struts/dojo",
+        isDebug: false,
+        bindEncoding: "UTF-8",
+        debugAtAllCosts: true // not needed, but allows the Venkman debugger to work with the includes
+    };
+</script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/dojo/dojo.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/simple/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/ajax/dojoRequire.js"></script>
+<script language="JavaScript" type="text/javascript"
+        src="/struts2-showcase-2.0.6/struts/CommonFunctions.js"></script>
+
+<!--// END SNIPPET: common-include-->
+
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/tabs.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyCorners.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">
+    <link rel="stylesheet" type="text/css" href="/struts2-showcase-2.0.6/struts/niftycorners/niftyPrint.css?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction" media="print">
+    <script type="text/javascript" src="/struts2-showcase-2.0.6/struts/niftycorners/nifty.js?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            if (!NiftyCheck())
+                return;
+            Rounded("li.tab_selected", "top", "white", "transparent", "border #ffffffS");
+            Rounded("li.tab_unselected", "top", "white", "transparent", "border #ffffffS");
+            //                Rounded("div#tab_header_main li","top","white","transparent","border #ffffffS");
+            // "white" needs to be replaced with the background color
+        }
+    </script>
+</head>
+
+<body id="page-home">
+
+
+<div id="page">
+    <div id="outer-header">
+        <div id="header" class="clearfix">
+            <div id="branding">
+                <h1 class="title">Struts Showcase</h1>
+                
+2007/04/06 03:18:23
+
+            </div><!-- end branding -->
+
+            <div id="search">
+                <img src="/struts2-showcase-2.0.6/images/struts-power.gif" alt="Powered by Struts"/>
+            </div><!-- end search -->
+
+            <hr/>
+        </div>
+    </div><!-- end header -->
+
+    <div id="content" class="clearfix">
+
+        <h1>View Sources</h1>
+
+<script type="text/javascript">
+  dojo.require("dojo.widget.TabContainer");
+  dojo.require("dojo.widget.LinkPane");
+  dojo.require("dojo.widget.ContentPane");
+</script>
+
+<div dojoType="TabContainer"
+      id="test"    doLayout="false">
+
+	<div dojoType="struts:BindDiv"
+    
+  	id="one"    label="Page"    showError="true">
+
+        <h3>/hangman/hangmanNonAjax.ftl</h3>
+<pre>
+
+1: &lt;html&gt;
+2: &lt;head&gt;
+3: 	&lt;title&gt;Showcase - Hangman&lt;/title&gt;
+4: 	&lt;@s.head theme=&quot;xhtml&quot; /&gt;
+5: &lt;/head&gt;
+6: &lt;body&gt;
+7: &lt;table bgcolor=&quot;green&quot;&gt; 
+8:   &lt;tr&gt; 
+9:     &lt;td&gt;
+10:     &lt;@s.url id=&quot;url&quot; value=&quot;/hangman/images/hangman.png&quot; /&gt;
+11:     &lt;img alt=&quot;Hangman&quot; src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot;
+12:            width=&quot;197&quot; height=&quot;50&quot; border=&quot;0&quot;/&gt; 
+13:     &lt;/td&gt; 
+14:     &lt;td width=&quot;70&quot; align=&quot;right&quot;&gt;
+15:       &lt;#-- Guesses Left --&gt;
+16:       &lt;div id=&quot;updateGuessLeftDiv&quot;&gt;
+17:       &lt;#if (hangman.guessLeft() &gt;= 0)&gt;
+18:       &lt;@s.set name=&quot;guessLeftImageName&quot; value=&quot;%{'Chalkboard_'+hangman.guessLeft()+'.png'}&quot; /&gt;
+19:       &lt;@s.url id=&quot;url&quot; value=&quot;%{'/hangman/images/'+#guessLeftImageName}&quot; /&gt;
+20:       &lt;img alt=&quot;No. Guesses Left&quot;
+21:       	   src=&quot;&lt;@s.property value=&quot;%{#url}&quot;/&gt;&quot; width=&quot;20&quot; height=&quot;20&quot; border=&quot;0&quot; /&gt;
+22:       &lt;/#if&gt;
+23:       &lt;/div&gt;
+24:     &lt;/td&gt;
+25:     &lt;td&gt;
+26:     	&lt;@s.url id=&quot;url&quot; value=&quot;/hangman/images/guesses-left.png&quot; /&gt;
+27:     	&lt;img alt=&quot;Guesses Left&quot;
+28:             src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot; width=&quot;164&quot; height=&quot;11&quot; border=&quot;0&quot;/&gt;
+29:     &lt;/td&gt;
+30:   &lt;/tr&gt; 
+31:   &lt;tr&gt; 
+32:   	&lt;td&gt;&lt;/td&gt;
+33:     &lt;td align=&quot;left&quot;&gt;
+34:     &lt;#-- Display Scaffold --&gt;
+35:   	&lt;div id=&quot;updateScaffoldDiv&quot;&gt;
+36:     	&lt;@s.set name=&quot;scaffoldImageName&quot; value=&quot;%{'scaffold_'+hangman.guessLeft()+'.png'}&quot; /&gt;
+37:     	&lt;@s.url id=&quot;url&quot; value=&quot;%{'/hangman/images/'+#scaffoldImageName}&quot; /&gt;
+38:     	&lt;img src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot; border=&quot;0&quot;/&gt;
+39:     &lt;/div&gt;
+40:     &lt;/td&gt;
+41:     &lt;td&gt;&lt;/td&gt;
+42:     &lt;/tr&gt; 
+43:   &lt;tr&gt;
+44:     &lt;td width=&quot;160&quot;&gt; 
+45:       &lt;p align=&quot;right&quot;&gt;
+46:       	&lt;@s.url id=&quot;url&quot; value=&quot;/hangman/images/guess.png&quot; /&gt;
+47:         &lt;img alt=&quot;Current Guess&quot; src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot;
+48:            align=&quot;MIDDLE&quot; width=&quot;127&quot; height=&quot;20&quot; border=&quot;0&quot;/&gt;&lt;/p&gt; 
+49:     &lt;/td&gt; 
+50:     &lt;td&gt;
+51:     &lt;#-- Display Vacab  --&gt;
+52:     &lt;div id=&quot;updateVocabDiv&quot;&gt;
+53:     &lt;#if hangman.gameEnded()&gt;
+54: 		&lt;@s.iterator id=&quot;currentCharacter&quot; value=&quot;%{hangman.vocab.inCharacters()}&quot; stat=&quot;stat&quot;&gt;
+55: 			&lt;@s.url id=&quot;url&quot; value=&quot;%{'/hangman/images/Chalkboard_'+#currentCharacter.toString()+'.png'}&quot; /&gt;
+56: 			&lt;img height=&quot;36&quot; alt=&quot;&lt;@s.property value=&quot;%{#currentCharacter}&quot; /&gt;&quot;
+57: 		 			src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot; width=&quot;36&quot; border=&quot;0&quot; /&gt;
+58: 		&lt;/@s.iterator&gt;
+59: 	&lt;#else&gt;
+60:     &lt;@s.iterator id=&quot;currentCharacter&quot; value=&quot;%{hangman.vocab.inCharacters()}&quot; stat=&quot;stat&quot;&gt;
+61:     	&lt;#if hangman.characterGuessedBefore(currentCharacter)&gt;
+62:     		&lt;@s.set name=&quot;chalkboardImageName&quot; value=&quot;%{'Chalkboard_'+#currentCharacter.toString()+'.png'}&quot; /&gt;
+63:     		&lt;@s.url id=&quot;url&quot; value=&quot;%{'/hangman/images/'+#chalkboardImageName}&quot; /&gt;
+64:     		&lt;img height=&quot;36&quot; alt=&quot;&lt;@s.property value=&quot;%{#currentCharacter}&quot; /&gt;&quot;
+65:         		src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot; width=&quot;36&quot; border=&quot;0&quot;/&gt;
+66:     	&lt;#else&gt;
+67:     		&lt;@s.url id=&quot;url&quot; value=&quot;/hangman/images/Chalkboard_underscroll.png&quot; /&gt;
+68:     		&lt;img height=&quot;36&quot; alt=&quot;_&quot;
+69:         		src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot; width=&quot;36&quot; border=&quot;0&quot;/&gt;
+70:     	&lt;/#if&gt;
+71: 	&lt;/@s.iterator&gt;
+72: 	&lt;/#if&gt;
+73: 	&lt;/div&gt;
+74:     &lt;/td&gt; 
+75:   &lt;/tr&gt;
+76:   &lt;tr&gt; 
+77:     &lt;td valign=&quot;top&quot;&gt; 
+78:       &lt;p align=&quot;right&quot;&gt;
+79:       	&lt;@s.url id=&quot;url&quot; value=&quot;/hangman/images/choose.png&quot; /&gt;
+80:         &lt;img alt=&quot;Choose&quot; src=&quot;&lt;@s.property value=&quot;%{#url}&quot; /&gt;&quot;
+81:              height=&quot;20&quot; width=&quot;151&quot; border=&quot;0&quot;/&gt;
+82:       &lt;/p&gt; 
+83:     &lt;/td&gt; 
+84:     &lt;td width=&quot;330&quot;&gt;
+85:     
+86:     &lt;#-- Show Characters Available --&gt;
+87:     &lt;div id=&quot;updateCharacterAvailableDiv&quot;&gt;
+88:     &lt;#if hangman.gameEnded()&gt;
+89: 	&lt;@s.set name=&quot;winImageName&quot; value=&quot;%{'you-win.png'}&quot; /&gt;
+90: 	&lt;@s.set name=&quot;looseImageName&quot; value=&quot;%{'you-lose.png'}&quot; /&gt;
+91: 	&lt;@s.set name=&quot;startImageName&quot; value=&quot;%{'start.png'}&quot; /&gt;
+92: 	&lt;@s.url id=&quot;winImageUrl&quot; value=&quot;%{'/hangman/images/'+#winImageName}&quot;  /&gt;
+93: 	&lt;@s.url id=&quot;looseImageUrl&quot; value=&quot;%{'/hangman/images/'+#looseImageName}&quot; /&gt;
+94: 	&lt;@s.url id=&quot;startImageUrl&quot; value=&quot;%{'/hangman/images/'+#startImageName}&quot; /&gt;
+95: 	&lt;@s.url id=&quot;startHref&quot; action=&quot;hangmanNonAjax&quot; namespace=&quot;/hangman&quot; /&gt;
+96: 	
+97: 	&lt;#if hangman.isWin()&gt;
+98: 	&lt;img src=&quot;&lt;@s.property value=&quot;%{#winImageUrl}&quot; /&gt;&quot; width=&quot;341&quot; height=&quot;44&quot; /&gt;
+99: 	&lt;#else&gt;
+100: 	&lt;img src=&quot;&lt;@s.property value=&quot;%{#looseImageUrl}&quot; /&gt;&quot; width=&quot;381&quot; height=&quot;44&quot; /&gt;
+101: 	&lt;/#if&gt;
+102: 	&lt;@s.a href=&quot;%{#startHref}&quot;&gt;
+103: 		&lt;img src=&quot;&lt;@s.property value=&quot;%{#startImageUrl}&quot; /&gt;&quot; width=&quot;250&quot; height=&quot;43&quot; /&gt;
+104: 	&lt;/@s.a&gt;
+105: 	&lt;#else&gt;
+106: 	&lt;@s.iterator id=&quot;currentCharacter&quot; value=&quot;%{hangman.charactersAvailable}&quot; status=&quot;stat&quot;&gt;
+107:       &lt;@s.set name=&quot;chalkboardImageName&quot; value=&quot;%{'Chalkboard_'+#currentCharacter+'.png'}&quot; /&gt;
+108:       &lt;@s.url id=&quot;chalkboardImageUrl&quot; value=&quot;%{'/hangman/images/'+#chalkboardImageName}&quot; /&gt;
+109:       &lt;@s.url id=&quot;spacerUrl&quot; value=&quot;/hangman/images/letter-spacer.png&quot; /&gt;
+110:       &lt;@s.url id=&quot;url&quot; action=&quot;guessCharacterNonAjax&quot; namespace=&quot;/hangman&quot;&gt;
+111:       	&lt;@s.param name=&quot;character&quot; value=&quot;%{#currentCharacter}&quot; /&gt;
+112:       &lt;/@s.url&gt;
+113:       
+114:       &lt;@s.a href=&quot;%{#url}&quot;
+115:       		  id=&quot;%{#currentCharacter}&quot; 
+116:       		  &gt;
+117:       	&lt;img height=&quot;36&quot; alt=&quot;&quot; src=&quot;&lt;@s.property value=&quot;%{#chalkboardImageUrl}&quot; /&gt;&quot; width=&quot;36&quot; border=&quot;0&quot; /&gt;
+118:       &lt;/@s.a&gt;
+119: 	&lt;/@s.iterator&gt;
+120: 	&lt;/#if&gt;
+121: 	&lt;/div&gt;
+122:  
+123:    
+124:    &lt;/td&gt;
+125:   &lt;/tr&gt; 
+126:   &lt;tr&gt;
+127:   	&lt;td&gt;
+128:   		
+129:   	&lt;/td&gt;
+130:   &lt;/tr&gt;
+131: &lt;/table&gt;
+132: &lt;/body&gt;
+133: &lt;/html&gt;
+134: 
+135: 
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="two"    label="Configuration"    showError="true">
+
+        <h3>file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts-hangman.xml</h3>
+<pre>
+
+
+14: 		&lt;/action&gt;
+15: 		&lt;action name=&quot;hangmanNonAjax&quot; class=&quot;startHangmanAction&quot;&gt;
+16: 			&lt;result type=&quot;freemarker&quot;&gt;/hangman/hangmanNonAjax.ftl&lt;/result&gt;
+17: 		&lt;/action&gt;
+18: 		&lt;action name=&quot;test&quot;&gt;
+19: 			&lt;result type=&quot;freemarker&quot;&gt;/hangman/test.ftl&lt;/result&gt;
+20: 		&lt;/action&gt;
+21: 		&lt;action name=&quot;guessCharacter&quot; class=&quot;guessCharacterAction&quot;&gt;
+22: 			&lt;result type=&quot;freemarker&quot;&gt;/hangman/blank.ftl&lt;/result&gt;
+23: 		&lt;/action&gt;
+<span style="background-color:yellow">24: 		&lt;action name=&quot;guessCharacterNonAjax&quot; class=&quot;guessCharacterAction&quot;&gt;</span>
+25: 			&lt;result type=&quot;freemarker&quot;&gt;/hangman/hangmanNonAjax.ftl&lt;/result&gt;
+26: 		&lt;/action&gt;
+27: 	&lt;/package&gt;
+28: 	
+29: 	
+30: 	
+31: 	&lt;package name=&quot;hangman-ajax&quot; extends=&quot;struts-default&quot; namespace=&quot;/hangman/ajax&quot;&gt;
+32: 		&lt;action name=&quot;blank&quot;&gt;
+33: 			&lt;result type=&quot;freemarker&quot;&gt;/hangman/blank.ftl&lt;/result&gt;
+34: 		&lt;/action&gt;
+</pre>
+    </div>
+
+    <div dojoType="struts:BindDiv"
+    
+  	id="three"    label="Java Action"    showError="true">
+
+        <h3>/guessCharacterAction.java</h3>
+<pre>
+
+</pre>
+    </div>
+
+    
+</div>
+
+        <div id="nav">
+            <div class="wrapper">
+                <h2 class="accessibility">Navigation</h2>
+                <ul class="clearfix">
+        <li><a href="/struts2-showcase-2.0.6/showcase.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Home</a></li>
+        <li><a href="/struts2-showcase-2.0.6/ajax/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Ajax</a></li>
+        <li><a href="/struts2-showcase-2.0.6/chat/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Ajax Chat</a></li>
+        <li><a href="/struts2-showcase-2.0.6/actionchaining/actionChain1!input.action">Action Chaining</a></li>
+        <li><a href="/struts2-showcase-2.0.6/config-browser/index.action">Config Browser</a></li>
+        <li><a href="/struts2-showcase-2.0.6/conversion/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Conversion</a></li>
+        <li><a href="/struts2-showcase-2.0.6/empmanager/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">CRUD</a></li>
+        <li><a href="/struts2-showcase-2.0.6/wait/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Execute & Wait</a></li>
+        <li><a href="/struts2-showcase-2.0.6/filedownload/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">File Download</a></li>
+        <li><a href="/struts2-showcase-2.0.6/fileupload?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">File Upload</a></li>
+        <li><a href="/struts2-showcase-2.0.6/freemarker/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Freemarker</a>
+        <li><a href="/struts2-showcase-2.0.6/hangman/hangmanMenu.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Hangman</a></li>
+        <li><a href="/struts2-showcase-2.0.6/jsf/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">JavaServer Faces</a></li>
+        <li><a href="/struts2-showcase-2.0.6/person/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Person Manager</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tags/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Tags</a></li>
+        <li><a href="/struts2-showcase-2.0.6/tiles/index.action?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Tiles</a></li>
+        <li><a href="/struts2-showcase-2.0.6/token/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Token</a></li>
+        <li><a href="/struts2-showcase-2.0.6/validation/index.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Validation</a></li>
+        <li class="last"><a href="/struts2-showcase-2.0.6/help.jsp?config=file%3A%2FC%3A%2Fmol%2Ftools%2Fjakarta-tomcat-5.0.30%2Fwebapps%2Fstruts2-showcase-2.0.6%2FWEB-INF%2Fclasses%2Fstruts-hangman.xml%3A24&amp;page=%2Fhangman%2F%2Fhangman%2FhangmanNonAjax.ftl&amp;className=guessCharacterAction">Help</a></li>
+                </ul>
+            </div>
+            <hr/>
+
+        </div><!-- end nav -->
+
+    </div><!-- end content -->
+
+  <div>
+      <p>
+        <a href="/struts2-showcase-2.0.6/viewSource.action?config=file:/C:/mol/tools/jakarta-tomcat-5.0.30/webapps/struts2-showcase-2.0.6/WEB-INF/classes/struts.xml:60&className=org.apache.struts2.showcase.source.ViewSourceAction&page=//viewSource.jsp">View Sources</a>
+      </p>
+  </div>
+    <div id="footer" class="clearfix">
+        <p>Copyright &copy; 2003-2007 The Apache Software Foundation.</p>
+    </div><!-- end footer -->
+    <p/>
+
+</div><!-- end page -->
+
+</body>
+</html>

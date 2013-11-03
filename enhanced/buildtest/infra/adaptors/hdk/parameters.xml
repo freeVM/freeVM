@@ -1,0 +1,47 @@
+<!-- 
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+
+<parameters>
+    <required/>
+
+    <!-- shared values -->
+    <shared>
+        <svn.url value="http://svn.apache.org/repos/asf/harmony/enhanced/trunk"/>
+        <trunk.dir location="${checkouts.dir}/hdk" id="trunk.dir.id"/>
+        <classlib.trunk.dir location="${checkouts.dir}/hdk/working_classlib" 
+                            id="classlib.trunk.dir.id"/>
+        <drlvm.trunk.dir location="${checkouts.dir}/hdk/working_vm"
+                         id="drlvm.trunk.dir.id"/>
+        <jdktools.trunk.dir location="${checkouts.dir}/hdk/working_jdktools"
+                            id="jdktools.trunk.dir.id"/>
+        <common.resources.dir location="${checkouts.dir}/hdk/common_resources"/>
+        <binaries.jre.dir location="${checkouts.dir}/hdk/target/hdk/jdk/jre"/> 
+        <hy.cfg value="debug"/>
+    </shared>
+
+    <svn>
+      <hdk url="http://svn.apache.org/repos/asf/harmony/enhanced/trunk" />
+    </svn>
+
+    <!-- CC specific configuration -->
+    <cc>
+        <usesvn refid="trunk.dir.id"/>
+        <usesvn.classlib refid="classlib.trunk.dir.id"/>
+        <usesvn.drlvm refid="drlvm.trunk.dir.id"/>
+        <usesvn.jdktools refid="jdktools.trunk.dir.id"/>
+        <skip.svnupdate value="true"/>
+    </cc>
+</parameters>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<parameters depends="drlvm">
+
+    <!-- Required parameters -->
+    <required>
+        <tested.jvm
+            description="Path to JVM under test "
+            value="${drlvm.parameters.shared.jvm.location}"/>
+        <tested.jre
+	        description="Path to JRE under test"
+            value="${drlvm.parameters.shared.jre.dir}"/>
+    </required>
+
+    <!-- Optional parameters -->
+    <optional/>
+
+    <!-- External dependencies -->
+    <external>
+       <ldap.ds
+            url="http://www.uniontransit.com/apache/java-repository/directory/jars/apacheds-main-0.9.3.jar"
+            md5="a299d9eb2e0480fab6442f49daa36540"
+            jar="ldap.ds.jar"
+        />
+       <log4j
+            url="http://repo1.maven.org/maven2/log4j/log4j/1.2.5/log4j-1.2.5.jar"
+            md5="0342459732ebdfc427d7288a39ea5538"
+            jar="log4j.jar"
+       />
+
+    </external>
+
+    <!-- Shared parameters -->
+    <shared/>
+
+    <!-- CC specific configuration -->
+    <cc>
+        <!-- Run this script for publishing results -->
+        <summary value="${ldap_scenario.summary}"/>
+
+        <!-- Merge results with CC log -->
+        <results value="${current.results.dir}"/>
+    </cc>
+
+</parameters>

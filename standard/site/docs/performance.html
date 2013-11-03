@@ -1,0 +1,329 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements. See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+<!-- start the processing -->
+    <!-- ====================================================================== -->
+    <!-- GENERATED FILE, DO NOT EDIT, EDIT THE XML FILE IN xdocs INSTEAD! -->
+    <!-- Main Page Section -->
+    <!-- ====================================================================== -->
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+                                                    <meta name="author" content="Harmony Documentation Team">
+            <meta name="email" content="dev@harmony.apache.org">
+            
+           
+            
+            
+            
+            
+            
+            <title>Apache Harmony - Performance</title>
+
+                        
+                
+        <link rel="stylesheet" type="text/css" href="css/site.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="css/print.css" media="print" />
+
+                        
+        </head>
+
+        <body>
+			<div style="
+				clear: left;
+   				font-size: 110%;
+   				background-color: #FF0040;
+   				color: white;
+				float: left">
+
+				<b><big>Apache Harmony is retired at the Apache Software Foundation</big></b> since Nov 16, 2011.
+				<p>
+				The information on these pages may be out of date, or may refer to
+				resources that have moved or have been made read-only.
+				<br> 
+				For more information please refer to the
+				<a href="http://attic.apache.org">Apache Attic</a>
+				<p>
+			</div>
+			
+            <div id="pageHeader" style="clear: left">
+			<br>
+            <!-- Logo -->
+                        <a id="harmonyLogo" href="http://harmony.apache.org/"><img src="./images/harmony-logo-new.png" alt="Apache Harmony"
+          width="415" height="50" /></a>
+      
+            <!-- Advertisement
+            <a href="http://na.apachecon.com">
+                <img id="advertisement"
+                     src="images/apachecon-na2010.gif"
+                     width="234" height="60"
+                     alt="ApacheCon US 2010" /></a>
+            -->
+
+            </div> <!-- pageHeader -->
+
+            <div id="navigationmenu">
+                    <!-- LEFT SIDE NAVIGATION -->
+                
+    <!-- ============================================================ -->
+
+                <p class="menuItem">General</p>
+        <ul>
+                    <li class="menuItem">    <a href="./index.html">Home</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/licenses/">License</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./contribution_policy.html">Contribution Policy</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./download.cgi">Downloads</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./bundles.html">Bundles</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./faq.html">FAQ</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/security/">Security</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./sitemap.html">Sitemap</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Community</p>
+        <ul>
+                    <li class="menuItem">    <a href="./get-involved.html">Get Involved</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./contributors.html">Who we are</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./mailing.html">Mailing Lists</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://issues.apache.org/jira/browse/HARMONY">Bug Tracker</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./related.html">Other Projects</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Development</p>
+        <ul>
+                    <li class="menuItem">    <a href="./svn.html">Source Code</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./quickhelp_contributors.html">Getting Started</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./roadmap.html">Project Roadmap</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./issue_resolution_guideline.html">Resolution Guideline</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./performance.html">Performance</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Documentation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.jdocs.com/harmony/5.M5/overview-summary.html">API Reference</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://wiki.apache.org/harmony">Wiki</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/drlvm/index.html">DRLVM</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/classlibrary/index.html">Class Library</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="./subcomponents/buildtest/index.html">Build-test Framework</a>
+</li>
+           
+                        
+        
+        </ul>
+            <p class="menuItem">Foundation</p>
+        <ul>
+                    <li class="menuItem">    <a href="http://www.apache.org">ASF</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/sponsorship.html ">Sponsorship</a>
+</li>
+           
+                        
+                    <li class="menuItem">    <a href="http://www.apache.org/foundation/thanks.html ">Thanks</a>
+</li>
+           
+                        
+        
+        </ul>
+                    
+                <!-- Add the ASF birthday logo to the end of the menu -->
+                <img id="birthday"
+                     src="http://www.apache.org/images/10yearsASF_170x101.jpg"
+                     width="170" height="101"
+                     vspace="30"
+                     alt="Ten Years of the ASF" />
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div id="top">
+                                                        <h1>
+      <a name="Performance">Performance</a>
+    </h1>
+                            
+    <h2>
+        <a name="Dacapo (less is better)">Dacapo (less is better)</a>
+    </h2>
+      
+                        <p>
+	<a href="subcomponents/performance/dacapo.html">Detailed</a>
+	<p>
+		Latest results: 
+		<p>		
+		<table border="1">
+		        <tr><th nowrap="true">Date</th><th>SVN revision</th><th>VM</th><th>workload</th><th>antlr</th><th>bloat</th><th>chart</th><th>eclipse</th><th>fop</th><th>hsqldb</th><th>jython</th><th>luindex</th><th>lusearch</th><th>pmd</th><th>xalan</th><th>JVM options</th></tr>
+			<tr><th colspan="17"><font color="green">Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE SP1</font></th></tr>
+<tr><td nowrap="true">08 Dec 2007</td><td>601978</td><td>DRLVM</td><td>default</td><td><font color="blue">1960</font></td><td><font color="blue">5798</font></td><td><font color="blue">7182</font></td><td><font color="blue">25729</font></td><td><font color="blue">1048</font></td><td><font color="blue">2206</font></td><td><font color="blue">13157</font></td><td><font color="blue">5584</font></td><td><font color="blue">2699</font></td><td><font color="blue">4295</font></td><td><font color="blue">2090</font></td><td nowrap="true"> -Xem:server_aggressive -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+			<tr><th colspan="17"><font color="green">Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE x64 SP1</font></th></tr>
+<tr><td nowrap="true">24 Nov 2007</td><td>597750</td><td>DRLVM</td><td>default</td><td><font color="blue">2112</font></td><td><font color="blue">6214</font></td><td><font color="blue">7418</font></td><td><font color="blue">36375</font></td><td><font color="blue">976</font></td><td><font color="blue">2340</font></td><td><font color="blue">13204</font></td><td><font color="blue">5939</font></td><td><font color="blue">2922</font></td><td><font color="blue">4385</font></td><td><font color="blue">2148</font></td><td nowrap="true"> -Xem:server_aggressive -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+		        <tr><th colspan="17"><font color="green">Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 12 Gb DDR2 / SLES 9 32-bit</font></th></tr>
+<tr><td nowrap="true">10 Dec 2007</td><td>599691</td><td>DRLVM</td><td>default</td><td><font color="red">N/A</font></td><td><font color="red">N/A</font></td><td><font color="red">N/A</font></td><td><font color="red">N/A</font></td><td><font color="red">N/A</font></td><td><font color="red">N/A</font></td><td><font color="red">N/A</font></td><td><font color="red">N/A</font></td><td><font color="red">N/A</font></td><td><font color="red">N/A</font></td><td><font color="red">N/A</font></td><td nowrap="true"> -Xem:server_aggressive -Xms1500M -Xmx1500M</td></tr>
+       			<tr><th colspan="17"><font color="green">Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / SLES 9 64-bit</font></th></tr>
+<tr><td nowrap="true">10 Dec 2007</td><td>601978</td><td>DRLVM</td><td>default</td><td><font color="blue">3477</font></td><td><font color="blue">10777</font></td><td><font color="blue">7447</font></td><td><font color="red">FAILED</font></td><td><font color="blue">1909</font></td><td><font color="blue">3413</font></td><td><font color="blue">10398</font></td><td><font color="blue">6465</font></td><td><font color="blue">5045</font></td><td><font color="blue">6423</font></td><td><font color="blue">2779</font></td><td nowrap="true"> -Xem:server -Xms1500M -Xmx1500M</td></tr>
+		</table>
+		</p>
+		</p>
+		<p>
+
+	</p>
+<!--		Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE SP1	
+<tr><td nowrap="true">08 Dec 2007</td><td>601978</td><td>DRLVM</td><td>default</td><td><font color="blue">1960</font></td><td><font color="blue">5798</font></td><td><font color="blue">7182</font></td><td><font color="blue">25729</font></td><td><font color="blue">1048</font></td><td><font color="blue">2206</font></td><td><font color="blue">13157</font></td><td><font color="blue">5584</font></td><td><font color="blue">2699</font></td><td><font color="blue">4295</font></td><td><font color="blue">2090</font></td><td nowrap="true"> -Xem:server_aggressive -XX:gc.use_large_page=true -Xms900M -Xmx900M</td></tr>
+	<img src="images/dacapo_win32.png"/>	
+-->
+</p>
+                   
+                                    
+    <h2>
+        <a name="SciMark2.0 (more is better)">SciMark2.0 (more is better)</a>
+    </h2>
+      
+                        <p>
+	<a href="subcomponents/performance/scimark.html">Detailed</a>
+	<p>
+		Latest results: 
+		<p>		
+		<table border="1">
+			<tr><th nowrap="true">Date</th><th>SVN classlib rev</th><th>VM</th><th>workload</th><th>Composite Score</th><th>FFT</th><th>SOR</th><th>Monte Carlo</th><th>Sparse matmult</th><th>LU</th><th>JVM options</th></tr>
+			<tr><th colspan="17"><font color="green">Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE SP1</font></th></tr>
+<tr><td nowrap="true">08 Dec 2007</td><td>601978</td><td>DRLVM</td><td>default</td><td><font color="blue">299.83</font></td><td><font color="blue">372.07</font></td><td><font color="blue">345.20</font></td><td><font color="blue">66.08</font></td><td><font color="blue">226.35</font></td><td><font color="blue">489.45</font></td><td nowrap="true"> -Xem:server -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+			<tr><th colspan="17"><font color="green">Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE x64 SP1</font></th></tr>
+<tr><td nowrap="true">24 Nov 2007</td><td>597750</td><td>DRLVM</td><td>default</td><td><font color="blue">285.47</font></td><td><font color="blue">340.27</font></td><td><font color="blue">312.97</font></td><td><font color="blue">49.64</font></td><td><font color="blue">225.15</font></td><td><font color="blue">499.34</font></td><td nowrap="true"> -Xem:server -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+		        <tr><th colspan="17"><font color="green">Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 12 Gb DDR2 / SLES 9 32-bit</font></th></tr>
+<tr><td nowrap="true">10 Dec 2007</td><td>599691</td><td>DRLVM</td><td>default</td><td><font color="blue">269.43</font></td><td><font color="blue">318.64</font></td><td><font color="blue">345.47</font></td><td><font color="blue">66.64</font></td><td><font color="blue">187.44</font></td><td><font color="blue">428.97</font></td><td nowrap="true"> -Xms1500m -Xmx1500m -Xem:server</td></tr>
+       			<tr><th colspan="17"><font color="green">Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / SLES 9 64-bit</font></th></tr>
+<tr><td nowrap="true">10 Dec 2007</td><td>601978</td><td>DRLVM</td><td>default</td><td><font color="blue">391.79</font></td><td><font color="blue">354.52</font></td><td><font color="blue">357.14</font></td><td><font color="blue">75.21</font></td><td><font color="blue">481.43</font></td><td><font color="blue">690.66</font></td><td nowrap="true"> -Xms1500m -Xmx1500m -Xem:server</td></tr>
+		</table>
+		</p>
+		</p>
+		<p>
+
+	</p>
+
+<!--
+		Tested on: 2xXeon (Woodcrest) 2.66 Ghz / 8 Gb DDR2 / Windows 2003 EE SP1
+<tr><td nowrap="true">08 Dec 2007</td><td>601978</td><td>DRLVM</td><td>default</td><td><font color="blue">299.83</font></td><td><font color="blue">372.07</font></td><td><font color="blue">345.20</font></td><td><font color="blue">66.08</font></td><td><font color="blue">226.35</font></td><td><font color="blue">489.45</font></td><td nowrap="true"> -Xem:server -XX:gc.use_large_page=true -Xms1500M -Xmx1500M</td></tr>
+		<img src="images/scimark_win32.png"/>
+-->
+
+</p>
+                   
+                <p class="backtotop"><a href="#top">Back to top</a></p>
+                
+                                            </div> <!-- top aka Main Content -->
+
+            <!-- FOOTER -->
+            <div id="pageFooter" class="special">
+            	<em>Copyright &#169; 2003-2010, The Apache Software Foundation</em>
+            	<br/>
+            	Apache Harmony, the Apache Harmony logo, and the Apache feather
+            	logo are trademarks of The Apache Software Foundation.
+            	<br/>
+            	Java is a registered trademark of Oracle and/or its affiliates. Other names
+            	mentioned may be trademarks or registered trademarks of their
+            	respective owners.
+            </div>
+        </body>
+    </html>
+<!-- end the processing -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,57 @@
+DESCRIPTION
+
+This msgstool helps to generate Messages.java and MsgUtil.java classes source files
+for modules listed in the property file modules.properties. Also initial empty 
+messages.property with Apache copyright in the heading is copied.
+
+CONTENTS
+
+Tool consist of the source files, template files, properties files and this
+README file:
+
+./org/apache/harmony/tools/msgstool/README
+./org/apache/harmony/tools/msgstool/Main.java 
+./org/apache/harmony/tools/msgstool/MsgClassGenerator.java 
+./org/apache/harmony/tools/msgstool/Messages.tpl
+./org/apache/harmony/tools/msgstool/messages.properties
+./org/apache/harmony/tools/msgstool/modules.properties
+
+USING
+
+To see a usage of the msgstool you need to:
+1. compile source files with Ant utility (call ant)
+2. go to ./bin directory execute the following command from a command line:
+
+java -jar msgstool.jar [options]
+
+where [options]:
+
+    -help                   Print help message
+
+    -d <dst path>           Destination path where to copy
+                            generated files that will be
+                            created if necessary.If this option is not specified
+                            current user dir is used.
+
+    -m <modules>            Property file, where 
+                            the list of modules is specified.
+                            If this option is not specified
+                            default ./org/apache/harmony/tools/msgstool/modules.properties
+                            file is used.
+
+After msgstool execution for each module from the list defined in the modules.properties 
+file there will be generated next source files:
+<dst path>/modules/<module>/src/main/java/[common/]org/apache/harmony/<module>/internal/nls/Messages.java
+<dst path>/modules/<module>/src/main/java/[common/]org/apache/harmony/<module>/internal.nls/messages.properties
+
+COMMENTS
+
+1. "<dst path>/modules/<module>/src/main/java/[common/]" path corresponds to the java src files
+path structure used for modules in Apache Harmony project.
+If "common" subdirerctory exists - java src files generated relative to this folder.
+2. Generated Messages.java source file replace existing one, while 
+messages.properties doesn't to avoid deletion of the externilized messages.
+
+
+    
+

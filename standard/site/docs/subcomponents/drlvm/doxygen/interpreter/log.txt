@@ -1,0 +1,19 @@
+C:/cvn_rep/source/trunk/working_vm/vm/include/interpreter_exports.h:35: Warning: Missing group name for \ingroup command
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_native.h:76: Warning: argument `method' of command @param is not found in the argument list of interpreterGetNativeMethodAddr(Method *)
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:519: Warning: argument `VM_thread' of command @param is not found in the argument list of interp_enumerate_root_set_single_thread_on_stack(VM_thread *)
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:543: Warning: The following parameters of interpreterInvokeVirtualNative(StackFrame &prevFrame, StackFrame &frame, Method *method, int sz) are not documented:
+  parameter sz
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:636: Warning: argument `method' of command @param is not found in the argument list of load_method_handled_exceptions(Method *m)
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:636: Warning: The following parameters of load_method_handled_exceptions(Method *m) are not documented:
+  parameter m
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:417: Warning: argument `idx' of command @param is not found in the argument list of Locals::ref(uint32 id)
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:417: Warning: The following parameters of Locals::ref(uint32 id) are not documented:
+  parameter id
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:519: Warning: argument `VM_thread' of command @param is not found in the argument list of Locals::interp_enumerate_root_set_single_thread_on_stack(VM_thread *)
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:446: Warning: argument `VM_thread' of command @param is not found in the argument list of Locals::interp_ti_enumerate_root_set_single_thread_on_stack(jvmtiEnv *ti_env, VM_thread *thread)
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:446: Warning: The following parameters of Locals::interp_ti_enumerate_root_set_single_thread_on_stack(jvmtiEnv *ti_env, VM_thread *thread) are not documented:
+  parameter thread
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:519: Warning: argument `VM_thread' of command @param is not found in the argument list of Stack::interp_enumerate_root_set_single_thread_on_stack(VM_thread *)
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:359: Warning: argument `VM_thread' of command @param is not found in the argument list of Stack::interp_ti_enumerate_root_set_single_thread_on_stack(jvmtiEnv *ti_env, VM_thread *thread)
+C:/cvn_rep/source/trunk/working_vm/vm/interpreter/src/interp_defs.h:359: Warning: The following parameters of Stack::interp_ti_enumerate_root_set_single_thread_on_stack(jvmtiEnv *ti_env, VM_thread *thread) are not documented:
+  parameter thread

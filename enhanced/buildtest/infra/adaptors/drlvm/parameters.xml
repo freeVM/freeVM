@@ -1,0 +1,39 @@
+<parameters depends="classlib">
+    <!-- required -->
+    <required>
+        <!-- path to built classlib, use classlib's shared value -->
+        <classlib.trunk 
+            description="Path to Classlib Workspace" 
+            value="${classlib.parameters.shared.trunk.dir}"/>
+    </required>
+
+    <optional>
+        <build.cfg description="DRLVM Build Configuration Switch (debug/release)"
+                   value="debug"/>
+    </optional>
+
+    <!-- shared values -->
+    <shared>
+        <!-- define the place where drlvm workspace will be placed -->
+        <trunk.dir value="${checkouts.dir}/${suite.name}" id="trunk.dir.id"/>
+        <!-- the trunk url for svn -->
+        <svn.url value="http://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk"/>
+        <!-- the path to built DRLVM JRE -->
+        <jre.dir value="${drlvm.parameters.shared.trunk.dir}/deploy/jdk/jre"/>
+        <!-- the path to built DRLVM JVM -->
+        <jvm.location value="${drlvm.parameters.shared.trunk.dir}/deploy/jdk/jre/bin/java${exe.suffix}"/>
+        <!-- DRLVM build configuration (debug/release) -->
+        <build.config value="${drlvm.parameters.optional.build.cfg}"/>
+    </shared>
+
+    <svn>
+      <drlvm url="http://svn.apache.org/repos/asf/harmony/enhanced/drlvm/trunk" />
+      <common_resources url="http://svn.apache.org/repos/asf/harmony/enhanced/common_resources/trunk"/>
+    </svn>
+
+    <!-- CC specific configuration -->
+    <cc publish="false"> 
+        <!-- reference to the value by parameter ID -->
+        <usesvn refid="trunk.dir.id"/>
+    </cc>
+</parameters>
