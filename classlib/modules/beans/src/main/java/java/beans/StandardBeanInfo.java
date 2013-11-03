@@ -77,6 +77,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     private PropertyDescriptor[] properties = null;
 
+    private BeanDescriptor beanDescriptor = null;
+
     BeanInfo[] additionalBeanInfo = null;
 
     private Class<?> beanClass;
@@ -175,13 +177,15 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     @Override
     public BeanDescriptor getBeanDescriptor() {
-        if (explicitBeanInfo != null) {
-            BeanDescriptor beanDesc = explicitBeanInfo.getBeanDescriptor();
-            if (beanDesc != null) {
-                return beanDesc;
+        if (beanDescriptor == null) {
+            if (explicitBeanInfo != null) {
+                beanDescriptor = explicitBeanInfo.getBeanDescriptor();
+            }
+            if (beanDescriptor == null) {
+                beanDescriptor = new BeanDescriptor(beanClass);
             }
         }
-        return new BeanDescriptor(beanClass);
+        return beanDescriptor;
     }
 
     @Override
@@ -598,7 +602,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
 
     private static String getQualifiedName(Method method) {
         String qualifiedName = method.getName();
-        Class[] paramTypes = method.getParameterTypes();
+        Class<?>[] paramTypes = method.getParameterTypes();
         if (paramTypes != null) {
             for (int i = 0; i < paramTypes.length; i++) {
                 qualifiedName += "_" + paramTypes[i].getName(); //$NON-NLS-1$
@@ -796,7 +800,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
     @SuppressWarnings("nls")
     private void introspectPropertyListener(Method theMethod) {
         String methodName = theMethod.getName();
-        Class[] param = theMethod.getParameterTypes();
+        Class<?>[] param = theMethod.getParameterTypes();
         if (param.length != 1) {
             return;
         }
@@ -969,8 +973,8 @@ class StandardBeanInfo extends SimpleBeanInfo {
             Method normalSetter = null;
             Method indexedSetter = null;
 
-            Class normalPropType = null;
-            Class indexedPropType = null;
+            Class<?> normalPropType = null;
+            Class<?> indexedPropType = null;
 
             if (getters == null) {
                 getters = new ArrayList<Method>();
@@ -981,24 +985,28 @@ class StandardBeanInfo extends SimpleBeanInfo {
             }
 
             // retrieve getters
+            Class<?>[] paramTypes = null;
+            String methodName = null;
             for (Method getter : getters) {
+                paramTypes = getter.getParameterTypes();
+                methodName = getter.getName();
                 // checks if it's a normal getter
-                if (getter.getParameterTypes() == null
-                        || getter.getParameterTypes().length == 0) {
+                if (paramTypes == null || paramTypes.length == 0) {
                     // normal getter found
                     if (normalGetter == null
-                            || getter.getName().startsWith(PREFIX_IS)) {
+                            || methodName.startsWith(PREFIX_IS)) {
                         normalGetter = getter;
                     }
                 }
 
                 // checks if it's an indexed getter
-                if (getter.getParameterTypes() != null
-                        && getter.getParameterTypes().length == 1
-                        && getter.getParameterTypes()[0] == int.class) {
+                if (paramTypes != null && paramTypes.length == 1
+                        && paramTypes[0] == int.class) {
                     // indexed getter found
                     if (indexedGetter == null
-                            || getter.getName().startsWith(PREFIX_IS)) {
+                            || methodName.startsWith(PREFIX_GET)
+                            || (methodName.startsWith(PREFIX_IS) && !indexedGetter
+                                    .getName().startsWith(PREFIX_GET))) {
                         indexedGetter = getter;
                     }
                 }
@@ -1007,7 +1015,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
             // retrieve normal setter
             if (normalGetter != null) {
                 // Now we will try to look for normal setter of the same type.
-                Class propertyType = normalGetter.getReturnType();
+                Class<?> propertyType = normalGetter.getReturnType();
 
                 for (Method setter : setters) {
                     if (setter.getParameterTypes().length == 1
@@ -1031,7 +1039,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
             // retrieve indexed setter
             if (indexedGetter != null) {
                 // Now we will try to look for indexed setter of the same type.
-                Class propertyType = indexedGetter.getReturnType();
+                Class<?> propertyType = indexedGetter.getReturnType();
 
                 for (Method setter : setters) {
                     if (setter.getParameterTypes().length == 2
@@ -1247,6 +1255,12 @@ class StandardBeanInfo extends SimpleBeanInfo {
                     && (indexedGetter != null || indexedSetter != null)) {
                 if (indexedGetter != null
                         && indexedGetter.getName().startsWith(PREFIX_IS)) {
+                    if (indexedSetter != null) {
+                        table.put(STR_INDEXED, STR_VALID);
+                        table.put(STR_INDEXED + PREFIX_SET, indexedSetter);
+                        table.put(STR_INDEXED + STR_PROPERTY_TYPE,
+                                indexedPropType);
+                    }
                     continue;
                 }
                 table.put(STR_INDEXED, STR_VALID);
@@ -1403,7 +1417,7 @@ class StandardBeanInfo extends SimpleBeanInfo {
         Method[] methods = listenerType.getDeclaredMethods();
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < methods.length; i++) {
-            Class[] paramTypes = methods[i].getParameterTypes();
+            Class<?>[] paramTypes = methods[i].getParameterTypes();
             if (paramTypes.length != 1) {
                 continue;
             }

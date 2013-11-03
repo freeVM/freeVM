@@ -85,22 +85,19 @@ public abstract class URLStreamHandler {
      * @see URL
      */
     protected void parseURL(URL u, String str, int start, int end) {
-        // For compatibility, refer to Harmony-2941
-        if (str.startsWith("//", start) //$NON-NLS-1$
-                && str.indexOf('/', start + 2) == -1
-                && end <= Integer.MIN_VALUE + 1) {
-            throw new StringIndexOutOfBoundsException(end - 2 - start);
-        }
-        if (end < start) {
+        if (end < start || end < 0) {
+            // Checks to ensure string index exception ahead of
+            // security exception for compatibility.
+            if (end <= Integer.MIN_VALUE + 1 && (start >= str.length() || start < 0)
+                    || str.startsWith("//", start) && str.indexOf('/', start + 2) == -1) { //$NON-NLS-1$
+                throw new StringIndexOutOfBoundsException(end);
+            }
             if (this != u.strmHandler) {
                 throw new SecurityException();
             }
             return;
         }
-        String parseString = ""; //$NON-NLS-1$
-        if (start < end) {
-            parseString = str.substring(start, end);
-        }
+        String parseString = str.substring(start, end);
         end -= start;
         int fileIdx = 0;
 
@@ -114,7 +111,7 @@ public abstract class URLStreamHandler {
         String userInfo = u.getUserInfo();
 
         int refIdx = parseString.indexOf('#', 0);
-        if (parseString.startsWith("//")) { //$NON-NLS-1$
+        if (parseString.startsWith("//") && !parseString.startsWith("////")) { //$NON-NLS-1$
             int hostIdx = 2, portIdx = -1;
             port = -1;
             fileIdx = parseString.indexOf('/', hostIdx);
@@ -402,17 +399,20 @@ public abstract class URLStreamHandler {
      *         otherwise.
      */
     protected boolean hostsEqual(URL url1, URL url2) {
-        String host1 = getHost(url1), host2 = getHost(url2);
-        if (host1 != null && host1.equalsIgnoreCase(host2)) {
-            return true;
-        }
-        // Compare host address if the host name is not equal.
+        // Compare by addresses if known.
         InetAddress address1 = getHostAddress(url1);
         InetAddress address2 = getHostAddress(url2);
-        if (address1 != null && address1.equals(address2)) {
+        if (address1 != null && address2 != null) {
+            return address1.equals(address2);
+        }
+
+        // Compare by name.
+        String host1 = getHost(url1);
+        String host2 = getHost(url2);
+        if (host1 == null && host2 == null) {
             return true;
         }
-        return false;
+        return host1 != null && host1.equalsIgnoreCase(host2);
     }
 
     /**
@@ -453,7 +453,7 @@ public abstract class URLStreamHandler {
     }
 
     /*
-     * If the URL host is empty while protocal is file, the host is regarded as
+     * If the URL host is empty while protocol is file, the host is regarded as
      * localhost.
      */
     private static String getHost(URL url) {

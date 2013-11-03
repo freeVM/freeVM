@@ -287,6 +287,8 @@ public class JarFileTest extends TestCase {
         // java.util.jar.JarFile.getManifest()
         Support_Resources.copyFile(resources, null, JAR1);
         JarFile jarFile = new JarFile(new File(resources, JAR1));
+        InputStream is = jarFile.getInputStream(jarFile.getEntry(JAR1_ENTRY1));
+        assertTrue(is.available() > 0);
         assertNotNull("Error--Manifest not returned", jarFile.getManifest());
         jarFile.close();
 
@@ -365,9 +367,10 @@ public class JarFileTest extends TestCase {
         // try to read class file header
         is.read(b, 0, 1024);
         jf.close();
-        assertTrue("Invalid bytes were red", b[0] == (byte) 0xCA
-                && b[1] == (byte) 0xFE && b[2] == (byte) 0xBA
-                && b[3] == (byte) 0xBE);
+        assertEquals("Invalid bytes were read", (byte) 0xCA, b[0]);
+        assertEquals("Invalid bytes were read", (byte) 0xFE, b[1]);
+        assertEquals("Invalid bytes were read", (byte) 0xBA, b[2]);
+        assertEquals("Invalid bytes were read", (byte) 0xBE, b[3]);
     }
 
     /**
@@ -660,5 +663,14 @@ public class JarFileTest extends TestCase {
         zipEntry = jarFile.getJarEntry(emptyEntry3);
         res = jarFile.getInputStream(zipEntry).read();
         assertEquals("Wrong length of empty jar entry", -1, res);
+    }
+
+    // Regression test for HARMONY-6384
+    public void testJarWrittenWithFlush() throws IOException {
+        File f = new File(resources, "hyts_flushed.jar");
+        Support_Resources.copyFile(resources, null, "hyts_flushed.jar");
+
+        // Used to crash with ZipException: Central Directory Entry not found
+        new JarFile(f);
     }
 }

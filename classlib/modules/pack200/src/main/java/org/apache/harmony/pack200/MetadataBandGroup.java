@@ -35,7 +35,7 @@ public class MetadataBandGroup extends BandSet {
     private final String type;
     private int numBackwardsCalls = 0;
 
-    public List param_NB = new ArrayList(); // TODO: Lazy instantiation?
+    public IntList param_NB = new IntList(); // TODO: Lazy instantiation?
     public IntList anno_N = new IntList();
     public List type_RS = new ArrayList();
     public IntList pair_N = new IntList();
@@ -95,6 +95,16 @@ public class MetadataBandGroup extends BandSet {
             }
             byte[] encodedBand = null;
             if(!type.equals("AD")) {
+                if(type.indexOf('P') != -1) {
+                    // Parameter annotation so we need to transmit param_NB
+                    encodedBand = encodeBandInt(
+                            contextStr + "_" + type + " param_NB", param_NB.toArray(),
+                            Codec.BYTE1);
+                    out.write(encodedBand);
+                    PackingUtils.log("Wrote " + encodedBand.length
+                            + " bytes from " + contextStr + "_" + type + " anno_N["
+                            + param_NB.size() + "]");
+                }
                 encodedBand = encodeBandInt(
                         contextStr + "_" + type + " anno_N", anno_N.toArray(),
                         Codec.UNSIGNED5);
@@ -242,9 +252,86 @@ public class MetadataBandGroup extends BandSet {
      * @param nestNameRU
      * @param nestPairN
      */
+    public void addParameterAnnotation(int numParams, int[] annoN, IntList pairN, List typeRS, List nameRU, List t, List values, List caseArrayN, List nestTypeRS, List nestNameRU, List nestPairN) {
+        param_NB.add(numParams);
+        for (int i = 0; i < annoN.length; i++) {
+            anno_N.add(annoN[i]);
+        }
+        pair_N.addAll(pairN);
+        for (Iterator iterator = typeRS.iterator(); iterator.hasNext();) {
+            String desc = (String) iterator.next();
+            type_RS.add(cpBands.getCPSignature(desc));
+        }
+        for (Iterator iterator = nameRU.iterator(); iterator.hasNext();) {
+            String name = (String) iterator.next();
+            name_RU.add(cpBands.getCPUtf8(name));
+        }
+        Iterator valuesIterator = values.iterator();
+        for (Iterator iterator = t.iterator(); iterator.hasNext();) {
+            String tag = (String) iterator.next();
+            T.add(tag);
+            if (tag.equals("B") || tag.equals("C") || tag.equals("I")
+                    || tag.equals("S") || tag.equals("Z")) {
+                Integer value = (Integer)valuesIterator.next();
+                caseI_KI.add(cpBands.getConstant(value));
+            } else if (tag.equals("D")) {
+                Double value = (Double)valuesIterator.next();
+                caseD_KD.add(cpBands.getConstant(value));
+            } else if (tag.equals("F")) {
+                Float value = (Float)valuesIterator.next();
+                caseF_KF.add(cpBands.getConstant(value));
+            } else if (tag.equals("J")) {
+                Long value = (Long)valuesIterator.next();
+                caseJ_KJ.add(cpBands.getConstant(value));
+            } else if (tag.equals("c")) {
+                String value = (String)valuesIterator.next();
+                casec_RS.add(cpBands.getCPSignature(value));
+            } else if (tag.equals("e")) {
+                String value = (String)valuesIterator.next();
+                String value2 = (String)valuesIterator.next();
+                caseet_RS.add(cpBands.getCPSignature(value));
+                caseec_RU.add(cpBands.getCPUtf8(value2));
+            } else if (tag.equals("s")) {
+                String value = (String)valuesIterator.next();
+                cases_RU.add(cpBands.getCPUtf8(value));
+            }
+            // do nothing here for [ or @ (handled below)
+        }
+        for (Iterator iterator = caseArrayN.iterator(); iterator.hasNext();) {
+            int arraySize = ((Integer)iterator.next()).intValue();
+            casearray_N.add(arraySize);
+            numBackwardsCalls += arraySize;
+        }
+        for (Iterator iterator = nestTypeRS.iterator(); iterator.hasNext();) {
+            String type = (String) iterator.next();
+            nesttype_RS.add(cpBands.getCPSignature(type));
+        }
+        for (Iterator iterator = nestNameRU.iterator(); iterator.hasNext();) {
+            String name = (String) iterator.next();
+            nestname_RU.add(cpBands.getCPUtf8(name));
+        }
+        for (Iterator iterator = nestPairN.iterator(); iterator.hasNext();) {
+            Integer numPairs = (Integer) iterator.next();
+            nestpair_N.add(numPairs.intValue());
+            numBackwardsCalls += numPairs.intValue();
+        }
+    }
+
+    /**
+     * Add an annotation to this set of bands
+     *
+     * @param desc
+     * @param nameRU
+     * @param t
+     * @param values
+     * @param caseArrayN
+     * @param nestTypeRS
+     * @param nestNameRU
+     * @param nestPairN
+     */
     public void addAnnotation(String desc, List nameRU, List t, List values, List caseArrayN, List nestTypeRS, List nestNameRU, List nestPairN) {
         type_RS.add(cpBands.getCPSignature(desc));
-        pair_N.add(t.size());
+        pair_N.add(nameRU.size());
 
         for (Iterator iterator = nameRU.iterator(); iterator.hasNext();) {
             String name = (String) iterator.next();
@@ -268,7 +355,7 @@ public class MetadataBandGroup extends BandSet {
             } else if (tag.equals("J")) {
                 Long value = (Long)valuesIterator.next();
                 caseJ_KJ.add(cpBands.getConstant(value));
-            } else if (tag.equals("C")) {
+            } else if (tag.equals("c")) {
                 String value = (String)valuesIterator.next();
                 casec_RS.add(cpBands.getCPSignature(value));
             } else if (tag.equals("e")) {
@@ -287,17 +374,17 @@ public class MetadataBandGroup extends BandSet {
             casearray_N.add(arraySize);
             numBackwardsCalls += arraySize;
         }
-        for (Iterator iterator = nesttype_RS.iterator(); iterator.hasNext();) {
+        for (Iterator iterator = nestTypeRS.iterator(); iterator.hasNext();) {
             String type = (String) iterator.next();
             nesttype_RS.add(cpBands.getCPSignature(type));
         }
-        for (Iterator iterator = nestname_RU.iterator(); iterator.hasNext();) {
+        for (Iterator iterator = nestNameRU.iterator(); iterator.hasNext();) {
             String name = (String) iterator.next();
             nestname_RU.add(cpBands.getCPUtf8(name));
         }
         for (Iterator iterator = nestPairN.iterator(); iterator.hasNext();) {
             Integer numPairs = (Integer) iterator.next();
-            nestPairN.add(numPairs);
+            nestpair_N.add(numPairs.intValue());
             numBackwardsCalls += numPairs.intValue();
         }
     }

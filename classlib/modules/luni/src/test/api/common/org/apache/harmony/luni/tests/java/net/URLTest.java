@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -68,7 +69,56 @@ public class URLTest extends TestCase {
     boolean caught = false;
 
     static boolean isSelectCalled;
+    
+    
+    /**
+     * Check when the argument in url consists of windows path character back-slash
+     * @tests java.net.URL#openConnection(Proxy)
+     * @throws Exception
+     */
+    public void test_openConnection_windows_path_character() throws Exception {
+        int port = Support_Jetty.startDefaultHttpServer();
+        HttpURLConnection con = null;
+        try {
+            URL url = new URL("http://0.0.0.0:" + port + "/servlet?ResourceName=C:\\temp\\test.txt");
+            con = (HttpURLConnection) url.openConnection();
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("GET");
+            InputStream is = con.getInputStream();
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
+        }
+    }
 
+   /**
+     * Check when the argument in url consists of quotation marks character
+     * @tests java.net.URL#openConnection(Proxy)
+     * @throws Exception
+     */
+    public void test_openConnection_quotation_marks_character()
+            throws Exception {
+        int port = Support_Jetty.startDefaultHttpServer();
+        HttpURLConnection con = null;
+        try {
+            URL url = new URL("http://0.0.0.0:" + port
+                    + "/servlet?ResourceName=[\"11111\",\"22222\"]");
+            con = (HttpURLConnection) url.openConnection();
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("GET");
+            InputStream is = con.getInputStream();
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
+        }
+    }
+    
     /**
      * @tests java.net.URL#URL(java.lang.String)
      */
@@ -198,6 +248,19 @@ public class URLTest extends TestCase {
                 .equals("[fec0::1:20d:60ff:fe24:7410]"));
         assertTrue("u10 returns a wrong port " + u10.getPort(),
                 u10.getPort() == -1);
+
+		URL u11 = new URL("file:////file.txt");
+        assertNull("u11 returns a wrong authority " + u11.getAuthority(), u11
+                .getAuthority());
+        assertTrue("u11 returns a wrong file " + u11.getFile(), u11.getFile()
+                .equals("////file.txt"));
+
+        URL u12 = new URL("file:///file.txt");
+        assertTrue("u12 returns a wrong authority", u12.getAuthority().equals(
+                ""));
+        assertTrue("u12 returns a wrong file " + u12.getFile(), u12.getFile()
+                .equals("/file.txt"));
+
 
         // test for error catching
 
@@ -666,20 +729,27 @@ public class URLTest extends TestCase {
     /**
      * @tests java.net.URL#equals(java.lang.Object)
      */
-    public void test_equalsLjava_lang_Object() {
-        // Test for method boolean java.net.URL.equals(java.lang.Object)
-        try {
-            u = new URL("http://www.apache.org:8080/dir::23??????????test.html");
-            u1 = new URL(
-                    "http://www.apache.org:8080/dir::23??????????test.html");
-            assertTrue("A) equals returns false for two identical URLs", u
-                    .equals(u1));
-            assertTrue("return true for null comaprison", !u1.equals(null));
-            u = new URL("ftp://www.apache.org:8080/dir::23??????????test.html");
-            assertTrue("Returned true for non-equal URLs", !u.equals(u1));
-        } catch (MalformedURLException e) {
-            fail("MalformedURLException during equals test : " + e.getMessage());
-        }
+    public void test_equalsLjava_lang_Object() throws MalformedURLException {
+        u = new URL("http://www.apache.org:8080/dir::23??????????test.html");
+        u1 = new URL("http://www.apache.org:8080/dir::23??????????test.html");
+        assertTrue("A) equals returns false for two identical URLs", u
+                .equals(u1));
+        assertTrue("return true for null comparison", !u1.equals(null));
+        u = new URL("ftp://www.apache.org:8080/dir::23??????????test.html");
+        assertTrue("Returned true for non-equal URLs", !u.equals(u1));
+
+        // Regression for HARMONY-6556
+        u = new URL("file", null, 0, "/test.txt");
+        u1 = new URL("file", null, 0, "/test.txt");
+        assertEquals(u, u1);
+        
+        u = new URL("file", "first.invalid", 0, "/test.txt");
+        u1 = new URL("file", "second.invalid", 0, "/test.txt");
+        assertFalse(u.equals(u1));
+        
+        u = new URL("file", "harmony.apache.org", 0, "/test.txt");
+        u1 = new URL("file", "www.apache.org", 0, "/test.txt");
+        assertEquals(u, u1);
     }
 
     /**
@@ -1349,6 +1419,49 @@ public class URLTest extends TestCase {
         try {
             handler.parse(url, "11", 1, Integer.MIN_VALUE);
             fail("Should throw SecurityException.");
+        } catch (SecurityException e) {
+            // expected;
+        }
+        
+        // Regression tests for HARMONY-6499
+        try {
+            handler.parse(url, "any", 10, Integer.MIN_VALUE);
+            fail("Should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected;
+        }
+        
+        try {
+            handler.parse(url, "any", 10, Integer.MIN_VALUE+1);
+            fail("Should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected;
+        }
+        
+        try {
+            handler.parse(url, "any", Integer.MIN_VALUE, Integer.MIN_VALUE);
+            fail("Should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected;
+        }
+        
+        try {
+            handler.parse(url, "any", Integer.MIN_VALUE, 2);
+            fail("Should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected;
+        }
+        
+        try {
+            handler.parse(url, "any", -1, 2);
+            fail("Should throw StringIndexOutOfBoundsException");
+        } catch (StringIndexOutOfBoundsException e) {
+            // expected;
+        }
+        
+        try {
+            handler.parse(url, "any", -1, -1);
+            fail("Should throw SecurityException");
         } catch (SecurityException e) {
             // expected;
         }

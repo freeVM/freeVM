@@ -18,23 +18,22 @@
 
 <project name="Harmony Lang-Management Test" default="test" basedir=".">
 
-    <property name="hy.hdk" location="../../.." />
-    <property name="test.jre.home" location="${hy.hdk}/jdk/jre" />
-    <property file="../test.properties" />
-
-    <property name="work.dir" value=".." />
-    <property name="target.dir" value=".." />
-    <property name="tests.output" location="../report" />
-    <property name="junit.jar" location="../junit.jar" />
-
-    <import file="../../ant/properties.xml" />
+    <property name="hy.test.root" location=".." />
+    <property name="hy.component" value="classlib" />
+    <property name="hy.module" value="lang-management" />
+    <import file="${hy.test.root}/../ant/testproperties.xml" />
 
     <target name="test" depends="test-module" />
 
-    <target name="test-module" depends="test-jre-vm-info">
+    <target name="test-module"
+            depends="-test-module,-test-module-impl" />
+    <target name="-test-module" depends="test-jre-vm-info">
         <convert-test-as-class from="test.case" to="converted.tc.class" />
         <run-hdk-tests module="lang-management"
                        jar="lang-management_tests.jar" />
+    </target>
+
+    <target name="-test-module-impl" if="hy.run.impl.tests">
         <run-hdk-tests module="lang-management"
                        jar="lang-management_impl_tests.jar" />
     </target>

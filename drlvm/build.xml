@@ -20,18 +20,26 @@
     <description>
     	Build contributed source and lay out results in the required format 
     </description>
-
-    <fail unless="hy.ignore.move">
-...
-
-This tree is deprecated.  Please switch to the new location with:
-
-  svn switch https://svn.apache.org/repos/asf/harmony/enhanced/java/trunk/drlvm
-
-This svn tree will disappear in two weeks.  If you wish to force a build
-in the meantime use "ant -Dhy.ignore.move=true".
-    </fail>
     
+    <property name="hy.target" location="target" />
+    <property name="hy.component" value="drlvm" />
+    <property name="hy.module" value="toplevel" />
+
+    <fail message="Property 'common.resources' is not defined">
+        <condition>
+            <not><isset property="common.resources" /></not>
+        </condition>
+    </fail>
+
+    <mkdir dir="${hy.target}/hdk/build/ant" />
+    <copy todir="${hy.target}/hdk/build/ant" preservelastmodified="true">
+        <fileset dir="${common.resources}/make" includes="*.xml"/>
+    </copy>
+
+    <!-- import properties for snapshot targets -->
+    <import file="${hy.target}/hdk/build/ant/properties.xml" />
+    <init-hdk/>
+
     <import file="make/properties.xml"/>
 
     <target name="help">
@@ -122,65 +130,108 @@ Usage:
 
     <target name="build-extra" depends=""
         description="Compiles external dependencies">
-        <ant antfile="make/extra/apr.xml"/>
+        <ant antfile="make/extra/apr.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="encoder">
-        <ant antfile="make/vm/encoder.xml"/>
+        <ant antfile="make/vm/encoder.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="port" depends="build-extra">
-        <ant antfile="make/vm/port.xml"/>
+        <ant antfile="make/vm/port.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="port_ch" depends="port">
-        <ant antfile="make/vm/port_ch.xml"/>
+        <ant antfile="make/vm/port_ch.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="hythr" depends="port">
-        <ant antfile="make/vm/hythr.xml"/>
+        <ant antfile="make/vm/hythr.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="verifier">
-        <ant antfile="make/vm/verifier.xml"/>
+        <ant antfile="make/vm/verifier.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
-    <target name="verifier-ext" description="Build a verifier extentions library">
-        <ant antfile="make/vm/verifier-ext.xml"/>
+    <target name="verifier-ext"
+            description="Build a verifier extentions library">
+        <ant antfile="make/vm/verifier-ext.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
-    <target name="clean-verifier-ext" description="Clean a verifier extentions library">
-        <ant antfile="make/vm/verifier-ext.xml" target="clean"/>
+    <target name="clean-verifier-ext"
+            description="Clean a verifier extentions library">
+        <ant antfile="make/vm/verifier-ext.xml" target="clean"
+             inheritall="false">
+            <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="vmcore" depends="encoder, port, port_ch, hythr, verifier">
-        <ant antfile="make/vm/vmcore.xml"/>
+        <ant antfile="make/vm/vmcore.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="em" depends="vmcore">
-        <ant antfile="make/vm/em.xml"/>
+        <ant antfile="make/vm/em.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="interpreter" depends="vmcore">
-        <ant antfile="make/vm/interpreter.xml"/>
+        <ant antfile="make/vm/interpreter.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="kernel">
-        <ant antfile="make/vm/kernel.xml"/>
+        <ant antfile="make/vm/kernel.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="vmi" depends="vmcore">
-        <ant antfile="make/vm/vmi.xml"/>
+        <ant antfile="make/vm/vmi.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="jitrino" depends="vmcore">
-        <ant antfile="make/vm/jitrino.xml"/>
+        <ant antfile="make/vm/jitrino.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
     <target name="gc_gen" depends="vmcore,kernel">
-        <ant antfile="make/vm/gc_gen.xml"/>
+        <ant antfile="make/vm/gc_gen.xml" inheritall="false">
+             <propertyset refid="module.props" />
+        </ant>
     </target>
 
+    <target name="-init-hdk">
+        <copy todir="${hy.hdk}/jdk/include" preservelastmodified="true">
+            <fileset dir="vm/include">
+                <include name="jvmti.h" />
+                <include name="jvmti_types.h" />
+                <include name="jni.h" />
+                <include name="jni_types.h" />
+            </fileset>
+        </copy>
+    </target>
 
     <!-- ================================================================
             import the deploy stuff from hdk / classlib
@@ -191,10 +242,10 @@ Usage:
         <mkdir dir="${drlvm.deploy.dir}/include" />        
         <copy todir="${drlvm.deploy.dir}">
             <fileset dir="${hy.hdk}">
-                <include name="**" if="import.hdk"/>
-                <include name="jdk/jre/**" unless="import.hdk"/>
-                <exclude name="jdk/jre/bin/default/**" unless="import.hdk"/>
-                <exclude name="jdk/jre/bin/*hythr*" unless="import.hdk"/>
+                <include name="**" unless="skip.import.hdk"/>
+                <include name="jdk/jre/**" if="skip.import.hdk"/>
+                <exclude name="jdk/jre/bin/default/**" if="skip.import.hdk"/>
+                <exclude name="jdk/jre/bin/*hythr*" if="skip.import.hdk"/>
             </fileset>
         </copy>
     </target>
@@ -203,7 +254,8 @@ Usage:
             deploy the rest of product
          ================================================================-->
     <target name="deploy">
-        <copy todir="${drlvm.deploy.dir}/jdk/include">
+        <copy todir="${drlvm.deploy.dir}/jdk/include"
+              preservelastmodified="true">
             <fileset dir="${vm.home}/include">
                 <include name="jni_types.h" />
                 <include name="jvmti_types.h" />
@@ -224,7 +276,8 @@ Usage:
         </delete>
         
         <!-- launcher should use our hythr -->
-        <copy todir="${drlvm.deploy.dir}/jdk/jre/bin" overwrite="yes">
+        <copy todir="${drlvm.deploy.dir}/jdk/jre/bin"
+              preservelastmodified="true" overwrite="yes">
             <fileset dir="${drlvm.bin.dir}">
                 <include name="*hythr*"/>
             </fileset>
@@ -250,7 +303,7 @@ Usage:
       so irrespective of the platform, compiler or release/debug
       there's a predicable place to find the output 
       ================================================================== -->
-    <target name="deploy-canonical" if="deploy.canonical.flag">
+    <target name="deploy-canonical" unless="skip.deploy.canonical">
         <property name="canonical.deploy.dir" location="${drlvm.base.dir}/deploy" />
         <delete dir="${canonical.deploy.dir}" failonerror="false" />
         <mkdir dir="${canonical.deploy.dir}" />

@@ -29,9 +29,9 @@ import java.util.LinkedList;
 public class FileCanonPathCache {
 
     static private class CacheElement {
-        String canonicalPath;
+        final String canonicalPath;
 
-        long timestamp;
+        final long timestamp;
 
         public CacheElement(String path) {
             this.canonicalPath = path;
@@ -44,20 +44,35 @@ public class FileCanonPathCache {
      */
     public static final int CACHE_SIZE = 256;
 
-    private static HashMap<String, CacheElement> cache = new HashMap<String, CacheElement>(
+    private static final HashMap<String, CacheElement> cache = new HashMap<String, CacheElement>(
             CACHE_SIZE);
 
     /**
      * FIFO queue for tracking age of elements.
      */
-    private static LinkedList<String> list = new LinkedList<String>();
+    private static final LinkedList<String> list = new LinkedList<String>();
 
-    private static Object lock = new Object();
+    private static final Object lock = new Object();
 
     /**
-     * Expired time.
+     * Expired time, 0 disable this cache.
      */
-    private static long timeout = 600000;
+    private static volatile long timeout = 30000;
+
+    public static final String FILE_CANONICAL_PATH_CACHE_TIMEOUT = "org.apache.harmony.file.canonical.path.cache.timeout";
+
+    static {
+        String value = System.getProperty(FILE_CANONICAL_PATH_CACHE_TIMEOUT);
+        try {
+            timeout = Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            // use default timeout value
+        }
+
+        if (timeout < 0) {
+            timeout = 0;
+        }
+    }
 
     /**
      * Retrieve element from cache.
@@ -68,6 +83,11 @@ public class FileCanonPathCache {
      * 
      */
     public static String get(String path) {
+        long localTimeout = timeout;
+        if (localTimeout == 0) {
+            return null;
+        }
+
         CacheElement element = null;
         synchronized (lock) {
             element = cache.get(path);
@@ -78,7 +98,7 @@ public class FileCanonPathCache {
         }
 
         long time = System.currentTimeMillis();
-        if (time - element.timestamp > timeout) {
+        if (time - element.timestamp > localTimeout) {
             // remove all elements older than this one
             synchronized (lock) {
                 if (cache.get(path) != null) {
@@ -104,6 +124,10 @@ public class FileCanonPathCache {
      *            the canonical path of <code>path</code>.
      */
     public static void put(String path, String canonicalPath) {
+        if (timeout == 0) {
+            return;
+        }
+
         CacheElement element = new CacheElement(canonicalPath);
         synchronized (lock) {
             if (cache.size() >= CACHE_SIZE) {
@@ -120,6 +144,10 @@ public class FileCanonPathCache {
      * Remove all elements from cache.
      */
     public static void clear() {
+        if (timeout == 0) {
+            return;
+        }
+
         synchronized (lock) {
             cache.clear();
             list.clear();
@@ -131,6 +159,12 @@ public class FileCanonPathCache {
     }
 
     public static void setTimeout(long timeout) {
-        FileCanonPathCache.timeout = timeout;
+        synchronized (lock) {
+            if (timeout <= 0) {
+                timeout = 0;
+                clear();
+            }
+            FileCanonPathCache.timeout = timeout;
+        }
     }
 }

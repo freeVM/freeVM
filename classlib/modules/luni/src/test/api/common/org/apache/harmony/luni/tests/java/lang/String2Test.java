@@ -282,6 +282,7 @@ public class String2Test extends junit.framework.TestCase {
         String s2 = "s2";
         String s3 = s1.concat(s2);
         assertEquals(s2, s3);
+        assertNotSame(s2, s3);
 
         s3 = s2.concat(s1);
         assertSame(s2, s3);
@@ -544,7 +545,7 @@ public class String2Test extends junit.framework.TestCase {
     public void test_indexOfI() {
         // Test for method int java.lang.String.indexOf(int)
         assertEquals("Invalid index returned", 1, hw1.indexOf('e'));
-
+        assertEquals("Invalid index returned", 1, "a\ud800\udc00".indexOf(0x10000));
     }
 
     /**
@@ -553,7 +554,7 @@ public class String2Test extends junit.framework.TestCase {
     public void test_indexOfII() {
         // Test for method int java.lang.String.indexOf(int, int)
         assertEquals("Invalid character index returned", 5, hw1.indexOf('W', 2));
-
+        assertEquals("Invalid index returned", 2, "ab\ud800\udc00".indexOf(0x10000, 1));
     }
 
     /**
@@ -595,7 +596,8 @@ public class String2Test extends junit.framework.TestCase {
         assertEquals("Failed to return correct index", 5, hw1.lastIndexOf('W'));
         assertEquals("Returned index for non-existent char", -1, hw1
                 .lastIndexOf('Z'));
-
+        assertEquals("Failed to return correct index", 1, "a\ud800\udc00"
+                .lastIndexOf(0x10000));
     }
 
     /**
@@ -697,6 +699,12 @@ public class String2Test extends junit.framework.TestCase {
                 "a", "ccc"));
         assertEquals("Failed replace by smaller seq", "$bba^", "$aaaaa^"
                 .replace(new StringBuilder("aa"), "b"));
+        assertEquals("Failed to replace empty string", "%%a%%b%%c%%",
+                "abc".replace("", "%%"));
+        assertEquals("Failed to replace with empty string", "aacc",
+                "aabbcc".replace("b", ""));
+        assertEquals("Failed to replace in empty string", "abc",
+                "".replace("", "abc"));
     }
 
     /**
@@ -737,6 +745,33 @@ public class String2Test extends junit.framework.TestCase {
                 && (hw1.substring(5, 10).equals("World")));
         assertTrue("not identical", hw1.substring(0, hw1.length()) == hw1);
     }
+    
+	/**
+	 * @tests java.lang.String#substring(int, int)
+	 */
+	public void test_substringErrorMessage() {
+		try {
+			hw1.substring(-1, 1);
+		} catch (StringIndexOutOfBoundsException ex) {
+			String msg = ex.getMessage();
+			assertTrue("Expected message to contain -1: " + msg, msg
+			        .indexOf("-1") != -1);
+		}
+		try {
+			hw1.substring(4, 1);
+		} catch (StringIndexOutOfBoundsException ex) {
+			String msg = ex.getMessage();
+			assertTrue("Expected message to contain -3: " + msg, msg
+			        .indexOf("-3") != -1);
+		}
+		try {
+			hw1.substring(0, 100);
+		} catch (StringIndexOutOfBoundsException ex) {
+			String msg = ex.getMessage();
+			assertTrue("Expected message to contain 100: " + msg, msg
+			        .indexOf("100") != -1);
+		}
+	}
 
     /**
      * @tests java.lang.String#toCharArray()
@@ -759,11 +794,14 @@ public class String2Test extends junit.framework.TestCase {
                 .toLowerCase().equals(hwlc));
 
         assertEquals(
-                "a) Sigma has same lower case value at end of word with Unicode 3.0",
+                "a) Sigma has ordinary lower case value when isolated with Unicode 4.0",
                 "\u03c3", "\u03a3".toLowerCase());
         assertEquals(
-                "b) Sigma has same lower case value at end of word with Unicode 3.0",
-                "a \u03c3", "a \u03a3".toLowerCase());
+                "b) Sigma has final form lower case value at end of word with Unicode 4.0",
+                "a\u03c2", "a\u03a3".toLowerCase());
+        
+        assertEquals("toLowerCase case conversion did not succeed",
+        		"\uD801\uDC44", "\uD801\uDC1C".toLowerCase());
     }
 
     /**
@@ -801,6 +839,8 @@ public class String2Test extends junit.framework.TestCase {
         String s = "a\u00df\u1f56";
         assertTrue("Invalid conversion", !s.toUpperCase().equals(s));
 
+        assertEquals("toUpperCase case conversion did not succeed",
+        		"\uD801\uDC1C", "\uD801\uDC44".toUpperCase());
     }
 
     /**

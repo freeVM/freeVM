@@ -43,11 +43,11 @@ import java.nio.channels.UnsupportedAddressTypeException;
 import java.nio.channels.spi.SelectorProvider;
 
 import org.apache.harmony.luni.net.PlainSocketImpl;
+import org.apache.harmony.luni.net.NetUtil;
 import org.apache.harmony.luni.platform.FileDescriptorHandler;
 import org.apache.harmony.luni.platform.INetworkSystem;
 import org.apache.harmony.luni.platform.Platform;
 import org.apache.harmony.luni.util.ErrorCodeException;
-import org.apache.harmony.nio.internal.nls.Messages;
 import org.apache.harmony.nio.AddressUtil;
 import org.apache.harmony.nio.internal.nls.Messages;
 
@@ -148,7 +148,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         fd = new FileDescriptor();
         status = SOCKET_STATUS_UNCONNECTED;
         if (connect) {
-            networkSystem.createStreamSocket(fd, true);
+            networkSystem.createStreamSocket(fd, NetUtil.preferIPv4Stack());
         }
     }
 
@@ -399,7 +399,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         }
 
         checkOpenConnected();
-        int totalCount = calculateByteBufferArray(targets, offset, length);
+        int totalCount = calculateTotalRemaining(targets, offset, length);
         if (0 == totalCount) {
             return 0;
         }
@@ -491,63 +491,63 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         }
 
         checkOpenConnected();
+        if (calculateTotalRemaining(sources, offset, length) == 0) {
+            return 0;
+        }
 
         Object[] src = new Object[length];
         int[] offsets = new int[length];
-        int[] counts = new int[length];
-        for (int i = 0; i < length; ++i) {
+        int[] lengths = new int[length];
+        for (int i = 0; i < length; i++) {
             ByteBuffer buffer = sources[i + offset];
             if (!buffer.isDirect()) {
                 if (buffer.hasArray()) {
                     src[i] = buffer.array();
-                    counts[i] = buffer.remaining();
                     offsets[i] = buffer.position();
                 } else {
-                    ByteBuffer db = ByteBuffer.allocateDirect(buffer.remaining());
+                    ByteBuffer directBuffer = ByteBuffer.allocateDirect(buffer.remaining());
                     int oldPosition = buffer.position();
-                    db.put(buffer);
+                    directBuffer.put(buffer);
                     buffer.position(oldPosition);
-                    db.flip();
-                    src[i] = db;
-                    counts[i] = buffer.remaining();
+                    directBuffer.flip();
+                    src[i] = directBuffer;
                     offsets[i] = 0;
                 }
             } else {
                 src[i] = buffer;
-                counts[i] = buffer.remaining();
                 offsets[i] = buffer.position();
             }
+            lengths[i] = buffer.remaining();
         }
 
-        if (length == 0) {
-            return 0;
+        long bytesWritten = writevImpl(src, offsets, lengths);
+        long bytesRemaining = bytesWritten;
+        for (int i = offset; i < length + offset; i++) {
+            if (bytesRemaining > sources[i].remaining()) {
+                int pos = sources[i].limit();
+                bytesRemaining -= sources[i].remaining();
+                sources[i].position(pos);
+            } else {
+                int pos = sources[i].position() + (int) bytesRemaining;
+                sources[i].position(pos);
+                break;
+            }
         }
-
-        int result = writevImpl(src, offsets, counts);
-        int val = offset;
-        int written = result;
-        while (result > 0) {
-            ByteBuffer source = sources[val];
-            int gap = Math.min(result, source.remaining());
-            source.position(source.position() + gap);
-            val++;
-            result -= gap;
-        }
-        return written;
+        return bytesWritten;
     }
 
     /*
      * Write the source. return the count of bytes written.
      */
-    private int writevImpl(Object[] sources, int[] offsets, int[] counts) throws IOException {
-        int writeCount = 0;
+    private long writevImpl(Object[] sources, int[] offsets, int[] lengths) throws IOException {
+        long writeCount = 0;
         try {
             if (isBlocking()) {
                 begin();
             }
 
             synchronized (writeLock) {
-                writeCount = networkSystem.writev(fd, sources, offsets, counts, sources.length);
+                writeCount = networkSystem.writev(fd, sources, offsets, lengths, sources.length);
             }
         } catch (SocketException e) {
             if (e.getCause() instanceof ErrorCodeException) {
@@ -565,13 +565,13 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
         return writeCount;
     }
 
-    private int calculateByteBufferArray(ByteBuffer[] sources, int offset,
+    private int calculateTotalRemaining(ByteBuffer[] buffers, int offset,
             int length) {
-        int sum = 0;
-        for (int val = offset; val < offset + length; val++) {
-            sum = sum + sources[val].remaining();
+        int count = 0;
+        for (int i = offset; i < offset + length; i++) {
+            count += buffers[i].remaining();
         }
-        return sum;
+        return count;
     }
 
     /*
@@ -746,7 +746,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
          */
         @Override
         public boolean isConnected() {
-            return channel.isConnected();
+            return super.isConnected() || channel.isConnected();
         }
 
         /**
@@ -794,11 +794,9 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                 throw new ConnectionPendingException();
             }
             super.bind(localAddr);
-            // keep here to see if need next version
-            // channel.Address = getLocalSocketAddress();
-            // channel.localport = getLocalPort();
             channel.isBound = true;
-
+            channel.localAddress = super.getLocalAddress();
+            channel.localPort = super.getLocalPort();
         }
 
         /**
@@ -1004,6 +1002,57 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorHandler {
                 throw new SocketException(Messages.getString("nio.03")); //$NON-NLS-1$
             }
             return new SocketChannelInputStream(channel);
+        }
+
+        @Override
+        public InetAddress getInetAddress() {
+            if (!isConnected()) {
+                return null;
+            }
+
+            if (channel.connectAddress == null && super.getInetAddress() != null) {
+                channel.connectAddress = new InetSocketAddress(super.getInetAddress(), super.getPort());
+            }
+            if (channel.connectAddress == null) {
+                return null;
+            }
+            return channel.connectAddress.getAddress();
+        }
+
+        @Override
+        public SocketAddress getRemoteSocketAddress() {
+            if (!isConnected()) {
+                return null;
+            }
+            if (channel.connectAddress == null && super.getInetAddress() != null) {
+                channel.connectAddress = new InetSocketAddress(super.getInetAddress(), super.getPort());
+            }
+            return channel.connectAddress;
+        }
+
+        @Override
+        public int getPort() {
+            if (!isConnected()) {
+                return 0;
+            }
+            if (channel.connectAddress == null && super.getInetAddress() != null) {
+                channel.connectAddress = new InetSocketAddress(super.getInetAddress(), super.getPort());
+            }
+            if (channel.connectAddress == null) {
+                return 0;
+            }
+            return channel.connectAddress.getPort();
+        }
+
+        @Override
+        public int getLocalPort() {
+            if (!isBound()) {
+                return -1;
+            }
+            if (channel.localPort == 0 && super.getLocalPort() != -1) {
+                channel.localPort = super.getLocalPort();
+            }
+            return channel.localPort;
         }
 
         /*

@@ -17,7 +17,8 @@
 # Makefile for module 'prefs'
 #
 
-!include <$(HY_HDK)\build\make\defines.mak>
+HY_BIN=$(HY_TARGET)\build\classlib\prefs\native\prefs\# trailing slash
+!include <$(HY_TARGET)\hdk\build\make\defines.mak>
 
 LIBBASE=hyprefs
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
@@ -25,19 +26,13 @@ LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-BUILDFILES = prefs_copyright.obj PreferencesImpl.obj
+BUILDFILES = $(HY_BIN)prefs_copyright.obj $(HY_BIN)PreferencesImpl.obj
 
 VIRTFILES = $(LIBBASE).res
 
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-!IF "$(HY_ZIP_API)" != "true"
-MDLLIBFILES = \
-  $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX)
-!ENDIF
-
-MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 DLLBASE=0x13300000
 
 !include <$(HY_HDK)\build\make\rules.mak>

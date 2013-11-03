@@ -30,18 +30,6 @@ public class WideForm extends VariableInstructionForm {
         super(opcode, name);
     }
 
-    public WideForm(int opcode, String name, int[] rewrite) {
-        super(opcode, name, rewrite);
-    }
-
-    public int getOperandType() {
-        return TYPE_WIDE;
-    }
-
-    public boolean hasWideOperand() {
-        return true;
-    }
-
     /*
      * (non-Javadoc)
      *

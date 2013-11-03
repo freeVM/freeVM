@@ -13,9 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-!include <$(HY_HDK)\build\make\defines.mak>
+HY_BIN=$(HY_TARGET)\build\classlib\imageio\native\jpegencoder\# trailing slash
+!include <$(HY_TARGET)\hdk\build\make\defines.mak>
 
-JPEG_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\jpeg-$(HY_JPEG_VER)\# avoid continuation
+JPEG_DIR=$(HY_JPEG_DIR)\# avoid continuation
 
 LIBBASE=jpegencoder
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
@@ -35,13 +36,12 @@ HYCFLAGS = $(HYCFLAGS) -DHY_ZIP_API
 !ENDIF
 
 
-BUILDFILES = $(SHAREDSUB)JpegEncoder.obj
+BUILDFILES = $(HY_BIN)JpegEncoder.obj
 
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) $(JPEG_DIR)libjpeg$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES = $(MDLLIBFILES) $(JPEG_DIR)libjpeg$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
 
@@ -49,7 +49,7 @@ CLEANFILES=jconfig.h
 
 !include <$(HY_HDK)\build\make\rules.mak>
 
-$(SHAREDSUB)JpegEncoder.obj: jconfig.h
+$(HY_BIN)JpegEncoder.obj: jconfig.h
 
 jconfig.h: $(JPEG_DIR)jconfig.vc
 	copy $(JPEG_DIR)jconfig.vc $@

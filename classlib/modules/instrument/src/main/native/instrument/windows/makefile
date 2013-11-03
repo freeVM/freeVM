@@ -17,7 +17,8 @@
 # Makefile for module 'instrument'
 #
 
-!include <$(HY_HDK)\build\make\defines.mak>
+HY_BIN=$(HY_TARGET)\build\classlib\instrument\native\instrument\# trailing slash
+!include <$(HY_TARGET)\hdk\build\make\defines.mak>
 
 LIBBASE=hyinstrument
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
@@ -26,18 +27,18 @@ HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I$(SHARED)fdlibm
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-  $(SHAREDSUB)instrument.obj $(SHAREDSUB)inst_agt.obj 
+  $(HY_BIN)instrument.obj $(HY_BIN)inst_agt.obj 
 
 VIRTFILES = hyinstrument.res
 
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 !IF "$(HY_ZIP_API)" != "true"
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX) \
+              $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX)
 !ENDIF
 
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) \
-  $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13200000
 

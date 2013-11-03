@@ -52,6 +52,7 @@ import java.util.TimeZone;
 import org.apache.harmony.luni.util.Base64;
 import org.apache.harmony.luni.internal.nls.Messages;
 import org.apache.harmony.luni.util.PriviAction;
+import org.apache.harmony.luni.util.Util;
 
 /**
  * This subclass extends <code>HttpURLConnection</code> which in turns extends
@@ -451,8 +452,8 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
             //Only with such situation when the fixedContentLength field of HttpURLConnection
             //is set by HttpURLConnection.setFixedLengthStreamingMode and larger than 0, the
             //IOException will be throwed
-            if (writeToSocket && fixedMod) {
-                if (limit > 0) {
+            if (writeToSocket) {
+                if (limit > 0 && fixedMod) {
                     throw new IOException(Messages.getString("luni.25")); //$NON-NLS-1$
                 }
                 sendCache(closed);
@@ -493,7 +494,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
             }
 
             if (limit >= 0) {
-                if (count > limit) {
+                if (count > limit && fixedMod) {
                     throw new IOException(Messages.getString("luni.26")); //$NON-NLS-1$
                 }
                 limit -= count;
@@ -615,6 +616,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
             return;
         }
         try {
+            url = new URL(Util.encodeURL(url.toString()));
             uri = url.toURI();
         } catch (URISyntaxException e1) {
             // ignore
@@ -1414,8 +1416,7 @@ public class HttpURLConnectionImpl extends HttpURLConnection {
                 // keep asking for username/password until authorized
                 String challenge = resHeader.get("WWW-Authenticate"); //$NON-NLS-1$
                 if (challenge == null) {
-                    // luni.2E=Received authentication challenge is null
-                    throw new IOException(Messages.getString("luni.2E")); //$NON-NLS-1$
+                    break;
                 }
                 // drop everything and reconnect, might not be required for
                 // HTTP/1.1

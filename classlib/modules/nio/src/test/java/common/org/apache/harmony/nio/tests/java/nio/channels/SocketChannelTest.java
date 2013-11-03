@@ -369,6 +369,70 @@ public class SocketChannelTest extends TestCase {
         }
     }
 
+    public void testSocket_getInetAddress() throws Exception {
+        Socket socket = channel1.socket();
+        assertNull(socket.getInetAddress());
+
+        channel1.connect(localAddr1);
+
+        assertNotNull(socket.getInetAddress());
+        assertEquals(localAddr1.getAddress(), socket.getInetAddress());
+    }
+
+    public void testSocket_getRemoteSocketAddress() throws Exception {
+        Socket socket = channel1.socket();
+        assertNull(socket.getRemoteSocketAddress());
+
+        channel1.connect(localAddr1);
+
+        assertNotNull(socket.getRemoteSocketAddress());
+        assertEquals(localAddr1, socket.getRemoteSocketAddress());
+    }
+
+    public void testSocket_getPort() throws Exception {
+        Socket socket = channel1.socket();
+        assertEquals(0, socket.getPort());
+
+        channel1.connect(localAddr1);
+
+        assertEquals(localAddr1.getPort(), socket.getPort());
+    }
+
+    public void testSocket_getLocalAddress() throws Exception {
+        Socket socket = channel1.socket();
+        assertNotNull(socket.getLocalAddress());
+
+        channel1.connect(localAddr1);
+
+        assertNotNull(socket.getLocalAddress());
+    }
+
+    public void testSocket_getLocalSocketAddress() throws Exception {
+        Socket socket = channel1.socket();
+        assertNull(socket.getLocalSocketAddress());
+
+        channel1.connect(localAddr1);
+
+        assertNotNull(socket.getLocalSocketAddress());
+    }
+
+    public void testSocket_getLocalPort() throws Exception {
+        Socket socket = channel1.socket();
+        assertEquals(-1, socket.getLocalPort());
+
+        channel1.connect(localAddr1);
+
+        assertTrue(-1 != socket.getLocalPort());
+        assertTrue(0 != socket.getLocalPort());
+    }
+
+    public void testSocket_bind() throws Exception {
+        Socket socket = channel1.socket();
+        socket.bind(new InetSocketAddress("127.0.0.1", 0));
+        assertEquals("127.0.0.1", socket.getLocalAddress().getHostAddress());
+        assertTrue(socket.getLocalPort() != -1);
+    }
+
     private void assertSocketBeforeConnect(Socket s) throws IOException {
         assertFalse(s.isBound());
         assertFalse(s.isClosed());
@@ -434,8 +498,6 @@ public class SocketChannelTest extends TestCase {
         assertEquals(s.getPort(), address.getPort());
         assertNotNull(s.getLocalSocketAddress());
         assertTrue(s.getReceiveBufferSize() >= 8192);
-        // equal , not same
-        assertNotSame(s.getRemoteSocketAddress(), (SocketAddress) address);
         assertEquals(s.getRemoteSocketAddress(), (SocketAddress) address);
         // assertFalse(s.getReuseAddress());
         assertTrue(s.getSendBufferSize() >= 8192);
@@ -2710,6 +2772,80 @@ public class SocketChannelTest extends TestCase {
     /**
      * @tests java.nio.channels.SocketChannel#write(ByteBuffer[])
      */
+    public void test_writev2() throws Exception {
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.configureBlocking(false);
+        ssc.socket().bind(null);
+        SocketChannel sc = SocketChannel.open();
+        sc.configureBlocking(false);
+        boolean connected = sc.connect(ssc.socket().getLocalSocketAddress());
+        SocketChannel sock = ssc.accept();
+        if (!connected) {
+            sc.finishConnect();
+        }
+
+        ByteBuffer buf1 = ByteBuffer.allocate(10);
+        sc.socket().setSendBufferSize(512);
+        int bufSize = sc.socket().getSendBufferSize();
+        ByteBuffer buf2 = ByteBuffer.allocate(bufSize * 10);
+
+        ByteBuffer[] sent = new ByteBuffer[2];
+        sent[0] = buf1;
+        sent[1] = buf2;
+
+        long whole = buf1.remaining() + buf2.remaining();
+
+        long write = sc.write(sent);
+        ssc.close();
+        sc.close();
+        sock.close();
+
+        assertTrue(whole == (write + buf1.remaining() + buf2.remaining()));
+    }
+
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[])
+     * 
+     * In non-blocking mode, the native system call will return EAGAIN/EWOULDBLOCK error
+     * code on Linux/Unix and return WSATRY_AGAIN/WSAEWOULDBLOCK error code on Windows.
+     * These error code means try again but not fatal error, so we should not throw exception.
+     */
+    public void test_write$NonBlockingException() throws Exception {
+        ServerSocketChannel ssc = ServerSocketChannel.open();
+        ssc.configureBlocking(false);
+        ssc.socket().bind(null);
+        SocketChannel sc = SocketChannel.open();
+        sc.configureBlocking(false);
+        boolean connected = sc.connect(ssc.socket().getLocalSocketAddress());
+        SocketChannel sock = ssc.accept();
+        if (!connected) {
+            sc.finishConnect();
+        }
+
+        try {
+            for (int i = 0; i < 100; i++) {
+                ByteBuffer buf1 = ByteBuffer.allocate(10);
+                sc.socket().setSendBufferSize(512);
+                int bufSize = sc.socket().getSendBufferSize();
+                ByteBuffer buf2 = ByteBuffer.allocate(bufSize * 10);
+
+                ByteBuffer[] sent = new ByteBuffer[2];
+                sent[0] = buf1;
+                sent[1] = buf2;
+
+                sc.write(sent);
+            }
+        } finally {
+            ssc.close();
+            sc.close();
+            sock.close();
+        }
+
+    }
+
+    /**
+     * @tests java.nio.channels.SocketChannel#write(ByteBuffer[])
+     */
     public void test_write$LByteBuffer2() throws IOException {
         // Set-up
         ServerSocketChannel server = ServerSocketChannel.open();
@@ -2727,15 +2863,15 @@ public class SocketChannelTest extends TestCase {
 
         // Write them out, read what we wrote and check it
         client.write(buffers);
+        client.close();
         ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-        worker.read(readBuffer);
+        while (EOF != worker.read(readBuffer)) {};
         readBuffer.flip();
         Buffer expected = ByteBuffer.allocate(1024).put(data).put(data).flip();
         assertEquals(expected, readBuffer);
 
         // Tidy-up
         worker.close();
-        client.close();
         server.close();
     }
 
@@ -2769,14 +2905,14 @@ public class SocketChannelTest extends TestCase {
 
         // Write them out, read what we wrote and check it
         client.write(buffers);
+        client.close();
         ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-        worker.read(readBuffer);
+        while (EOF != worker.read(readBuffer)) {};
         readBuffer.flip();
         assertEquals(ByteBuffer.wrap(data), readBuffer);
 
         // Tidy-up
         worker.close();
-        client.close();
         server.close();
     }
 
@@ -2809,16 +2945,16 @@ public class SocketChannelTest extends TestCase {
         client.write(buffers, 0, 2); // writes "world!"
         assertEquals("Failed to drain buffer 1", 0, buffers[1].remaining());
         client.write(buffers, 0, 3); // write nothing
+        client.close();
 
         // Read what we wrote and check it
         ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-        worker.read(readBuffer);
+        while (EOF != worker.read(readBuffer)) {};
         readBuffer.flip();
         assertEquals(ByteBuffer.wrap(data), readBuffer);
 
         // Tidy-up
         worker.close();
-        client.close();
         server.close();
     }
 

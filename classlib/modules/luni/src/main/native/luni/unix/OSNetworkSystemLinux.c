@@ -346,14 +346,14 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_selectImpl
 	  /* output result to int array */
 	  flagArray = (*env)->GetIntArrayElements(env, outFlags, &isCopy);
 	  for (val=0; val<countReadC; val++) {
-          if (my_pollfds[val].revents & (POLLIN | POLLPRI)) {
+          if (my_pollfds[val].revents & (POLLIN | POLLPRI | POLLHUP | POLLERR)) {
               flagArray[val] = SOCKET_OP_READ;
               changed=1;
           }
       }
 
 	  for (val=0; val<countWriteC; val++) {
-          if (my_pollfds[val+countReadC].revents & POLLOUT) {
+            if (my_pollfds[val+countReadC].revents & (POLLOUT | POLLHUP | POLLERR)) {
               flagArray[val+countReadC] = SOCKET_OP_WRITE;
               changed=1;
           }
@@ -727,7 +727,7 @@ pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
   return result;
 }
 
-JNIEXPORT jint JNICALL
+JNIEXPORT jlong JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
 (JNIEnv *env, jobject thiz, jobject fd, jobjectArray buffers, jintArray offset, jintArray counts, jint length) {
 
@@ -735,9 +735,9 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
 
   jobject buffer;
   jobject* toBeReleasedBuffers;
-  jint *noffset;
+  jint *noffset = NULL;
   jboolean isDirectBuffer = JNI_FALSE;
-  jint result = 0;
+  ssize_t result = 0;
   jclass byteBufferClass;
   struct iovec* vect;
   int i;
@@ -746,13 +746,13 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
 
   if (!hysock_socketIsValid(socketP)) {
     throwJavaNetSocketException(env, HYPORT_ERROR_SOCKET_BADSOCKET);
-    return (jint) 0;
+    return (jlong)0;
   }
 
   vect = (struct iovec*) hymem_allocate_memory(sizeof(struct iovec) * length);
   if (vect == NULL) {
     throwNewOutOfMemoryError(env, "");
-    return 0;
+    return (jlong)0;
   }
 
   toBeReleasedBuffers =
@@ -799,11 +799,10 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
     (*env)->ReleasePrimitiveArrayCritical(env, counts, cts, JNI_ABORT);
   }
 
-
   result = writev(SOCKET_CAST (socketP), vect, length);
 
   if (0 > result) {
-    if (errno != EAGAIN) {
+    if (errno != EAGAIN && errno != EWOULDBLOCK) {
       throwJavaNetSocketException(env, result);
     }
     result = 0;
@@ -828,5 +827,5 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
   hymem_free_memory(toBeReleasedBuffers);
   hymem_free_memory(vect);
 
-  return (jint) result;
+  return (jlong)result;
 }

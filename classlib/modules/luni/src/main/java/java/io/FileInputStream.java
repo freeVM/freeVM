@@ -45,8 +45,6 @@ public class FileInputStream extends InputStream implements Closeable {
     // initialized).
     private FileChannel channel;
 
-    boolean innerFD;
-
     private IFileSystem fileSystem = Platform.getFileSystem();
 
     private static class RepositioningLock {
@@ -81,7 +79,6 @@ public class FileInputStream extends InputStream implements Closeable {
         fd.readOnly = true;
         fd.descriptor = fileSystem.open(file.properPath(true),
                 IFileSystem.O_RDONLY);
-        innerFD = true;
         channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
                 IFileSystem.O_RDONLY);
     }
@@ -109,7 +106,6 @@ public class FileInputStream extends InputStream implements Closeable {
             security.checkRead(fd);
         }
         this.fd = fd;
-        innerFD = false;
         channel = FileChannelFactory.getFileChannel(this, fd.descriptor,
                 IFileSystem.O_RDONLY);
     }
@@ -148,14 +144,7 @@ public class FileInputStream extends InputStream implements Closeable {
             if (fd == FileDescriptor.in) {
                 return (int) fileSystem.ttyAvailable();
             }
-
-            long currentPosition = fileSystem.seek(fd.descriptor, 0L,
-                    IFileSystem.SEEK_CUR);
-            long endOfFilePosition = fileSystem.seek(fd.descriptor, 0L,
-                    IFileSystem.SEEK_END);
-            fileSystem.seek(fd.descriptor, currentPosition,
-                    IFileSystem.SEEK_SET);
-            return (int) (endOfFilePosition - currentPosition);
+            return (int) fileSystem.available(fd.descriptor);
         }
     }
 
@@ -180,7 +169,7 @@ public class FileInputStream extends InputStream implements Closeable {
             }
         }
         synchronized (this) {
-            if (fd.descriptor >= 0 && innerFD) {
+            if (fd.descriptor >= 0) {
                 fileSystem.close(fd.descriptor);
                 fd.descriptor = -1;
             }

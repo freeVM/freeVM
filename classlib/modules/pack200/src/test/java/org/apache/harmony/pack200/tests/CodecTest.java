@@ -26,7 +26,6 @@ import org.apache.harmony.pack200.BHSDCodec;
 import org.apache.harmony.pack200.CanonicalCodecFamilies;
 import org.apache.harmony.pack200.Codec;
 import org.apache.harmony.pack200.Pack200Exception;
-import org.apache.harmony.pack200.RunCodec;
 
 /**
  * 
@@ -165,23 +164,6 @@ public class CodecTest extends TestCase {
         assertFalse(byte2s.encodes(256));
     }
 
-    public void testRunCodec() throws Exception {
-        RunCodec runCodec = new RunCodec(1, Codec.UNSIGNED5, Codec.BYTE1);
-        ByteArrayInputStream bais = new ByteArrayInputStream(new byte[] {
-                (byte) 192, 0, (byte) 192, 0 });
-        assertEquals(192, runCodec.decode(bais));
-        assertEquals(192, runCodec.decode(bais));
-        assertEquals(0, runCodec.decode(bais));
-        assertEquals(0, bais.available());
-        runCodec = new RunCodec(1, Codec.BYTE1, Codec.UNSIGNED5);
-        bais = new ByteArrayInputStream(new byte[] { (byte) 192, 0, (byte) 192,
-                0 });
-        assertEquals(192, runCodec.decode(bais));
-        assertEquals(0, runCodec.decode(bais));
-        assertEquals(192, runCodec.decode(bais));
-        assertEquals(0, bais.available());
-    }
-
     public void testUnsigned5() throws Exception {
         decode(Codec.UNSIGNED5, new byte[] { 1 }, 1, 0);
         decode(Codec.UNSIGNED5, new byte[] { (byte) 191 }, 191, 0);
@@ -222,6 +204,15 @@ public class CodecTest extends TestCase {
         checkAscendingCardinalities(CanonicalCodecFamilies.deltaUnsignedCodecs3);
         checkAscendingCardinalities(CanonicalCodecFamilies.deltaUnsignedCodecs4);
         checkAscendingCardinalities(CanonicalCodecFamilies.deltaUnsignedCodecs5);
+        checkAscendingCardinalities(CanonicalCodecFamilies.nonDeltaSignedCodecs1);
+        checkAscendingCardinalities(CanonicalCodecFamilies.nonDeltaSignedCodecs2);
+        checkAscendingCardinalities(CanonicalCodecFamilies.nonDeltaDoubleSignedCodecs1);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaSignedCodecs1);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaSignedCodecs2);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaSignedCodecs3);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaSignedCodecs4);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaSignedCodecs5);
+        checkAscendingCardinalities(CanonicalCodecFamilies.deltaDoubleSignedCodecs1);
     }
 
     private void checkAscendingCardinalities(BHSDCodec[] family) {

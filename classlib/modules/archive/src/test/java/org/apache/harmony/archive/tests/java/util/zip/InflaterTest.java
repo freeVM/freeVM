@@ -17,13 +17,14 @@
 package org.apache.harmony.archive.tests.java.util.zip;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.zip.Adler32;
 import java.io.UnsupportedEncodingException;
+import java.util.zip.Adler32;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.ZipException;
 
@@ -82,9 +83,9 @@ public class InflaterTest extends junit.framework.TestCase {
 			fail("Invalid input to be decompressed");
 		}
 		for (int i = 0; i < byteArray.length; i++) {
-			assertTrue(
+			assertEquals(
 					"Final decompressed data does not equal the original data",
-					byteArray[i] == outPutInf[i]);
+					outPutInf[i], byteArray[i]);
 		}
 		assertEquals("final decompressed data contained more bytes than original - finished()",
 				0, outPutInf[byteArray.length]);
@@ -104,9 +105,9 @@ public class InflaterTest extends junit.framework.TestCase {
 			Adler32 adl = new Adler32();
 			adl.update(dictionaryArray);
 			long checkSumR = adl.getValue();
-			assertTrue(
+			assertEquals(
 					"the checksum value returned by getAdler() is not the same as the checksum returned by creating the adler32 instance",
-					checkSumR == inflateDiction.getAdler());
+					inflateDiction.getAdler(), checkSumR);
 		}
 	}
 
@@ -158,9 +159,9 @@ public class InflaterTest extends junit.framework.TestCase {
 			fail("Input to inflate is invalid or corrupted - getTotalIn");
 		}
 		// System.out.print(deflate.getTotalOut() + " " + inflate.getTotalIn());
-		assertTrue(
+		assertEquals(
 				"the total byte in outPutBuf did not equal the byte returned in getTotalIn",
-				inflate.getTotalIn() == deflate.getTotalOut());
+				deflate.getTotalOut(), inflate.getTotalIn());
 
 		Inflater inflate2 = new Inflater();
 		int offSet = 0;// seems only can start as 0
@@ -177,9 +178,9 @@ public class InflaterTest extends junit.framework.TestCase {
 			fail("Input to inflate is invalid or corrupted - getTotalIn");
 		}
 		// System.out.print(inflate2.getTotalIn() + " " + length);
-		assertTrue(
+		assertEquals(
 				"total byte dictated by length did not equal byte returned in getTotalIn",
-				inflate2.getTotalIn() == length);
+				length, inflate2.getTotalIn());
 	}
 
 	/**
@@ -216,12 +217,12 @@ public class InflaterTest extends junit.framework.TestCase {
 			fail("Input to inflate is invalid or corrupted - getTotalIn");
 		}
 
-		assertTrue(
+		assertEquals(
 				"the sum of the bytes returned from inflate does not equal the bytes of getTotalOut()",
-				y == inflate.getTotalOut());
-		assertTrue(
+				inflate.getTotalOut(), y);
+		assertEquals(
 				"the total number of bytes to be compressed does not equal the total bytes decompressed",
-				inflate.getTotalOut() == deflate.getTotalIn());
+				deflate.getTotalIn(), inflate.getTotalOut());
 
 		// testing inflate(byte,int,int)
 		inflate.reset();
@@ -240,12 +241,12 @@ public class InflaterTest extends junit.framework.TestCase {
 			System.out
 					.println("Input to inflate is invalid or corrupted - getTotalIn");
 		}
-		assertTrue(
+		assertEquals(
 				"the sum of the bytes returned from inflate does not equal the bytes of getTotalOut()",
-				y == inflate.getTotalOut());
-		assertTrue(
+				y, inflate.getTotalOut());
+		assertEquals(
 				"the total number of bytes to be compressed does not equal the total bytes decompressed",
-				inflate.getTotalOut() == deflate.getTotalIn());
+				deflate.getTotalIn(), inflate.getTotalOut());
 	}
 
 	/**
@@ -268,9 +269,9 @@ public class InflaterTest extends junit.framework.TestCase {
 			fail("Invalid input to be decompressed");
 		}
 		for (int i = 0; i < byteArray.length; i++) {
-			assertTrue(
+			assertEquals(
 					"Final decompressed data does not equal the original data",
-					byteArray[i] == outPutInf[i]);
+					byteArray[i], outPutInf[i]);
 		}
 		assertEquals("final decompressed data contained more bytes than original - inflateB",
 				0, outPutInf[byteArray.length]);
@@ -287,12 +288,12 @@ public class InflaterTest extends junit.framework.TestCase {
 		while (!(defEmpty.finished())) {
 			x += defEmpty.deflate(outPutBuf, x, outPutBuf.length - x);
 		}
-		assertTrue(
+		assertEquals(
 				"the total number of byte from deflate did not equal getTotalOut - inflate(byte)",
-				x == defEmpty.getTotalOut());
-		assertTrue(
+				x, defEmpty.getTotalOut());
+		assertEquals(
 				"the number of input byte from the array did not correspond with getTotalIn - inflate(byte)",
-				defEmpty.getTotalIn() == emptyArray.length);
+				emptyArray.length, defEmpty.getTotalIn());
 		Inflater infEmpty = new Inflater();
 		try {
 			while (!(infEmpty.finished())) {
@@ -305,9 +306,9 @@ public class InflaterTest extends junit.framework.TestCase {
 			fail("Invalid input to be decompressed");
 		}
 		for (int i = 0; i < emptyArray.length; i++) {
-			assertTrue(
+			assertEquals(
 					"Final decompressed data does not equal the original data",
-					emptyArray[i] == outPutInf[i]);
+					emptyArray[i], outPutInf[i]);
 			assertEquals("Final decompressed data does not equal zero",
 					0, outPutInf[i]);
 		}
@@ -363,6 +364,7 @@ public class InflaterTest extends junit.framework.TestCase {
 		try {
 			while (!(inflate.finished())) {
 				if (inflate.needsInput()) {
+				    assertEquals(0, inflate.inflate(outPutInf, 0, 1));
 					inflate.setInput(outPutBuff1);
 				}
 				y += inflate.inflate(outPutInf, y, outPutInf.length - y);
@@ -371,9 +373,9 @@ public class InflaterTest extends junit.framework.TestCase {
 			fail("Invalid input to be decompressed");
 		}
 		for (int i = 0; i < byteArray.length; i++) {
-			assertTrue(
+			assertEquals(
 					"Final decompressed data does not equal the original data",
-					byteArray[i] == outPutInf[i]);
+					byteArray[i], outPutInf[i]);
 		}
 		assertEquals("final decompressed data contained more bytes than original - inflateB",
 				0, outPutInf[byteArray.length]);
@@ -395,6 +397,21 @@ public class InflaterTest extends junit.framework.TestCase {
 			r = 1;
 		}
 		assertEquals("out of bounds error did not get caught", 1, r);
+
+        try {
+            assertEquals(0, inflate.inflate(outPutInf, offSet, 0));
+        } catch (DataFormatException e) {
+            fail("Invalid input to be decompressed");
+        }
+        inflate.end();
+        try {
+            inflate.inflate(outPutInf, offSet, 1);
+            fail("IllegalStateException expected");
+        } catch (DataFormatException e) {
+            fail("Invalid input to be decompressed");
+        } catch (IllegalStateException e) {
+            //expected
+        }
 	}
 
     public void test_inflate$BII1() {
@@ -430,6 +447,28 @@ public class InflaterTest extends junit.framework.TestCase {
         }
 
         infl2.end();
+    }
+
+    /*
+     * Regression test for HARMONY-6637
+     */
+    public void testInflateZero() throws Exception {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(
+                byteArrayOutputStream);
+        deflaterOutputStream.close();
+        byte[] input = byteArrayOutputStream.toByteArray();
+
+        Inflater inflater = new Inflater();
+        inflater.setInput(input);
+        byte[] buffer = new byte[0];
+        int numRead = 0;
+        while (!inflater.finished()) {
+            int inflatedChunkSize = inflater.inflate(buffer, numRead,
+                    buffer.length - numRead);
+            numRead += inflatedChunkSize;
+        }
+        inflater.end();
     }
 
 	/**
@@ -517,6 +556,7 @@ public class InflaterTest extends junit.framework.TestCase {
         assertEquals(0,inf.getTotalOut());
         assertEquals(0,inf.getBytesRead());
         assertEquals(0,inf.getBytesWritten());
+        assertEquals(1, inf.getAdler());
 	}
 
 	/**
@@ -563,9 +603,9 @@ public class InflaterTest extends junit.framework.TestCase {
 			fail("Invalid input to be decompressed");
 		}
 		for (int i = 0; i < byteArray.length; i++) {
-			assertTrue(
+			assertEquals(
 					"Final decompressed data does not equal the original data",
-					byteArray[i] == outPutInf[i]);
+					byteArray[i], outPutInf[i]);
 		}
 		assertEquals("final decompressed data contained more bytes than original - reset",
 				0, outPutInf[byteArray.length]);
@@ -585,9 +625,9 @@ public class InflaterTest extends junit.framework.TestCase {
 			fail("Invalid input to be decompressed");
 		}
 		for (int i = 0; i < byteArray.length; i++) {
-			assertTrue(
+			assertEquals(
 					"Final decompressed data does not equal the original data",
-					byteArray[i] == outPutInf[i]);
+					byteArray[i], outPutInf[i]);
 		}
 		assertEquals("final decompressed data contained more bytes than original - reset",
 				0, outPutInf[byteArray.length]);
@@ -671,9 +711,9 @@ public class InflaterTest extends junit.framework.TestCase {
 		int length = 6;
 		Inflater inflate = new Inflater();
 		inflate.setInput(byteArray, offSet, length);
-		assertTrue(
+		assertEquals(
 				"setInputBII did not deliver the right number of bytes to the input buffer",
-				inflate.getRemaining() == length);
+				length, inflate.getRemaining());
 		// boundary check
 		inflate.reset();
 		int r = 0;
@@ -689,13 +729,13 @@ public class InflaterTest extends junit.framework.TestCase {
     protected void setUp() {
 		try {
 			java.io.InputStream infile = Support_Resources
-					.getStream("hyts_compressD.txt");
+					.getStream("hyts_compressD.bin");
 			BufferedInputStream inflatIP = new BufferedInputStream(infile);
 			inflatIP.read(outPutBuff1, 0, outPutBuff1.length);
 			inflatIP.close();
 
 			java.io.InputStream infile2 = Support_Resources
-					.getStream("hyts_compDiction.txt");
+					.getStream("hyts_compDiction.bin");
 			BufferedInputStream inflatIP2 = new BufferedInputStream(infile2);
 			inflatIP2.read(outPutDiction, 0, outPutDiction.length);
 			inflatIP2.close();
@@ -924,6 +964,12 @@ public class InflaterTest extends junit.framework.TestCase {
             // expected.
         }
         infl1.end();
+        try{
+            infl1.setDictionary(dictionary2.getBytes());
+            fail("IllegalStateException expected");
+        }catch(IllegalStateException ise){
+            //expected
+        }
     }
 
     public void testSetDictionary$BII() throws Exception {
@@ -992,6 +1038,7 @@ public class InflaterTest extends junit.framework.TestCase {
         Inflater infl1 = new Inflater();
         Inflater infl2 = new Inflater();
         Inflater infl3 = new Inflater();
+        Inflater infl4 = new Inflater();
 
         byte[] result = new byte[100];
         int decLen;
@@ -1026,6 +1073,62 @@ public class InflaterTest extends junit.framework.TestCase {
         infl3.end();
         assertEquals(inputString, new String(result, 0, decLen));
 
+        //exception test
+        infl4.setInput(output3, 0, dataLen3);
+        decLen = infl4.inflate(result);
+        assertTrue(infl4.needsDictionary());
+
+        try{
+            infl4.setDictionary(dictionary1.getBytes(), 4, 4);
+            fail("ArrayIndexOutOfBoundsException expected");
+        }catch(ArrayIndexOutOfBoundsException aiob){
+            //expected
+        }
     }
 
+    public void testExceptions() throws Exception {
+        byte byteArray[] = { 5, 2, 3, 7, 8 };
+
+        int r = 0;
+        Inflater inflate = new Inflater();
+        inflate.setInput(byteArray);
+        inflate.end();
+        
+        try{
+            inflate.getAdler();
+            fail("IllegalStateException expected");
+        }catch(IllegalStateException ise){
+            //expected
+        }
+
+        try{
+            inflate.getBytesRead();
+            fail("NullPointerException expected");
+        }catch(NullPointerException ise){
+            //expected
+        }
+        
+        try{
+            inflate.getBytesWritten();
+            fail("NullPointerException expected");
+        }catch(NullPointerException ise){
+            //expected
+        }
+         
+        
+        try{
+            inflate.getTotalIn();
+            fail("IllegalStateException expected");
+        }catch(IllegalStateException ise){
+            //expected
+        }
+        
+        try{
+            inflate.getTotalOut();
+            fail("IllegalStateException expected");
+        }catch(IllegalStateException ise){
+            //expected
+        }
+         
+    }
 }

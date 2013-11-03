@@ -13,38 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include $(HY_HDK)/build/make/defines.mk
+HY_BIN=$(HY_TARGET)/build/classlib/awt/native/gl/
+include $(HY_TARGET)/hdk/build/make/defines.mk
 
 # TODO: Fix the warnings see HARMONY-5885
 WARNFLAGS :=
 
-INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)/include \
+INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include \
             -I/usr/X11R6/include -I/usr/include -Iinclude
 
-BUILDFILES = \
-  $(SHAREDSUB)/blitter.o \
-  $(SHAREDSUB)/gifdecoder.o \
-  $(SHAREDSUB)/LUTTables.o \
-  $(SHAREDSUB)/pngdecoder.o \
-  $(SHAREDSUB)/SurfaceDataStructure.o \
-  gl.o \
-  XBlitter.o \
-  XGraphics2D.o \
-  LockingKeys.o
+BUILDFILES = blitter.o gifdecoder.o LUTTables.o pngdecoder.o \
+  SurfaceDataStructure.o gl.o XBlitter.o XGraphics2D.o LockingKeys.o
 
 OSLIBS += -lpng
-
-ifneq ($(HY_ZIP_API),true)
-MDLLIBFILES += $(LIBPATH)libhyzip.a
-endif
-
-MDLLIBFILES += $(MDLLIBZLIB) \
-	$(LIBPATH)libhypool.a \
-	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
 
 OSLIBS += $(STDCLIBS) $(XLIBS)
 
 DLLNAME=$(DLLPATH)libgl$(HY_SHLIB_SUFFIX)
 EXPNAME=HYGL_0.1
 
-include $(HY_HDK)/build/make/rules.mk
+include $(HY_TARGET)/hdk/build/make/rules.mk

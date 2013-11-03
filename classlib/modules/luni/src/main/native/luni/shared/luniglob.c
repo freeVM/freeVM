@@ -57,6 +57,11 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
   char charset[CHARSETBUFF];
   vmiError propRes;
 
+#ifdef ZOS
+  /* Ensure that stdout only line buffers and has a maximum buffer of 128 */
+  setvbuf(stdout, NULL, _IOLBF, 128);
+#endif
+
   /* Query the VM interface */
   vmInterface = VMI_GetVMIFromJavaVM (vm);
   if (!vmInterface)
@@ -131,16 +136,14 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
        /* set other (not required by api specification) properties */
        (*vmInterface)->GetSystemProperty (vmInterface, "user.language", &propVal);
        if (propVal == NULL) {
-            /* FIXME provide appropriate non-dummy value */
-           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "user.language", "en");
+           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "user.language", (char *)hynls_get_language());
            if (VMI_ERROR_NONE != propRes) {
                /* goto fail2; */
            }
        }
        (*vmInterface)->GetSystemProperty (vmInterface, "user.country", &propVal);
        if (propVal == NULL) {
-           /* FIXME provide appropriate non-dummy value */
-           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "user.country", "US");
+           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "user.country", (char *)hynls_get_region());
            if (VMI_ERROR_NONE != propRes) {
                /* goto fail2; */
            }
@@ -158,9 +161,13 @@ JNI_OnLoad (JavaVM * vm, void *reserved)
        /* Many classes depend on correct "file.encoding" value */
        (*vmInterface)->GetSystemProperty (vmInterface, "file.encoding", &propVal);
        if (propVal == NULL) {
+#if defined(ZOS)
+           propRes = (*vmInterface)->SetSystemProperty (vmInterface, "file.encoding", "IBM-1047");
+#else
            /* FIXME provide appropriate non-dummy value */
            getOSCharset(charset, CHARSETBUFF);
            propRes = (*vmInterface)->SetSystemProperty (vmInterface, "file.encoding", charset);
+#endif
            if (VMI_ERROR_NONE != propRes) {
                /* goto fail2; */
            }

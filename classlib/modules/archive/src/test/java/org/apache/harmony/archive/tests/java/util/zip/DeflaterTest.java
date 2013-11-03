@@ -676,6 +676,22 @@ public class DeflaterTest extends TestCase {
 			defl.end();
 		}
 
+        //test setLevel - Call after inputArray 
+        Deflater defl = new Deflater();
+        defl.setLevel(2);
+        outPutBuf = new byte[500];
+        defl.setInput(byteArray);
+        defl.setLevel(3);
+        while (!defl.needsInput()) {
+            defl.deflate(outPutBuf);
+        }
+        defl.finish();
+        while (!defl.finished()) {
+            defl.deflate(outPutBuf);
+        }
+        totalOut = defl.getTotalOut();
+        defl.end();
+
 		// testing boundaries
 		try {
 			Deflater boundDefl = new Deflater();
@@ -744,6 +760,21 @@ public class DeflaterTest extends TestCase {
 			}
 			mdefl.end();
 		}
+
+		//Call setStrategy after setInput call
+        byte outPutBuf[] = new byte[500];
+        MyDeflater mdefl = new MyDeflater();
+        mdefl.setStrategy(mdefl.getDefStrategy());
+        mdefl.setInput(byteArray);
+        mdefl.setStrategy(mdefl.getHuffman());
+        while (!mdefl.needsInput()) {
+            mdefl.deflate(outPutBuf);
+        }
+        mdefl.finish();
+        while (!mdefl.finished()) {
+            mdefl.deflate(outPutBuf);
+        }
+        mdefl.end();
 
 		// Attempting to setStrategy to an invalid value
 		try {
@@ -886,6 +917,18 @@ public class DeflaterTest extends TestCase {
 			fail("IllegalArgumentException not thrown when setting level to a number > 9.");
 		} catch (IllegalArgumentException e) {
 		}
+		
+        try {
+            Deflater boundDefl = new Deflater(-2, true);
+            fail("IllegalArgumentException not thrown when passing level to a number < 0.");
+        } catch (IllegalArgumentException e) {
+        }
+
+        try {
+            Deflater boundDefl = new Deflater(10, true);
+            fail("IllegalArgumentException not thrown when passing level to a number > 9.");
+        } catch (IllegalArgumentException e) {
+        }
 	}
 
 	/**
@@ -1007,6 +1050,22 @@ public class DeflaterTest extends TestCase {
 		} catch (NullPointerException e) {
 		}
 
+        // Methods where we expect NullPointerException to be thrown
+        try {
+            defl.getBytesRead();
+            fail("defl.reset() can still be used after " + desc
+                    + " is called in test_" + desc);
+        } catch (NullPointerException e) {
+        }
+        
+        // Methods where we expect NullPointerException to be thrown
+        try {
+            defl.getBytesWritten();
+            fail("defl.getBytesWritten() can still be used after " + desc
+                    + " is called in test_" + desc);
+        } catch (NullPointerException e) {
+        }        
+        
 		// Methods that should be allowed to be called after end() is called
 		defl.needsInput();
 		defl.setStrategy(1);

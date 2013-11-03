@@ -13,9 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-!include <$(HY_HDK)\build\make\defines.mak>
+HY_BIN=$(HY_TARGET)\build\classlib\imageio\native\pngencoder\# trailing slash
+!include <$(HY_TARGET)\hdk\build\make\defines.mak>
 
-PNG_DIR=$(HY_HDK)\..\depends\libs\$(HY_PLATFORM)\png-$(HY_PNG_VER)\# avoid continuation
+PNG_DIR=$(HY_PNG_DIR)\# avoid continuation
 
 LIBBASE=pngencoder
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
@@ -25,13 +26,12 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB)include /I$(SHAREDSUB) \
            /I$(PNG_DIR) /Iinclude
 
-BUILDFILES = $(SHAREDSUB)pngencoder.obj
+BUILDFILES = $(HY_BIN)pngencoder.obj
 
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
 MDLLIBFILES = $(MDLLIBFILES) \
-  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) \
   $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX) $(PNG_DIR)libpng$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000

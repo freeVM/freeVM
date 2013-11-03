@@ -47,6 +47,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.apache.harmony.luni.internal.nls.Messages;
+import org.apache.harmony.luni.util.Util;
 
 /**
  * This class loader is responsible for loading classes and resources from a
@@ -664,9 +665,6 @@ public class URLClassLoader extends SecureClassLoader {
      */
     @Override
     public Enumeration<URL> findResources(final String name) throws IOException {
-        if (name == null) {
-            return null;
-        }
         ArrayList<URL> result = AccessController.doPrivileged(
                 new PrivilegedAction<ArrayList<URL>>() {
                     public ArrayList<URL> run() {
@@ -694,6 +692,9 @@ public class URLClassLoader extends SecureClassLoader {
     }
 
     void findResourcesImpl(String name, ArrayList<URL> result) {
+        if (name == null) {
+            return;
+        }
         int n = 0;
         while (true) {
             URLHandler handler = getHandler(n++);
@@ -1145,12 +1146,12 @@ public class URLClassLoader extends SecureClassLoader {
     private boolean isSealed(Manifest manifest, String dirName) {
         Attributes mainAttributes = manifest.getMainAttributes();
         String value = mainAttributes.getValue(Attributes.Name.SEALED);
-        boolean sealed = value != null && value.toLowerCase().equals("true"); //$NON-NLS-1$
+        boolean sealed = value != null && Util.toASCIILowerCase(value).equals("true"); //$NON-NLS-1$
         Attributes attributes = manifest.getAttributes(dirName);
         if (attributes != null) {
             value = attributes.getValue(Attributes.Name.SEALED);
             if (value != null) {
-                sealed = value.toLowerCase().equals("true"); //$NON-NLS-1$
+                sealed = Util.toASCIILowerCase(value).equals("true"); //$NON-NLS-1$
             }
         }
         return sealed;

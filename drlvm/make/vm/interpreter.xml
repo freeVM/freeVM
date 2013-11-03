@@ -18,7 +18,8 @@
 
 <project name="interpreter" default="build" basedir="../..">
         
-    <property name="component" value="interpreter"/>
+    <property name="hy.component" value="drlvm"/>
+    <property name="hy.module" value="interpreter"/>
     <import file="common-vm.xml"/>
         
     <target name="build" depends="-common-vm">        
@@ -37,7 +38,6 @@
         </compile-asm>
         
         <path id="int.includes">
-            <pathelement location="${drlvm.include.dir}" />
             <dirset dir="${vm.home}">
                 <include name="include" />
                 <include name="vmcore/include" />
@@ -58,6 +58,7 @@
                 <include name="port/src/encoder/ia32_em64t" if="is.x86_64"/>
                 <include name="vmcore/src/lil/em64t/include" if="is.x86_64"/>
             </dirset>
+            <pathelement location="${drlvm.include.dir}" />
         </path>
         <depend-includes paths="int.includes"/>
         <depend-selector rebuild-flag="int.includes.uptodate" id="int.depends"/>

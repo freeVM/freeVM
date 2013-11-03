@@ -15,6 +15,11 @@
  *  limitations under the License.
  */
 
+/* windows.h defined UDATA.  Ignore its definition */
+#define UDATA UDATA_win32_
+#include <windows.h>
+#undef UDATA                    /* this is safe because our UDATA is a typedef, not a macro */
+
 /* Undefine the winsockapi because winsock2 defines it.  Removes warnings. */
 #if defined(_WINSOCKAPI_) && !defined(_WINSOCK2API_)
 #undef _WINSOCKAPI_
@@ -395,11 +400,13 @@ PORT_ACCESS_FROM_ENV (env);
 I_32
 getPlatformIsWriteOnly (JNIEnv * env, char *path)
 {
+  PORT_ACCESS_FROM_ENV(env);
   HANDLE fHandle;
   wchar_t *pathW;
   convert_path_to_unicode(env,path,&pathW);
 
   fHandle = CreateFileW(pathW, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
+  jclmem_free_memory(env, pathW);
   if (fHandle == INVALID_HANDLE_VALUE) {
     return 1;
   }
@@ -445,4 +452,14 @@ void getOSCharset(char *locale, const size_t size) {
   }
   getCharset(cp, locale, size);
   return;
+}
+
+jlong getPlatformStdInFD() {
+  return (jlong)GetStdHandle(STD_INPUT_HANDLE);
+}
+jlong getPlatformStdOutFD() {
+  return (jlong)GetStdHandle(STD_OUTPUT_HANDLE);
+}
+jlong getPlatformStdErrFD() {
+  return (jlong)GetStdHandle(STD_ERROR_HANDLE);
 }

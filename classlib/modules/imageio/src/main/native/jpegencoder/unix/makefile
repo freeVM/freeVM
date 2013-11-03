@@ -13,11 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include $(HY_HDK)/build/make/defines.mk
+HY_BIN=$(HY_TARGET)/build/classlib/imageio/native/jpegencoder/
+include $(HY_TARGET)/hdk/build/make/defines.mk
 
 INCLUDES += -I$(SHARED)common -I$(SHAREDSUB)include
 
-BUILDFILES = $(SHAREDSUB)JpegEncoder.o
+BUILDFILES = JpegEncoder.o
 
 ifneq ($(HY_OS),zos)
 OSLIBS += -ljpeg
@@ -25,14 +26,7 @@ else
 MDLLIBFILES += $(LIBPATH)libjpeg.a
 endif
 
-ifneq ($(HY_ZIP_API),true)
-MDLLIBFILES += $(LIBPATH)libhyzip.a $(MDLLIBZLIB)
-endif
-
-MDLLIBFILES += $(LIBPATH)libhypool.a \
-	$(LIBPATH)libvmi$(HY_LINKLIB_SUFFIX)
-
 DLLNAME=$(DLLPATH)libjpegencoder$(HY_SHLIB_SUFFIX)
 EXPNAME=HYJPEGENCODER_0.1
 
-include $(HY_HDK)/build/make/rules.mk
+include $(HY_TARGET)/hdk/build/make/rules.mk

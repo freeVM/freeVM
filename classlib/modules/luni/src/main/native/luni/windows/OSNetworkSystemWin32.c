@@ -435,20 +435,20 @@ pollSelectRead (JNIEnv * env, jobject fileDescriptor, jint timeout,
   return result;
 }
 
-JNIEXPORT jint JNICALL
+JNIEXPORT jlong JNICALL
 Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
   (JNIEnv *env, jobject thiz, jobject fd, jobjectArray buffers, jintArray offsets, jintArray counts, jint length) {
 
   PORT_ACCESS_FROM_ENV(env);
 
   jobject buffer;
-  jobject* toBeReleasedBuffers = NULL;
+  jobject* toBeReleasedBuffers;
   jint *noffset = NULL;
   jboolean isDirectBuffer = JNI_FALSE;
-  jint result = 0;
+  jlong result = 0;
   LPWSABUF vect;
   int i;
-  jint sentBytes;
+  jint sentBytes = 0;
   jint rc;
   jclass byteBufferClass;
 
@@ -521,7 +521,9 @@ Java_org_apache_harmony_luni_platform_OSNetworkSystem_writev
 
   if (SOCKET_ERROR == result) {
     rc = WSAGetLastError ();
-    throwJavaNetSocketException(env, rc);
+    if (rc != WSATRY_AGAIN && rc != WSAEWOULDBLOCK) {
+        throwJavaNetSocketException(env, rc);
+    }
     result = 0;
   }
 

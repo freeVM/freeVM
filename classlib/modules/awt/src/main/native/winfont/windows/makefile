@@ -15,7 +15,8 @@
 
 TARGETOS = WINNT # Need _WIN32_WINNT=0x0500 to get GLYPHSET defined.
 APPVER = 5.0 
-!include <$(HY_HDK)\build\make\defines.mak>
+HY_BIN=$(HY_TARGET)\build\classlib\awt\native\winfont\# trailing slash
+!include <$(HY_TARGET)\hdk\build\make\defines.mak>
 
 LIBBASE=fontlib
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
@@ -25,12 +26,13 @@ HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 HYCFLAGS = $(HYCFLAGS) /Iinclude /I..\..\gl\windows\include /I..\..\fontlib\shared /I..\..\fontlib\windows \
   -DUNICODE -D_UNICODE
 
-BUILDFILES = winFont.obj
+BUILDFILES = $(HY_BIN)winFont.obj
 
 VIRTFILES = $(LIBBASE).res
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib gdi32.lib GdiPlus.lib advapi32.lib 
 
-MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) $(LIBPATH)FL$(HY_LINKLIB_SUFFIX)
+MDLLIBFILES = $(MDLLIBFILES) \
+  $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX) $(LIBPATH)FL$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13300000
 

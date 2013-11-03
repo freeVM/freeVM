@@ -35,7 +35,6 @@ public class PackingOptions {
     public static final String KEEP = "keep";
 
     // All options are initially set to their defaults
-    private boolean repack = false;
     private boolean gzip = true;
     private boolean stripDebug = false;
     private boolean keepFileOrder = true;
@@ -50,18 +49,9 @@ public class PackingOptions {
     private Map methodAttributeActions;
     private Map codeAttributeActions;
     private boolean verbose = false;
-    private boolean quiet = true;
     private String logFile;
 
     private Attribute[] unknownAttributeTypes;
-
-    public boolean isRepack() {
-        return repack;
-    }
-
-    public void setRepack(boolean repack) {
-        this.repack = repack;
-    }
 
     public boolean isGzip() {
         return gzip;
@@ -128,6 +118,14 @@ public class PackingOptions {
     }
 
     public void setDeflateHint(String deflateHint) {
+        if (!KEEP.equals(deflateHint)
+                && !"true".equals(deflateHint)
+                && !"false".equals(deflateHint)) {
+            throw new IllegalArgumentException(
+                    "Bad argument: -H "
+                            + deflateHint
+                            + " ? deflate hint should be either true, false or keep (default)");
+        }
         this.deflateHint = deflateHint;
     }
 
@@ -209,19 +207,11 @@ public class PackingOptions {
         }
     }
 
-    public Map getClassAttributeActions() {
-        return classAttributeActions;
-    }
-
     public void addClassAttributeAction(String attributeName, String action) {
         if(classAttributeActions == null) {
             classAttributeActions = new HashMap();
         }
         classAttributeActions.put(attributeName, action);
-    }
-
-    public Map getFieldAttributeActions() {
-        return fieldAttributeActions;
     }
 
     public void addFieldAttributeAction(String attributeName, String action) {
@@ -231,19 +221,11 @@ public class PackingOptions {
         fieldAttributeActions.put(attributeName, action);
     }
 
-    public Map getMethodAttributeActions() {
-        return methodAttributeActions;
-    }
-
     public void addMethodAttributeAction(String attributeName, String action) {
         if(methodAttributeActions == null) {
             methodAttributeActions = new HashMap();
         }
         methodAttributeActions.put(attributeName, action);
-    }
-
-    public Map getCodeAttributeActions() {
-        return codeAttributeActions;
     }
 
     public void addCodeAttributeAction(String attributeName, String action) {
@@ -261,12 +243,8 @@ public class PackingOptions {
         this.verbose = verbose;
     }
 
-    public boolean isQuiet() {
-        return quiet;
-    }
-
     public void setQuiet(boolean quiet) {
-        this.quiet = quiet;
+        this.verbose = !quiet;
     }
 
     public String getLogFile() {
@@ -288,25 +266,29 @@ public class PackingOptions {
                         .hasNext();) {
                     name = (String) iteratorI.next();
                     action = (String) attributeActions.get(name);
-                    if (!ERROR.equals(action) && !STRIP.equals(action)
-                            && !PASS.equals(action)) {
-                        prototypeExists = false;
-                        for (Iterator iteratorJ = prototypes.iterator(); iteratorJ
-                                .hasNext();) {
-                            newAttribute = (NewAttribute) iteratorJ.next();
-                            if (newAttribute.type.equals(name)) {
-                                // if the attribute exists, update its context
-                                newAttribute.addContext(tag);
-                                prototypeExists = true;
-                                break;
-                            }
-                            // if no attribute is found, add a new attribute
-                            if (!prototypeExists) {
-                                newAttribute = new NewAttribute(name, action,
-                                        tag);
-                                prototypes.add(newAttribute);
-                            }
+                    prototypeExists = false;
+                    for (Iterator iteratorJ = prototypes.iterator(); iteratorJ
+                            .hasNext();) {
+                        newAttribute = (NewAttribute) iteratorJ.next();
+                        if (newAttribute.type.equals(name)) {
+                            // if the attribute exists, update its context
+                            newAttribute.addContext(tag);
+                            prototypeExists = true;
+                            break;
                         }
+                    }
+                    // if no attribute is found, add a new attribute
+                    if (!prototypeExists) {
+                        if (ERROR.equals(action)) {
+                            newAttribute = new NewAttribute.ErrorAttribute(name, tag);
+                        } else if (STRIP.equals(action)) {
+                            newAttribute = new NewAttribute.StripAttribute(name, tag);
+                        } else if (PASS.equals(action)) {
+                            newAttribute = new NewAttribute.PassAttribute(name, tag);
+                        } else {
+                            newAttribute = new NewAttribute(name, action, tag);
+                        }
+                        prototypes.add(newAttribute);
                     }
                 }
             }
@@ -335,6 +317,9 @@ public class PackingOptions {
     }
 
     public String getUnknownClassAttributeAction(String type) {
+        if (classAttributeActions == null) {
+            return unknownAttributeAction;
+        }
         String action = (String) classAttributeActions.get(type);
         if(action == null) {
             action = unknownAttributeAction;
@@ -343,6 +328,9 @@ public class PackingOptions {
     }
 
     public String getUnknownMethodAttributeAction(String type) {
+        if (methodAttributeActions == null) {
+            return unknownAttributeAction;
+        }
         String action = (String) methodAttributeActions.get(type);
         if(action == null) {
             action = unknownAttributeAction;
@@ -351,6 +339,9 @@ public class PackingOptions {
     }
 
     public String getUnknownFieldAttributeAction(String type) {
+        if (fieldAttributeActions == null) {
+            return unknownAttributeAction;
+        }
         String action = (String) fieldAttributeActions.get(type);
         if(action == null) {
             action = unknownAttributeAction;
@@ -359,6 +350,9 @@ public class PackingOptions {
     }
 
     public String getUnknownCodeAttributeAction(String type) {
+        if (codeAttributeActions == null) {
+            return unknownAttributeAction;
+        }
         String action = (String) codeAttributeActions.get(type);
         if(action == null) {
             action = unknownAttributeAction;

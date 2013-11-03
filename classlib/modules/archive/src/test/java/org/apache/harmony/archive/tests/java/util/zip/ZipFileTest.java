@@ -49,11 +49,16 @@ public class ZipFileTest extends junit.framework.TestCase {
 	private ZipFile zfile;
 
 	/**
+     * @throws IOException 
 	 * @tests java.util.zip.ZipFile#ZipFile(java.io.File)
 	 */
-	public void test_ConstructorLjava_io_File() {
+	public void test_ConstructorLjava_io_File() throws IOException {
 		// Test for method java.util.zip.ZipFile(java.io.File)
-		assertTrue("Used to test", true);
+        zfile.close(); // about to reopen the same temp file
+        File file = new File(tempFileName);
+        ZipFile zip = new ZipFile(file);
+        assertTrue("Zip should exist", file.exists());
+        zip.close();        
 	}
 
 	/**
@@ -66,6 +71,14 @@ public class ZipFileTest extends junit.framework.TestCase {
                                           | ZipFile.OPEN_READ);
                 zip.close();
                 assertTrue("Zip should not exist", !file.exists());
+
+                file = new File(tempFileName);
+                try{
+                    zip = new ZipFile(file, 3);  //passing unkown argument
+                    fail("Should throw IllegalArgumentException");
+                }catch(IllegalArgumentException iae ){
+                    //expected
+                }
 	}
 
 	/**
@@ -142,7 +155,7 @@ public class ZipFileTest extends junit.framework.TestCase {
 			++c;
 			enumer.nextElement();
 		}
-		assertTrue("Incorrect number of entries returned: " + c, c == 6);
+		assertEquals("Incorrect number of entries returned: " + c, 6, c);
 
 		Enumeration<? extends ZipEntry> enumeration = zfile.entries();
 		zfile.close();
@@ -242,8 +255,8 @@ public class ZipFileTest extends junit.framework.TestCase {
 	 */
 	public void test_getName() {
 		// Test for method java.lang.String java.util.zip.ZipFile.getName()
-		assertTrue("Returned incorrect name: " + zfile.getName(), zfile
-				.getName().equals(tempFileName));
+		assertEquals("Returned incorrect name: " + zfile.getName(), tempFileName,
+		        zfile.getName());
 	}
     
     /**

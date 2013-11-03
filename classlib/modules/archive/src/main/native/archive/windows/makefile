@@ -17,7 +17,8 @@
 # Makefile for module 'archive'
 #
 
-!include <$(HY_HDK)\build\make\defines.mak>
+HY_BIN=$(HY_TARGET)\build\classlib\archive\native\archive\# trailing slash
+!include <$(HY_TARGET)\hdk\build\make\defines.mak>
 
 LIBBASE=hyarchive
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
@@ -27,10 +28,9 @@ HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I..\..\zlib_dist \
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
 BUILDFILES = \
-	$(SHAREDSUB)archive_copyright.obj $(SHAREDSUB)jclcrc32.obj \
-	$(SHAREDSUB)zip.obj $(SHAREDSUB)adler32.obj $(SHAREDSUB)inflater.obj \
-	$(SHAREDSUB)jarfile.obj $(SHAREDSUB)deflater.obj \
-	$(SHAREDSUB)archiveglob.obj
+	$(HY_BIN)archive_copyright.obj $(HY_BIN)jclcrc32.obj \
+	$(HY_BIN)zip.obj $(HY_BIN)adler32.obj $(HY_BIN)inflater.obj \
+	$(HY_BIN)jarfile.obj $(HY_BIN)deflater.obj $(HY_BIN)archiveglob.obj
 
 VIRTFILES = $(LIBBASE).res
 
@@ -42,7 +42,6 @@ MDLLIBFILES = $(MDLLIBFILES) $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX)
 
 MDLLIBFILES = $(MDLLIBFILES) \
         $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX) \
-	$(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) \
 	$(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 DLLBASE=0x13100000
 

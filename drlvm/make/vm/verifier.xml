@@ -18,16 +18,17 @@
 
 <project name="verifier" default="build" basedir="../..">
     
-    <property name="component" value="verifier"/>
+    <property name="hy.component" value="drlvm"/>
+    <property name="hy.module" value="verifier"/>
     <import file="common-vm.xml"/>
     
     <target name="build" depends="-common-vm">        
         <init-native/>
         <make-native libname="verifier" type="static">
             <includepath>
-                <pathelement location="${drlvm.include.dir}" />
                 <pathelement location="${vm.home}/vmcore/include" />
                 <pathelement location="${vm.home}/include" />
+                <pathelement location="${drlvm.include.dir}" />
             </includepath>
             <compiler extends="common.cpp.compiler">
                 <fileset dir="${vm.home}/vmcore/src/verifier-3363">

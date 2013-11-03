@@ -25,6 +25,7 @@ import java.security.Permission;
 import java.security.PermissionCollection;
 
 import org.apache.harmony.luni.util.Inet6Util;
+import org.apache.harmony.luni.util.Util;
 import org.apache.harmony.luni.internal.nls.Messages;
 
 /**
@@ -222,7 +223,7 @@ public final class SocketPermission extends Permission implements Serializable {
             if (pos == length) {
                 parsing = false;
             }
-            action = sb.toString().trim().toLowerCase();
+            action = Util.toASCIILowerCase(sb.toString().trim());
             if (action.equals(actionNames[SP_CONNECT])) {
                 actionsMask |= SP_CONNECT;
             } else if (action.equals(actionNames[SP_LISTEN])) {
@@ -300,14 +301,7 @@ public final class SocketPermission extends Permission implements Serializable {
        String port = hostPort.substring(host.length());
        String emptyString = ""; //$NON-NLS-1$
 
-       if (emptyString.equals(port)) {
-           // Not specified
-           portMin = 80;
-           portMax = 80;
-           return;
-       }
-       
-       if (":*".equals(port)) {
+       if (emptyString.equals(port) || ":*".equals(port)) {
            // The port range should be 0-65535
            portMin = 0;
            portMax = 65535;

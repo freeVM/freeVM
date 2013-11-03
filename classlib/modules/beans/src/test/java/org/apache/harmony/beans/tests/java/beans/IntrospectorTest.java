@@ -122,6 +122,11 @@ public class IntrospectorTest extends TestCase {
         }
     }
 
+    public void testBeanDescriptor_Same() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MockJavaBean.class);
+        assertSame(beanInfo.getBeanDescriptor(), beanInfo.getBeanDescriptor());
+    }
+
     /**
      * The test checks the getMethodDescriptor method
      * 
@@ -450,7 +455,60 @@ public class IntrospectorTest extends TestCase {
         } catch (IntrospectionException e) {
         }
     }
-    
+
+    /*
+     * BeanClass provide bean info about itself
+     */
+    public static class MockBeanInfo4BeanClassSelf implements BeanInfo {
+
+        public void setValue(String v) throws Exception {
+        }
+
+        public int getValue() {
+            return 0;
+        }
+
+        public BeanDescriptor getBeanDescriptor() {
+            return null;
+        }
+
+        public EventSetDescriptor[] getEventSetDescriptors() {
+            return new EventSetDescriptor[0];
+        }
+
+        public int getDefaultEventIndex() {
+            return -1;
+        }
+
+        public int getDefaultPropertyIndex() {
+            return -1;
+        }
+
+        public PropertyDescriptor[] getPropertyDescriptors() {
+            return new PropertyDescriptor[0];
+        }
+
+        public MethodDescriptor[] getMethodDescriptors() {
+            return new MethodDescriptor[0];
+        }
+
+        public BeanInfo[] getAdditionalBeanInfo() {
+            return null;
+        }
+
+        public Image getIcon(int iconKind) {
+            return null;
+        }
+    }
+
+    public void test_BeanInfo_Self() throws Exception {
+        BeanInfo info = Introspector
+                .getBeanInfo(MockBeanInfo4BeanClassSelf.class);
+        assertEquals(0, info.getMethodDescriptors().length);
+        assertEquals(0, info.getPropertyDescriptors().length);
+        assertEquals(0, info.getEventSetDescriptors().length);
+    }
+
     /*
      * Introspect static methods
      */
@@ -4055,6 +4113,512 @@ public class IntrospectorTest extends TestCase {
                 assertFalse(pd instanceof IndexedPropertyDescriptor);
                 assertNull(pd.getReadMethod());
                 assertEquals(setter, pd.getWriteMethod());
+            }
+        }
+    }
+
+    public class MixedSimpleClass45 {
+        public boolean isList(int index) {
+            return true;
+        }
+    }
+
+    public void test_MixedSimpleClass45() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass45.class);
+        assertEquals(1, beanInfo.getPropertyDescriptors().length);
+    }
+
+    public class MixedSimpleClass46 {
+        public boolean getList() {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+    }
+
+    public void test_MixedSimpleClass46() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass46.class);
+        Method getter = MixedSimpleClass46.class.getMethod("getList",
+                new Class<?>[] {});
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertEquals(getter, pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertFalse(pd instanceof IndexedPropertyDescriptor);
+            }
+        }
+    }
+
+    public class MixedSimpleClass47 {
+        public boolean isList() {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+    }
+
+    public void test_MixedSimpleClass47() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass47.class);
+        Method getter = MixedSimpleClass47.class.getMethod("isList",
+                new Class<?>[] {});
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertEquals(getter, pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertFalse(pd instanceof IndexedPropertyDescriptor);
+            }
+        }
+    }
+
+    public class MixedSimpleClass48 {
+        public boolean getList(int index) {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+    }
+
+    public void test_MixedSimpleClass48() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass48.class);
+        Method getter = MixedSimpleClass48.class.getMethod("getList",
+                new Class<?>[] { int.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertNull(pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertTrue(pd instanceof IndexedPropertyDescriptor);
+                assertEquals(getter,
+                        ((IndexedPropertyDescriptor) pd).getIndexedReadMethod());
+                assertNull(((IndexedPropertyDescriptor) pd)
+                        .getIndexedWriteMethod());
+            }
+        }
+    }
+
+    public class MixedSimpleClass49 {
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(boolean bool) {
+        }
+    }
+
+    public void test_MixedSimpleClass49() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass49.class);
+        Method setter = MixedSimpleClass49.class.getMethod("setList",
+                new Class<?>[] { boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertNull(pd.getReadMethod());
+                assertEquals(setter, pd.getWriteMethod());
+                assertFalse(pd instanceof IndexedPropertyDescriptor);
+            }
+        }
+    }
+
+    public class MixedSimpleClass50 {
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(int index, boolean bool) {
+        }
+    }
+
+    public void test_MixedSimpleClass50() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass50.class);
+        Method setter = MixedSimpleClass50.class.getMethod("setList",
+                new Class<?>[] { int.class, boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertNull(pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertTrue(pd instanceof IndexedPropertyDescriptor);
+                assertNull(((IndexedPropertyDescriptor) pd)
+                        .getIndexedReadMethod());
+                assertEquals(setter,
+                        ((IndexedPropertyDescriptor) pd)
+                                .getIndexedWriteMethod());
+            }
+        }
+    }
+
+    public class MixedSimpleClass51 {
+        public boolean getList() {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(boolean bool) {
+        }
+    }
+
+    public void test_MixedSimpleClass51() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass51.class);
+        Method getter = MixedSimpleClass51.class.getMethod("getList",
+                new Class<?>[] {});
+        Method setter = MixedSimpleClass51.class.getMethod("setList",
+                new Class<?>[] { boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertEquals(getter, pd.getReadMethod());
+                assertEquals(setter, pd.getWriteMethod());
+                assertFalse(pd instanceof IndexedPropertyDescriptor);
+            }
+        }
+    }
+
+    public class MixedSimpleClass52 {
+        public boolean getList() {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(int index, boolean bool) {
+        }
+    }
+
+    public void test_MixedSimpleClass52() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass52.class);
+        Method setter = MixedSimpleClass52.class.getMethod("setList",
+                new Class<?>[] { int.class, boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertNull(pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertTrue(pd instanceof IndexedPropertyDescriptor);
+                assertNull(((IndexedPropertyDescriptor) pd)
+                        .getIndexedReadMethod());
+                assertEquals(setter,
+                        ((IndexedPropertyDescriptor) pd)
+                                .getIndexedWriteMethod());
+            }
+        }
+    }
+
+    public class MixedSimpleClass53 {
+        public boolean isList() {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(boolean bool) {
+        }
+    }
+
+    public void test_MixedSimpleClass53() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass53.class);
+        Method getter = MixedSimpleClass53.class.getMethod("isList",
+                new Class<?>[] {});
+        Method setter = MixedSimpleClass53.class.getMethod("setList",
+                new Class<?>[] { boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertEquals(getter, pd.getReadMethod());
+                assertEquals(setter, pd.getWriteMethod());
+                assertFalse(pd instanceof IndexedPropertyDescriptor);
+            }
+        }
+    }
+
+    public class MixedSimpleClass54 {
+        public boolean isList() {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(int index, boolean bool) {
+        }
+    }
+
+    public void test_MixedSimpleClass54() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass54.class);
+        Method setter = MixedSimpleClass54.class.getMethod("setList",
+                new Class<?>[] { int.class, boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertNull(pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertTrue(pd instanceof IndexedPropertyDescriptor);
+                assertNull(((IndexedPropertyDescriptor) pd)
+                        .getIndexedReadMethod());
+                assertEquals(setter,
+                        ((IndexedPropertyDescriptor) pd)
+                                .getIndexedWriteMethod());
+            }
+        }
+    }
+
+    public class MixedSimpleClass55 {
+        public boolean getList(int index) {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(boolean bool) {
+        }
+    }
+
+    public void test_MixedSimpleClass55() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass55.class);
+        Method getter = MixedSimpleClass55.class.getMethod("getList",
+                new Class<?>[] { int.class });
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertNull(pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertTrue(pd instanceof IndexedPropertyDescriptor);
+                assertEquals(getter,
+                        ((IndexedPropertyDescriptor) pd).getIndexedReadMethod());
+                assertNull(((IndexedPropertyDescriptor) pd)
+                        .getIndexedWriteMethod());
+            }
+        }
+    }
+
+    public class MixedSimpleClass56 {
+        public boolean getList(int index) {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(int index, boolean bool) {
+        }
+    }
+
+    public void test_MixedSimpleClass56() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass56.class);
+        Method getter = MixedSimpleClass56.class.getMethod("getList",
+                new Class<?>[] { int.class });
+        Method setter = MixedSimpleClass56.class.getMethod("setList",
+                new Class<?>[] { int.class, boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertNull(pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertTrue(pd instanceof IndexedPropertyDescriptor);
+                assertEquals(getter,
+                        ((IndexedPropertyDescriptor) pd).getIndexedReadMethod());
+                assertEquals(setter,
+                        ((IndexedPropertyDescriptor) pd)
+                                .getIndexedWriteMethod());
+            }
+        }
+    }
+
+    public class MixedSimpleClass57 {
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(boolean bool) {
+
+        }
+
+        public void setList(int index, boolean bool) {
+        }
+    }
+
+    public void test_MixedSimpleClass57() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass57.class);
+        Method setter = MixedSimpleClass57.class.getMethod("setList",
+                new Class<?>[] { int.class, boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertNull(pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertTrue(pd instanceof IndexedPropertyDescriptor);
+                assertNull(((IndexedPropertyDescriptor) pd)
+                        .getIndexedReadMethod());
+                assertEquals(setter,
+                        ((IndexedPropertyDescriptor) pd)
+                                .getIndexedWriteMethod());
+            }
+        }
+    }
+
+    public class MixedSimpleClass58 {
+        public boolean getList() {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(boolean bool) {
+        }
+
+        public void setList(int index, boolean bool) {
+
+        }
+    }
+
+    public void test_MixedSimpleClass58() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass58.class);
+        Method getter = MixedSimpleClass58.class.getMethod("getList",
+                new Class<?>[] {});
+        Method setter = MixedSimpleClass58.class.getMethod("setList",
+                new Class<?>[] { boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertEquals(getter, pd.getReadMethod());
+                assertEquals(setter, pd.getWriteMethod());
+                assertFalse(pd instanceof IndexedPropertyDescriptor);
+            }
+        }
+    }
+
+    public class MixedSimpleClass59 {
+        public boolean isList() {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(boolean bool) {
+        }
+
+        public void setList(int index, boolean bool) {
+
+        }
+    }
+
+    public void test_MixedSimpleClass59() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass59.class);
+        Method getter = MixedSimpleClass59.class.getMethod("isList",
+                new Class<?>[] {});
+        Method setter = MixedSimpleClass59.class.getMethod("setList",
+                new Class<?>[] { boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertEquals(getter, pd.getReadMethod());
+                assertEquals(setter, pd.getWriteMethod());
+                assertFalse(pd instanceof IndexedPropertyDescriptor);
+            }
+        }
+    }
+
+    public class MixedSimpleClass60 {
+        public boolean getList(int index) {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(boolean bool) {
+        }
+
+        public void setList(int index, boolean bool) {
+
+        }
+    }
+
+    public void test_MixedSimpleClass60() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass60.class);
+        Method getter = MixedSimpleClass60.class.getMethod("getList",
+                new Class<?>[] { int.class });
+        Method setter = MixedSimpleClass60.class.getMethod("setList",
+                new Class<?>[] { int.class, boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertNull(pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertTrue(pd instanceof IndexedPropertyDescriptor);
+                assertEquals(getter,
+                        ((IndexedPropertyDescriptor) pd).getIndexedReadMethod());
+                assertEquals(setter,
+                        ((IndexedPropertyDescriptor) pd)
+                                .getIndexedWriteMethod());
+            }
+        }
+    }
+
+    public class MixedSimpleClass61 {
+        public boolean getList() {
+            return true;
+        }
+
+        public boolean getList(int index) {
+            return true;
+        }
+
+        public boolean isList() {
+            return true;
+        }
+
+        public boolean isList(int index) {
+            return true;
+        }
+
+        public void setList(boolean bool) {
+        }
+
+        public void setList(int index, boolean bool) {
+
+        }
+    }
+
+    public void test_MixedSimpleClass61() throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(MixedSimpleClass61.class);
+        Method getter = MixedSimpleClass61.class.getMethod("getList",
+                new Class<?>[] { int.class });
+        Method setter = MixedSimpleClass61.class.getMethod("setList",
+                new Class<?>[] { int.class, boolean.class });
+        assertEquals(2, beanInfo.getPropertyDescriptors().length);
+        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+            if (propertyName.equals(pd.getName())) {
+                assertNull(pd.getReadMethod());
+                assertNull(pd.getWriteMethod());
+                assertTrue(pd instanceof IndexedPropertyDescriptor);
+                assertEquals(getter,
+                        ((IndexedPropertyDescriptor) pd).getIndexedReadMethod());
+                assertEquals(setter,
+                        ((IndexedPropertyDescriptor) pd)
+                                .getIndexedWriteMethod());
             }
         }
     }

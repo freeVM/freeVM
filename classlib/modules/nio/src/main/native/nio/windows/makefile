@@ -17,7 +17,8 @@
 # Makefile for module 'nio'
 #
 
-!include <$(HY_HDK)\build\make\defines.mak>
+HY_BIN=$(HY_TARGET)\build\classlib\nio\native\nio\# trailing slash
+!include <$(HY_TARGET)\hdk\build\make\defines.mak>
 
 LIBBASE=hynio
 DLLNAME=$(DLLPATH)$(LIBBASE).dll
@@ -25,19 +26,12 @@ LIBNAME=$(LIBPATH)$(LIBBASE).lib
 HYCFLAGS = $(HYCFLAGS) /I$(SHAREDSUB) /I$(SHARED)common /I$(SHARED)fdlibm
 HYLDFLAGS = $(HYLDFLAGS) -def:$(LIBBASE).def
 
-BUILDFILES = \
-  $(SHAREDSUB)DirectBufferUtil.obj $(SHAREDSUB)AddressUtil.obj
+BUILDFILES = $(HY_BIN)DirectBufferUtil.obj $(HY_BIN)AddressUtil.obj
 VIRTFILES = hynio.res
 
 SYSLIBFILES = ws2_32.lib Iphlpapi.lib
 
-!IF "$(HY_ZIP_API)" != "true"
-MDLLIBFILES = \
-  $(LIBPATH)hyzip$(HY_LINKLIB_SUFFIX) $(LIBPATH)hyzlib$(HY_LINKLIB_SUFFIX)
-!ENDIF
-
 MDLLIBFILES = $(LIBPATH)hycommon$(HY_LINKLIB_SUFFIX) \
-  $(LIBPATH)hypool$(HY_LINKLIB_SUFFIX) \
   $(LIBPATH)hythr$(HY_LINKLIB_SUFFIX) $(LIBPATH)vmi$(HY_LINKLIB_SUFFIX)
 
 DLLBASE=0x13200000

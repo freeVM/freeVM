@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -37,8 +38,10 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -1114,7 +1117,7 @@ public class ScannerTest extends TestCase {
             // expected
         }
 
-        s = new Scanner("-123 123- (123)");
+        s = new Scanner("-123 123-");
         s.useLocale(new Locale("mk", "MK"));
         assertEquals(-123, s.nextInt(10));
         try {
@@ -1125,8 +1128,6 @@ public class ScannerTest extends TestCase {
         }
         // Skip the un-recognizable token 123-.
         assertEquals("123-", s.next());
-        // The following test case fails on RI
-        assertEquals(-123, s.nextInt(10));
 
         // If the parameter radix is illegal, the following test cases fail on
         // RI
@@ -1314,7 +1315,7 @@ public class ScannerTest extends TestCase {
             // expected
         }
 
-        s = new Scanner("-123 123- (123)");
+        s = new Scanner("-123 123-");
         s.useLocale(new Locale("mk", "MK"));
         assertEquals(-123, s.nextInt());
         try {
@@ -1325,8 +1326,6 @@ public class ScannerTest extends TestCase {
         }
         // Skip the un-recognizable token 123-.
         assertEquals("123-", s.next());
-        // The following test case fails on RI
-        assertEquals(-123, s.nextInt());
     }
     
     /**
@@ -1571,9 +1570,8 @@ public class ScannerTest extends TestCase {
             // Expected
         }
 
-        s = new Scanner("(123) 123- -123");
+        s = new Scanner("123- -123");
         s.useLocale(new Locale("mk", "MK"));
-        assertEquals((float)-123.0, s.nextFloat());
         try {
             s.nextFloat();
             fail("Should throw InputMismatchException");
@@ -3448,7 +3446,7 @@ public class ScannerTest extends TestCase {
             // expected
         }
 
-        s = new Scanner("-123 123- (123)");
+        s = new Scanner("-123 123-");
         s.useLocale(new Locale("mk", "MK"));
         assertTrue(s.hasNextInt(10));
         assertEquals(-123, s.nextInt(10));
@@ -3461,9 +3459,6 @@ public class ScannerTest extends TestCase {
         }
         // Skip the un-recognizable token 123-.
         assertEquals("123-", s.next());
-        // The following test case fails on RI
-        assertTrue(s.hasNextInt(10));
-        assertEquals(-123, s.nextInt(10));
     }
 
     /**
@@ -3650,7 +3645,7 @@ public class ScannerTest extends TestCase {
             // expected
         }
 
-        s = new Scanner("-123 123- (123)");
+        s = new Scanner("-123 123-");
         s.useLocale(new Locale("mk", "MK"));
         assertTrue(s.hasNextInt());
         assertEquals(-123, s.nextInt());
@@ -3662,9 +3657,6 @@ public class ScannerTest extends TestCase {
         }
         // Skip the un-recognizable token 123-.
         assertEquals("123-", s.next());
-        // The following test case fails on RI
-        assertTrue(s.hasNextInt());
-        assertEquals(-123, s.nextInt());
     }
     
     /**
@@ -3772,10 +3764,8 @@ public class ScannerTest extends TestCase {
 //            // Expected
 //        }
 
-        s = new Scanner("(123) 123- -123");
+        s = new Scanner("123- -123");
         s.useLocale(new Locale("mk", "MK"));
-        assertTrue(s.hasNextFloat());
-        assertEquals((float)-123.0, s.nextFloat());
         assertFalse(s.hasNextFloat());
         try {
             s.nextFloat();
@@ -5614,7 +5604,6 @@ public class ScannerTest extends TestCase {
      * @tests java.util.Scanner#hasNextLine()
      */
     public void test_hasNextLine() {
-        
         s = new Scanner("");
         s.close();
         try {
@@ -5682,7 +5671,41 @@ public class ScannerTest extends TestCase {
         assertEquals(0, matchResult.start());
         assertEquals(1, matchResult.end());
     }
-    
+
+    public void test_hasNextLine_sequence() throws IOException {
+        final PipedInputStream pis = new PipedInputStream();
+        final PipedOutputStream pos = new PipedOutputStream();
+        final Scanner scanner = new Scanner(pis);
+        pis.connect(pos);
+        final List<String> result = new ArrayList<String>();
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+                while (scanner.hasNextLine()) {
+                    result.add(scanner.nextLine());
+                }
+            }
+        });
+        thread.start();
+        for (int index = 0; index < 5; index++) {
+            pos.write(("line" + index + "\n").getBytes());
+            pos.flush();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // Ignored
+            }
+            assertEquals(index + 1, result.size());
+        }
+        pis.close();
+        pos.close();
+        try {
+            thread.join(1000);
+        } catch (InterruptedException e) {
+            // Ignored
+        }
+        assertFalse(scanner.hasNextLine());
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
 

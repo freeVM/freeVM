@@ -79,17 +79,27 @@
 #define EXE_SUFFIX          ""
 #endif
 
+#if defined(ZOS)
+/* zOS does not define PATH_MAX, so just set it to be _POSIX_PATH_MAX */
+#if !defined(PATH_MAX)
+#define PATH_MAX _POSIX_PATH_MAX
+#endif
+#endif
+
 typedef struct ToolData {
     int numJars; 
     char **jarList;
 } TOOLDATA;
 
 char     *cleanToolName(const char *);
-char     *getExeDir();
-char     *getRoot();
+char     *getExeDir(const char*);
+char     *getRoot(const char*);
 TOOLDATA *getToolData(const char *, const char *, int toolType);
 int getToolType(const char*, const char*);
 char* jarFile(const char*, const char*);
+#if !defined(LINUX) && !defined(FREEBSD) && !defined(WIN32)
+char* findInPath(const char* basename);
+#endif
 
 /**
  *  main
@@ -118,14 +128,12 @@ int main (int argc, char **argv, char **envp)
     int moreArgvCount = /* -cp <classpath> */ 2 + /* <tool-class> */ 1 + /* NULL */ 1;
     char **myArgv = (char **) malloc(sizeof(char*) * (myArgvCount + moreArgvCount));    
     char *toolName = NULL;
-    char *cmd_line = NULL;
-    int size, i, j;
-    int cmd_len = 0;
+    int i;
     int exit_code = -1;
     int newIndex = 0;
     char *root = NULL;
     char *fullExePath = NULL;
-    TOOLDATA *pToolData = (TOOLDATA *) malloc(sizeof(TOOLDATA));
+    TOOLDATA *pToolData;
     
     int isJavaw = 0;
     int toolType = 0; /* 0 = JRE tool, 1 = JDK tool, 2 = JRE tool in jdk/bin */
@@ -135,7 +143,7 @@ int main (int argc, char **argv, char **envp)
      *  and the full paths to jars.  This way, we can be called 
      *  from anywhere
      */    
-    root = getRoot();
+    root = getRoot(argv[0]);
 
 //    printf("root = %s\n", root);
     
@@ -161,6 +169,7 @@ int main (int argc, char **argv, char **envp)
     toolType = getToolType(root, toolName);
     if (toolType == -1) {
         fprintf(stderr, "Unable to determine type (JDK/JRE) of tool\n");
+        free(toolName);
         return 1;
     }
       
@@ -171,6 +180,7 @@ int main (int argc, char **argv, char **envp)
     pToolData = getToolData(toolName, root, toolType);
        
     if (pToolData == NULL) { 
+        free(toolName);
         return 2;
     }
     
@@ -199,6 +209,7 @@ int main (int argc, char **argv, char **envp)
     if (strcmp(toolName, "java") && !isJavaw) {
         char *classpath;
         char *buffer;
+        int size;
 
         myArgvCount = argc + moreArgvCount;
         
@@ -269,68 +280,74 @@ int main (int argc, char **argv, char **envp)
      
 #if defined(WIN32)
 
-    /*
-     * win32 - CreateProcess() needs a cmd line string
-     *   - double quote all arguments to avoid breaking spaces
-     *   - prepend existing double quotes with '\'
-     */
+    {
+        char *cmd_line = NULL;
+        int cmd_len = 0;
+        int j;
+        int size = 0;
+
+        /*
+         * win32 - CreateProcess() needs a cmd line string
+         *   - double quote all arguments to avoid breaking spaces
+         *   - prepend existing double quotes with '\'
+         */
      
-    // determine required memory size for command line arguments
-    size = 0;
-    for (i=1; i < myArgvCount; i++) {
-        if (myArgv[i] != NULL) {
-            int arg_len = strlen(myArgv[i]);
-            size += /* space */ 1 + /* quotes */ 2 + arg_len;
-            for (j = 0; j < arg_len; j++) {
-                 if (myArgv[i][j] == '\"') size++;
+        // determine required memory size for command line arguments
+        for (i=1; i < myArgvCount; i++) {
+            if (myArgv[i] != NULL) {
+                int arg_len = strlen(myArgv[i]);
+                size += /* space */ 1 + /* quotes */ 2 + arg_len;
+                for (j = 0; j < arg_len; j++) {
+                    if (myArgv[i][j] == '\"') size++;
+                }
             }
         }
-    }
     
-    // allocate memory for whole command line
-    cmd_line = (char *) malloc(strlen(fullExePath) + /* quotes */ 2 + /* arguments */ size + /* NULL */ 1);
+        // allocate memory for whole command line
+        cmd_line = (char *) malloc(strlen(fullExePath) + /* quotes */ 2 + /* arguments */ size + /* NULL */ 1);
     
-    if (cmd_line == NULL) { 
-        fprintf(stderr, "Unable to allocate memory for tool command line %s\n", argv[0]);
-        return 4;
-    }
-    
-    // copy quoted exe path
-    sprintf(cmd_line, "\"%s\"", fullExePath);
-    cmd_len = strlen(cmd_line);
-        
-    // copy quoted arguments and prepend existing double quotes with '\'
-    for (i=1; i < myArgvCount; i++) {
-        if (myArgv[i] != NULL) {
-            int arg_len = strlen(myArgv[i]);
-            cmd_line[cmd_len++] = ' ';  // space delimiter
-            cmd_line[cmd_len++] = '\"'; // starting quote
-            for (j = 0; j < arg_len; j++) {
-                char ch = myArgv[i][j];
-                if (ch == '\"') {
-                    cmd_line[cmd_len++] = '\\';
-                }  
-                cmd_line[cmd_len++] = ch;
-            }
-            cmd_line[cmd_len++] = '\"'; // ending quote
+        if (cmd_line == NULL) { 
+            fprintf(stderr, "Unable to allocate memory for tool command line %s\n", argv[0]);
+            return 4;
         }
-    }
-    cmd_line[cmd_len] = '\0';
     
-    // create child process
-    memset(&procInfo, 0, sizeof(PROCESS_INFORMATION));
-    memset(&startInfo, 0, sizeof(STARTUPINFO));
-    startInfo.cb = sizeof(STARTUPINFO);
+        // copy quoted exe path
+        sprintf(cmd_line, "\"%s\"", fullExePath);
+        cmd_len = strlen(cmd_line);
         
-    if (!CreateProcess(NULL, cmd_line, NULL, NULL,
-                    TRUE, 0, NULL, NULL, &startInfo, &procInfo)) { 
+        // copy quoted arguments and prepend existing double quotes with '\'
+        for (i=1; i < myArgvCount; i++) {
+            if (myArgv[i] != NULL) {
+                int arg_len = strlen(myArgv[i]);
+                cmd_line[cmd_len++] = ' ';  // space delimiter
+                cmd_line[cmd_len++] = '\"'; // starting quote
+                for (j = 0; j < arg_len; j++) {
+                    char ch = myArgv[i][j];
+                    if (ch == '\"') {
+                        cmd_line[cmd_len++] = '\\';
+                    }
+                    cmd_line[cmd_len++] = ch;
+                }
+                cmd_line[cmd_len++] = '\"'; // ending quote
+            }
+        }
+        cmd_line[cmd_len] = '\0';
+    
+        // create child process
+        memset(&procInfo, 0, sizeof(PROCESS_INFORMATION));
+        memset(&startInfo, 0, sizeof(STARTUPINFO));
+        startInfo.cb = sizeof(STARTUPINFO);
+        
+        if (!CreateProcess(NULL, cmd_line, NULL, NULL,
+                           TRUE, 0, NULL, NULL, &startInfo, &procInfo)) { 
 
-        fprintf(stderr, "Error creating process : %d\n", GetLastError());
+            fprintf(stderr, "Error creating process : %d\n", GetLastError());
+            free(cmd_line);
+            return exit_code;
+        }
+
         free(cmd_line);
-        return exit_code;
     }
-
-    free(cmd_line);
 
     // wait for child process to finish
     if (!isJavaw && WAIT_FAILED == WaitForSingleObject(procInfo.hProcess, INFINITE)) {
@@ -405,13 +422,13 @@ char *cleanToolName(const char *name)
     _strlwr(temp);
 
     // remove possible '.exe' suffix
-	exe = strstr(temp, ".exe");
+    exe = strstr(temp, ".exe");
     if (exe) { 
        *exe = '\0';
     }
          
     return temp;     
- #elif defined(LINUX) || defined(FREEBSD)
+ #else
  
     /*
      *  if we found a slash (and someone didn't do something 
@@ -423,20 +440,18 @@ char *cleanToolName(const char *name)
     else { 
         return strdup(name);
     }
- #else
- #error Need to define basename-type function
  #endif
 }
 
 /******************************************************************
- *  getRoot()
+ *  getRoot(const char* argv0)
  * 
  *  returns the root (JDK or JRE) where this executable is located
  *  if it can figure it out or NULL if it can't
  */
-char *getRoot() { 
+char *getRoot(const char* argv0) { 
     
-    char *exeDir = getExeDir();
+    char *exeDir = getExeDir(argv0);
 
     char *last = strrchr(exeDir, PATH_SEPARATOR_CHAR);
     
@@ -444,16 +459,17 @@ char *getRoot() {
         *last = '\0';
         return exeDir;
     }
-    
+
+    free(exeDir);
     return NULL;
 }
 
 /*****************************************************************
- * getExeDir()
+ * getExeDir(const char* argv0)
  * 
  *  returns directory of running exe
  */
-char *getExeDir() {
+char *getExeDir(const char* argv0) {
 
     char *last = NULL;
     
@@ -478,7 +494,27 @@ char *getExeDir() {
         
     // FIXME - handle this right - it could be that 512 isn't enough
 #else
-#error Need to implement executable name code
+    char buffer[PATH_MAX+1];
+    char *rc;
+    const char *exename;
+    rc = strchr(argv0, '/');
+    if (rc) {
+        /* is an absolute or relative path so just use that */
+        exename = argv0;
+    } else {
+        /* search in path */
+       exename = findInPath(argv0);
+       if (!exename) {
+           return NULL;
+       }
+    }
+    rc = realpath(exename, buffer);
+    if (exename != argv0) {
+        free((void*)exename);
+    }
+    if (!rc) {
+        return NULL;
+    }
 #endif
 
     last = strrchr(buffer, PATH_SEPARATOR_CHAR);
@@ -510,7 +546,6 @@ TOOLDATA *getToolData(const char *toolName, const char *root, int toolType) {
     FILE *fp = NULL;
     char key[256];
     char value[256];
-    int count = 0;
     char *temp = NULL;
     TOOLDATA *pToolData = NULL;
             
@@ -556,6 +591,7 @@ TOOLDATA *getToolData(const char *toolName, const char *root, int toolType) {
     free(temp);
  
     if (fp) {
+        int count = 0;
         while (EOF != (count = fscanf(fp, "%s = %s\n", key, value))) {
             // printf("count = %d : %s = %s\n", count, key, value);
             
@@ -684,3 +720,52 @@ char* jarFile(const char* path, const char* jarName) {
     strcat(jarPath, jarName);
     return jarPath;
 }
+
+#if !defined(LINUX) && !defined(FREEBSD) && !defined(WIN32)
+char* findInPath(const char* basename)
+{
+  char filename[PATH_MAX+1];
+  char *path;
+  char *path_to_free;
+  char *path_end;
+
+  path = getenv("PATH");
+  if (!path) {
+    return NULL;
+  }
+  path_to_free = path = strdup(path);
+  if (!path) {
+    return NULL;
+  }
+  path_end = path + strlen(path);
+  while (path < path_end) {
+    int rc;
+    char *path_next;
+    char *sep = strchr(path, ':');
+    if (sep) {
+      *sep = '\0';
+      path_next = sep + 1;
+    } else {
+      path_next = path_end;
+    }
+    if (PATH_MAX < strlen(path) + strlen(basename) + 1) {
+      path = path_next;
+      continue;
+    }
+    strcpy(filename, path);
+    filename[strlen(path)] = '/';
+    filename[strlen(path)+1] = '\0';
+    strcat(filename, basename);
+    rc = access(filename, X_OK);
+    if (rc == 0) {
+      char *ret = strdup(filename);
+      free((void*)path_to_free);
+      return ret;
+    }
+    path = path_next;
+  }
+
+  free((void*)path_to_free);
+  return NULL;
+}
+#endif
