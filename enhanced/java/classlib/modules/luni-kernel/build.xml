@@ -40,7 +40,7 @@ the top-level build.
 
     <target name="build" depends="-build-no-check"/>
     <target name="-build-no-check" unless="skip.java.build"
-            depends="-class-patternset">
+            depends="-svn-info,-class-patternset">
         <hy.jar.bin destfile="${stub.jar}" manifest="META-INF/MANIFEST.MF">
             <fileset refid="classes" />
         </hy.jar.bin>

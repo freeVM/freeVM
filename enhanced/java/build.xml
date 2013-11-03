@@ -713,7 +713,7 @@ Usage:
     <!-- ============================================================== -->
     <!-- sets up a platform                                             -->
     <!-- ============================================================== -->
-    <target name="init">
+    <target name="init" depends="-svn-info">
 
         <property name="harmony.version" value="${svn.revision}" />
         <property name="harmony.long.version" value="${svn.info}" />

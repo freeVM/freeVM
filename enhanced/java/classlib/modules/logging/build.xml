@@ -77,7 +77,7 @@
     </target>
 
     <target name="-build-jar" unless="skip.java.build"
-            depends="-compile-java,-class-patternset">
+            depends="-svn-info,-compile-java,-class-patternset">
         <hy.jar.bin destfile="${hy.jdk}/jre/lib/boot/${hy.module}.jar"
                     manifest="META-INF/MANIFEST.MF">
             <fileset refid="classes" />
@@ -101,7 +101,7 @@
     </target>
 
     <target name="-test-jar" unless="skip.test.build"
-            depends="-compile-tests">
+            depends="-svn-info,-compile-tests">
         <mkdir dir="${tests.hdk.dir}" />
 
         <copy file="make/run-test.xml" tofile="${tests.hdk.dir}/build.xml" />
