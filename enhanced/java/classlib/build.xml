@@ -200,7 +200,7 @@ module:
         </hy.javac>
     </target>
 
-    <target name="-build-modules" depends="-svn-info">
+    <target name="-build-modules">
         <poll-modules target="-build-no-check" />
     </target>
 
@@ -331,7 +331,7 @@ ${built.files.list}
     </target>
 
     <target name="-build-native" unless="skip.native.build"
-            depends="-init-hdk,-svn-info,-layout-natives"
+            depends="-init-hdk,-layout-natives"
             description="Compiles the native code only" >
 
         <!-- these must be run in a specific order due to dependencies -->
@@ -480,7 +480,7 @@ Generating HTML using Doxygen...
     <!-- ================================= 
           target: -properties
          ================================= -->
-    <target name="-properties" depends="-svn-info">
+    <target name="-properties">
         <property name="deploy.file.prefix"
                   value="harmony-classlib-r${svn.revision}" />
         <property name="deploy.tar"
