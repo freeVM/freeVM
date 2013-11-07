@@ -348,7 +348,7 @@
 
     <property name="findBugs.report" location="../../build/findbugs_report" />
 
-    <target name="echo" depends="svn-prop, svn-info, test-jre-vm-info"
+    <target name="echo" depends="svn-prop, test-jre-vm-info"
             description="Display the properties defined by this ant file" >
         <echo>
 Harmony release configuration property:
@@ -444,7 +444,7 @@ properties in preference to these:
         </exec>
     </target>
 
-    <target name="svn-info">
+    <!--target name="svn-info">
         <exec executable="svn"
               failifexecutionfails="false"
               resultproperty="svn.rc">
@@ -468,7 +468,7 @@ properties in preference to these:
         <tstamp>
             <format property="svn.info" pattern="'Unknown revision at' dd-MMM-yyyy hh:mm aa"/>
         </tstamp>
-    </target>
+    </target-->
 
     <target name="test-jre-vm-info" depends="-get-test-vm-output">
         <echo level="info" message="java -version${line.separator}${test.vm.info.tmp}" />

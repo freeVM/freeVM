@@ -235,7 +235,7 @@
         <propertyref name="hy.select" />
     </propertyset>
 
-    <target name="echo" depends="-svn-info, test-jre-vm-info"
+    <target name="echo" depends="test-jre-vm-info"
             description="Display the properties defined by this ant file" >
         <echo>
 Harmony release configuration property:
