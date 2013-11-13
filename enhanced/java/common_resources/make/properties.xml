@@ -29,7 +29,7 @@
              file="${ant.file.Common property definitions}"/>
 
     <import file="${common.basedir}/platform.xml"/>
-    <import file="${common.basedir}/svn.xml"/>
+    <!--import file="${common.basedir}/svn.xml"/-->
 
     <fail message="Property 'hy.target' is not defined">
         <condition>
