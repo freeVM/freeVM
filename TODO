@@ -30,6 +30,12 @@ Building
    but any modern version of Linux should be fine.
    If you want to try to build under Windows, that's
    great too.
+
+   1a. Resolution of dependencies.  I have deliberately
+       removed the build processes that bring down 
+       dependencies from SVN.  We need a more modern
+       way of doing this such as the package management
+       system or artifact repositories.
    
 2. We need to perform some basic tests and get an idea
    of the current condition of the project and what
